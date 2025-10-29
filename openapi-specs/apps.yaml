@@ -1,0 +1,2665 @@
+openapi: 3.0.0
+info:
+  title: Databricks Apps API
+  description: API for Databricks apps service
+  version: 1.0.0
+  contact:
+    name: Databricks
+    url: https://databricks.com
+servers:
+- url: https://{deployment_name}.cloud.databricks.com
+  description: Databricks Workspace API
+  variables:
+    deployment_name:
+      default: your-deployment
+      description: Databricks workspace deployment name
+paths:
+  /api/2.0/apps:
+    post:
+      operationId: create
+      summary: Creates a new app.
+      description: "Creates a new app.\n\n:param app: :class:`App`\n:param no_compute:\
+        \ bool (optional)\n  If true, the app will not be started after creation.\n\
+        \n:returns:\n  Long-running operation waiter for :class:`App`.\n  See :method:wait_get_app_active\
+        \ for more details."
+      tags:
+      - apps
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                app:
+                  $ref: '#/components/schemas/App'
+                no_compute:
+                  type: boolean
+                  description: bool (optional) If true, the app will not be started
+                    after creation.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list
+      summary: Lists all apps in the workspace.
+      description: "Lists all apps in the workspace.\n\n:param page_size: int (optional)\n\
+        \  Upper bound for items returned.\n:param page_token: str (optional)\n  Pagination\
+        \ token to go to the next page of apps. Requests first page if absent.\n\n\
+        :returns: Iterator over :class:`App`"
+      tags:
+      - apps
+      parameters:
+      - name: page_size
+        description: int (optional) Upper bound for items returned.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional) Pagination token to go to the next page of apps.
+          Requests first page if absent.
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/apps/{app_name}/update:
+    post:
+      operationId: create_update
+      summary: 'Creates an app update and starts the update process. The update process
+        is asynchronous and the status
+
+        of the update can be checked with the GetAppUpdate method.'
+      description: "Creates an app update and starts the update process. The update\
+        \ process is asynchronous and the status\nof the update can be checked with\
+        \ the GetAppUpdate method.\n\n:param app_name: str\n:param update_mask: str\n\
+        \  The field mask must be a single string, with multiple fields separated\
+        \ by commas (no spaces). The\n  field path is relative to the resource object,\
+        \ using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`).\
+        \ Specification of elements in sequence or map fields is not allowed, as only\n\
+        \  the entire collection field can be specified. Field names must exactly\
+        \ match the resource field\n  names.\n\n  A field mask of `*` indicates full\
+        \ replacement. It’s recommended to always explicitly list the\n  fields being\
+        \ updated and avoid using `*` wildcards, as it can lead to unintended results\
+        \ if the API\n  changes in the future.\n:param app: :class:`App` (optional)\n\
+        \n:returns:\n  Long-running operation waiter for :class:`AppUpdate`.\n  See\
+        \ :method:wait_get_update_app_succeeded for more details."
+      tags:
+      - apps
+      parameters:
+      - name: app_name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                update_mask:
+                  type: string
+                  description: str The field mask must be a single string, with multiple
+                    fields separated by commas (no spaces). The field path is relative
+                    to the resource object, using a dot (`.`) to navigate sub-fields
+                    (e.g., `author.given_name`). Specification of elements in sequence
+                    or map fields is not allowed, as only the entire collection field
+                    can be specified. Field names must exactly match the resource
+                    field names. A field mask of `*` indicates full replacement. It’s
+                    recommended to always explicitly list the fields being updated
+                    and avoid using `*` wildcards, as it can lead to unintended results
+                    if the API changes in the future.
+                app:
+                  $ref: '#/components/schemas/App'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppUpdate'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: get_update
+      summary: Gets the status of an app update.
+      description: "Gets the status of an app update.\n\n:param app_name: str\n  The\
+        \ name of the app.\n\n:returns: :class:`AppUpdate`"
+      tags:
+      - apps
+      parameters:
+      - name: app_name
+        description: str The name of the app.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppUpdate'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/apps/{name}:
+    delete:
+      operationId: delete
+      summary: Deletes an app.
+      description: "Deletes an app.\n\n:param name: str\n  The name of the app.\n\n\
+        :returns: :class:`App`"
+      tags:
+      - apps
+      parameters:
+      - name: name
+        description: str The name of the app.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: get
+      summary: Retrieves information for the app with the supplied name.
+      description: "Retrieves information for the app with the supplied name.\n\n\
+        :param name: str\n  The name of the app.\n\n:returns: :class:`App`"
+      tags:
+      - apps
+      parameters:
+      - name: name
+        description: str The name of the app.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: update
+      summary: Updates the app with the supplied name.
+      description: "Updates the app with the supplied name.\n\n:param name: str\n\
+        \  The name of the app. The name must contain only lowercase alphanumeric\
+        \ characters and hyphens. It\n  must be unique within the workspace.\n:param\
+        \ app: :class:`App`\n\n:returns: :class:`App`"
+      tags:
+      - apps
+      parameters:
+      - name: name
+        description: str The name of the app. The name must contain only lowercase
+          alphanumeric characters and hyphens. It must be unique within the workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/App'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/apps/{app_name}/deployments:
+    post:
+      operationId: deploy
+      summary: Creates an app deployment for the app with the supplied name.
+      description: "Creates an app deployment for the app with the supplied name.\n\
+        \n:param app_name: str\n  The name of the app.\n:param app_deployment: :class:`AppDeployment`\n\
+        \  The app deployment configuration.\n\n:returns:\n  Long-running operation\
+        \ waiter for :class:`AppDeployment`.\n  See :method:wait_get_deployment_app_succeeded\
+        \ for more details."
+      tags:
+      - apps
+      parameters:
+      - name: app_name
+        description: str The name of the app.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AppDeployment'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppDeployment'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list_deployments
+      summary: Lists all app deployments for the app with the supplied name.
+      description: "Lists all app deployments for the app with the supplied name.\n\
+        \n:param app_name: str\n  The name of the app.\n:param page_size: int (optional)\n\
+        \  Upper bound for items returned.\n:param page_token: str (optional)\n  Pagination\
+        \ token to go to the next page of apps. Requests first page if absent.\n\n\
+        :returns: Iterator over :class:`AppDeployment`"
+      tags:
+      - apps
+      parameters:
+      - name: app_name
+        description: str The name of the app.
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: page_size
+        description: int (optional) Upper bound for items returned.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional) Pagination token to go to the next page of apps.
+          Requests first page if absent.
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppDeployment'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/apps/{app_name}/deployments/{deployment_id}:
+    get:
+      operationId: get_deployment
+      summary: Retrieves information for the app deployment with the supplied name
+        and deployment id.
+      description: "Retrieves information for the app deployment with the supplied\
+        \ name and deployment id.\n\n:param app_name: str\n  The name of the app.\n\
+        :param deployment_id: str\n  The unique id of the deployment.\n\n:returns:\
+        \ :class:`AppDeployment`"
+      tags:
+      - apps
+      parameters:
+      - name: app_name
+        description: str The name of the app.
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: deployment_id
+        description: str The unique id of the deployment.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppDeployment'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/permissions/apps/{app_name}/permissionLevels:
+    get:
+      operationId: get_permission_levels
+      summary: Gets the permission levels that a user can have on an object.
+      description: "Gets the permission levels that a user can have on an object.\n\
+        \n:param app_name: str\n  The app for which to get or manage permissions.\n\
+        \n:returns: :class:`GetAppPermissionLevelsResponse`"
+      tags:
+      - apps
+      parameters:
+      - name: app_name
+        description: str The app for which to get or manage permissions.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetAppPermissionLevelsResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/permissions/apps/{app_name}:
+    get:
+      operationId: get_permissions
+      summary: Gets the permissions of an app. Apps can inherit permissions from their
+        root object.
+      description: "Gets the permissions of an app. Apps can inherit permissions from\
+        \ their root object.\n\n:param app_name: str\n  The app for which to get or\
+        \ manage permissions.\n\n:returns: :class:`AppPermissions`"
+      tags:
+      - apps
+      parameters:
+      - name: app_name
+        description: str The app for which to get or manage permissions.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppPermissions'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    put:
+      operationId: set_permissions
+      summary: 'Sets permissions on an object, replacing existing permissions if they
+        exist. Deletes all direct
+
+        permissions if none are specified. Objects can inherit permissions from their
+        root object.'
+      description: "Sets permissions on an object, replacing existing permissions\
+        \ if they exist. Deletes all direct\npermissions if none are specified. Objects\
+        \ can inherit permissions from their root object.\n\n:param app_name: str\n\
+        \  The app for which to get or manage permissions.\n:param access_control_list:\
+        \ List[:class:`AppAccessControlRequest`] (optional)\n\n:returns: :class:`AppPermissions`"
+      tags:
+      - apps
+      parameters:
+      - name: app_name
+        description: str The app for which to get or manage permissions.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_control_list:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AppAccessControlRequest'
+                  description: List[:class:`AppAccessControlRequest`] (optional)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppPermissions'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: update_permissions
+      summary: Updates the permissions on an app. Apps can inherit permissions from
+        their root object.
+      description: "Updates the permissions on an app. Apps can inherit permissions\
+        \ from their root object.\n\n:param app_name: str\n  The app for which to\
+        \ get or manage permissions.\n:param access_control_list: List[:class:`AppAccessControlRequest`]\
+        \ (optional)\n\n:returns: :class:`AppPermissions`"
+      tags:
+      - apps
+      parameters:
+      - name: app_name
+        description: str The app for which to get or manage permissions.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_control_list:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/AppAccessControlRequest'
+                  description: List[:class:`AppAccessControlRequest`] (optional)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AppPermissions'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/apps/{name}/start:
+    post:
+      operationId: start
+      summary: Start the last active deployment of the app in the workspace.
+      description: "Start the last active deployment of the app in the workspace.\n\
+        \n:param name: str\n  The name of the app.\n\n:returns:\n  Long-running operation\
+        \ waiter for :class:`App`.\n  See :method:wait_get_app_active for more details."
+      tags:
+      - apps
+      parameters:
+      - name: name
+        description: str The name of the app.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/apps/{name}/stop:
+    post:
+      operationId: stop
+      summary: Stops the active deployment of the app in the workspace.
+      description: "Stops the active deployment of the app in the workspace.\n\n:param\
+        \ name: str\n  The name of the app.\n\n:returns:\n  Long-running operation\
+        \ waiter for :class:`App`.\n  See :method:wait_get_app_stopped for more details."
+      tags:
+      - apps
+      parameters:
+      - name: name
+        description: str The name of the app.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/App'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/apps-settings/templates:
+    post:
+      operationId: create_custom_template
+      summary: Creates a custom template.
+      description: 'Creates a custom template.
+
+
+        :param template: :class:`CustomTemplate`
+
+
+        :returns: :class:`CustomTemplate`'
+      tags:
+      - apps
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomTemplate'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTemplate'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list_custom_templates
+      summary: Lists all custom templates in the workspace.
+      description: "Lists all custom templates in the workspace.\n\n:param page_size:\
+        \ int (optional)\n  Upper bound for items returned.\n:param page_token: str\
+        \ (optional)\n  Pagination token to go to the next page of custom templates.\
+        \ Requests first page if absent.\n\n:returns: Iterator over :class:`CustomTemplate`"
+      tags:
+      - apps
+      parameters:
+      - name: page_size
+        description: int (optional) Upper bound for items returned.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional) Pagination token to go to the next page of custom
+          templates. Requests first page if absent.
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTemplate'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/apps-settings/templates/{name}:
+    delete:
+      operationId: delete_custom_template
+      summary: Deletes the custom template with the specified name.
+      description: "Deletes the custom template with the specified name.\n\n:param\
+        \ name: str\n  The name of the custom template.\n\n:returns: :class:`CustomTemplate`"
+      tags:
+      - apps
+      parameters:
+      - name: name
+        description: str The name of the custom template.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTemplate'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: get_custom_template
+      summary: Gets the custom template with the specified name.
+      description: "Gets the custom template with the specified name.\n\n:param name:\
+        \ str\n  The name of the custom template.\n\n:returns: :class:`CustomTemplate`"
+      tags:
+      - apps
+      parameters:
+      - name: name
+        description: str The name of the custom template.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTemplate'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    put:
+      operationId: update_custom_template
+      summary: Updates the custom template with the specified name. Note that the
+        template name cannot be updated.
+      description: "Updates the custom template with the specified name. Note that\
+        \ the template name cannot be updated.\n\n:param name: str\n  The name of\
+        \ the template. It must contain only alphanumeric characters, hyphens, underscores,\
+        \ and\n  whitespaces. It must be unique within the workspace.\n:param template:\
+        \ :class:`CustomTemplate`\n\n:returns: :class:`CustomTemplate`"
+      tags:
+      - apps
+      parameters:
+      - name: name
+        description: str The name of the template. It must contain only alphanumeric
+          characters, hyphens, underscores, and whitespaces. It must be unique within
+          the workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CustomTemplate'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomTemplate'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    App:
+      type: object
+      description: 'App(name: ''str'', active_deployment: ''Optional[AppDeployment]''
+        = None, app_status: ''Optional[ApplicationStatus]'' = None, budget_policy_id:
+        ''Optional[str]'' = None, compute_size: ''Optional[ComputeSize]'' = None,
+        compute_status: ''Optional[ComputeStatus]'' = None, create_time: ''Optional[str]''
+        = None, creator: ''Optional[str]'' = None, default_source_code_path: ''Optional[str]''
+        = None, description: ''Optional[str]'' = None, effective_budget_policy_id:
+        ''Optional[str]'' = None, effective_user_api_scopes: ''Optional[List[str]]''
+        = None, id: ''Optional[str]'' = None, oauth2_app_client_id: ''Optional[str]''
+        = None, oauth2_app_integration_id: ''Optional[str]'' = None, pending_deployment:
+        ''Optional[AppDeployment]'' = None, resources: ''Optional[List[AppResource]]''
+        = None, service_principal_client_id: ''Optional[str]'' = None, service_principal_id:
+        ''Optional[int]'' = None, service_principal_name: ''Optional[str]'' = None,
+        update_time: ''Optional[str]'' = None, updater: ''Optional[str]'' = None,
+        url: ''Optional[str]'' = None, user_api_scopes: ''Optional[List[str]]'' =
+        None)'
+      properties:
+        name:
+          type: string
+          description: The name of the app. The name must contain only lowercase alphanumeric
+            characters and hyphens. It must be unique within the workspace.
+        active_deployment:
+          type: string
+          description: The active deployment of the app. A deployment is considered
+            active when it has been deployed to the app compute.
+        app_status:
+          type: string
+          description: ''
+        budget_policy_id:
+          type: string
+          description: ''
+        compute_size:
+          type: string
+          description: ''
+        compute_status:
+          type: string
+          description: ''
+        create_time:
+          type: string
+          description: 'The creation time of the app. Formatted timestamp in ISO 6801.  creator:
+            Optional[str] = None The email of the user that created the app.'
+        creator:
+          type: string
+          description: 'The email of the user that created the app.  default_source_code_path:
+            Optional[str] = None """The default workspace file system path of the
+            source code from which app deployment are created. This field tracks the
+            workspace source code path of the last active deployment.'
+        default_source_code_path:
+          type: string
+          description: The default workspace file system path of the source code from
+            which app deployment are created. This field tracks the workspace source
+            code path of the last active deployment.
+        description:
+          type: string
+          description: 'The description of the app.  effective_budget_policy_id: Optional[str]
+            = None  effective_user_api_scopes: Optional[List[str]] = None The effective
+            api scopes granted to the user access token.'
+        effective_budget_policy_id:
+          type: string
+          description: ''
+        effective_user_api_scopes:
+          type: string
+          description: 'The effective api scopes granted to the user access token.  id:
+            Optional[str] = None The unique identifier of the app.'
+        id:
+          type: string
+          description: 'The unique identifier of the app.  oauth2_app_client_id: Optional[str]
+            = None  oauth2_app_integration_id: Optional[str] = None  pending_deployment:
+            Optional[AppDeployment] = None """The pending deployment of the app. A
+            deployment is considered pending when it is being prepared for deployment
+            to the app compute.'
+        oauth2_app_client_id:
+          type: string
+          description: ''
+        oauth2_app_integration_id:
+          type: string
+          description: ''
+        pending_deployment:
+          type: string
+          description: The pending deployment of the app. A deployment is considered
+            pending when it is being prepared for deployment to the app compute.
+        resources:
+          type: string
+          description: 'Resources for the app.  service_principal_client_id: Optional[str]
+            = None  service_principal_id: Optional[int] = None  service_principal_name:
+            Optional[str] = None  update_time: Optional[str] = None The update time
+            of the app. Formatted timestamp in ISO 6801.'
+        service_principal_client_id:
+          type: string
+          description: ''
+        service_principal_id:
+          type: string
+          description: ''
+        service_principal_name:
+          type: string
+          description: ''
+        update_time:
+          type: string
+          description: 'The update time of the app. Formatted timestamp in ISO 6801.  updater:
+            Optional[str] = None The email of the user that last updated the app.'
+        updater:
+          type: string
+          description: 'The email of the user that last updated the app.  url: Optional[str]
+            = None The URL of the app once it is deployed.'
+        url:
+          type: string
+          description: 'The URL of the app once it is deployed.  user_api_scopes:
+            Optional[List[str]] = None  def as_dict(self) -> dict: Serializes the
+            App into a dictionary suitable for use as a JSON request body.'
+        user_api_scopes:
+          type: string
+          description: 'The effective api scopes granted to the user access token.  id:
+            Optional[str] = None The unique identifier of the app.'
+    AppAccessControlRequest:
+      type: object
+      description: 'AppAccessControlRequest(group_name: ''Optional[str]'' = None,
+        permission_level: ''Optional[AppPermissionLevel]'' = None, service_principal_name:
+        ''Optional[str]'' = None, user_name: ''Optional[str]'' = None)'
+      properties:
+        group_name:
+          type: string
+          description: 'name of the group  permission_level: Optional[AppPermissionLevel]
+            = None  service_principal_name: Optional[str] = None application ID of
+            a service principal'
+        permission_level:
+          type: string
+          description: ''
+        service_principal_name:
+          type: string
+          description: 'application ID of a service principal  user_name: Optional[str]
+            = None name of the user'
+        user_name:
+          type: string
+          description: 'name of the user  def as_dict(self) -> dict: Serializes the
+            AppAccessControlRequest into a dictionary suitable for use as a JSON request
+            body.'
+    AppAccessControlResponse:
+      type: object
+      description: 'AppAccessControlResponse(all_permissions: ''Optional[List[AppPermission]]''
+        = None, display_name: ''Optional[str]'' = None, group_name: ''Optional[str]''
+        = None, service_principal_name: ''Optional[str]'' = None, user_name: ''Optional[str]''
+        = None)'
+      properties:
+        all_permissions:
+          type: string
+          description: 'All permissions.  display_name: Optional[str] = None Display
+            name of the user or service principal.'
+        display_name:
+          type: string
+          description: 'Display name of the user or service principal.  group_name:
+            Optional[str] = None name of the group'
+        group_name:
+          type: string
+          description: 'name of the group  service_principal_name: Optional[str] =
+            None Name of the service principal.'
+        service_principal_name:
+          type: string
+          description: 'Name of the service principal.  user_name: Optional[str] =
+            None name of the user'
+        user_name:
+          type: string
+          description: 'name of the user  def as_dict(self) -> dict: Serializes the
+            AppAccessControlResponse into a dictionary suitable for use as a JSON
+            request body.'
+    AppDeployment:
+      type: object
+      description: 'AppDeployment(create_time: ''Optional[str]'' = None, creator:
+        ''Optional[str]'' = None, deployment_artifacts: ''Optional[AppDeploymentArtifacts]''
+        = None, deployment_id: ''Optional[str]'' = None, mode: ''Optional[AppDeploymentMode]''
+        = None, source_code_path: ''Optional[str]'' = None, status: ''Optional[AppDeploymentStatus]''
+        = None, update_time: ''Optional[str]'' = None)'
+      properties:
+        create_time:
+          type: string
+          description: 'The creation time of the deployment. Formatted timestamp in
+            ISO 6801.  creator: Optional[str] = None The email of the user creates
+            the deployment.'
+        creator:
+          type: string
+          description: 'The email of the user creates the deployment.  deployment_artifacts:
+            Optional[AppDeploymentArtifacts] = None The deployment artifacts for an
+            app.'
+        deployment_artifacts:
+          type: string
+          description: 'The deployment artifacts for an app.  deployment_id: Optional[str]
+            = None The unique id of the deployment.'
+        deployment_id:
+          type: string
+          description: 'The unique id of the deployment.  mode: Optional[AppDeploymentMode]
+            = None The mode of which the deployment will manage the source code.'
+        mode:
+          type: string
+          description: 'The mode of which the deployment will manage the source code.  source_code_path:
+            Optional[str] = None """The workspace file system path of the source code
+            used to create the app deployment. This is different from `deployment_artifacts.source_code_path`,
+            which is the path used by the deployed app. The former refers to the original
+            source code location of the app in the workspace during deployment creation,
+            whereas the latter provides a system generated stable snapshotted source
+            code path used by the deployment.'
+        source_code_path:
+          type: string
+          description: The workspace file system path of the source code used to create
+            the app deployment. This is different from `deployment_artifacts.source_code_path`,
+            which is the path used by the deployed app. The former refers to the original
+            source code location of the app in the workspace during deployment creation,
+            whereas the latter provides a system generated stable snapshotted source
+            code path used by the deployment.
+        status:
+          type: string
+          description: 'Status and status message of the deployment  update_time:
+            Optional[str] = None The update time of the deployment. Formatted timestamp
+            in ISO 6801.'
+        update_time:
+          type: string
+          description: 'The update time of the deployment. Formatted timestamp in
+            ISO 6801.  def as_dict(self) -> dict: Serializes the AppDeployment into
+            a dictionary suitable for use as a JSON request body.'
+    AppDeploymentArtifacts:
+      type: object
+      description: 'AppDeploymentArtifacts(source_code_path: ''Optional[str]'' = None)'
+      properties:
+        source_code_path:
+          type: string
+          description: 'The snapshotted workspace file system path of the source code
+            loaded by the deployed app.  def as_dict(self) -> dict: Serializes the
+            AppDeploymentArtifacts into a dictionary suitable for use as a JSON request
+            body.'
+    AppDeploymentMode:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - AUTO_SYNC
+      - SNAPSHOT
+    AppDeploymentState:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CANCELLED
+      - FAILED
+      - IN_PROGRESS
+      - SUCCEEDED
+    AppDeploymentStatus:
+      type: object
+      description: 'AppDeploymentStatus(message: ''Optional[str]'' = None, state:
+        ''Optional[AppDeploymentState]'' = None)'
+      properties:
+        message:
+          type: string
+          description: 'Message corresponding with the deployment state.  state: Optional[AppDeploymentState]
+            = None State of the deployment.'
+        state:
+          type: string
+          description: 'State of the deployment.  def as_dict(self) -> dict: Serializes
+            the AppDeploymentStatus into a dictionary suitable for use as a JSON request
+            body.'
+    AppManifest:
+      type: object
+      description: App manifest definition
+      properties:
+        version:
+          type: string
+          description: 'The manifest schema version, for now only 1 is allowed  name:
+            str Name of the app defined by manifest author / publisher'
+        name:
+          type: string
+          description: 'Name of the app defined by manifest author / publisher  description:
+            Optional[str] = None Description of the app defined by manifest author
+            / publisher'
+        description:
+          type: string
+          description: 'Description of the app defined by manifest author / publisher  resource_specs:
+            Optional[List[AppManifestAppResourceSpec]] = None  def as_dict(self) ->
+            dict: Serializes the AppManifest into a dictionary suitable for use as
+            a JSON request body.'
+        resource_specs:
+          type: string
+          description: ''
+    AppManifestAppResourceJobSpec:
+      type: object
+      description: 'AppManifestAppResourceJobSpec(permission: ''AppManifestAppResourceJobSpecJobPermission'')'
+      properties:
+        permission:
+          type: string
+          description: 'Permissions to grant on the Job. Supported permissions are:
+            "CAN_MANAGE", "IS_OWNER", CAN_MANAGE_RUN", "CAN_VIEW".'
+    AppManifestAppResourceJobSpecJobPermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CAN_MANAGE
+      - CAN_MANAGE_RUN
+      - CAN_VIEW
+      - IS_OWNER
+    AppManifestAppResourceSecretSpec:
+      type: object
+      description: 'AppManifestAppResourceSecretSpec(permission: ''AppManifestAppResourceSecretSpecSecretPermission'')'
+      properties:
+        permission:
+          type: string
+          description: 'Permission to grant on the secret scope. For secrets, only
+            one permission is allowed. Permission must be one of: "READ", "WRITE",
+            "MANAGE".'
+    AppManifestAppResourceSecretSpecSecretPermission:
+      type: string
+      description: 'Permission to grant on the secret scope. Supported permissions
+        are: "READ", "WRITE", "MANAGE".'
+      enum:
+      - MANAGE
+      - READ
+      - WRITE
+    AppManifestAppResourceServingEndpointSpec:
+      type: object
+      description: 'AppManifestAppResourceServingEndpointSpec(permission: ''AppManifestAppResourceServingEndpointSpecServingEndpointPermission'')'
+      properties:
+        permission:
+          type: string
+          description: 'Permission to grant on the serving endpoint. Supported permissions
+            are: "CAN_MANAGE", CAN_QUERY", "CAN_VIEW".'
+    AppManifestAppResourceServingEndpointSpecServingEndpointPermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CAN_MANAGE
+      - CAN_QUERY
+      - CAN_VIEW
+    AppManifestAppResourceSpec:
+      type: object
+      description: 'AppResource related fields are copied from app.proto but excludes
+        resource identifiers (e.g.
+
+        name, id, key, scope, etc.)'
+      properties:
+        name:
+          type: string
+          description: 'Name of the App Resource.  description: Optional[str] = None
+            Description of the App Resource.'
+        description:
+          type: string
+          description: 'Description of the App Resource.  job_spec: Optional[AppManifestAppResourceJobSpec]
+            = None  secret_spec: Optional[AppManifestAppResourceSecretSpec] = None  serving_endpoint_spec:
+            Optional[AppManifestAppResourceServingEndpointSpec] = None  sql_warehouse_spec:
+            Optional[AppManifestAppResourceSqlWarehouseSpec] = None  uc_securable_spec:
+            Optional[AppManifestAppResourceUcSecurableSpec] = None  def as_dict(self)
+            -> dict: Serializes the AppManifestAppResourceSpec into a dictionary suitable
+            for use as a JSON request body.'
+        job_spec:
+          type: string
+          description: ''
+        secret_spec:
+          type: string
+          description: ''
+        serving_endpoint_spec:
+          type: string
+          description: ''
+        sql_warehouse_spec:
+          type: string
+          description: ''
+        uc_securable_spec:
+          type: string
+          description: ''
+    AppManifestAppResourceSqlWarehouseSpec:
+      type: object
+      description: 'AppManifestAppResourceSqlWarehouseSpec(permission: ''AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission'')'
+      properties:
+        permission:
+          type: string
+          description: 'Permission to grant on the SQL warehouse. Supported permissions
+            are: "CAN_MANAGE", "CAN_USE", IS_OWNER".'
+    AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CAN_MANAGE
+      - CAN_USE
+      - IS_OWNER
+    AppManifestAppResourceUcSecurableSpec:
+      type: object
+      description: 'AppManifestAppResourceUcSecurableSpec(securable_type: ''AppManifestAppResourceUcSecurableSpecUcSecurableType'',
+        permission: ''AppManifestAppResourceUcSecurableSpecUcSecurablePermission'')'
+      properties:
+        securable_type:
+          type: string
+          description: ''
+        permission:
+          type: string
+          description: ''
+    AppManifestAppResourceUcSecurableSpecUcSecurablePermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - MANAGE
+      - READ_VOLUME
+      - WRITE_VOLUME
+    AppManifestAppResourceUcSecurableSpecUcSecurableType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - VOLUME
+    AppPermission:
+      type: object
+      description: 'AppPermission(inherited: ''Optional[bool]'' = None, inherited_from_object:
+        ''Optional[List[str]]'' = None, permission_level: ''Optional[AppPermissionLevel]''
+        = None)'
+      properties:
+        inherited:
+          type: string
+          description: ''
+        inherited_from_object:
+          type: string
+          description: ''
+        permission_level:
+          type: string
+          description: ''
+    AppPermissionLevel:
+      type: string
+      description: Permission level
+      enum:
+      - CAN_MANAGE
+      - CAN_USE
+    AppPermissions:
+      type: object
+      description: 'AppPermissions(access_control_list: ''Optional[List[AppAccessControlResponse]]''
+        = None, object_id: ''Optional[str]'' = None, object_type: ''Optional[str]''
+        = None)'
+      properties:
+        access_control_list:
+          type: string
+          description: ''
+        object_id:
+          type: string
+          description: ''
+        object_type:
+          type: string
+          description: ''
+    AppPermissionsDescription:
+      type: object
+      description: 'AppPermissionsDescription(description: ''Optional[str]'' = None,
+        permission_level: ''Optional[AppPermissionLevel]'' = None)'
+      properties:
+        description:
+          type: string
+          description: ''
+        permission_level:
+          type: string
+          description: ''
+    AppResource:
+      type: object
+      description: 'AppResource(name: ''str'', database: ''Optional[AppResourceDatabase]''
+        = None, description: ''Optional[str]'' = None, genie_space: ''Optional[AppResourceGenieSpace]''
+        = None, job: ''Optional[AppResourceJob]'' = None, secret: ''Optional[AppResourceSecret]''
+        = None, serving_endpoint: ''Optional[AppResourceServingEndpoint]'' = None,
+        sql_warehouse: ''Optional[AppResourceSqlWarehouse]'' = None, uc_securable:
+        ''Optional[AppResourceUcSecurable]'' = None)'
+      properties:
+        name:
+          type: string
+          description: 'Name of the App Resource.  database: Optional[AppResourceDatabase]
+            = None  description: Optional[str] = None Description of the App Resource.'
+        database:
+          type: string
+          description: ''
+        description:
+          type: string
+          description: 'Description of the App Resource.  genie_space: Optional[AppResourceGenieSpace]
+            = None  job: Optional[AppResourceJob] = None  secret: Optional[AppResourceSecret]
+            = None  serving_endpoint: Optional[AppResourceServingEndpoint] = None  sql_warehouse:
+            Optional[AppResourceSqlWarehouse] = None  uc_securable: Optional[AppResourceUcSecurable]
+            = None  def as_dict(self) -> dict: Serializes the AppResource into a dictionary
+            suitable for use as a JSON request body.'
+        genie_space:
+          type: string
+          description: ''
+        job:
+          type: string
+          description: ''
+        secret:
+          type: string
+          description: ''
+        serving_endpoint:
+          type: string
+          description: ''
+        sql_warehouse:
+          type: string
+          description: ''
+        uc_securable:
+          type: string
+          description: ''
+    AppResourceDatabase:
+      type: object
+      description: 'AppResourceDatabase(instance_name: ''str'', database_name: ''str'',
+        permission: ''AppResourceDatabaseDatabasePermission'')'
+      properties:
+        instance_name:
+          type: string
+          description: ''
+        database_name:
+          type: string
+          description: ''
+        permission:
+          type: string
+          description: ''
+    AppResourceDatabaseDatabasePermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CAN_CONNECT_AND_CREATE
+    AppResourceGenieSpace:
+      type: object
+      description: 'AppResourceGenieSpace(name: ''str'', space_id: ''str'', permission:
+        ''AppResourceGenieSpaceGenieSpacePermission'')'
+      properties:
+        name:
+          type: string
+          description: ''
+        space_id:
+          type: string
+          description: ''
+        permission:
+          type: string
+          description: ''
+    AppResourceGenieSpaceGenieSpacePermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CAN_EDIT
+      - CAN_MANAGE
+      - CAN_RUN
+      - CAN_VIEW
+    AppResourceJob:
+      type: object
+      description: 'AppResourceJob(id: ''str'', permission: ''AppResourceJobJobPermission'')'
+      properties:
+        id:
+          type: string
+          description: 'Id of the job to grant permission on.  permission: AppResourceJobJobPermission
+            """Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE",
+            "IS_OWNER", CAN_MANAGE_RUN", "CAN_VIEW".'
+        permission:
+          type: string
+          description: 'Permissions to grant on the Job. Supported permissions are:
+            "CAN_MANAGE", "IS_OWNER", CAN_MANAGE_RUN", "CAN_VIEW".'
+    AppResourceJobJobPermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CAN_MANAGE
+      - CAN_MANAGE_RUN
+      - CAN_VIEW
+      - IS_OWNER
+    AppResourceSecret:
+      type: object
+      description: 'AppResourceSecret(scope: ''str'', key: ''str'', permission: ''AppResourceSecretSecretPermission'')'
+      properties:
+        scope:
+          type: string
+          description: 'Scope of the secret to grant permission on.  key: str Key
+            of the secret to grant permission on.'
+        key:
+          type: string
+          description: 'Key of the secret to grant permission on.  permission: AppResourceSecretSecretPermission
+            """Permission to grant on the secret scope. For secrets, only one permission
+            is allowed. Permission must be one of: "READ", "WRITE", "MANAGE".'
+        permission:
+          type: string
+          description: 'Permission to grant on the secret scope. For secrets, only
+            one permission is allowed. Permission must be one of: "READ", "WRITE",
+            "MANAGE".'
+    AppResourceSecretSecretPermission:
+      type: string
+      description: 'Permission to grant on the secret scope. Supported permissions
+        are: "READ", "WRITE", "MANAGE".'
+      enum:
+      - MANAGE
+      - READ
+      - WRITE
+    AppResourceServingEndpoint:
+      type: object
+      description: 'AppResourceServingEndpoint(name: ''str'', permission: ''AppResourceServingEndpointServingEndpointPermission'')'
+      properties:
+        name:
+          type: string
+          description: 'Name of the serving endpoint to grant permission on.  permission:
+            AppResourceServingEndpointServingEndpointPermission """Permission to grant
+            on the serving endpoint. Supported permissions are: "CAN_MANAGE", CAN_QUERY",
+            "CAN_VIEW".'
+        permission:
+          type: string
+          description: 'Permission to grant on the serving endpoint. Supported permissions
+            are: "CAN_MANAGE", CAN_QUERY", "CAN_VIEW".'
+    AppResourceServingEndpointServingEndpointPermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CAN_MANAGE
+      - CAN_QUERY
+      - CAN_VIEW
+    AppResourceSqlWarehouse:
+      type: object
+      description: 'AppResourceSqlWarehouse(id: ''str'', permission: ''AppResourceSqlWarehouseSqlWarehousePermission'')'
+      properties:
+        id:
+          type: string
+          description: 'Id of the SQL warehouse to grant permission on.  permission:
+            AppResourceSqlWarehouseSqlWarehousePermission """Permission to grant on
+            the SQL warehouse. Supported permissions are: "CAN_MANAGE", "CAN_USE",
+            IS_OWNER".'
+        permission:
+          type: string
+          description: 'Permission to grant on the SQL warehouse. Supported permissions
+            are: "CAN_MANAGE", "CAN_USE", IS_OWNER".'
+    AppResourceSqlWarehouseSqlWarehousePermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CAN_MANAGE
+      - CAN_USE
+      - IS_OWNER
+    AppResourceUcSecurable:
+      type: object
+      description: 'AppResourceUcSecurable(securable_full_name: ''str'', securable_type:
+        ''AppResourceUcSecurableUcSecurableType'', permission: ''AppResourceUcSecurableUcSecurablePermission'')'
+      properties:
+        securable_full_name:
+          type: string
+          description: ''
+        securable_type:
+          type: string
+          description: ''
+        permission:
+          type: string
+          description: ''
+    AppResourceUcSecurableUcSecurablePermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - READ_VOLUME
+      - WRITE_VOLUME
+    AppResourceUcSecurableUcSecurableType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - VOLUME
+    AppUpdate:
+      type: object
+      description: 'AppUpdate(budget_policy_id: ''Optional[str]'' = None, compute_size:
+        ''Optional[ComputeSize]'' = None, description: ''Optional[str]'' = None, resources:
+        ''Optional[List[AppResource]]'' = None, status: ''Optional[AppUpdateUpdateStatus]''
+        = None, usage_policy_id: ''Optional[str]'' = None, user_api_scopes: ''Optional[List[str]]''
+        = None)'
+      properties:
+        budget_policy_id:
+          type: string
+          description: ''
+        compute_size:
+          type: string
+          description: ''
+        description:
+          type: string
+          description: ''
+        resources:
+          type: string
+          description: ''
+        status:
+          type: string
+          description: ''
+        usage_policy_id:
+          type: string
+          description: ''
+        user_api_scopes:
+          type: string
+          description: ''
+    AppUpdateUpdateStatus:
+      type: object
+      description: 'AppUpdateUpdateStatus(message: ''Optional[str]'' = None, state:
+        ''Optional[AppUpdateUpdateStatusUpdateState]'' = None)'
+      properties:
+        message:
+          type: string
+          description: ''
+        state:
+          type: string
+          description: ''
+    AppUpdateUpdateStatusUpdateState:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - FAILED
+      - IN_PROGRESS
+      - NOT_UPDATED
+      - SUCCEEDED
+    ApplicationState:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CRASHED
+      - DEPLOYING
+      - RUNNING
+      - UNAVAILABLE
+    ApplicationStatus:
+      type: object
+      description: 'ApplicationStatus(message: ''Optional[str]'' = None, state: ''Optional[ApplicationState]''
+        = None)'
+      properties:
+        message:
+          type: string
+          description: 'Application status message  state: Optional[ApplicationState]
+            = None State of the application.'
+        state:
+          type: string
+          description: 'State of the application.  def as_dict(self) -> dict: Serializes
+            the ApplicationStatus into a dictionary suitable for use as a JSON request
+            body.'
+    ComputeSize:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - LARGE
+      - LIQUID
+      - MEDIUM
+    ComputeState:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ACTIVE
+      - DELETING
+      - ERROR
+      - STARTING
+      - STOPPED
+      - STOPPING
+      - UPDATING
+    ComputeStatus:
+      type: object
+      description: 'ComputeStatus(message: ''Optional[str]'' = None, state: ''Optional[ComputeState]''
+        = None)'
+      properties:
+        message:
+          type: string
+          description: 'Compute status message  state: Optional[ComputeState] = None
+            State of the app compute.'
+        state:
+          type: string
+          description: 'State of the app compute.  def as_dict(self) -> dict: Serializes
+            the ComputeStatus into a dictionary suitable for use as a JSON request
+            body.'
+    CustomTemplate:
+      type: object
+      description: 'CustomTemplate(name: ''str'', git_repo: ''str'', path: ''str'',
+        manifest: ''AppManifest'', git_provider: ''str'', creator: ''Optional[str]''
+        = None, description: ''Optional[str]'' = None)'
+      properties:
+        name:
+          type: string
+          description: The name of the template. It must contain only alphanumeric
+            characters, hyphens, underscores, and whitespaces. It must be unique within
+            the workspace.
+        git_repo:
+          type: string
+          description: 'The Git repository URL that the template resides in.  path:
+            str The path to the template within the Git repository.'
+        path:
+          type: string
+          description: 'The path to the template within the Git repository.  manifest:
+            AppManifest The manifest of the template. It defines fields and default
+            values when installing the template.'
+        manifest:
+          type: string
+          description: 'The manifest of the template. It defines fields and default
+            values when installing the template.  git_provider: str The Git provider
+            of the template.'
+        git_provider:
+          type: string
+          description: 'The Git provider of the template.  creator: Optional[str]
+            = None  description: Optional[str] = None The description of the template.'
+        creator:
+          type: string
+          description: ''
+        description:
+          type: string
+          description: 'The description of the template.  def as_dict(self) -> dict:
+            Serializes the CustomTemplate into a dictionary suitable for use as a
+            JSON request body.'
+    GetAppPermissionLevelsResponse:
+      type: object
+      description: 'GetAppPermissionLevelsResponse(permission_levels: ''Optional[List[AppPermissionsDescription]]''
+        = None)'
+      properties:
+        permission_levels:
+          type: string
+          description: 'Specific permission levels  def as_dict(self) -> dict: Serializes
+            the GetAppPermissionLevelsResponse into a dictionary suitable for use
+            as a JSON request body.'
+    ListAppDeploymentsResponse:
+      type: object
+      description: 'ListAppDeploymentsResponse(app_deployments: ''Optional[List[AppDeployment]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        app_deployments:
+          type: string
+          description: 'Deployment history of the app.  next_page_token: Optional[str]
+            = None Pagination token to request the next page of apps.'
+        next_page_token:
+          type: string
+          description: 'Pagination token to request the next page of apps.  def as_dict(self)
+            -> dict: Serializes the ListAppDeploymentsResponse into a dictionary suitable
+            for use as a JSON request body.'
+    ListAppsResponse:
+      type: object
+      description: 'ListAppsResponse(apps: ''Optional[List[App]]'' = None, next_page_token:
+        ''Optional[str]'' = None)'
+      properties:
+        apps:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: 'Pagination token to request the next page of apps.  def as_dict(self)
+            -> dict: Serializes the ListAppsResponse into a dictionary suitable for
+            use as a JSON request body.'
+    ListCustomTemplatesResponse:
+      type: object
+      description: 'ListCustomTemplatesResponse(next_page_token: ''Optional[str]''
+        = None, templates: ''Optional[List[CustomTemplate]]'' = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: 'Pagination token to request the next page of custom templates.  templates:
+            Optional[List[CustomTemplate]] = None  def as_dict(self) -> dict: Serializes
+            the ListCustomTemplatesResponse into a dictionary suitable for use as
+            a JSON request body.'
+        templates:
+          type: string
+          description: ''
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Databricks personal access token
+security:
+- bearerAuth: []

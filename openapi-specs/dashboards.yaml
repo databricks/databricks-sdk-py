@@ -1,0 +1,1608 @@
+openapi: 3.0.0
+info:
+  title: Databricks Dashboards API
+  description: API for Databricks dashboards service
+  version: 1.0.0
+  contact:
+    name: Databricks
+    url: https://databricks.com
+servers:
+- url: https://{deployment_name}.cloud.databricks.com
+  description: Databricks Workspace API
+  variables:
+    deployment_name:
+      default: your-deployment
+      description: Databricks workspace deployment name
+paths:
+  /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}:
+    delete:
+      operationId: delete_conversation
+      summary: Delete a conversation.
+      description: "Delete a conversation.\n\n:param space_id: str\n  The ID associated\
+        \ with the Genie space where the conversation is located.\n:param conversation_id:\
+        \ str\n  The ID of the conversation to delete."
+      tags:
+      - dashboards
+      parameters:
+      - name: space_id
+        description: str The ID associated with the Genie space where the conversation
+          is located.
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: conversation_id
+        description: str The ID of the conversation to delete.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+  /api/2.0/genie/spaces/{space_id}:
+    get:
+      operationId: get_space
+      summary: Get details of a Genie Space.
+      description: "Get details of a Genie Space.\n\n:param space_id: str\n  The ID\
+        \ associated with the Genie space\n\n:returns: :class:`GenieSpace`"
+      tags:
+      - dashboards
+      parameters:
+      - name: space_id
+        description: str The ID associated with the Genie space
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenieSpace'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    delete:
+      operationId: trash_space
+      summary: Move a Genie Space to the trash.
+      description: "Move a Genie Space to the trash.\n\n:param space_id: str\n  The\
+        \ ID associated with the Genie space to be sent to the trash."
+      tags:
+      - dashboards
+      parameters:
+      - name: space_id
+        description: str The ID associated with the Genie space to be sent to the
+          trash.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+  /api/2.0/genie/spaces/{space_id}/conversations:
+    get:
+      operationId: list_conversations
+      summary: Get a list of conversations in a Genie Space.
+      description: "Get a list of conversations in a Genie Space.\n\n:param space_id:\
+        \ str\n  The ID of the Genie space to retrieve conversations from.\n:param\
+        \ include_all: bool (optional)\n  Include all conversations in the space across\
+        \ all users. Requires at least CAN MANAGE permission on\n  the space.\n:param\
+        \ page_size: int (optional)\n  Maximum number of conversations to return per\
+        \ page\n:param page_token: str (optional)\n  Token to get the next page of\
+        \ results\n\n:returns: :class:`GenieListConversationsResponse`"
+      tags:
+      - dashboards
+      parameters:
+      - name: space_id
+        description: str The ID of the Genie space to retrieve conversations from.
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: include_all
+        description: bool (optional) Include all conversations in the space across
+          all users. Requires at least CAN MANAGE permission on the space.
+        required: false
+        schema:
+          type: boolean
+        in: query
+      - name: page_size
+        description: int (optional) Maximum number of conversations to return per
+          page
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional) Token to get the next page of results
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenieListConversationsResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/genie/spaces:
+    get:
+      operationId: list_spaces
+      summary: Get list of Genie Spaces.
+      description: "Get list of Genie Spaces.\n\n:param page_size: int (optional)\n\
+        \  Maximum number of spaces to return per page\n:param page_token: str (optional)\n\
+        \  Pagination token for getting the next page of results\n\n:returns: :class:`GenieListSpacesResponse`"
+      tags:
+      - dashboards
+      parameters:
+      - name: page_size
+        description: int (optional) Maximum number of spaces to return per page
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional) Pagination token for getting the next page of
+          results
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GenieListSpacesResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/lakeview/dashboards:
+    post:
+      operationId: create
+      summary: Create a draft dashboard.
+      description: 'Create a draft dashboard.
+
+
+        :param dashboard: :class:`Dashboard`
+
+
+        :returns: :class:`Dashboard`'
+      tags:
+      - dashboards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list
+      summary: List dashboards.
+      description: "List dashboards.\n\n:param page_size: int (optional)\n  The number\
+        \ of dashboards to return per page.\n:param page_token: str (optional)\n \
+        \ A page token, received from a previous `ListDashboards` call. This token\
+        \ can be used to retrieve the\n  subsequent page.\n:param show_trashed: bool\
+        \ (optional)\n  The flag to include dashboards located in the trash. If unspecified,\
+        \ only active dashboards will be\n  returned.\n:param view: :class:`DashboardView`\
+        \ (optional)\n  `DASHBOARD_VIEW_BASIC`only includes summary metadata from\
+        \ the dashboard.\n\n:returns: Iterator over :class:`Dashboard`"
+      tags:
+      - dashboards
+      parameters:
+      - name: page_size
+        description: int (optional) The number of dashboards to return per page.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional) A page token, received from a previous `ListDashboards`
+          call. This token can be used to retrieve the subsequent page.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: show_trashed
+        description: bool (optional) The flag to include dashboards located in the
+          trash. If unspecified, only active dashboards will be returned.
+        required: false
+        schema:
+          type: boolean
+        in: query
+      - name: view
+        description: :class:`DashboardView` (optional) `DASHBOARD_VIEW_BASIC`only
+          includes summary metadata from the dashboard.
+        required: false
+        schema:
+          type: string
+          enum:
+          - DASHBOARD_VIEW_BASIC
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/lakeview/dashboards/{dashboard_id}/schedules:
+    post:
+      operationId: create_schedule
+      summary: Create dashboard schedule.
+      description: "Create dashboard schedule.\n\n:param dashboard_id: str\n  UUID\
+        \ identifying the dashboard to which the schedule belongs.\n:param schedule:\
+        \ :class:`Schedule`\n  The schedule to create. A dashboard is limited to 10\
+        \ schedules.\n\n:returns: :class:`Schedule`"
+      tags:
+      - dashboards
+      parameters:
+      - name: dashboard_id
+        description: str UUID identifying the dashboard to which the schedule belongs.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Schedule'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Schedule'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/lakeview/dashboards/{dashboard_id}:
+    get:
+      operationId: get
+      summary: Get a draft dashboard.
+      description: "Get a draft dashboard.\n\n:param dashboard_id: str\n  UUID identifying\
+        \ the dashboard.\n\n:returns: :class:`Dashboard`"
+      tags:
+      - dashboards
+      parameters:
+      - name: dashboard_id
+        description: str UUID identifying the dashboard.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    delete:
+      operationId: trash
+      summary: Trash a dashboard.
+      description: "Trash a dashboard.\n\n:param dashboard_id: str\n  UUID identifying\
+        \ the dashboard."
+      tags:
+      - dashboards
+      parameters:
+      - name: dashboard_id
+        description: str UUID identifying the dashboard.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    patch:
+      operationId: update
+      summary: Update a draft dashboard.
+      description: "Update a draft dashboard.\n\n:param dashboard_id: str\n  UUID\
+        \ identifying the dashboard.\n:param dashboard: :class:`Dashboard`\n\n:returns:\
+        \ :class:`Dashboard`"
+      tags:
+      - dashboards
+      parameters:
+      - name: dashboard_id
+        description: str UUID identifying the dashboard.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Dashboard'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/lakeview/dashboards/{dashboard_id}/published:
+    get:
+      operationId: get_published
+      summary: Get the current published dashboard.
+      description: "Get the current published dashboard.\n\n:param dashboard_id: str\n\
+        \  UUID identifying the published dashboard.\n\n:returns: :class:`PublishedDashboard`"
+      tags:
+      - dashboards
+      parameters:
+      - name: dashboard_id
+        description: str UUID identifying the published dashboard.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishedDashboard'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    post:
+      operationId: publish
+      summary: Publish the current draft dashboard.
+      description: "Publish the current draft dashboard.\n\n:param dashboard_id: str\n\
+        \  UUID identifying the dashboard to be published.\n:param embed_credentials:\
+        \ bool (optional)\n  Flag to indicate if the publisher's credentials should\
+        \ be embedded in the published dashboard. These\n  embedded credentials will\
+        \ be used to execute the published dashboard's queries.\n:param warehouse_id:\
+        \ str (optional)\n  The ID of the warehouse that can be used to override the\
+        \ warehouse which was set in the draft.\n\n:returns: :class:`PublishedDashboard`"
+      tags:
+      - dashboards
+      parameters:
+      - name: dashboard_id
+        description: str UUID identifying the dashboard to be published.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                embed_credentials:
+                  type: boolean
+                  description: bool (optional) Flag to indicate if the publisher's
+                    credentials should be embedded in the published dashboard. These
+                    embedded credentials will be used to execute the published dashboard's
+                    queries.
+                warehouse_id:
+                  type: string
+                  description: str (optional) The ID of the warehouse that can be
+                    used to override the warehouse which was set in the draft.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PublishedDashboard'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    delete:
+      operationId: unpublish
+      summary: Unpublish the dashboard.
+      description: "Unpublish the dashboard.\n\n:param dashboard_id: str\n  UUID identifying\
+        \ the published dashboard."
+      tags:
+      - dashboards
+      parameters:
+      - name: dashboard_id
+        description: str UUID identifying the published dashboard.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+  /api/2.0/lakeview/dashboards/migrate:
+    post:
+      operationId: migrate
+      summary: Migrates a classic SQL dashboard to Lakeview.
+      description: "Migrates a classic SQL dashboard to Lakeview.\n\n:param source_dashboard_id:\
+        \ str\n  UUID of the dashboard to be migrated.\n:param display_name: str (optional)\n\
+        \  Display name for the new Lakeview dashboard.\n:param parent_path: str (optional)\n\
+        \  The workspace path of the folder to contain the migrated Lakeview dashboard.\n\
+        :param update_parameter_syntax: bool (optional)\n  Flag to indicate if mustache\
+        \ parameter syntax ({{ param }}) should be auto-updated to named syntax\n\
+        \  (:param) when converting datasets in the dashboard.\n\n:returns: :class:`Dashboard`"
+      tags:
+      - dashboards
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                source_dashboard_id:
+                  type: string
+                  description: str UUID of the dashboard to be migrated.
+                display_name:
+                  type: string
+                  description: str (optional) Display name for the new Lakeview dashboard.
+                parent_path:
+                  type: string
+                  description: str (optional) The workspace path of the folder to
+                    contain the migrated Lakeview dashboard.
+                update_parameter_syntax:
+                  type: boolean
+                  description: bool (optional) Flag to indicate if mustache parameter
+                    syntax ({{ param }}) should be auto-updated to named syntax (:param)
+                    when converting datasets in the dashboard.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dashboard'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    AuthorizationDetails:
+      type: object
+      description: 'AuthorizationDetails(grant_rules: ''Optional[List[AuthorizationDetailsGrantRule]]''
+        = None, resource_legacy_acl_path: ''Optional[str]'' = None, resource_name:
+        ''Optional[str]'' = None, type: ''Optional[str]'' = None)'
+      properties:
+        grant_rules:
+          type: string
+          description: Represents downscoped permission rules with specific access
+            rights. This field is specific to `workspace_rule_set` constraint.
+        resource_legacy_acl_path:
+          type: string
+          description: 'The acl path of the tree store resource resource.  resource_name:
+            Optional[str] = None """The resource name to which the authorization rule
+            applies. This field is specific to `workspace_rule_set` constraint. Format:
+            `workspaces/{workspace_id}/dashboards/{dashboard_id}`'
+        resource_name:
+          type: string
+          description: 'The resource name to which the authorization rule applies.
+            This field is specific to `workspace_rule_set` constraint. Format: `workspaces/{workspace_id}/dashboards/{dashboard_id}`'
+        type:
+          type: string
+          description: 'The type of authorization downscoping policy. Ex: `workspace_rule_set`
+            defines access rules for a specific workspace resource'
+    AuthorizationDetailsGrantRule:
+      type: object
+      description: 'AuthorizationDetailsGrantRule(permission_set: ''Optional[str]''
+        = None)'
+      properties:
+        permission_set:
+          type: string
+          description: 'Permission sets for dashboard are defined in iam-common/rbac-common/permission-sets/definitions/TreeStoreBasePermissionSets
+            Ex: `permissionSets/dashboard.runner`'
+    CronSchedule:
+      type: object
+      description: 'CronSchedule(quartz_cron_expression: ''str'', timezone_id: ''str'')'
+      properties:
+        quartz_cron_expression:
+          type: string
+          description: 'A cron expression using quartz syntax. EX: `0 0 8 * * ?` represents
+            everyday at 8am. See [Cron Trigger] for details.  [Cron Trigger]: http://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html'
+        timezone_id:
+          type: string
+          description: 'A Java timezone id. The schedule will be resolved with respect
+            to this timezone. See [Java TimeZone] for details.  [Java TimeZone]: https://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html'
+    Dashboard:
+      type: object
+      description: 'Dashboard(create_time: ''Optional[str]'' = None, dashboard_id:
+        ''Optional[str]'' = None, display_name: ''Optional[str]'' = None, etag: ''Optional[str]''
+        = None, lifecycle_state: ''Optional[LifecycleState]'' = None, parent_path:
+        ''Optional[str]'' = None, path: ''Optional[str]'' = None, serialized_dashboard:
+        ''Optional[str]'' = None, update_time: ''Optional[str]'' = None, warehouse_id:
+        ''Optional[str]'' = None)'
+      properties:
+        create_time:
+          type: string
+          description: 'The timestamp of when the dashboard was created.  dashboard_id:
+            Optional[str] = None UUID identifying the dashboard.'
+        dashboard_id:
+          type: string
+          description: 'UUID identifying the dashboard.  display_name: Optional[str]
+            = None The display name of the dashboard.'
+        display_name:
+          type: string
+          description: 'The display name of the dashboard.  etag: Optional[str] =
+            None """The etag for the dashboard. Can be optionally provided on updates
+            to ensure that the dashboard has not been modified since the last read.
+            This field is excluded in List Dashboards responses.'
+        etag:
+          type: string
+          description: The etag for the dashboard. Can be optionally provided on updates
+            to ensure that the dashboard has not been modified since the last read.
+            This field is excluded in List Dashboards responses.
+        lifecycle_state:
+          type: string
+          description: 'The state of the dashboard resource. Used for tracking trashed
+            status.  parent_path: Optional[str] = None """The workspace path of the
+            folder containing the dashboard. Includes leading slash and no trailing
+            slash. This field is excluded in List Dashboards responses.'
+        parent_path:
+          type: string
+          description: The workspace path of the folder containing the dashboard.
+            Includes leading slash and no trailing slash. This field is excluded in
+            List Dashboards responses.
+        path:
+          type: string
+          description: The workspace path of the folder containing the dashboard.
+            Includes leading slash and no trailing slash. This field is excluded in
+            List Dashboards responses.
+        serialized_dashboard:
+          type: string
+          description: 'The contents of the dashboard in serialized string form. This
+            field is excluded in List Dashboards responses. Use the [get dashboard
+            API] to retrieve an example response, which includes the `serialized_dashboard`
+            field. This field provides the structure of the JSON string that represents
+            the dashboard''s layout and components.  [get dashboard API]: https://docs.databricks.com/api/workspace/lakeview/get'
+        update_time:
+          type: string
+          description: The timestamp of when the dashboard was last updated by the
+            user. This field is excluded in List Dashboards responses.
+        warehouse_id:
+          type: string
+          description: 'The warehouse ID used to run the dashboard.  def as_dict(self)
+            -> dict: Serializes the Dashboard into a dictionary suitable for use as
+            a JSON request body.'
+    DashboardView:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - DASHBOARD_VIEW_BASIC
+    GenieAttachment:
+      type: object
+      description: Genie AI Response
+      properties:
+        attachment_id:
+          type: string
+          description: 'Attachment ID  query: Optional[GenieQueryAttachment] = None
+            Query Attachment if Genie responds with a SQL query'
+        query:
+          type: string
+          description: 'Query Attachment if Genie responds with a SQL query  suggested_questions:
+            Optional[GenieSuggestedQuestionsAttachment] = None Follow-up questions
+            suggested by Genie'
+        suggested_questions:
+          type: string
+          description: 'Follow-up questions suggested by Genie  text: Optional[TextAttachment]
+            = None Text Attachment if Genie responds with text'
+        text:
+          type: string
+          description: 'Text Attachment if Genie responds with text  def as_dict(self)
+            -> dict: Serializes the GenieAttachment into a dictionary suitable for
+            use as a JSON request body.'
+    GenieConversation:
+      type: object
+      description: 'GenieConversation(id: ''str'', space_id: ''str'', user_id: ''int'',
+        title: ''str'', conversation_id: ''str'', created_timestamp: ''Optional[int]''
+        = None, last_updated_timestamp: ''Optional[int]'' = None)'
+      properties:
+        id:
+          type: string
+          description: 'Conversation ID. Legacy identifier, use conversation_id instead  space_id:
+            str Genie space ID'
+        space_id:
+          type: string
+          description: 'Genie space ID  user_id: int ID of the user who created the
+            conversation'
+        user_id:
+          type: string
+          description: 'ID of the user who created the conversation  title: str Conversation
+            title'
+        title:
+          type: string
+          description: 'Conversation title  conversation_id: str Conversation ID'
+        conversation_id:
+          type: string
+          description: 'Conversation ID  created_timestamp: Optional[int] = None Timestamp
+            when the message was created'
+        created_timestamp:
+          type: string
+          description: 'Timestamp when the message was created  last_updated_timestamp:
+            Optional[int] = None Timestamp when the message was last updated'
+        last_updated_timestamp:
+          type: string
+          description: 'Timestamp when the message was last updated  def as_dict(self)
+            -> dict: Serializes the GenieConversation into a dictionary suitable for
+            use as a JSON request body.'
+    GenieConversationSummary:
+      type: object
+      description: 'GenieConversationSummary(conversation_id: ''str'', title: ''str'',
+        created_timestamp: ''int'')'
+      properties:
+        conversation_id:
+          type: string
+          description: ''
+        title:
+          type: string
+          description: ''
+        created_timestamp:
+          type: string
+          description: ''
+    GenieFeedback:
+      type: object
+      description: Feedback containing rating and optional comment
+      properties:
+        rating:
+          type: string
+          description: 'The feedback rating  def as_dict(self) -> dict: Serializes
+            the GenieFeedback into a dictionary suitable for use as a JSON request
+            body.'
+    GenieFeedbackRating:
+      type: string
+      description: Feedback rating for Genie messages
+      enum:
+      - NEGATIVE
+      - NONE
+      - POSITIVE
+    GenieGetMessageQueryResultResponse:
+      type: object
+      description: 'GenieGetMessageQueryResultResponse(statement_response: ''Optional[sql.StatementResponse]''
+        = None)'
+      properties:
+        statement_response:
+          type: string
+          description: SQL Statement Execution response. See [Get status, manifest,
+            and result first chunk](:method:statementexecution/getstatement) for more
+            details.
+    GenieListConversationMessagesResponse:
+      type: object
+      description: 'GenieListConversationMessagesResponse(messages: ''Optional[List[GenieMessage]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        messages:
+          type: string
+          description: 'List of messages in the conversation.  next_page_token: Optional[str]
+            = None The token to use for retrieving the next page of results.'
+        next_page_token:
+          type: string
+          description: 'The token to use for retrieving the next page of results.  def
+            as_dict(self) -> dict: Serializes the GenieListConversationMessagesResponse
+            into a dictionary suitable for use as a JSON request body.'
+    GenieListConversationsResponse:
+      type: object
+      description: 'GenieListConversationsResponse(conversations: ''Optional[List[GenieConversationSummary]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        conversations:
+          type: string
+          description: 'List of conversations in the Genie space  next_page_token:
+            Optional[str] = None Token to get the next page of results'
+        next_page_token:
+          type: string
+          description: 'Token to get the next page of results  def as_dict(self) ->
+            dict: Serializes the GenieListConversationsResponse into a dictionary
+            suitable for use as a JSON request body.'
+    GenieListSpacesResponse:
+      type: object
+      description: 'GenieListSpacesResponse(next_page_token: ''Optional[str]'' = None,
+        spaces: ''Optional[List[GenieSpace]]'' = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: 'Token to get the next page of results  spaces: Optional[List[GenieSpace]]
+            = None List of Genie spaces'
+        spaces:
+          type: string
+          description: 'List of Genie spaces  def as_dict(self) -> dict: Serializes
+            the GenieListSpacesResponse into a dictionary suitable for use as a JSON
+            request body.'
+    GenieMessage:
+      type: object
+      description: 'GenieMessage(id: ''str'', space_id: ''str'', conversation_id:
+        ''str'', content: ''str'', message_id: ''str'', attachments: ''Optional[List[GenieAttachment]]''
+        = None, created_timestamp: ''Optional[int]'' = None, error: ''Optional[MessageError]''
+        = None, feedback: ''Optional[GenieFeedback]'' = None, last_updated_timestamp:
+        ''Optional[int]'' = None, query_result: ''Optional[Result]'' = None, status:
+        ''Optional[MessageStatus]'' = None, user_id: ''Optional[int]'' = None)'
+      properties:
+        id:
+          type: string
+          description: 'Message ID. Legacy identifier, use message_id instead  space_id:
+            str Genie space ID'
+        space_id:
+          type: string
+          description: 'Genie space ID  conversation_id: str Conversation ID'
+        conversation_id:
+          type: string
+          description: 'Conversation ID  content: str User message content'
+        content:
+          type: string
+          description: 'User message content  message_id: str Message ID'
+        message_id:
+          type: string
+          description: 'Message ID  attachments: Optional[List[GenieAttachment]] =
+            None AI-generated response to the message'
+        attachments:
+          type: string
+          description: 'AI-generated response to the message  created_timestamp: Optional[int]
+            = None Timestamp when the message was created'
+        created_timestamp:
+          type: string
+          description: 'Timestamp when the message was created  error: Optional[MessageError]
+            = None Error message if Genie failed to respond to the message'
+        error:
+          type: string
+          description: 'Error message if Genie failed to respond to the message  feedback:
+            Optional[GenieFeedback] = None User feedback for the message if provided'
+        feedback:
+          type: string
+          description: 'User feedback for the message if provided  last_updated_timestamp:
+            Optional[int] = None Timestamp when the message was last updated'
+        last_updated_timestamp:
+          type: string
+          description: 'Timestamp when the message was last updated  query_result:
+            Optional[Result] = None """The result of SQL query if the message includes
+            a query attachment. Deprecated. Use `query_result_metadata` in `GenieQueryAttachment`
+            instead.'
+        query_result:
+          type: string
+          description: The result of SQL query if the message includes a query attachment.
+            Deprecated. Use `query_result_metadata` in `GenieQueryAttachment` instead.
+        status:
+          type: string
+          description: ''
+        user_id:
+          type: string
+          description: 'ID of the user who created the message  def as_dict(self)
+            -> dict: Serializes the GenieMessage into a dictionary suitable for use
+            as a JSON request body.'
+    GenieQueryAttachment:
+      type: object
+      description: 'GenieQueryAttachment(description: ''Optional[str]'' = None, id:
+        ''Optional[str]'' = None, last_updated_timestamp: ''Optional[int]'' = None,
+        parameters: ''Optional[List[QueryAttachmentParameter]]'' = None, query: ''Optional[str]''
+        = None, query_result_metadata: ''Optional[GenieResultMetadata]'' = None, statement_id:
+        ''Optional[str]'' = None, title: ''Optional[str]'' = None)'
+      properties:
+        description:
+          type: string
+          description: 'Description of the query  id: Optional[str] = None  last_updated_timestamp:
+            Optional[int] = None Time when the user updated the query last'
+        id:
+          type: string
+          description: Statement Execution API statement id. Use [Get status, manifest,
+            and result first chunk](:method:statementexecution/getstatement) to get
+            the full result data.
+        last_updated_timestamp:
+          type: string
+          description: 'Time when the user updated the query last  parameters: Optional[List[QueryAttachmentParameter]]
+            = None  query: Optional[str] = None AI generated SQL query'
+        parameters:
+          type: string
+          description: ''
+        query:
+          type: string
+          description: 'AI generated SQL query  query_result_metadata: Optional[GenieResultMetadata]
+            = None Metadata associated with the query result.'
+        query_result_metadata:
+          type: string
+          description: 'Metadata associated with the query result.  statement_id:
+            Optional[str] = None """Statement Execution API statement id. Use [Get
+            status, manifest, and result first chunk](:method:statementexecution/getstatement)
+            to get the full result data.'
+        statement_id:
+          type: string
+          description: Statement Execution API statement id. Use [Get status, manifest,
+            and result first chunk](:method:statementexecution/getstatement) to get
+            the full result data.
+        title:
+          type: string
+          description: 'Name of the query  def as_dict(self) -> dict: Serializes the
+            GenieQueryAttachment into a dictionary suitable for use as a JSON request
+            body.'
+    GenieResultMetadata:
+      type: object
+      description: 'GenieResultMetadata(is_truncated: ''Optional[bool]'' = None, row_count:
+        ''Optional[int]'' = None)'
+      properties:
+        is_truncated:
+          type: string
+          description: 'Indicates whether the result set is truncated.  row_count:
+            Optional[int] = None The number of rows in the result set.'
+        row_count:
+          type: string
+          description: 'The number of rows in the result set.  def as_dict(self) ->
+            dict: Serializes the GenieResultMetadata into a dictionary suitable for
+            use as a JSON request body.'
+    GenieSpace:
+      type: object
+      description: 'GenieSpace(space_id: ''str'', title: ''str'', description: ''Optional[str]''
+        = None, warehouse_id: ''Optional[str]'' = None)'
+      properties:
+        space_id:
+          type: string
+          description: 'Genie space ID  title: str Title of the Genie Space'
+        title:
+          type: string
+          description: 'Title of the Genie Space  description: Optional[str] = None
+            Description of the Genie Space'
+        description:
+          type: string
+          description: 'Description of the Genie Space  warehouse_id: Optional[str]
+            = None Warehouse associated with the Genie Space'
+        warehouse_id:
+          type: string
+          description: 'Warehouse associated with the Genie Space  def as_dict(self)
+            -> dict: Serializes the GenieSpace into a dictionary suitable for use
+            as a JSON request body.'
+    GenieStartConversationResponse:
+      type: object
+      description: 'GenieStartConversationResponse(message_id: ''str'', conversation_id:
+        ''str'', conversation: ''Optional[GenieConversation]'' = None, message: ''Optional[GenieMessage]''
+        = None)'
+      properties:
+        message_id:
+          type: string
+          description: 'Message ID  conversation_id: str Conversation ID'
+        conversation_id:
+          type: string
+          description: 'Conversation ID  conversation: Optional[GenieConversation]
+            = None  message: Optional[GenieMessage] = None  def as_dict(self) -> dict:
+            Serializes the GenieStartConversationResponse into a dictionary suitable
+            for use as a JSON request body.'
+        conversation:
+          type: string
+          description: ''
+        message:
+          type: string
+          description: ''
+    GenieSuggestedQuestionsAttachment:
+      type: object
+      description: Follow-up questions suggested by Genie
+      properties:
+        questions:
+          type: string
+          description: 'The suggested follow-up questions  def as_dict(self) -> dict:
+            Serializes the GenieSuggestedQuestionsAttachment into a dictionary suitable
+            for use as a JSON request body.'
+    GetPublishedDashboardTokenInfoResponse:
+      type: object
+      description: 'GetPublishedDashboardTokenInfoResponse(authorization_details:
+        ''Optional[List[AuthorizationDetails]]'' = None, custom_claim: ''Optional[str]''
+        = None, scope: ''Optional[str]'' = None)'
+      properties:
+        authorization_details:
+          type: string
+          description: Authorization constraints for accessing the published dashboard.
+            Currently includes `workspace_rule_set` and could be enriched with `unity_catalog_privileges`
+            before oAuth token generation.
+        custom_claim:
+          type: string
+          description: 'Custom claim generated from external_value and external_viewer_id.
+            Format: `urn:aibi:external_data:<external_value>:<external_viewer_id>:<dashboard_id>`'
+        scope:
+          type: string
+          description: 'Scope defining access permissions.  def as_dict(self) -> dict:
+            Serializes the GetPublishedDashboardTokenInfoResponse into a dictionary
+            suitable for use as a JSON request body.'
+    LifecycleState:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ACTIVE
+      - TRASHED
+    ListDashboardsResponse:
+      type: object
+      description: 'ListDashboardsResponse(dashboards: ''Optional[List[Dashboard]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        dashboards:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: A token, which can be sent as `page_token` to retrieve the
+            next page. If this field is omitted, there are no subsequent dashboards.
+    ListSchedulesResponse:
+      type: object
+      description: 'ListSchedulesResponse(next_page_token: ''Optional[str]'' = None,
+        schedules: ''Optional[List[Schedule]]'' = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: A token that can be used as a `page_token` in subsequent requests
+            to retrieve the next page of results. If this field is omitted, there
+            are no subsequent schedules.
+        schedules:
+          type: string
+          description: ''
+    ListSubscriptionsResponse:
+      type: object
+      description: 'ListSubscriptionsResponse(next_page_token: ''Optional[str]'' =
+        None, subscriptions: ''Optional[List[Subscription]]'' = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: A token that can be used as a `page_token` in subsequent requests
+            to retrieve the next page of results. If this field is omitted, there
+            are no subsequent subscriptions.
+        subscriptions:
+          type: string
+          description: ''
+    MessageError:
+      type: object
+      description: 'MessageError(error: ''Optional[str]'' = None, type: ''Optional[MessageErrorType]''
+        = None)'
+      properties:
+        error:
+          type: string
+          description: ''
+        type:
+          type: string
+          description: ''
+    MessageErrorType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION
+      - CHAT_COMPLETION_CLIENT_EXCEPTION
+      - CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION
+      - CHAT_COMPLETION_NETWORK_EXCEPTION
+      - CONTENT_FILTER_EXCEPTION
+      - CONTEXT_EXCEEDED_EXCEPTION
+      - COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION
+      - COULD_NOT_GET_UC_SCHEMA_EXCEPTION
+      - DEPLOYMENT_NOT_FOUND_EXCEPTION
+      - DESCRIBE_QUERY_INVALID_SQL_ERROR
+      - DESCRIBE_QUERY_TIMEOUT
+      - DESCRIBE_QUERY_UNEXPECTED_FAILURE
+      - EXCEEDED_MAX_TOKEN_LENGTH_EXCEPTION
+      - FUNCTIONS_NOT_AVAILABLE_EXCEPTION
+      - FUNCTION_ARGUMENTS_INVALID_EXCEPTION
+      - FUNCTION_ARGUMENTS_INVALID_JSON_EXCEPTION
+      - FUNCTION_ARGUMENTS_INVALID_TYPE_EXCEPTION
+      - FUNCTION_CALL_MISSING_PARAMETER_EXCEPTION
+      - GENERATED_SQL_QUERY_TOO_LONG_EXCEPTION
+      - GENERIC_CHAT_COMPLETION_EXCEPTION
+      - GENERIC_CHAT_COMPLETION_SERVICE_EXCEPTION
+      - GENERIC_SQL_EXEC_API_CALL_EXCEPTION
+      - ILLEGAL_PARAMETER_DEFINITION_EXCEPTION
+      - INTERNAL_CATALOG_ASSET_CREATION_FAILED_EXCEPTION
+      - INTERNAL_CATALOG_ASSET_CREATION_ONGOING_EXCEPTION
+      - INTERNAL_CATALOG_ASSET_CREATION_UNSUPPORTED_EXCEPTION
+      - INTERNAL_CATALOG_MISSING_UC_PATH_EXCEPTION
+      - INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION
+      - INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION
+      - INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION
+      - INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION
+      - INVALID_CHAT_COMPLETION_JSON_EXCEPTION
+      - INVALID_COMPLETION_REQUEST_EXCEPTION
+      - INVALID_FUNCTION_CALL_EXCEPTION
+      - INVALID_SQL_MULTIPLE_DATASET_REFERENCES_EXCEPTION
+      - INVALID_SQL_MULTIPLE_STATEMENTS_EXCEPTION
+      - INVALID_SQL_UNKNOWN_TABLE_EXCEPTION
+      - INVALID_TABLE_IDENTIFIER_EXCEPTION
+      - LOCAL_CONTEXT_EXCEEDED_EXCEPTION
+      - MESSAGE_ATTACHMENT_TOO_LONG_ERROR
+      - MESSAGE_CANCELLED_WHILE_EXECUTING_EXCEPTION
+      - MESSAGE_DELETED_WHILE_EXECUTING_EXCEPTION
+      - MESSAGE_UPDATED_WHILE_EXECUTING_EXCEPTION
+      - MISSING_SQL_QUERY_EXCEPTION
+      - NO_DEPLOYMENTS_AVAILABLE_TO_WORKSPACE
+      - NO_QUERY_TO_VISUALIZE_EXCEPTION
+      - NO_TABLES_TO_QUERY_EXCEPTION
+      - RATE_LIMIT_EXCEEDED_GENERIC_EXCEPTION
+      - RATE_LIMIT_EXCEEDED_SPECIFIED_WAIT_EXCEPTION
+      - REPLY_PROCESS_TIMEOUT_EXCEPTION
+      - RETRYABLE_PROCESSING_EXCEPTION
+      - SQL_EXECUTION_EXCEPTION
+      - STOP_PROCESS_DUE_TO_AUTO_REGENERATE
+      - TABLES_MISSING_EXCEPTION
+      - TOO_MANY_CERTIFIED_ANSWERS_EXCEPTION
+      - TOO_MANY_TABLES_EXCEPTION
+      - UNEXPECTED_REPLY_PROCESS_EXCEPTION
+      - UNKNOWN_AI_MODEL
+      - WAREHOUSE_ACCESS_MISSING_EXCEPTION
+      - WAREHOUSE_NOT_FOUND_EXCEPTION
+    MessageStatus:
+      type: string
+      description: 'MessageStatus. The possible values are: * `FETCHING_METADATA`:
+        Fetching metadata from the data
+
+        sources. * `FILTERING_CONTEXT`: Running smart context step to determine relevant
+        context. *
+
+        `ASKING_AI`: Waiting for the LLM to respond to the user''s question. * `PENDING_WAREHOUSE`:
+
+        Waiting for warehouse before the SQL query can start executing. * `EXECUTING_QUERY`:
+        Executing a
+
+        generated SQL query. Get the SQL query result by calling
+
+        [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
+        API. *
+
+        `FAILED`: The response generation or query execution failed. See `error` field.
+        * `COMPLETED`:
+
+        Message processing is completed. Results are in the `attachments` field. Get
+        the SQL query
+
+        result by calling
+
+        [getMessageAttachmentQueryResult](:method:genie/getMessageAttachmentQueryResult)
+        API. *
+
+        `SUBMITTED`: Message has been submitted. * `QUERY_RESULT_EXPIRED`: SQL result
+        is not available
+
+        anymore. The user needs to rerun the query. Rerun the SQL query result by
+        calling
+
+        [executeMessageAttachmentQuery](:method:genie/executeMessageAttachmentQuery)
+        API. * `CANCELLED`:
+
+        Message has been cancelled.'
+      enum:
+      - ASKING_AI
+      - CANCELLED
+      - COMPLETED
+      - EXECUTING_QUERY
+      - FAILED
+      - FETCHING_METADATA
+      - FILTERING_CONTEXT
+      - PENDING_WAREHOUSE
+      - QUERY_RESULT_EXPIRED
+      - SUBMITTED
+    PublishedDashboard:
+      type: object
+      description: 'PublishedDashboard(display_name: ''Optional[str]'' = None, embed_credentials:
+        ''Optional[bool]'' = None, revision_create_time: ''Optional[str]'' = None,
+        warehouse_id: ''Optional[str]'' = None)'
+      properties:
+        display_name:
+          type: string
+          description: 'The display name of the published dashboard.  embed_credentials:
+            Optional[bool] = None Indicates whether credentials are embedded in the
+            published dashboard.'
+        embed_credentials:
+          type: string
+          description: 'Indicates whether credentials are embedded in the published
+            dashboard.  revision_create_time: Optional[str] = None The timestamp of
+            when the published dashboard was last revised.'
+        revision_create_time:
+          type: string
+          description: 'The timestamp of when the published dashboard was last revised.  warehouse_id:
+            Optional[str] = None The warehouse ID used to run the published dashboard.'
+        warehouse_id:
+          type: string
+          description: 'The warehouse ID used to run the published dashboard.  def
+            as_dict(self) -> dict: Serializes the PublishedDashboard into a dictionary
+            suitable for use as a JSON request body.'
+    QueryAttachmentParameter:
+      type: object
+      description: 'QueryAttachmentParameter(keyword: ''Optional[str]'' = None, sql_type:
+        ''Optional[str]'' = None, value: ''Optional[str]'' = None)'
+      properties:
+        keyword:
+          type: string
+          description: ''
+        sql_type:
+          type: string
+          description: ''
+        value:
+          type: string
+          description: ''
+    Result:
+      type: object
+      description: 'Result(is_truncated: ''Optional[bool]'' = None, row_count: ''Optional[int]''
+        = None, statement_id: ''Optional[str]'' = None, statement_id_signature: ''Optional[str]''
+        = None)'
+      properties:
+        is_truncated:
+          type: string
+          description: 'If result is truncated  row_count: Optional[int] = None Row
+            count of the result'
+        row_count:
+          type: string
+          description: 'Row count of the result  statement_id: Optional[str] = None
+            """Statement Execution API statement id. Use [Get status, manifest, and
+            result first chunk](:method:statementexecution/getstatement) to get the
+            full result data.'
+        statement_id:
+          type: string
+          description: Statement Execution API statement id. Use [Get status, manifest,
+            and result first chunk](:method:statementexecution/getstatement) to get
+            the full result data.
+        statement_id_signature:
+          type: string
+          description: 'JWT corresponding to the statement contained in this result  def
+            as_dict(self) -> dict: Serializes the Result into a dictionary suitable
+            for use as a JSON request body.'
+    Schedule:
+      type: object
+      description: 'Schedule(cron_schedule: ''CronSchedule'', create_time: ''Optional[str]''
+        = None, dashboard_id: ''Optional[str]'' = None, display_name: ''Optional[str]''
+        = None, etag: ''Optional[str]'' = None, pause_status: ''Optional[SchedulePauseStatus]''
+        = None, schedule_id: ''Optional[str]'' = None, update_time: ''Optional[str]''
+        = None, warehouse_id: ''Optional[str]'' = None)'
+      properties:
+        cron_schedule:
+          type: string
+          description: 'The cron expression describing the frequency of the periodic
+            refresh for this schedule.  create_time: Optional[str] = None A timestamp
+            indicating when the schedule was created.'
+        create_time:
+          type: string
+          description: 'A timestamp indicating when the schedule was created.  dashboard_id:
+            Optional[str] = None UUID identifying the dashboard to which the schedule
+            belongs.'
+        dashboard_id:
+          type: string
+          description: 'UUID identifying the dashboard to which the schedule belongs.  display_name:
+            Optional[str] = None The display name for schedule.'
+        display_name:
+          type: string
+          description: 'The display name for schedule.  etag: Optional[str] = None
+            """The etag for the schedule. Must be left empty on create, must be provided
+            on updates to ensure that the schedule has not been modified since the
+            last read, and can be optionally provided on delete.'
+        etag:
+          type: string
+          description: The etag for the schedule. Must be left empty on create, must
+            be provided on updates to ensure that the schedule has not been modified
+            since the last read, and can be optionally provided on delete.
+        pause_status:
+          type: string
+          description: 'The status indicates whether this schedule is paused or not.  schedule_id:
+            Optional[str] = None UUID identifying the schedule.'
+        schedule_id:
+          type: string
+          description: 'UUID identifying the schedule.  update_time: Optional[str]
+            = None A timestamp indicating when the schedule was last updated.'
+        update_time:
+          type: string
+          description: 'A timestamp indicating when the schedule was last updated.  warehouse_id:
+            Optional[str] = None The warehouse id to run the dashboard with for the
+            schedule.'
+        warehouse_id:
+          type: string
+          description: 'The warehouse id to run the dashboard with for the schedule.  def
+            as_dict(self) -> dict: Serializes the Schedule into a dictionary suitable
+            for use as a JSON request body.'
+    SchedulePauseStatus:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - PAUSED
+      - UNPAUSED
+    Subscriber:
+      type: object
+      description: 'Subscriber(destination_subscriber: ''Optional[SubscriptionSubscriberDestination]''
+        = None, user_subscriber: ''Optional[SubscriptionSubscriberUser]'' = None)'
+      properties:
+        destination_subscriber:
+          type: string
+          description: The destination to receive the subscription email. This parameter
+            is mutually exclusive with `user_subscriber`.
+        user_subscriber:
+          type: string
+          description: The user to receive the subscription email. This parameter
+            is mutually exclusive with `destination_subscriber`.
+    Subscription:
+      type: object
+      description: 'Subscription(subscriber: ''Subscriber'', create_time: ''Optional[str]''
+        = None, created_by_user_id: ''Optional[int]'' = None, dashboard_id: ''Optional[str]''
+        = None, etag: ''Optional[str]'' = None, schedule_id: ''Optional[str]'' = None,
+        subscription_id: ''Optional[str]'' = None, update_time: ''Optional[str]''
+        = None)'
+      properties:
+        subscriber:
+          type: string
+          description: 'Subscriber details for users and destinations to be added
+            as subscribers to the schedule.  create_time: Optional[str] = None A timestamp
+            indicating when the subscription was created.'
+        create_time:
+          type: string
+          description: 'A timestamp indicating when the subscription was created.  created_by_user_id:
+            Optional[int] = None """UserId of the user who adds subscribers (users
+            or notification destinations) to the dashboard''s schedule.'
+        created_by_user_id:
+          type: string
+          description: UserId of the user who adds subscribers (users or notification
+            destinations) to the dashboard's schedule.
+        dashboard_id:
+          type: string
+          description: 'UUID identifying the dashboard to which the subscription belongs.  etag:
+            Optional[str] = None """The etag for the subscription. Must be left empty
+            on create, can be optionally provided on delete to ensure that the subscription
+            has not been deleted since the last read.'
+        etag:
+          type: string
+          description: The etag for the subscription. Must be left empty on create,
+            can be optionally provided on delete to ensure that the subscription has
+            not been deleted since the last read.
+        schedule_id:
+          type: string
+          description: 'UUID identifying the schedule to which the subscription belongs.  subscription_id:
+            Optional[str] = None UUID identifying the subscription.'
+        subscription_id:
+          type: string
+          description: 'UUID identifying the subscription.  update_time: Optional[str]
+            = None A timestamp indicating when the subscription was last updated.'
+        update_time:
+          type: string
+          description: 'A timestamp indicating when the subscription was last updated.  def
+            as_dict(self) -> dict: Serializes the Subscription into a dictionary suitable
+            for use as a JSON request body.'
+    SubscriptionSubscriberDestination:
+      type: object
+      description: 'SubscriptionSubscriberDestination(destination_id: ''str'')'
+      properties:
+        destination_id:
+          type: string
+          description: 'The canonical identifier of the destination to receive email
+            notification.  def as_dict(self) -> dict: Serializes the SubscriptionSubscriberDestination
+            into a dictionary suitable for use as a JSON request body.'
+    SubscriptionSubscriberUser:
+      type: object
+      description: 'SubscriptionSubscriberUser(user_id: ''int'')'
+      properties:
+        user_id:
+          type: string
+          description: 'UserId of the subscriber.  def as_dict(self) -> dict: Serializes
+            the SubscriptionSubscriberUser into a dictionary suitable for use as a
+            JSON request body.'
+    TextAttachment:
+      type: object
+      description: 'TextAttachment(content: ''Optional[str]'' = None, id: ''Optional[str]''
+        = None)'
+      properties:
+        content:
+          type: string
+          description: 'AI generated message  id: Optional[str] = None  def as_dict(self)
+            -> dict: Serializes the TextAttachment into a dictionary suitable for
+            use as a JSON request body.'
+        id:
+          type: string
+          description: ''
+    TrashDashboardResponse:
+      type: object
+      description: TrashDashboardResponse()
+      properties: {}
+    UnpublishDashboardResponse:
+      type: object
+      description: UnpublishDashboardResponse()
+      properties: {}
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Databricks personal access token
+security:
+- bearerAuth: []

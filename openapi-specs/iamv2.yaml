@@ -1,0 +1,302 @@
+openapi: 3.0.0
+info:
+  title: Databricks Iamv2 API
+  description: API for Databricks iamv2 service
+  version: 1.0.0
+  contact:
+    name: Databricks
+    url: https://databricks.com
+servers:
+- url: https://{deployment_name}.cloud.databricks.com
+  description: Databricks Workspace API
+  variables:
+    deployment_name:
+      default: your-deployment
+      description: Databricks workspace deployment name
+paths:
+  /api/2.0/identity/groups/resolveByExternalId:
+    post:
+      operationId: resolve_group_proxy
+      summary: 'Resolves a group with the given external ID from the customer''s IdP.
+        If the group does not exist, it
+
+        will be created in the account. If the customer is not onboarded onto Automatic
+        Identity Management
+
+        (AIM), this will return an error.'
+      description: "Resolves a group with the given external ID from the customer's\
+        \ IdP. If the group does not exist, it\nwill be created in the account. If\
+        \ the customer is not onboarded onto Automatic Identity Management\n(AIM),\
+        \ this will return an error.\n\n:param external_id: str\n  Required. The external\
+        \ ID of the group in the customer's IdP.\n\n:returns: :class:`ResolveGroupResponse`"
+      tags:
+      - iamv2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                external_id:
+                  type: string
+                  description: str Required. The external ID of the group in the customer's
+                    IdP.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResolveGroupResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/identity/users/resolveByExternalId:
+    post:
+      operationId: resolve_user_proxy
+      summary: 'Resolves a user with the given external ID from the customer''s IdP.
+        If the user does not exist, it
+
+        will be created. If the customer is not onboarded onto Automatic Identity
+        Management (AIM), this will
+
+        return an error.'
+      description: "Resolves a user with the given external ID from the customer's\
+        \ IdP. If the user does not exist, it\nwill be created. If the customer is\
+        \ not onboarded onto Automatic Identity Management (AIM), this will\nreturn\
+        \ an error.\n\n:param external_id: str\n  Required. The external ID of the\
+        \ user in the customer's IdP.\n\n:returns: :class:`ResolveUserResponse`"
+      tags:
+      - iamv2
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                external_id:
+                  type: string
+                  description: str Required. The external ID of the user in the customer's
+                    IdP.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ResolveUserResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    Group:
+      type: object
+      description: The details of a Group resource.
+      properties:
+        account_id:
+          type: string
+          description: 'The parent account ID for group in Databricks.  external_id:
+            Optional[str] = None ExternalId of the group in the customer''s IdP.'
+        external_id:
+          type: string
+          description: 'ExternalId of the group in the customer''s IdP.  group_name:
+            Optional[str] = None Display name of the group.'
+        group_name:
+          type: string
+          description: 'Display name of the group.  internal_id: Optional[int] = None
+            Internal group ID of the group in Databricks.'
+        internal_id:
+          type: string
+          description: 'Internal group ID of the group in Databricks.  def as_dict(self)
+            -> dict: Serializes the Group into a dictionary suitable for use as a
+            JSON request body.'
+    PrincipalType:
+      type: string
+      description: The type of the principal (user/sp/group).
+      enum:
+      - GROUP
+      - SERVICE_PRINCIPAL
+      - USER
+    ResolveGroupResponse:
+      type: object
+      description: 'ResolveGroupResponse(group: ''Optional[Group]'' = None)'
+      properties:
+        group:
+          type: string
+          description: 'The group that was resolved.  def as_dict(self) -> dict: Serializes
+            the ResolveGroupResponse into a dictionary suitable for use as a JSON
+            request body.'
+    ResolveServicePrincipalResponse:
+      type: object
+      description: 'ResolveServicePrincipalResponse(service_principal: ''Optional[ServicePrincipal]''
+        = None)'
+      properties:
+        service_principal:
+          type: string
+          description: 'The service principal that was resolved.  def as_dict(self)
+            -> dict: Serializes the ResolveServicePrincipalResponse into a dictionary
+            suitable for use as a JSON request body.'
+    ResolveUserResponse:
+      type: object
+      description: 'ResolveUserResponse(user: ''Optional[User]'' = None)'
+      properties:
+        user:
+          type: string
+          description: 'The user that was resolved.  def as_dict(self) -> dict: Serializes
+            the ResolveUserResponse into a dictionary suitable for use as a JSON request
+            body.'
+    ServicePrincipal:
+      type: object
+      description: The details of a ServicePrincipal resource.
+      properties:
+        account_id:
+          type: string
+          description: 'The parent account ID for the service principal in Databricks.  account_sp_status:
+            Optional[State] = None The activity status of a service principal in a
+            Databricks account.'
+        account_sp_status:
+          type: string
+          description: 'The activity status of a service principal in a Databricks
+            account.  application_id: Optional[str] = None Application ID of the service
+            principal.'
+        application_id:
+          type: string
+          description: 'Application ID of the service principal.  display_name: Optional[str]
+            = None Display name of the service principal.'
+        display_name:
+          type: string
+          description: 'Display name of the service principal.  external_id: Optional[str]
+            = None ExternalId of the service principal in the customer''s IdP.'
+        external_id:
+          type: string
+          description: 'ExternalId of the service principal in the customer''s IdP.  internal_id:
+            Optional[int] = None Internal service principal ID of the service principal
+            in Databricks.'
+        internal_id:
+          type: string
+          description: 'Internal service principal ID of the service principal in
+            Databricks.  def as_dict(self) -> dict: Serializes the ServicePrincipal
+            into a dictionary suitable for use as a JSON request body.'
+    State:
+      type: string
+      description: The activity status of a user or service principal in a Databricks
+        account or workspace.
+      enum:
+      - ACTIVE
+      - INACTIVE
+    User:
+      type: object
+      description: The details of a User resource.
+      properties:
+        username:
+          type: string
+          description: 'Username/email of the user.  account_id: Optional[str] = None
+            The accountId parent of the user in Databricks.'
+        account_id:
+          type: string
+          description: 'The accountId parent of the user in Databricks.  account_user_status:
+            Optional[State] = None The activity status of a user in a Databricks account.'
+        account_user_status:
+          type: string
+          description: 'The activity status of a user in a Databricks account.  external_id:
+            Optional[str] = None ExternalId of the user in the customer''s IdP.'
+        external_id:
+          type: string
+          description: 'ExternalId of the user in the customer''s IdP.  internal_id:
+            Optional[int] = None Internal userId of the user in Databricks.'
+        internal_id:
+          type: string
+          description: 'Internal userId of the user in Databricks.  name: Optional[UserName]
+            = None  def as_dict(self) -> dict: Serializes the User into a dictionary
+            suitable for use as a JSON request body.'
+        name:
+          type: string
+          description: 'Username/email of the user.  account_id: Optional[str] = None
+            The accountId parent of the user in Databricks.'
+    UserName:
+      type: object
+      description: 'UserName(family_name: ''Optional[str]'' = None, given_name: ''Optional[str]''
+        = None)'
+      properties:
+        family_name:
+          type: string
+          description: ''
+        given_name:
+          type: string
+          description: ''
+    WorkspaceAccessDetail:
+      type: object
+      description: The details of a principal's access to a workspace.
+      properties:
+        access_type:
+          type: string
+          description: ''
+        account_id:
+          type: string
+          description: 'The account ID parent of the workspace where the principal
+            has access.  permissions: Optional[List[WorkspacePermission]] = None The
+            permissions granted to the principal in the workspace.'
+        permissions:
+          type: string
+          description: 'The permissions granted to the principal in the workspace.  principal_id:
+            Optional[int] = None The internal ID of the principal (user/sp/group)
+            in Databricks.'
+        principal_id:
+          type: string
+          description: 'The internal ID of the principal (user/sp/group) in Databricks.  principal_type:
+            Optional[PrincipalType] = None  status: Optional[State] = None The activity
+            status of the principal in the workspace. Not applicable for groups at
+            the moment.'
+        principal_type:
+          type: string
+          description: ''
+        status:
+          type: string
+          description: 'The activity status of the principal in the workspace. Not
+            applicable for groups at the moment.  workspace_id: Optional[int] = None
+            The workspace ID where the principal has access.'
+        workspace_id:
+          type: string
+          description: 'The workspace ID where the principal has access.  def as_dict(self)
+            -> dict: Serializes the WorkspaceAccessDetail into a dictionary suitable
+            for use as a JSON request body.'
+    WorkspaceAccessDetailAccessType:
+      type: string
+      description: The type of access the principal has to the workspace.
+      enum:
+      - DIRECT
+      - INDIRECT
+    WorkspaceAccessDetailView:
+      type: string
+      description: Controls what fields are returned in the GetWorkspaceAccessDetail
+        response.
+      enum:
+      - BASIC
+      - FULL
+    WorkspacePermission:
+      type: string
+      description: The type of permission a principal has to a workspace (admin/user).
+      enum:
+      - ADMIN_PERMISSION
+      - USER_PERMISSION
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Databricks personal access token
+security:
+- bearerAuth: []

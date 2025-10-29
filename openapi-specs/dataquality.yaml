@@ -1,0 +1,643 @@
+openapi: 3.0.0
+info:
+  title: Databricks Dataquality API
+  description: API for Databricks dataquality service
+  version: 1.0.0
+  contact:
+    name: Databricks
+    url: https://databricks.com
+servers:
+- url: https://{deployment_name}.cloud.databricks.com
+  description: Databricks Workspace API
+  variables:
+    deployment_name:
+      default: your-deployment
+      description: Databricks workspace deployment name
+paths:
+  /api/data-quality/v1/monitors:
+    post:
+      operationId: create_monitor
+      summary: 'Create a data quality monitor on a Unity Catalog object. The caller
+        must provide either
+
+        `anomaly_detection_config` for a schema monitor or `data_profiling_config`
+        for a table monitor.'
+      description: "Create a data quality monitor on a Unity Catalog object. The caller\
+        \ must provide either\n`anomaly_detection_config` for a schema monitor or\
+        \ `data_profiling_config` for a table monitor.\n\nFor the `table` `object_type`,\
+        \ the caller must have either of the following sets of permissions: 1.\n**MANAGE**\
+        \ and **USE_CATALOG** on the table's parent catalog, **USE_SCHEMA** on the\
+        \ table's parent\nschema, and **SELECT** on the table 2. **USE_CATALOG** on\
+        \ the table's parent catalog, **MANAGE** and\n**USE_SCHEMA** on the table's\
+        \ parent schema, and **SELECT** on the table. 3. **USE_CATALOG** on the\n\
+        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and **MANAGE**\
+        \ and **SELECT** on\nthe table.\n\nWorkspace assets, such as the dashboard,\
+        \ will be created in the workspace where this call was made.\n\nFor the `schema`\
+        \ `object_type`, the caller must have either of the following sets of permissions:\
+        \ 1.\n**MANAGE** and **USE_CATALOG** on the schema's parent catalog. 2. **USE_CATALOG**\
+        \ on the schema's\nparent catalog, and **MANAGE** and **USE_SCHEMA** on the\
+        \ schema.\n\n:param monitor: :class:`Monitor`\n  The monitor to create.\n\n\
+        :returns: :class:`Monitor`"
+      tags:
+      - dataquality
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Monitor'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitor'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list_monitor
+      summary: (Unimplemented) List data quality monitors.
+      description: '(Unimplemented) List data quality monitors.
+
+
+        :param page_size: int (optional)
+
+        :param page_token: str (optional)
+
+
+        :returns: Iterator over :class:`Monitor`'
+      tags:
+      - dataquality
+      parameters:
+      - name: page_size
+        description: int (optional)
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional)
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitor'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/data-quality/v1/monitors/{object_type}/{object_id}:
+    delete:
+      operationId: delete_monitor
+      summary: Delete a data quality monitor on Unity Catalog object.
+      description: "Delete a data quality monitor on Unity Catalog object.\n\nFor\
+        \ the `table` `object_type`, the caller must have either of the following\
+        \ sets of permissions:\n**MANAGE** and **USE_CATALOG** on the table's parent\
+        \ catalog. **USE_CATALOG** on the table's parent\ncatalog, and **MANAGE**\
+        \ and **USE_SCHEMA** on the table's parent schema. **USE_CATALOG** on the\n\
+        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and **MANAGE**\
+        \ on the table.\n\nNote that the metric tables and dashboard will not be deleted\
+        \ as part of this call; those assets must\nbe manually cleaned up (if desired).\n\
+        \nFor the `schema` `object_type`, the caller must have either of the following\
+        \ sets of permissions: 1.\n**MANAGE** and **USE_CATALOG** on the schema's\
+        \ parent catalog. 2. **USE_CATALOG** on the schema's\nparent catalog, and\
+        \ **MANAGE** and **USE_SCHEMA** on the schema.\n\n:param object_type: str\n\
+        \  The type of the monitored object. Can be one of the following: `schema`\
+        \ or `table`.\n:param object_id: str\n  The UUID of the request object. It\
+        \ is `schema_id` for `schema`, and `table_id` for `table`.\n\n  Find the `schema_id`\
+        \ from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog\n\
+        \  Explorer] > select the `schema` > go to the `Details` tab > the `Schema\
+        \ ID` field.\n\n  Find the `table_id` from either: 1. The [table_id] of the\
+        \ `Tables` resource. 2. In [Catalog\n  Explorer] > select the `table` > go\
+        \ to the `Details` tab > the `Table ID` field.\n\n  [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/\n\
+        \  [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id\n\
+        \  [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id"
+      tags:
+      - dataquality
+      parameters:
+      - name: object_type
+        description: 'str The type of the monitored object. Can be one of the following:
+          `schema` or `table`.'
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: object_id
+        description: 'str The UUID of the request object. It is `schema_id` for `schema`,
+          and `table_id` for `table`. Find the `schema_id` from either: 1. The [schema_id]
+          of the `Schemas` resource. 2. In [Catalog Explorer] > select the `schema`
+          > go to the `Details` tab > the `Schema ID` field. Find the `table_id` from
+          either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog Explorer]
+          > select the `table` > go to the `Details` tab > the `Table ID` field. [Catalog
+          Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+          https://docs.databricks.com/api/workspace/schemas/get#schema_id [table_id]:
+          https://docs.databricks.com/api/workspace/tables/get#table_id'
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get_monitor
+      summary: Read a data quality monitor on a Unity Catalog object.
+      description: "Read a data quality monitor on a Unity Catalog object.\n\nFor\
+        \ the `table` `object_type`, the caller must have either of the following\
+        \ sets of permissions: 1.\n**MANAGE** and **USE_CATALOG** on the table's parent\
+        \ catalog. 2. **USE_CATALOG** on the table's parent\ncatalog, and **MANAGE**\
+        \ and **USE_SCHEMA** on the table's parent schema. 3. **USE_CATALOG** on the\n\
+        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and **SELECT**\
+        \ on the table.\n\nFor the `schema` `object_type`, the caller must have either\
+        \ of the following sets of permissions: 1.\n**MANAGE** and **USE_CATALOG**\
+        \ on the schema's parent catalog. 2. **USE_CATALOG** on the schema's\nparent\
+        \ catalog, and **USE_SCHEMA** on the schema.\n\nThe returned information includes\
+        \ configuration values on the entity and parent entity as well as\ninformation\
+        \ on assets created by the monitor. Some information (e.g. dashboard) may\
+        \ be filtered out if\nthe caller is in a different workspace than where the\
+        \ monitor was created.\n\n:param object_type: str\n  The type of the monitored\
+        \ object. Can be one of the following: `schema` or `table`.\n:param object_id:\
+        \ str\n  The UUID of the request object. It is `schema_id` for `schema`, and\
+        \ `table_id` for `table`.\n\n  Find the `schema_id` from either: 1. The [schema_id]\
+        \ of the `Schemas` resource. 2. In [Catalog\n  Explorer] > select the `schema`\
+        \ > go to the `Details` tab > the `Schema ID` field.\n\n  Find the `table_id`\
+        \ from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog\n\
+        \  Explorer] > select the `table` > go to the `Details` tab > the `Table ID`\
+        \ field.\n\n  [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/\n\
+        \  [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id\n\
+        \  [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id\n\
+        \n:returns: :class:`Monitor`"
+      tags:
+      - dataquality
+      parameters:
+      - name: object_type
+        description: 'str The type of the monitored object. Can be one of the following:
+          `schema` or `table`.'
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: object_id
+        description: 'str The UUID of the request object. It is `schema_id` for `schema`,
+          and `table_id` for `table`. Find the `schema_id` from either: 1. The [schema_id]
+          of the `Schemas` resource. 2. In [Catalog Explorer] > select the `schema`
+          > go to the `Details` tab > the `Schema ID` field. Find the `table_id` from
+          either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog Explorer]
+          > select the `table` > go to the `Details` tab > the `Table ID` field. [Catalog
+          Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+          https://docs.databricks.com/api/workspace/schemas/get#schema_id [table_id]:
+          https://docs.databricks.com/api/workspace/tables/get#table_id'
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitor'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    AggregationGranularity:
+      type: string
+      description: The granularity for aggregating data into time windows based on
+        their timestamp.
+      enum:
+      - AGGREGATION_GRANULARITY_1_DAY
+      - AGGREGATION_GRANULARITY_1_HOUR
+      - AGGREGATION_GRANULARITY_1_MONTH
+      - AGGREGATION_GRANULARITY_1_WEEK
+      - AGGREGATION_GRANULARITY_1_YEAR
+      - AGGREGATION_GRANULARITY_2_WEEKS
+      - AGGREGATION_GRANULARITY_30_MINUTES
+      - AGGREGATION_GRANULARITY_3_WEEKS
+      - AGGREGATION_GRANULARITY_4_WEEKS
+      - AGGREGATION_GRANULARITY_5_MINUTES
+    AnomalyDetectionConfig:
+      type: object
+      description: Anomaly Detection Configurations.
+      properties: {}
+    CancelRefreshResponse:
+      type: object
+      description: Response to cancelling a refresh.
+      properties:
+        refresh:
+          type: string
+          description: 'The refresh to cancel.  def as_dict(self) -> dict: Serializes
+            the CancelRefreshResponse into a dictionary suitable for use as a JSON
+            request body.'
+    CronSchedule:
+      type: object
+      description: The data quality monitoring workflow cron schedule.
+      properties:
+        quartz_cron_expression:
+          type: string
+          description: 'The expression that determines when to run the monitor. See
+            [examples].  [examples]: https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html'
+        timezone_id:
+          type: string
+          description: A Java timezone id. The schedule for a job will be resolved
+            with respect to this timezone. See `Java TimeZone <http://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html>`_
+            for details. The timezone id (e.g., ``America/Los_Angeles``) in which
+            to evaluate the quartz expression.
+        pause_status:
+          type: string
+          description: 'Read only field that indicates whether the schedule is paused
+            or not.  def as_dict(self) -> dict: Serializes the CronSchedule into a
+            dictionary suitable for use as a JSON request body.'
+    CronSchedulePauseStatus:
+      type: string
+      description: The data quality monitoring workflow cron schedule pause status.
+      enum:
+      - CRON_SCHEDULE_PAUSE_STATUS_PAUSED
+      - CRON_SCHEDULE_PAUSE_STATUS_UNPAUSED
+    DataProfilingConfig:
+      type: object
+      description: Data Profiling Configurations.
+      properties:
+        output_schema_id:
+          type: string
+          description: 'ID of the schema where output tables are created.  assets_dir:
+            Optional[str] = None """Field for specifying the absolute path to a custom
+            directory to store data-monitoring assets. Normally prepopulated to a
+            default user location via UI and Python APIs.'
+        assets_dir:
+          type: string
+          description: Field for specifying the absolute path to a custom directory
+            to store data-monitoring assets. Normally prepopulated to a default user
+            location via UI and Python APIs.
+        baseline_table_name:
+          type: string
+          description: Baseline table name. Baseline data is used to compute drift
+            from the data in the monitored `table_name`. The baseline table and the
+            monitored table shall have the same schema.
+        custom_metrics:
+          type: string
+          description: 'Custom metrics.  dashboard_id: Optional[str] = None """Id
+            of dashboard that visualizes the computed metrics. This can be empty if
+            the monitor is in PENDING state.'
+        dashboard_id:
+          type: string
+          description: Id of dashboard that visualizes the computed metrics. This
+            can be empty if the monitor is in PENDING state.
+        drift_metrics_table_name:
+          type: string
+          description: 'Table that stores drift metrics data. Format: `catalog.schema.table_name`.  effective_warehouse_id:
+            Optional[str] = None The warehouse for dashboard creation'
+        effective_warehouse_id:
+          type: string
+          description: 'The warehouse for dashboard creation  inference_log: Optional[InferenceLogConfig]
+            = None `Analysis Configuration` for monitoring inference log tables.'
+        inference_log:
+          type: string
+          description: '`Analysis Configuration` for monitoring inference log tables.  latest_monitor_failure_message:
+            Optional[str] = None The latest error message for a monitor failure.'
+        latest_monitor_failure_message:
+          type: string
+          description: 'The latest error message for a monitor failure.  monitor_version:
+            Optional[int] = None """Represents the current monitor configuration version
+            in use. The version will be represented in a numeric fashion (1,2,3...).
+            The field has flexibility to take on negative values, which can indicate
+            corrupted monitor_version numbers.'
+        monitor_version:
+          type: string
+          description: Represents the current monitor configuration version in use.
+            The version will be represented in a numeric fashion (1,2,3...). The field
+            has flexibility to take on negative values, which can indicate corrupted
+            monitor_version numbers.
+        monitored_table_name:
+          type: string
+          description: 'Unity Catalog table to monitor. Format: `catalog.schema.table_name`  notification_settings:
+            Optional[NotificationSettings] = None Field for specifying notification
+            settings.'
+        notification_settings:
+          type: string
+          description: 'Field for specifying notification settings.  profile_metrics_table_name:
+            Optional[str] = None Table that stores profile metrics data. Format: `catalog.schema.table_name`.'
+        profile_metrics_table_name:
+          type: string
+          description: 'Table that stores profile metrics data. Format: `catalog.schema.table_name`.  schedule:
+            Optional[CronSchedule] = None The cron schedule.'
+        schedule:
+          type: string
+          description: 'The cron schedule.  skip_builtin_dashboard: Optional[bool]
+            = None Whether to skip creating a default dashboard summarizing data quality
+            metrics.'
+        skip_builtin_dashboard:
+          type: string
+          description: 'Whether to skip creating a default dashboard summarizing data
+            quality metrics.  slicing_exprs: Optional[List[str]] = None """List of
+            column expressions to slice data with for targeted analysis. The data
+            is grouped by each expression independently, resulting in a separate slice
+            for each predicate and its complements. For example `slicing_exprs=[“col_1”,
+            “col_2 > 10”]` will generate the following slices: two slices for `col_2
+            > 10` (True and False), and one slice per unique value in `col1`. For
+            high-cardinality columns, only the top 100 unique values by frequency
+            will generate slices.'
+        slicing_exprs:
+          type: string
+          description: 'List of column expressions to slice data with for targeted
+            analysis. The data is grouped by each expression independently, resulting
+            in a separate slice for each predicate and its complements. For example
+            `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the following slices:
+            two slices for `col_2 > 10` (True and False), and one slice per unique
+            value in `col1`. For high-cardinality columns, only the top 100 unique
+            values by frequency will generate slices.'
+        snapshot:
+          type: string
+          description: '`Analysis Configuration` for monitoring snapshot tables.  status:
+            Optional[DataProfilingStatus] = None The data profiling monitor status.'
+        status:
+          type: string
+          description: 'The data profiling monitor status.  time_series: Optional[TimeSeriesConfig]
+            = None `Analysis Configuration` for monitoring time series tables.'
+        time_series:
+          type: string
+          description: '`Analysis Configuration` for monitoring time series tables.  warehouse_id:
+            Optional[str] = None """Optional argument to specify the warehouse for
+            dashboard creation. If not specified, the first running warehouse will
+            be used.'
+        warehouse_id:
+          type: string
+          description: 'The warehouse for dashboard creation  inference_log: Optional[InferenceLogConfig]
+            = None `Analysis Configuration` for monitoring inference log tables.'
+    DataProfilingCustomMetric:
+      type: object
+      description: Custom metric definition.
+      properties:
+        name:
+          type: string
+          description: 'Name of the metric in the output tables.  definition: str
+            """Jinja template for a SQL expression that specifies how to compute the
+            metric. See [create metric definition].  [create metric definition]: https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition'
+        definition:
+          type: string
+          description: 'Jinja template for a SQL expression that specifies how to
+            compute the metric. See [create metric definition].  [create metric definition]:
+            https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition'
+        input_columns:
+          type: string
+          description: A list of column names in the input table the metric should
+            be computed for. Can use ``":table"`` to indicate that the metric needs
+            information from multiple columns.
+        output_data_type:
+          type: string
+          description: 'The output type of the custom metric.  type: DataProfilingCustomMetricType
+            The type of the custom metric.'
+        type:
+          type: string
+          description: 'The output type of the custom metric.  type: DataProfilingCustomMetricType
+            The type of the custom metric.'
+    DataProfilingCustomMetricType:
+      type: string
+      description: The custom metric type.
+      enum:
+      - DATA_PROFILING_CUSTOM_METRIC_TYPE_AGGREGATE
+      - DATA_PROFILING_CUSTOM_METRIC_TYPE_DERIVED
+      - DATA_PROFILING_CUSTOM_METRIC_TYPE_DRIFT
+    DataProfilingStatus:
+      type: string
+      description: The status of the data profiling monitor.
+      enum:
+      - DATA_PROFILING_STATUS_ACTIVE
+      - DATA_PROFILING_STATUS_DELETE_PENDING
+      - DATA_PROFILING_STATUS_ERROR
+      - DATA_PROFILING_STATUS_FAILED
+      - DATA_PROFILING_STATUS_PENDING
+    InferenceLogConfig:
+      type: object
+      description: Inference log configuration.
+      properties:
+        problem_type:
+          type: string
+          description: 'Problem type the model aims to solve.  timestamp_column: str
+            Column for the timestamp.'
+        timestamp_column:
+          type: string
+          description: 'Column for the timestamp.  granularities: List[AggregationGranularity]
+            List of granularities to use when aggregating data into time windows based
+            on their timestamp.'
+        granularities:
+          type: string
+          description: 'List of granularities to use when aggregating data into time
+            windows based on their timestamp.  prediction_column: str Column for the
+            prediction.'
+        prediction_column:
+          type: string
+          description: 'Column for the prediction.  model_id_column: str Column for
+            the model identifier.'
+        model_id_column:
+          type: string
+          description: 'Column for the model identifier.  label_column: Optional[str]
+            = None Column for the label.'
+        label_column:
+          type: string
+          description: 'Column for the label.  def as_dict(self) -> dict: Serializes
+            the InferenceLogConfig into a dictionary suitable for use as a JSON request
+            body.'
+    InferenceProblemType:
+      type: string
+      description: Inference problem type the model aims to solve.
+      enum:
+      - INFERENCE_PROBLEM_TYPE_CLASSIFICATION
+      - INFERENCE_PROBLEM_TYPE_REGRESSION
+    ListMonitorResponse:
+      type: object
+      description: Response for listing Monitors.
+      properties:
+        monitors:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ListRefreshResponse:
+      type: object
+      description: Response for listing refreshes.
+      properties:
+        next_page_token:
+          type: string
+          description: ''
+        refreshes:
+          type: string
+          description: ''
+    Monitor:
+      type: object
+      description: Monitor for the data quality of unity catalog entities such as
+        schema or table.
+      properties:
+        object_type:
+          type: string
+          description: 'The type of the monitored object. Can be one of the following:
+            `schema` or `table`.  object_id: str """The UUID of the request object.
+            It is `schema_id` for `schema`, and `table_id` for `table`.  Find the
+            `schema_id` from either: 1. The [schema_id] of the `Schemas` resource.
+            2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+            > the `Schema ID` field.  Find the `table_id` from either: 1. The [table_id]
+            of the `Tables` resource. 2. In [Catalog Explorer] > select the `table`
+            > go to the `Details` tab > the `Table ID` field.  [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id'
+        object_id:
+          type: string
+          description: 'The UUID of the request object. It is `schema_id` for `schema`,
+            and `table_id` for `table`.  Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] > select
+            the `schema` > go to the `Details` tab > the `Schema ID` field.  Find
+            the `table_id` from either: 1. The [table_id] of the `Tables` resource.
+            2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+            > the `Table ID` field.  [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+            [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id'
+        anomaly_detection_config:
+          type: string
+          description: 'Anomaly Detection Configuration, applicable to `schema` object
+            types.  data_profiling_config: Optional[DataProfilingConfig] = None """Data
+            Profiling Configuration, applicable to `table` object types. Exactly one
+            `Analysis Configuration` must be present.'
+        data_profiling_config:
+          type: string
+          description: Data Profiling Configuration, applicable to `table` object
+            types. Exactly one `Analysis Configuration` must be present.
+    NotificationDestination:
+      type: object
+      description: Destination of the data quality monitoring notification.
+      properties:
+        email_addresses:
+          type: string
+          description: The list of email addresses to send the notification to. A
+            maximum of 5 email addresses is supported.
+    NotificationSettings:
+      type: object
+      description: Settings for sending notifications on the data quality monitoring.
+      properties:
+        on_failure:
+          type: string
+          description: 'Destinations to send notifications on failure/timeout.  def
+            as_dict(self) -> dict: Serializes the NotificationSettings into a dictionary
+            suitable for use as a JSON request body.'
+    Refresh:
+      type: object
+      description: The Refresh object gives information on a refresh of the data quality
+        monitoring pipeline.
+      properties:
+        object_type:
+          type: string
+          description: 'The type of the monitored object. Can be one of the following:
+            `schema`or `table`.  object_id: str """The UUID of the request object.
+            It is `schema_id` for `schema`, and `table_id` for `table`.  Find the
+            `schema_id` from either: 1. The [schema_id] of the `Schemas` resource.
+            2. In [Catalog Explorer] > select the `schema` > go to the `Details` tab
+            > the `Schema ID` field.  Find the `table_id` from either: 1. The [table_id]
+            of the `Tables` resource. 2. In [Catalog Explorer] > select the `table`
+            > go to the `Details` tab > the `Table ID` field.  [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id'
+        object_id:
+          type: string
+          description: 'The UUID of the request object. It is `schema_id` for `schema`,
+            and `table_id` for `table`.  Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] > select
+            the `schema` > go to the `Details` tab > the `Schema ID` field.  Find
+            the `table_id` from either: 1. The [table_id] of the `Tables` resource.
+            2. In [Catalog Explorer] > select the `table` > go to the `Details` tab
+            > the `Table ID` field.  [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+            [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id'
+        end_time_ms:
+          type: string
+          description: 'Time when the refresh ended (milliseconds since 1/1/1970 UTC).  message:
+            Optional[str] = None """An optional message to give insight into the current
+            state of the refresh (e.g. FAILURE messages).'
+        message:
+          type: string
+          description: An optional message to give insight into the current state
+            of the refresh (e.g. FAILURE messages).
+        refresh_id:
+          type: string
+          description: 'Unique id of the refresh operation.  start_time_ms: Optional[int]
+            = None Time when the refresh started (milliseconds since 1/1/1970 UTC).'
+        start_time_ms:
+          type: string
+          description: 'Time when the refresh started (milliseconds since 1/1/1970
+            UTC).  state: Optional[RefreshState] = None The current state of the refresh.'
+        state:
+          type: string
+          description: 'The current state of the refresh.  trigger: Optional[RefreshTrigger]
+            = None What triggered the refresh.'
+        trigger:
+          type: string
+          description: 'What triggered the refresh.  def as_dict(self) -> dict: Serializes
+            the Refresh into a dictionary suitable for use as a JSON request body.'
+    RefreshState:
+      type: string
+      description: The state of the refresh.
+      enum:
+      - MONITOR_REFRESH_STATE_CANCELED
+      - MONITOR_REFRESH_STATE_FAILED
+      - MONITOR_REFRESH_STATE_PENDING
+      - MONITOR_REFRESH_STATE_RUNNING
+      - MONITOR_REFRESH_STATE_SUCCESS
+      - MONITOR_REFRESH_STATE_UNKNOWN
+    RefreshTrigger:
+      type: string
+      description: The trigger of the refresh.
+      enum:
+      - MONITOR_REFRESH_TRIGGER_DATA_CHANGE
+      - MONITOR_REFRESH_TRIGGER_MANUAL
+      - MONITOR_REFRESH_TRIGGER_SCHEDULE
+      - MONITOR_REFRESH_TRIGGER_UNKNOWN
+    SnapshotConfig:
+      type: object
+      description: Snapshot analysis configuration.
+      properties: {}
+    TimeSeriesConfig:
+      type: object
+      description: Time series analysis configuration.
+      properties:
+        timestamp_column:
+          type: string
+          description: 'Column for the timestamp.  granularities: List[AggregationGranularity]
+            List of granularities to use when aggregating data into time windows based
+            on their timestamp.'
+        granularities:
+          type: string
+          description: 'List of granularities to use when aggregating data into time
+            windows based on their timestamp.  def as_dict(self) -> dict: Serializes
+            the TimeSeriesConfig into a dictionary suitable for use as a JSON request
+            body.'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Databricks personal access token
+security:
+- bearerAuth: []

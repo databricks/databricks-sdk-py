@@ -1,0 +1,3702 @@
+openapi: 3.0.0
+info:
+  title: Databricks Marketplace API
+  description: API for Databricks marketplace service
+  version: 1.0.0
+  contact:
+    name: Databricks
+    url: https://databricks.com
+servers:
+- url: https://{deployment_name}.cloud.databricks.com
+  description: Databricks Workspace API
+  variables:
+    deployment_name:
+      default: your-deployment
+      description: Databricks workspace deployment name
+paths:
+  /api/2.1/marketplace-consumer/installations:
+    get:
+      operationId: list
+      summary: List all installations across all listings.
+      description: 'List all installations across all listings.
+
+
+        :param page_size: int (optional)
+
+        :param page_token: str (optional)
+
+
+        :returns: Iterator over :class:`InstallationDetail`'
+      tags:
+      - marketplace
+      parameters:
+      - name: page_size
+        description: int (optional)
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional)
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/InstallationDetail'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.1/marketplace-consumer/listings:batchGet:
+    get:
+      operationId: batch_get
+      summary: Batch get a published listing in the Databricks Marketplace that the
+        consumer has access to.
+      description: 'Batch get a published listing in the Databricks Marketplace that
+        the consumer has access to.
+
+
+        :param ids: List[str] (optional)
+
+
+        :returns: :class:`BatchGetListingsResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: ids
+        description: List[str] (optional)
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchGetListingsResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.1/marketplace-consumer/listings/{id}:
+    get:
+      operationId: get
+      summary: Get a published listing in the Databricks Marketplace that the consumer
+        has access to.
+      description: 'Get a published listing in the Databricks Marketplace that the
+        consumer has access to.
+
+
+        :param id: str
+
+
+        :returns: :class:`GetListingResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetListingResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.1/marketplace-consumer/listings:
+    get:
+      operationId: list
+      summary: List all published listings in the Databricks Marketplace that the
+        consumer has access to.
+      description: "List all published listings in the Databricks Marketplace that\
+        \ the consumer has access to.\n\n:param assets: List[:class:`AssetType`] (optional)\n\
+        \  Matches any of the following asset types\n:param categories: List[:class:`Category`]\
+        \ (optional)\n  Matches any of the following categories\n:param is_free: bool\
+        \ (optional)\n  Filters each listing based on if it is free.\n:param is_private_exchange:\
+        \ bool (optional)\n  Filters each listing based on if it is a private exchange.\n\
+        :param is_staff_pick: bool (optional)\n  Filters each listing based on whether\
+        \ it is a staff pick.\n:param page_size: int (optional)\n:param page_token:\
+        \ str (optional)\n:param provider_ids: List[str] (optional)\n  Matches any\
+        \ of the following provider ids\n:param tags: List[:class:`ListingTag`] (optional)\n\
+        \  Matches any of the following tags\n\n:returns: Iterator over :class:`Listing`"
+      tags:
+      - marketplace
+      parameters:
+      - name: assets
+        description: List[:class:`AssetType`] (optional) Matches any of the following
+          asset types
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - ASSET_TYPE_APP
+            - ASSET_TYPE_DATA_TABLE
+            - ASSET_TYPE_GIT_REPO
+            - ASSET_TYPE_MCP
+            - ASSET_TYPE_MEDIA
+            - ASSET_TYPE_MODEL
+            - ASSET_TYPE_NOTEBOOK
+            - ASSET_TYPE_PARTNER_INTEGRATION
+        in: query
+      - name: categories
+        description: List[:class:`Category`] (optional) Matches any of the following
+          categories
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - ADVERTISING_AND_MARKETING
+            - CLIMATE_AND_ENVIRONMENT
+            - COMMERCE
+            - DEMOGRAPHICS
+            - ECONOMICS
+            - EDUCATION
+            - ENERGY
+            - FINANCIAL
+            - GAMING
+            - GEOSPATIAL
+            - HEALTH
+            - LOOKUP_TABLES
+            - MANUFACTURING
+            - MEDIA
+            - OTHER
+            - PUBLIC_SECTOR
+            - RETAIL
+            - SCIENCE_AND_RESEARCH
+            - SECURITY
+            - SPORTS
+            - TRANSPORTATION_AND_LOGISTICS
+            - TRAVEL_AND_TOURISM
+        in: query
+      - name: is_free
+        description: bool (optional) Filters each listing based on if it is free.
+        required: false
+        schema:
+          type: boolean
+        in: query
+      - name: is_private_exchange
+        description: bool (optional) Filters each listing based on if it is a private
+          exchange.
+        required: false
+        schema:
+          type: boolean
+        in: query
+      - name: is_staff_pick
+        description: bool (optional) Filters each listing based on whether it is a
+          staff pick.
+        required: false
+        schema:
+          type: boolean
+        in: query
+      - name: page_size
+        description: int (optional)
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional)
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: provider_ids
+        description: List[str] (optional) Matches any of the following provider ids
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        in: query
+      - name: tags
+        description: List[:class:`ListingTag`] (optional) Matches any of the following
+          tags
+        required: false
+        schema:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListingTag'
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.1/marketplace-consumer/search-listings:
+    get:
+      operationId: search
+      summary: 'Search published listings in the Databricks Marketplace that the consumer
+        has access to. This query
+
+        supports a variety of different search parameters and performs fuzzy matching.'
+      description: "Search published listings in the Databricks Marketplace that the\
+        \ consumer has access to. This query\nsupports a variety of different search\
+        \ parameters and performs fuzzy matching.\n\n:param query: str\n  Fuzzy matches\
+        \ query\n:param assets: List[:class:`AssetType`] (optional)\n  Matches any\
+        \ of the following asset types\n:param categories: List[:class:`Category`]\
+        \ (optional)\n  Matches any of the following categories\n:param is_free: bool\
+        \ (optional)\n:param is_private_exchange: bool (optional)\n:param page_size:\
+        \ int (optional)\n:param page_token: str (optional)\n:param provider_ids:\
+        \ List[str] (optional)\n  Matches any of the following provider ids\n\n:returns:\
+        \ Iterator over :class:`Listing`"
+      tags:
+      - marketplace
+      parameters:
+      - name: query
+        description: str Fuzzy matches query
+        required: true
+        schema:
+          type: string
+        in: query
+      - name: assets
+        description: List[:class:`AssetType`] (optional) Matches any of the following
+          asset types
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - ASSET_TYPE_APP
+            - ASSET_TYPE_DATA_TABLE
+            - ASSET_TYPE_GIT_REPO
+            - ASSET_TYPE_MCP
+            - ASSET_TYPE_MEDIA
+            - ASSET_TYPE_MODEL
+            - ASSET_TYPE_NOTEBOOK
+            - ASSET_TYPE_PARTNER_INTEGRATION
+        in: query
+      - name: categories
+        description: List[:class:`Category`] (optional) Matches any of the following
+          categories
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+            enum:
+            - ADVERTISING_AND_MARKETING
+            - CLIMATE_AND_ENVIRONMENT
+            - COMMERCE
+            - DEMOGRAPHICS
+            - ECONOMICS
+            - EDUCATION
+            - ENERGY
+            - FINANCIAL
+            - GAMING
+            - GEOSPATIAL
+            - HEALTH
+            - LOOKUP_TABLES
+            - MANUFACTURING
+            - MEDIA
+            - OTHER
+            - PUBLIC_SECTOR
+            - RETAIL
+            - SCIENCE_AND_RESEARCH
+            - SECURITY
+            - SPORTS
+            - TRANSPORTATION_AND_LOGISTICS
+            - TRAVEL_AND_TOURISM
+        in: query
+      - name: is_free
+        description: bool (optional)
+        required: false
+        schema:
+          type: boolean
+        in: query
+      - name: is_private_exchange
+        description: bool (optional)
+        required: false
+        schema:
+          type: boolean
+        in: query
+      - name: page_size
+        description: int (optional)
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional)
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: provider_ids
+        description: List[str] (optional) Matches any of the following provider ids
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.1/marketplace-consumer/providers:batchGet:
+    get:
+      operationId: batch_get
+      summary: Batch get a provider in the Databricks Marketplace with at least one
+        visible listing.
+      description: 'Batch get a provider in the Databricks Marketplace with at least
+        one visible listing.
+
+
+        :param ids: List[str] (optional)
+
+
+        :returns: :class:`BatchGetProvidersResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: ids
+        description: List[str] (optional)
+        required: false
+        schema:
+          type: array
+          items:
+            type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BatchGetProvidersResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.1/marketplace-consumer/providers/{id}:
+    get:
+      operationId: get
+      summary: Get a provider in the Databricks Marketplace with at least one visible
+        listing.
+      description: 'Get a provider in the Databricks Marketplace with at least one
+        visible listing.
+
+
+        :param id: str
+
+
+        :returns: :class:`GetProviderResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProviderResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.1/marketplace-consumer/providers:
+    get:
+      operationId: list
+      summary: List all providers in the Databricks Marketplace with at least one
+        visible listing.
+      description: 'List all providers in the Databricks Marketplace with at least
+        one visible listing.
+
+
+        :param is_featured: bool (optional)
+
+        :param page_size: int (optional)
+
+        :param page_token: str (optional)
+
+
+        :returns: Iterator over :class:`ProviderInfo`'
+      tags:
+      - marketplace
+      parameters:
+      - name: is_featured
+        description: bool (optional)
+        required: false
+        schema:
+          type: boolean
+        in: query
+      - name: page_size
+        description: int (optional)
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional)
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderInfo'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-exchange/filters:
+    post:
+      operationId: create
+      summary: Add an exchange filter.
+      description: 'Add an exchange filter.
+
+
+        :param filter: :class:`ExchangeFilter`
+
+
+        :returns: :class:`CreateExchangeFilterResponse`'
+      tags:
+      - marketplace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExchangeFilter'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateExchangeFilterResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list
+      summary: List exchange filter
+      description: 'List exchange filter
+
+
+        :param exchange_id: str
+
+        :param page_size: int (optional)
+
+        :param page_token: str (optional)
+
+
+        :returns: Iterator over :class:`ExchangeFilter`'
+      tags:
+      - marketplace
+      parameters:
+      - name: exchange_id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: query
+      - name: page_size
+        description: int (optional)
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional)
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExchangeFilter'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-exchange/filters/{id}:
+    delete:
+      operationId: delete
+      summary: Delete an exchange filter
+      description: 'Delete an exchange filter
+
+
+        :param id: str'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    put:
+      operationId: update
+      summary: Update an exchange filter.
+      description: 'Update an exchange filter.
+
+
+        :param id: str
+
+        :param filter: :class:`ExchangeFilter`
+
+
+        :returns: :class:`UpdateExchangeFilterResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExchangeFilter'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateExchangeFilterResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-exchange/exchanges-for-listing:
+    post:
+      operationId: add_listing_to_exchange
+      summary: Associate an exchange with a listing
+      description: 'Associate an exchange with a listing
+
+
+        :param listing_id: str
+
+        :param exchange_id: str
+
+
+        :returns: :class:`AddExchangeForListingResponse`'
+      tags:
+      - marketplace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                listing_id:
+                  type: string
+                  description: str
+                exchange_id:
+                  type: string
+                  description: str
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddExchangeForListingResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-exchange/exchanges:
+    post:
+      operationId: create
+      summary: Create an exchange
+      description: 'Create an exchange
+
+
+        :param exchange: :class:`Exchange`
+
+
+        :returns: :class:`CreateExchangeResponse`'
+      tags:
+      - marketplace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Exchange'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateExchangeResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list
+      summary: List exchanges visible to provider
+      description: 'List exchanges visible to provider
+
+
+        :param page_size: int (optional)
+
+        :param page_token: str (optional)
+
+
+        :returns: Iterator over :class:`Exchange`'
+      tags:
+      - marketplace
+      parameters:
+      - name: page_size
+        description: int (optional)
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional)
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Exchange'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-exchange/exchanges/{id}:
+    delete:
+      operationId: delete
+      summary: This removes a listing from marketplace.
+      description: 'This removes a listing from marketplace.
+
+
+        :param id: str'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get
+      summary: Get an exchange.
+      description: 'Get an exchange.
+
+
+        :param id: str
+
+
+        :returns: :class:`GetExchangeResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetExchangeResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    put:
+      operationId: update
+      summary: Update an exchange
+      description: 'Update an exchange
+
+
+        :param id: str
+
+        :param exchange: :class:`Exchange`
+
+
+        :returns: :class:`UpdateExchangeResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Exchange'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateExchangeResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-exchange/exchanges-for-listing/{id}:
+    delete:
+      operationId: delete_listing_from_exchange
+      summary: Disassociate an exchange with a listing
+      description: 'Disassociate an exchange with a listing
+
+
+        :param id: str'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+  /api/2.0/marketplace-provider/files:
+    post:
+      operationId: create
+      summary: Create a file. Currently, only provider icons and attached notebooks
+        are supported.
+      description: 'Create a file. Currently, only provider icons and attached notebooks
+        are supported.
+
+
+        :param file_parent: :class:`FileParent`
+
+        :param marketplace_file_type: :class:`MarketplaceFileType`
+
+        :param mime_type: str
+
+        :param display_name: str (optional)
+
+
+        :returns: :class:`CreateFileResponse`'
+      tags:
+      - marketplace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                file_parent:
+                  $ref: '#/components/schemas/FileParent'
+                marketplace_file_type:
+                  type: string
+                  enum:
+                  - APP
+                  - EMBEDDED_NOTEBOOK
+                  - PROVIDER_ICON
+                  description: :class:`MarketplaceFileType`
+                mime_type:
+                  type: string
+                  description: str
+                display_name:
+                  type: string
+                  description: str (optional)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateFileResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list
+      summary: List files attached to a parent entity.
+      description: 'List files attached to a parent entity.
+
+
+        :param file_parent: :class:`FileParent`
+
+        :param page_size: int (optional)
+
+        :param page_token: str (optional)
+
+
+        :returns: Iterator over :class:`FileInfo`'
+      tags:
+      - marketplace
+      parameters:
+      - name: file_parent
+        description: :class:`FileParent`
+        required: true
+        schema:
+          $ref: '#/components/schemas/FileParent'
+        in: query
+      - name: page_size
+        description: int (optional)
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional)
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FileInfo'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-provider/files/{file_id}:
+    delete:
+      operationId: delete
+      summary: Delete a file
+      description: 'Delete a file
+
+
+        :param file_id: str'
+      tags:
+      - marketplace
+      parameters:
+      - name: file_id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get
+      summary: Get a file
+      description: 'Get a file
+
+
+        :param file_id: str
+
+
+        :returns: :class:`GetFileResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: file_id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetFileResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-provider/listing:
+    post:
+      operationId: create
+      summary: Create a new listing
+      description: 'Create a new listing
+
+
+        :param listing: :class:`Listing`
+
+
+        :returns: :class:`CreateListingResponse`'
+      tags:
+      - marketplace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Listing'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateListingResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-provider/listings/{id}:
+    delete:
+      operationId: delete
+      summary: Delete a listing
+      description: 'Delete a listing
+
+
+        :param id: str'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get
+      summary: Get a listing
+      description: 'Get a listing
+
+
+        :param id: str
+
+
+        :returns: :class:`GetListingResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetListingResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    put:
+      operationId: update
+      summary: Update a listing
+      description: 'Update a listing
+
+
+        :param id: str
+
+        :param listing: :class:`Listing`
+
+
+        :returns: :class:`UpdateListingResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Listing'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateListingResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-provider/listings:
+    get:
+      operationId: list
+      summary: List listings owned by this provider
+      description: 'List listings owned by this provider
+
+
+        :param page_size: int (optional)
+
+        :param page_token: str (optional)
+
+
+        :returns: Iterator over :class:`Listing`'
+      tags:
+      - marketplace
+      parameters:
+      - name: page_size
+        description: int (optional)
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional)
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Listing'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-provider/analytics_dashboard:
+    post:
+      operationId: create
+      summary: 'Create provider analytics dashboard. Returns Marketplace specific
+        `id`. Not to be confused with the
+
+        Lakeview dashboard id.'
+      description: 'Create provider analytics dashboard. Returns Marketplace specific
+        `id`. Not to be confused with the
+
+        Lakeview dashboard id.
+
+
+
+        :returns: :class:`ProviderAnalyticsDashboard`'
+      tags:
+      - marketplace
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderAnalyticsDashboard'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: get
+      summary: Get provider analytics dashboard.
+      description: 'Get provider analytics dashboard.
+
+
+
+        :returns: :class:`ListProviderAnalyticsDashboardResponse`'
+      tags:
+      - marketplace
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListProviderAnalyticsDashboardResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-provider/analytics_dashboard/latest:
+    get:
+      operationId: get_latest_version
+      summary: Get latest version of provider analytics dashboard.
+      description: 'Get latest version of provider analytics dashboard.
+
+
+
+        :returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`'
+      tags:
+      - marketplace
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetLatestVersionProviderAnalyticsDashboardResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-provider/analytics_dashboard/{id}:
+    put:
+      operationId: update
+      summary: Update provider analytics dashboard.
+      description: "Update provider analytics dashboard.\n\n:param id: str\n  id is\
+        \ immutable property and can't be updated.\n:param version: int (optional)\n\
+        \  this is the version of the dashboard template we want to update our user\
+        \ to current expectation is\n  that it should be equal to latest version of\
+        \ the dashboard template\n\n:returns: :class:`UpdateProviderAnalyticsDashboardResponse`"
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str id is immutable property and can't be updated.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                version:
+                  type: integer
+                  description: int (optional) this is the version of the dashboard
+                    template we want to update our user to current expectation is
+                    that it should be equal to latest version of the dashboard template
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProviderAnalyticsDashboardResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-provider/provider:
+    post:
+      operationId: create
+      summary: Create a provider
+      description: 'Create a provider
+
+
+        :param provider: :class:`ProviderInfo`
+
+
+        :returns: :class:`CreateProviderResponse`'
+      tags:
+      - marketplace
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderInfo'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateProviderResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-provider/providers/{id}:
+    delete:
+      operationId: delete
+      summary: Delete provider
+      description: 'Delete provider
+
+
+        :param id: str'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get
+      summary: Get provider profile
+      description: 'Get provider profile
+
+
+        :param id: str
+
+
+        :returns: :class:`GetProviderResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetProviderResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    put:
+      operationId: update
+      summary: Update provider profile
+      description: 'Update provider profile
+
+
+        :param id: str
+
+        :param provider: :class:`ProviderInfo`
+
+
+        :returns: :class:`UpdateProviderResponse`'
+      tags:
+      - marketplace
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProviderInfo'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProviderResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/marketplace-provider/providers:
+    get:
+      operationId: list
+      summary: List provider profiles for account.
+      description: 'List provider profiles for account.
+
+
+        :param page_size: int (optional)
+
+        :param page_token: str (optional)
+
+
+        :returns: Iterator over :class:`ProviderInfo`'
+      tags:
+      - marketplace
+      parameters:
+      - name: page_size
+        description: int (optional)
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional)
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProviderInfo'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    AddExchangeForListingResponse:
+      type: object
+      description: 'AddExchangeForListingResponse(exchange_for_listing: ''Optional[ExchangeListing]''
+        = None)'
+      properties:
+        exchange_for_listing:
+          type: string
+          description: ''
+    AssetType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ASSET_TYPE_APP
+      - ASSET_TYPE_DATA_TABLE
+      - ASSET_TYPE_GIT_REPO
+      - ASSET_TYPE_MCP
+      - ASSET_TYPE_MEDIA
+      - ASSET_TYPE_MODEL
+      - ASSET_TYPE_NOTEBOOK
+      - ASSET_TYPE_PARTNER_INTEGRATION
+    BatchGetListingsResponse:
+      type: object
+      description: 'BatchGetListingsResponse(listings: ''Optional[List[Listing]]''
+        = None)'
+      properties:
+        listings:
+          type: string
+          description: ''
+    BatchGetProvidersResponse:
+      type: object
+      description: 'BatchGetProvidersResponse(providers: ''Optional[List[ProviderInfo]]''
+        = None)'
+      properties:
+        providers:
+          type: string
+          description: ''
+    Category:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ADVERTISING_AND_MARKETING
+      - CLIMATE_AND_ENVIRONMENT
+      - COMMERCE
+      - DEMOGRAPHICS
+      - ECONOMICS
+      - EDUCATION
+      - ENERGY
+      - FINANCIAL
+      - GAMING
+      - GEOSPATIAL
+      - HEALTH
+      - LOOKUP_TABLES
+      - MANUFACTURING
+      - MEDIA
+      - OTHER
+      - PUBLIC_SECTOR
+      - RETAIL
+      - SCIENCE_AND_RESEARCH
+      - SECURITY
+      - SPORTS
+      - TRANSPORTATION_AND_LOGISTICS
+      - TRAVEL_AND_TOURISM
+    ConsumerTerms:
+      type: object
+      description: 'ConsumerTerms(version: ''str'')'
+      properties:
+        version:
+          type: string
+          description: ''
+    ContactInfo:
+      type: object
+      description: contact info for the consumer requesting data or performing a listing
+        installation
+      properties:
+        company:
+          type: string
+          description: ''
+        email:
+          type: string
+          description: ''
+        first_name:
+          type: string
+          description: ''
+        last_name:
+          type: string
+          description: ''
+    Cost:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - FREE
+      - PAID
+    CreateExchangeFilterResponse:
+      type: object
+      description: 'CreateExchangeFilterResponse(filter_id: ''Optional[str]'' = None)'
+      properties:
+        filter_id:
+          type: string
+          description: ''
+    CreateExchangeResponse:
+      type: object
+      description: 'CreateExchangeResponse(exchange_id: ''Optional[str]'' = None)'
+      properties:
+        exchange_id:
+          type: string
+          description: ''
+    CreateFileResponse:
+      type: object
+      description: 'CreateFileResponse(file_info: ''Optional[FileInfo]'' = None, upload_url:
+        ''Optional[str]'' = None)'
+      properties:
+        file_info:
+          type: string
+          description: ''
+        upload_url:
+          type: string
+          description: 'Pre-signed POST URL to blob storage  def as_dict(self) ->
+            dict: Serializes the CreateFileResponse into a dictionary suitable for
+            use as a JSON request body.'
+    CreateListingResponse:
+      type: object
+      description: 'CreateListingResponse(listing_id: ''Optional[str]'' = None)'
+      properties:
+        listing_id:
+          type: string
+          description: ''
+    CreatePersonalizationRequestResponse:
+      type: object
+      description: 'CreatePersonalizationRequestResponse(id: ''Optional[str]'' = None)'
+      properties:
+        id:
+          type: string
+          description: ''
+    CreateProviderResponse:
+      type: object
+      description: 'CreateProviderResponse(id: ''Optional[str]'' = None)'
+      properties:
+        id:
+          type: string
+          description: ''
+    DataRefresh:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - DAILY
+      - HOURLY
+      - MINUTE
+      - MONTHLY
+      - NONE
+      - QUARTERLY
+      - SECOND
+      - WEEKLY
+      - YEARLY
+    DataRefreshInfo:
+      type: object
+      description: 'DataRefreshInfo(interval: ''int'', unit: ''DataRefresh'')'
+      properties:
+        interval:
+          type: string
+          description: ''
+        unit:
+          type: string
+          description: ''
+    DeleteExchangeFilterResponse:
+      type: object
+      description: DeleteExchangeFilterResponse()
+      properties: {}
+    DeleteExchangeResponse:
+      type: object
+      description: DeleteExchangeResponse()
+      properties: {}
+    DeleteFileResponse:
+      type: object
+      description: DeleteFileResponse()
+      properties: {}
+    DeleteInstallationResponse:
+      type: object
+      description: DeleteInstallationResponse()
+      properties: {}
+    DeleteListingResponse:
+      type: object
+      description: DeleteListingResponse()
+      properties: {}
+    DeleteProviderResponse:
+      type: object
+      description: DeleteProviderResponse()
+      properties: {}
+    DeltaSharingRecipientType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS
+      - DELTA_SHARING_RECIPIENT_TYPE_OPEN
+    Exchange:
+      type: object
+      description: 'Exchange(name: ''str'', comment: ''Optional[str]'' = None, created_at:
+        ''Optional[int]'' = None, created_by: ''Optional[str]'' = None, filters: ''Optional[List[ExchangeFilter]]''
+        = None, id: ''Optional[str]'' = None, linked_listings: ''Optional[List[ExchangeListing]]''
+        = None, updated_at: ''Optional[int]'' = None, updated_by: ''Optional[str]''
+        = None)'
+      properties:
+        name:
+          type: string
+          description: ''
+        comment:
+          type: string
+          description: ''
+        created_at:
+          type: string
+          description: ''
+        created_by:
+          type: string
+          description: ''
+        filters:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: ''
+        linked_listings:
+          type: string
+          description: ''
+        updated_at:
+          type: string
+          description: ''
+        updated_by:
+          type: string
+          description: ''
+    ExchangeFilter:
+      type: object
+      description: 'ExchangeFilter(exchange_id: ''str'', filter_value: ''str'', filter_type:
+        ''ExchangeFilterType'', created_at: ''Optional[int]'' = None, created_by:
+        ''Optional[str]'' = None, id: ''Optional[str]'' = None, name: ''Optional[str]''
+        = None, updated_at: ''Optional[int]'' = None, updated_by: ''Optional[str]''
+        = None)'
+      properties:
+        exchange_id:
+          type: string
+          description: ''
+        filter_value:
+          type: string
+          description: ''
+        filter_type:
+          type: string
+          description: ''
+        created_at:
+          type: string
+          description: ''
+        created_by:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: ''
+        name:
+          type: string
+          description: ''
+        updated_at:
+          type: string
+          description: ''
+        updated_by:
+          type: string
+          description: ''
+    ExchangeFilterType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - GLOBAL_METASTORE_ID
+    ExchangeListing:
+      type: object
+      description: 'ExchangeListing(created_at: ''Optional[int]'' = None, created_by:
+        ''Optional[str]'' = None, exchange_id: ''Optional[str]'' = None, exchange_name:
+        ''Optional[str]'' = None, id: ''Optional[str]'' = None, listing_id: ''Optional[str]''
+        = None, listing_name: ''Optional[str]'' = None)'
+      properties:
+        created_at:
+          type: string
+          description: ''
+        created_by:
+          type: string
+          description: ''
+        exchange_id:
+          type: string
+          description: ''
+        exchange_name:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: ''
+        listing_id:
+          type: string
+          description: ''
+        listing_name:
+          type: string
+          description: ''
+    FileInfo:
+      type: object
+      description: 'FileInfo(created_at: ''Optional[int]'' = None, display_name: ''Optional[str]''
+        = None, download_link: ''Optional[str]'' = None, file_parent: ''Optional[FileParent]''
+        = None, id: ''Optional[str]'' = None, marketplace_file_type: ''Optional[MarketplaceFileType]''
+        = None, mime_type: ''Optional[str]'' = None, status: ''Optional[FileStatus]''
+        = None, status_message: ''Optional[str]'' = None, updated_at: ''Optional[int]''
+        = None)'
+      properties:
+        created_at:
+          type: string
+          description: ''
+        display_name:
+          type: string
+          description: 'Name displayed to users for applicable files, e.g. embedded
+            notebooks  download_link: Optional[str] = None  file_parent: Optional[FileParent]
+            = None  id: Optional[str] = None  marketplace_file_type: Optional[MarketplaceFileType]
+            = None  mime_type: Optional[str] = None  status: Optional[FileStatus]
+            = None  status_message: Optional[str] = None Populated if status is in
+            a failed state with more information on reason for the failure.'
+        download_link:
+          type: string
+          description: ''
+        file_parent:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: ''
+        marketplace_file_type:
+          type: string
+          description: ''
+        mime_type:
+          type: string
+          description: ''
+        status:
+          type: string
+          description: ''
+        status_message:
+          type: string
+          description: 'Populated if status is in a failed state with more information
+            on reason for the failure.  updated_at: Optional[int] = None  def as_dict(self)
+            -> dict: Serializes the FileInfo into a dictionary suitable for use as
+            a JSON request body.'
+        updated_at:
+          type: string
+          description: ''
+    FileParent:
+      type: object
+      description: 'FileParent(file_parent_type: ''Optional[FileParentType]'' = None,
+        parent_id: ''Optional[str]'' = None)'
+      properties:
+        file_parent_type:
+          type: string
+          description: ''
+        parent_id:
+          type: string
+          description: 'TODO make the following fields required  def as_dict(self)
+            -> dict: Serializes the FileParent into a dictionary suitable for use
+            as a JSON request body.'
+    FileParentType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - LISTING
+      - LISTING_RESOURCE
+      - PROVIDER
+    FileStatus:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - FILE_STATUS_PUBLISHED
+      - FILE_STATUS_SANITIZATION_FAILED
+      - FILE_STATUS_SANITIZING
+      - FILE_STATUS_STAGING
+    FulfillmentType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - INSTALL
+      - REQUEST_ACCESS
+    GetExchangeResponse:
+      type: object
+      description: 'GetExchangeResponse(exchange: ''Optional[Exchange]'' = None)'
+      properties:
+        exchange:
+          type: string
+          description: ''
+    GetFileResponse:
+      type: object
+      description: 'GetFileResponse(file_info: ''Optional[FileInfo]'' = None)'
+      properties:
+        file_info:
+          type: string
+          description: ''
+    GetLatestVersionProviderAnalyticsDashboardResponse:
+      type: object
+      description: 'GetLatestVersionProviderAnalyticsDashboardResponse(version: ''Optional[int]''
+        = None)'
+      properties:
+        version:
+          type: string
+          description: 'version here is latest logical version of the dashboard template  def
+            as_dict(self) -> dict: Serializes the GetLatestVersionProviderAnalyticsDashboardResponse
+            into a dictionary suitable for use as a JSON request body.'
+    GetListingContentMetadataResponse:
+      type: object
+      description: 'GetListingContentMetadataResponse(next_page_token: ''Optional[str]''
+        = None, shared_data_objects: ''Optional[List[SharedDataObject]]'' = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: ''
+        shared_data_objects:
+          type: string
+          description: ''
+    GetListingResponse:
+      type: object
+      description: 'GetListingResponse(listing: ''Optional[Listing]'' = None)'
+      properties:
+        listing:
+          type: string
+          description: ''
+    GetListingsResponse:
+      type: object
+      description: 'GetListingsResponse(listings: ''Optional[List[Listing]]'' = None,
+        next_page_token: ''Optional[str]'' = None)'
+      properties:
+        listings:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    GetPersonalizationRequestResponse:
+      type: object
+      description: 'GetPersonalizationRequestResponse(personalization_requests: ''Optional[List[PersonalizationRequest]]''
+        = None)'
+      properties:
+        personalization_requests:
+          type: string
+          description: ''
+    GetProviderResponse:
+      type: object
+      description: 'GetProviderResponse(provider: ''Optional[ProviderInfo]'' = None)'
+      properties:
+        provider:
+          type: string
+          description: ''
+    Installation:
+      type: object
+      description: 'Installation(installation: ''Optional[InstallationDetail]'' =
+        None)'
+      properties:
+        installation:
+          type: string
+          description: ''
+    InstallationDetail:
+      type: object
+      description: 'InstallationDetail(catalog_name: ''Optional[str]'' = None, error_message:
+        ''Optional[str]'' = None, id: ''Optional[str]'' = None, installed_on: ''Optional[int]''
+        = None, listing_id: ''Optional[str]'' = None, listing_name: ''Optional[str]''
+        = None, recipient_type: ''Optional[DeltaSharingRecipientType]'' = None, repo_name:
+        ''Optional[str]'' = None, repo_path: ''Optional[str]'' = None, share_name:
+        ''Optional[str]'' = None, status: ''Optional[InstallationStatus]'' = None,
+        token_detail: ''Optional[TokenDetail]'' = None, tokens: ''Optional[List[TokenInfo]]''
+        = None)'
+      properties:
+        catalog_name:
+          type: string
+          description: ''
+        error_message:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: ''
+        installed_on:
+          type: string
+          description: ''
+        listing_id:
+          type: string
+          description: ''
+        listing_name:
+          type: string
+          description: ''
+        recipient_type:
+          type: string
+          description: ''
+        repo_name:
+          type: string
+          description: ''
+        repo_path:
+          type: string
+          description: ''
+        share_name:
+          type: string
+          description: ''
+        status:
+          type: string
+          description: ''
+        token_detail:
+          type: string
+          description: ''
+        tokens:
+          type: string
+          description: ''
+    InstallationStatus:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - FAILED
+      - INSTALLED
+    ListAllInstallationsResponse:
+      type: object
+      description: 'ListAllInstallationsResponse(installations: ''Optional[List[InstallationDetail]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        installations:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ListAllPersonalizationRequestsResponse:
+      type: object
+      description: 'ListAllPersonalizationRequestsResponse(next_page_token: ''Optional[str]''
+        = None, personalization_requests: ''Optional[List[PersonalizationRequest]]''
+        = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: ''
+        personalization_requests:
+          type: string
+          description: ''
+    ListExchangeFiltersResponse:
+      type: object
+      description: 'ListExchangeFiltersResponse(filters: ''Optional[List[ExchangeFilter]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        filters:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ListExchangesForListingResponse:
+      type: object
+      description: 'ListExchangesForListingResponse(exchange_listing: ''Optional[List[ExchangeListing]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        exchange_listing:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ListExchangesResponse:
+      type: object
+      description: 'ListExchangesResponse(exchanges: ''Optional[List[Exchange]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        exchanges:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ListFilesResponse:
+      type: object
+      description: 'ListFilesResponse(file_infos: ''Optional[List[FileInfo]]'' = None,
+        next_page_token: ''Optional[str]'' = None)'
+      properties:
+        file_infos:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ListFulfillmentsResponse:
+      type: object
+      description: 'ListFulfillmentsResponse(fulfillments: ''Optional[List[ListingFulfillment]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        fulfillments:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ListInstallationsResponse:
+      type: object
+      description: 'ListInstallationsResponse(installations: ''Optional[List[InstallationDetail]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        installations:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ListListingsForExchangeResponse:
+      type: object
+      description: 'ListListingsForExchangeResponse(exchange_listings: ''Optional[List[ExchangeListing]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        exchange_listings:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ListListingsResponse:
+      type: object
+      description: 'ListListingsResponse(listings: ''Optional[List[Listing]]'' = None,
+        next_page_token: ''Optional[str]'' = None)'
+      properties:
+        listings:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ListProviderAnalyticsDashboardResponse:
+      type: object
+      description: 'ListProviderAnalyticsDashboardResponse(id: ''str'', dashboard_id:
+        ''str'', version: ''Optional[int]'' = None)'
+      properties:
+        id:
+          type: string
+          description: 'dashboard_id will be used to open Lakeview dashboard.  version:
+            Optional[int] = None  def as_dict(self) -> dict: Serializes the ListProviderAnalyticsDashboardResponse
+            into a dictionary suitable for use as a JSON request body.'
+        dashboard_id:
+          type: string
+          description: 'dashboard_id will be used to open Lakeview dashboard.  version:
+            Optional[int] = None  def as_dict(self) -> dict: Serializes the ListProviderAnalyticsDashboardResponse
+            into a dictionary suitable for use as a JSON request body.'
+        version:
+          type: string
+          description: ''
+    ListProvidersResponse:
+      type: object
+      description: 'ListProvidersResponse(next_page_token: ''Optional[str]'' = None,
+        providers: ''Optional[List[ProviderInfo]]'' = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: ''
+        providers:
+          type: string
+          description: ''
+    Listing:
+      type: object
+      description: 'Listing(summary: ''ListingSummary'', detail: ''Optional[ListingDetail]''
+        = None, id: ''Optional[str]'' = None)'
+      properties:
+        summary:
+          type: string
+          description: ''
+        detail:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: ''
+    ListingDetail:
+      type: object
+      description: 'ListingDetail(assets: ''Optional[List[AssetType]]'' = None, collection_date_end:
+        ''Optional[int]'' = None, collection_date_start: ''Optional[int]'' = None,
+        collection_granularity: ''Optional[DataRefreshInfo]'' = None, cost: ''Optional[Cost]''
+        = None, data_source: ''Optional[str]'' = None, description: ''Optional[str]''
+        = None, documentation_link: ''Optional[str]'' = None, embedded_notebook_file_infos:
+        ''Optional[List[FileInfo]]'' = None, file_ids: ''Optional[List[str]]'' = None,
+        geographical_coverage: ''Optional[str]'' = None, license: ''Optional[str]''
+        = None, pricing_model: ''Optional[str]'' = None, privacy_policy_link: ''Optional[str]''
+        = None, size: ''Optional[float]'' = None, support_link: ''Optional[str]''
+        = None, tags: ''Optional[List[ListingTag]]'' = None, terms_of_service: ''Optional[str]''
+        = None, update_frequency: ''Optional[DataRefreshInfo]'' = None)'
+      properties:
+        assets:
+          type: string
+          description: 'Type of assets included in the listing. eg. GIT_REPO, DATA_TABLE,
+            MODEL, NOTEBOOK  collection_date_end: Optional[int] = None The ending
+            date timestamp for when the data spans'
+        collection_date_end:
+          type: string
+          description: 'The ending date timestamp for when the data spans  collection_date_start:
+            Optional[int] = None The starting date timestamp for when the data spans'
+        collection_date_start:
+          type: string
+          description: 'The starting date timestamp for when the data spans  collection_granularity:
+            Optional[DataRefreshInfo] = None Smallest unit of time in the dataset'
+        collection_granularity:
+          type: string
+          description: 'Smallest unit of time in the dataset  cost: Optional[Cost]
+            = None Whether the dataset is free or paid'
+        cost:
+          type: string
+          description: 'Whether the dataset is free or paid  data_source: Optional[str]
+            = None Where/how the data is sourced'
+        data_source:
+          type: string
+          description: 'Where/how the data is sourced  description: Optional[str]
+            = None  documentation_link: Optional[str] = None  embedded_notebook_file_infos:
+            Optional[List[FileInfo]] = None  file_ids: Optional[List[str]] = None  geographical_coverage:
+            Optional[str] = None Which geo region the listing data is collected from'
+        description:
+          type: string
+          description: ''
+        documentation_link:
+          type: string
+          description: ''
+        embedded_notebook_file_infos:
+          type: string
+          description: ''
+        file_ids:
+          type: string
+          description: ''
+        geographical_coverage:
+          type: string
+          description: 'Which geo region the listing data is collected from  license:
+            Optional[str] = None """ID 20, 21 removed don''t use License of the data
+            asset - Required for listings with model based assets'
+        license:
+          type: string
+          description: ID 20, 21 removed don't use License of the data asset - Required
+            for listings with model based assets
+        pricing_model:
+          type: string
+          description: 'What the pricing model is (e.g. paid, subscription, paid upfront);
+            should only be present if cost is paid TODO: Not used yet, should deprecate
+            if we will never use it'
+        privacy_policy_link:
+          type: string
+          description: ''
+        size:
+          type: string
+          description: 'size of the dataset in GB  support_link: Optional[str] = None  tags:
+            Optional[List[ListingTag]] = None """Listing tags - Simple key value pair
+            to annotate listings. When should I use tags vs dedicated fields? Using
+            tags avoids the need to add new columns in the database for new annotations.
+            However, this should be used sparingly since tags are stored as key value
+            pair. Use tags only: 1. If the field is optional and won''t need to have
+            NOT NULL integrity check 2. The value is fairly fixed, static and low
+            cardinality (eg. enums). 3. The value won''t be used in filters or joins
+            with other tables.'
+        support_link:
+          type: string
+          description: ''
+        tags:
+          type: string
+          description: 'Listing tags - Simple key value pair to annotate listings.
+            When should I use tags vs dedicated fields? Using tags avoids the need
+            to add new columns in the database for new annotations. However, this
+            should be used sparingly since tags are stored as key value pair. Use
+            tags only: 1. If the field is optional and won''t need to have NOT NULL
+            integrity check 2. The value is fairly fixed, static and low cardinality
+            (eg. enums). 3. The value won''t be used in filters or joins with other
+            tables.'
+        terms_of_service:
+          type: string
+          description: ''
+        update_frequency:
+          type: string
+          description: 'How often data is updated  def as_dict(self) -> dict: Serializes
+            the ListingDetail into a dictionary suitable for use as a JSON request
+            body.'
+    ListingFulfillment:
+      type: object
+      description: 'ListingFulfillment(listing_id: ''str'', fulfillment_type: ''Optional[FulfillmentType]''
+        = None, recipient_type: ''Optional[DeltaSharingRecipientType]'' = None, repo_info:
+        ''Optional[RepoInfo]'' = None, share_info: ''Optional[ShareInfo]'' = None)'
+      properties:
+        listing_id:
+          type: string
+          description: ''
+        fulfillment_type:
+          type: string
+          description: ''
+        recipient_type:
+          type: string
+          description: ''
+        repo_info:
+          type: string
+          description: ''
+        share_info:
+          type: string
+          description: ''
+    ListingSetting:
+      type: object
+      description: 'ListingSetting(visibility: ''Optional[Visibility]'' = None)'
+      properties:
+        visibility:
+          type: string
+          description: ''
+    ListingShareType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - FULL
+      - SAMPLE
+    ListingStatus:
+      type: string
+      description: Enums
+      enum:
+      - DRAFT
+      - PENDING
+      - PUBLISHED
+      - SUSPENDED
+    ListingSummary:
+      type: object
+      description: 'ListingSummary(name: ''str'', listing_type: ''ListingType'', categories:
+        ''Optional[List[Category]]'' = None, created_at: ''Optional[int]'' = None,
+        created_by: ''Optional[str]'' = None, created_by_id: ''Optional[int]'' = None,
+        exchange_ids: ''Optional[List[str]]'' = None, git_repo: ''Optional[RepoInfo]''
+        = None, provider_id: ''Optional[str]'' = None, provider_region: ''Optional[RegionInfo]''
+        = None, published_at: ''Optional[int]'' = None, published_by: ''Optional[str]''
+        = None, setting: ''Optional[ListingSetting]'' = None, share: ''Optional[ShareInfo]''
+        = None, status: ''Optional[ListingStatus]'' = None, subtitle: ''Optional[str]''
+        = None, updated_at: ''Optional[int]'' = None, updated_by: ''Optional[str]''
+        = None, updated_by_id: ''Optional[int]'' = None)'
+      properties:
+        name:
+          type: string
+          description: ''
+        listing_type:
+          type: string
+          description: ''
+        categories:
+          type: string
+          description: ''
+        created_at:
+          type: string
+          description: ''
+        created_by:
+          type: string
+          description: ''
+        created_by_id:
+          type: string
+          description: ''
+        exchange_ids:
+          type: string
+          description: ''
+        git_repo:
+          type: string
+          description: if a git repo is being created, a listing will be initialized
+            with this field as opposed to a share
+        provider_id:
+          type: string
+          description: ''
+        provider_region:
+          type: string
+          description: ''
+        published_at:
+          type: string
+          description: ''
+        published_by:
+          type: string
+          description: ''
+        setting:
+          type: string
+          description: ''
+        share:
+          type: string
+          description: ''
+        status:
+          type: string
+          description: ''
+        subtitle:
+          type: string
+          description: ''
+        updated_at:
+          type: string
+          description: ''
+        updated_by:
+          type: string
+          description: ''
+        updated_by_id:
+          type: string
+          description: ''
+    ListingTag:
+      type: object
+      description: 'ListingTag(tag_name: ''Optional[ListingTagType]'' = None, tag_values:
+        ''Optional[List[str]]'' = None)'
+      properties:
+        tag_name:
+          type: string
+          description: 'Tag name (enum)  tag_values: Optional[List[str]] = None String
+            representation of the tag value. Values should be string literals (no
+            complex types)'
+        tag_values:
+          type: string
+          description: 'String representation of the tag value. Values should be string
+            literals (no complex types)  def as_dict(self) -> dict: Serializes the
+            ListingTag into a dictionary suitable for use as a JSON request body.'
+    ListingTagType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - LISTING_TAG_TYPE_LANGUAGE
+      - LISTING_TAG_TYPE_TASK
+    ListingType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - PERSONALIZED
+      - STANDARD
+    MarketplaceFileType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - APP
+      - EMBEDDED_NOTEBOOK
+      - PROVIDER_ICON
+    PersonalizationRequest:
+      type: object
+      description: 'PersonalizationRequest(consumer_region: ''RegionInfo'', comment:
+        ''Optional[str]'' = None, contact_info: ''Optional[ContactInfo]'' = None,
+        created_at: ''Optional[int]'' = None, id: ''Optional[str]'' = None, intended_use:
+        ''Optional[str]'' = None, is_from_lighthouse: ''Optional[bool]'' = None, listing_id:
+        ''Optional[str]'' = None, listing_name: ''Optional[str]'' = None, metastore_id:
+        ''Optional[str]'' = None, provider_id: ''Optional[str]'' = None, recipient_type:
+        ''Optional[DeltaSharingRecipientType]'' = None, share: ''Optional[ShareInfo]''
+        = None, status: ''Optional[PersonalizationRequestStatus]'' = None, status_message:
+        ''Optional[str]'' = None, updated_at: ''Optional[int]'' = None)'
+      properties:
+        consumer_region:
+          type: string
+          description: ''
+        comment:
+          type: string
+          description: ''
+        contact_info:
+          type: string
+          description: ''
+        created_at:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: ''
+        intended_use:
+          type: string
+          description: ''
+        is_from_lighthouse:
+          type: string
+          description: ''
+        listing_id:
+          type: string
+          description: ''
+        listing_name:
+          type: string
+          description: ''
+        metastore_id:
+          type: string
+          description: ''
+        provider_id:
+          type: string
+          description: ''
+        recipient_type:
+          type: string
+          description: ''
+        share:
+          type: string
+          description: ''
+        status:
+          type: string
+          description: ''
+        status_message:
+          type: string
+          description: ''
+        updated_at:
+          type: string
+          description: ''
+    PersonalizationRequestStatus:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - DENIED
+      - FULFILLED
+      - NEW
+      - REQUEST_PENDING
+    ProviderAnalyticsDashboard:
+      type: object
+      description: 'ProviderAnalyticsDashboard(id: ''str'')'
+      properties:
+        id:
+          type: string
+          description: ''
+    ProviderInfo:
+      type: object
+      description: 'ProviderInfo(name: ''str'', business_contact_email: ''str'', term_of_service_link:
+        ''str'', privacy_policy_link: ''str'', company_website_link: ''Optional[str]''
+        = None, dark_mode_icon_file_id: ''Optional[str]'' = None, dark_mode_icon_file_path:
+        ''Optional[str]'' = None, description: ''Optional[str]'' = None, icon_file_id:
+        ''Optional[str]'' = None, icon_file_path: ''Optional[str]'' = None, id: ''Optional[str]''
+        = None, is_featured: ''Optional[bool]'' = None, published_by: ''Optional[str]''
+        = None, support_contact_email: ''Optional[str]'' = None)'
+      properties:
+        name:
+          type: string
+          description: ''
+        business_contact_email:
+          type: string
+          description: ''
+        term_of_service_link:
+          type: string
+          description: ''
+        privacy_policy_link:
+          type: string
+          description: ''
+        company_website_link:
+          type: string
+          description: ''
+        dark_mode_icon_file_id:
+          type: string
+          description: ''
+        dark_mode_icon_file_path:
+          type: string
+          description: ''
+        description:
+          type: string
+          description: ''
+        icon_file_id:
+          type: string
+          description: ''
+        icon_file_path:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: ''
+        is_featured:
+          type: string
+          description: 'is_featured is accessible by consumers only  published_by:
+            Optional[str] = None published_by is only applicable to data aggregators
+            (e.g. Crux)'
+        published_by:
+          type: string
+          description: 'published_by is only applicable to data aggregators (e.g.
+            Crux)  support_contact_email: Optional[str] = None  def as_dict(self)
+            -> dict: Serializes the ProviderInfo into a dictionary suitable for use
+            as a JSON request body.'
+        support_contact_email:
+          type: string
+          description: ''
+    RegionInfo:
+      type: object
+      description: 'RegionInfo(cloud: ''Optional[str]'' = None, region: ''Optional[str]''
+        = None)'
+      properties:
+        cloud:
+          type: string
+          description: ''
+        region:
+          type: string
+          description: ''
+    RemoveExchangeForListingResponse:
+      type: object
+      description: RemoveExchangeForListingResponse()
+      properties: {}
+    RepoInfo:
+      type: object
+      description: 'RepoInfo(git_repo_url: ''str'')'
+      properties:
+        git_repo_url:
+          type: string
+          description: 'the git repo url e.g. https://github.com/databrickslabs/dolly.git  def
+            as_dict(self) -> dict: Serializes the RepoInfo into a dictionary suitable
+            for use as a JSON request body.'
+    RepoInstallation:
+      type: object
+      description: 'RepoInstallation(repo_name: ''str'', repo_path: ''str'')'
+      properties:
+        repo_name:
+          type: string
+          description: 'the user-specified repo name for their installed git repo
+            listing  repo_path: str """refers to the full url file path that navigates
+            the user to the repo''s entrypoint (e.g. a README.md file, or the repo
+            file view in the unified UI) should just be a relative path'
+        repo_path:
+          type: string
+          description: refers to the full url file path that navigates the user to
+            the repo's entrypoint (e.g. a README.md file, or the repo file view in
+            the unified UI) should just be a relative path
+    SearchListingsResponse:
+      type: object
+      description: 'SearchListingsResponse(listings: ''Optional[List[Listing]]'' =
+        None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        listings:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: ''
+    ShareInfo:
+      type: object
+      description: 'ShareInfo(name: ''str'', type: ''ListingShareType'')'
+      properties:
+        name:
+          type: string
+          description: ''
+        type:
+          type: string
+          description: ''
+    SharedDataObject:
+      type: object
+      description: 'SharedDataObject(data_object_type: ''Optional[str]'' = None, name:
+        ''Optional[str]'' = None)'
+      properties:
+        data_object_type:
+          type: string
+          description: 'The type of the data object. Could be one of: TABLE, SCHEMA,
+            NOTEBOOK_FILE, MODEL, VOLUME  name: Optional[str] = None Name of the shared
+            object'
+        name:
+          type: string
+          description: 'Name of the shared object  def as_dict(self) -> dict: Serializes
+            the SharedDataObject into a dictionary suitable for use as a JSON request
+            body.'
+    TokenDetail:
+      type: object
+      description: 'TokenDetail(bearer_token: ''Optional[str]'' = None, endpoint:
+        ''Optional[str]'' = None, expiration_time: ''Optional[str]'' = None, share_credentials_version:
+        ''Optional[int]'' = None)'
+      properties:
+        bearer_token:
+          type: string
+          description: ''
+        endpoint:
+          type: string
+          description: ''
+        expiration_time:
+          type: string
+          description: ''
+        share_credentials_version:
+          type: string
+          description: 'These field names must follow the delta sharing protocol.
+            Original message: RetrieveToken.Response in managed-catalog/api/messages/recipient.proto'
+    TokenInfo:
+      type: object
+      description: 'TokenInfo(activation_url: ''Optional[str]'' = None, created_at:
+        ''Optional[int]'' = None, created_by: ''Optional[str]'' = None, expiration_time:
+        ''Optional[int]'' = None, id: ''Optional[str]'' = None, updated_at: ''Optional[int]''
+        = None, updated_by: ''Optional[str]'' = None)'
+      properties:
+        activation_url:
+          type: string
+          description: Full activation url to retrieve the access token. It will be
+            empty if the token is already retrieved.
+        created_at:
+          type: string
+          description: 'Time at which this Recipient Token was created, in epoch milliseconds.  created_by:
+            Optional[str] = None Username of Recipient Token creator.'
+        created_by:
+          type: string
+          description: 'Username of Recipient Token creator.  expiration_time: Optional[int]
+            = None Expiration timestamp of the token in epoch milliseconds.'
+        expiration_time:
+          type: string
+          description: 'Expiration timestamp of the token in epoch milliseconds.  id:
+            Optional[str] = None Unique id of the Recipient Token.'
+        id:
+          type: string
+          description: 'Unique id of the Recipient Token.  updated_at: Optional[int]
+            = None Time at which this Recipient Token was updated, in epoch milliseconds.'
+        updated_at:
+          type: string
+          description: 'Time at which this Recipient Token was updated, in epoch milliseconds.  updated_by:
+            Optional[str] = None Username of Recipient Token updater.'
+        updated_by:
+          type: string
+          description: 'Username of Recipient Token updater.  def as_dict(self) ->
+            dict: Serializes the TokenInfo into a dictionary suitable for use as a
+            JSON request body.'
+    UpdateExchangeFilterResponse:
+      type: object
+      description: 'UpdateExchangeFilterResponse(filter: ''Optional[ExchangeFilter]''
+        = None)'
+      properties:
+        filter:
+          type: string
+          description: ''
+    UpdateExchangeResponse:
+      type: object
+      description: 'UpdateExchangeResponse(exchange: ''Optional[Exchange]'' = None)'
+      properties:
+        exchange:
+          type: string
+          description: ''
+    UpdateInstallationResponse:
+      type: object
+      description: 'UpdateInstallationResponse(installation: ''Optional[InstallationDetail]''
+        = None)'
+      properties:
+        installation:
+          type: string
+          description: ''
+    UpdateListingResponse:
+      type: object
+      description: 'UpdateListingResponse(listing: ''Optional[Listing]'' = None)'
+      properties:
+        listing:
+          type: string
+          description: ''
+    UpdatePersonalizationRequestResponse:
+      type: object
+      description: 'UpdatePersonalizationRequestResponse(request: ''Optional[PersonalizationRequest]''
+        = None)'
+      properties:
+        request:
+          type: string
+          description: ''
+    UpdateProviderAnalyticsDashboardResponse:
+      type: object
+      description: 'UpdateProviderAnalyticsDashboardResponse(id: ''str'', dashboard_id:
+        ''str'', version: ''Optional[int]'' = None)'
+      properties:
+        id:
+          type: string
+          description: 'id & version should be the same as the request  dashboard_id:
+            str this is newly created Lakeview dashboard for the user'
+        dashboard_id:
+          type: string
+          description: 'this is newly created Lakeview dashboard for the user  version:
+            Optional[int] = None  def as_dict(self) -> dict: Serializes the UpdateProviderAnalyticsDashboardResponse
+            into a dictionary suitable for use as a JSON request body.'
+        version:
+          type: string
+          description: ''
+    UpdateProviderResponse:
+      type: object
+      description: 'UpdateProviderResponse(provider: ''Optional[ProviderInfo]'' =
+        None)'
+      properties:
+        provider:
+          type: string
+          description: ''
+    Visibility:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - PRIVATE
+      - PUBLIC
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Databricks personal access token
+security:
+- bearerAuth: []

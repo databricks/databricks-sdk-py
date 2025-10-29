@@ -1,0 +1,3270 @@
+openapi: 3.0.0
+info:
+  title: Databricks Iam API
+  description: API for Databricks iam service
+  version: 1.0.0
+  contact:
+    name: Databricks
+    url: https://databricks.com
+servers:
+- url: https://accounts.cloud.databricks.com
+  description: Databricks Account API
+  variables:
+    account_id:
+      default: your-account-id
+      description: Databricks account ID
+paths:
+  /api/2.0/access-control/check-policy-v2:
+    get:
+      operationId: check_policy
+      summary: Check access policy to a resource.
+      description: "Check access policy to a resource.\n\n:param actor: :class:`Actor`\n\
+        :param permission: str\n:param resource: str\n  Ex: (servicePrincipal/use,\
+        \ accounts/<account-id>/servicePrincipals/<sp-id>) Ex:\n  (servicePrincipal.ruleSet/update,\
+        \ accounts/<account-id>/servicePrincipals/<sp-id>/ruleSets/default)\n:param\
+        \ consistency_token: :class:`ConsistencyToken`\n:param authz_identity: :class:`RequestAuthzIdentity`\n\
+        :param resource_info: :class:`ResourceInfo` (optional)\n\n:returns: :class:`CheckPolicyResponse`"
+      tags:
+      - iam
+      parameters:
+      - name: actor
+        description: :class:`Actor`
+        required: true
+        schema:
+          $ref: '#/components/schemas/Actor'
+        in: query
+      - name: permission
+        description: str
+        required: true
+        schema:
+          type: string
+        in: query
+      - name: resource
+        description: 'str Ex: (servicePrincipal/use, accounts/<account-id>/servicePrincipals/<sp-id>)
+          Ex: (servicePrincipal.ruleSet/update, accounts/<account-id>/servicePrincipals/<sp-id>/ruleSets/default)'
+        required: true
+        schema:
+          type: string
+        in: query
+      - name: consistency_token
+        description: :class:`ConsistencyToken`
+        required: true
+        schema:
+          $ref: '#/components/schemas/ConsistencyToken'
+        in: query
+      - name: authz_identity
+        description: :class:`RequestAuthzIdentity`
+        required: true
+        schema:
+          type: string
+          enum:
+          - REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY
+          - REQUEST_AUTHZ_IDENTITY_USER_CONTEXT
+        in: query
+      - name: resource_info
+        description: :class:`ResourceInfo` (optional)
+        required: false
+        schema:
+          $ref: '#/components/schemas/ResourceInfo'
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CheckPolicyResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/preview/accounts/access-control/rule-sets:
+    get:
+      operationId: get_rule_set
+      summary: 'Get a rule set by its name. A rule set is always attached to a resource
+        and contains a list of access
+
+        rules on the said resource. Currently only a default rule set for each resource
+        is supported.'
+      description: "Get a rule set by its name. A rule set is always attached to a\
+        \ resource and contains a list of access\nrules on the said resource. Currently\
+        \ only a default rule set for each resource is supported.\n\n:param name:\
+        \ str\n  The ruleset name associated with the request.\n\n  Examples | Summary\
+        \ :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a\
+        \ rule set\n  on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default`\
+        \ | A name for a rule\n  set on the group.\n  `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default`\
+        \ |\n  A name for a rule set on the service principal.\n  `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default`\
+        \ | A name for a rule set on\n  the tag policy.\n:param etag: str\n  Etag\
+        \ used for versioning. The response is at least as fresh as the eTag provided.\
+        \ Etag is used for\n  optimistic concurrency control as a way to help prevent\
+        \ simultaneous updates of a rule set from\n  overwriting each other. It is\
+        \ strongly suggested that systems make use of the etag in the read ->\n  modify\
+        \ -> write pattern to perform rule set updates in order to avoid race conditions\
+        \ that is get an\n  etag from a GET rule set request, and pass it with the\
+        \ PUT update request to identify the rule set\n  version you are updating.\n\
+        \n  Examples | Summary :--- | :--- `etag=` | An empty etag can only be used\
+        \ in GET to indicate no\n  freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==`\
+        \ | An\n  etag encoded a specific version of the rule set to get or to be\
+        \ updated.\n\n:returns: :class:`RuleSetResponse`"
+      tags:
+      - iam
+      parameters:
+      - name: name
+        description: str The ruleset name associated with the request. Examples |
+          Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name
+          for a rule set on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default`
+          | A name for a rule set on the group. `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default`
+          | A name for a rule set on the service principal. `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default`
+          | A name for a rule set on the tag policy.
+        required: true
+        schema:
+          type: string
+        in: query
+      - name: etag
+        description: str Etag used for versioning. The response is at least as fresh
+          as the eTag provided. Etag is used for optimistic concurrency control as
+          a way to help prevent simultaneous updates of a rule set from overwriting
+          each other. It is strongly suggested that systems make use of the etag in
+          the read -> modify -> write pattern to perform rule set updates in order
+          to avoid race conditions that is get an etag from a GET rule set request,
+          and pass it with the PUT update request to identify the rule set version
+          you are updating. Examples | Summary :--- | :--- `etag=` | An empty etag
+          can only be used in GET to indicate no freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==`
+          | An etag encoded a specific version of the rule set to get or to be updated.
+        required: true
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleSetResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    put:
+      operationId: update_rule_set
+      summary: 'Replace the rules of a rule set. First, use get to read the current
+        version of the rule set before
+
+        modifying it. This pattern helps prevent conflicts between concurrent updates.'
+      description: "Replace the rules of a rule set. First, use get to read the current\
+        \ version of the rule set before\nmodifying it. This pattern helps prevent\
+        \ conflicts between concurrent updates.\n\n:param name: str\n  Name of the\
+        \ rule set.\n:param rule_set: :class:`RuleSetUpdateRequest`\n\n:returns: :class:`RuleSetResponse`"
+      tags:
+      - iam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: str Name of the rule set.
+                rule_set:
+                  $ref: '#/components/schemas/RuleSetUpdateRequest'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RuleSetResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/accounts/{account_id}/scim/v2/Groups/{id}:
+    delete:
+      operationId: delete
+      summary: Deletes a group from the Databricks account.
+      description: "Deletes a group from the Databricks account.\n\n:param id: str\n\
+        \  Unique ID for a group in the Databricks account."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID for a group in the Databricks account.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get
+      summary: Gets the information for a specific group in the Databricks account.
+      description: "Gets the information for a specific group in the Databricks account.\n\
+        \n:param id: str\n  Unique ID for a group in the Databricks account.\n\n:returns:\
+        \ :class:`AccountGroup`"
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID for a group in the Databricks account.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountGroup'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    put:
+      operationId: update
+      summary: Updates the details of a group by replacing the entire group entity.
+      description: "Updates the details of a group by replacing the entire group entity.\n\
+        \n:param id: str\n  Databricks group ID\n:param display_name: str (optional)\n\
+        \  String that represents a human-readable group name\n:param external_id:\
+        \ str (optional)\n:param members: List[:class:`ComplexValue`] (optional)\n\
+        :param meta: :class:`ResourceMeta` (optional)\n  Container for the group identifier.\
+        \ Workspace local versus account.\n:param roles: List[:class:`ComplexValue`]\
+        \ (optional)\n  Indicates if the group has the admin role."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Databricks group ID
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                display_name:
+                  type: string
+                  description: str (optional) String that represents a human-readable
+                    group name
+                external_id:
+                  type: string
+                  description: str (optional)
+                members:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional)
+                meta:
+                  $ref: '#/components/schemas/ResourceMeta'
+                roles:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) Indicates if
+                    the group has the admin role.
+      responses:
+        '200':
+          description: Success
+  /api/2.0/accounts/{account_id}/scim/v2/Users/{id}:
+    delete:
+      operationId: delete
+      summary: 'Deletes a user. Deleting a user from a Databricks account also removes
+        objects associated with the
+
+        user.'
+      description: "Deletes a user. Deleting a user from a Databricks account also\
+        \ removes objects associated with the\nuser.\n\n:param id: str\n  Unique ID\
+        \ for a user in the Databricks account."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID for a user in the Databricks account.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    put:
+      operationId: update
+      summary: Replaces a user's information with the data supplied in request.
+      description: "Replaces a user's information with the data supplied in request.\n\
+        \n:param id: str\n  Databricks user ID.\n:param active: bool (optional)\n\
+        \  If this user is active\n:param display_name: str (optional)\n  String that\
+        \ represents a concatenation of given and family names. For example `John\
+        \ Smith`.\n:param emails: List[:class:`ComplexValue`] (optional)\n  All the\
+        \ emails associated with the Databricks user.\n:param external_id: str (optional)\n\
+        \  External ID is not currently supported. It is reserved for future use.\n\
+        :param name: :class:`Name` (optional)\n:param roles: List[:class:`ComplexValue`]\
+        \ (optional)\n  Indicates if the group has the admin role.\n:param user_name:\
+        \ str (optional)\n  Email address of the Databricks user."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Databricks user ID.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                  description: bool (optional) If this user is active
+                display_name:
+                  type: string
+                  description: str (optional) String that represents a concatenation
+                    of given and family names. For example `John Smith`.
+                emails:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) All the emails
+                    associated with the Databricks user.
+                external_id:
+                  type: string
+                  description: str (optional) External ID is not currently supported.
+                    It is reserved for future use.
+                name:
+                  $ref: '#/components/schemas/Name'
+                roles:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) Indicates if
+                    the group has the admin role.
+                user_name:
+                  type: string
+                  description: str (optional) Email address of the Databricks user.
+      responses:
+        '200':
+          description: Success
+  /api/2.0/preview/scim/v2/Me:
+    get:
+      operationId: me
+      summary: Get details about the current method caller's identity.
+      description: 'Get details about the current method caller''s identity.
+
+
+
+        :returns: :class:`User`'
+      tags:
+      - iam
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/preview/scim/v2/Groups:
+    post:
+      operationId: create
+      summary: Creates a group in the Databricks workspace with a unique name, using
+        the supplied group details.
+      description: "Creates a group in the Databricks workspace with a unique name,\
+        \ using the supplied group details.\n\n:param display_name: str (optional)\n\
+        \  String that represents a human-readable group name\n:param entitlements:\
+        \ List[:class:`ComplexValue`] (optional)\n  Entitlements assigned to the group.\
+        \ See [assigning entitlements] for a full list of supported\n  values.\n\n\
+        \  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements\n\
+        :param external_id: str (optional)\n:param groups: List[:class:`ComplexValue`]\
+        \ (optional)\n:param id: str (optional)\n  Databricks group ID\n:param members:\
+        \ List[:class:`ComplexValue`] (optional)\n:param meta: :class:`ResourceMeta`\
+        \ (optional)\n  Container for the group identifier. Workspace local versus\
+        \ account.\n:param roles: List[:class:`ComplexValue`] (optional)\n  Corresponds\
+        \ to AWS instance profile/arn role.\n:param schemas: List[:class:`GroupSchema`]\
+        \ (optional)\n  The schema of the group.\n\n:returns: :class:`Group`"
+      tags:
+      - iam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                display_name:
+                  type: string
+                  description: str (optional) String that represents a human-readable
+                    group name
+                entitlements:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: 'List[:class:`ComplexValue`] (optional) Entitlements
+                    assigned to the group. See [assigning entitlements] for a full
+                    list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+                external_id:
+                  type: string
+                  description: str (optional)
+                groups:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional)
+                id:
+                  type: string
+                  description: str (optional) Databricks group ID
+                members:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional)
+                meta:
+                  $ref: '#/components/schemas/ResourceMeta'
+                roles:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) Corresponds
+                    to AWS instance profile/arn role.
+                schemas:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - urn:ietf:params:scim:schemas:core:2.0:Group
+                  description: List[:class:`GroupSchema`] (optional) The schema of
+                    the group.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list
+      summary: Gets all details of the groups associated with the Databricks workspace.
+      description: "Gets all details of the groups associated with the Databricks\
+        \ workspace.\n\n:param attributes: str (optional)\n  Comma-separated list\
+        \ of attributes to return in response.\n:param count: int (optional)\n  Desired\
+        \ number of results per page.\n:param excluded_attributes: str (optional)\n\
+        \  Comma-separated list of attributes to exclude in response.\n:param filter:\
+        \ str (optional)\n  Query by which the results have to be filtered. Supported\
+        \ operators are equals(`eq`),\n  contains(`co`), starts with(`sw`) and not\
+        \ equals(`ne`). Additionally, simple expressions can be\n  formed using logical\
+        \ operators - `and` and `or`. The [SCIM RFC] has more details but we currently\n\
+        \  only support simple expressions.\n\n  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2\n\
+        :param sort_by: str (optional)\n  Attribute to sort the results.\n:param sort_order:\
+        \ :class:`ListSortOrder` (optional)\n  The order to sort the results.\n:param\
+        \ start_index: int (optional)\n  Specifies the index of the first result.\
+        \ First item is number 1.\n\n:returns: Iterator over :class:`Group`"
+      tags:
+      - iam
+      parameters:
+      - name: attributes
+        description: str (optional) Comma-separated list of attributes to return in
+          response.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: count
+        description: int (optional) Desired number of results per page.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: excluded_attributes
+        description: str (optional) Comma-separated list of attributes to exclude
+          in response.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: filter
+        description: 'str (optional) Query by which the results have to be filtered.
+          Supported operators are equals(`eq`), contains(`co`), starts with(`sw`)
+          and not equals(`ne`). Additionally, simple expressions can be formed using
+          logical operators - `and` and `or`. The [SCIM RFC] has more details but
+          we currently only support simple expressions. [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2'
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: sort_by
+        description: str (optional) Attribute to sort the results.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: sort_order
+        description: :class:`ListSortOrder` (optional) The order to sort the results.
+        required: false
+        schema:
+          type: string
+          enum:
+          - ascending
+          - descending
+        in: query
+      - name: start_index
+        description: int (optional) Specifies the index of the first result. First
+          item is number 1.
+        required: false
+        schema:
+          type: integer
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/preview/scim/v2/Groups/{id}:
+    delete:
+      operationId: delete
+      summary: Deletes a group from the Databricks workspace.
+      description: "Deletes a group from the Databricks workspace.\n\n:param id: str\n\
+        \  Unique ID for a group in the Databricks workspace."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID for a group in the Databricks workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get
+      summary: Gets the information for a specific group in the Databricks workspace.
+      description: "Gets the information for a specific group in the Databricks workspace.\n\
+        \n:param id: str\n  Unique ID for a group in the Databricks workspace.\n\n\
+        :returns: :class:`Group`"
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID for a group in the Databricks workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Group'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: patch
+      summary: Partially updates the details of a group.
+      description: "Partially updates the details of a group.\n\n:param id: str\n\
+        \  Unique ID in the Databricks workspace.\n:param operations: List[:class:`Patch`]\
+        \ (optional)\n:param schemas: List[:class:`PatchSchema`] (optional)\n  The\
+        \ schema of the patch request. Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"\
+        ]."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID in the Databricks workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                operations:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Patch'
+                  description: List[:class:`Patch`] (optional)
+                schemas:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - urn:ietf:params:scim:api:messages:2.0:PatchOp
+                  description: List[:class:`PatchSchema`] (optional) The schema of
+                    the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+      responses:
+        '200':
+          description: Success
+    put:
+      operationId: update
+      summary: Updates the details of a group by replacing the entire group entity.
+      description: "Updates the details of a group by replacing the entire group entity.\n\
+        \n:param id: str\n  Databricks group ID\n:param display_name: str (optional)\n\
+        \  String that represents a human-readable group name\n:param entitlements:\
+        \ List[:class:`ComplexValue`] (optional)\n  Entitlements assigned to the group.\
+        \ See [assigning entitlements] for a full list of supported\n  values.\n\n\
+        \  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements\n\
+        :param external_id: str (optional)\n:param groups: List[:class:`ComplexValue`]\
+        \ (optional)\n:param members: List[:class:`ComplexValue`] (optional)\n:param\
+        \ meta: :class:`ResourceMeta` (optional)\n  Container for the group identifier.\
+        \ Workspace local versus account.\n:param roles: List[:class:`ComplexValue`]\
+        \ (optional)\n  Corresponds to AWS instance profile/arn role.\n:param schemas:\
+        \ List[:class:`GroupSchema`] (optional)\n  The schema of the group."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Databricks group ID
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                display_name:
+                  type: string
+                  description: str (optional) String that represents a human-readable
+                    group name
+                entitlements:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: 'List[:class:`ComplexValue`] (optional) Entitlements
+                    assigned to the group. See [assigning entitlements] for a full
+                    list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+                external_id:
+                  type: string
+                  description: str (optional)
+                groups:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional)
+                members:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional)
+                meta:
+                  $ref: '#/components/schemas/ResourceMeta'
+                roles:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) Corresponds
+                    to AWS instance profile/arn role.
+                schemas:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - urn:ietf:params:scim:schemas:core:2.0:Group
+                  description: List[:class:`GroupSchema`] (optional) The schema of
+                    the group.
+      responses:
+        '200':
+          description: Success
+  /api/2.0/permissionmigration:
+    post:
+      operationId: migrate_permissions
+      summary: Migrate Permissions.
+      description: "Migrate Permissions.\n\n:param workspace_id: int\n  WorkspaceId\
+        \ of the associated workspace where the permission migration will occur.\n\
+        :param from_workspace_group_name: str\n  The name of the workspace group that\
+        \ permissions will be migrated from.\n:param to_account_group_name: str\n\
+        \  The name of the account group that permissions will be migrated to.\n:param\
+        \ size: int (optional)\n  The maximum number of permissions that will be migrated.\n\
+        \n:returns: :class:`MigratePermissionsResponse`"
+      tags:
+      - iam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workspace_id:
+                  type: integer
+                  description: int WorkspaceId of the associated workspace where the
+                    permission migration will occur.
+                from_workspace_group_name:
+                  type: string
+                  description: str The name of the workspace group that permissions
+                    will be migrated from.
+                to_account_group_name:
+                  type: string
+                  description: str The name of the account group that permissions
+                    will be migrated to.
+                size:
+                  type: integer
+                  description: int (optional) The maximum number of permissions that
+                    will be migrated.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MigratePermissionsResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/permissions/{request_object_type}/{request_object_id}:
+    get:
+      operationId: get
+      summary: 'Gets the permissions of an object. Objects can inherit permissions
+        from their parent objects or root
+
+        object.'
+      description: "Gets the permissions of an object. Objects can inherit permissions\
+        \ from their parent objects or root\nobject.\n\n:param request_object_type:\
+        \ str\n  The type of the request object. Can be one of the following: alerts,\
+        \ alertsv2, authorization,\n  clusters, cluster-policies, dashboards, dbsql-dashboards,\
+        \ directories, experiments, files, genie,\n  instance-pools, jobs, notebooks,\
+        \ pipelines, queries, registered-models, repos, serving-endpoints, or\n  warehouses.\n\
+        :param request_object_id: str\n  The id of the request object.\n\n:returns:\
+        \ :class:`ObjectPermissions`"
+      tags:
+      - iam
+      parameters:
+      - name: request_object_type
+        description: 'str The type of the request object. Can be one of the following:
+          alerts, alertsv2, authorization, clusters, cluster-policies, dashboards,
+          dbsql-dashboards, directories, experiments, files, genie, instance-pools,
+          jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints,
+          or warehouses.'
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: request_object_id
+        description: str The id of the request object.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ObjectPermissions'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/preview/scim/v2/ServicePrincipals:
+    post:
+      operationId: create
+      summary: Creates a new service principal in the Databricks workspace.
+      description: "Creates a new service principal in the Databricks workspace.\n\
+        \n:param active: bool (optional)\n  If this user is active\n:param application_id:\
+        \ str (optional)\n  UUID relating to the service principal\n:param display_name:\
+        \ str (optional)\n  String that represents a concatenation of given and family\
+        \ names.\n:param entitlements: List[:class:`ComplexValue`] (optional)\n  Entitlements\
+        \ assigned to the service principal. See [assigning entitlements] for a full\
+        \ list of\n  supported values.\n\n  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements\n\
+        :param external_id: str (optional)\n:param groups: List[:class:`ComplexValue`]\
+        \ (optional)\n:param id: str (optional)\n  Databricks service principal ID.\n\
+        :param roles: List[:class:`ComplexValue`] (optional)\n  Corresponds to AWS\
+        \ instance profile/arn role.\n:param schemas: List[:class:`ServicePrincipalSchema`]\
+        \ (optional)\n  The schema of the List response.\n\n:returns: :class:`ServicePrincipal`"
+      tags:
+      - iam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                  description: bool (optional) If this user is active
+                application_id:
+                  type: string
+                  description: str (optional) UUID relating to the service principal
+                display_name:
+                  type: string
+                  description: str (optional) String that represents a concatenation
+                    of given and family names.
+                entitlements:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: 'List[:class:`ComplexValue`] (optional) Entitlements
+                    assigned to the service principal. See [assigning entitlements]
+                    for a full list of supported values. [assigning entitlements]:
+                    https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+                external_id:
+                  type: string
+                  description: str (optional)
+                groups:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional)
+                id:
+                  type: string
+                  description: str (optional) Databricks service principal ID.
+                roles:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) Corresponds
+                    to AWS instance profile/arn role.
+                schemas:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal
+                  description: List[:class:`ServicePrincipalSchema`] (optional) The
+                    schema of the List response.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicePrincipal'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list
+      summary: Gets the set of service principals associated with a Databricks workspace.
+      description: "Gets the set of service principals associated with a Databricks\
+        \ workspace.\n\n:param attributes: str (optional)\n  Comma-separated list\
+        \ of attributes to return in response.\n:param count: int (optional)\n  Desired\
+        \ number of results per page.\n:param excluded_attributes: str (optional)\n\
+        \  Comma-separated list of attributes to exclude in response.\n:param filter:\
+        \ str (optional)\n  Query by which the results have to be filtered. Supported\
+        \ operators are equals(`eq`),\n  contains(`co`), starts with(`sw`) and not\
+        \ equals(`ne`). Additionally, simple expressions can be\n  formed using logical\
+        \ operators - `and` and `or`. The [SCIM RFC] has more details but we currently\n\
+        \  only support simple expressions.\n\n  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2\n\
+        :param sort_by: str (optional)\n  Attribute to sort the results.\n:param sort_order:\
+        \ :class:`ListSortOrder` (optional)\n  The order to sort the results.\n:param\
+        \ start_index: int (optional)\n  Specifies the index of the first result.\
+        \ First item is number 1.\n\n:returns: Iterator over :class:`ServicePrincipal`"
+      tags:
+      - iam
+      parameters:
+      - name: attributes
+        description: str (optional) Comma-separated list of attributes to return in
+          response.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: count
+        description: int (optional) Desired number of results per page.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: excluded_attributes
+        description: str (optional) Comma-separated list of attributes to exclude
+          in response.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: filter
+        description: 'str (optional) Query by which the results have to be filtered.
+          Supported operators are equals(`eq`), contains(`co`), starts with(`sw`)
+          and not equals(`ne`). Additionally, simple expressions can be formed using
+          logical operators - `and` and `or`. The [SCIM RFC] has more details but
+          we currently only support simple expressions. [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2'
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: sort_by
+        description: str (optional) Attribute to sort the results.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: sort_order
+        description: :class:`ListSortOrder` (optional) The order to sort the results.
+        required: false
+        schema:
+          type: string
+          enum:
+          - ascending
+          - descending
+        in: query
+      - name: start_index
+        description: int (optional) Specifies the index of the first result. First
+          item is number 1.
+        required: false
+        schema:
+          type: integer
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicePrincipal'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/preview/scim/v2/ServicePrincipals/{id}:
+    delete:
+      operationId: delete
+      summary: Delete a single service principal in the Databricks workspace.
+      description: "Delete a single service principal in the Databricks workspace.\n\
+        \n:param id: str\n  Unique ID for a service principal in the Databricks workspace."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID for a service principal in the Databricks workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get
+      summary: Gets the details for a single service principal define in the Databricks
+        workspace.
+      description: "Gets the details for a single service principal define in the\
+        \ Databricks workspace.\n\n:param id: str\n  Unique ID for a service principal\
+        \ in the Databricks workspace.\n\n:returns: :class:`ServicePrincipal`"
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID for a service principal in the Databricks workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ServicePrincipal'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: patch
+      summary: Partially updates the details of a single service principal in the
+        Databricks workspace.
+      description: "Partially updates the details of a single service principal in\
+        \ the Databricks workspace.\n\n:param id: str\n  Unique ID in the Databricks\
+        \ workspace.\n:param operations: List[:class:`Patch`] (optional)\n:param schemas:\
+        \ List[:class:`PatchSchema`] (optional)\n  The schema of the patch request.\
+        \ Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID in the Databricks workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                operations:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Patch'
+                  description: List[:class:`Patch`] (optional)
+                schemas:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - urn:ietf:params:scim:api:messages:2.0:PatchOp
+                  description: List[:class:`PatchSchema`] (optional) The schema of
+                    the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+      responses:
+        '200':
+          description: Success
+    put:
+      operationId: update
+      summary: Updates the details of a single service principal.
+      description: "Updates the details of a single service principal.\n\nThis action\
+        \ replaces the existing service principal with the same name.\n\n:param id:\
+        \ str\n  Databricks service principal ID.\n:param active: bool (optional)\n\
+        \  If this user is active\n:param application_id: str (optional)\n  UUID relating\
+        \ to the service principal\n:param display_name: str (optional)\n  String\
+        \ that represents a concatenation of given and family names.\n:param entitlements:\
+        \ List[:class:`ComplexValue`] (optional)\n  Entitlements assigned to the service\
+        \ principal. See [assigning entitlements] for a full list of\n  supported\
+        \ values.\n\n  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements\n\
+        :param external_id: str (optional)\n:param groups: List[:class:`ComplexValue`]\
+        \ (optional)\n:param roles: List[:class:`ComplexValue`] (optional)\n  Corresponds\
+        \ to AWS instance profile/arn role.\n:param schemas: List[:class:`ServicePrincipalSchema`]\
+        \ (optional)\n  The schema of the List response."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Databricks service principal ID.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                  description: bool (optional) If this user is active
+                application_id:
+                  type: string
+                  description: str (optional) UUID relating to the service principal
+                display_name:
+                  type: string
+                  description: str (optional) String that represents a concatenation
+                    of given and family names.
+                entitlements:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: 'List[:class:`ComplexValue`] (optional) Entitlements
+                    assigned to the service principal. See [assigning entitlements]
+                    for a full list of supported values. [assigning entitlements]:
+                    https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+                external_id:
+                  type: string
+                  description: str (optional)
+                groups:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional)
+                roles:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) Corresponds
+                    to AWS instance profile/arn role.
+                schemas:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal
+                  description: List[:class:`ServicePrincipalSchema`] (optional) The
+                    schema of the List response.
+      responses:
+        '200':
+          description: Success
+  /api/2.0/preview/scim/v2/Users:
+    post:
+      operationId: create
+      summary: 'Creates a new user in the Databricks workspace. This new user will
+        also be added to the Databricks
+
+        account.'
+      description: "Creates a new user in the Databricks workspace. This new user\
+        \ will also be added to the Databricks\naccount.\n\n:param active: bool (optional)\n\
+        \  If this user is active\n:param display_name: str (optional)\n  String that\
+        \ represents a concatenation of given and family names. For example `John\
+        \ Smith`. This\n  field cannot be updated through the Workspace SCIM APIs\
+        \ when [identity federation is enabled]. Use\n  Account SCIM APIs to update\
+        \ `displayName`.\n\n  [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation\n\
+        :param emails: List[:class:`ComplexValue`] (optional)\n  All the emails associated\
+        \ with the Databricks user.\n:param entitlements: List[:class:`ComplexValue`]\
+        \ (optional)\n  Entitlements assigned to the user. See [assigning entitlements]\
+        \ for a full list of supported values.\n\n  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements\n\
+        :param external_id: str (optional)\n  External ID is not currently supported.\
+        \ It is reserved for future use.\n:param groups: List[:class:`ComplexValue`]\
+        \ (optional)\n:param id: str (optional)\n  Databricks user ID.\n:param name:\
+        \ :class:`Name` (optional)\n:param roles: List[:class:`ComplexValue`] (optional)\n\
+        \  Corresponds to AWS instance profile/arn role.\n:param schemas: List[:class:`UserSchema`]\
+        \ (optional)\n  The schema of the user.\n:param user_name: str (optional)\n\
+        \  Email address of the Databricks user.\n\n:returns: :class:`User`"
+      tags:
+      - iam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                  description: bool (optional) If this user is active
+                display_name:
+                  type: string
+                  description: 'str (optional) String that represents a concatenation
+                    of given and family names. For example `John Smith`. This field
+                    cannot be updated through the Workspace SCIM APIs when [identity
+                    federation is enabled]. Use Account SCIM APIs to update `displayName`.
+                    [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation'
+                emails:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) All the emails
+                    associated with the Databricks user.
+                entitlements:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: 'List[:class:`ComplexValue`] (optional) Entitlements
+                    assigned to the user. See [assigning entitlements] for a full
+                    list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+                external_id:
+                  type: string
+                  description: str (optional) External ID is not currently supported.
+                    It is reserved for future use.
+                groups:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional)
+                id:
+                  type: string
+                  description: str (optional) Databricks user ID.
+                name:
+                  $ref: '#/components/schemas/Name'
+                roles:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) Corresponds
+                    to AWS instance profile/arn role.
+                schemas:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - urn:ietf:params:scim:schemas:core:2.0:User
+                    - urn:ietf:params:scim:schemas:extension:workspace:2.0:User
+                  description: List[:class:`UserSchema`] (optional) The schema of
+                    the user.
+                user_name:
+                  type: string
+                  description: str (optional) Email address of the Databricks user.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list
+      summary: Gets details for all the users associated with a Databricks workspace.
+      description: "Gets details for all the users associated with a Databricks workspace.\n\
+        \n:param attributes: str (optional)\n  Comma-separated list of attributes\
+        \ to return in response.\n:param count: int (optional)\n  Desired number of\
+        \ results per page.\n:param excluded_attributes: str (optional)\n  Comma-separated\
+        \ list of attributes to exclude in response.\n:param filter: str (optional)\n\
+        \  Query by which the results have to be filtered. Supported operators are\
+        \ equals(`eq`),\n  contains(`co`), starts with(`sw`) and not equals(`ne`).\
+        \ Additionally, simple expressions can be\n  formed using logical operators\
+        \ - `and` and `or`. The [SCIM RFC] has more details but we currently\n  only\
+        \ support simple expressions.\n\n  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2\n\
+        :param sort_by: str (optional)\n  Attribute to sort the results. Multi-part\
+        \ paths are supported. For example, `userName`,\n  `name.givenName`, and `emails`.\n\
+        :param sort_order: :class:`ListSortOrder` (optional)\n  The order to sort\
+        \ the results.\n:param start_index: int (optional)\n  Specifies the index\
+        \ of the first result. First item is number 1.\n\n:returns: Iterator over\
+        \ :class:`User`"
+      tags:
+      - iam
+      parameters:
+      - name: attributes
+        description: str (optional) Comma-separated list of attributes to return in
+          response.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: count
+        description: int (optional) Desired number of results per page.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: excluded_attributes
+        description: str (optional) Comma-separated list of attributes to exclude
+          in response.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: filter
+        description: 'str (optional) Query by which the results have to be filtered.
+          Supported operators are equals(`eq`), contains(`co`), starts with(`sw`)
+          and not equals(`ne`). Additionally, simple expressions can be formed using
+          logical operators - `and` and `or`. The [SCIM RFC] has more details but
+          we currently only support simple expressions. [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2'
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: sort_by
+        description: str (optional) Attribute to sort the results. Multi-part paths
+          are supported. For example, `userName`, `name.givenName`, and `emails`.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: sort_order
+        description: :class:`ListSortOrder` (optional) The order to sort the results.
+        required: false
+        schema:
+          type: string
+          enum:
+          - ascending
+          - descending
+        in: query
+      - name: start_index
+        description: int (optional) Specifies the index of the first result. First
+          item is number 1.
+        required: false
+        schema:
+          type: integer
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/preview/scim/v2/Users/{id}:
+    delete:
+      operationId: delete
+      summary: 'Deletes a user. Deleting a user from a Databricks workspace also removes
+        objects associated with the
+
+        user.'
+      description: "Deletes a user. Deleting a user from a Databricks workspace also\
+        \ removes objects associated with the\nuser.\n\n:param id: str\n  Unique ID\
+        \ for a user in the Databricks workspace."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID for a user in the Databricks workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get
+      summary: Gets information for a specific user in Databricks workspace.
+      description: "Gets information for a specific user in Databricks workspace.\n\
+        \n:param id: str\n  Unique ID for a user in the Databricks workspace.\n:param\
+        \ attributes: str (optional)\n  Comma-separated list of attributes to return\
+        \ in response.\n:param count: int (optional)\n  Desired number of results\
+        \ per page.\n:param excluded_attributes: str (optional)\n  Comma-separated\
+        \ list of attributes to exclude in response.\n:param filter: str (optional)\n\
+        \  Query by which the results have to be filtered. Supported operators are\
+        \ equals(`eq`),\n  contains(`co`), starts with(`sw`) and not equals(`ne`).\
+        \ Additionally, simple expressions can be\n  formed using logical operators\
+        \ - `and` and `or`. The [SCIM RFC] has more details but we currently\n  only\
+        \ support simple expressions.\n\n  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2\n\
+        :param sort_by: str (optional)\n  Attribute to sort the results. Multi-part\
+        \ paths are supported. For example, `userName`,\n  `name.givenName`, and `emails`.\n\
+        :param sort_order: :class:`GetSortOrder` (optional)\n  The order to sort the\
+        \ results.\n:param start_index: int (optional)\n  Specifies the index of the\
+        \ first result. First item is number 1.\n\n:returns: :class:`User`"
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID for a user in the Databricks workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: attributes
+        description: str (optional) Comma-separated list of attributes to return in
+          response.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: count
+        description: int (optional) Desired number of results per page.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: excluded_attributes
+        description: str (optional) Comma-separated list of attributes to exclude
+          in response.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: filter
+        description: 'str (optional) Query by which the results have to be filtered.
+          Supported operators are equals(`eq`), contains(`co`), starts with(`sw`)
+          and not equals(`ne`). Additionally, simple expressions can be formed using
+          logical operators - `and` and `or`. The [SCIM RFC] has more details but
+          we currently only support simple expressions. [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2'
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: sort_by
+        description: str (optional) Attribute to sort the results. Multi-part paths
+          are supported. For example, `userName`, `name.givenName`, and `emails`.
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: sort_order
+        description: :class:`GetSortOrder` (optional) The order to sort the results.
+        required: false
+        schema:
+          type: string
+          enum:
+          - ascending
+          - descending
+        in: query
+      - name: start_index
+        description: int (optional) Specifies the index of the first result. First
+          item is number 1.
+        required: false
+        schema:
+          type: integer
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/User'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: patch
+      summary: Partially updates a user resource by applying the supplied operations
+        on specific user attributes.
+      description: "Partially updates a user resource by applying the supplied operations\
+        \ on specific user attributes.\n\n:param id: str\n  Unique ID in the Databricks\
+        \ workspace.\n:param operations: List[:class:`Patch`] (optional)\n:param schemas:\
+        \ List[:class:`PatchSchema`] (optional)\n  The schema of the patch request.\
+        \ Must be [\"urn:ietf:params:scim:api:messages:2.0:PatchOp\"]."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Unique ID in the Databricks workspace.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                operations:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Patch'
+                  description: List[:class:`Patch`] (optional)
+                schemas:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - urn:ietf:params:scim:api:messages:2.0:PatchOp
+                  description: List[:class:`PatchSchema`] (optional) The schema of
+                    the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+      responses:
+        '200':
+          description: Success
+    put:
+      operationId: update
+      summary: Replaces a user's information with the data supplied in request.
+      description: "Replaces a user's information with the data supplied in request.\n\
+        \n:param id: str\n  Databricks user ID.\n:param active: bool (optional)\n\
+        \  If this user is active\n:param display_name: str (optional)\n  String that\
+        \ represents a concatenation of given and family names. For example `John\
+        \ Smith`. This\n  field cannot be updated through the Workspace SCIM APIs\
+        \ when [identity federation is enabled]. Use\n  Account SCIM APIs to update\
+        \ `displayName`.\n\n  [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation\n\
+        :param emails: List[:class:`ComplexValue`] (optional)\n  All the emails associated\
+        \ with the Databricks user.\n:param entitlements: List[:class:`ComplexValue`]\
+        \ (optional)\n  Entitlements assigned to the user. See [assigning entitlements]\
+        \ for a full list of supported values.\n\n  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements\n\
+        :param external_id: str (optional)\n  External ID is not currently supported.\
+        \ It is reserved for future use.\n:param groups: List[:class:`ComplexValue`]\
+        \ (optional)\n:param name: :class:`Name` (optional)\n:param roles: List[:class:`ComplexValue`]\
+        \ (optional)\n  Corresponds to AWS instance profile/arn role.\n:param schemas:\
+        \ List[:class:`UserSchema`] (optional)\n  The schema of the user.\n:param\
+        \ user_name: str (optional)\n  Email address of the Databricks user."
+      tags:
+      - iam
+      parameters:
+      - name: id
+        description: str Databricks user ID.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                active:
+                  type: boolean
+                  description: bool (optional) If this user is active
+                display_name:
+                  type: string
+                  description: 'str (optional) String that represents a concatenation
+                    of given and family names. For example `John Smith`. This field
+                    cannot be updated through the Workspace SCIM APIs when [identity
+                    federation is enabled]. Use Account SCIM APIs to update `displayName`.
+                    [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation'
+                emails:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) All the emails
+                    associated with the Databricks user.
+                entitlements:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: 'List[:class:`ComplexValue`] (optional) Entitlements
+                    assigned to the user. See [assigning entitlements] for a full
+                    list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+                external_id:
+                  type: string
+                  description: str (optional) External ID is not currently supported.
+                    It is reserved for future use.
+                groups:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional)
+                name:
+                  $ref: '#/components/schemas/Name'
+                roles:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ComplexValue'
+                  description: List[:class:`ComplexValue`] (optional) Corresponds
+                    to AWS instance profile/arn role.
+                schemas:
+                  type: array
+                  items:
+                    type: string
+                    enum:
+                    - urn:ietf:params:scim:schemas:core:2.0:User
+                    - urn:ietf:params:scim:schemas:extension:workspace:2.0:User
+                  description: List[:class:`UserSchema`] (optional) The schema of
+                    the user.
+                user_name:
+                  type: string
+                  description: str (optional) Email address of the Databricks user.
+      responses:
+        '200':
+          description: Success
+  /api/2.0/permissions/authorization/passwords/permissionLevels:
+    get:
+      operationId: get_permission_levels
+      summary: Gets the permission levels that a user can have on an object.
+      description: 'Gets the permission levels that a user can have on an object.
+
+
+
+        :returns: :class:`GetPasswordPermissionLevelsResponse`'
+      tags:
+      - iam
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPasswordPermissionLevelsResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/permissions/authorization/passwords:
+    get:
+      operationId: get_permissions
+      summary: Gets the permissions of all passwords. Passwords can inherit permissions
+        from their root object.
+      description: 'Gets the permissions of all passwords. Passwords can inherit permissions
+        from their root object.
+
+
+
+        :returns: :class:`PasswordPermissions`'
+      tags:
+      - iam
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordPermissions'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    put:
+      operationId: set_permissions
+      summary: 'Sets permissions on an object, replacing existing permissions if they
+        exist. Deletes all direct
+
+        permissions if none are specified. Objects can inherit permissions from their
+        root object.'
+      description: 'Sets permissions on an object, replacing existing permissions
+        if they exist. Deletes all direct
+
+        permissions if none are specified. Objects can inherit permissions from their
+        root object.
+
+
+        :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
+
+
+        :returns: :class:`PasswordPermissions`'
+      tags:
+      - iam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_control_list:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PasswordAccessControlRequest'
+                  description: List[:class:`PasswordAccessControlRequest`] (optional)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordPermissions'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: update_permissions
+      summary: Updates the permissions on all passwords. Passwords can inherit permissions
+        from their root object.
+      description: 'Updates the permissions on all passwords. Passwords can inherit
+        permissions from their root object.
+
+
+        :param access_control_list: List[:class:`PasswordAccessControlRequest`] (optional)
+
+
+        :returns: :class:`PasswordPermissions`'
+      tags:
+      - iam
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_control_list:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PasswordAccessControlRequest'
+                  description: List[:class:`PasswordAccessControlRequest`] (optional)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PasswordPermissions'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    AccessControlRequest:
+      type: object
+      description: 'AccessControlRequest(group_name: ''Optional[str]'' = None, permission_level:
+        ''Optional[PermissionLevel]'' = None, service_principal_name: ''Optional[str]''
+        = None, user_name: ''Optional[str]'' = None)'
+      properties:
+        group_name:
+          type: string
+          description: 'name of the group  permission_level: Optional[PermissionLevel]
+            = None  service_principal_name: Optional[str] = None application ID of
+            a service principal'
+        permission_level:
+          type: string
+          description: ''
+        service_principal_name:
+          type: string
+          description: 'application ID of a service principal  user_name: Optional[str]
+            = None name of the user'
+        user_name:
+          type: string
+          description: 'name of the user  def as_dict(self) -> dict: Serializes the
+            AccessControlRequest into a dictionary suitable for use as a JSON request
+            body.'
+    AccessControlResponse:
+      type: object
+      description: 'AccessControlResponse(all_permissions: ''Optional[List[Permission]]''
+        = None, display_name: ''Optional[str]'' = None, group_name: ''Optional[str]''
+        = None, service_principal_name: ''Optional[str]'' = None, user_name: ''Optional[str]''
+        = None)'
+      properties:
+        all_permissions:
+          type: string
+          description: 'All permissions.  display_name: Optional[str] = None Display
+            name of the user or service principal.'
+        display_name:
+          type: string
+          description: 'Display name of the user or service principal.  group_name:
+            Optional[str] = None name of the group'
+        group_name:
+          type: string
+          description: 'name of the group  service_principal_name: Optional[str] =
+            None Name of the service principal.'
+        service_principal_name:
+          type: string
+          description: 'Name of the service principal.  user_name: Optional[str] =
+            None name of the user'
+        user_name:
+          type: string
+          description: 'name of the user  def as_dict(self) -> dict: Serializes the
+            AccessControlResponse into a dictionary suitable for use as a JSON request
+            body.'
+    AccountGroup:
+      type: object
+      description: 'AccountGroup(account_id: ''Optional[str]'' = None, display_name:
+        ''Optional[str]'' = None, external_id: ''Optional[str]'' = None, id: ''Optional[str]''
+        = None, members: ''Optional[List[ComplexValue]]'' = None, meta: ''Optional[ResourceMeta]''
+        = None, roles: ''Optional[List[ComplexValue]]'' = None)'
+      properties:
+        account_id:
+          type: string
+          description: 'Databricks account ID  display_name: Optional[str] = None
+            String that represents a human-readable group name'
+        display_name:
+          type: string
+          description: 'String that represents a human-readable group name  external_id:
+            Optional[str] = None external_id should be unique for identifying groups'
+        external_id:
+          type: string
+          description: 'external_id should be unique for identifying groups  id: Optional[str]
+            = None Databricks group ID'
+        id:
+          type: string
+          description: 'Databricks account ID  display_name: Optional[str] = None
+            String that represents a human-readable group name'
+        members:
+          type: string
+          description: ''
+        meta:
+          type: string
+          description: 'Container for the group identifier. Workspace local versus
+            account.  roles: Optional[List[ComplexValue]] = None Indicates if the
+            group has the admin role.'
+        roles:
+          type: string
+          description: 'Indicates if the group has the admin role.  def as_dict(self)
+            -> dict: Serializes the AccountGroup into a dictionary suitable for use
+            as a JSON request body.'
+    AccountServicePrincipal:
+      type: object
+      description: 'AccountServicePrincipal(account_id: ''Optional[str]'' = None,
+        active: ''Optional[bool]'' = None, application_id: ''Optional[str]'' = None,
+        display_name: ''Optional[str]'' = None, external_id: ''Optional[str]'' = None,
+        id: ''Optional[str]'' = None, roles: ''Optional[List[ComplexValue]]'' = None)'
+      properties:
+        account_id:
+          type: string
+          description: 'Databricks account ID  active: Optional[bool] = None If this
+            user is active'
+        active:
+          type: string
+          description: 'If this user is active  application_id: Optional[str] = None
+            UUID relating to the service principal'
+        application_id:
+          type: string
+          description: 'UUID relating to the service principal  display_name: Optional[str]
+            = None String that represents a concatenation of given and family names.'
+        display_name:
+          type: string
+          description: 'String that represents a concatenation of given and family
+            names.  external_id: Optional[str] = None  id: Optional[str] = None Databricks
+            service principal ID.'
+        external_id:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: 'Databricks account ID  active: Optional[bool] = None If this
+            user is active'
+        roles:
+          type: string
+          description: 'Indicates if the group has the admin role.  def as_dict(self)
+            -> dict: Serializes the AccountServicePrincipal into a dictionary suitable
+            for use as a JSON request body.'
+    AccountUser:
+      type: object
+      description: 'AccountUser(account_id: ''Optional[str]'' = None, active: ''Optional[bool]''
+        = None, display_name: ''Optional[str]'' = None, emails: ''Optional[List[ComplexValue]]''
+        = None, external_id: ''Optional[str]'' = None, id: ''Optional[str]'' = None,
+        name: ''Optional[Name]'' = None, roles: ''Optional[List[ComplexValue]]'' =
+        None, user_name: ''Optional[str]'' = None)'
+      properties:
+        account_id:
+          type: string
+          description: 'Databricks account ID  active: Optional[bool] = None If this
+            user is active'
+        active:
+          type: string
+          description: 'If this user is active  display_name: Optional[str] = None
+            String that represents a concatenation of given and family names. For
+            example `John Smith`.'
+        display_name:
+          type: string
+          description: 'String that represents a concatenation of given and family
+            names. For example `John Smith`.  emails: Optional[List[ComplexValue]]
+            = None All the emails associated with the Databricks user.'
+        emails:
+          type: string
+          description: 'All the emails associated with the Databricks user.  external_id:
+            Optional[str] = None External ID is not currently supported. It is reserved
+            for future use.'
+        external_id:
+          type: string
+          description: 'External ID is not currently supported. It is reserved for
+            future use.  id: Optional[str] = None Databricks user ID.'
+        id:
+          type: string
+          description: 'Databricks account ID  active: Optional[bool] = None If this
+            user is active'
+        name:
+          type: string
+          description: 'String that represents a concatenation of given and family
+            names. For example `John Smith`.  emails: Optional[List[ComplexValue]]
+            = None All the emails associated with the Databricks user.'
+        roles:
+          type: string
+          description: 'Indicates if the group has the admin role.  user_name: Optional[str]
+            = None Email address of the Databricks user.'
+        user_name:
+          type: string
+          description: 'Email address of the Databricks user.  def as_dict(self) ->
+            dict: Serializes the AccountUser into a dictionary suitable for use as
+            a JSON request body.'
+    Actor:
+      type: object
+      description: 'represents an identity trying to access a resource - user or a
+        service principal group can be a
+
+        principal of a permission set assignment but an actor is always a user or
+        a service principal'
+      properties:
+        actor_id:
+          type: string
+          description: ''
+    CheckPolicyResponse:
+      type: object
+      description: 'CheckPolicyResponse(consistency_token: ''ConsistencyToken'', is_permitted:
+        ''Optional[bool]'' = None)'
+      properties:
+        consistency_token:
+          type: string
+          description: ''
+        is_permitted:
+          type: string
+          description: ''
+    ComplexValue:
+      type: object
+      description: 'ComplexValue(display: ''Optional[str]'' = None, primary: ''Optional[bool]''
+        = None, ref: ''Optional[str]'' = None, type: ''Optional[str]'' = None, value:
+        ''Optional[str]'' = None)'
+      properties:
+        display:
+          type: string
+          description: ''
+        primary:
+          type: string
+          description: ''
+        ref:
+          type: string
+          description: ''
+        type:
+          type: string
+          description: ''
+        value:
+          type: string
+          description: ''
+    ConsistencyToken:
+      type: object
+      description: 'ConsistencyToken(value: ''str'')'
+      properties:
+        value:
+          type: string
+          description: ''
+    DeleteResponse:
+      type: object
+      description: DeleteResponse()
+      properties: {}
+    DeleteWorkspacePermissionAssignmentResponse:
+      type: object
+      description: DeleteWorkspacePermissionAssignmentResponse()
+      properties: {}
+    GetAssignableRolesForResourceResponse:
+      type: object
+      description: 'GetAssignableRolesForResourceResponse(roles: ''Optional[List[Role]]''
+        = None)'
+      properties:
+        roles:
+          type: string
+          description: ''
+    GetPasswordPermissionLevelsResponse:
+      type: object
+      description: 'GetPasswordPermissionLevelsResponse(permission_levels: ''Optional[List[PasswordPermissionsDescription]]''
+        = None)'
+      properties:
+        permission_levels:
+          type: string
+          description: 'Specific permission levels  def as_dict(self) -> dict: Serializes
+            the GetPasswordPermissionLevelsResponse into a dictionary suitable for
+            use as a JSON request body.'
+    GetPermissionLevelsResponse:
+      type: object
+      description: 'GetPermissionLevelsResponse(permission_levels: ''Optional[List[PermissionsDescription]]''
+        = None)'
+      properties:
+        permission_levels:
+          type: string
+          description: 'Specific permission levels  def as_dict(self) -> dict: Serializes
+            the GetPermissionLevelsResponse into a dictionary suitable for use as
+            a JSON request body.'
+    GetSortOrder:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ascending
+      - descending
+    GrantRule:
+      type: object
+      description: 'GrantRule(role: ''str'', principals: ''Optional[List[str]]'' =
+        None)'
+      properties:
+        role:
+          type: string
+          description: 'Role that is assigned to the list of principals.  principals:
+            Optional[List[str]] = None """Principals this grant rule applies to. A
+            principal can be a user (for end users), a service principal (for applications
+            and compute workloads), or an account group. Each principal has its own
+            identifier format: * users/<USERNAME> * groups/<GROUP_NAME> * servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>'
+        principals:
+          type: string
+          description: 'Principals this grant rule applies to. A principal can be
+            a user (for end users), a service principal (for applications and compute
+            workloads), or an account group. Each principal has its own identifier
+            format: * users/<USERNAME> * groups/<GROUP_NAME> * servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>'
+    Group:
+      type: object
+      description: 'Group(display_name: ''Optional[str]'' = None, entitlements: ''Optional[List[ComplexValue]]''
+        = None, external_id: ''Optional[str]'' = None, groups: ''Optional[List[ComplexValue]]''
+        = None, id: ''Optional[str]'' = None, members: ''Optional[List[ComplexValue]]''
+        = None, meta: ''Optional[ResourceMeta]'' = None, roles: ''Optional[List[ComplexValue]]''
+        = None, schemas: ''Optional[List[GroupSchema]]'' = None)'
+      properties:
+        display_name:
+          type: string
+          description: 'String that represents a human-readable group name  entitlements:
+            Optional[List[ComplexValue]] = None """Entitlements assigned to the group.
+            See [assigning entitlements] for a full list of supported values.  [assigning
+            entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+        entitlements:
+          type: string
+          description: 'Entitlements assigned to the group. See [assigning entitlements]
+            for a full list of supported values.  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+        external_id:
+          type: string
+          description: 'external_id should be unique for identifying groups  groups:
+            Optional[List[ComplexValue]] = None  id: Optional[str] = None Databricks
+            group ID'
+        groups:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: 'external_id should be unique for identifying groups  groups:
+            Optional[List[ComplexValue]] = None  id: Optional[str] = None Databricks
+            group ID'
+        members:
+          type: string
+          description: ''
+        meta:
+          type: string
+          description: 'Container for the group identifier. Workspace local versus
+            account.  roles: Optional[List[ComplexValue]] = None Corresponds to AWS
+            instance profile/arn role.'
+        roles:
+          type: string
+          description: 'Corresponds to AWS instance profile/arn role.  schemas: Optional[List[GroupSchema]]
+            = None The schema of the group.'
+        schemas:
+          type: string
+          description: 'The schema of the group.  def as_dict(self) -> dict: Serializes
+            the Group into a dictionary suitable for use as a JSON request body.'
+    GroupSchema:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - urn:ietf:params:scim:schemas:core:2.0:Group
+    ListAccountGroupsResponse:
+      type: object
+      description: 'ListAccountGroupsResponse(items_per_page: ''Optional[int]'' =
+        None, resources: ''Optional[List[AccountGroup]]'' = None, start_index: ''Optional[int]''
+        = None, total_results: ''Optional[int]'' = None)'
+      properties:
+        items_per_page:
+          type: string
+          description: 'Total results returned in the response.  resources: Optional[List[AccountGroup]]
+            = None User objects returned in the response.'
+        resources:
+          type: string
+          description: 'User objects returned in the response.  start_index: Optional[int]
+            = None Starting index of all the results that matched the request filters.
+            First item is number 1.'
+        start_index:
+          type: string
+          description: 'Starting index of all the results that matched the request
+            filters. First item is number 1.  total_results: Optional[int] = None
+            Total results that match the request filters.'
+        total_results:
+          type: string
+          description: 'Total results that match the request filters.  def as_dict(self)
+            -> dict: Serializes the ListAccountGroupsResponse into a dictionary suitable
+            for use as a JSON request body.'
+    ListAccountServicePrincipalsResponse:
+      type: object
+      description: 'ListAccountServicePrincipalsResponse(items_per_page: ''Optional[int]''
+        = None, resources: ''Optional[List[AccountServicePrincipal]]'' = None, start_index:
+        ''Optional[int]'' = None, total_results: ''Optional[int]'' = None)'
+      properties:
+        items_per_page:
+          type: string
+          description: 'Total results returned in the response.  resources: Optional[List[AccountServicePrincipal]]
+            = None User objects returned in the response.'
+        resources:
+          type: string
+          description: 'User objects returned in the response.  start_index: Optional[int]
+            = None Starting index of all the results that matched the request filters.
+            First item is number 1.'
+        start_index:
+          type: string
+          description: 'Starting index of all the results that matched the request
+            filters. First item is number 1.  total_results: Optional[int] = None
+            Total results that match the request filters.'
+        total_results:
+          type: string
+          description: 'Total results that match the request filters.  def as_dict(self)
+            -> dict: Serializes the ListAccountServicePrincipalsResponse into a dictionary
+            suitable for use as a JSON request body.'
+    ListAccountUsersResponse:
+      type: object
+      description: 'ListAccountUsersResponse(items_per_page: ''Optional[int]'' = None,
+        resources: ''Optional[List[AccountUser]]'' = None, start_index: ''Optional[int]''
+        = None, total_results: ''Optional[int]'' = None)'
+      properties:
+        items_per_page:
+          type: string
+          description: 'Total results returned in the response.  resources: Optional[List[AccountUser]]
+            = None User objects returned in the response.'
+        resources:
+          type: string
+          description: 'User objects returned in the response.  start_index: Optional[int]
+            = None Starting index of all the results that matched the request filters.
+            First item is number 1.'
+        start_index:
+          type: string
+          description: 'Starting index of all the results that matched the request
+            filters. First item is number 1.  total_results: Optional[int] = None
+            Total results that match the request filters.'
+        total_results:
+          type: string
+          description: 'Total results that match the request filters.  def as_dict(self)
+            -> dict: Serializes the ListAccountUsersResponse into a dictionary suitable
+            for use as a JSON request body.'
+    ListGroupsResponse:
+      type: object
+      description: 'ListGroupsResponse(items_per_page: ''Optional[int]'' = None, resources:
+        ''Optional[List[Group]]'' = None, schemas: ''Optional[List[ListResponseSchema]]''
+        = None, start_index: ''Optional[int]'' = None, total_results: ''Optional[int]''
+        = None)'
+      properties:
+        items_per_page:
+          type: string
+          description: 'Total results returned in the response.  resources: Optional[List[Group]]
+            = None User objects returned in the response.'
+        resources:
+          type: string
+          description: 'User objects returned in the response.  schemas: Optional[List[ListResponseSchema]]
+            = None The schema of the service principal.'
+        schemas:
+          type: string
+          description: 'The schema of the service principal.  start_index: Optional[int]
+            = None Starting index of all the results that matched the request filters.
+            First item is number 1.'
+        start_index:
+          type: string
+          description: 'Starting index of all the results that matched the request
+            filters. First item is number 1.  total_results: Optional[int] = None
+            Total results that match the request filters.'
+        total_results:
+          type: string
+          description: 'Total results that match the request filters.  def as_dict(self)
+            -> dict: Serializes the ListGroupsResponse into a dictionary suitable
+            for use as a JSON request body.'
+    ListResponseSchema:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - urn:ietf:params:scim:api:messages:2.0:ListResponse
+    ListServicePrincipalResponse:
+      type: object
+      description: 'ListServicePrincipalResponse(items_per_page: ''Optional[int]''
+        = None, resources: ''Optional[List[ServicePrincipal]]'' = None, schemas: ''Optional[List[ListResponseSchema]]''
+        = None, start_index: ''Optional[int]'' = None, total_results: ''Optional[int]''
+        = None)'
+      properties:
+        items_per_page:
+          type: string
+          description: 'Total results returned in the response.  resources: Optional[List[ServicePrincipal]]
+            = None User objects returned in the response.'
+        resources:
+          type: string
+          description: 'User objects returned in the response.  schemas: Optional[List[ListResponseSchema]]
+            = None The schema of the List response.'
+        schemas:
+          type: string
+          description: 'The schema of the List response.  start_index: Optional[int]
+            = None Starting index of all the results that matched the request filters.
+            First item is number 1.'
+        start_index:
+          type: string
+          description: 'Starting index of all the results that matched the request
+            filters. First item is number 1.  total_results: Optional[int] = None
+            Total results that match the request filters.'
+        total_results:
+          type: string
+          description: 'Total results that match the request filters.  def as_dict(self)
+            -> dict: Serializes the ListServicePrincipalResponse into a dictionary
+            suitable for use as a JSON request body.'
+    ListSortOrder:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ascending
+      - descending
+    ListUsersResponse:
+      type: object
+      description: 'ListUsersResponse(items_per_page: ''Optional[int]'' = None, resources:
+        ''Optional[List[User]]'' = None, schemas: ''Optional[List[ListResponseSchema]]''
+        = None, start_index: ''Optional[int]'' = None, total_results: ''Optional[int]''
+        = None)'
+      properties:
+        items_per_page:
+          type: string
+          description: 'Total results returned in the response.  resources: Optional[List[User]]
+            = None User objects returned in the response.'
+        resources:
+          type: string
+          description: 'User objects returned in the response.  schemas: Optional[List[ListResponseSchema]]
+            = None The schema of the List response.'
+        schemas:
+          type: string
+          description: 'The schema of the List response.  start_index: Optional[int]
+            = None Starting index of all the results that matched the request filters.
+            First item is number 1.'
+        start_index:
+          type: string
+          description: 'Starting index of all the results that matched the request
+            filters. First item is number 1.  total_results: Optional[int] = None
+            Total results that match the request filters.'
+        total_results:
+          type: string
+          description: 'Total results that match the request filters.  def as_dict(self)
+            -> dict: Serializes the ListUsersResponse into a dictionary suitable for
+            use as a JSON request body.'
+    MigratePermissionsResponse:
+      type: object
+      description: 'MigratePermissionsResponse(permissions_migrated: ''Optional[int]''
+        = None)'
+      properties:
+        permissions_migrated:
+          type: string
+          description: 'Number of permissions migrated.  def as_dict(self) -> dict:
+            Serializes the MigratePermissionsResponse into a dictionary suitable for
+            use as a JSON request body.'
+    Name:
+      type: object
+      description: 'Name(family_name: ''Optional[str]'' = None, given_name: ''Optional[str]''
+        = None)'
+      properties:
+        family_name:
+          type: string
+          description: 'Family name of the Databricks user.  given_name: Optional[str]
+            = None Given name of the Databricks user.'
+        given_name:
+          type: string
+          description: 'Given name of the Databricks user.  def as_dict(self) -> dict:
+            Serializes the Name into a dictionary suitable for use as a JSON request
+            body.'
+    ObjectPermissions:
+      type: object
+      description: 'ObjectPermissions(access_control_list: ''Optional[List[AccessControlResponse]]''
+        = None, object_id: ''Optional[str]'' = None, object_type: ''Optional[str]''
+        = None)'
+      properties:
+        access_control_list:
+          type: string
+          description: ''
+        object_id:
+          type: string
+          description: ''
+        object_type:
+          type: string
+          description: ''
+    PasswordAccessControlRequest:
+      type: object
+      description: 'PasswordAccessControlRequest(group_name: ''Optional[str]'' = None,
+        permission_level: ''Optional[PasswordPermissionLevel]'' = None, service_principal_name:
+        ''Optional[str]'' = None, user_name: ''Optional[str]'' = None)'
+      properties:
+        group_name:
+          type: string
+          description: 'name of the group  permission_level: Optional[PasswordPermissionLevel]
+            = None Permission level'
+        permission_level:
+          type: string
+          description: 'Permission level  service_principal_name: Optional[str] =
+            None application ID of a service principal'
+        service_principal_name:
+          type: string
+          description: 'application ID of a service principal  user_name: Optional[str]
+            = None name of the user'
+        user_name:
+          type: string
+          description: 'name of the user  def as_dict(self) -> dict: Serializes the
+            PasswordAccessControlRequest into a dictionary suitable for use as a JSON
+            request body.'
+    PasswordAccessControlResponse:
+      type: object
+      description: 'PasswordAccessControlResponse(all_permissions: ''Optional[List[PasswordPermission]]''
+        = None, display_name: ''Optional[str]'' = None, group_name: ''Optional[str]''
+        = None, service_principal_name: ''Optional[str]'' = None, user_name: ''Optional[str]''
+        = None)'
+      properties:
+        all_permissions:
+          type: string
+          description: 'All permissions.  display_name: Optional[str] = None Display
+            name of the user or service principal.'
+        display_name:
+          type: string
+          description: 'Display name of the user or service principal.  group_name:
+            Optional[str] = None name of the group'
+        group_name:
+          type: string
+          description: 'name of the group  service_principal_name: Optional[str] =
+            None Name of the service principal.'
+        service_principal_name:
+          type: string
+          description: 'Name of the service principal.  user_name: Optional[str] =
+            None name of the user'
+        user_name:
+          type: string
+          description: 'name of the user  def as_dict(self) -> dict: Serializes the
+            PasswordAccessControlResponse into a dictionary suitable for use as a
+            JSON request body.'
+    PasswordPermission:
+      type: object
+      description: 'PasswordPermission(inherited: ''Optional[bool]'' = None, inherited_from_object:
+        ''Optional[List[str]]'' = None, permission_level: ''Optional[PasswordPermissionLevel]''
+        = None)'
+      properties:
+        inherited:
+          type: string
+          description: ''
+        inherited_from_object:
+          type: string
+          description: ''
+        permission_level:
+          type: string
+          description: 'Permission level  def as_dict(self) -> dict: Serializes the
+            PasswordPermission into a dictionary suitable for use as a JSON request
+            body.'
+    PasswordPermissionLevel:
+      type: string
+      description: Permission level
+      enum:
+      - CAN_USE
+    PasswordPermissions:
+      type: object
+      description: 'PasswordPermissions(access_control_list: ''Optional[List[PasswordAccessControlResponse]]''
+        = None, object_id: ''Optional[str]'' = None, object_type: ''Optional[str]''
+        = None)'
+      properties:
+        access_control_list:
+          type: string
+          description: ''
+        object_id:
+          type: string
+          description: ''
+        object_type:
+          type: string
+          description: ''
+    PasswordPermissionsDescription:
+      type: object
+      description: 'PasswordPermissionsDescription(description: ''Optional[str]''
+        = None, permission_level: ''Optional[PasswordPermissionLevel]'' = None)'
+      properties:
+        description:
+          type: string
+          description: ''
+        permission_level:
+          type: string
+          description: 'Permission level  def as_dict(self) -> dict: Serializes the
+            PasswordPermissionsDescription into a dictionary suitable for use as a
+            JSON request body.'
+    Patch:
+      type: object
+      description: 'Patch(op: ''Optional[PatchOp]'' = None, path: ''Optional[str]''
+        = None, value: ''Optional[Any]'' = None)'
+      properties:
+        op:
+          type: string
+          description: 'Type of patch operation.  path: Optional[str] = None Selection
+            of patch operation'
+        path:
+          type: string
+          description: 'Selection of patch operation  value: Optional[Any] = None
+            Value to modify'
+        value:
+          type: string
+          description: 'Value to modify  def as_dict(self) -> dict: Serializes the
+            Patch into a dictionary suitable for use as a JSON request body.'
+    PatchOp:
+      type: string
+      description: Type of patch operation.
+      enum:
+      - add
+      - remove
+      - replace
+    PatchResponse:
+      type: object
+      description: PatchResponse()
+      properties: {}
+    PatchSchema:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - urn:ietf:params:scim:api:messages:2.0:PatchOp
+    Permission:
+      type: object
+      description: 'Permission(inherited: ''Optional[bool]'' = None, inherited_from_object:
+        ''Optional[List[str]]'' = None, permission_level: ''Optional[PermissionLevel]''
+        = None)'
+      properties:
+        inherited:
+          type: string
+          description: ''
+        inherited_from_object:
+          type: string
+          description: ''
+        permission_level:
+          type: string
+          description: ''
+    PermissionAssignment:
+      type: object
+      description: 'The output format for existing workspace PermissionAssignment
+        records, which contains some info
+
+        for user consumption.'
+      properties:
+        error:
+          type: string
+          description: 'Error response associated with a workspace permission assignment,
+            if any.  permissions: Optional[List[WorkspacePermission]] = None The permissions
+            level of the principal.'
+        permissions:
+          type: string
+          description: 'The permissions level of the principal.  principal: Optional[PrincipalOutput]
+            = None Information about the principal assigned to the workspace.'
+        principal:
+          type: string
+          description: 'Information about the principal assigned to the workspace.  def
+            as_dict(self) -> dict: Serializes the PermissionAssignment into a dictionary
+            suitable for use as a JSON request body.'
+    PermissionAssignments:
+      type: object
+      description: 'PermissionAssignments(permission_assignments: ''Optional[List[PermissionAssignment]]''
+        = None)'
+      properties:
+        permission_assignments:
+          type: string
+          description: 'Array of permissions assignments defined for a workspace.  def
+            as_dict(self) -> dict: Serializes the PermissionAssignments into a dictionary
+            suitable for use as a JSON request body.'
+    PermissionLevel:
+      type: string
+      description: Permission level
+      enum:
+      - CAN_ATTACH_TO
+      - CAN_BIND
+      - CAN_CREATE
+      - CAN_EDIT
+      - CAN_EDIT_METADATA
+      - CAN_MANAGE
+      - CAN_MANAGE_PRODUCTION_VERSIONS
+      - CAN_MANAGE_RUN
+      - CAN_MANAGE_STAGING_VERSIONS
+      - CAN_MONITOR
+      - CAN_MONITOR_ONLY
+      - CAN_QUERY
+      - CAN_READ
+      - CAN_RESTART
+      - CAN_RUN
+      - CAN_USE
+      - CAN_VIEW
+      - CAN_VIEW_METADATA
+      - IS_OWNER
+    PermissionOutput:
+      type: object
+      description: 'PermissionOutput(description: ''Optional[str]'' = None, permission_level:
+        ''Optional[WorkspacePermission]'' = None)'
+      properties:
+        description:
+          type: string
+          description: 'The results of a permissions query.  permission_level: Optional[WorkspacePermission]
+            = None  def as_dict(self) -> dict: Serializes the PermissionOutput into
+            a dictionary suitable for use as a JSON request body.'
+        permission_level:
+          type: string
+          description: ''
+    PermissionsDescription:
+      type: object
+      description: 'PermissionsDescription(description: ''Optional[str]'' = None,
+        permission_level: ''Optional[PermissionLevel]'' = None)'
+      properties:
+        description:
+          type: string
+          description: ''
+        permission_level:
+          type: string
+          description: ''
+    PrincipalOutput:
+      type: object
+      description: Information about the principal assigned to the workspace.
+      properties:
+        display_name:
+          type: string
+          description: 'The display name of the principal.  group_name: Optional[str]
+            = None The group name of the group. Present only if the principal is a
+            group.'
+        group_name:
+          type: string
+          description: 'The group name of the group. Present only if the principal
+            is a group.  principal_id: Optional[int] = None The unique, opaque id
+            of the principal.'
+        principal_id:
+          type: string
+          description: 'The unique, opaque id of the principal.  service_principal_name:
+            Optional[str] = None The name of the service principal. Present only if
+            the principal is a service principal.'
+        service_principal_name:
+          type: string
+          description: 'The name of the service principal. Present only if the principal
+            is a service principal.  user_name: Optional[str] = None The username
+            of the user. Present only if the principal is a user.'
+        user_name:
+          type: string
+          description: 'The username of the user. Present only if the principal is
+            a user.  def as_dict(self) -> dict: Serializes the PrincipalOutput into
+            a dictionary suitable for use as a JSON request body.'
+    RequestAuthzIdentity:
+      type: string
+      description: 'Defines the identity to be used for authZ of the request on the
+        server side. See one pager for
+
+        for more information: http://go/acl/service-identity'
+      enum:
+      - REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY
+      - REQUEST_AUTHZ_IDENTITY_USER_CONTEXT
+    ResourceInfo:
+      type: object
+      description: 'ResourceInfo(id: ''str'', legacy_acl_path: ''Optional[str]'' =
+        None, parent_resource_info: ''Optional[ResourceInfo]'' = None)'
+      properties:
+        id:
+          type: string
+          description: 'Id of the current resource.  legacy_acl_path: Optional[str]
+            = None The legacy acl path of the current resource.'
+        legacy_acl_path:
+          type: string
+          description: 'The legacy acl path of the current resource.  parent_resource_info:
+            Optional[ResourceInfo] = None Parent resource info for the current resource.
+            The parent may have another parent.'
+        parent_resource_info:
+          type: string
+          description: 'Parent resource info for the current resource. The parent
+            may have another parent.  def as_dict(self) -> dict: Serializes the ResourceInfo
+            into a dictionary suitable for use as a JSON request body.'
+    ResourceMeta:
+      type: object
+      description: 'ResourceMeta(resource_type: ''Optional[str]'' = None)'
+      properties:
+        resource_type:
+          type: string
+          description: Identifier for group type. Can be local workspace group (`WorkspaceGroup`)
+            or account group (`Group`).
+    Role:
+      type: object
+      description: 'Role(name: ''str'')'
+      properties:
+        name:
+          type: string
+          description: 'Role to assign to a principal or a list of principals on a
+            resource.  def as_dict(self) -> dict: Serializes the Role into a dictionary
+            suitable for use as a JSON request body.'
+    RuleSetResponse:
+      type: object
+      description: 'RuleSetResponse(name: ''str'', etag: ''str'', grant_rules: ''Optional[List[GrantRule]]''
+        = None)'
+      properties:
+        name:
+          type: string
+          description: 'Name of the rule set.  etag: str """Identifies the version
+            of the rule set returned. Etag used for versioning. The response is at
+            least as fresh as the eTag provided. Etag is used for optimistic concurrency
+            control as a way to help prevent simultaneous updates of a rule set from
+            overwriting each other. It is strongly suggested that systems make use
+            of the etag in the read -> modify -> write pattern to perform rule set
+            updates in order to avoid race conditions that is get an etag from a GET
+            rule set request, and pass it with the PUT update request to identify
+            the rule set version you are updating.'
+        etag:
+          type: string
+          description: Identifies the version of the rule set returned. Etag used
+            for versioning. The response is at least as fresh as the eTag provided.
+            Etag is used for optimistic concurrency control as a way to help prevent
+            simultaneous updates of a rule set from overwriting each other. It is
+            strongly suggested that systems make use of the etag in the read -> modify
+            -> write pattern to perform rule set updates in order to avoid race conditions
+            that is get an etag from a GET rule set request, and pass it with the
+            PUT update request to identify the rule set version you are updating.
+        grant_rules:
+          type: string
+          description: ''
+    RuleSetUpdateRequest:
+      type: object
+      description: 'RuleSetUpdateRequest(name: ''str'', etag: ''str'', grant_rules:
+        ''Optional[List[GrantRule]]'' = None)'
+      properties:
+        name:
+          type: string
+          description: 'Name of the rule set.  etag: str """Identifies the version
+            of the rule set returned. Etag used for versioning. The response is at
+            least as fresh as the eTag provided. Etag is used for optimistic concurrency
+            control as a way to help prevent simultaneous updates of a rule set from
+            overwriting each other. It is strongly suggested that systems make use
+            of the etag in the read -> modify -> write pattern to perform rule set
+            updates in order to avoid race conditions that is get an etag from a GET
+            rule set request, and pass it with the PUT update request to identify
+            the rule set version you are updating.'
+        etag:
+          type: string
+          description: Identifies the version of the rule set returned. Etag used
+            for versioning. The response is at least as fresh as the eTag provided.
+            Etag is used for optimistic concurrency control as a way to help prevent
+            simultaneous updates of a rule set from overwriting each other. It is
+            strongly suggested that systems make use of the etag in the read -> modify
+            -> write pattern to perform rule set updates in order to avoid race conditions
+            that is get an etag from a GET rule set request, and pass it with the
+            PUT update request to identify the rule set version you are updating.
+        grant_rules:
+          type: string
+          description: ''
+    ServicePrincipal:
+      type: object
+      description: 'ServicePrincipal(active: ''Optional[bool]'' = None, application_id:
+        ''Optional[str]'' = None, display_name: ''Optional[str]'' = None, entitlements:
+        ''Optional[List[ComplexValue]]'' = None, external_id: ''Optional[str]'' =
+        None, groups: ''Optional[List[ComplexValue]]'' = None, id: ''Optional[str]''
+        = None, roles: ''Optional[List[ComplexValue]]'' = None, schemas: ''Optional[List[ServicePrincipalSchema]]''
+        = None)'
+      properties:
+        active:
+          type: string
+          description: 'If this user is active  application_id: Optional[str] = None
+            UUID relating to the service principal'
+        application_id:
+          type: string
+          description: 'UUID relating to the service principal  display_name: Optional[str]
+            = None String that represents a concatenation of given and family names.'
+        display_name:
+          type: string
+          description: 'String that represents a concatenation of given and family
+            names.  entitlements: Optional[List[ComplexValue]] = None """Entitlements
+            assigned to the service principal. See [assigning entitlements] for a
+            full list of supported values.  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+        entitlements:
+          type: string
+          description: 'Entitlements assigned to the service principal. See [assigning
+            entitlements] for a full list of supported values.  [assigning entitlements]:
+            https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+        external_id:
+          type: string
+          description: ''
+        groups:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: 'UUID relating to the service principal  display_name: Optional[str]
+            = None String that represents a concatenation of given and family names.'
+        roles:
+          type: string
+          description: 'Corresponds to AWS instance profile/arn role.  schemas: Optional[List[ServicePrincipalSchema]]
+            = None The schema of the List response.'
+        schemas:
+          type: string
+          description: 'The schema of the List response.  def as_dict(self) -> dict:
+            Serializes the ServicePrincipal into a dictionary suitable for use as
+            a JSON request body.'
+    ServicePrincipalSchema:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal
+    User:
+      type: object
+      description: 'User(active: ''Optional[bool]'' = None, display_name: ''Optional[str]''
+        = None, emails: ''Optional[List[ComplexValue]]'' = None, entitlements: ''Optional[List[ComplexValue]]''
+        = None, external_id: ''Optional[str]'' = None, groups: ''Optional[List[ComplexValue]]''
+        = None, id: ''Optional[str]'' = None, name: ''Optional[Name]'' = None, roles:
+        ''Optional[List[ComplexValue]]'' = None, schemas: ''Optional[List[UserSchema]]''
+        = None, user_name: ''Optional[str]'' = None)'
+      properties:
+        active:
+          type: string
+          description: 'If this user is active  display_name: Optional[str] = None
+            """String that represents a concatenation of given and family names. For
+            example `John Smith`. This field cannot be updated through the Workspace
+            SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs
+            to update `displayName`.  [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation'
+        display_name:
+          type: string
+          description: 'String that represents a concatenation of given and family
+            names. For example `John Smith`. This field cannot be updated through
+            the Workspace SCIM APIs when [identity federation is enabled]. Use Account
+            SCIM APIs to update `displayName`.  [identity federation is enabled]:
+            https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation'
+        emails:
+          type: string
+          description: 'All the emails associated with the Databricks user.  entitlements:
+            Optional[List[ComplexValue]] = None """Entitlements assigned to the user.
+            See [assigning entitlements] for a full list of supported values.  [assigning
+            entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+        entitlements:
+          type: string
+          description: 'Entitlements assigned to the user. See [assigning entitlements]
+            for a full list of supported values.  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements'
+        external_id:
+          type: string
+          description: 'External ID is not currently supported. It is reserved for
+            future use.  groups: Optional[List[ComplexValue]] = None  id: Optional[str]
+            = None Databricks user ID.'
+        groups:
+          type: string
+          description: ''
+        id:
+          type: string
+          description: 'External ID is not currently supported. It is reserved for
+            future use.  groups: Optional[List[ComplexValue]] = None  id: Optional[str]
+            = None Databricks user ID.'
+        name:
+          type: string
+          description: 'String that represents a concatenation of given and family
+            names. For example `John Smith`. This field cannot be updated through
+            the Workspace SCIM APIs when [identity federation is enabled]. Use Account
+            SCIM APIs to update `displayName`.  [identity federation is enabled]:
+            https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation'
+        roles:
+          type: string
+          description: 'Corresponds to AWS instance profile/arn role.  schemas: Optional[List[UserSchema]]
+            = None The schema of the user.'
+        schemas:
+          type: string
+          description: 'The schema of the user.  user_name: Optional[str] = None Email
+            address of the Databricks user.'
+        user_name:
+          type: string
+          description: 'Email address of the Databricks user.  def as_dict(self) ->
+            dict: Serializes the User into a dictionary suitable for use as a JSON
+            request body.'
+    UserSchema:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - urn:ietf:params:scim:schemas:core:2.0:User
+      - urn:ietf:params:scim:schemas:extension:workspace:2.0:User
+    WorkspacePermission:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ADMIN
+      - UNKNOWN
+      - USER
+    WorkspacePermissions:
+      type: object
+      description: 'WorkspacePermissions(permissions: ''Optional[List[PermissionOutput]]''
+        = None)'
+      properties:
+        permissions:
+          type: string
+          description: 'Array of permissions defined for a workspace.  def as_dict(self)
+            -> dict: Serializes the WorkspacePermissions into a dictionary suitable
+            for use as a JSON request body.'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Databricks personal access token
+security:
+- bearerAuth: []

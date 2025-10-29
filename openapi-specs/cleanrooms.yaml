@@ -1,0 +1,1484 @@
+openapi: 3.0.0
+info:
+  title: Databricks Cleanrooms API
+  description: API for Databricks cleanrooms service
+  version: 1.0.0
+  contact:
+    name: Databricks
+    url: https://databricks.com
+servers:
+- url: https://{deployment_name}.cloud.databricks.com
+  description: Databricks Workspace API
+  variables:
+    deployment_name:
+      default: your-deployment
+      description: Databricks workspace deployment name
+paths:
+  /api/2.0/clean-rooms/{clean_room_name}/assets:
+    post:
+      operationId: create
+      summary: 'Create a clean room asset —share an asset like a notebook or table
+        into the clean room. For each UC
+
+        asset that is added through this method, the clean room owner must also have
+        enough privilege on the
+
+        asset to consume it. The privilege must be maintained indefinitely for the
+        clean room to be able to
+
+        access the asset. Typically, you should use a group as the clean room owner.'
+      description: "Create a clean room asset —share an asset like a notebook or table\
+        \ into the clean room. For each UC\nasset that is added through this method,\
+        \ the clean room owner must also have enough privilege on the\nasset to consume\
+        \ it. The privilege must be maintained indefinitely for the clean room to\
+        \ be able to\naccess the asset. Typically, you should use a group as the clean\
+        \ room owner.\n\n:param clean_room_name: str\n  The name of the clean room\
+        \ this asset belongs to. This field is required for create operations and\n\
+        \  populated by the server for responses.\n:param asset: :class:`CleanRoomAsset`\n\
+        \n:returns: :class:`CleanRoomAsset`"
+      tags:
+      - cleanrooms
+      parameters:
+      - name: clean_room_name
+        description: str The name of the clean room this asset belongs to. This field
+          is required for create operations and populated by the server for responses.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CleanRoomAsset'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomAsset'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list
+      summary: List assets.
+      description: "List assets.\n\n:param clean_room_name: str\n  Name of the clean\
+        \ room.\n:param page_token: str (optional)\n  Opaque pagination token to go\
+        \ to next page based on previous query.\n\n:returns: Iterator over :class:`CleanRoomAsset`"
+      tags:
+      - cleanrooms
+      parameters:
+      - name: clean_room_name
+        description: str Name of the clean room.
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: page_token
+        description: str (optional) Opaque pagination token to go to next page based
+          on previous query.
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomAsset'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}:
+    delete:
+      operationId: delete
+      summary: Delete a auto-approval rule by rule ID
+      description: 'Delete a auto-approval rule by rule ID
+
+
+        :param clean_room_name: str
+
+        :param rule_id: str'
+      tags:
+      - cleanrooms
+      parameters:
+      - name: clean_room_name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: rule_id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+  /api/2.0/clean-rooms/{clean_room_name}/runs:
+    get:
+      operationId: list
+      summary: List all the historical notebook task runs in a clean room.
+      description: "List all the historical notebook task runs in a clean room.\n\n\
+        :param clean_room_name: str\n  Name of the clean room.\n:param notebook_name:\
+        \ str (optional)\n  Notebook name\n:param page_size: int (optional)\n  The\
+        \ maximum number of task runs to return. Currently ignored - all runs will\
+        \ be returned.\n:param page_token: str (optional)\n  Opaque pagination token\
+        \ to go to next page based on previous query.\n\n:returns: Iterator over :class:`CleanRoomNotebookTaskRun`"
+      tags:
+      - cleanrooms
+      parameters:
+      - name: clean_room_name
+        description: str Name of the clean room.
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: notebook_name
+        description: str (optional) Notebook name
+        required: false
+        schema:
+          type: string
+        in: query
+      - name: page_size
+        description: int (optional) The maximum number of task runs to return. Currently
+          ignored - all runs will be returned.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional) Opaque pagination token to go to next page based
+          on previous query.
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomNotebookTaskRun'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/clean-rooms:
+    post:
+      operationId: create
+      summary: 'Create a new clean room with the specified collaborators. This method
+        is asynchronous; the returned
+
+        name field inside the clean_room field can be used to poll the clean room
+        status, using the
+
+        :method:cleanrooms/get method. When this method returns, the clean room will
+        be in a PROVISIONING
+
+        state, with only name, owner, comment, created_at and status populated. The
+        clean room will be usable
+
+        once it enters an ACTIVE state.'
+      description: "Create a new clean room with the specified collaborators. This\
+        \ method is asynchronous; the returned\nname field inside the clean_room field\
+        \ can be used to poll the clean room status, using the\n:method:cleanrooms/get\
+        \ method. When this method returns, the clean room will be in a PROVISIONING\n\
+        state, with only name, owner, comment, created_at and status populated. The\
+        \ clean room will be usable\nonce it enters an ACTIVE state.\n\nThe caller\
+        \ must be a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on\
+        \ the metastore.\n\n:param clean_room: :class:`CleanRoom`\n\n:returns:\n \
+        \ Long-running operation waiter for :class:`CleanRoom`.\n  See :method:wait_get_clean_room_active\
+        \ for more details."
+      tags:
+      - cleanrooms
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CleanRoom'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoom'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list
+      summary: 'Get a list of all clean rooms of the metastore. Only clean rooms the
+        caller has access to are
+
+        returned.'
+      description: "Get a list of all clean rooms of the metastore. Only clean rooms\
+        \ the caller has access to are\nreturned.\n\n:param page_size: int (optional)\n\
+        \  Maximum number of clean rooms to return (i.e., the page length). Defaults\
+        \ to 100.\n:param page_token: str (optional)\n  Opaque pagination token to\
+        \ go to next page based on previous query.\n\n:returns: Iterator over :class:`CleanRoom`"
+      tags:
+      - cleanrooms
+      parameters:
+      - name: page_size
+        description: int (optional) Maximum number of clean rooms to return (i.e.,
+          the page length). Defaults to 100.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional) Opaque pagination token to go to next page based
+          on previous query.
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoom'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/clean-rooms/{name}:
+    delete:
+      operationId: delete
+      summary: 'Delete a clean room. After deletion, the clean room will be removed
+        from the metastore. If the other
+
+        collaborators have not deleted the clean room, they will still have the clean
+        room in their metastore,
+
+        but it will be in a DELETED state and no operations other than deletion can
+        be performed on it.'
+      description: "Delete a clean room. After deletion, the clean room will be removed\
+        \ from the metastore. If the other\ncollaborators have not deleted the clean\
+        \ room, they will still have the clean room in their metastore,\nbut it will\
+        \ be in a DELETED state and no operations other than deletion can be performed\
+        \ on it.\n\n:param name: str\n  Name of the clean room."
+      tags:
+      - cleanrooms
+      parameters:
+      - name: name
+        description: str Name of the clean room.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get
+      summary: Get the details of a clean room given its name.
+      description: 'Get the details of a clean room given its name.
+
+
+        :param name: str
+
+
+        :returns: :class:`CleanRoom`'
+      tags:
+      - cleanrooms
+      parameters:
+      - name: name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoom'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: update
+      summary: 'Update a clean room. The caller must be the owner of the clean room,
+        have **MODIFY_CLEAN_ROOM**
+
+        privilege, or be metastore admin.'
+      description: "Update a clean room. The caller must be the owner of the clean\
+        \ room, have **MODIFY_CLEAN_ROOM**\nprivilege, or be metastore admin.\n\n\
+        When the caller is a metastore admin, only the __owner__ field can be updated.\n\
+        \n:param name: str\n  Name of the clean room.\n:param clean_room: :class:`CleanRoom`\
+        \ (optional)\n\n:returns: :class:`CleanRoom`"
+      tags:
+      - cleanrooms
+      parameters:
+      - name: name
+        description: str Name of the clean room.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CleanRoom'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoom'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    CleanRoom:
+      type: object
+      description: 'CleanRoom(access_restricted: ''Optional[CleanRoomAccessRestricted]''
+        = None, comment: ''Optional[str]'' = None, created_at: ''Optional[int]'' =
+        None, local_collaborator_alias: ''Optional[str]'' = None, name: ''Optional[str]''
+        = None, output_catalog: ''Optional[CleanRoomOutputCatalog]'' = None, owner:
+        ''Optional[str]'' = None, remote_detailed_info: ''Optional[CleanRoomRemoteDetail]''
+        = None, status: ''Optional[CleanRoomStatusEnum]'' = None, updated_at: ''Optional[int]''
+        = None)'
+      properties:
+        access_restricted:
+          type: string
+          description: 'Whether clean room access is restricted due to [CSP]  [CSP]:
+            https://docs.databricks.com/en/security/privacy/security-profile.html'
+        comment:
+          type: string
+          description: ''
+        created_at:
+          type: string
+          description: 'When the clean room was created, in epoch milliseconds.  local_collaborator_alias:
+            Optional[str] = None The alias of the collaborator tied to the local clean
+            room.'
+        local_collaborator_alias:
+          type: string
+          description: 'The alias of the collaborator tied to the local clean room.  name:
+            Optional[str] = None """The name of the clean room. It should follow [UC
+            securable naming requirements].  [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements'
+        name:
+          type: string
+          description: 'The name of the clean room. It should follow [UC securable
+            naming requirements].  [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements'
+        output_catalog:
+          type: string
+          description: Output catalog of the clean room. It is an output only field.
+            Output catalog is manipulated using the separate CreateCleanRoomOutputCatalog
+            API.
+        owner:
+          type: string
+          description: This is the Databricks username of the owner of the local clean
+            room securable for permission management.
+        remote_detailed_info:
+          type: string
+          description: Central clean room details. During creation, users need to
+            specify cloud_vendor, region, and collaborators.global_metastore_id. This
+            field will not be filled in the ListCleanRooms call.
+        status:
+          type: string
+          description: 'Clean room status.  updated_at: Optional[int] = None When
+            the clean room was last updated, in epoch milliseconds.'
+        updated_at:
+          type: string
+          description: 'When the clean room was last updated, in epoch milliseconds.  def
+            as_dict(self) -> dict: Serializes the CleanRoom into a dictionary suitable
+            for use as a JSON request body.'
+    CleanRoomAccessRestricted:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CSP_MISMATCH
+      - NO_RESTRICTION
+    CleanRoomAsset:
+      type: object
+      description: Metadata of the clean room asset
+      properties:
+        name:
+          type: string
+          description: A fully qualified name that uniquely identifies the asset within
+            the clean room. This is also the name displayed in the clean room UI.  For
+            UC securable assets (tables, volumes, etc.), the format is *shared_catalog*.*shared_schema*.*asset_name*  For
+            notebooks, the name is the notebook file name. For jar analyses, the name
+            is the jar analysis name.
+        asset_type:
+          type: string
+          description: 'The type of the asset.  added_at: Optional[int] = None When
+            the asset is added to the clean room, in epoch milliseconds.'
+        added_at:
+          type: string
+          description: 'When the asset is added to the clean room, in epoch milliseconds.  clean_room_name:
+            Optional[str] = None """The name of the clean room this asset belongs
+            to. This field is required for create operations and populated by the
+            server for responses.'
+        clean_room_name:
+          type: string
+          description: The name of the clean room this asset belongs to. This field
+            is required for create operations and populated by the server for responses.
+        foreign_table:
+          type: string
+          description: Foreign table details available to all collaborators of the
+            clean room. Present if and only if **asset_type** is **FOREIGN_TABLE**
+        foreign_table_local_details:
+          type: string
+          description: Local details for a foreign that are only available to its
+            owner. Present if and only if **asset_type** is **FOREIGN_TABLE**
+        notebook:
+          type: string
+          description: Notebook details available to all collaborators of the clean
+            room. Present if and only if **asset_type** is **NOTEBOOK_FILE**
+        owner_collaborator_alias:
+          type: string
+          description: 'The alias of the collaborator who owns this asset  status:
+            Optional[CleanRoomAssetStatusEnum] = None Status of the asset'
+        status:
+          type: string
+          description: 'Status of the asset  table: Optional[CleanRoomAssetTable]
+            = None """Table details available to all collaborators of the clean room.
+            Present if and only if **asset_type** is **TABLE**'
+        table:
+          type: string
+          description: Foreign table details available to all collaborators of the
+            clean room. Present if and only if **asset_type** is **FOREIGN_TABLE**
+        table_local_details:
+          type: string
+          description: Local details for a foreign that are only available to its
+            owner. Present if and only if **asset_type** is **FOREIGN_TABLE**
+        view:
+          type: string
+          description: View details available to all collaborators of the clean room.
+            Present if and only if **asset_type** is **VIEW**
+        view_local_details:
+          type: string
+          description: Local details for a view that are only available to its owner.
+            Present if and only if **asset_type** is **VIEW**
+        volume_local_details:
+          type: string
+          description: Local details for a volume that are only available to its owner.
+            Present if and only if **asset_type** is **VOLUME**
+    CleanRoomAssetAssetType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - FOREIGN_TABLE
+      - NOTEBOOK_FILE
+      - TABLE
+      - VIEW
+      - VOLUME
+    CleanRoomAssetForeignTable:
+      type: object
+      description: 'CleanRoomAssetForeignTable(columns: ''Optional[List[catalog.ColumnInfo]]''
+        = None)'
+      properties:
+        columns:
+          type: string
+          description: 'The metadata information of the columns in the foreign table  def
+            as_dict(self) -> dict: Serializes the CleanRoomAssetForeignTable into
+            a dictionary suitable for use as a JSON request body.'
+    CleanRoomAssetForeignTableLocalDetails:
+      type: object
+      description: 'CleanRoomAssetForeignTableLocalDetails(local_name: ''str'')'
+      properties:
+        local_name:
+          type: string
+          description: The fully qualified name of the foreign table in its owner's
+            local metastore, in the format of *catalog*.*schema*.*foreign_table_name*
+    CleanRoomAssetNotebook:
+      type: object
+      description: 'CleanRoomAssetNotebook(notebook_content: ''str'', etag: ''Optional[str]''
+        = None, review_state: ''Optional[CleanRoomNotebookReviewNotebookReviewState]''
+        = None, reviews: ''Optional[List[CleanRoomNotebookReview]]'' = None, runner_collaborator_aliases:
+        ''Optional[List[str]]'' = None)'
+      properties:
+        notebook_content:
+          type: string
+          description: Base 64 representation of the notebook contents. This is the
+            same format as returned by :method:workspace/export with the format of
+            **HTML**.
+        etag:
+          type: string
+          description: 'Server generated etag that represents the notebook version.  review_state:
+            Optional[CleanRoomNotebookReviewNotebookReviewState] = None Top-level
+            status derived from all reviews'
+        review_state:
+          type: string
+          description: 'Top-level status derived from all reviews  reviews: Optional[List[CleanRoomNotebookReview]]
+            = None All existing approvals or rejections'
+        reviews:
+          type: string
+          description: 'All existing approvals or rejections  runner_collaborator_aliases:
+            Optional[List[str]] = None Aliases of collaborators that can run the notebook.'
+        runner_collaborator_aliases:
+          type: string
+          description: 'Aliases of collaborators that can run the notebook.  def as_dict(self)
+            -> dict: Serializes the CleanRoomAssetNotebook into a dictionary suitable
+            for use as a JSON request body.'
+    CleanRoomAssetStatusEnum:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ACTIVE
+      - PENDING
+      - PERMISSION_DENIED
+    CleanRoomAssetTable:
+      type: object
+      description: 'CleanRoomAssetTable(columns: ''Optional[List[catalog.ColumnInfo]]''
+        = None)'
+      properties:
+        columns:
+          type: string
+          description: 'The metadata information of the columns in the table  def
+            as_dict(self) -> dict: Serializes the CleanRoomAssetTable into a dictionary
+            suitable for use as a JSON request body.'
+    CleanRoomAssetTableLocalDetails:
+      type: object
+      description: 'CleanRoomAssetTableLocalDetails(local_name: ''str'', partitions:
+        ''Optional[List[sharing.Partition]]'' = None)'
+      properties:
+        local_name:
+          type: string
+          description: The fully qualified name of the table in its owner's local
+            metastore, in the format of *catalog*.*schema*.*table_name*
+        partitions:
+          type: string
+          description: 'Partition filtering specification for a shared table.  def
+            as_dict(self) -> dict: Serializes the CleanRoomAssetTableLocalDetails
+            into a dictionary suitable for use as a JSON request body.'
+    CleanRoomAssetView:
+      type: object
+      description: 'CleanRoomAssetView(columns: ''Optional[List[catalog.ColumnInfo]]''
+        = None)'
+      properties:
+        columns:
+          type: string
+          description: 'The metadata information of the columns in the view  def as_dict(self)
+            -> dict: Serializes the CleanRoomAssetView into a dictionary suitable
+            for use as a JSON request body.'
+    CleanRoomAssetViewLocalDetails:
+      type: object
+      description: 'CleanRoomAssetViewLocalDetails(local_name: ''str'')'
+      properties:
+        local_name:
+          type: string
+          description: The fully qualified name of the view in its owner's local metastore,
+            in the format of *catalog*.*schema*.*view_name*
+    CleanRoomAssetVolumeLocalDetails:
+      type: object
+      description: 'CleanRoomAssetVolumeLocalDetails(local_name: ''str'')'
+      properties:
+        local_name:
+          type: string
+          description: The fully qualified name of the volume in its owner's local
+            metastore, in the format of *catalog*.*schema*.*volume_name*
+    CleanRoomAutoApprovalRule:
+      type: object
+      description: 'CleanRoomAutoApprovalRule(author_collaborator_alias: ''Optional[str]''
+        = None, author_scope: ''Optional[CleanRoomAutoApprovalRuleAuthorScope]'' =
+        None, clean_room_name: ''Optional[str]'' = None, created_at: ''Optional[int]''
+        = None, rule_id: ''Optional[str]'' = None, rule_owner_collaborator_alias:
+        ''Optional[str]'' = None, runner_collaborator_alias: ''Optional[str]'' = None)'
+      properties:
+        author_collaborator_alias:
+          type: string
+          description: Collaborator alias of the author covered by the rule. Only
+            one of `author_collaborator_alias` and `author_scope` can be set.
+        author_scope:
+          type: string
+          description: Scope of authors covered by the rule. Only one of `author_collaborator_alias`
+            and `author_scope` can be set.
+        clean_room_name:
+          type: string
+          description: 'The name of the clean room this auto-approval rule belongs
+            to.  created_at: Optional[int] = None Timestamp of when the rule was created,
+            in epoch milliseconds.'
+        created_at:
+          type: string
+          description: 'Timestamp of when the rule was created, in epoch milliseconds.  rule_id:
+            Optional[str] = None A generated UUID identifying the rule.'
+        rule_id:
+          type: string
+          description: 'A generated UUID identifying the rule.  rule_owner_collaborator_alias:
+            Optional[str] = None The owner of the rule to whom the rule applies.'
+        rule_owner_collaborator_alias:
+          type: string
+          description: 'The owner of the rule to whom the rule applies.  runner_collaborator_alias:
+            Optional[str] = None Collaborator alias of the runner covered by the rule.'
+        runner_collaborator_alias:
+          type: string
+          description: 'Collaborator alias of the runner covered by the rule.  def
+            as_dict(self) -> dict: Serializes the CleanRoomAutoApprovalRule into a
+            dictionary suitable for use as a JSON request body.'
+    CleanRoomAutoApprovalRuleAuthorScope:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ANY_AUTHOR
+    CleanRoomCollaborator:
+      type: object
+      description: Publicly visible clean room collaborator.
+      properties:
+        collaborator_alias:
+          type: string
+          description: 'Collaborator alias specified by the clean room creator. It
+            is unique across all collaborators of this clean room, and used to derive
+            multiple values internally such as catalog alias and clean room name for
+            single metastore clean rooms. It should follow [UC securable naming requirements].  [UC
+            securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements'
+        display_name:
+          type: string
+          description: Generated display name for the collaborator. In the case of
+            a single metastore clean room, it is the clean room name. For x-metastore
+            clean rooms, it is the organization name of the metastore. It is not restricted
+            to these values and could change in the future
+        global_metastore_id:
+          type: string
+          description: The global Unity Catalog metastore ID of the collaborator.
+            The identifier is of format cloud:region:metastore-uuid.
+        invite_recipient_email:
+          type: string
+          description: Email of the user who is receiving the clean room "invitation".
+            It should be empty for the creator of the clean room, and non-empty for
+            the invitees of the clean room. It is only returned in the output when
+            clean room creator calls GET
+        invite_recipient_workspace_id:
+          type: string
+          description: Workspace ID of the user who is receiving the clean room "invitation".
+            Must be specified if invite_recipient_email is specified. It should be
+            empty when the collaborator is the creator of the clean room.
+        organization_name:
+          type: string
+          description: '[Organization name](:method:metastores/list#metastores-delta_sharing_organization_name)
+            configured in the metastore'
+    CleanRoomNotebookReview:
+      type: object
+      description: 'CleanRoomNotebookReview(comment: ''Optional[str]'' = None, created_at_millis:
+        ''Optional[int]'' = None, review_state: ''Optional[CleanRoomNotebookReviewNotebookReviewState]''
+        = None, review_sub_reason: ''Optional[CleanRoomNotebookReviewNotebookReviewSubReason]''
+        = None, reviewer_collaborator_alias: ''Optional[str]'' = None)'
+      properties:
+        comment:
+          type: string
+          description: 'Review comment  created_at_millis: Optional[int] = None When
+            the review was submitted, in epoch milliseconds'
+        created_at_millis:
+          type: string
+          description: 'When the review was submitted, in epoch milliseconds  review_state:
+            Optional[CleanRoomNotebookReviewNotebookReviewState] = None Review outcome'
+        review_state:
+          type: string
+          description: 'Review outcome  review_sub_reason: Optional[CleanRoomNotebookReviewNotebookReviewSubReason]
+            = None Specified when the review was not explicitly made by a user'
+        review_sub_reason:
+          type: string
+          description: 'Specified when the review was not explicitly made by a user  reviewer_collaborator_alias:
+            Optional[str] = None Collaborator alias of the reviewer'
+        reviewer_collaborator_alias:
+          type: string
+          description: 'Collaborator alias of the reviewer  def as_dict(self) -> dict:
+            Serializes the CleanRoomNotebookReview into a dictionary suitable for
+            use as a JSON request body.'
+    CleanRoomNotebookReviewNotebookReviewState:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - APPROVED
+      - PENDING
+      - REJECTED
+    CleanRoomNotebookReviewNotebookReviewSubReason:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - AUTO_APPROVED
+      - BACKFILLED
+    CleanRoomNotebookTaskRun:
+      type: object
+      description: Stores information about a single task run.
+      properties:
+        collaborator_job_run_info:
+          type: string
+          description: Job run info of the task in the runner's local workspace. This
+            field is only included in the LIST API. if the task was run within the
+            same workspace the API is being called. If the task run was in a different
+            workspace under the same metastore, only the workspace_id is included.
+        notebook_etag:
+          type: string
+          description: 'Etag of the notebook executed in this task run, used to identify
+            the notebook version.  notebook_job_run_state: Optional[jobs.CleanRoomTaskRunState]
+            = None State of the task run.'
+        notebook_job_run_state:
+          type: string
+          description: 'State of the task run.  notebook_name: Optional[str] = None
+            Asset name of the notebook executed in this task run.'
+        notebook_name:
+          type: string
+          description: 'Asset name of the notebook executed in this task run.  notebook_updated_at:
+            Optional[int] = None The timestamp of when the notebook was last updated.'
+        notebook_updated_at:
+          type: string
+          description: 'The timestamp of when the notebook was last updated.  output_schema_expiration_time:
+            Optional[int] = None Expiration time of the output schema of the task
+            run (if any), in epoch milliseconds.'
+        output_schema_expiration_time:
+          type: string
+          description: 'Expiration time of the output schema of the task run (if any),
+            in epoch milliseconds.  output_schema_name: Optional[str] = None Name
+            of the output schema associated with the clean rooms notebook task run.'
+        output_schema_name:
+          type: string
+          description: 'Name of the output schema associated with the clean rooms
+            notebook task run.  run_duration: Optional[int] = None Duration of the
+            task run, in milliseconds.'
+        run_duration:
+          type: string
+          description: 'Duration of the task run, in milliseconds.  start_time: Optional[int]
+            = None When the task run started, in epoch milliseconds.'
+        start_time:
+          type: string
+          description: 'When the task run started, in epoch milliseconds.  def as_dict(self)
+            -> dict: Serializes the CleanRoomNotebookTaskRun into a dictionary suitable
+            for use as a JSON request body.'
+    CleanRoomOutputCatalog:
+      type: object
+      description: 'CleanRoomOutputCatalog(catalog_name: ''Optional[str]'' = None,
+        status: ''Optional[CleanRoomOutputCatalogOutputCatalogStatus]'' = None)'
+      properties:
+        catalog_name:
+          type: string
+          description: 'The name of the output catalog in UC. It should follow [UC
+            securable naming requirements]. The field will always exist if status
+            is CREATED.  [UC securable naming requirements]: https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements'
+        status:
+          type: string
+          description: ''
+    CleanRoomOutputCatalogOutputCatalogStatus:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CREATED
+      - NOT_CREATED
+      - NOT_ELIGIBLE
+    CleanRoomRemoteDetail:
+      type: object
+      description: Publicly visible central clean room details.
+      properties:
+        central_clean_room_id:
+          type: string
+          description: 'Central clean room ID.  cloud_vendor: Optional[str] = None
+            Cloud vendor (aws,azure,gcp) of the central clean room.'
+        cloud_vendor:
+          type: string
+          description: 'Cloud vendor (aws,azure,gcp) of the central clean room.  collaborators:
+            Optional[List[CleanRoomCollaborator]] = None """Collaborators in the central
+            clean room. There should one and only one collaborator in the list that
+            satisfies the owner condition:  1. It has the creator''s global_metastore_id
+            (determined by caller of CreateCleanRoom).  2. Its invite_recipient_email
+            is empty.'
+        collaborators:
+          type: string
+          description: 'Collaborators in the central clean room. There should one
+            and only one collaborator in the list that satisfies the owner condition:  1.
+            It has the creator''s global_metastore_id (determined by caller of CreateCleanRoom).  2.
+            Its invite_recipient_email is empty.'
+        compliance_security_profile:
+          type: string
+          description: ''
+        creator:
+          type: string
+          description: 'Collaborator who creates the clean room.  egress_network_policy:
+            Optional[settings.EgressNetworkPolicy] = None Egress network policy to
+            apply to the central clean room workspace.'
+        egress_network_policy:
+          type: string
+          description: 'Egress network policy to apply to the central clean room workspace.  region:
+            Optional[str] = None Region of the central clean room.'
+        region:
+          type: string
+          description: 'Region of the central clean room.  def as_dict(self) -> dict:
+            Serializes the CleanRoomRemoteDetail into a dictionary suitable for use
+            as a JSON request body.'
+    CleanRoomStatusEnum:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ACTIVE
+      - DELETED
+      - FAILED
+      - PROVISIONING
+    CollaboratorJobRunInfo:
+      type: object
+      description: 'CollaboratorJobRunInfo(collaborator_alias: ''Optional[str]'' =
+        None, collaborator_job_id: ''Optional[int]'' = None, collaborator_job_run_id:
+        ''Optional[int]'' = None, collaborator_task_run_id: ''Optional[int]'' = None,
+        collaborator_workspace_id: ''Optional[int]'' = None)'
+      properties:
+        collaborator_alias:
+          type: string
+          description: 'Alias of the collaborator that triggered the task run.  collaborator_job_id:
+            Optional[int] = None Job ID of the task run in the collaborator''s workspace.'
+        collaborator_job_id:
+          type: string
+          description: 'Job ID of the task run in the collaborator''s workspace.  collaborator_job_run_id:
+            Optional[int] = None Job run ID of the task run in the collaborator''s
+            workspace.'
+        collaborator_job_run_id:
+          type: string
+          description: 'Job run ID of the task run in the collaborator''s workspace.  collaborator_task_run_id:
+            Optional[int] = None Task run ID of the task run in the collaborator''s
+            workspace.'
+        collaborator_task_run_id:
+          type: string
+          description: 'Task run ID of the task run in the collaborator''s workspace.  collaborator_workspace_id:
+            Optional[int] = None ID of the collaborator''s workspace that triggered
+            the task run.'
+        collaborator_workspace_id:
+          type: string
+          description: 'ID of the collaborator''s workspace that triggered the task
+            run.  def as_dict(self) -> dict: Serializes the CollaboratorJobRunInfo
+            into a dictionary suitable for use as a JSON request body.'
+    ComplianceSecurityProfile:
+      type: object
+      description: The compliance security profile used to process regulated data
+        following compliance standards.
+      properties:
+        compliance_standards:
+          type: string
+          description: 'The list of compliance standards that the compliance security
+            profile is configured to enforce.  is_enabled: Optional[bool] = None Whether
+            the compliance security profile is enabled.'
+        is_enabled:
+          type: string
+          description: 'Whether the compliance security profile is enabled.  def as_dict(self)
+            -> dict: Serializes the ComplianceSecurityProfile into a dictionary suitable
+            for use as a JSON request body.'
+    CreateCleanRoomAssetReviewResponse:
+      type: object
+      description: 'CreateCleanRoomAssetReviewResponse(notebook_review_state: ''Optional[CleanRoomNotebookReviewNotebookReviewState]''
+        = None, notebook_reviews: ''Optional[List[CleanRoomNotebookReview]]'' = None)'
+      properties:
+        notebook_review_state:
+          type: string
+          description: 'Top-level status derived from all reviews  notebook_reviews:
+            Optional[List[CleanRoomNotebookReview]] = None All existing notebook approvals
+            or rejections'
+        notebook_reviews:
+          type: string
+          description: 'All existing notebook approvals or rejections  def as_dict(self)
+            -> dict: Serializes the CreateCleanRoomAssetReviewResponse into a dictionary
+            suitable for use as a JSON request body.'
+    CreateCleanRoomOutputCatalogResponse:
+      type: object
+      description: 'CreateCleanRoomOutputCatalogResponse(output_catalog: ''Optional[CleanRoomOutputCatalog]''
+        = None)'
+      properties:
+        output_catalog:
+          type: string
+          description: ''
+    DeleteCleanRoomAssetResponse:
+      type: object
+      description: 'Response for delete clean room request. Using an empty message
+        since the generic Empty proto
+
+        does not externd UnshadedMessageMarker.'
+      properties: {}
+    ListCleanRoomAssetRevisionsResponse:
+      type: object
+      description: 'ListCleanRoomAssetRevisionsResponse(next_page_token: ''Optional[str]''
+        = None, revisions: ''Optional[List[CleanRoomAsset]]'' = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: ''
+        revisions:
+          type: string
+          description: ''
+    ListCleanRoomAssetsResponse:
+      type: object
+      description: 'ListCleanRoomAssetsResponse(assets: ''Optional[List[CleanRoomAsset]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        assets:
+          type: string
+          description: 'Assets in the clean room.  next_page_token: Optional[str]
+            = None """Opaque token to retrieve the next page of results. Absent if
+            there are no more pages. page_token should be set to this value for the
+            next request (for the next page of results).'
+        next_page_token:
+          type: string
+          description: Opaque token to retrieve the next page of results. Absent if
+            there are no more pages. page_token should be set to this value for the
+            next request (for the next page of results).
+    ListCleanRoomAutoApprovalRulesResponse:
+      type: object
+      description: 'ListCleanRoomAutoApprovalRulesResponse(next_page_token: ''Optional[str]''
+        = None, rules: ''Optional[List[CleanRoomAutoApprovalRule]]'' = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: Opaque token to retrieve the next page of results. Absent if
+            there are no more pages. page_token should be set to this value for the
+            next request (for the next page of results).
+        rules:
+          type: string
+          description: ''
+    ListCleanRoomNotebookTaskRunsResponse:
+      type: object
+      description: 'ListCleanRoomNotebookTaskRunsResponse(next_page_token: ''Optional[str]''
+        = None, runs: ''Optional[List[CleanRoomNotebookTaskRun]]'' = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: Opaque token to retrieve the next page of results. Absent if
+            there are no more pages. page_token should be set to this value for the
+            next request (for the next page of results).
+        runs:
+          type: string
+          description: 'Name of the clean room.  def as_dict(self) -> dict: Serializes
+            the ListCleanRoomNotebookTaskRunsResponse into a dictionary suitable for
+            use as a JSON request body.'
+    ListCleanRoomsResponse:
+      type: object
+      description: 'ListCleanRoomsResponse(clean_rooms: ''Optional[List[CleanRoom]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        clean_rooms:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: Opaque token to retrieve the next page of results. Absent if
+            there are no more pages. page_token should be set to this value for the
+            next request (for the next page of results).
+    NotebookVersionReview:
+      type: object
+      description: 'NotebookVersionReview(etag: ''str'', review_state: ''CleanRoomNotebookReviewNotebookReviewState'',
+        comment: ''Optional[str]'' = None)'
+      properties:
+        etag:
+          type: string
+          description: 'Etag identifying the notebook version  review_state: CleanRoomNotebookReviewNotebookReviewState
+            Review outcome'
+        review_state:
+          type: string
+          description: 'Review outcome  comment: Optional[str] = None Review comment'
+        comment:
+          type: string
+          description: 'Review comment  def as_dict(self) -> dict: Serializes the
+            NotebookVersionReview into a dictionary suitable for use as a JSON request
+            body.'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Databricks personal access token
+security:
+- bearerAuth: []

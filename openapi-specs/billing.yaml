@@ -1,0 +1,1478 @@
+openapi: 3.0.0
+info:
+  title: Databricks Billing API
+  description: API for Databricks billing service
+  version: 1.0.0
+  contact:
+    name: Databricks
+    url: https://databricks.com
+servers:
+- url: https://accounts.cloud.databricks.com
+  description: Databricks Account API
+  variables:
+    account_id:
+      default: your-account-id
+      description: Databricks account ID
+paths:
+  /api/2.1/accounts/{account_id}/budget-policies/{policy_id}:
+    delete:
+      operationId: delete
+      summary: Deletes a policy
+      description: "Deletes a policy\n\n:param policy_id: str\n  The Id of the policy."
+      tags:
+      - billing
+      parameters:
+      - name: policy_id
+        description: str The Id of the policy.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+  /api/2.1/accounts/{account_id}/budgets:
+    post:
+      operationId: create
+      summary: 'Create a new budget configuration for an account. For full details,
+        see
+
+        https://docs.databricks.com/en/admin/account-settings/budgets.html.'
+      description: "Create a new budget configuration for an account. For full details,\
+        \ see\nhttps://docs.databricks.com/en/admin/account-settings/budgets.html.\n\
+        \n:param budget: :class:`CreateBudgetConfigurationBudget`\n  Properties of\
+        \ the new budget configuration.\n\n:returns: :class:`CreateBudgetConfigurationResponse`"
+      tags:
+      - billing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateBudgetConfigurationBudget'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBudgetConfigurationResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.1/accounts/{account_id}/budgets/{budget_id}:
+    delete:
+      operationId: delete
+      summary: 'Deletes a budget configuration for an account. Both account and budget
+        configuration are specified by
+
+        ID. This cannot be undone.'
+      description: "Deletes a budget configuration for an account. Both account and\
+        \ budget configuration are specified by\nID. This cannot be undone.\n\n:param\
+        \ budget_id: str\n  The Databricks budget configuration ID."
+      tags:
+      - billing
+      parameters:
+      - name: budget_id
+        description: str The Databricks budget configuration ID.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get
+      summary: Gets a budget configuration for an account. Both account and budget
+        configuration are specified by ID.
+      description: "Gets a budget configuration for an account. Both account and budget\
+        \ configuration are specified by ID.\n\n:param budget_id: str\n  The budget\
+        \ configuration ID\n\n:returns: :class:`GetBudgetConfigurationResponse`"
+      tags:
+      - billing
+      parameters:
+      - name: budget_id
+        description: str The budget configuration ID
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBudgetConfigurationResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/accounts/{account_id}/log-delivery:
+    post:
+      operationId: create
+      summary: 'Creates a new Databricks log delivery configuration to enable delivery
+        of the specified type of logs
+
+        to your storage location. This requires that you already created a [credential
+
+        object](:method:Credentials/Create) (which encapsulates a cross-account service
+        IAM role) and a
+
+        [storage configuration object](:method:Storage/Create) (which encapsulates
+        an S3 bucket).'
+      description: 'Creates a new Databricks log delivery configuration to enable
+        delivery of the specified type of logs
+
+        to your storage location. This requires that you already created a [credential
+
+        object](:method:Credentials/Create) (which encapsulates a cross-account service
+        IAM role) and a
+
+        [storage configuration object](:method:Storage/Create) (which encapsulates
+        an S3 bucket).
+
+
+        For full details, including the required IAM role policies and bucket policies,
+        see [Deliver and
+
+        access billable usage logs] or [Configure audit logging].
+
+
+        **Note**: There is a limit on the number of log delivery configurations available
+        per account (each
+
+        limit applies separately to each log type including billable usage and audit
+        logs). You can create a
+
+        maximum of two enabled account-level delivery configurations (configurations
+        without a workspace
+
+        filter) per type. Additionally, you can create two enabled workspace-level
+        delivery configurations per
+
+        workspace for each log type, which means that the same workspace ID can occur
+        in the workspace filter
+
+        for no more than two delivery configurations per log type.
+
+
+        You cannot delete a log delivery configuration, but you can disable it (see
+        [Enable or disable log
+
+        delivery configuration](:method:LogDelivery/PatchStatus)).
+
+
+        [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+
+        [Deliver and access billable usage logs]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html
+
+
+        :param log_delivery_configuration: :class:`CreateLogDeliveryConfigurationParams`
+
+
+        :returns: :class:`WrappedLogDeliveryConfiguration`'
+      tags:
+      - billing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateLogDeliveryConfigurationParams'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WrappedLogDeliveryConfiguration'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/accounts/{account_id}/dashboard:
+    post:
+      operationId: create
+      summary: Create a usage dashboard specified by workspaceId, accountId, and dashboard
+        type.
+      description: "Create a usage dashboard specified by workspaceId, accountId,\
+        \ and dashboard type.\n\n:param dashboard_type: :class:`UsageDashboardType`\
+        \ (optional)\n  Workspace level usage dashboard shows usage data for the specified\
+        \ workspace ID. Global level usage\n  dashboard shows usage data for all workspaces\
+        \ in the account.\n:param workspace_id: int (optional)\n  The workspace ID\
+        \ of the workspace in which the usage dashboard is created.\n\n:returns: :class:`CreateBillingUsageDashboardResponse`"
+      tags:
+      - billing
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                dashboard_type:
+                  type: string
+                  enum:
+                  - USAGE_DASHBOARD_TYPE_GLOBAL
+                  - USAGE_DASHBOARD_TYPE_WORKSPACE
+                  description: :class:`UsageDashboardType` (optional) Workspace level
+                    usage dashboard shows usage data for the specified workspace ID.
+                    Global level usage dashboard shows usage data for all workspaces
+                    in the account.
+                workspace_id:
+                  type: integer
+                  description: int (optional) The workspace ID of the workspace in
+                    which the usage dashboard is created.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBillingUsageDashboardResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: get
+      summary: Get a usage dashboard specified by workspaceId, accountId, and dashboard
+        type.
+      description: "Get a usage dashboard specified by workspaceId, accountId, and\
+        \ dashboard type.\n\n:param dashboard_type: :class:`UsageDashboardType` (optional)\n\
+        \  Workspace level usage dashboard shows usage data for the specified workspace\
+        \ ID. Global level usage\n  dashboard shows usage data for all workspaces\
+        \ in the account.\n:param workspace_id: int (optional)\n  The workspace ID\
+        \ of the workspace in which the usage dashboard is created.\n\n:returns: :class:`GetBillingUsageDashboardResponse`"
+      tags:
+      - billing
+      parameters:
+      - name: dashboard_type
+        description: :class:`UsageDashboardType` (optional) Workspace level usage
+          dashboard shows usage data for the specified workspace ID. Global level
+          usage dashboard shows usage data for all workspaces in the account.
+        required: false
+        schema:
+          type: string
+          enum:
+          - USAGE_DASHBOARD_TYPE_GLOBAL
+          - USAGE_DASHBOARD_TYPE_WORKSPACE
+        in: query
+      - name: workspace_id
+        description: int (optional) The workspace ID of the workspace in which the
+          usage dashboard is created.
+        required: false
+        schema:
+          type: integer
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetBillingUsageDashboardResponse'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    ActionConfiguration:
+      type: object
+      description: 'ActionConfiguration(action_configuration_id: ''Optional[str]''
+        = None, action_type: ''Optional[ActionConfigurationType]'' = None, target:
+        ''Optional[str]'' = None)'
+      properties:
+        action_configuration_id:
+          type: string
+          description: 'Databricks action configuration ID.  action_type: Optional[ActionConfigurationType]
+            = None The type of the action.'
+        action_type:
+          type: string
+          description: 'The type of the action.  target: Optional[str] = None Target
+            for the action. For example, an email address.'
+        target:
+          type: string
+          description: 'Target for the action. For example, an email address.  def
+            as_dict(self) -> dict: Serializes the ActionConfiguration into a dictionary
+            suitable for use as a JSON request body.'
+    ActionConfigurationType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - EMAIL_NOTIFICATION
+    AlertConfiguration:
+      type: object
+      description: 'AlertConfiguration(action_configurations: ''Optional[List[ActionConfiguration]]''
+        = None, alert_configuration_id: ''Optional[str]'' = None, quantity_threshold:
+        ''Optional[str]'' = None, quantity_type: ''Optional[AlertConfigurationQuantityType]''
+        = None, time_period: ''Optional[AlertConfigurationTimePeriod]'' = None, trigger_type:
+        ''Optional[AlertConfigurationTriggerType]'' = None)'
+      properties:
+        action_configurations:
+          type: string
+          description: Configured actions for this alert. These define what happens
+            when an alert enters a triggered state.
+        alert_configuration_id:
+          type: string
+          description: 'Databricks alert configuration ID.  quantity_threshold: Optional[str]
+            = None """The threshold for the budget alert to determine if it is in
+            a triggered state. The number is evaluated based on `quantity_type`.'
+        quantity_threshold:
+          type: string
+          description: The threshold for the budget alert to determine if it is in
+            a triggered state. The number is evaluated based on `quantity_type`.
+        quantity_type:
+          type: string
+          description: The way to calculate cost for this budget alert. This is what
+            `quantity_threshold` is measured in.
+        time_period:
+          type: string
+          description: 'The time window of usage data for the budget.  trigger_type:
+            Optional[AlertConfigurationTriggerType] = None The evaluation method to
+            determine when this budget alert is in a triggered state.'
+        trigger_type:
+          type: string
+          description: 'The evaluation method to determine when this budget alert
+            is in a triggered state.  def as_dict(self) -> dict: Serializes the AlertConfiguration
+            into a dictionary suitable for use as a JSON request body.'
+    AlertConfigurationQuantityType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - LIST_PRICE_DOLLARS_USD
+    AlertConfigurationTimePeriod:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - MONTH
+    AlertConfigurationTriggerType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CUMULATIVE_SPENDING_EXCEEDED
+    BudgetConfiguration:
+      type: object
+      description: 'BudgetConfiguration(account_id: ''Optional[str]'' = None, alert_configurations:
+        ''Optional[List[AlertConfiguration]]'' = None, budget_configuration_id: ''Optional[str]''
+        = None, create_time: ''Optional[int]'' = None, display_name: ''Optional[str]''
+        = None, filter: ''Optional[BudgetConfigurationFilter]'' = None, update_time:
+        ''Optional[int]'' = None)'
+      properties:
+        account_id:
+          type: string
+          description: 'Databricks account ID.  alert_configurations: Optional[List[AlertConfiguration]]
+            = None """Alerts to configure when this budget is in a triggered state.
+            Budgets must have exactly one alert configuration.'
+        alert_configurations:
+          type: string
+          description: Alerts to configure when this budget is in a triggered state.
+            Budgets must have exactly one alert configuration.
+        budget_configuration_id:
+          type: string
+          description: 'Databricks budget configuration ID.  create_time: Optional[int]
+            = None Creation time of this budget configuration.'
+        create_time:
+          type: string
+          description: 'Creation time of this budget configuration.  display_name:
+            Optional[str] = None Human-readable name of budget configuration. Max
+            Length: 128'
+        display_name:
+          type: string
+          description: 'Human-readable name of budget configuration. Max Length: 128  filter:
+            Optional[BudgetConfigurationFilter] = None """Configured filters for this
+            budget. These are applied to your account''s usage to limit the scope
+            of what is considered for this budget. Leave empty to include all usage
+            for this account. All provided filters must be matched for usage to be
+            included.'
+        filter:
+          type: string
+          description: Configured filters for this budget. These are applied to your
+            account's usage to limit the scope of what is considered for this budget.
+            Leave empty to include all usage for this account. All provided filters
+            must be matched for usage to be included.
+        update_time:
+          type: string
+          description: 'Update time of this budget configuration.  def as_dict(self)
+            -> dict: Serializes the BudgetConfiguration into a dictionary suitable
+            for use as a JSON request body.'
+    BudgetConfigurationFilter:
+      type: object
+      description: 'BudgetConfigurationFilter(tags: ''Optional[List[BudgetConfigurationFilterTagClause]]''
+        = None, workspace_id: ''Optional[BudgetConfigurationFilterWorkspaceIdClause]''
+        = None)'
+      properties:
+        tags:
+          type: string
+          description: A list of tag keys and values that will limit the budget to
+            usage that includes those specific custom tags. Tags are case-sensitive
+            and should be entered exactly as they appear in your usage data.
+        workspace_id:
+          type: string
+          description: 'If provided, usage must match with the provided Databricks
+            workspace IDs.  def as_dict(self) -> dict: Serializes the BudgetConfigurationFilter
+            into a dictionary suitable for use as a JSON request body.'
+    BudgetConfigurationFilterClause:
+      type: object
+      description: 'BudgetConfigurationFilterClause(operator: ''Optional[BudgetConfigurationFilterOperator]''
+        = None, values: ''Optional[List[str]]'' = None)'
+      properties:
+        operator:
+          type: string
+          description: ''
+        values:
+          type: string
+          description: ''
+    BudgetConfigurationFilterOperator:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - IN
+    BudgetConfigurationFilterTagClause:
+      type: object
+      description: 'BudgetConfigurationFilterTagClause(key: ''Optional[str]'' = None,
+        value: ''Optional[BudgetConfigurationFilterClause]'' = None)'
+      properties:
+        key:
+          type: string
+          description: ''
+        value:
+          type: string
+          description: ''
+    BudgetConfigurationFilterWorkspaceIdClause:
+      type: object
+      description: 'BudgetConfigurationFilterWorkspaceIdClause(operator: ''Optional[BudgetConfigurationFilterOperator]''
+        = None, values: ''Optional[List[int]]'' = None)'
+      properties:
+        operator:
+          type: string
+          description: ''
+        values:
+          type: string
+          description: ''
+    BudgetPolicy:
+      type: object
+      description: Contains the BudgetPolicy details.
+      properties:
+        binding_workspace_ids:
+          type: string
+          description: List of workspaces that this budget policy will be exclusively
+            bound to. An empty binding implies that this budget policy is open to
+            any workspace in the account.
+        custom_tags:
+          type: string
+          description: 'A list of tags defined by the customer. At most 20 entries
+            are allowed per policy.  policy_id: Optional[str] = None The Id of the
+            policy. This field is generated by Databricks and globally unique.'
+        policy_id:
+          type: string
+          description: 'The Id of the policy. This field is generated by Databricks
+            and globally unique.  policy_name: Optional[str] = None """The name of
+            the policy. - Must be unique among active policies. - Can contain only
+            characters from the ISO 8859-1 (latin1) set. - Can''t start with reserved
+            keywords such as `databricks:default-policy`.'
+        policy_name:
+          type: string
+          description: The name of the policy. - Must be unique among active policies.
+            - Can contain only characters from the ISO 8859-1 (latin1) set. - Can't
+            start with reserved keywords such as `databricks:default-policy`.
+    CreateBillingUsageDashboardResponse:
+      type: object
+      description: 'CreateBillingUsageDashboardResponse(dashboard_id: ''Optional[str]''
+        = None)'
+      properties:
+        dashboard_id:
+          type: string
+          description: 'The unique id of the usage dashboard.  def as_dict(self) ->
+            dict: Serializes the CreateBillingUsageDashboardResponse into a dictionary
+            suitable for use as a JSON request body.'
+    CreateBudgetConfigurationBudget:
+      type: object
+      description: 'CreateBudgetConfigurationBudget(account_id: ''Optional[str]''
+        = None, alert_configurations: ''Optional[List[CreateBudgetConfigurationBudgetAlertConfigurations]]''
+        = None, display_name: ''Optional[str]'' = None, filter: ''Optional[BudgetConfigurationFilter]''
+        = None)'
+      properties:
+        account_id:
+          type: string
+          description: 'Databricks account ID.  alert_configurations: Optional[List[CreateBudgetConfigurationBudgetAlertConfigurations]]
+            = None """Alerts to configure when this budget is in a triggered state.
+            Budgets must have exactly one alert configuration.'
+        alert_configurations:
+          type: string
+          description: Alerts to configure when this budget is in a triggered state.
+            Budgets must have exactly one alert configuration.
+        display_name:
+          type: string
+          description: 'Human-readable name of budget configuration. Max Length: 128  filter:
+            Optional[BudgetConfigurationFilter] = None """Configured filters for this
+            budget. These are applied to your account''s usage to limit the scope
+            of what is considered for this budget. Leave empty to include all usage
+            for this account. All provided filters must be matched for usage to be
+            included.'
+        filter:
+          type: string
+          description: Configured filters for this budget. These are applied to your
+            account's usage to limit the scope of what is considered for this budget.
+            Leave empty to include all usage for this account. All provided filters
+            must be matched for usage to be included.
+    CreateBudgetConfigurationBudgetActionConfigurations:
+      type: object
+      description: 'CreateBudgetConfigurationBudgetActionConfigurations(action_type:
+        ''Optional[ActionConfigurationType]'' = None, target: ''Optional[str]'' =
+        None)'
+      properties:
+        action_type:
+          type: string
+          description: 'The type of the action.  target: Optional[str] = None Target
+            for the action. For example, an email address.'
+        target:
+          type: string
+          description: 'Target for the action. For example, an email address.  def
+            as_dict(self) -> dict: Serializes the CreateBudgetConfigurationBudgetActionConfigurations
+            into a dictionary suitable for use as a JSON request body.'
+    CreateBudgetConfigurationBudgetAlertConfigurations:
+      type: object
+      description: 'CreateBudgetConfigurationBudgetAlertConfigurations(action_configurations:
+        ''Optional[List[CreateBudgetConfigurationBudgetActionConfigurations]]'' =
+        None, quantity_threshold: ''Optional[str]'' = None, quantity_type: ''Optional[AlertConfigurationQuantityType]''
+        = None, time_period: ''Optional[AlertConfigurationTimePeriod]'' = None, trigger_type:
+        ''Optional[AlertConfigurationTriggerType]'' = None)'
+      properties:
+        action_configurations:
+          type: string
+          description: Configured actions for this alert. These define what happens
+            when an alert enters a triggered state.
+        quantity_threshold:
+          type: string
+          description: The threshold for the budget alert to determine if it is in
+            a triggered state. The number is evaluated based on `quantity_type`.
+        quantity_type:
+          type: string
+          description: The way to calculate cost for this budget alert. This is what
+            `quantity_threshold` is measured in.
+        time_period:
+          type: string
+          description: 'The time window of usage data for the budget.  trigger_type:
+            Optional[AlertConfigurationTriggerType] = None The evaluation method to
+            determine when this budget alert is in a triggered state.'
+        trigger_type:
+          type: string
+          description: 'The evaluation method to determine when this budget alert
+            is in a triggered state.  def as_dict(self) -> dict: Serializes the CreateBudgetConfigurationBudgetAlertConfigurations
+            into a dictionary suitable for use as a JSON request body.'
+    CreateBudgetConfigurationResponse:
+      type: object
+      description: 'CreateBudgetConfigurationResponse(budget: ''Optional[BudgetConfiguration]''
+        = None)'
+      properties:
+        budget:
+          type: string
+          description: 'The created budget configuration.  def as_dict(self) -> dict:
+            Serializes the CreateBudgetConfigurationResponse into a dictionary suitable
+            for use as a JSON request body.'
+    CreateLogDeliveryConfigurationParams:
+      type: object
+      description: '* Log Delivery Configuration'
+      properties:
+        log_type:
+          type: string
+          description: 'Log delivery type. Supported values are: * `BILLABLE_USAGE`
+            — Configure [billable usage log delivery]. For the CSV schema, see the
+            [View billable usage]. * `AUDIT_LOGS` — Configure [audit log delivery].
+            For the JSON schema, see [Configure audit logging]  [Configure audit logging]:
+            https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+            [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+            [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+            [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html'
+        output_format:
+          type: string
+          description: 'The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`,
+            this value must be `CSV`. Only the CSV (comma-separated values) format
+            is supported. For the schema, see the [View billable usage] * If `log_type`
+            is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript
+            Object Notation) format is supported. For the schema, see the [Configuring
+            audit logs].  [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+            [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html'
+        credentials_id:
+          type: string
+          description: 'The ID for a method:credentials/create that represents the
+            AWS IAM role with policy and trust relationship as described in the main
+            billable usage documentation page. See [Configure billable usage delivery].  [Configure
+            billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html'
+        storage_configuration_id:
+          type: string
+          description: 'The ID for a method:storage/create that represents the S3
+            bucket with bucket policy as described in the main billable usage documentation
+            page. See [Configure billable usage delivery].  [Configure billable usage
+            delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html'
+        config_name:
+          type: string
+          description: 'The optional human-readable name of the log delivery configuration.
+            Defaults to empty.  delivery_path_prefix: Optional[str] = None """The
+            optional delivery path prefix within Amazon S3 storage. Defaults to empty,
+            which means that logs are delivered to the root of the bucket. This must
+            be a valid S3 object key. This must not start or end with a slash character.'
+        delivery_path_prefix:
+          type: string
+          description: The optional delivery path prefix within Amazon S3 storage.
+            Defaults to empty, which means that logs are delivered to the root of
+            the bucket. This must be a valid S3 object key. This must not start or
+            end with a slash character.
+        delivery_start_time:
+          type: string
+          description: This field applies only if log_type is BILLABLE_USAGE. This
+            is the optional start month and year for delivery, specified in YYYY-MM
+            format. Defaults to current year and month. BILLABLE_USAGE logs are not
+            available for usage before March 2019 (2019-03).
+        status:
+          type: string
+          description: Status of log delivery configuration. Set to `ENABLED` (enabled)
+            or `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable
+            the configuration](#operation/patch-log-delivery-config-status) later.
+            Deletion of a configuration is not supported, so disable a log delivery
+            configuration that is no longer needed.
+        workspace_ids_filter:
+          type: string
+          description: Optional filter that specifies workspace IDs to deliver logs
+            for. By default the workspace filter is empty and log delivery applies
+            at the account level, delivering workspace-level logs for all workspaces
+            in your account, plus account level logs. You can optionally set this
+            field to an array of workspace IDs (each one is an `int64`) to which log
+            delivery should apply, in which case only workspace-level logs relating
+            to the specified workspaces are delivered. If you plan to use different
+            log delivery configurations for different workspaces, set this field explicitly.
+            Be aware that delivery configurations mentioning specific workspaces won't
+            apply to new workspaces created in the future, and delivery won't include
+            account level logs. For some types of Databricks deployments there is
+            only one workspace per account ID, so this field is unnecessary.
+    DeleteBudgetConfigurationResponse:
+      type: object
+      description: DeleteBudgetConfigurationResponse()
+      properties: {}
+    DeliveryStatus:
+      type: string
+      description: '* The status string for log delivery. Possible values are: `CREATED`:
+        There were no log delivery
+
+        attempts since the config was created. `SUCCEEDED`: The latest attempt of
+        log delivery has
+
+        succeeded completely. `USER_FAILURE`: The latest attempt of log delivery failed
+        because of
+
+        misconfiguration of customer provided permissions on role or storage. `SYSTEM_FAILURE`:
+        The
+
+        latest attempt of log delivery failed because of an Databricks internal error.
+        Contact support
+
+        if it doesn''t go away soon. `NOT_FOUND`: The log delivery status as the configuration
+        has been
+
+        disabled since the release of this feature or there are no workspaces in the
+        account.'
+      enum:
+      - CREATED
+      - NOT_FOUND
+      - SUCCEEDED
+      - SYSTEM_FAILURE
+      - USER_FAILURE
+    DownloadResponse:
+      type: object
+      description: 'DownloadResponse(contents: ''Optional[BinaryIO]'' = None)'
+      properties:
+        contents:
+          type: string
+          description: ''
+    Filter:
+      type: object
+      description: 'Structured representation of a filter to be applied to a list
+        of policies. All specified filters
+
+        will be applied in conjunction.'
+      properties:
+        creator_user_id:
+          type: string
+          description: 'The policy creator user id to be filtered on. If unspecified,
+            all policies will be returned.  creator_user_name: Optional[str] = None
+            The policy creator user name to be filtered on. If unspecified, all policies
+            will be returned.'
+        creator_user_name:
+          type: string
+          description: 'The policy creator user name to be filtered on. If unspecified,
+            all policies will be returned.  policy_name: Optional[str] = None The
+            partial name of policies to be filtered on. If unspecified, all policies
+            will be returned.'
+        policy_name:
+          type: string
+          description: 'The partial name of policies to be filtered on. If unspecified,
+            all policies will be returned.  def as_dict(self) -> dict: Serializes
+            the Filter into a dictionary suitable for use as a JSON request body.'
+    GetBillingUsageDashboardResponse:
+      type: object
+      description: 'GetBillingUsageDashboardResponse(dashboard_id: ''Optional[str]''
+        = None, dashboard_url: ''Optional[str]'' = None)'
+      properties:
+        dashboard_id:
+          type: string
+          description: 'The unique id of the usage dashboard.  dashboard_url: Optional[str]
+            = None The URL of the usage dashboard.'
+        dashboard_url:
+          type: string
+          description: 'The URL of the usage dashboard.  def as_dict(self) -> dict:
+            Serializes the GetBillingUsageDashboardResponse into a dictionary suitable
+            for use as a JSON request body.'
+    GetBudgetConfigurationResponse:
+      type: object
+      description: 'GetBudgetConfigurationResponse(budget: ''Optional[BudgetConfiguration]''
+        = None)'
+      properties:
+        budget:
+          type: string
+          description: ''
+    GetLogDeliveryConfigurationResponse:
+      type: object
+      description: 'GetLogDeliveryConfigurationResponse(log_delivery_configuration:
+        ''Optional[LogDeliveryConfiguration]'' = None)'
+      properties:
+        log_delivery_configuration:
+          type: string
+          description: 'The fetched log delivery configuration  def as_dict(self)
+            -> dict: Serializes the GetLogDeliveryConfigurationResponse into a dictionary
+            suitable for use as a JSON request body.'
+    LimitConfig:
+      type: object
+      description: 'The limit configuration of the policy. Limit configuration provide
+        a budget policy level cost
+
+        control by enforcing the limit.'
+      properties: {}
+    ListBudgetConfigurationsResponse:
+      type: object
+      description: 'ListBudgetConfigurationsResponse(budgets: ''Optional[List[BudgetConfiguration]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        budgets:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: Token which can be sent as `page_token` to retrieve the next
+            page of results. If this field is omitted, there are no subsequent budgets.
+    ListBudgetPoliciesResponse:
+      type: object
+      description: A list of policies.
+      properties:
+        next_page_token:
+          type: string
+          description: A token that can be sent as `page_token` to retrieve the next
+            page. If this field is omitted, there are no subsequent pages.
+        policies:
+          type: string
+          description: ''
+        previous_page_token:
+          type: string
+          description: A token that can be sent as `page_token` to retrieve the previous
+            page. In this field is omitted, there are no previous pages.
+    LogDeliveryConfigStatus:
+      type: string
+      description: '* Log Delivery Status
+
+
+        `ENABLED`: All dependencies have executed and succeeded `DISABLED`: At least
+        one dependency has
+
+        succeeded'
+      enum:
+      - DISABLED
+      - ENABLED
+    LogDeliveryConfiguration:
+      type: object
+      description: '* Log Delivery Configuration'
+      properties:
+        log_type:
+          type: string
+          description: 'Log delivery type. Supported values are: * `BILLABLE_USAGE`
+            — Configure [billable usage log delivery]. For the CSV schema, see the
+            [View billable usage]. * `AUDIT_LOGS` — Configure [audit log delivery].
+            For the JSON schema, see [Configure audit logging]  [Configure audit logging]:
+            https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+            [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html
+            [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+            [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html'
+        output_format:
+          type: string
+          description: 'The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`,
+            this value must be `CSV`. Only the CSV (comma-separated values) format
+            is supported. For the schema, see the [View billable usage] * If `log_type`
+            is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript
+            Object Notation) format is supported. For the schema, see the [Configuring
+            audit logs].  [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
+            [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html'
+        account_id:
+          type: string
+          description: 'Databricks account ID.  credentials_id: str """The ID for
+            a method:credentials/create that represents the AWS IAM role with policy
+            and trust relationship as described in the main billable usage documentation
+            page. See [Configure billable usage delivery].  [Configure billable usage
+            delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html'
+        credentials_id:
+          type: string
+          description: 'The ID for a method:credentials/create that represents the
+            AWS IAM role with policy and trust relationship as described in the main
+            billable usage documentation page. See [Configure billable usage delivery].  [Configure
+            billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html'
+        storage_configuration_id:
+          type: string
+          description: 'The ID for a method:storage/create that represents the S3
+            bucket with bucket policy as described in the main billable usage documentation
+            page. See [Configure billable usage delivery].  [Configure billable usage
+            delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html'
+        config_id:
+          type: string
+          description: 'The unique UUID of log delivery configuration  config_name:
+            Optional[str] = None The optional human-readable name of the log delivery
+            configuration. Defaults to empty.'
+        config_name:
+          type: string
+          description: 'The optional human-readable name of the log delivery configuration.
+            Defaults to empty.  creation_time: Optional[int] = None Time in epoch
+            milliseconds when the log delivery configuration was created.'
+        creation_time:
+          type: string
+          description: 'Time in epoch milliseconds when the log delivery configuration
+            was created.  delivery_path_prefix: Optional[str] = None """The optional
+            delivery path prefix within Amazon S3 storage. Defaults to empty, which
+            means that logs are delivered to the root of the bucket. This must be
+            a valid S3 object key. This must not start or end with a slash character.'
+        delivery_path_prefix:
+          type: string
+          description: The optional delivery path prefix within Amazon S3 storage.
+            Defaults to empty, which means that logs are delivered to the root of
+            the bucket. This must be a valid S3 object key. This must not start or
+            end with a slash character.
+        delivery_start_time:
+          type: string
+          description: This field applies only if log_type is BILLABLE_USAGE. This
+            is the optional start month and year for delivery, specified in YYYY-MM
+            format. Defaults to current year and month. BILLABLE_USAGE logs are not
+            available for usage before March 2019 (2019-03).
+        log_delivery_status:
+          type: string
+          description: 'The LogDeliveryStatus of this log delivery configuration  status:
+            Optional[LogDeliveryConfigStatus] = None """Status of log delivery configuration.
+            Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`.
+            You can [enable or disable the configuration](#operation/patch-log-delivery-config-status)
+            later. Deletion of a configuration is not supported, so disable a log
+            delivery configuration that is no longer needed.'
+        status:
+          type: string
+          description: 'The LogDeliveryStatus of this log delivery configuration  status:
+            Optional[LogDeliveryConfigStatus] = None """Status of log delivery configuration.
+            Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`.
+            You can [enable or disable the configuration](#operation/patch-log-delivery-config-status)
+            later. Deletion of a configuration is not supported, so disable a log
+            delivery configuration that is no longer needed.'
+        update_time:
+          type: string
+          description: 'Time in epoch milliseconds when the log delivery configuration
+            was updated.  workspace_ids_filter: Optional[List[int]] = None """Optional
+            filter that specifies workspace IDs to deliver logs for. By default the
+            workspace filter is empty and log delivery applies at the account level,
+            delivering workspace-level logs for all workspaces in your account, plus
+            account level logs. You can optionally set this field to an array of workspace
+            IDs (each one is an `int64`) to which log delivery should apply, in which
+            case only workspace-level logs relating to the specified workspaces are
+            delivered. If you plan to use different log delivery configurations for
+            different workspaces, set this field explicitly. Be aware that delivery
+            configurations mentioning specific workspaces won''t apply to new workspaces
+            created in the future, and delivery won''t include account level logs.
+            For some types of Databricks deployments there is only one workspace per
+            account ID, so this field is unnecessary.'
+        workspace_ids_filter:
+          type: string
+          description: Optional filter that specifies workspace IDs to deliver logs
+            for. By default the workspace filter is empty and log delivery applies
+            at the account level, delivering workspace-level logs for all workspaces
+            in your account, plus account level logs. You can optionally set this
+            field to an array of workspace IDs (each one is an `int64`) to which log
+            delivery should apply, in which case only workspace-level logs relating
+            to the specified workspaces are delivered. If you plan to use different
+            log delivery configurations for different workspaces, set this field explicitly.
+            Be aware that delivery configurations mentioning specific workspaces won't
+            apply to new workspaces created in the future, and delivery won't include
+            account level logs. For some types of Databricks deployments there is
+            only one workspace per account ID, so this field is unnecessary.
+    LogDeliveryStatus:
+      type: object
+      description: 'LogDeliveryStatus(status: ''DeliveryStatus'', message: ''str'',
+        last_attempt_time: ''Optional[str]'' = None, last_successful_attempt_time:
+        ''Optional[str]'' = None)'
+      properties:
+        status:
+          type: string
+          description: 'Enum that describes the status. Possible values are: * `CREATED`:
+            There were no log delivery attempts since the config was created. * `SUCCEEDED`:
+            The latest attempt of log delivery has succeeded completely. * `USER_FAILURE`:
+            The latest attempt of log delivery failed because of misconfiguration
+            of customer provided permissions on role or storage. * `SYSTEM_FAILURE`:
+            The latest attempt of log delivery failed because of an Databricks internal
+            error. Contact support if it doesn''t go away soon. * `NOT_FOUND`: The
+            log delivery status as the configuration has been disabled since the release
+            of this feature or there are no workspaces in the account.'
+        message:
+          type: string
+          description: Informative message about the latest log delivery attempt.
+            If the log delivery fails with USER_FAILURE, error details will be provided
+            for fixing misconfigurations in cloud permissions.
+        last_attempt_time:
+          type: string
+          description: 'The UTC time for the latest log delivery attempt.  last_successful_attempt_time:
+            Optional[str] = None The UTC time for the latest successful log delivery.'
+        last_successful_attempt_time:
+          type: string
+          description: 'The UTC time for the latest successful log delivery.  def
+            as_dict(self) -> dict: Serializes the LogDeliveryStatus into a dictionary
+            suitable for use as a JSON request body.'
+    LogType:
+      type: string
+      description: '* Log Delivery Type'
+      enum:
+      - AUDIT_LOGS
+      - BILLABLE_USAGE
+    OutputFormat:
+      type: string
+      description: '* Log Delivery Output Format'
+      enum:
+      - CSV
+      - JSON
+    PatchStatusResponse:
+      type: object
+      description: PatchStatusResponse()
+      properties: {}
+    SortSpec:
+      type: object
+      description: 'SortSpec(descending: ''Optional[bool]'' = None, field: ''Optional[SortSpecField]''
+        = None)'
+      properties:
+        descending:
+          type: string
+          description: 'Whether to sort in descending order.  field: Optional[SortSpecField]
+            = None The filed to sort by'
+        field:
+          type: string
+          description: 'The filed to sort by  def as_dict(self) -> dict: Serializes
+            the SortSpec into a dictionary suitable for use as a JSON request body.'
+    SortSpecField:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - POLICY_NAME
+    UpdateBudgetConfigurationBudget:
+      type: object
+      description: 'UpdateBudgetConfigurationBudget(account_id: ''Optional[str]''
+        = None, alert_configurations: ''Optional[List[AlertConfiguration]]'' = None,
+        budget_configuration_id: ''Optional[str]'' = None, display_name: ''Optional[str]''
+        = None, filter: ''Optional[BudgetConfigurationFilter]'' = None)'
+      properties:
+        account_id:
+          type: string
+          description: 'Databricks account ID.  alert_configurations: Optional[List[AlertConfiguration]]
+            = None """Alerts to configure when this budget is in a triggered state.
+            Budgets must have exactly one alert configuration.'
+        alert_configurations:
+          type: string
+          description: Alerts to configure when this budget is in a triggered state.
+            Budgets must have exactly one alert configuration.
+        budget_configuration_id:
+          type: string
+          description: 'Databricks budget configuration ID.  display_name: Optional[str]
+            = None Human-readable name of budget configuration. Max Length: 128'
+        display_name:
+          type: string
+          description: 'Human-readable name of budget configuration. Max Length: 128  filter:
+            Optional[BudgetConfigurationFilter] = None """Configured filters for this
+            budget. These are applied to your account''s usage to limit the scope
+            of what is considered for this budget. Leave empty to include all usage
+            for this account. All provided filters must be matched for usage to be
+            included.'
+        filter:
+          type: string
+          description: Configured filters for this budget. These are applied to your
+            account's usage to limit the scope of what is considered for this budget.
+            Leave empty to include all usage for this account. All provided filters
+            must be matched for usage to be included.
+    UpdateBudgetConfigurationResponse:
+      type: object
+      description: 'UpdateBudgetConfigurationResponse(budget: ''Optional[BudgetConfiguration]''
+        = None)'
+      properties:
+        budget:
+          type: string
+          description: 'The updated budget.  def as_dict(self) -> dict: Serializes
+            the UpdateBudgetConfigurationResponse into a dictionary suitable for use
+            as a JSON request body.'
+    UsageDashboardType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - USAGE_DASHBOARD_TYPE_GLOBAL
+      - USAGE_DASHBOARD_TYPE_WORKSPACE
+    WrappedLogDeliveryConfiguration:
+      type: object
+      description: 'WrappedLogDeliveryConfiguration(log_delivery_configuration: ''Optional[LogDeliveryConfiguration]''
+        = None)'
+      properties:
+        log_delivery_configuration:
+          type: string
+          description: 'The created log delivery configuration  def as_dict(self)
+            -> dict: Serializes the WrappedLogDeliveryConfiguration into a dictionary
+            suitable for use as a JSON request body.'
+    WrappedLogDeliveryConfigurations:
+      type: object
+      description: 'WrappedLogDeliveryConfigurations(log_delivery_configurations:
+        ''Optional[List[LogDeliveryConfiguration]]'' = None, next_page_token: ''Optional[str]''
+        = None)'
+      properties:
+        log_delivery_configurations:
+          type: string
+          description: 'Log delivery configurations were returned successfully.  next_page_token:
+            Optional[str] = None """Token which can be sent as `page_token` to retrieve
+            the next page of results. If this field is omitted, there are no subsequent
+            budgets.'
+        next_page_token:
+          type: string
+          description: Token which can be sent as `page_token` to retrieve the next
+            page of results. If this field is omitted, there are no subsequent budgets.
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Databricks personal access token
+security:
+- bearerAuth: []

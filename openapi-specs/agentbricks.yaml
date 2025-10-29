@@ -1,0 +1,338 @@
+openapi: 3.0.0
+info:
+  title: Databricks Agentbricks API
+  description: API for Databricks agentbricks service
+  version: 1.0.0
+  contact:
+    name: Databricks
+    url: https://databricks.com
+servers:
+- url: https://{deployment_name}.cloud.databricks.com
+  description: Databricks Workspace API
+  variables:
+    deployment_name:
+      default: your-deployment
+      description: Databricks workspace deployment name
+paths:
+  /api/2.0/custom-llms/{id}/optimize/cancel:
+    post:
+      operationId: cancel_optimize
+      summary: Cancel a Custom LLM Optimization Run.
+      description: 'Cancel a Custom LLM Optimization Run.
+
+
+        :param id: str'
+      tags:
+      - agentbricks
+      parameters:
+      - name: id
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+  /api/2.0/custom-llms:
+    post:
+      operationId: create_custom_llm
+      summary: Create a Custom LLM.
+      description: "Create a Custom LLM.\n\n:param name: str\n  Name of the custom\
+        \ LLM. Only alphanumeric characters and dashes allowed.\n:param instructions:\
+        \ str\n  Instructions for the custom LLM to follow\n:param agent_artifact_path:\
+        \ str (optional)\n  This will soon be deprecated!! Optional: UC path for agent\
+        \ artifacts. If you are using a dataset\n  that you only have read permissions,\
+        \ please provide a destination path where you have write\n  permissions. Please\
+        \ provide this in catalog.schema format.\n:param datasets: List[:class:`Dataset`]\
+        \ (optional)\n  Datasets used for training and evaluating the model, not for\
+        \ inference. Currently, only 1 dataset is\n  accepted.\n:param guidelines:\
+        \ List[str] (optional)\n  Guidelines for the custom LLM to adhere to\n\n:returns:\
+        \ :class:`CustomLlm`"
+      tags:
+      - agentbricks
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: str Name of the custom LLM. Only alphanumeric characters
+                    and dashes allowed.
+                instructions:
+                  type: string
+                  description: str Instructions for the custom LLM to follow
+                agent_artifact_path:
+                  type: string
+                  description: 'str (optional) This will soon be deprecated!! Optional:
+                    UC path for agent artifacts. If you are using a dataset that you
+                    only have read permissions, please provide a destination path
+                    where you have write permissions. Please provide this in catalog.schema
+                    format.'
+                datasets:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/Dataset'
+                  description: List[:class:`Dataset`] (optional) Datasets used for
+                    training and evaluating the model, not for inference. Currently,
+                    only 1 dataset is accepted.
+                guidelines:
+                  type: array
+                  items:
+                    type: string
+                  description: List[str] (optional) Guidelines for the custom LLM
+                    to adhere to
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomLlm'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/custom-llms/{id}:
+    delete:
+      operationId: delete_custom_llm
+      summary: Delete a Custom LLM.
+      description: "Delete a Custom LLM.\n\n:param id: str\n  The id of the custom\
+        \ llm"
+      tags:
+      - agentbricks
+      parameters:
+      - name: id
+        description: str The id of the custom llm
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get_custom_llm
+      summary: Get a Custom LLM.
+      description: "Get a Custom LLM.\n\n:param id: str\n  The id of the custom llm\n\
+        \n:returns: :class:`CustomLlm`"
+      tags:
+      - agentbricks
+      parameters:
+      - name: id
+        description: str The id of the custom llm
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomLlm'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: update_custom_llm
+      summary: Update a Custom LLM.
+      description: "Update a Custom LLM.\n\n:param id: str\n  The id of the custom\
+        \ llm\n:param custom_llm: :class:`CustomLlm`\n  The CustomLlm containing the\
+        \ fields which should be updated.\n:param update_mask: str\n  The list of\
+        \ the CustomLlm fields to update. These should correspond to the values (or\
+        \ lack thereof)\n  present in `custom_llm`.\n\n  The field mask must be a\
+        \ single string, with multiple fields separated by commas (no spaces). The\n\
+        \  field path is relative to the resource object, using a dot (`.`) to navigate\
+        \ sub-fields (e.g.,\n  `author.given_name`). Specification of elements in\
+        \ sequence or map fields is not allowed, as only\n  the entire collection\
+        \ field can be specified. Field names must exactly match the resource field\n\
+        \  names.\n\n  A field mask of `*` indicates full replacement. It’s recommended\
+        \ to always explicitly list the\n  fields being updated and avoid using `*`\
+        \ wildcards, as it can lead to unintended results if the API\n  changes in\
+        \ the future.\n\n:returns: :class:`CustomLlm`"
+      tags:
+      - agentbricks
+      parameters:
+      - name: id
+        description: str The id of the custom llm
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                custom_llm:
+                  $ref: '#/components/schemas/CustomLlm'
+                update_mask:
+                  type: string
+                  description: str The list of the CustomLlm fields to update. These
+                    should correspond to the values (or lack thereof) present in `custom_llm`.
+                    The field mask must be a single string, with multiple fields separated
+                    by commas (no spaces). The field path is relative to the resource
+                    object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`).
+                    Specification of elements in sequence or map fields is not allowed,
+                    as only the entire collection field can be specified. Field names
+                    must exactly match the resource field names. A field mask of `*`
+                    indicates full replacement. It’s recommended to always explicitly
+                    list the fields being updated and avoid using `*` wildcards, as
+                    it can lead to unintended results if the API changes in the future.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomLlm'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/custom-llms/{id}/optimize:
+    post:
+      operationId: start_optimize
+      summary: Start a Custom LLM Optimization Run.
+      description: "Start a Custom LLM Optimization Run.\n\n:param id: str\n  The\
+        \ Id of the tile.\n\n:returns: :class:`CustomLlm`"
+      tags:
+      - agentbricks
+      parameters:
+      - name: id
+        description: str The Id of the tile.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CustomLlm'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    CustomLlm:
+      type: object
+      description: 'CustomLlm(name: ''str'', instructions: ''str'', agent_artifact_path:
+        ''Optional[str]'' = None, creation_time: ''Optional[str]'' = None, creator:
+        ''Optional[str]'' = None, datasets: ''Optional[List[Dataset]]'' = None, endpoint_name:
+        ''Optional[str]'' = None, guidelines: ''Optional[List[str]]'' = None, id:
+        ''Optional[str]'' = None, optimization_state: ''Optional[State]'' = None)'
+      properties:
+        name:
+          type: string
+          description: 'Name of the custom LLM  instructions: str Instructions for
+            the custom LLM to follow'
+        instructions:
+          type: string
+          description: 'Instructions for the custom LLM to follow  agent_artifact_path:
+            Optional[str] = None  creation_time: Optional[str] = None Creation timestamp
+            of the custom LLM'
+        agent_artifact_path:
+          type: string
+          description: ''
+        creation_time:
+          type: string
+          description: 'Creation timestamp of the custom LLM  creator: Optional[str]
+            = None Creator of the custom LLM'
+        creator:
+          type: string
+          description: 'Creator of the custom LLM  datasets: Optional[List[Dataset]]
+            = None Datasets used for training and evaluating the model, not for inference'
+        datasets:
+          type: string
+          description: 'Datasets used for training and evaluating the model, not for
+            inference  endpoint_name: Optional[str] = None Name of the endpoint that
+            will be used to serve the custom LLM'
+        endpoint_name:
+          type: string
+          description: 'Name of the endpoint that will be used to serve the custom
+            LLM  guidelines: Optional[List[str]] = None Guidelines for the custom
+            LLM to adhere to'
+        guidelines:
+          type: string
+          description: 'Guidelines for the custom LLM to adhere to  id: Optional[str]
+            = None  optimization_state: Optional[State] = None If optimization is
+            kicked off, tracks the state of the custom LLM'
+        id:
+          type: string
+          description: ''
+        optimization_state:
+          type: string
+          description: 'If optimization is kicked off, tracks the state of the custom
+            LLM  def as_dict(self) -> dict: Serializes the CustomLlm into a dictionary
+            suitable for use as a JSON request body.'
+    Dataset:
+      type: object
+      description: 'Dataset(table: ''Table'')'
+      properties:
+        table:
+          type: string
+          description: ''
+    State:
+      type: string
+      description: States of Custom LLM optimization lifecycle.
+      enum:
+      - CANCELLED
+      - COMPLETED
+      - CREATED
+      - FAILED
+      - PENDING
+      - RUNNING
+    Table:
+      type: object
+      description: 'Table(table_path: ''str'', request_col: ''str'', response_col:
+        ''Optional[str]'' = None)'
+      properties:
+        table_path:
+          type: string
+          description: 'Full UC table path in catalog.schema.table_name format  request_col:
+            str Name of the request column'
+        request_col:
+          type: string
+          description: 'Name of the request column  response_col: Optional[str] =
+            None Optional: Name of the response column if the data is labeled'
+        response_col:
+          type: string
+          description: 'Optional: Name of the response column if the data is labeled  def
+            as_dict(self) -> dict: Serializes the Table into a dictionary suitable
+            for use as a JSON request body.'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Databricks personal access token
+security:
+- bearerAuth: []

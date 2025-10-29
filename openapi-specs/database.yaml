@@ -1,0 +1,1771 @@
+openapi: 3.0.0
+info:
+  title: Databricks Database API
+  description: API for Databricks database service
+  version: 1.0.0
+  contact:
+    name: Databricks
+    url: https://databricks.com
+servers:
+- url: https://{deployment_name}.cloud.databricks.com
+  description: Databricks Workspace API
+  variables:
+    deployment_name:
+      default: your-deployment
+      description: Databricks workspace deployment name
+paths:
+  /api/2.0/database/catalogs:
+    post:
+      operationId: create_database_catalog
+      summary: Create a Database Catalog.
+      description: 'Create a Database Catalog.
+
+
+        :param catalog: :class:`DatabaseCatalog`
+
+
+        :returns: :class:`DatabaseCatalog`'
+      tags:
+      - database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatabaseCatalog'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseCatalog'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/database/instances:
+    post:
+      operationId: create_database_instance
+      summary: Create a Database Instance.
+      description: "Create a Database Instance.\n\n:param database_instance: :class:`DatabaseInstance`\n\
+        \  Instance to create.\n\n:returns:\n  Long-running operation waiter for :class:`DatabaseInstance`.\n\
+        \  See :method:wait_get_database_instance_database_available for more details."
+      tags:
+      - database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatabaseInstance'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseInstance'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    get:
+      operationId: list_database_instances
+      summary: List Database Instances.
+      description: "List Database Instances.\n\n:param page_size: int (optional)\n\
+        \  Upper bound for items returned.\n:param page_token: str (optional)\n  Pagination\
+        \ token to go to the next page of Database Instances. Requests first page\
+        \ if absent.\n\n:returns: Iterator over :class:`DatabaseInstance`"
+      tags:
+      - database
+      parameters:
+      - name: page_size
+        description: int (optional) Upper bound for items returned.
+        required: false
+        schema:
+          type: integer
+        in: query
+      - name: page_token
+        description: str (optional) Pagination token to go to the next page of Database
+          Instances. Requests first page if absent.
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseInstance'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/database/tables:
+    post:
+      operationId: create_database_table
+      summary: 'Create a Database Table. Useful for registering pre-existing PG tables
+        in UC. See
+
+        CreateSyncedDatabaseTable for creating synced tables in PG from a source table
+        in UC.'
+      description: 'Create a Database Table. Useful for registering pre-existing PG
+        tables in UC. See
+
+        CreateSyncedDatabaseTable for creating synced tables in PG from a source table
+        in UC.
+
+
+        :param table: :class:`DatabaseTable`
+
+
+        :returns: :class:`DatabaseTable`'
+      tags:
+      - database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DatabaseTable'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseTable'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/database/synced_tables:
+    post:
+      operationId: create_synced_database_table
+      summary: Create a Synced Database Table.
+      description: 'Create a Synced Database Table.
+
+
+        :param synced_table: :class:`SyncedDatabaseTable`
+
+
+        :returns: :class:`SyncedDatabaseTable`'
+      tags:
+      - database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SyncedDatabaseTable'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncedDatabaseTable'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/database/catalogs/{name}:
+    delete:
+      operationId: delete_database_catalog
+      summary: Delete a Database Catalog.
+      description: 'Delete a Database Catalog.
+
+
+        :param name: str'
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get_database_catalog
+      summary: Get a Database Catalog.
+      description: 'Get a Database Catalog.
+
+
+        :param name: str
+
+
+        :returns: :class:`DatabaseCatalog`'
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseCatalog'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: update_database_catalog
+      summary: This API is currently unimplemented, but exposed for Terraform support.
+      description: "This API is currently unimplemented, but exposed for Terraform\
+        \ support.\n\n:param name: str\n  The name of the catalog in UC.\n:param database_catalog:\
+        \ :class:`DatabaseCatalog`\n  Note that updating a database catalog is not\
+        \ yet supported.\n:param update_mask: str\n  The list of fields to update.\
+        \ Setting this field is not yet supported.\n\n:returns: :class:`DatabaseCatalog`"
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str The name of the catalog in UC.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                database_catalog:
+                  $ref: '#/components/schemas/DatabaseCatalog'
+                update_mask:
+                  type: string
+                  description: str The list of fields to update. Setting this field
+                    is not yet supported.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseCatalog'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/database/instances/{name}:
+    delete:
+      operationId: delete_database_instance
+      summary: Delete a Database Instance.
+      description: "Delete a Database Instance.\n\n:param name: str\n  Name of the\
+        \ instance to delete.\n:param force: bool (optional)\n  By default, a instance\
+        \ cannot be deleted if it has descendant instances created via PITR. If this\n\
+        \  flag is specified as true, all descendent instances will be deleted as\
+        \ well.\n:param purge: bool (optional)\n  Deprecated. Omitting the field or\
+        \ setting it to true will result in the field being hard deleted.\n  Setting\
+        \ a value of false will throw a bad request."
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str Name of the instance to delete.
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: force
+        description: bool (optional) By default, a instance cannot be deleted if it
+          has descendant instances created via PITR. If this flag is specified as
+          true, all descendent instances will be deleted as well.
+        required: false
+        schema:
+          type: boolean
+        in: query
+      - name: purge
+        description: bool (optional) Deprecated. Omitting the field or setting it
+          to true will result in the field being hard deleted. Setting a value of
+          false will throw a bad request.
+        required: false
+        schema:
+          type: boolean
+        in: query
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get_database_instance
+      summary: Get a Database Instance.
+      description: "Get a Database Instance.\n\n:param name: str\n  Name of the cluster\
+        \ to get.\n\n:returns: :class:`DatabaseInstance`"
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str Name of the cluster to get.
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseInstance'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: update_database_instance
+      summary: Update a Database Instance.
+      description: "Update a Database Instance.\n\n:param name: str\n  The name of\
+        \ the instance. This is the unique identifier for the instance.\n:param database_instance:\
+        \ :class:`DatabaseInstance`\n:param update_mask: str\n  The list of fields\
+        \ to update. If unspecified, all fields will be updated when possible. To\
+        \ wipe out\n  custom_tags, specify custom_tags in the update_mask with an\
+        \ empty custom_tags map.\n\n:returns: :class:`DatabaseInstance`"
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str The name of the instance. This is the unique identifier for
+          the instance.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                database_instance:
+                  $ref: '#/components/schemas/DatabaseInstance'
+                update_mask:
+                  type: string
+                  description: str The list of fields to update. If unspecified, all
+                    fields will be updated when possible. To wipe out custom_tags,
+                    specify custom_tags in the update_mask with an empty custom_tags
+                    map.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseInstance'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/database/tables/{name}:
+    delete:
+      operationId: delete_database_table
+      summary: Delete a Database Table.
+      description: 'Delete a Database Table.
+
+
+        :param name: str'
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get_database_table
+      summary: Get a Database Table.
+      description: 'Get a Database Table.
+
+
+        :param name: str
+
+
+        :returns: :class:`DatabaseTable`'
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseTable'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/database/synced_tables/{name}:
+    delete:
+      operationId: delete_synced_database_table
+      summary: Delete a Synced Database Table.
+      description: 'Delete a Synced Database Table.
+
+
+        :param name: str'
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Success
+    get:
+      operationId: get_synced_database_table
+      summary: Get a Synced Database Table.
+      description: 'Get a Synced Database Table.
+
+
+        :param name: str
+
+
+        :returns: :class:`SyncedDatabaseTable`'
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncedDatabaseTable'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+    patch:
+      operationId: update_synced_database_table
+      summary: This API is currently unimplemented, but exposed for Terraform support.
+      description: "This API is currently unimplemented, but exposed for Terraform\
+        \ support.\n\n:param name: str\n  Full three-part (catalog, schema, table)\
+        \ name of the table.\n:param synced_table: :class:`SyncedDatabaseTable`\n\
+        \  Note that updating a synced database table is not yet supported.\n:param\
+        \ update_mask: str\n  The list of fields to update. Setting this field is\
+        \ not yet supported.\n\n:returns: :class:`SyncedDatabaseTable`"
+      tags:
+      - database
+      parameters:
+      - name: name
+        description: str Full three-part (catalog, schema, table) name of the table.
+        required: true
+        schema:
+          type: string
+        in: path
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                synced_table:
+                  $ref: '#/components/schemas/SyncedDatabaseTable'
+                update_mask:
+                  type: string
+                  description: str The list of fields to update. Setting this field
+                    is not yet supported.
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SyncedDatabaseTable'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/database/instances:findByUid:
+    get:
+      operationId: find_database_instance_by_uid
+      summary: Find a Database Instance by uid.
+      description: "Find a Database Instance by uid.\n\n:param uid: str (optional)\n\
+        \  UID of the cluster to get.\n\n:returns: :class:`DatabaseInstance`"
+      tags:
+      - database
+      parameters:
+      - name: uid
+        description: str (optional) UID of the cluster to get.
+        required: false
+        schema:
+          type: string
+        in: query
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseInstance'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/database/credentials:
+    post:
+      operationId: generate_database_credential
+      summary: Generates a credential that can be used to access database instances.
+      description: "Generates a credential that can be used to access database instances.\n\
+        \n:param claims: List[:class:`RequestedClaims`] (optional)\n  The returned\
+        \ token will be scoped to the union of instance_names and instances containing\
+        \ the\n  specified UC tables, so instance_names is allowed to be empty.\n\
+        :param instance_names: List[str] (optional)\n  Instances to which the token\
+        \ will be scoped.\n:param request_id: str (optional)\n\n:returns: :class:`DatabaseCredential`"
+      tags:
+      - database
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                claims:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/RequestedClaims'
+                  description: List[:class:`RequestedClaims`] (optional) The returned
+                    token will be scoped to the union of instance_names and instances
+                    containing the specified UC tables, so instance_names is allowed
+                    to be empty.
+                instance_names:
+                  type: array
+                  items:
+                    type: string
+                  description: List[str] (optional) Instances to which the token will
+                    be scoped.
+                request_id:
+                  type: string
+                  description: str (optional)
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseCredential'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+  /api/2.0/database/instances/{instance_name}/roles/{name}:
+    get:
+      operationId: get_database_instance_role
+      summary: Gets a role for a Database Instance.
+      description: 'Gets a role for a Database Instance.
+
+
+        :param instance_name: str
+
+        :param name: str
+
+
+        :returns: :class:`DatabaseInstanceRole`'
+      tags:
+      - database
+      parameters:
+      - name: instance_name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      - name: name
+        description: str
+        required: true
+        schema:
+          type: string
+        in: path
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseInstanceRole'
+        '400':
+          description: Bad request
+        '401':
+          description: Unauthorized
+        '404':
+          description: Not found
+        '500':
+          description: Internal server error
+components:
+  schemas:
+    CustomTag:
+      type: object
+      description: 'CustomTag(key: ''Optional[str]'' = None, value: ''Optional[str]''
+        = None)'
+      properties:
+        key:
+          type: string
+          description: 'The key of the custom tag.  value: Optional[str] = None The
+            value of the custom tag.'
+        value:
+          type: string
+          description: 'The value of the custom tag.  def as_dict(self) -> dict: Serializes
+            the CustomTag into a dictionary suitable for use as a JSON request body.'
+    DatabaseCatalog:
+      type: object
+      description: 'DatabaseCatalog(name: ''str'', database_instance_name: ''str'',
+        database_name: ''str'', create_database_if_not_exists: ''Optional[bool]''
+        = None, uid: ''Optional[str]'' = None)'
+      properties:
+        name:
+          type: string
+          description: 'The name of the catalog in UC.  database_instance_name: str
+            The name of the DatabaseInstance housing the database.'
+        database_instance_name:
+          type: string
+          description: 'The name of the DatabaseInstance housing the database.  database_name:
+            str The name of the database (in a instance) associated with the catalog.'
+        database_name:
+          type: string
+          description: 'The name of the database (in a instance) associated with the
+            catalog.  create_database_if_not_exists: Optional[bool] = None  uid: Optional[str]
+            = None  def as_dict(self) -> dict: Serializes the DatabaseCatalog into
+            a dictionary suitable for use as a JSON request body.'
+        create_database_if_not_exists:
+          type: string
+          description: ''
+        uid:
+          type: string
+          description: ''
+    DatabaseCredential:
+      type: object
+      description: 'DatabaseCredential(expiration_time: ''Optional[str]'' = None,
+        token: ''Optional[str]'' = None)'
+      properties:
+        expiration_time:
+          type: string
+          description: ''
+        token:
+          type: string
+          description: ''
+    DatabaseInstance:
+      type: object
+      description: 'A DatabaseInstance represents a logical Postgres instance, comprised
+        of both compute and
+
+        storage.'
+      properties:
+        name:
+          type: string
+          description: 'The name of the instance. This is the unique identifier for
+            the instance.  capacity: Optional[str] = None The sku of the instance.
+            Valid values are "CU_1", "CU_2", "CU_4", "CU_8".'
+        capacity:
+          type: string
+          description: 'The sku of the instance. Valid values are "CU_1", "CU_2",
+            "CU_4", "CU_8".  child_instance_refs: Optional[List[DatabaseInstanceRef]]
+            = None The refs of the child instances. This is only available if the
+            instance is parent instance.'
+        child_instance_refs:
+          type: string
+          description: 'The refs of the child instances. This is only available if
+            the instance is parent instance.  creation_time: Optional[str] = None
+            The timestamp when the instance was created.'
+        creation_time:
+          type: string
+          description: 'The timestamp when the instance was created.  creator: Optional[str]
+            = None The email of the creator of the instance.'
+        creator:
+          type: string
+          description: 'The email of the creator of the instance.  custom_tags: Optional[List[CustomTag]]
+            = None """Custom tags associated with the instance. This field is only
+            included on create and update responses.'
+        custom_tags:
+          type: string
+          description: Custom tags associated with the instance. This field is only
+            included on create and update responses.
+        effective_capacity:
+          type: string
+          description: 'Deprecated. The sku of the instance; this field will always
+            match the value of capacity.  effective_custom_tags: Optional[List[CustomTag]]
+            = None The recorded custom tags associated with the instance.'
+        effective_custom_tags:
+          type: string
+          description: 'The recorded custom tags associated with the instance.  effective_enable_pg_native_login:
+            Optional[bool] = None Whether the instance has PG native password login
+            enabled.'
+        effective_enable_pg_native_login:
+          type: string
+          description: 'Whether the instance has PG native password login enabled.  effective_enable_readable_secondaries:
+            Optional[bool] = None Whether secondaries serving read-only traffic are
+            enabled. Defaults to false.'
+        effective_enable_readable_secondaries:
+          type: string
+          description: 'Whether secondaries serving read-only traffic are enabled.
+            Defaults to false.  effective_node_count: Optional[int] = None """The
+            number of nodes in the instance, composed of 1 primary and 0 or more secondaries.
+            Defaults to 1 primary and 0 secondaries.'
+        effective_node_count:
+          type: string
+          description: The number of nodes in the instance, composed of 1 primary
+            and 0 or more secondaries. Defaults to 1 primary and 0 secondaries.
+        effective_retention_window_in_days:
+          type: string
+          description: The retention window for the instance. This is the time window
+            in days for which the historical data is retained.
+        effective_stopped:
+          type: string
+          description: 'Whether the instance is stopped.  effective_usage_policy_id:
+            Optional[str] = None The policy that is applied to the instance.'
+        effective_usage_policy_id:
+          type: string
+          description: 'The policy that is applied to the instance.  enable_pg_native_login:
+            Optional[bool] = None Whether to enable PG native password login on the
+            instance. Defaults to false.'
+        enable_pg_native_login:
+          type: string
+          description: 'Whether the instance has PG native password login enabled.  effective_enable_readable_secondaries:
+            Optional[bool] = None Whether secondaries serving read-only traffic are
+            enabled. Defaults to false.'
+        enable_readable_secondaries:
+          type: string
+          description: 'Whether secondaries serving read-only traffic are enabled.
+            Defaults to false.  effective_node_count: Optional[int] = None """The
+            number of nodes in the instance, composed of 1 primary and 0 or more secondaries.
+            Defaults to 1 primary and 0 secondaries.'
+        node_count:
+          type: string
+          description: The number of nodes in the instance, composed of 1 primary
+            and 0 or more secondaries. Defaults to 1 primary and 0 secondaries.
+        parent_instance_ref:
+          type: string
+          description: 'The ref of the parent instance. This is only available if
+            the instance is child instance. Input: For specifying the parent instance
+            to create a child instance. Optional. Output: Only populated if provided
+            as input to create a child instance.'
+        pg_version:
+          type: string
+          description: 'The version of Postgres running on the instance.  read_only_dns:
+            Optional[str] = None """The DNS endpoint to connect to the instance for
+            read only access. This is only available if enable_readable_secondaries
+            is true.'
+        read_only_dns:
+          type: string
+          description: The DNS endpoint to connect to the instance for read only access.
+            This is only available if enable_readable_secondaries is true.
+        read_write_dns:
+          type: string
+          description: 'The DNS endpoint to connect to the instance for read+write
+            access.  retention_window_in_days: Optional[int] = None """The retention
+            window for the instance. This is the time window in days for which the
+            historical data is retained. The default value is 7 days. Valid values
+            are 2 to 35 days.'
+        retention_window_in_days:
+          type: string
+          description: The retention window for the instance. This is the time window
+            in days for which the historical data is retained.
+        state:
+          type: string
+          description: 'The current state of the instance.  stopped: Optional[bool]
+            = None Whether to stop the instance. An input only param, see effective_stopped
+            for the output.'
+        stopped:
+          type: string
+          description: 'Whether the instance is stopped.  effective_usage_policy_id:
+            Optional[str] = None The policy that is applied to the instance.'
+        uid:
+          type: string
+          description: 'An immutable UUID identifier for the instance.  usage_policy_id:
+            Optional[str] = None The desired usage policy to associate with the instance.'
+        usage_policy_id:
+          type: string
+          description: 'The policy that is applied to the instance.  enable_pg_native_login:
+            Optional[bool] = None Whether to enable PG native password login on the
+            instance. Defaults to false.'
+    DatabaseInstanceRef:
+      type: object
+      description: 'DatabaseInstanceRef is a reference to a database instance. It
+        is used in the DatabaseInstance
+
+        object to refer to the parent instance of an instance and to refer the child
+        instances of an
+
+        instance. To specify as a parent instance during creation of an instance,
+        the lsn and
+
+        branch_time fields are optional. If not specified, the child instance will
+        be created from the
+
+        latest lsn of the parent. If both lsn and branch_time are specified, the lsn
+        will be used to
+
+        create the child instance.'
+      properties:
+        branch_time:
+          type: string
+          description: 'Branch time of the ref database instance. For a parent ref
+            instance, this is the point in time on the parent instance from which
+            the instance was created. For a child ref instance, this is the point
+            in time on the instance from which the child instance was created. Input:
+            For specifying the point in time to create a child instance. Optional.
+            Output: Only populated if provided as input to create a child instance.'
+        effective_lsn:
+          type: string
+          description: For a parent ref instance, this is the LSN on the parent instance
+            from which the instance was created. For a child ref instance, this is
+            the LSN on the instance from which the child instance was created.
+        lsn:
+          type: string
+          description: For a parent ref instance, this is the LSN on the parent instance
+            from which the instance was created. For a child ref instance, this is
+            the LSN on the instance from which the child instance was created.
+        name:
+          type: string
+          description: 'Name of the ref database instance.  uid: Optional[str] = None
+            Id of the ref database instance.'
+        uid:
+          type: string
+          description: 'Id of the ref database instance.  def as_dict(self) -> dict:
+            Serializes the DatabaseInstanceRef into a dictionary suitable for use
+            as a JSON request body.'
+    DatabaseInstanceRole:
+      type: object
+      description: A DatabaseInstanceRole represents a Postgres role in a database
+        instance.
+      properties:
+        name:
+          type: string
+          description: 'The name of the role. This is the unique identifier for the
+            role in an instance.  attributes: Optional[DatabaseInstanceRoleAttributes]
+            = None The desired API-exposed Postgres role attribute to associate with
+            the role. Optional.'
+        attributes:
+          type: string
+          description: 'The desired API-exposed Postgres role attribute to associate
+            with the role. Optional.  effective_attributes: Optional[DatabaseInstanceRoleAttributes]
+            = None The attributes that are applied to the role.'
+        effective_attributes:
+          type: string
+          description: 'The attributes that are applied to the role.  identity_type:
+            Optional[DatabaseInstanceRoleIdentityType] = None The type of the role.'
+        identity_type:
+          type: string
+          description: 'The type of the role.  instance_name: Optional[str] = None  membership_role:
+            Optional[DatabaseInstanceRoleMembershipRole] = None An enum value for
+            a standard role that this role is a member of.'
+        instance_name:
+          type: string
+          description: ''
+        membership_role:
+          type: string
+          description: 'An enum value for a standard role that this role is a member
+            of.  def as_dict(self) -> dict: Serializes the DatabaseInstanceRole into
+            a dictionary suitable for use as a JSON request body.'
+    DatabaseInstanceRoleAttributes:
+      type: object
+      description: 'Attributes that can be granted to a Postgres role. We are only
+        implementing a subset for now,
+
+        see xref: https://www.postgresql.org/docs/16/sql-createrole.html The values
+        follow Postgres
+
+        keyword naming e.g. CREATEDB, BYPASSRLS, etc. which is why they don''t include
+        typical
+
+        underscores between words. We were requested to make this a nested object/struct
+        representation
+
+        since these are knobs from an external spec.'
+      properties:
+        bypassrls:
+          type: string
+          description: ''
+        createdb:
+          type: string
+          description: ''
+        createrole:
+          type: string
+          description: ''
+    DatabaseInstanceRoleIdentityType:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - GROUP
+      - PG_ONLY
+      - SERVICE_PRINCIPAL
+      - USER
+    DatabaseInstanceRoleMembershipRole:
+      type: string
+      description: Roles that the DatabaseInstanceRole can be a member of.
+      enum:
+      - DATABRICKS_SUPERUSER
+    DatabaseInstanceState:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - AVAILABLE
+      - DELETING
+      - FAILING_OVER
+      - STARTING
+      - STOPPED
+      - UPDATING
+    DatabaseTable:
+      type: object
+      description: 'Next field marker: 13'
+      properties:
+        name:
+          type: string
+          description: 'Full three-part (catalog, schema, table) name of the table.  database_instance_name:
+            Optional[str] = None """Name of the target database instance. This is
+            required when creating database tables in standard catalogs. This is optional
+            when creating database tables in registered catalogs. If this field is
+            specified when creating database tables in registered catalogs, the database
+            instance name MUST match that of the registered catalog (or the request
+            will be rejected).'
+        database_instance_name:
+          type: string
+          description: Name of the target database instance. This is required when
+            creating database tables in standard catalogs. This is optional when creating
+            database tables in registered catalogs. If this field is specified when
+            creating database tables in registered catalogs, the database instance
+            name MUST match that of the registered catalog (or the request will be
+            rejected).
+        logical_database_name:
+          type: string
+          description: Target Postgres database object (logical database) name for
+            this table.  When creating a table in a registered Postgres catalog, the
+            target Postgres database name is inferred to be that of the registered
+            catalog. If this field is specified in this scenario, the Postgres database
+            name MUST match that of the registered catalog (or the request will be
+            rejected).  When creating a table in a standard catalog, this field is
+            required. In this scenario, specifying this field will allow targeting
+            an arbitrary postgres database.
+    DeltaTableSyncInfo:
+      type: object
+      description: 'DeltaTableSyncInfo(delta_commit_timestamp: ''Optional[str]'' =
+        None, delta_commit_version: ''Optional[int]'' = None)'
+      properties:
+        delta_commit_timestamp:
+          type: string
+          description: 'The timestamp when the above Delta version was committed in
+            the source Delta table. Note: This is the Delta commit time, not the time
+            the data was written to the synced table.'
+        delta_commit_version:
+          type: string
+          description: 'The Delta Lake commit version that was last successfully synced.  def
+            as_dict(self) -> dict: Serializes the DeltaTableSyncInfo into a dictionary
+            suitable for use as a JSON request body.'
+    ListDatabaseCatalogsResponse:
+      type: object
+      description: 'ListDatabaseCatalogsResponse(database_catalogs: ''Optional[List[DatabaseCatalog]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        database_catalogs:
+          type: string
+          description: ''
+        next_page_token:
+          type: string
+          description: 'Pagination token to request the next page of database catalogs.  def
+            as_dict(self) -> dict: Serializes the ListDatabaseCatalogsResponse into
+            a dictionary suitable for use as a JSON request body.'
+    ListDatabaseInstanceRolesResponse:
+      type: object
+      description: 'ListDatabaseInstanceRolesResponse(database_instance_roles: ''Optional[List[DatabaseInstanceRole]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        database_instance_roles:
+          type: string
+          description: 'List of database instance roles.  next_page_token: Optional[str]
+            = None Pagination token to request the next page of instances.'
+        next_page_token:
+          type: string
+          description: 'Pagination token to request the next page of instances.  def
+            as_dict(self) -> dict: Serializes the ListDatabaseInstanceRolesResponse
+            into a dictionary suitable for use as a JSON request body.'
+    ListDatabaseInstancesResponse:
+      type: object
+      description: 'ListDatabaseInstancesResponse(database_instances: ''Optional[List[DatabaseInstance]]''
+        = None, next_page_token: ''Optional[str]'' = None)'
+      properties:
+        database_instances:
+          type: string
+          description: 'List of instances.  next_page_token: Optional[str] = None
+            Pagination token to request the next page of instances.'
+        next_page_token:
+          type: string
+          description: 'Pagination token to request the next page of instances.  def
+            as_dict(self) -> dict: Serializes the ListDatabaseInstancesResponse into
+            a dictionary suitable for use as a JSON request body.'
+    ListSyncedDatabaseTablesResponse:
+      type: object
+      description: 'ListSyncedDatabaseTablesResponse(next_page_token: ''Optional[str]''
+        = None, synced_tables: ''Optional[List[SyncedDatabaseTable]]'' = None)'
+      properties:
+        next_page_token:
+          type: string
+          description: 'Pagination token to request the next page of synced tables.  synced_tables:
+            Optional[List[SyncedDatabaseTable]] = None  def as_dict(self) -> dict:
+            Serializes the ListSyncedDatabaseTablesResponse into a dictionary suitable
+            for use as a JSON request body.'
+        synced_tables:
+          type: string
+          description: ''
+    NewPipelineSpec:
+      type: object
+      description: 'Custom fields that user can set for pipeline while creating SyncedDatabaseTable.
+        Note that other
+
+        fields of pipeline are still inferred by table def internally'
+      properties:
+        storage_catalog:
+          type: string
+          description: This field needs to be specified if the destination catalog
+            is a managed postgres catalog.  UC catalog for the pipeline to store intermediate
+            files (checkpoints, event logs etc). This needs to be a standard catalog
+            where the user has permissions to create Delta tables.
+        storage_schema:
+          type: string
+          description: This field needs to be specified if the destination catalog
+            is a managed postgres catalog.  UC schema for the pipeline to store intermediate
+            files (checkpoints, event logs etc). This needs to be in the standard
+            catalog where the user has permissions to create Delta tables.
+    ProvisioningInfoState:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - ACTIVE
+      - DEGRADED
+      - DELETING
+      - FAILED
+      - PROVISIONING
+      - UPDATING
+    ProvisioningPhase:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - PROVISIONING_PHASE_INDEX_SCAN
+      - PROVISIONING_PHASE_INDEX_SORT
+      - PROVISIONING_PHASE_MAIN
+    RequestedClaims:
+      type: object
+      description: 'RequestedClaims(permission_set: ''Optional[RequestedClaimsPermissionSet]''
+        = None, resources: ''Optional[List[RequestedResource]]'' = None)'
+      properties:
+        permission_set:
+          type: string
+          description: ''
+        resources:
+          type: string
+          description: ''
+    RequestedClaimsPermissionSet:
+      type: string
+      description: Might add WRITE in the future
+      enum:
+      - READ_ONLY
+    RequestedResource:
+      type: object
+      description: 'RequestedResource(table_name: ''Optional[str]'' = None, unspecified_resource_name:
+        ''Optional[str]'' = None)'
+      properties:
+        table_name:
+          type: string
+          description: ''
+        unspecified_resource_name:
+          type: string
+          description: ''
+    SyncedDatabaseTable:
+      type: object
+      description: 'Next field marker: 18'
+      properties:
+        name:
+          type: string
+          description: 'Full three-part (catalog, schema, table) name of the table.  data_synchronization_status:
+            Optional[SyncedTableStatus] = None Synced Table data synchronization status'
+        data_synchronization_status:
+          type: string
+          description: 'Synced Table data synchronization status  database_instance_name:
+            Optional[str] = None """Name of the target database instance. This is
+            required when creating synced database tables in standard catalogs. This
+            is optional when creating synced database tables in registered catalogs.
+            If this field is specified when creating synced database tables in registered
+            catalogs, the database instance name MUST match that of the registered
+            catalog (or the request will be rejected).'
+        database_instance_name:
+          type: string
+          description: Name of the target database instance. This is required when
+            creating synced database tables in standard catalogs. This is optional
+            when creating synced database tables in registered catalogs. If this field
+            is specified when creating synced database tables in registered catalogs,
+            the database instance name MUST match that of the registered catalog (or
+            the request will be rejected).
+        effective_database_instance_name:
+          type: string
+          description: The name of the database instance that this table is registered
+            to. This field is always returned, and for tables inside database catalogs
+            is inferred database instance associated with the catalog.
+        effective_logical_database_name:
+          type: string
+          description: 'The name of the logical database that this table is registered
+            to.  logical_database_name: Optional[str] = None """Target Postgres database
+            object (logical database) name for this table.  When creating a synced
+            table in a registered Postgres catalog, the target Postgres database name
+            is inferred to be that of the registered catalog. If this field is specified
+            in this scenario, the Postgres database name MUST match that of the registered
+            catalog (or the request will be rejected).  When creating a synced table
+            in a standard catalog, this field is required. In this scenario, specifying
+            this field will allow targeting an arbitrary postgres database. Note that
+            this has implications for the `create_database_objects_is_missing` field
+            in `spec`.'
+        logical_database_name:
+          type: string
+          description: 'The name of the logical database that this table is registered
+            to.  logical_database_name: Optional[str] = None """Target Postgres database
+            object (logical database) name for this table.  When creating a synced
+            table in a registered Postgres catalog, the target Postgres database name
+            is inferred to be that of the registered catalog. If this field is specified
+            in this scenario, the Postgres database name MUST match that of the registered
+            catalog (or the request will be rejected).  When creating a synced table
+            in a standard catalog, this field is required. In this scenario, specifying
+            this field will allow targeting an arbitrary postgres database. Note that
+            this has implications for the `create_database_objects_is_missing` field
+            in `spec`.'
+        spec:
+          type: string
+          description: ''
+        unity_catalog_provisioning_state:
+          type: string
+          description: The provisioning state of the synced table entity in Unity
+            Catalog. This is distinct from the state of the data synchronization pipeline
+            (i.e. the table may be in "ACTIVE" but the pipeline may be in "PROVISIONING"
+            as it runs asynchronously).
+    SyncedTableContinuousUpdateStatus:
+      type: object
+      description: 'Detailed status of a synced table. Shown if the synced table is
+        in the SYNCED_CONTINUOUS_UPDATE
+
+        or the SYNCED_UPDATING_PIPELINE_RESOURCES state.'
+      properties:
+        initial_pipeline_sync_progress:
+          type: string
+          description: 'Progress of the initial data synchronization.  last_processed_commit_version:
+            Optional[int] = None The last source table Delta version that was successfully
+            synced to the synced table.'
+        last_processed_commit_version:
+          type: string
+          description: 'The last source table Delta version that was successfully
+            synced to the synced table.  timestamp: Optional[str] = None """The end
+            timestamp of the last time any data was synchronized from the source table
+            to the synced table. This is when the data is available in the synced
+            table.'
+        timestamp:
+          type: string
+          description: The end timestamp of the last time any data was synchronized
+            from the source table to the synced table. This is when the data is available
+            in the synced table.
+    SyncedTableFailedStatus:
+      type: object
+      description: 'Detailed status of a synced table. Shown if the synced table is
+        in the OFFLINE_FAILED or the
+
+        SYNCED_PIPELINE_FAILED state.'
+      properties:
+        last_processed_commit_version:
+          type: string
+          description: The last source table Delta version that was successfully synced
+            to the synced table. The last source table Delta version that was synced
+            to the synced table. Only populated if the table is still synced and available
+            for serving.
+        timestamp:
+          type: string
+          description: The end timestamp of the last time any data was synchronized
+            from the source table to the synced table. Only populated if the table
+            is still synced and available for serving.
+    SyncedTablePipelineProgress:
+      type: object
+      description: Progress information of the Synced Table data synchronization pipeline.
+      properties:
+        estimated_completion_time_seconds:
+          type: string
+          description: 'The estimated time remaining to complete this update in seconds.  latest_version_currently_processing:
+            Optional[int] = None """The source table Delta version that was last processed
+            by the pipeline. The pipeline may not have completely processed this version
+            yet.'
+        latest_version_currently_processing:
+          type: string
+          description: The source table Delta version that was last processed by the
+            pipeline. The pipeline may not have completely processed this version
+            yet.
+        provisioning_phase:
+          type: string
+          description: 'The current phase of the data synchronization pipeline.  sync_progress_completion:
+            Optional[float] = None The completion ratio of this update. This is a
+            number between 0 and 1.'
+        sync_progress_completion:
+          type: string
+          description: 'The completion ratio of this update. This is a number between
+            0 and 1.  synced_row_count: Optional[int] = None The number of rows that
+            have been synced in this update.'
+        synced_row_count:
+          type: string
+          description: 'The number of rows that have been synced in this update.  total_row_count:
+            Optional[int] = None The total number of rows that need to be synced in
+            this update. This number may be an estimate.'
+        total_row_count:
+          type: string
+          description: 'The total number of rows that need to be synced in this update.
+            This number may be an estimate.  def as_dict(self) -> dict: Serializes
+            the SyncedTablePipelineProgress into a dictionary suitable for use as
+            a JSON request body.'
+    SyncedTablePosition:
+      type: object
+      description: 'SyncedTablePosition(delta_table_sync_info: ''Optional[DeltaTableSyncInfo]''
+        = None, sync_end_timestamp: ''Optional[str]'' = None, sync_start_timestamp:
+        ''Optional[str]'' = None)'
+      properties:
+        delta_table_sync_info:
+          type: string
+          description: ''
+        sync_end_timestamp:
+          type: string
+          description: The end timestamp of the most recent successful synchronization.
+            This is the time when the data is available in the synced table.
+        sync_start_timestamp:
+          type: string
+          description: The starting timestamp of the most recent successful synchronization
+            from the source table to the destination (synced) table. Note this is
+            the starting timestamp of the sync operation, not the end time. E.g.,
+            for a batch, this is the time when the sync operation started.
+    SyncedTableProvisioningStatus:
+      type: object
+      description: 'Detailed status of a synced table. Shown if the synced table is
+        in the
+
+        PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state.'
+      properties:
+        initial_pipeline_sync_progress:
+          type: string
+          description: Details about initial data synchronization. Only populated
+            when in the PROVISIONING_INITIAL_SNAPSHOT state.
+    SyncedTableSchedulingPolicy:
+      type: string
+      description: 'Create a collection of name/value pairs.
+
+
+        Example enumeration:
+
+
+        >>> class Color(Enum):
+
+        ...     RED = 1
+
+        ...     BLUE = 2
+
+        ...     GREEN = 3
+
+
+        Access them by:
+
+
+        - attribute access::
+
+
+        >>> Color.RED
+
+        <Color.RED: 1>
+
+
+        - value lookup:
+
+
+        >>> Color(1)
+
+        <Color.RED: 1>
+
+
+        - name lookup:
+
+
+        >>> Color[''RED'']
+
+        <Color.RED: 1>
+
+
+        Enumerations can be iterated over, and know how many members they have:
+
+
+        >>> len(Color)
+
+        3
+
+
+        >>> list(Color)
+
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+
+        Methods can be added to enumerations, and members can have their own
+
+        attributes -- see the documentation for details.'
+      enum:
+      - CONTINUOUS
+      - SNAPSHOT
+      - TRIGGERED
+    SyncedTableSpec:
+      type: object
+      description: Specification of a synced database table.
+      properties:
+        create_database_objects_if_missing:
+          type: string
+          description: If true, the synced table's logical database and schema resources
+            in PG will be created if they do not already exist.
+        existing_pipeline_id:
+          type: string
+          description: At most one of existing_pipeline_id and new_pipeline_spec should
+            be defined.  If existing_pipeline_id is defined, the synced table will
+            be bin packed into the existing pipeline referenced. This avoids creating
+            a new pipeline and allows sharing existing compute. In this case, the
+            scheduling_policy of this synced table must match the scheduling policy
+            of the existing pipeline.
+        new_pipeline_spec:
+          type: string
+          description: At most one of existing_pipeline_id and new_pipeline_spec should
+            be defined.  If new_pipeline_spec is defined, a new pipeline is created
+            for this synced table. The location pointed to is used to store intermediate
+            files (checkpoints, event logs etc). The caller must have write permissions
+            to create Delta tables in the specified catalog and schema. Again, note
+            this requires write permissions, whereas the source table only requires
+            read permissions.
+        primary_key_columns:
+          type: string
+          description: 'Primary Key columns to be used for data insert/update in the
+            destination.  scheduling_policy: Optional[SyncedTableSchedulingPolicy]
+            = None Scheduling policy of the underlying pipeline.'
+        scheduling_policy:
+          type: string
+          description: 'Scheduling policy of the underlying pipeline.  source_table_full_name:
+            Optional[str] = None Three-part (catalog, schema, table) name of the source
+            Delta table.'
+        source_table_full_name:
+          type: string
+          description: 'Three-part (catalog, schema, table) name of the source Delta
+            table.  timeseries_key: Optional[str] = None Time series key to deduplicate
+            (tie-break) rows with the same primary key.'
+        timeseries_key:
+          type: string
+          description: 'Time series key to deduplicate (tie-break) rows with the same
+            primary key.  def as_dict(self) -> dict: Serializes the SyncedTableSpec
+            into a dictionary suitable for use as a JSON request body.'
+    SyncedTableState:
+      type: string
+      description: The state of a synced table.
+      enum:
+      - SYNCED_TABLED_OFFLINE
+      - SYNCED_TABLE_OFFLINE_FAILED
+      - SYNCED_TABLE_ONLINE
+      - SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE
+      - SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE
+      - SYNCED_TABLE_ONLINE_PIPELINE_FAILED
+      - SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE
+      - SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES
+      - SYNCED_TABLE_PROVISIONING
+      - SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT
+      - SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES
+    SyncedTableStatus:
+      type: object
+      description: Status of a synced table.
+      properties:
+        continuous_update_status:
+          type: string
+          description: ''
+        detailed_state:
+          type: string
+          description: 'The state of the synced table.  failed_status: Optional[SyncedTableFailedStatus]
+            = None  last_sync: Optional[SyncedTablePosition] = None """Summary of
+            the last successful synchronization from source to destination.  Will
+            always be present if there has been a successful sync. Even if the most
+            recent syncs have failed.  Limitation: The only exception is if the synced
+            table is doing a FULL REFRESH, then the last sync information will not
+            be available until the full refresh is complete. This limitation will
+            be addressed in a future version.  This top-level field is a convenience
+            for consumers who want easy access to last sync information without having
+            to traverse detailed_status.'
+        failed_status:
+          type: string
+          description: ''
+        last_sync:
+          type: string
+          description: 'Summary of the last successful synchronization from source
+            to destination.  Will always be present if there has been a successful
+            sync. Even if the most recent syncs have failed.  Limitation: The only
+            exception is if the synced table is doing a FULL REFRESH, then the last
+            sync information will not be available until the full refresh is complete.
+            This limitation will be addressed in a future version.  This top-level
+            field is a convenience for consumers who want easy access to last sync
+            information without having to traverse detailed_status.'
+        message:
+          type: string
+          description: 'A text description of the current state of the synced table.  pipeline_id:
+            Optional[str] = None """ID of the associated pipeline. The pipeline ID
+            may have been provided by the client (in the case of bin packing), or
+            generated by the server (when creating a new pipeline).'
+        pipeline_id:
+          type: string
+          description: ID of the associated pipeline. The pipeline ID may have been
+            provided by the client (in the case of bin packing), or generated by the
+            server (when creating a new pipeline).
+        provisioning_status:
+          type: string
+          description: ''
+        triggered_update_status:
+          type: string
+          description: ''
+    SyncedTableTriggeredUpdateStatus:
+      type: object
+      description: 'Detailed status of a synced table. Shown if the synced table is
+        in the SYNCED_TRIGGERED_UPDATE
+
+        or the SYNCED_NO_PENDING_UPDATE state.'
+      properties:
+        last_processed_commit_version:
+          type: string
+          description: 'The last source table Delta version that was successfully
+            synced to the synced table.  timestamp: Optional[str] = None """The end
+            timestamp of the last time any data was synchronized from the source table
+            to the synced table. This is when the data is available in the synced
+            table.'
+        timestamp:
+          type: string
+          description: The end timestamp of the last time any data was synchronized
+            from the source table to the synced table. This is when the data is available
+            in the synced table.
+        triggered_update_progress:
+          type: string
+          description: 'Progress of the active data synchronization pipeline.  def
+            as_dict(self) -> dict: Serializes the SyncedTableTriggeredUpdateStatus
+            into a dictionary suitable for use as a JSON request body.'
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
+      description: Databricks personal access token
+security:
+- bearerAuth: []
