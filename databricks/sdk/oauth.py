@@ -37,7 +37,7 @@ class AuthorizationDetail:
     type: str
     object_type: str
     object_path: str
-    actions: list[str]
+    actions: List[str]
 
     def as_dict(self) -> dict:
         return {
