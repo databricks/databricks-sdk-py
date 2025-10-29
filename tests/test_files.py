@@ -1085,7 +1085,7 @@ class PresignedUrlDownloadTestCase:
             custom_response_download_from_url=CustomResponse(
                 code=403,
                 first_invocation=2,
-                last_invocation=4,
+                last_invocation=3,
                 body=PresignedUrlDownloadTestCase.expired_url_aws_response,
             ),
         ),
