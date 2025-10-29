@@ -1085,7 +1085,7 @@ class PresignedUrlDownloadTestCase:
             custom_response_download_from_url=CustomResponse(
                 code=403,
                 first_invocation=2,
-                last_invocation=4,
+                last_invocation=3,
                 body=PresignedUrlDownloadTestCase.expired_url_aws_response,
             ),
         ),
@@ -1375,8 +1375,8 @@ class UploadTestCase:
                 def upload() -> None:
                     if source_type == UploadSourceType.FILE:
                         w.files.upload_from(
-                            self.path,
-                            content_or_source,
+                            file_path=self.path,
+                            source_path=content_or_source,
                             overwrite=self.overwrite,
                             part_size=self.multipart_upload_part_size,
                             use_parallel=use_parallel,
@@ -1384,8 +1384,8 @@ class UploadTestCase:
                         )
                     else:
                         w.files.upload(
-                            self.path,
-                            content_or_source,
+                            file_path=self.path,
+                            contents=content_or_source,
                             overwrite=self.overwrite,
                             part_size=self.multipart_upload_part_size,
                             use_parallel=use_parallel,

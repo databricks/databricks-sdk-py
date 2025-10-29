@@ -1064,7 +1064,7 @@ class FilesExt(files.FilesAPI):
     def upload(
         self,
         file_path: str,
-        content: BinaryIO,
+        contents: BinaryIO,
         *,
         overwrite: Optional[bool] = None,
         part_size: Optional[int] = None,
@@ -1076,7 +1076,7 @@ class FilesExt(files.FilesAPI):
 
         :param file_path: str
             The absolute remote path of the target file, e.g. /Volumes/path/to/your/file
-        :param content: BinaryIO
+        :param contents: BinaryIO
             The contents of the file to upload. This must be a BinaryIO stream.
         :param overwrite: bool (optional)
             If true, an existing file will be overwritten. When not specified, assumed True.
@@ -1096,7 +1096,7 @@ class FilesExt(files.FilesAPI):
 
         if self._config.disable_experimental_files_api_client:
             _LOG.info("Disable experimental files API client, will use the original upload method.")
-            super().upload(file_path=file_path, contents=content, overwrite=overwrite)
+            super().upload(file_path=file_path, contents=contents, overwrite=overwrite)
             return UploadStreamResult()
 
         _LOG.debug(f"Uploading file from BinaryIO stream")
@@ -1107,12 +1107,12 @@ class FilesExt(files.FilesAPI):
 
         # Determine content length if the stream is seekable
         content_length = None
-        if content.seekable():
+        if contents.seekable():
             _LOG.debug(f"Uploading using seekable mode")
             # If the stream is seekable, we can read its size.
-            content.seek(0, os.SEEK_END)
-            content_length = content.tell()
-            content.seek(0)
+            contents.seek(0, os.SEEK_END)
+            content_length = contents.tell()
+            contents.seek(0)
 
         # Get optimized part size and batch size based on content length and provided part size
         optimized_part_size, optimized_batch_size = self._get_optimized_performance_parameters_for_upload(
@@ -1135,17 +1135,17 @@ class FilesExt(files.FilesAPI):
         )
 
         if ctx.use_parallel:
-            self._parallel_upload_from_stream(ctx, content)
+            self._parallel_upload_from_stream(ctx, contents)
             return UploadStreamResult()
         elif ctx.content_length is not None:
-            self._upload_single_thread_with_known_size(ctx, content)
+            self._upload_single_thread_with_known_size(ctx, contents)
             return UploadStreamResult()
         else:
             _LOG.debug(f"Uploading using non-seekable mode")
             # If the stream is not seekable, we cannot determine its size.
             # We will use a multipart upload.
             _LOG.debug(f"Using multipart upload for non-seekable input stream of unknown size for file {file_path}")
-            self._single_thread_multipart_upload(ctx, content)
+            self._single_thread_multipart_upload(ctx, contents)
             return UploadStreamResult()
 
     def upload_from(
