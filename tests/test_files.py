@@ -1806,7 +1806,7 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         MultipartUploadTestCase(
             "Multipart upload successful: empty file or empty seekable stream",
-            content_size=0,  # less than part size
+            content_size=0,  # content with zero length
             multipart_upload_min_stream_size=100 * 1024 * 1024,  # all files smaller than 100M goes to single-shot
             expected_single_shot_upload=True,
             expected_multipart_upload_aborted=None,
