@@ -33,5 +33,6 @@ databricks/sdk/service/tags.py linguist-generated=true
 databricks/sdk/service/vectorsearch.py linguist-generated=true
 databricks/sdk/service/workspace.py linguist-generated=true
 test_http_call.py linguist-generated=true
+test_idempotency.py linguist-generated=true
 test_json_marshall.py linguist-generated=true
 test_lro_call.py linguist-generated=true

@@ -279,7 +279,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 46
+   Next Id: 47
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -574,10 +574,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DatabricksGcpServiceAccountResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteAliasResponse
    :members:
    :undoc-members:
 
@@ -1504,7 +1500,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_SALESFORCE_OAUTH_MTLS = 268; Next id:269
+   Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"

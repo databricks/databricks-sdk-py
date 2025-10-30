@@ -292,6 +292,38 @@ class CommentObject:
 
 
 @dataclass
+class ContinuousWindow:
+    window_duration: str
+    """The duration of the continuous window (must be positive)."""
+
+    offset: Optional[str] = None
+    """The offset of the continuous window (must be non-positive)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ContinuousWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.offset is not None:
+            body["offset"] = self.offset
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ContinuousWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.offset is not None:
+            body["offset"] = self.offset
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ContinuousWindow:
+        """Deserializes the ContinuousWindow from a dictionary."""
+        return cls(offset=d.get("offset", None), window_duration=d.get("window_duration", None))
+
+
+@dataclass
 class CreateCommentResponse:
     comment: Optional[CommentObject] = None
     """New comment object"""
@@ -2987,16 +3019,16 @@ class MaterializedFeature:
     feature_name: str
     """The full name of the feature in Unity Catalog."""
 
-    offline_store_config: OfflineStoreConfig
-
-    online_store_config: OnlineStore
-
     last_materialization_time: Optional[str] = None
     """The timestamp when the pipeline last ran and updated the materialized feature values. If the
     pipeline has not run yet, this field will be null."""
 
     materialized_feature_id: Optional[str] = None
     """Unique identifier for the materialized feature."""
+
+    offline_store_config: Optional[OfflineStoreConfig] = None
+
+    online_store_config: Optional[OnlineStore] = None
 
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
     """The schedule state of the materialization pipeline."""
@@ -5114,6 +5146,38 @@ class SetTagResponse:
         return cls()
 
 
+@dataclass
+class SlidingWindow:
+    window_duration: str
+    """The duration of the sliding window."""
+
+    slide_duration: str
+    """The slide duration (interval by which windows advance, must be positive and less than duration)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SlidingWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.slide_duration is not None:
+            body["slide_duration"] = self.slide_duration
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SlidingWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.slide_duration is not None:
+            body["slide_duration"] = self.slide_duration
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SlidingWindow:
+        """Deserializes the SlidingWindow from a dictionary."""
+        return cls(slide_duration=d.get("slide_duration", None), window_duration=d.get("window_duration", None))
+
+
 class Status(Enum):
     """The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register
     a new model version is pending as server performs background tasks.
@@ -5161,34 +5225,42 @@ class TestRegistryWebhookResponse:
 
 @dataclass
 class TimeWindow:
-    duration: str
-    """The duration of the time window."""
+    continuous: Optional[ContinuousWindow] = None
 
-    offset: Optional[str] = None
-    """The offset of the time window."""
+    sliding: Optional[SlidingWindow] = None
+
+    tumbling: Optional[TumblingWindow] = None
 
     def as_dict(self) -> dict:
         """Serializes the TimeWindow into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.duration is not None:
-            body["duration"] = self.duration
-        if self.offset is not None:
-            body["offset"] = self.offset
+        if self.continuous:
+            body["continuous"] = self.continuous.as_dict()
+        if self.sliding:
+            body["sliding"] = self.sliding.as_dict()
+        if self.tumbling:
+            body["tumbling"] = self.tumbling.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the TimeWindow into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.duration is not None:
-            body["duration"] = self.duration
-        if self.offset is not None:
-            body["offset"] = self.offset
+        if self.continuous:
+            body["continuous"] = self.continuous
+        if self.sliding:
+            body["sliding"] = self.sliding
+        if self.tumbling:
+            body["tumbling"] = self.tumbling
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TimeWindow:
         """Deserializes the TimeWindow from a dictionary."""
-        return cls(duration=d.get("duration", None), offset=d.get("offset", None))
+        return cls(
+            continuous=_from_dict(d, "continuous", ContinuousWindow),
+            sliding=_from_dict(d, "sliding", SlidingWindow),
+            tumbling=_from_dict(d, "tumbling", TumblingWindow),
+        )
 
 
 @dataclass
@@ -5284,6 +5356,31 @@ class TransitionStageResponse:
     def from_dict(cls, d: Dict[str, Any]) -> TransitionStageResponse:
         """Deserializes the TransitionStageResponse from a dictionary."""
         return cls(model_version_databricks=_from_dict(d, "model_version_databricks", ModelVersionDatabricks))
+
+
+@dataclass
+class TumblingWindow:
+    window_duration: str
+    """The duration of each tumbling window (non-overlapping, fixed-duration windows)."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TumblingWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TumblingWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.window_duration is not None:
+            body["window_duration"] = self.window_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TumblingWindow:
+        """Deserializes the TumblingWindow from a dictionary."""
+        return cls(window_duration=d.get("window_duration", None))
 
 
 @dataclass
@@ -5478,6 +5575,7 @@ class ExperimentsAPI:
 
         :returns: :class:`CreateExperimentResponse`
         """
+
         body = {}
         if artifact_location is not None:
             body["artifact_location"] = artifact_location
@@ -5520,6 +5618,7 @@ class ExperimentsAPI:
 
         :returns: :class:`CreateLoggedModelResponse`
         """
+
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
@@ -5568,6 +5667,7 @@ class ExperimentsAPI:
 
         :returns: :class:`CreateRunResponse`
         """
+
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
@@ -5596,6 +5696,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
@@ -5646,6 +5747,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if run_id is not None:
             body["run_id"] = run_id
@@ -5674,6 +5776,7 @@ class ExperimentsAPI:
 
         :returns: :class:`DeleteRunsResponse`
         """
+
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
@@ -5700,6 +5803,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if key is not None:
             body["key"] = key
@@ -5723,6 +5827,7 @@ class ExperimentsAPI:
 
         :returns: :class:`FinalizeLoggedModelResponse`
         """
+
         body = {}
         if status is not None:
             body["status"] = status.value
@@ -6061,6 +6166,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if metrics is not None:
             body["metrics"] = [v.as_dict() for v in metrics]
@@ -6091,6 +6197,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if datasets is not None:
             body["datasets"] = [v.as_dict() for v in datasets]
@@ -6117,6 +6224,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if params is not None:
             body["params"] = [v.as_dict() for v in params]
@@ -6168,6 +6276,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if dataset_digest is not None:
             body["dataset_digest"] = dataset_digest
@@ -6207,6 +6316,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if model_json is not None:
             body["model_json"] = model_json
@@ -6229,6 +6339,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if models is not None:
             body["models"] = [v.as_dict() for v in models]
@@ -6258,6 +6369,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if key is not None:
             body["key"] = key
@@ -6286,6 +6398,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
@@ -6306,6 +6419,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if run_id is not None:
             body["run_id"] = run_id
@@ -6334,6 +6448,7 @@ class ExperimentsAPI:
 
         :returns: :class:`RestoreRunsResponse`
         """
+
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
@@ -6375,6 +6490,7 @@ class ExperimentsAPI:
 
         :returns: Iterator over :class:`Experiment`
         """
+
         body = {}
         if filter is not None:
             body["filter"] = filter
@@ -6434,6 +6550,7 @@ class ExperimentsAPI:
 
         :returns: :class:`SearchLoggedModelsResponse`
         """
+
         body = {}
         if datasets is not None:
             body["datasets"] = [v.as_dict() for v in datasets]
@@ -6497,6 +6614,7 @@ class ExperimentsAPI:
 
         :returns: Iterator over :class:`Run`
         """
+
         body = {}
         if experiment_ids is not None:
             body["experiment_ids"] = [v for v in experiment_ids]
@@ -6536,6 +6654,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
@@ -6560,6 +6679,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if tags is not None:
             body["tags"] = [v.as_dict() for v in tags]
@@ -6582,6 +6702,7 @@ class ExperimentsAPI:
 
         :returns: :class:`ExperimentPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -6608,6 +6729,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if key is not None:
             body["key"] = key
@@ -6634,6 +6756,7 @@ class ExperimentsAPI:
 
 
         """
+
         body = {}
         if experiment_id is not None:
             body["experiment_id"] = experiment_id
@@ -6657,6 +6780,7 @@ class ExperimentsAPI:
 
         :returns: :class:`ExperimentPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -6693,6 +6817,7 @@ class ExperimentsAPI:
 
         :returns: :class:`UpdateRunResponse`
         """
+
         body = {}
         if end_time is not None:
             body["end_time"] = end_time
@@ -6727,6 +6852,7 @@ class FeatureEngineeringAPI:
 
         :returns: :class:`Feature`
         """
+
         body = feature.as_dict()
         headers = {
             "Accept": "application/json",
@@ -6744,6 +6870,7 @@ class FeatureEngineeringAPI:
 
         :returns: :class:`MaterializedFeature`
         """
+
         body = materialized_feature.as_dict()
         headers = {
             "Accept": "application/json",
@@ -6899,6 +7026,7 @@ class FeatureEngineeringAPI:
 
         :returns: :class:`Feature`
         """
+
         body = feature.as_dict()
         query = {}
         if update_mask is not None:
@@ -6928,6 +7056,7 @@ class FeatureEngineeringAPI:
 
         :returns: :class:`MaterializedFeature`
         """
+
         body = materialized_feature.as_dict()
         query = {}
         if update_mask is not None:
@@ -6966,6 +7095,7 @@ class FeatureStoreAPI:
 
         :returns: :class:`OnlineStore`
         """
+
         body = online_store.as_dict()
         headers = {
             "Accept": "application/json",
@@ -7047,6 +7177,7 @@ class FeatureStoreAPI:
 
         :returns: :class:`PublishTableResponse`
         """
+
         body = {}
         if publish_spec is not None:
             body["publish_spec"] = publish_spec.as_dict()
@@ -7072,6 +7203,7 @@ class FeatureStoreAPI:
 
         :returns: :class:`OnlineStore`
         """
+
         body = online_store.as_dict()
         query = {}
         if update_mask is not None:
@@ -7204,6 +7336,7 @@ class ForecastingAPI:
           Long-running operation waiter for :class:`ForecastingExperiment`.
           See :method:wait_get_experiment_forecasting_succeeded for more details.
         """
+
         body = {}
         if custom_weights_column is not None:
             body["custom_weights_column"] = custom_weights_column
@@ -7326,6 +7459,7 @@ class MaterializedFeaturesAPI:
 
         :returns: :class:`FeatureTag`
         """
+
         body = feature_tag.as_dict()
         headers = {
             "Accept": "application/json",
@@ -7464,6 +7598,7 @@ class MaterializedFeaturesAPI:
 
         :returns: :class:`FeatureTag`
         """
+
         body = feature_tag.as_dict()
         query = {}
         if update_mask is not None:
@@ -7521,6 +7656,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`ApproveTransitionRequestResponse`
         """
+
         body = {}
         if archive_existing_versions is not None:
             body["archive_existing_versions"] = archive_existing_versions
@@ -7553,6 +7689,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`CreateCommentResponse`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -7583,6 +7720,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`CreateModelResponse`
         """
+
         body = {}
         if description is not None:
             body["description"] = description
@@ -7627,6 +7765,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`CreateModelVersionResponse`
         """
+
         body = {}
         if description is not None:
             body["description"] = description
@@ -7672,6 +7811,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`CreateTransitionRequestResponse`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -7750,6 +7890,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`CreateWebhookResponse`
         """
+
         body = {}
         if description is not None:
             body["description"] = description
@@ -7953,6 +8094,7 @@ class ModelRegistryAPI:
 
         :returns: Iterator over :class:`ModelVersion`
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -8222,6 +8364,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`RejectTransitionRequestResponse`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -8249,6 +8392,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`RenameModelResponse`
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -8372,6 +8516,7 @@ class ModelRegistryAPI:
 
 
         """
+
         body = {}
         if key is not None:
             body["key"] = key
@@ -8403,6 +8548,7 @@ class ModelRegistryAPI:
 
 
         """
+
         body = {}
         if key is not None:
             body["key"] = key
@@ -8434,6 +8580,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`RegisteredModelPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -8460,6 +8607,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`TestRegistryWebhookResponse`
         """
+
         body = {}
         if event is not None:
             body["event"] = event.value
@@ -8502,6 +8650,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`TransitionStageResponse`
         """
+
         body = {}
         if archive_existing_versions is not None:
             body["archive_existing_versions"] = archive_existing_versions
@@ -8533,6 +8682,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`UpdateCommentResponse`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -8556,6 +8706,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`UpdateModelResponse`
         """
+
         body = {}
         if description is not None:
             body["description"] = description
@@ -8583,6 +8734,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`UpdateModelVersionResponse`
         """
+
         body = {}
         if description is not None:
             body["description"] = description
@@ -8613,6 +8765,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`RegisteredModelPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -8677,6 +8830,7 @@ class ModelRegistryAPI:
 
         :returns: :class:`UpdateWebhookResponse`
         """
+
         body = {}
         if description is not None:
             body["description"] = description

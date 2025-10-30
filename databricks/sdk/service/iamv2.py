@@ -472,6 +472,7 @@ class AccountIamV2API:
 
         :returns: :class:`ResolveGroupResponse`
         """
+
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
@@ -498,6 +499,7 @@ class AccountIamV2API:
 
         :returns: :class:`ResolveServicePrincipalResponse`
         """
+
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
@@ -524,6 +526,7 @@ class AccountIamV2API:
 
         :returns: :class:`ResolveUserResponse`
         """
+
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
@@ -587,6 +590,7 @@ class WorkspaceIamV2API:
 
         :returns: :class:`ResolveGroupResponse`
         """
+
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
@@ -608,6 +612,7 @@ class WorkspaceIamV2API:
 
         :returns: :class:`ResolveServicePrincipalResponse`
         """
+
         body = {}
         if external_id is not None:
             body["external_id"] = external_id
@@ -631,6 +636,7 @@ class WorkspaceIamV2API:
 
         :returns: :class:`ResolveUserResponse`
         """
+
         body = {}
         if external_id is not None:
             body["external_id"] = external_id

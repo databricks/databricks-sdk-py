@@ -70,8 +70,8 @@
             # cleanup
             w.shares.delete(name=created_share.name)
 
-        Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
-        share.
+        Gets a data object share from the metastore. The caller must have the USE_SHARE privilege on the
+        metastore or be the owner of the share.
 
         :param name: str
           The name of the share.
@@ -95,8 +95,9 @@
             
             all = w.shares.list(sharing.ListSharesRequest())
 
-        Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
-        owner of the share. There is no guarantee of a specific ordering of the elements in the array.
+        Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on
+        the metastore, all shares are returned. Otherwise, only shares owned by the caller are returned. There
+        is no guarantee of a specific ordering of the elements in the array.
 
         :param max_results: int (optional)
           Maximum number of shares to return. - when set to 0, the page length is set to a server configured
@@ -114,11 +115,11 @@
 
     .. py:method:: share_permissions(name: str [, max_results: Optional[int], page_token: Optional[str]]) -> GetSharePermissionsResponse
 
-        Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
-        owner of the share.
+        Gets the permissions for a data share from the metastore. The caller must have the USE_SHARE privilege
+        on the metastore or be the owner of the share.
 
         :param name: str
-          The name of the share.
+          The name of the Recipient.
         :param max_results: int (optional)
           Maximum number of permissions to return. - when set to 0, the page length is set to a server
           configured value (recommended); - when set to a value greater than 0, the page length is the minimum
@@ -219,11 +220,11 @@
 
     .. py:method:: update_permissions(name: str [, changes: Optional[List[PermissionsChange]], omit_permissions_list: Optional[bool]]) -> UpdateSharePermissionsResponse
 
-        Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
-        owner of the share.
+        Updates the permissions for a data share in the metastore. The caller must have both the USE_SHARE and
+        SET_SHARE_PERMISSION privileges on the metastore, or be the owner of the share.
 
-        For new recipient grants, the user must also be the recipient owner or metastore admin. recipient
-        revocations do not require additional privileges.
+        For new recipient grants, the user must also be the owner of the recipients. recipient revocations do
+        not require additional privileges.
 
         :param name: str
           The name of the share.

@@ -2024,6 +2024,9 @@ class PipelineSpec:
     trigger: Optional[PipelineTrigger] = None
     """Which pipeline trigger to use. Deprecated: Use `continuous` instead."""
 
+    usage_policy_id: Optional[str] = None
+    """Usage policy of this pipeline."""
+
     def as_dict(self) -> dict:
         """Serializes the PipelineSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2081,6 +2084,8 @@ class PipelineSpec:
             body["target"] = self.target
         if self.trigger:
             body["trigger"] = self.trigger.as_dict()
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2140,6 +2145,8 @@ class PipelineSpec:
             body["target"] = self.target
         if self.trigger:
             body["trigger"] = self.trigger
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     @classmethod
@@ -2173,6 +2180,7 @@ class PipelineSpec:
             tags=d.get("tags", None),
             target=d.get("target", None),
             trigger=_from_dict(d, "trigger", PipelineTrigger),
+            usage_policy_id=d.get("usage_policy_id", None),
         )
 
 
@@ -3318,6 +3326,7 @@ class PipelinesAPI:
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
         trigger: Optional[PipelineTrigger] = None,
+        usage_policy_id: Optional[str] = None,
     ) -> CreatePipelineResponse:
         """Creates a new data processing pipeline based on the requested configuration. If successful, this
         method returns the ID of the new pipeline.
@@ -3388,9 +3397,12 @@ class PipelinesAPI:
           for pipeline creation in favor of the `schema` field.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+        :param usage_policy_id: str (optional)
+          Usage policy of this pipeline.
 
         :returns: :class:`CreatePipelineResponse`
         """
+
         body = {}
         if allow_duplicate_names is not None:
             body["allow_duplicate_names"] = allow_duplicate_names
@@ -3452,6 +3464,8 @@ class PipelinesAPI:
             body["target"] = target
         if trigger is not None:
             body["trigger"] = trigger.as_dict()
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3699,6 +3713,7 @@ class PipelinesAPI:
 
         :returns: :class:`PipelinePermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -3741,6 +3756,7 @@ class PipelinesAPI:
 
         :returns: :class:`StartUpdateResponse`
         """
+
         body = {}
         if cause is not None:
             body["cause"] = cause.value
@@ -3815,6 +3831,7 @@ class PipelinesAPI:
         tags: Optional[Dict[str, str]] = None,
         target: Optional[str] = None,
         trigger: Optional[PipelineTrigger] = None,
+        usage_policy_id: Optional[str] = None,
     ):
         """Updates a pipeline with the supplied configuration.
 
@@ -3888,9 +3905,12 @@ class PipelinesAPI:
           for pipeline creation in favor of the `schema` field.
         :param trigger: :class:`PipelineTrigger` (optional)
           Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+        :param usage_policy_id: str (optional)
+          Usage policy of this pipeline.
 
 
         """
+
         body = {}
         if allow_duplicate_names is not None:
             body["allow_duplicate_names"] = allow_duplicate_names
@@ -3952,6 +3972,8 @@ class PipelinesAPI:
             body["target"] = target
         if trigger is not None:
             body["trigger"] = trigger.as_dict()
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -3970,6 +3992,7 @@ class PipelinesAPI:
 
         :returns: :class:`PipelinePermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]

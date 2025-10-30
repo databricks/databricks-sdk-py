@@ -3377,6 +3377,8 @@ class EventType(Enum):
     CLUSTER_MIGRATED = "CLUSTER_MIGRATED"
     CREATING = "CREATING"
     DBFS_DOWN = "DBFS_DOWN"
+    DECOMMISSION_ENDED = "DECOMMISSION_ENDED"
+    DECOMMISSION_STARTED = "DECOMMISSION_STARTED"
     DID_NOT_EXPAND_DISK = "DID_NOT_EXPAND_DISK"
     DRIVER_HEALTHY = "DRIVER_HEALTHY"
     DRIVER_NOT_RESPONDING = "DRIVER_NOT_RESPONDING"
@@ -4823,6 +4825,16 @@ class InstancePoolAwsAttributes:
     availability: Optional[InstancePoolAwsAttributesAvailability] = None
     """Availability type used for the spot nodes."""
 
+    instance_profile_arn: Optional[str] = None
+    """All AWS instances belonging to the instance pool will have this instance profile. If omitted,
+    instances will initially be launched with the workspace's default instance profile. If defined,
+    clusters that use the pool will inherit the instance profile, and must not specify their own
+    instance profile on cluster creation or update. If the pool does not specify an instance
+    profile, clusters using the pool may specify any instance profile. The instance profile must
+    have previously been added to the Databricks environment by an account administrator.
+    
+    This feature may only be available to certain customer plans."""
+
     spot_bid_price_percent: Optional[int] = None
     """Calculates the bid price for AWS spot instances, as a percentage of the corresponding instance
     type's on-demand price. For example, if this field is set to 50, and the cluster needs a new
@@ -4845,6 +4857,8 @@ class InstancePoolAwsAttributes:
         body = {}
         if self.availability is not None:
             body["availability"] = self.availability.value
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.spot_bid_price_percent is not None:
             body["spot_bid_price_percent"] = self.spot_bid_price_percent
         if self.zone_id is not None:
@@ -4856,6 +4870,8 @@ class InstancePoolAwsAttributes:
         body = {}
         if self.availability is not None:
             body["availability"] = self.availability
+        if self.instance_profile_arn is not None:
+            body["instance_profile_arn"] = self.instance_profile_arn
         if self.spot_bid_price_percent is not None:
             body["spot_bid_price_percent"] = self.spot_bid_price_percent
         if self.zone_id is not None:
@@ -4867,6 +4883,7 @@ class InstancePoolAwsAttributes:
         """Deserializes the InstancePoolAwsAttributes from a dictionary."""
         return cls(
             availability=_enum(d, "availability", InstancePoolAwsAttributesAvailability),
+            instance_profile_arn=d.get("instance_profile_arn", None),
             spot_bid_price_percent=d.get("spot_bid_price_percent", None),
             zone_id=d.get("zone_id", None),
         )
@@ -7087,6 +7104,7 @@ class TerminationReasonCode(Enum):
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
     DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
+    DBR_IMAGE_RESOLUTION_FAILURE = "DBR_IMAGE_RESOLUTION_FAILURE"
     DISASTER_RECOVERY_REPLICATION = "DISASTER_RECOVERY_REPLICATION"
     DNS_RESOLUTION_ERROR = "DNS_RESOLUTION_ERROR"
     DOCKER_CONTAINER_CREATION_EXCEPTION = "DOCKER_CONTAINER_CREATION_EXCEPTION"
@@ -7783,6 +7801,7 @@ class ClusterPoliciesAPI:
 
         :returns: :class:`CreatePolicyResponse`
         """
+
         body = {}
         if definition is not None:
             body["definition"] = definition
@@ -7814,6 +7833,7 @@ class ClusterPoliciesAPI:
 
 
         """
+
         body = {}
         if policy_id is not None:
             body["policy_id"] = policy_id
@@ -7873,6 +7893,7 @@ class ClusterPoliciesAPI:
 
 
         """
+
         body = {}
         if definition is not None:
             body["definition"] = definition
@@ -7991,6 +8012,7 @@ class ClusterPoliciesAPI:
 
         :returns: :class:`ClusterPolicyPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -8016,6 +8038,7 @@ class ClusterPoliciesAPI:
 
         :returns: :class:`ClusterPolicyPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -8133,6 +8156,7 @@ class ClustersAPI:
 
 
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
@@ -8332,6 +8356,7 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
+
         body = {}
         if apply_policy_default_values is not None:
             body["apply_policy_default_values"] = apply_policy_default_values
@@ -8497,6 +8522,7 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_terminated for more details.
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
@@ -8695,6 +8721,7 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
+
         body = {}
         if apply_policy_default_values is not None:
             body["apply_policy_default_values"] = apply_policy_default_values
@@ -8891,6 +8918,7 @@ class ClustersAPI:
 
         :returns: Iterator over :class:`ClusterEvent`
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
@@ -9064,6 +9092,7 @@ class ClustersAPI:
 
 
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
@@ -9082,6 +9111,7 @@ class ClustersAPI:
 
 
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
@@ -9117,6 +9147,7 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
+
         body = {}
         if autoscale is not None:
             body["autoscale"] = autoscale.as_dict()
@@ -9154,6 +9185,7 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
@@ -9184,6 +9216,7 @@ class ClustersAPI:
 
         :returns: :class:`ClusterPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -9223,6 +9256,7 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
@@ -9246,6 +9280,7 @@ class ClustersAPI:
 
 
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
@@ -9290,6 +9325,7 @@ class ClustersAPI:
           Long-running operation waiter for :class:`ClusterDetails`.
           See :method:wait_get_cluster_running for more details.
         """
+
         body = {}
         if cluster is not None:
             body["cluster"] = cluster.as_dict()
@@ -9326,6 +9362,7 @@ class ClustersAPI:
 
         :returns: :class:`ClusterPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -9469,6 +9506,7 @@ class CommandExecutionAPI:
           Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_cancelled for more details.
         """
+
         body = {}
         if cluster_id is not None:
             body["clusterId"] = cluster_id
@@ -9561,6 +9599,7 @@ class CommandExecutionAPI:
           Long-running operation waiter for :class:`ContextStatusResponse`.
           See :method:wait_context_status_command_execution_running for more details.
         """
+
         body = {}
         if cluster_id is not None:
             body["clusterId"] = cluster_id
@@ -9592,6 +9631,7 @@ class CommandExecutionAPI:
 
 
         """
+
         body = {}
         if cluster_id is not None:
             body["clusterId"] = cluster_id
@@ -9628,6 +9668,7 @@ class CommandExecutionAPI:
           Long-running operation waiter for :class:`CommandStatusResponse`.
           See :method:wait_command_status_command_execution_finished_or_error for more details.
         """
+
         body = {}
         if cluster_id is not None:
             body["clusterId"] = cluster_id
@@ -9701,6 +9742,7 @@ class GlobalInitScriptsAPI:
 
         :returns: :class:`CreateResponse`
         """
+
         body = {}
         if enabled is not None:
             body["enabled"] = enabled
@@ -9793,6 +9835,7 @@ class GlobalInitScriptsAPI:
 
 
         """
+
         body = {}
         if enabled is not None:
             body["enabled"] = enabled
@@ -9905,6 +9948,7 @@ class InstancePoolsAPI:
 
         :returns: :class:`CreateInstancePoolResponse`
         """
+
         body = {}
         if aws_attributes is not None:
             body["aws_attributes"] = aws_attributes.as_dict()
@@ -9952,6 +9996,7 @@ class InstancePoolsAPI:
 
 
         """
+
         body = {}
         if instance_pool_id is not None:
             body["instance_pool_id"] = instance_pool_id
@@ -10013,6 +10058,7 @@ class InstancePoolsAPI:
 
 
         """
+
         body = {}
         if custom_tags is not None:
             body["custom_tags"] = custom_tags
@@ -10120,6 +10166,7 @@ class InstancePoolsAPI:
 
         :returns: :class:`InstancePoolPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -10143,6 +10190,7 @@ class InstancePoolsAPI:
 
         :returns: :class:`InstancePoolPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -10205,6 +10253,7 @@ class InstanceProfilesAPI:
 
 
         """
+
         body = {}
         if iam_role_arn is not None:
             body["iam_role_arn"] = iam_role_arn
@@ -10259,6 +10308,7 @@ class InstanceProfilesAPI:
 
 
         """
+
         body = {}
         if iam_role_arn is not None:
             body["iam_role_arn"] = iam_role_arn
@@ -10301,6 +10351,7 @@ class InstanceProfilesAPI:
 
 
         """
+
         body = {}
         if instance_profile_arn is not None:
             body["instance_profile_arn"] = instance_profile_arn
@@ -10381,6 +10432,7 @@ class LibrariesAPI:
 
 
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
@@ -10404,6 +10456,7 @@ class LibrariesAPI:
 
 
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id
@@ -10453,6 +10506,7 @@ class PolicyComplianceForClustersAPI:
 
         :returns: :class:`EnforceClusterComplianceResponse`
         """
+
         body = {}
         if cluster_id is not None:
             body["cluster_id"] = cluster_id

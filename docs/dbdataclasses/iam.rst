@@ -40,10 +40,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteWorkspacePermissionAssignmentResponse
    :members:
    :undoc-members:
@@ -173,10 +169,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: REPLACE
       :value: "REPLACE"
-
-.. autoclass:: PatchResponse
-   :members:
-   :undoc-members:
 
 .. py:class:: PatchSchema
 

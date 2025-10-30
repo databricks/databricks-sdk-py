@@ -148,14 +148,14 @@
         :returns: Iterator over :class:`DirectoryEntry`
         
 
-    .. py:method:: upload(file_path: str, content: BinaryIO [, overwrite: Optional[bool], part_size: Optional[int], use_parallel: bool = True, parallelism: Optional[int]]) -> UploadStreamResult
+    .. py:method:: upload(file_path: str, contents: BinaryIO [, overwrite: Optional[bool], part_size: Optional[int], use_parallel: bool = True, parallelism: Optional[int]]) -> UploadStreamResult
 
         
         Upload a file with stream interface.
 
         :param file_path: str
             The absolute remote path of the target file, e.g. /Volumes/path/to/your/file
-        :param content: BinaryIO
+        :param contents: BinaryIO
             The contents of the file to upload. This must be a BinaryIO stream.
         :param overwrite: bool (optional)
             If true, an existing file will be overwritten. When not specified, assumed True.

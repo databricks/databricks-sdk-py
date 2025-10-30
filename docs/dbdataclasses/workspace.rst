@@ -33,15 +33,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CreateScopeResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: CredentialInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteAclResponse
    :members:
    :undoc-members:
 
@@ -54,10 +46,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DeleteResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteScopeResponse
    :members:
    :undoc-members:
 
@@ -212,14 +200,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: REPO
       :value: "REPO"
-
-.. autoclass:: PutAclResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: PutSecretResponse
-   :members:
-   :undoc-members:
 
 .. autoclass:: RepoAccessControlRequest
    :members:

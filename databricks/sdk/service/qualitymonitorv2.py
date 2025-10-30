@@ -151,6 +151,7 @@ class QualityMonitorV2API:
 
         :returns: :class:`QualityMonitor`
         """
+
         body = quality_monitor.as_dict()
         headers = {
             "Accept": "application/json",
@@ -237,6 +238,7 @@ class QualityMonitorV2API:
 
         :returns: :class:`QualityMonitor`
         """
+
         body = quality_monitor.as_dict()
         headers = {
             "Accept": "application/json",

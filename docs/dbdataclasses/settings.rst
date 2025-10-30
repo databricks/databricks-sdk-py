@@ -279,10 +279,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: DeleteResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: DeleteRestrictWorkspaceAdminsSettingResponse
    :members:
    :undoc-members:
@@ -708,10 +704,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ReplaceResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: RestrictWorkspaceAdminsMessage
    :members:
    :undoc-members:
@@ -729,10 +721,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RevokeTokenResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: SetStatusResponse
    :members:
    :undoc-members:
 
@@ -799,10 +787,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "AZURE_ACTIVE_DIRECTORY_TOKEN"
 
 .. autoclass:: UpdatePrivateEndpointRule
-   :members:
-   :undoc-members:
-
-.. autoclass:: UpdateResponse
    :members:
    :undoc-members:
 

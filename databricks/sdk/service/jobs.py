@@ -449,42 +449,6 @@ class BaseRun:
         )
 
 
-@dataclass
-class CancelAllRunsResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CancelAllRunsResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CancelAllRunsResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelAllRunsResponse:
-        """Deserializes the CancelAllRunsResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class CancelRunResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CancelRunResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CancelRunResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelRunResponse:
-        """Deserializes the CancelRunResponse from a dictionary."""
-        return cls()
-
-
 class CleanRoomTaskRunLifeCycleState(Enum):
     """Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to
     remove coupling with jobs API definition"""
@@ -1513,42 +1477,6 @@ class DbtTask:
             source=_enum(d, "source", Source),
             warehouse_id=d.get("warehouse_id", None),
         )
-
-
-@dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteRunResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteRunResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteRunResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteRunResponse:
-        """Deserializes the DeleteRunResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -4210,24 +4138,6 @@ class RepairRunResponse:
     def from_dict(cls, d: Dict[str, Any]) -> RepairRunResponse:
         """Deserializes the RepairRunResponse from a dictionary."""
         return cls(repair_id=d.get("repair_id", None))
-
-
-@dataclass
-class ResetResponse:
-    def as_dict(self) -> dict:
-        """Serializes the ResetResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ResetResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ResetResponse:
-        """Deserializes the ResetResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -8056,9 +7966,6 @@ class TriggerSettings:
     periodic: Optional[PeriodicTriggerConfiguration] = None
     """Periodic trigger settings."""
 
-    table: Optional[TableUpdateTriggerConfiguration] = None
-    """Old table trigger settings name. Deprecated in favor of `table_update`."""
-
     table_update: Optional[TableUpdateTriggerConfiguration] = None
 
     def as_dict(self) -> dict:
@@ -8070,8 +7977,6 @@ class TriggerSettings:
             body["pause_status"] = self.pause_status.value
         if self.periodic:
             body["periodic"] = self.periodic.as_dict()
-        if self.table:
-            body["table"] = self.table.as_dict()
         if self.table_update:
             body["table_update"] = self.table_update.as_dict()
         return body
@@ -8085,8 +7990,6 @@ class TriggerSettings:
             body["pause_status"] = self.pause_status
         if self.periodic:
             body["periodic"] = self.periodic
-        if self.table:
-            body["table"] = self.table
         if self.table_update:
             body["table_update"] = self.table_update
         return body
@@ -8098,7 +8001,6 @@ class TriggerSettings:
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerConfiguration),
             pause_status=_enum(d, "pause_status", PauseStatus),
             periodic=_from_dict(d, "periodic", PeriodicTriggerConfiguration),
-            table=_from_dict(d, "table", TableUpdateTriggerConfiguration),
             table_update=_from_dict(d, "table_update", TableUpdateTriggerConfiguration),
         )
 
@@ -8157,24 +8059,6 @@ class TriggerType(Enum):
     RETRY = "RETRY"
     RUN_JOB_TASK = "RUN_JOB_TASK"
     TABLE = "TABLE"
-
-
-@dataclass
-class UpdateResponse:
-    def as_dict(self) -> dict:
-        """Serializes the UpdateResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the UpdateResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> UpdateResponse:
-        """Deserializes the UpdateResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -8418,6 +8302,7 @@ class JobsAPI:
 
 
         """
+
         body = {}
         if all_queued_runs is not None:
             body["all_queued_runs"] = all_queued_runs
@@ -8440,6 +8325,7 @@ class JobsAPI:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
+
         body = {}
         if run_id is not None:
             body["run_id"] = run_id
@@ -8584,6 +8470,7 @@ class JobsAPI:
 
         :returns: :class:`CreateResponse`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -8653,6 +8540,7 @@ class JobsAPI:
 
 
         """
+
         body = {}
         if job_id is not None:
             body["job_id"] = job_id
@@ -8670,6 +8558,7 @@ class JobsAPI:
 
 
         """
+
         body = {}
         if run_id is not None:
             body["run_id"] = run_id
@@ -9096,6 +8985,7 @@ class JobsAPI:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
+
         body = {}
         if dbt_commands is not None:
             body["dbt_commands"] = [v for v in dbt_commands]
@@ -9191,6 +9081,7 @@ class JobsAPI:
 
 
         """
+
         body = {}
         if job_id is not None:
             body["job_id"] = job_id
@@ -9331,6 +9222,7 @@ class JobsAPI:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
+
         body = {}
         if dbt_commands is not None:
             body["dbt_commands"] = [v for v in dbt_commands]
@@ -9420,6 +9312,7 @@ class JobsAPI:
 
         :returns: :class:`JobPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -9509,6 +9402,7 @@ class JobsAPI:
           Long-running operation waiter for :class:`Run`.
           See :method:wait_get_run_job_terminated_or_skipped for more details.
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -9615,6 +9509,7 @@ class JobsAPI:
 
 
         """
+
         body = {}
         if fields_to_remove is not None:
             body["fields_to_remove"] = [v for v in fields_to_remove]
@@ -9639,6 +9534,7 @@ class JobsAPI:
 
         :returns: :class:`JobPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -9680,6 +9576,7 @@ class PolicyComplianceForJobsAPI:
 
         :returns: :class:`EnforcePolicyComplianceResponse`
         """
+
         body = {}
         if job_id is not None:
             body["job_id"] = job_id

@@ -90,6 +90,10 @@
         is a metastore admin, retrieval of credentials is unrestricted. There is no guarantee of a specific
         ordering of the elements in the array.
 
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
+
         :param include_unbound: bool (optional)
           Whether to include credentials not bound to the workspace. Effective only if the user has permission
           to update the credential–workspace binding.

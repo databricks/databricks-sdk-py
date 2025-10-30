@@ -56,24 +56,6 @@ class ColumnTypeName(Enum):
 
 
 @dataclass
-class DeleteResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
-        """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class DeltaSharingDependency:
     """Represents a UC dependency."""
 
@@ -2563,6 +2545,7 @@ class ProvidersAPI:
 
         :returns: :class:`ProviderInfo`
         """
+
         body = {}
         if authentication_type is not None:
             body["authentication_type"] = authentication_type.value
@@ -2778,6 +2761,7 @@ class ProvidersAPI:
 
         :returns: :class:`ProviderInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -2898,6 +2882,7 @@ class RecipientFederationPoliciesAPI:
 
         :returns: :class:`FederationPolicy`
         """
+
         body = policy.as_dict()
         headers = {
             "Accept": "application/json",
@@ -3047,6 +3032,7 @@ class RecipientsAPI:
 
         :returns: :class:`RecipientInfo`
         """
+
         body = {}
         if authentication_type is not None:
             body["authentication_type"] = authentication_type.value
@@ -3169,6 +3155,7 @@ class RecipientsAPI:
 
         :returns: :class:`RecipientInfo`
         """
+
         body = {}
         if existing_token_expire_in_seconds is not None:
             body["existing_token_expire_in_seconds"] = existing_token_expire_in_seconds
@@ -3183,8 +3170,8 @@ class RecipientsAPI:
     def share_permissions(
         self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> GetRecipientSharePermissionsResponse:
-        """Gets the share permissions for the specified Recipient. The caller must be a metastore admin or the
-        owner of the Recipient.
+        """Gets the share permissions for the specified Recipient. The caller must have the USE_RECIPIENT
+        privilege on the metastore or be the owner of the Recipient.
 
         :param name: str
           The name of the Recipient.
@@ -3250,6 +3237,7 @@ class RecipientsAPI:
 
         :returns: :class:`RecipientInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -3294,6 +3282,7 @@ class SharesAPI:
 
         :returns: :class:`ShareInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -3323,8 +3312,8 @@ class SharesAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{name}", headers=headers)
 
     def get(self, name: str, *, include_shared_data: Optional[bool] = None) -> ShareInfo:
-        """Gets a data object share from the metastore. The caller must be a metastore admin or the owner of the
-        share.
+        """Gets a data object share from the metastore. The caller must have the USE_SHARE privilege on the
+        metastore or be the owner of the share.
 
         :param name: str
           The name of the share.
@@ -3347,8 +3336,9 @@ class SharesAPI:
     def list_shares(
         self, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[ShareInfo]:
-        """Gets an array of data object shares from the metastore. The caller must be a metastore admin or the
-        owner of the share. There is no guarantee of a specific ordering of the elements in the array.
+        """Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on
+        the metastore, all shares are returned. Otherwise, only shares owned by the caller are returned. There
+        is no guarantee of a specific ordering of the elements in the array.
 
         :param max_results: int (optional)
           Maximum number of shares to return. - when set to 0, the page length is set to a server configured
@@ -3387,11 +3377,11 @@ class SharesAPI:
     def share_permissions(
         self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> GetSharePermissionsResponse:
-        """Gets the permissions for a data share from the metastore. The caller must be a metastore admin or the
-        owner of the share.
+        """Gets the permissions for a data share from the metastore. The caller must have the USE_SHARE privilege
+        on the metastore or be the owner of the share.
 
         :param name: str
-          The name of the share.
+          The name of the Recipient.
         :param max_results: int (optional)
           Maximum number of permissions to return. - when set to 0, the page length is set to a server
           configured value (recommended); - when set to a value greater than 0, the page length is the minimum
@@ -3459,6 +3449,7 @@ class SharesAPI:
 
         :returns: :class:`ShareInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -3485,11 +3476,11 @@ class SharesAPI:
         changes: Optional[List[PermissionsChange]] = None,
         omit_permissions_list: Optional[bool] = None,
     ) -> UpdateSharePermissionsResponse:
-        """Updates the permissions for a data share in the metastore. The caller must be a metastore admin or an
-        owner of the share.
+        """Updates the permissions for a data share in the metastore. The caller must have both the USE_SHARE and
+        SET_SHARE_PERMISSION privileges on the metastore, or be the owner of the share.
 
-        For new recipient grants, the user must also be the recipient owner or metastore admin. recipient
-        revocations do not require additional privileges.
+        For new recipient grants, the user must also be the owner of the recipients. recipient revocations do
+        not require additional privileges.
 
         :param name: str
           The name of the share.
@@ -3500,6 +3491,7 @@ class SharesAPI:
 
         :returns: :class:`UpdateSharePermissionsResponse`
         """
+
         body = {}
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]
