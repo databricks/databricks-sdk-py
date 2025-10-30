@@ -793,6 +793,7 @@ class AccountSettingsV2API:
 
         :returns: :class:`Setting`
         """
+
         body = setting.as_dict()
         headers = {
             "Accept": "application/json",
@@ -875,6 +876,7 @@ class WorkspaceSettingsV2API:
 
         :returns: :class:`Setting`
         """
+
         body = setting.as_dict()
         headers = {
             "Accept": "application/json",

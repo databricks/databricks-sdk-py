@@ -178,7 +178,7 @@
                 content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
                 format=workspace.ImportFormat.SOURCE,
                 language=workspace.Language.SQL,
-                overwrite=True,
+                overwrite=true_,
                 path=notebook_path,
             )
 
@@ -186,7 +186,7 @@
         If `path` already exists and `overwrite` is set to `false`, this call returns an error
         `RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`
         format with the `language` field unset. To import a single file as `SOURCE`, you must set the
-        `language` field.
+        `language` field. Zip files within directories are not supported.
 
         :param path: str
           The absolute path of the object or directory. Importing a directory is only supported for the `DBC`

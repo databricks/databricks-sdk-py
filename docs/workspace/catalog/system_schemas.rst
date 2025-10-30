@@ -45,8 +45,7 @@
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.

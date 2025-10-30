@@ -94,6 +94,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ContinuousWindow
+   :members:
+   :undoc-members:
+
 .. autoclass:: CreateCommentResponse
    :members:
    :undoc-members:
@@ -868,6 +872,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SlidingWindow
+   :members:
+   :undoc-members:
+
 .. py:class:: Status
 
    The status of the model version. Valid values are: * `PENDING_REGISTRATION`: Request to register a new model version is pending as server performs background tasks.
@@ -896,6 +904,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TransitionStageResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: TumblingWindow
    :members:
    :undoc-members:
 

@@ -135,10 +135,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: READ_VOLUME
       :value: "READ_VOLUME"
 
+   .. py:attribute:: SELECT
+      :value: "SELECT"
+
    .. py:attribute:: WRITE_VOLUME
       :value: "WRITE_VOLUME"
 
 .. py:class:: AppManifestAppResourceUcSecurableSpecUcSecurableType
+
+   .. py:attribute:: TABLE
+      :value: "TABLE"
 
    .. py:attribute:: VOLUME
       :value: "VOLUME"

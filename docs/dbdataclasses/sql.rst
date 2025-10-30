@@ -66,6 +66,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UNKNOWN
       :value: "UNKNOWN"
 
+.. py:class:: AlertLifecycleState
+
+   .. py:attribute:: ACTIVE
+      :value: "ACTIVE"
+
+   .. py:attribute:: DELETED
+      :value: "DELETED"
+
 .. autoclass:: AlertOperandColumn
    :members:
    :undoc-members:
@@ -162,10 +170,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: BaseChunkInfo
-   :members:
-   :undoc-members:
-
-.. autoclass:: CancelExecutionResponse
    :members:
    :undoc-members:
 
@@ -1270,6 +1274,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DBFS_COMPONENT_UNHEALTHY
       :value: "DBFS_COMPONENT_UNHEALTHY"
+
+   .. py:attribute:: DBR_IMAGE_RESOLUTION_FAILURE
+      :value: "DBR_IMAGE_RESOLUTION_FAILURE"
 
    .. py:attribute:: DISASTER_RECOVERY_REPLICATION
       :value: "DISASTER_RECOVERY_REPLICATION"

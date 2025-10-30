@@ -1260,7 +1260,7 @@ class CloudflareApiToken:
     secret_access_key: str
     """The secret access token generated for the above access key ID."""
 
-    account_id: str
+    account_id: Optional[str] = None
     """The ID of the account associated with the API token."""
 
     def as_dict(self) -> dict:
@@ -1740,7 +1740,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 46"""
+    """Next Id: 47"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -2241,15 +2241,15 @@ class CreateFunctionSqlDataAccess(Enum):
 
 @dataclass
 class CreateMetastoreAssignment:
+    workspace_id: int
+    """A workspace ID."""
+
     metastore_id: str
     """The unique ID of the metastore."""
 
     default_catalog_name: str
     """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
     Namespace API" to configure the default catalog for a Databricks workspace."""
-
-    workspace_id: Optional[int] = None
-    """A workspace ID."""
 
     def as_dict(self) -> dict:
         """Serializes the CreateMetastoreAssignment into a dictionary suitable for use as a JSON request body."""
@@ -2724,24 +2724,6 @@ class DatabricksGcpServiceAccountResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DatabricksGcpServiceAccountResponse:
         """Deserializes the DatabricksGcpServiceAccountResponse from a dictionary."""
         return cls(credential_id=d.get("credential_id", None), email=d.get("email", None))
-
-
-@dataclass
-class DeleteAliasResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteAliasResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteAliasResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteAliasResponse:
-        """Deserializes the DeleteAliasResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -8550,7 +8532,7 @@ class RowFilterOptions:
 
 @dataclass
 class SchemaInfo:
-    """Next ID: 42"""
+    """Next ID: 43"""
 
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
@@ -8763,7 +8745,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_SALESFORCE_OAUTH_MTLS = 268; Next id:269"""
+    """Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -10071,15 +10053,15 @@ class UpdateCatalogWorkspaceBindingsResponse:
 
 @dataclass
 class UpdateMetastoreAssignment:
+    workspace_id: int
+    """A workspace ID."""
+
     default_catalog_name: Optional[str] = None
     """The name of the default catalog in the metastore. This field is deprecated. Please use "Default
     Namespace API" to configure the default catalog for a Databricks workspace."""
 
     metastore_id: Optional[str] = None
     """The unique ID of the metastore."""
-
-    workspace_id: Optional[int] = None
-    """A workspace ID."""
 
     def as_dict(self) -> dict:
         """Serializes the UpdateMetastoreAssignment into a dictionary suitable for use as a JSON request body."""
@@ -10601,6 +10583,7 @@ class AccountMetastoreAssignmentsAPI:
 
         :returns: :class:`AccountsCreateMetastoreAssignmentResponse`
         """
+
         body = {}
         if metastore_assignment is not None:
             body["metastore_assignment"] = metastore_assignment.as_dict()
@@ -10692,6 +10675,7 @@ class AccountMetastoreAssignmentsAPI:
 
         :returns: :class:`AccountsUpdateMetastoreAssignmentResponse`
         """
+
         body = {}
         if metastore_assignment is not None:
             body["metastore_assignment"] = metastore_assignment.as_dict()
@@ -10723,6 +10707,7 @@ class AccountMetastoresAPI:
 
         :returns: :class:`AccountsCreateMetastoreResponse`
         """
+
         body = {}
         if metastore_info is not None:
             body["metastore_info"] = metastore_info.as_dict()
@@ -10805,6 +10790,7 @@ class AccountMetastoresAPI:
 
         :returns: :class:`AccountsUpdateMetastoreResponse`
         """
+
         body = {}
         if metastore_info is not None:
             body["metastore_info"] = metastore_info.as_dict()
@@ -10848,6 +10834,7 @@ class AccountStorageCredentialsAPI:
 
         :returns: :class:`AccountsCreateStorageCredentialInfo`
         """
+
         body = {}
         if credential_info is not None:
             body["credential_info"] = credential_info.as_dict()
@@ -10962,6 +10949,7 @@ class AccountStorageCredentialsAPI:
 
         :returns: :class:`AccountsUpdateStorageCredentialResponse`
         """
+
         body = {}
         if credential_info is not None:
             body["credential_info"] = credential_info.as_dict()
@@ -11031,6 +11019,7 @@ class ArtifactAllowlistsAPI:
 
         :returns: :class:`ArtifactAllowlistInfo`
         """
+
         body = {}
         if artifact_matchers is not None:
             body["artifact_matchers"] = [v.as_dict() for v in artifact_matchers]
@@ -11098,6 +11087,7 @@ class CatalogsAPI:
 
         :returns: :class:`CatalogInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -11185,8 +11175,7 @@ class CatalogsAPI:
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param include_browse: bool (optional)
           Whether to include catalogs in the response for which the principal can only access selective
@@ -11264,6 +11253,7 @@ class CatalogsAPI:
 
         :returns: :class:`CatalogInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -11331,6 +11321,7 @@ class ConnectionsAPI:
 
         :returns: :class:`ConnectionInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -11391,8 +11382,7 @@ class ConnectionsAPI:
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
           Maximum number of connections to return. - If not set, all connections are returned (not
@@ -11439,6 +11429,7 @@ class ConnectionsAPI:
 
         :returns: :class:`ConnectionInfo`
         """
+
         body = {}
         if new_name is not None:
             body["new_name"] = new_name
@@ -11509,6 +11500,7 @@ class CredentialsAPI:
 
         :returns: :class:`CredentialInfo`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -11575,6 +11567,7 @@ class CredentialsAPI:
 
         :returns: :class:`TemporaryCredentials`
         """
+
         body = {}
         if azure_options is not None:
             body["azure_options"] = azure_options.as_dict()
@@ -11620,6 +11613,10 @@ class CredentialsAPI:
         The array is limited to only the credentials that the caller has permission to access. If the caller
         is a metastore admin, retrieval of credentials is unrestricted. There is no guarantee of a specific
         ordering of the elements in the array.
+
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
 
         :param include_unbound: bool (optional)
           Whether to include credentials not bound to the workspace. Effective only if the user has permission
@@ -11709,6 +11706,7 @@ class CredentialsAPI:
 
         :returns: :class:`CredentialInfo`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -11784,6 +11782,7 @@ class CredentialsAPI:
 
         :returns: :class:`ValidateCredentialResponse`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -11835,6 +11834,7 @@ class EntityTagAssignmentsAPI:
 
         :returns: :class:`EntityTagAssignment`
         """
+
         body = tag_assignment.as_dict()
         headers = {
             "Accept": "application/json",
@@ -11907,6 +11907,10 @@ class EntityTagAssignmentsAPI:
     ) -> Iterator[EntityTagAssignment]:
         """List tag assignments for an Unity Catalog entity
 
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
+
         :param entity_type: str
           The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,
           columns, volumes.
@@ -11978,6 +11982,7 @@ class EntityTagAssignmentsAPI:
 
         :returns: :class:`EntityTagAssignment`
         """
+
         body = tag_assignment.as_dict()
         query = {}
         if update_mask is not None:
@@ -12018,6 +12023,7 @@ class ExternalLineageAPI:
 
         :returns: :class:`ExternalLineageRelationship`
         """
+
         body = external_lineage_relationship.as_dict()
         headers = {
             "Accept": "application/json",
@@ -12113,6 +12119,7 @@ class ExternalLineageAPI:
 
         :returns: :class:`ExternalLineageRelationship`
         """
+
         body = external_lineage_relationship.as_dict()
         query = {}
         if update_mask is not None:
@@ -12186,6 +12193,7 @@ class ExternalLocationsAPI:
 
         :returns: :class:`ExternalLocationInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -12276,8 +12284,7 @@ class ExternalLocationsAPI:
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param include_browse: bool (optional)
           Whether to include external locations in the response for which the principal can only access
@@ -12372,6 +12379,7 @@ class ExternalLocationsAPI:
 
         :returns: :class:`ExternalLocationInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -12428,6 +12436,7 @@ class ExternalMetadataAPI:
 
         :returns: :class:`ExternalMetadata`
         """
+
         body = external_metadata.as_dict()
         headers = {
             "Accept": "application/json",
@@ -12527,6 +12536,7 @@ class ExternalMetadataAPI:
 
         :returns: :class:`ExternalMetadata`
         """
+
         body = external_metadata.as_dict()
         query = {}
         if update_mask is not None:
@@ -12566,6 +12576,7 @@ class FunctionsAPI:
 
         :returns: :class:`FunctionInfo`
         """
+
         body = {}
         if function_info is not None:
             body["function_info"] = function_info.as_dict()
@@ -12648,8 +12659,7 @@ class FunctionsAPI:
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param catalog_name: str
           Name of parent catalog for functions of interest.
@@ -12709,6 +12719,7 @@ class FunctionsAPI:
 
         :returns: :class:`FunctionInfo`
         """
+
         body = {}
         if owner is not None:
             body["owner"] = owner
@@ -12745,6 +12756,13 @@ class GrantsAPI:
         principal: Optional[str] = None,
     ) -> GetPermissionsResponse:
         """Gets the permissions for a securable. Does not include inherited permissions.
+
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached.
 
         :param securable_type: str
           Type of securable.
@@ -12795,6 +12813,13 @@ class GrantsAPI:
     ) -> EffectivePermissionsList:
         """Gets the effective permissions for a securable. Includes inherited permissions from any parent
         securables.
+
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached.
 
         :param securable_type: str
           Type of securable.
@@ -12853,6 +12878,7 @@ class GrantsAPI:
 
         :returns: :class:`UpdatePermissionsResponse`
         """
+
         body = {}
         if changes is not None:
             body["changes"] = [v.as_dict() for v in changes]
@@ -12898,6 +12924,7 @@ class MetastoresAPI:
 
 
         """
+
         body = {}
         if default_catalog_name is not None:
             body["default_catalog_name"] = default_catalog_name
@@ -12925,6 +12952,7 @@ class MetastoresAPI:
 
         :returns: :class:`MetastoreInfo`
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -13000,8 +13028,7 @@ class MetastoresAPI:
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param max_results: int (optional)
           Maximum number of metastores to return. - when set to a value greater than 0, the page length is the
@@ -13107,6 +13134,7 @@ class MetastoresAPI:
 
         :returns: :class:`MetastoreInfo`
         """
+
         body = {}
         if delta_sharing_organization_name is not None:
             body["delta_sharing_organization_name"] = delta_sharing_organization_name
@@ -13150,6 +13178,7 @@ class MetastoresAPI:
 
 
         """
+
         body = {}
         if default_catalog_name is not None:
             body["default_catalog_name"] = default_catalog_name
@@ -13284,6 +13313,10 @@ class ModelVersionsAPI:
         There is no guarantee of a specific ordering of the elements in the response. The elements in the
         response will not contain any aliases or tags.
 
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
+
         :param full_name: str
           The full three-level name of the registered model under which to list model versions
         :param include_browse: bool (optional)
@@ -13397,6 +13430,7 @@ class ModelVersionsAPI:
 
         :returns: :class:`ModelVersionInfo`
         """
+
         body = {}
         if aliases is not None:
             body["aliases"] = [v.as_dict() for v in aliases]
@@ -13488,6 +13522,7 @@ class OnlineTablesAPI:
           Long-running operation waiter for :class:`OnlineTable`.
           See :method:wait_get_online_table_active for more details.
         """
+
         body = table.as_dict()
         headers = {
             "Accept": "application/json",
@@ -13555,6 +13590,7 @@ class PoliciesAPI:
 
         :returns: :class:`PolicyInfo`
         """
+
         body = policy_info.as_dict()
         headers = {
             "Accept": "application/json",
@@ -13623,6 +13659,10 @@ class PoliciesAPI:
     ) -> Iterator[PolicyInfo]:
         """List all policies defined on a securable. Optionally, the list can include inherited policies defined
         on the securable's parent schema or catalog.
+
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
 
         :param on_securable_type: str
           Required. The type of the securable to list policies for.
@@ -13696,6 +13736,7 @@ class PoliciesAPI:
 
         :returns: :class:`PolicyInfo`
         """
+
         body = policy_info.as_dict()
         query = {}
         if update_mask is not None:
@@ -13815,6 +13856,7 @@ class QualityMonitorsAPI:
 
         :returns: :class:`MonitorInfo`
         """
+
         body = {}
         if assets_dir is not None:
             body["assets_dir"] = assets_dir
@@ -13978,6 +14020,7 @@ class QualityMonitorsAPI:
 
         :returns: :class:`RegenerateDashboardResponse`
         """
+
         body = {}
         if warehouse_id is not None:
             body["warehouse_id"] = warehouse_id
@@ -14082,6 +14125,7 @@ class QualityMonitorsAPI:
 
         :returns: :class:`MonitorInfo`
         """
+
         body = {}
         if baseline_table_name is not None:
             body["baseline_table_name"] = baseline_table_name
@@ -14205,6 +14249,7 @@ class RegisteredModelsAPI:
 
         :returns: :class:`RegisteredModelInfo`
         """
+
         body = {}
         if aliases is not None:
             body["aliases"] = [v.as_dict() for v in aliases]
@@ -14330,6 +14375,10 @@ class RegisteredModelsAPI:
 
         There is no guarantee of a specific ordering of the elements in the response.
 
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
+
         :param catalog_name: str (optional)
           The identifier of the catalog under which to list registered models. If specified, schema_name must
           be specified.
@@ -14399,6 +14448,7 @@ class RegisteredModelsAPI:
 
         :returns: :class:`RegisteredModelAlias`
         """
+
         body = {}
         if version_num is not None:
             body["version_num"] = version_num
@@ -14473,6 +14523,7 @@ class RegisteredModelsAPI:
 
         :returns: :class:`RegisteredModelInfo`
         """
+
         body = {}
         if aliases is not None:
             body["aliases"] = [v.as_dict() for v in aliases]
@@ -14555,6 +14606,10 @@ class ResourceQuotasAPI:
         """ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the
         counts returned. This API does not trigger a refresh of quota counts.
 
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
+
         :param max_results: int (optional)
           The number of quotas to return.
         :param page_token: str (optional)
@@ -14613,6 +14668,7 @@ class RfaAPI:
 
         :returns: :class:`BatchCreateAccessRequestsResponse`
         """
+
         body = {}
         if requests is not None:
             body["requests"] = [v.as_dict() for v in requests]
@@ -14677,6 +14733,7 @@ class RfaAPI:
 
         :returns: :class:`AccessRequestDestinations`
         """
+
         body = access_request_destinations.as_dict()
         query = {}
         if update_mask is not None:
@@ -14724,6 +14781,7 @@ class SchemasAPI:
 
         :returns: :class:`SchemaInfo`
         """
+
         body = {}
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
@@ -14805,8 +14863,7 @@ class SchemasAPI:
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param catalog_name: str
           Parent catalog for schemas of interest.
@@ -14876,6 +14933,7 @@ class SchemasAPI:
 
         :returns: :class:`SchemaInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -14952,6 +15010,7 @@ class StorageCredentialsAPI:
 
         :returns: :class:`StorageCredentialInfo`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -15035,8 +15094,7 @@ class StorageCredentialsAPI:
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param include_unbound: bool (optional)
           Whether to include credentials not bound to the workspace. Effective only if the user has permission
@@ -15125,6 +15183,7 @@ class StorageCredentialsAPI:
 
         :returns: :class:`StorageCredentialInfo`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -15202,6 +15261,7 @@ class StorageCredentialsAPI:
 
         :returns: :class:`ValidateStorageCredentialResponse`
         """
+
         body = {}
         if aws_iam_role is not None:
             body["aws_iam_role"] = aws_iam_role.as_dict()
@@ -15270,6 +15330,7 @@ class SystemSchemasAPI:
 
 
         """
+
         body = {}
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
@@ -15296,8 +15357,7 @@ class SystemSchemasAPI:
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param metastore_id: str
           The ID for the metastore in which the system schema resides.
@@ -15364,6 +15424,7 @@ class TableConstraintsAPI:
 
         :returns: :class:`TableConstraint`
         """
+
         body = {}
         if constraint is not None:
             body["constraint"] = constraint.as_dict()
@@ -15471,6 +15532,7 @@ class TablesAPI:
 
         :returns: :class:`TableInfo`
         """
+
         body = {}
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
@@ -15600,8 +15662,7 @@ class TablesAPI:
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param catalog_name: str
           Name of parent catalog for tables of interest.
@@ -15683,6 +15744,10 @@ class TablesAPI:
 
         There is no guarantee of a specific ordering of the elements in the array.
 
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
+
         :param catalog_name: str
           Name of parent catalog for tables of interest.
         :param include_manifest_capabilities: bool (optional)
@@ -15742,6 +15807,7 @@ class TablesAPI:
 
 
         """
+
         body = {}
         if owner is not None:
             body["owner"] = owner
@@ -15803,6 +15869,7 @@ class TemporaryPathCredentialsAPI:
 
         :returns: :class:`GenerateTemporaryPathCredentialResponse`
         """
+
         body = {}
         if dry_run is not None:
             body["dry_run"] = dry_run
@@ -15853,6 +15920,7 @@ class TemporaryTableCredentialsAPI:
 
         :returns: :class:`GenerateTemporaryTableCredentialResponse`
         """
+
         body = {}
         if operation is not None:
             body["operation"] = operation.value
@@ -15923,6 +15991,7 @@ class VolumesAPI:
 
         :returns: :class:`VolumeInfo`
         """
+
         body = {}
         if catalog_name is not None:
             body["catalog_name"] = catalog_name
@@ -15979,6 +16048,10 @@ class VolumesAPI:
         **USE_SCHEMA** privilege on the parent schema.
 
         There is no guarantee of a specific ordering of the elements in the array.
+
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
 
         :param catalog_name: str
           The identifier of the catalog
@@ -16078,6 +16151,7 @@ class VolumesAPI:
 
         :returns: :class:`VolumeInfo`
         """
+
         body = {}
         if comment is not None:
             body["comment"] = comment
@@ -16141,6 +16215,13 @@ class WorkspaceBindingsAPI:
         """Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
         securable.
 
+        NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
+        will be deprecated soon.
+
+        PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
+        still providing a next_page_token. Clients must continue reading pages until next_page_token is
+        absent, which is the only indication that the end of results has been reached.
+
         :param securable_type: str
           The type of the securable to bind to a workspace (catalog, storage_credential, credential, or
           external_location).
@@ -16199,6 +16280,7 @@ class WorkspaceBindingsAPI:
 
         :returns: :class:`UpdateCatalogWorkspaceBindingsResponse`
         """
+
         body = {}
         if assign_workspaces is not None:
             body["assign_workspaces"] = [v for v in assign_workspaces]
@@ -16239,6 +16321,7 @@ class WorkspaceBindingsAPI:
 
         :returns: :class:`UpdateWorkspaceBindingsResponse`
         """
+
         body = {}
         if add is not None:
             body["add"] = [v.as_dict() for v in add]

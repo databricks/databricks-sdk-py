@@ -453,6 +453,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DBFS_DOWN
       :value: "DBFS_DOWN"
 
+   .. py:attribute:: DECOMMISSION_ENDED
+      :value: "DECOMMISSION_ENDED"
+
+   .. py:attribute:: DECOMMISSION_STARTED
+      :value: "DECOMMISSION_STARTED"
+
    .. py:attribute:: DID_NOT_EXPAND_DISK
       :value: "DID_NOT_EXPAND_DISK"
 
@@ -1185,6 +1191,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DBFS_COMPONENT_UNHEALTHY
       :value: "DBFS_COMPONENT_UNHEALTHY"
+
+   .. py:attribute:: DBR_IMAGE_RESOLUTION_FAILURE
+      :value: "DBR_IMAGE_RESOLUTION_FAILURE"
 
    .. py:attribute:: DISASTER_RECOVERY_REPLICATION
       :value: "DISASTER_RECOVERY_REPLICATION"

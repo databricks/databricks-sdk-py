@@ -331,6 +331,12 @@ class AlertEvaluationState(Enum):
     UNKNOWN = "UNKNOWN"
 
 
+class AlertLifecycleState(Enum):
+
+    ACTIVE = "ACTIVE"
+    DELETED = "DELETED"
+
+
 @dataclass
 class AlertOperandColumn:
     name: Optional[str] = None
@@ -665,7 +671,7 @@ class AlertV2:
     id: Optional[str] = None
     """UUID identifying the alert."""
 
-    lifecycle_state: Optional[LifecycleState] = None
+    lifecycle_state: Optional[AlertLifecycleState] = None
     """Indicates whether the query is trashed."""
 
     owner_user_name: Optional[str] = None
@@ -776,7 +782,7 @@ class AlertV2:
             effective_run_as=_from_dict(d, "effective_run_as", AlertV2RunAs),
             evaluation=_from_dict(d, "evaluation", AlertV2Evaluation),
             id=d.get("id", None),
-            lifecycle_state=_enum(d, "lifecycle_state", LifecycleState),
+            lifecycle_state=_enum(d, "lifecycle_state", AlertLifecycleState),
             owner_user_name=d.get("owner_user_name", None),
             parent_path=d.get("parent_path", None),
             query_text=d.get("query_text", None),
@@ -1130,24 +1136,6 @@ class BaseChunkInfo:
             row_count=d.get("row_count", None),
             row_offset=d.get("row_offset", None),
         )
-
-
-@dataclass
-class CancelExecutionResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CancelExecutionResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CancelExecutionResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CancelExecutionResponse:
-        """Deserializes the CancelExecutionResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -5111,7 +5099,7 @@ class QueryMetrics:
     queue."""
 
     pruned_bytes: Optional[int] = None
-    """Total number of bytes in all tables not read due to pruning"""
+    """Total number of file bytes in all tables not read due to pruning"""
 
     pruned_files_count: Optional[int] = None
     """Total number of files from all tables not read due to pruning"""
@@ -5124,6 +5112,9 @@ class QueryMetrics:
 
     read_cache_bytes: Optional[int] = None
     """Size of persistent data read from the cache, in bytes."""
+
+    read_files_bytes: Optional[int] = None
+    """Total number of file bytes in all tables read"""
 
     read_files_count: Optional[int] = None
     """Number of files read after pruning"""
@@ -5204,6 +5195,8 @@ class QueryMetrics:
             body["read_bytes"] = self.read_bytes
         if self.read_cache_bytes is not None:
             body["read_cache_bytes"] = self.read_cache_bytes
+        if self.read_files_bytes is not None:
+            body["read_files_bytes"] = self.read_files_bytes
         if self.read_files_count is not None:
             body["read_files_count"] = self.read_files_count
         if self.read_partitions_count is not None:
@@ -5265,6 +5258,8 @@ class QueryMetrics:
             body["read_bytes"] = self.read_bytes
         if self.read_cache_bytes is not None:
             body["read_cache_bytes"] = self.read_cache_bytes
+        if self.read_files_bytes is not None:
+            body["read_files_bytes"] = self.read_files_bytes
         if self.read_files_count is not None:
             body["read_files_count"] = self.read_files_count
         if self.read_partitions_count is not None:
@@ -5314,6 +5309,7 @@ class QueryMetrics:
             query_compilation_start_timestamp=d.get("query_compilation_start_timestamp", None),
             read_bytes=d.get("read_bytes", None),
             read_cache_bytes=d.get("read_cache_bytes", None),
+            read_files_bytes=d.get("read_files_bytes", None),
             read_files_count=d.get("read_files_count", None),
             read_partitions_count=d.get("read_partitions_count", None),
             read_remote_bytes=d.get("read_remote_bytes", None),
@@ -6299,6 +6295,7 @@ class TerminationReasonCode(Enum):
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
     DATA_ACCESS_CONFIG_CHANGED = "DATA_ACCESS_CONFIG_CHANGED"
     DBFS_COMPONENT_UNHEALTHY = "DBFS_COMPONENT_UNHEALTHY"
+    DBR_IMAGE_RESOLUTION_FAILURE = "DBR_IMAGE_RESOLUTION_FAILURE"
     DISASTER_RECOVERY_REPLICATION = "DISASTER_RECOVERY_REPLICATION"
     DNS_RESOLUTION_ERROR = "DNS_RESOLUTION_ERROR"
     DOCKER_CONTAINER_CREATION_EXCEPTION = "DOCKER_CONTAINER_CREATION_EXCEPTION"
@@ -7399,6 +7396,7 @@ class AlertsAPI:
 
         :returns: :class:`Alert`
         """
+
         body = {}
         if alert is not None:
             body["alert"] = alert.as_dict()
@@ -7501,6 +7499,7 @@ class AlertsAPI:
 
         :returns: :class:`Alert`
         """
+
         body = {}
         if alert is not None:
             body["alert"] = alert.as_dict()
@@ -7562,6 +7561,7 @@ class AlertsLegacyAPI:
 
         :returns: :class:`LegacyAlert`
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -7661,6 +7661,7 @@ class AlertsLegacyAPI:
 
 
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -7691,6 +7692,7 @@ class AlertsV2API:
 
         :returns: :class:`AlertV2`
         """
+
         body = alert.as_dict()
         headers = {
             "Accept": "application/json",
@@ -7777,6 +7779,7 @@ class AlertsV2API:
 
         :returns: :class:`AlertV2`
         """
+
         body = alert.as_dict()
         query = {}
         if update_mask is not None:
@@ -7821,6 +7824,7 @@ class DashboardWidgetsAPI:
 
         :returns: :class:`Widget`
         """
+
         body = {}
         if dashboard_id is not None:
             body["dashboard_id"] = dashboard_id
@@ -7882,6 +7886,7 @@ class DashboardWidgetsAPI:
 
         :returns: :class:`Widget`
         """
+
         body = {}
         if dashboard_id is not None:
             body["dashboard_id"] = dashboard_id
@@ -8027,6 +8032,7 @@ class DashboardsAPI:
 
         :returns: :class:`Dashboard`
         """
+
         body = {}
         if name is not None:
             body["name"] = name
@@ -8147,6 +8153,7 @@ class DbsqlPermissionsAPI:
 
         :returns: :class:`SetResponse`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -8179,6 +8186,7 @@ class DbsqlPermissionsAPI:
 
         :returns: :class:`Success`
         """
+
         body = {}
         if new_owner is not None:
             body["new_owner"] = new_owner
@@ -8216,6 +8224,7 @@ class QueriesAPI:
 
         :returns: :class:`Query`
         """
+
         body = {}
         if auto_resolve_display_name is not None:
             body["auto_resolve_display_name"] = auto_resolve_display_name
@@ -8348,6 +8357,7 @@ class QueriesAPI:
 
         :returns: :class:`Query`
         """
+
         body = {}
         if auto_resolve_display_name is not None:
             body["auto_resolve_display_name"] = auto_resolve_display_name
@@ -8427,6 +8437,7 @@ class QueriesLegacyAPI:
 
         :returns: :class:`LegacyQuery`
         """
+
         body = {}
         if data_source_id is not None:
             body["data_source_id"] = data_source_id
@@ -8622,6 +8633,7 @@ class QueriesLegacyAPI:
 
         :returns: :class:`LegacyQuery`
         """
+
         body = {}
         if data_source_id is not None:
             body["data_source_id"] = data_source_id
@@ -8715,6 +8727,7 @@ class QueryVisualizationsAPI:
 
         :returns: :class:`Visualization`
         """
+
         body = {}
         if visualization is not None:
             body["visualization"] = visualization.as_dict()
@@ -8760,6 +8773,7 @@ class QueryVisualizationsAPI:
 
         :returns: :class:`Visualization`
         """
+
         body = {}
         if update_mask is not None:
             body["update_mask"] = update_mask
@@ -8810,6 +8824,7 @@ class QueryVisualizationsLegacyAPI:
 
         :returns: :class:`LegacyVisualization`
         """
+
         body = {}
         if description is not None:
             body["description"] = description
@@ -8851,10 +8866,10 @@ class QueryVisualizationsLegacyAPI:
 
     def update(
         self,
-        id: str,
         *,
         created_at: Optional[str] = None,
         description: Optional[str] = None,
+        id: Optional[str] = None,
         name: Optional[str] = None,
         options: Optional[Any] = None,
         query: Optional[LegacyQuery] = None,
@@ -8868,11 +8883,11 @@ class QueryVisualizationsLegacyAPI:
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
-        :param id: str
-          The UUID for this visualization.
         :param created_at: str (optional)
         :param description: str (optional)
           A short description of this visualization. This is not displayed in the UI.
+        :param id: str (optional)
+          The UUID for this visualization.
         :param name: str (optional)
           The name of the visualization that appears on dashboards and the query screen.
         :param options: Any (optional)
@@ -8885,11 +8900,14 @@ class QueryVisualizationsLegacyAPI:
 
         :returns: :class:`LegacyVisualization`
         """
+
         body = {}
         if created_at is not None:
             body["created_at"] = created_at
         if description is not None:
             body["description"] = description
+        if id is not None:
+            body["id"] = id
         if name is not None:
             body["name"] = name
         if options is not None:
@@ -9223,6 +9241,7 @@ class StatementExecutionAPI:
 
         :returns: :class:`StatementResponse`
         """
+
         body = {}
         if byte_limit is not None:
             body["byte_limit"] = byte_limit
@@ -9451,6 +9470,7 @@ class WarehousesAPI:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         """
+
         body = {}
         if auto_stop_mins is not None:
             body["auto_stop_mins"] = auto_stop_mins
@@ -9620,6 +9640,7 @@ class WarehousesAPI:
           Long-running operation waiter for :class:`GetWarehouseResponse`.
           See :method:wait_get_warehouse_running for more details.
         """
+
         body = {}
         if auto_stop_mins is not None:
             body["auto_stop_mins"] = auto_stop_mins
@@ -9806,6 +9827,7 @@ class WarehousesAPI:
 
         :returns: :class:`WarehousePermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -9861,6 +9883,7 @@ class WarehousesAPI:
 
 
         """
+
         body = {}
         if channel is not None:
             body["channel"] = channel.as_dict()
@@ -9943,6 +9966,7 @@ class WarehousesAPI:
 
         :returns: :class:`WarehousePermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]

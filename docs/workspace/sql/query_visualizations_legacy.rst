@@ -51,7 +51,7 @@
 
         
 
-    .. py:method:: update(id: str [, created_at: Optional[str], description: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[LegacyQuery], type: Optional[str], updated_at: Optional[str]]) -> LegacyVisualization
+    .. py:method:: update( [, created_at: Optional[str], description: Optional[str], id: Optional[str], name: Optional[str], options: Optional[Any], query: Optional[LegacyQuery], type: Optional[str], updated_at: Optional[str]]) -> LegacyVisualization
 
         Updates visualization in the query.
 
@@ -60,11 +60,11 @@
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
-        :param id: str
-          The UUID for this visualization.
         :param created_at: str (optional)
         :param description: str (optional)
           A short description of this visualization. This is not displayed in the UI.
+        :param id: str (optional)
+          The UUID for this visualization.
         :param name: str (optional)
           The name of the visualization that appears on dashboards and the query screen.
         :param options: Any (optional)

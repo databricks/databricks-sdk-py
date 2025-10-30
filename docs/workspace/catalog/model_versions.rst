@@ -81,6 +81,10 @@
         There is no guarantee of a specific ordering of the elements in the response. The elements in the
         response will not contain any aliases or tags.
 
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
+
         :param full_name: str
           The full three-level name of the registered model under which to list model versions
         :param include_browse: bool (optional)

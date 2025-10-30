@@ -33,6 +33,10 @@
         ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the
         counts returned. This API does not trigger a refresh of quota counts.
 
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
+
         :param max_results: int (optional)
           The number of quotas to return.
         :param page_token: str (optional)

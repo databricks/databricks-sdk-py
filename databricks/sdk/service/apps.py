@@ -790,11 +790,13 @@ class AppManifestAppResourceUcSecurableSpecUcSecurablePermission(Enum):
 
     MANAGE = "MANAGE"
     READ_VOLUME = "READ_VOLUME"
+    SELECT = "SELECT"
     WRITE_VOLUME = "WRITE_VOLUME"
 
 
 class AppManifestAppResourceUcSecurableSpecUcSecurableType(Enum):
 
+    TABLE = "TABLE"
     VOLUME = "VOLUME"
 
 
@@ -1867,6 +1869,7 @@ class AppsAPI:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_active for more details.
         """
+
         body = app.as_dict()
         query = {}
         if no_compute is not None:
@@ -1903,6 +1906,7 @@ class AppsAPI:
           Long-running operation waiter for :class:`AppUpdate`.
           See :method:wait_get_update_app_succeeded for more details.
         """
+
         body = {}
         if app is not None:
             body["app"] = app.as_dict()
@@ -1949,6 +1953,7 @@ class AppsAPI:
           Long-running operation waiter for :class:`AppDeployment`.
           See :method:wait_get_deployment_app_succeeded for more details.
         """
+
         body = app_deployment.as_dict()
         headers = {
             "Accept": "application/json",
@@ -2124,6 +2129,7 @@ class AppsAPI:
 
         :returns: :class:`AppPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -2189,6 +2195,7 @@ class AppsAPI:
 
         :returns: :class:`App`
         """
+
         body = app.as_dict()
         headers = {
             "Accept": "application/json",
@@ -2209,6 +2216,7 @@ class AppsAPI:
 
         :returns: :class:`AppPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -2234,6 +2242,7 @@ class AppsSettingsAPI:
 
         :returns: :class:`CustomTemplate`
         """
+
         body = template.as_dict()
         headers = {
             "Accept": "application/json",
@@ -2316,6 +2325,7 @@ class AppsSettingsAPI:
 
         :returns: :class:`CustomTemplate`
         """
+
         body = template.as_dict()
         headers = {
             "Accept": "application/json",

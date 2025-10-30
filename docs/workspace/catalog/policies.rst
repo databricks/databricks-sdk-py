@@ -54,6 +54,10 @@
         List all policies defined on a securable. Optionally, the list can include inherited policies defined
         on the securable's parent schema or catalog.
 
+        PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still
+        providing a next_page_token. Clients must continue reading pages until next_page_token is absent,
+        which is the only indication that the end of results has been reached.
+
         :param on_securable_type: str
           Required. The type of the securable to list policies for.
         :param on_securable_fullname: str

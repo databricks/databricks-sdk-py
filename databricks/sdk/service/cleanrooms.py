@@ -12,7 +12,7 @@ from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.service import catalog, jobs, settings, sharing
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict)
+                                              _repeated_dict, _repeated_enum)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1080,7 +1080,7 @@ class ComplianceSecurityProfile:
         """Serializes the ComplianceSecurityProfile into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.compliance_standards:
-            body["compliance_standards"] = [v.as_dict() for v in self.compliance_standards]
+            body["compliance_standards"] = [v.value for v in self.compliance_standards]
         if self.is_enabled is not None:
             body["is_enabled"] = self.is_enabled
         return body
@@ -1098,7 +1098,7 @@ class ComplianceSecurityProfile:
     def from_dict(cls, d: Dict[str, Any]) -> ComplianceSecurityProfile:
         """Deserializes the ComplianceSecurityProfile from a dictionary."""
         return cls(
-            compliance_standards=_repeated_dict(d, "compliance_standards", settings.ComplianceStandard),
+            compliance_standards=_repeated_enum(d, "compliance_standards", settings.ComplianceStandard),
             is_enabled=d.get("is_enabled", None),
         )
 
@@ -1495,6 +1495,7 @@ class CleanRoomAssetsAPI:
 
         :returns: :class:`CleanRoomAsset`
         """
+
         body = asset.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1524,6 +1525,7 @@ class CleanRoomAssetsAPI:
 
         :returns: :class:`CreateCleanRoomAssetReviewResponse`
         """
+
         body = {}
         if notebook_review is not None:
             body["notebook_review"] = notebook_review.as_dict()
@@ -1635,6 +1637,7 @@ class CleanRoomAssetsAPI:
 
         :returns: :class:`CleanRoomAsset`
         """
+
         body = asset.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1666,6 +1669,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         :returns: :class:`CleanRoomAutoApprovalRule`
         """
+
         body = {}
         if auto_approval_rule is not None:
             body["auto_approval_rule"] = auto_approval_rule.as_dict()
@@ -1760,6 +1764,7 @@ class CleanRoomAutoApprovalRulesAPI:
 
         :returns: :class:`CleanRoomAutoApprovalRule`
         """
+
         body = auto_approval_rule.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1869,6 +1874,7 @@ class CleanRoomsAPI:
           Long-running operation waiter for :class:`CleanRoom`.
           See :method:wait_get_clean_room_active for more details.
         """
+
         body = clean_room.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1894,6 +1900,7 @@ class CleanRoomsAPI:
 
         :returns: :class:`CreateCleanRoomOutputCatalogResponse`
         """
+
         body = output_catalog.as_dict()
         headers = {
             "Accept": "application/json",
@@ -1979,6 +1986,7 @@ class CleanRoomsAPI:
 
         :returns: :class:`CleanRoom`
         """
+
         body = {}
         if clean_room is not None:
             body["clean_room"] = clean_room.as_dict()

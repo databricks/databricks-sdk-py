@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import logging
+import uuid
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional
@@ -1067,9 +1068,6 @@ class LogDeliveryConfiguration:
     [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html
     [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"""
 
-    account_id: str
-    """Databricks account ID."""
-
     credentials_id: str
     """The ID for a method:credentials/create that represents the AWS IAM role with policy and trust
     relationship as described in the main billable usage documentation page. See [Configure billable
@@ -1082,6 +1080,9 @@ class LogDeliveryConfiguration:
     in the main billable usage documentation page. See [Configure billable usage delivery].
     
     [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"""
+
+    account_id: Optional[str] = None
+    """Databricks account ID."""
 
     config_id: Optional[str] = None
     """The unique UUID of log delivery configuration"""
@@ -1565,6 +1566,9 @@ class BudgetPolicyAPI:
 
         :returns: :class:`BudgetPolicy`
         """
+
+        if request_id is None or request_id == "":
+            request_id = str(uuid.uuid4())
         body = {}
         if policy is not None:
             body["policy"] = policy.as_dict()
@@ -1679,6 +1683,7 @@ class BudgetPolicyAPI:
 
         :returns: :class:`BudgetPolicy`
         """
+
         body = policy.as_dict()
         query = {}
         if limit_config is not None:
@@ -1715,6 +1720,7 @@ class BudgetsAPI:
 
         :returns: :class:`CreateBudgetConfigurationResponse`
         """
+
         body = {}
         if budget is not None:
             body["budget"] = budget.as_dict()
@@ -1797,6 +1803,7 @@ class BudgetsAPI:
 
         :returns: :class:`UpdateBudgetConfigurationResponse`
         """
+
         body = {}
         if budget is not None:
             body["budget"] = budget.as_dict()
@@ -1895,6 +1902,7 @@ class LogDeliveryAPI:
 
         :returns: :class:`WrappedLogDeliveryConfiguration`
         """
+
         body = {}
         if log_delivery_configuration is not None:
             body["log_delivery_configuration"] = log_delivery_configuration.as_dict()
@@ -1989,6 +1997,7 @@ class LogDeliveryAPI:
 
 
         """
+
         body = {}
         if status is not None:
             body["status"] = status.value
@@ -2026,6 +2035,7 @@ class UsageDashboardsAPI:
 
         :returns: :class:`CreateBillingUsageDashboardResponse`
         """
+
         body = {}
         if dashboard_type is not None:
             body["dashboard_type"] = dashboard_type.value

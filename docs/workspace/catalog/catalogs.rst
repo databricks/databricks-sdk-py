@@ -24,10 +24,10 @@
             
             w = WorkspaceClient()
             
-            created = w.catalogs.create(name=f"sdk-{time.time_ns()}")
+            created_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
             # cleanup
-            w.catalogs.delete(name=created.name, force=True)
+            w.catalogs.delete(name=created_catalog.name, force=True)
 
         Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
         **CREATE_CATALOG** privilege.
@@ -123,8 +123,7 @@
 
         PAGINATION BEHAVIOR: When using pagination (max_results >= 0), a page may contain zero results while
         still providing a next_page_token. Clients must continue reading pages until next_page_token is
-        absent, which is the only indication that the end of results has been reached. This behavior follows
-        Google AIP-158 guidelines.
+        absent, which is the only indication that the end of results has been reached.
 
         :param include_browse: bool (optional)
           Whether to include catalogs in the response for which the principal can only access selective

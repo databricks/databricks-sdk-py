@@ -1756,6 +1756,7 @@ class GenieAPI:
           Long-running operation waiter for :class:`GenieMessage`.
           See :method:wait_get_message_genie_completed for more details.
         """
+
         body = {}
         if content is not None:
             body["content"] = content
@@ -2116,6 +2117,7 @@ class GenieAPI:
 
 
         """
+
         body = {}
         if rating is not None:
             body["rating"] = rating.value
@@ -2143,6 +2145,7 @@ class GenieAPI:
           Long-running operation waiter for :class:`GenieMessage`.
           See :method:wait_get_message_genie_completed for more details.
         """
+
         body = {}
         if content is not None:
             body["content"] = content
@@ -2195,6 +2198,7 @@ class LakeviewAPI:
 
         :returns: :class:`Dashboard`
         """
+
         body = dashboard.as_dict()
         headers = {
             "Accept": "application/json",
@@ -2214,6 +2218,7 @@ class LakeviewAPI:
 
         :returns: :class:`Schedule`
         """
+
         body = schedule.as_dict()
         headers = {
             "Accept": "application/json",
@@ -2235,6 +2240,7 @@ class LakeviewAPI:
 
         :returns: :class:`Subscription`
         """
+
         body = subscription.as_dict()
         headers = {
             "Accept": "application/json",
@@ -2530,6 +2536,7 @@ class LakeviewAPI:
 
         :returns: :class:`Dashboard`
         """
+
         body = {}
         if display_name is not None:
             body["display_name"] = display_name
@@ -2562,6 +2569,7 @@ class LakeviewAPI:
 
         :returns: :class:`PublishedDashboard`
         """
+
         body = {}
         if embed_credentials is not None:
             body["embed_credentials"] = embed_credentials
@@ -2614,6 +2622,7 @@ class LakeviewAPI:
 
         :returns: :class:`Dashboard`
         """
+
         body = dashboard.as_dict()
         headers = {
             "Accept": "application/json",
@@ -2635,6 +2644,7 @@ class LakeviewAPI:
 
         :returns: :class:`Schedule`
         """
+
         body = schedule.as_dict()
         headers = {
             "Accept": "application/json",

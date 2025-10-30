@@ -20,14 +20,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: CancelAllRunsResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: CancelRunResponse
-   :members:
-   :undoc-members:
-
 .. py:class:: CleanRoomTaskRunLifeCycleState
 
    Copied from elastic-spark-common/api/messages/runs.proto. Using the original definition to remove coupling with jobs API definition
@@ -239,14 +231,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: DbtTask
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: DeleteRunResponse
    :members:
    :undoc-members:
 
@@ -605,10 +589,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
       :value: "REPAIR"
 
 .. autoclass:: RepairRunResponse
-   :members:
-   :undoc-members:
-
-.. autoclass:: ResetResponse
    :members:
    :undoc-members:
 
@@ -1127,10 +1107,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE
       :value: "TABLE"
-
-.. autoclass:: UpdateResponse
-   :members:
-   :undoc-members:
 
 .. autoclass:: ViewItem
    :members:

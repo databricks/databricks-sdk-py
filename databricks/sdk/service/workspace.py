@@ -241,24 +241,6 @@ class CreateRepoResponse:
 
 
 @dataclass
-class CreateScopeResponse:
-    def as_dict(self) -> dict:
-        """Serializes the CreateScopeResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the CreateScopeResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> CreateScopeResponse:
-        """Deserializes the CreateScopeResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class CredentialInfo:
     credential_id: int
     """ID of the credential object in the workspace."""
@@ -332,24 +314,6 @@ class CredentialInfo:
 
 
 @dataclass
-class DeleteAclResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteAclResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteAclResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteAclResponse:
-        """Deserializes the DeleteAclResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class DeleteCredentialsResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteCredentialsResponse into a dictionary suitable for use as a JSON request body."""
@@ -400,24 +364,6 @@ class DeleteResponse:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DeleteResponse:
         """Deserializes the DeleteResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class DeleteScopeResponse:
-    def as_dict(self) -> dict:
-        """Serializes the DeleteScopeResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the DeleteScopeResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> DeleteScopeResponse:
-        """Deserializes the DeleteScopeResponse from a dictionary."""
         return cls()
 
 
@@ -1030,42 +976,6 @@ class ObjectType(Enum):
     LIBRARY = "LIBRARY"
     NOTEBOOK = "NOTEBOOK"
     REPO = "REPO"
-
-
-@dataclass
-class PutAclResponse:
-    def as_dict(self) -> dict:
-        """Serializes the PutAclResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PutAclResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PutAclResponse:
-        """Deserializes the PutAclResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
-class PutSecretResponse:
-    def as_dict(self) -> dict:
-        """Serializes the PutSecretResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the PutSecretResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> PutSecretResponse:
-        """Deserializes the PutSecretResponse from a dictionary."""
-        return cls()
 
 
 @dataclass
@@ -1840,6 +1750,7 @@ class GitCredentialsAPI:
 
         :returns: :class:`CreateCredentialsResponse`
         """
+
         body = {}
         if git_email is not None:
             body["git_email"] = git_email
@@ -1948,6 +1859,7 @@ class GitCredentialsAPI:
 
 
         """
+
         body = {}
         if git_email is not None:
             body["git_email"] = git_email
@@ -2004,6 +1916,7 @@ class ReposAPI:
 
         :returns: :class:`CreateRepoResponse`
         """
+
         body = {}
         if path is not None:
             body["path"] = path
@@ -2129,6 +2042,7 @@ class ReposAPI:
 
         :returns: :class:`RepoPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -2165,6 +2079,7 @@ class ReposAPI:
 
 
         """
+
         body = {}
         if branch is not None:
             body["branch"] = branch
@@ -2190,6 +2105,7 @@ class ReposAPI:
 
         :returns: :class:`RepoPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -2268,6 +2184,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if backend_azure_keyvault is not None:
             body["backend_azure_keyvault"] = backend_azure_keyvault.as_dict()
@@ -2305,6 +2222,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if principal is not None:
             body["principal"] = principal
@@ -2334,6 +2252,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if scope is not None:
             body["scope"] = scope
@@ -2365,6 +2284,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if key is not None:
             body["key"] = key
@@ -2586,6 +2506,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if permission is not None:
             body["permission"] = permission.value
@@ -2637,6 +2558,7 @@ class SecretsAPI:
 
 
         """
+
         body = {}
         if bytes_value is not None:
             body["bytes_value"] = bytes_value
@@ -2679,6 +2601,7 @@ class WorkspaceAPI:
 
 
         """
+
         body = {}
         if path is not None:
             body["path"] = path
@@ -2807,7 +2730,7 @@ class WorkspaceAPI:
         If `path` already exists and `overwrite` is set to `false`, this call returns an error
         `RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`
         format with the `language` field unset. To import a single file as `SOURCE`, you must set the
-        `language` field.
+        `language` field. Zip files within directories are not supported.
 
         :param path: str
           The absolute path of the object or directory. Importing a directory is only supported for the `DBC`
@@ -2836,6 +2759,7 @@ class WorkspaceAPI:
 
 
         """
+
         body = {}
         if content is not None:
             body["content"] = content
@@ -2893,6 +2817,7 @@ class WorkspaceAPI:
 
 
         """
+
         body = {}
         if path is not None:
             body["path"] = path
@@ -2922,6 +2847,7 @@ class WorkspaceAPI:
 
         :returns: :class:`WorkspaceObjectPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
@@ -2953,6 +2879,7 @@ class WorkspaceAPI:
 
         :returns: :class:`WorkspaceObjectPermissions`
         """
+
         body = {}
         if access_control_list is not None:
             body["access_control_list"] = [v.as_dict() for v in access_control_list]
