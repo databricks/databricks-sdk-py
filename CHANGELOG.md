@@ -1048,7 +1048,7 @@
 * [Breaking] Removed `aliases`, `comment`, `data_type`, `dependency_list`, `full_data_type`, `id`, `input_params`, `name`, `properties`, `routine_definition`, `schema`, `securable_kind`, `share`, `share_id`, `storage_location` and `tags` fields for `databricks.sdk.service.sharing.Function`.
 
 
-## Release v0.46.0 (2025-03-11)
+## Release v0.46.0 (2025-03-12)
 
 ### New Features and Improvements
 * [Experimental] Add support for async token refresh ([#916](https://github.com/databricks/databricks-sdk-py/pull/916)).
@@ -1065,7 +1065,7 @@
 * [Breaking] Removed `jwks_uri` field for `databricks.sdk.service.oauth2.OidcFederationPolicy`.
 
 
-## Release v0.45.0 (2025-03-06)
+## Release v0.45.0 (2025-03-07)
 
 ### New Features and Improvements
 * Update Jobs service to use API 2.2 ([#913](https://github.com/databricks/databricks-sdk-py/pull/913)).
@@ -1333,7 +1333,7 @@ OpenAPI SHA: a6a317df8327c9b1e5cb59a03a42ffa2aabeef6d, Date: 2024-12-16
 
 OpenAPI SHA: 7016dcbf2e011459416cf408ce21143bcc4b3a25, Date: 2024-12-05
 
-## Release v0.38.0 (2024-11-20)
+## Release v0.38.0 (2024-11-18)
 
 ### New Features and Improvements
 
