@@ -796,6 +796,25 @@ class PresignedUrlDownloadTestCase:
         }
     """
 
+    model_serving_presigned_url_internal_error_response = """
+        {
+          "error_code": "INTERNAL_ERROR",
+          "message": "Can't infer requester network zone.",
+          "details": [
+            {
+              "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+              "reason": "FILES_API_REQUESTER_NETWORK_ZONE_UNKNOWN",
+              "domain": "filesystem.databricks.com"
+            },
+            {
+              "@type": "type.googleapis.com/google.rpc.RequestInfo",
+              "request_id": "b2ffb201-ff61-41ad-93e3-50d47654e924",
+              "serving_data": ""
+            }
+          ]
+        }
+    """
+
     expired_url_aws_response = (
         '<?xml version="1.0" encoding="utf-8"?><Error><Code>'
         "AuthenticationFailed</Code><Message>Server failed to authenticate "
@@ -1096,6 +1115,16 @@ class PresignedUrlDownloadTestCase:
             expected_download_api="files_api",
             custom_response_create_presigned_url=CustomResponse(
                 code=403, only_invocation=1, body=PresignedUrlDownloadTestCase.presigned_url_disabled_response
+            ),
+        ),
+        PresignedUrlDownloadTestCase(
+            name="Presigned URL is not issued because NetworkZone is not populated, should fallback to Files API",
+            file_size=100 * 1024 * 1024,
+            expected_download_api="files_api",
+            custom_response_create_presigned_url=CustomResponse(
+                code=500,
+                only_invocation=1,
+                body=PresignedUrlDownloadTestCase.model_serving_presigned_url_internal_error_response,
             ),
         ),
         PresignedUrlDownloadTestCase(
@@ -1490,6 +1519,25 @@ class MultipartUploadTestCase(UploadTestCase):
             {
               "@type": "type.googleapis.com/google.rpc.RequestInfo",
               "request_id": "9ccb2aa8-621e-42f7-a815-828b70653bf6",
+              "serving_data": ""
+            }
+          ]
+        }
+    """
+
+    model_serving_presigned_url_internal_error_response = """
+        {
+          "error_code": "INTERNAL_ERROR",
+          "message": "Can't infer requester network zone.",
+          "details": [
+            {
+              "@type": "type.googleapis.com/google.rpc.ErrorInfo",
+              "reason": "FILES_API_REQUESTER_NETWORK_ZONE_UNKNOWN",
+              "domain": "filesystem.databricks.com"
+            },
+            {
+              "@type": "type.googleapis.com/google.rpc.RequestInfo",
+              "request_id": "b2ffb201-ff61-41ad-93e3-50d47654e924",
               "serving_data": ""
             }
           ]
@@ -1957,6 +2005,18 @@ class MultipartUploadTestCase(UploadTestCase):
             custom_response_on_create_multipart_url=CustomResponse(
                 code=403,
                 body=MultipartUploadTestCase.presigned_url_disabled_response,
+                # 1 failure is enough
+                only_invocation=1,
+            ),
+            expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
+        ),
+        MultipartUploadTestCase(
+            "Create upload URL: fallback to single-shot upload when presigned URLs are not issue because of the NetworkZone is not populated to Filesystem service",
+            content_size=1024 * 1024,
+            custom_response_on_create_multipart_url=CustomResponse(
+                code=500,
+                body=MultipartUploadTestCase.model_serving_presigned_url_internal_error_response,
                 # 1 failure is enough
                 only_invocation=1,
             ),
@@ -2498,6 +2558,17 @@ class ResumableUploadTestCase(UploadTestCase):
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(
                 code=403, body=MultipartUploadTestCase.presigned_url_disabled_response, only_invocation=1
+            ),
+            expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
+        ),
+        ResumableUploadTestCase(
+            "Create resumable URL: fallback to single-shot upload when presigned URLs are not issued because of the NetworkZone is not populated to Filesystem service",
+            stream_size=1024 * 1024,
+            custom_response_on_create_resumable_url=CustomResponse(
+                code=500,
+                body=MultipartUploadTestCase.model_serving_presigned_url_internal_error_response,
+                only_invocation=1,
             ),
             expected_multipart_upload_aborted=False,  # upload didn't start
             expected_single_shot_upload=True,
