@@ -1,6 +1,6 @@
 # Version changelog
 
-## Release v0.71.0
+## Release v0.71.0 (2025-10-30)
 
 ### Bug Fixes
 
@@ -25,7 +25,7 @@
 * [Breaking] Remove `duration` and `offset` fields for `databricks.sdk.service.ml.TimeWindow`.
 
 
-## Release v0.70.0
+## Release v0.70.0 (2025-10-23)
 
 ### Bug Fixes
 - Improving the error message that is shown when the unsupported `dbutils.credentials.getServiceCredentialsProvider` method is used. This method can only be used inside of a notebook.
@@ -51,7 +51,7 @@
 * [Breaking] Remove `results` field for `databricks.sdk.service.sql.ListAlertsV2Response`.
 
 
-## Release v0.69.0
+## Release v0.69.0 (2025-10-20)
 
 ### New Features and Improvements
 
@@ -74,7 +74,7 @@
 * Add `files_ext_client_download_streaming_chunk_size`, `files_ext_multipart_upload_part_size_options`, `files_ext_multipart_upload_max_part_size`, `files_ext_multipart_upload_default_parallelism`, `files_ext_presigned_download_url_expiration_duration`, `files_ext_parallel_download_default_parallelism`, `files_ext_parallel_download_min_file_size`, `files_ext_parallel_download_default_part_size`, `files_ext_parallel_download_max_retries` for `databricks.sdk.Config`
 
 
-## Release v0.68.0
+## Release v0.68.0 (2025-10-14)
 
 ### New Features and Improvements
 
@@ -326,7 +326,7 @@
 * [Breaking] Remove `prediction_probability_column` field for `databricks.sdk.service.dataquality.InferenceLogConfig`.
 
 
-## Release v0.67.0
+## Release v0.67.0 (2025-09-25)
 
 ### API Changes
 * Add `update_notifications()` method for [w.serving_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/serving/serving_endpoints.html) workspace-level service.
@@ -341,7 +341,7 @@
 * [Breaking] Change `name` field for `databricks.sdk.service.database.DatabaseInstanceRole` to be required.
 
 
-## Release v0.66.0
+## Release v0.66.0 (2025-09-22)
 
 ### New Features and Improvements
 
@@ -381,7 +381,7 @@
 * [Breaking] Removed `comment` field for `databricks.sdk.service.dashboards.GenieSendMessageFeedbackRequest`.
 
 
-## Release v0.65.0
+## Release v0.65.0 (2025-09-02)
 
 ### New Features and Improvements
 
@@ -403,7 +403,7 @@
 * [Breaking] Removed `feedback_rating` and `feedback_text` fields for `databricks.sdk.service.dashboards.GenieSendMessageFeedbackRequest`.
 
 
-## Release v0.64.0
+## Release v0.64.0 (2025-08-20)
 
 ### API Changes
 * Added `databricks.sdk.service.settingsv2` and `databricks.sdk.service.tags` packages.
@@ -428,7 +428,7 @@
 * [Breaking] Removed `comment`, `display_name` and `tags` fields for `databricks.sdk.service.sharing.Share`.
 
 
-## Release v0.63.0
+## Release v0.63.0 (2025-08-13)
 
 ### API Changes
 * Added [w.policies](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/policies.html) workspace-level service and [w.temporary_path_credentials](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/catalog/temporary_path_credentials.html) workspace-level service.
@@ -444,7 +444,7 @@
 * [Breaking] Changed `publish_mode` field for `databricks.sdk.service.ml.PublishSpec` to be required.
 
 
-## Release v0.62.0
+## Release v0.62.0 (2025-08-06)
 
 ### Bug Fixes
 
@@ -464,7 +464,7 @@
 * [Breaking] Removed `is_featured` field for `databricks.sdk.service.marketplace.ListProvidersRequest`.
 
 
-## Release v0.61.0
+## Release v0.61.0 (2025-07-31)
 
 ### API Changes
 * Added [w.clean_room_asset_revisions](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cleanrooms/clean_room_asset_revisions.html) workspace-level service and [w.clean_room_auto_approval_rules](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/cleanrooms/clean_room_auto_approval_rules.html) workspace-level service.
@@ -489,7 +489,7 @@
 * Changed `output_schema_name` field for `databricks.sdk.service.catalog.MonitorInfo` to be required.
 
 
-## Release v0.60.0
+## Release v0.60.0 (2025-07-24)
 
 ### New Features and Improvements
 
@@ -524,7 +524,7 @@
 * [Breaking] Removed `databricks.sdk.service.aibuilder` package.
 
 
-## Release v0.59.0
+## Release v0.59.0 (2025-07-17)
 
 ### API Changes
 * Added [w.service_principal_secrets_proxy](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/oauth2/service_principal_secrets_proxy.html) workspace-level service.
@@ -557,7 +557,7 @@
 * [Breaking] Removed `range` and `if_unmodified_since` fields for `databricks.sdk.service.files.GetMetadataRequest`.
 
 
-## Release v0.58.0
+## Release v0.58.0 (2025-07-09)
 
 ### API Changes
 * Added `remote_disk_throughput` and `total_initial_remote_disk_size` fields for `databricks.sdk.service.compute.ClusterAttributes`.
@@ -648,7 +648,7 @@
 * [Breaking] Removed `archived`, `none`, `production` and `staging` enum values for `databricks.sdk.service.ml.Stage`.
 
 
-## Release v0.57.0
+## Release v0.57.0 (2025-06-12)
 
 ### API Changes
 * Added [w.ai_builder](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/aibuilder/ai_builder.html) workspace-level service.
@@ -675,7 +675,7 @@
 * [Breaking] Removed `cancelled`, `error`, `queued`, `running`, `starting` and `success` enum values for `databricks.sdk.service.jobs.DbtCloudRunStatus`.
 
 
-## Release v0.56.0
+## Release v0.56.0 (2025-06-05)
 
 ### API Changes
 * Added `databricks.sdk.service.aibuilder`, `databricks.sdk.service.database` and `databricks.sdk.service.qualitymonitorv2` packages.
@@ -754,7 +754,7 @@
 * [Breaking] Removed `internal` and `internal_and_external` enum values for `databricks.sdk.service.catalog.UpdateMetastoreDeltaSharingScope`.
 
 
-## Release v0.55.0
+## Release v0.55.0 (2025-05-27)
 
 ### New Features and Improvements
 
@@ -769,7 +769,7 @@
   ([#979](https://github.com/databricks/databricks-sdk-py/pull/979)).
 
 
-## Release v0.54.0
+## Release v0.54.0 (2025-05-22)
 
 ### API Changes
 * Added [a.llm_proxy_partner_powered_account](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/settings/llm_proxy_partner_powered_account.html) account-level service, [a.llm_proxy_partner_powered_enforce](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/settings/llm_proxy_partner_powered_enforce.html) account-level service, [w.llm_proxy_partner_powered_workspace](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/settings/llm_proxy_partner_powered_workspace.html) workspace-level service, [a.network_policies](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/network_policies.html) account-level service and [a.workspace_network_configuration](https://databricks-sdk-py.readthedocs.io/en/latest/account/settings/workspace_network_configuration.html) account-level service.
@@ -835,13 +835,13 @@
 * [Breaking] Removed `catalog`, `credential`, `external_location` and `storage_credential` enum values for `databricks.sdk.service.catalog.UpdateBindingsSecurableType`.
 
 
-## Release v0.53.0
+## Release v0.53.0 (2025-05-02)
 
 ### Bug Fixes
 * Fixed the deserialization of responses in VectorSearchAPI's `query_index()` method ([#961](https://github.com/databricks/databricks-sdk-py/pull/961)).
 
 
-## Release v0.52.0
+## Release v0.52.0 (2025-05-02)
 
 ### API Changes
 * Added `future_feature_data_path` field for `databricks.sdk.service.ml.CreateForecastingExperimentRequest`.
@@ -863,7 +863,7 @@
 * Fixed waiter for [GenieAPI.create_message](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html#databricks.sdk.service.dashboards.GenieAPI.create_message) method.
 
 
-## Release v0.51.0
+## Release v0.51.0 (2025-04-30)
 
 ### New Features and Improvements
 * Enabled asynchronous token refreshes by default. A new `disable_async_token_refresh` configuration option has been added to allow disabling this feature if necessary ([#952](https://github.com/databricks/databricks-sdk-py/pull/952)).
@@ -914,7 +914,7 @@
 * [Breaking] Removed `blob`, `dfs`, `mysql_server` and `sql_server` enum values for `databricks.sdk.service.settings.NccAzurePrivateEndpointRuleGroupId`.
 
 
-## Release v0.50.0
+## Release v0.50.0 (2025-04-14)
 
 ### API Changes
 * Added [w.enable_export_notebook](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/settings/enable_export_notebook.html) workspace-level service, [w.enable_notebook_table_clipboard](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/settings/enable_notebook_table_clipboard.html) workspace-level service and [w.enable_results_downloading](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/settings/settings/enable_results_downloading.html) workspace-level service.
@@ -945,7 +945,7 @@
 * [Breaking] Removed [PipelinesAPI.wait_get_pipeline_running](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines/pipelines.html#databricks.sdk.service.pipelines.PipelinesAPI.wait_get_pipeline_running) method.
 
 
-## Release v0.49.0
+## Release v0.49.0 (2025-03-28)
 
 ### API Changes
 * Added `generate_download_full_query_result()` method for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
@@ -981,7 +981,7 @@
 * [Breaking] Removed `aliases`, `comment`, `data_type`, `dependency_list`, `full_data_type`, `id`, `input_params`, `name`, `properties`, `routine_definition`, `schema`, `securable_kind`, `share`, `share_id`, `storage_location` and `tags` fields for `databricks.sdk.service.sharing.Function`.
 
 
-## Release v0.48.0
+## Release v0.48.0 (2025-03-27)
 
 ### API Changes
 * Added `execution_details` and `script` fields for `databricks.sdk.service.compute.InitScriptInfoAndExecutionDetails`.
@@ -1009,7 +1009,7 @@
 * [Breaking] Removed `custom` enum value for `databricks.sdk.service.serving.ExternalModelProvider`.
 
 
-## Release v0.47.0
+## Release v0.47.0 (2025-03-21)
 
 ### Bug Fixes
 
@@ -1048,7 +1048,7 @@
 * [Breaking] Removed `aliases`, `comment`, `data_type`, `dependency_list`, `full_data_type`, `id`, `input_params`, `name`, `properties`, `routine_definition`, `schema`, `securable_kind`, `share`, `share_id`, `storage_location` and `tags` fields for `databricks.sdk.service.sharing.Function`.
 
 
-## Release v0.46.0
+## Release v0.46.0 (2025-03-12)
 
 ### New Features and Improvements
 * [Experimental] Add support for async token refresh ([#916](https://github.com/databricks/databricks-sdk-py/pull/916)).
@@ -1065,7 +1065,7 @@
 * [Breaking] Removed `jwks_uri` field for `databricks.sdk.service.oauth2.OidcFederationPolicy`.
 
 
-## Release v0.45.0
+## Release v0.45.0 (2025-03-07)
 
 ### New Features and Improvements
 * Update Jobs service to use API 2.2 ([#913](https://github.com/databricks/databricks-sdk-py/pull/913)).
@@ -1137,7 +1137,7 @@
 * [Breaking] Removed `active_only`, `all` and `deleted_only` enum values for `databricks.sdk.service.ml.SearchRunsRunViewType`.
 
 
-## [Release] Release v0.44.1
+## Release v0.44.1 (2025-02-13)
 
 ### New Features and Improvements
 
@@ -1150,7 +1150,7 @@
 
 
 
-## [Release] Release v0.44.0
+## Release v0.44.0 (2025-02-11)
 
 ### Internal Changes
 
@@ -1167,7 +1167,7 @@
 
 OpenAPI SHA: 99f644e72261ef5ecf8d74db20f4b7a1e09723cc, Date: 2025-02-11
 
-## [Release] Release v0.43.0
+## Release v0.43.0 (2025-02-03)
 
 ### API Changes:
 
@@ -1223,7 +1223,7 @@ OpenAPI SHA: c72c58f97b950fcb924a90ef164bcb10cfcd5ece, Date: 2025-02-03
 
 OpenAPI SHA: 840c660106f820a1a5dff931d51fa5f65cd9fdd9, Date: 2025-01-28
 
-## [Release] Release v0.41.0
+## Release v0.41.0 (2025-01-20)
 
 ### New Features and Improvements
 
@@ -1286,7 +1286,7 @@ OpenAPI SHA: 840c660106f820a1a5dff931d51fa5f65cd9fdd9, Date: 2025-01-28
 
 OpenAPI SHA: 58905570a9928fc9ed31fba14a2edaf9a7c55b08, Date: 2025-01-20
 
-## [Release] Release v0.40.0
+## Release v0.40.0 (2024-12-19)
 
 ### API Changes:
 
@@ -1305,7 +1305,7 @@ OpenAPI SHA: 58905570a9928fc9ed31fba14a2edaf9a7c55b08, Date: 2025-01-20
 
 OpenAPI SHA: a6a317df8327c9b1e5cb59a03a42ffa2aabeef6d, Date: 2024-12-16
 
-## [Release] Release v0.39.0
+## Release v0.39.0 (2024-12-11)
 
 ### Bug Fixes
 
@@ -1333,7 +1333,7 @@ OpenAPI SHA: a6a317df8327c9b1e5cb59a03a42ffa2aabeef6d, Date: 2024-12-16
 
 OpenAPI SHA: 7016dcbf2e011459416cf408ce21143bcc4b3a25, Date: 2024-12-05
 
-## [Release] Release v0.38.0
+## Release v0.38.0 (2024-11-18)
 
 ### New Features and Improvements
 
@@ -1371,7 +1371,7 @@ OpenAPI SHA: 7016dcbf2e011459416cf408ce21143bcc4b3a25, Date: 2024-12-05
 
 OpenAPI SHA: f2385add116e3716c8a90a0b68e204deb40f996c, Date: 2024-11-15
 
-## [Release] Release v0.37.0
+## Release v0.37.0 (2024-11-05)
 
 ### Bug Fixes
 
@@ -1428,7 +1428,7 @@ OpenAPI SHA: f2385add116e3716c8a90a0b68e204deb40f996c, Date: 2024-11-15
 
 OpenAPI SHA: 5285ce76f81314f342c1702d5c2ad4ef42488781, Date: 2024-11-04
 
-## [Release] Release v0.36.0
+## Release v0.36.0 (2024-10-22)
 
 ### Breaking Changes
 * `external_browser` now uses the `databricks-cli` app instead of the third-party "6128a518-99a9-425b-8333-4cc94f04cacd" application when performing the U2M login flow for Azure workspaces when a client ID is not otherwise specified. This matches the AWS behavior.
@@ -1448,7 +1448,7 @@ OpenAPI SHA: 5285ce76f81314f342c1702d5c2ad4ef42488781, Date: 2024-11-04
 
 
 
-## [Release] Release v0.35.0
+## Release v0.35.0 (2024-10-17)
 
 ### New Features and Improvements
 
@@ -1479,7 +1479,7 @@ OpenAPI SHA: 5285ce76f81314f342c1702d5c2ad4ef42488781, Date: 2024-11-04
 
 OpenAPI SHA: cf9c61453990df0f9453670f2fe68e1b128647a2, Date: 2024-10-14
 
-## [Release] Release v0.34.0
+## Release v0.34.0 (2024-10-07)
 
 ### Bug Fixes
 
@@ -1503,7 +1503,7 @@ OpenAPI SHA: cf9c61453990df0f9453670f2fe68e1b128647a2, Date: 2024-10-14
 
 OpenAPI SHA: bc17b474818138f19b78a7bea0675707dead2b87, Date: 2024-10-07
 
-## [Release] Release v0.33.0
+## Release v0.33.0 (2024-09-26)
 
 ### Internal Changes
 
@@ -1569,7 +1569,7 @@ OpenAPI SHA: bc17b474818138f19b78a7bea0675707dead2b87, Date: 2024-10-07
 
 OpenAPI SHA: 248f4ad9668661da9d0bf4a7b0119a2d44fd1e75, Date: 2024-09-25
 
-## [Release] Release v0.32.3
+## Release v0.32.3 (2024-09-19)
 
 ### New Features and Improvements
 
@@ -1583,7 +1583,7 @@ OpenAPI SHA: 248f4ad9668661da9d0bf4a7b0119a2d44fd1e75, Date: 2024-09-25
 
 
 
-## [Release] Release v0.32.2
+## Release v0.32.2 (2024-09-17)
 
 ### New Features and Improvements
 
@@ -1598,7 +1598,7 @@ OpenAPI SHA: 248f4ad9668661da9d0bf4a7b0119a2d44fd1e75, Date: 2024-09-25
 
 
 
-## [Release] Release v0.32.1
+## Release v0.32.1 (2024-09-10)
 
 ### Bug Fixes
 
@@ -1606,7 +1606,7 @@ OpenAPI SHA: 248f4ad9668661da9d0bf4a7b0119a2d44fd1e75, Date: 2024-09-25
 
 
 
-## [Release] Release v0.32.0
+## Release v0.32.0 (2024-09-04)
 
 ### Bug Fixes
 
@@ -1638,7 +1638,7 @@ OpenAPI SHA: 248f4ad9668661da9d0bf4a7b0119a2d44fd1e75, Date: 2024-09-25
 
 OpenAPI SHA: d05898328669a3f8ab0c2ecee37db2673d3ea3f7, Date: 2024-09-04
 
-## [Release] Release v0.31.1
+## Release v0.31.1 (2024-08-28)
 
 ### Bug Fixes
 
@@ -1652,7 +1652,7 @@ OpenAPI SHA: d05898328669a3f8ab0c2ecee37db2673d3ea3f7, Date: 2024-09-04
 
 
 
-## [Release] Release v0.31.0
+## Release v0.31.0 (2024-08-21)
 
 ### Bug Fixes
 
@@ -1685,7 +1685,7 @@ OpenAPI SHA: d05898328669a3f8ab0c2ecee37db2673d3ea3f7, Date: 2024-09-04
 
 OpenAPI SHA: 3eae49b444cac5a0118a3503e5b7ecef7f96527a, Date: 2024-08-21
 
-## [Release] Release v0.30.0
+## Release v0.30.0 (2024-08-13)
 
 ### New Features and Improvements
 
@@ -1883,7 +1883,7 @@ OpenAPI SHA: 3eae49b444cac5a0118a3503e5b7ecef7f96527a, Date: 2024-08-21
 
 OpenAPI SHA: f98c07f9c71f579de65d2587bb0292f83d10e55d, Date: 2024-08-12
 
-## 0.29.0
+## Release v0.29.0 (2024-06-24)
 
 ### Breaking Changes
 * Create a method to generate OAuth tokens ([#644](https://github.com/databricks/databricks-sdk-py/pull/644))
@@ -1954,7 +1954,7 @@ OpenAPI SHA: f98c07f9c71f579de65d2587bb0292f83d10e55d, Date: 2024-08-12
  * Added `next_page_token` field for `databricks.sdk.service.vectorsearch.QueryVectorIndexResponse`.
 
 OpenAPI SHA: 7437dabb9dadee402c1fc060df4c1ce8cc5369f0, Date: 2024-06-24
-## 0.28.0
+## Release v0.28.0 (2024-05-23)
 
 ### Improvements and new features
 
@@ -2016,13 +2016,13 @@ OpenAPI SHA: 7437dabb9dadee402c1fc060df4c1ce8cc5369f0, Date: 2024-06-24
  * Changed `list()` method for [w.connections](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/connections.html) workspace-level service to require request of `databricks.sdk.service.catalog.ListConnectionsRequest` dataclass.
 
 OpenAPI SHA: 7eb5ad9a2ed3e3f1055968a2d1014ac92c06fe92, Date: 2024-05-21
-## 0.27.1
+## Release v0.27.1 (2024-05-16)
 
 ### Bug Fixes
 * Fix null body response to empty in ApiClient ([#579](https://github.com/databricks/databricks-sdk-py/pull/579)).
 
 
-## 0.27.0
+## Release v0.27.0 (2024-05-03)
 
 ### New Features
 
@@ -2119,7 +2119,7 @@ API Changes:
 
 OpenAPI SHA: 9bb7950fa3390afb97abaa552934bc0a2e069de5, Date: 2024-05-02
 
-## 0.26.0
+## Release v0.26.0 (2024-04-24)
 
 * Increase cluster creation test timeout ([#617](https://github.com/databricks/databricks-sdk-py/pull/617)).
 * Added code example for adding a user to a group using group patch API ([#625](https://github.com/databricks/databricks-sdk-py/pull/625)).
@@ -2155,13 +2155,13 @@ API Changes:
 
 OpenAPI SHA: 06d330f43d92c1be864d4638c672cd0723e20a51, Date: 2024-04-22
 
-## 0.25.1
+## Release v0.25.1 (2024-04-12)
 
 Bug fixes:
 * Fixed `select_node_type` error ([#614](https://github.com/databricks/databricks-sdk-py/pull/614)).
 
 
-## 0.25.0
+## Release v0.25.0 (2024-04-11)
 
 ### Behavior Changes
 
@@ -2297,7 +2297,7 @@ API Changes:
 
 OpenAPI SHA: 94684175b8bd65f8701f89729351f8069e8309c9, Date: 2024-04-11
 
-## 0.24.0
+## Release v0.24.0 (2024-04-02)
 
 ### Improvements and Bug Fixes
 * Properly escape multi-segment path parameters ([#596](https://github.com/databricks/databricks-sdk-py/pull/596)).
@@ -2359,7 +2359,7 @@ OpenAPI SHA: 94684175b8bd65f8701f89729351f8069e8309c9, Date: 2024-04-11
   
 OpenAPI SHA: d38528c3e47dd81c9bdbd918272a3e49d36e09ce, Date: 2024-03-27
 
-## 0.23.0
+## Release v0.23.0 (2024-03-20)
 
 * Add CONTRIBUTING.md ([#585](https://github.com/databricks/databricks-sdk-py/pull/585)).
 
@@ -2380,7 +2380,7 @@ API Changes:
 
 OpenAPI SHA: 93763b0d7ae908520c229c786fff28b8fd623261, Date: 2024-03-20
 
-## 0.22.0
+## Release v0.22.0 (2024-03-15)
 
 * Fix typos in doc string for select_spark_version ([#575](https://github.com/databricks/databricks-sdk-py/pull/575)).
 
@@ -2395,7 +2395,7 @@ API Changes:
 
 OpenAPI SHA: c84caf9e5ef531cc0b1ddd0a76970d9a8b664e32, Date: 2024-03-15
 
-## 0.21.0
+## Release v0.21.0 (2024-03-07)
 
 ### New Features and Improvements
 * Fixed get_workspace_client in GCP ([#532](https://github.com/databricks/databricks-sdk-py/pull/532)).
@@ -2535,7 +2535,7 @@ Dataclasses:
 OpenAPI SHA: 1026b998b14fba1b8317528f47778240dc4e9a5d, Date: 2024-03-06
 
 
-## 0.20.0
+## Release v0.20.0 (2024-02-19)
 
 Major Changes:
 
@@ -2596,7 +2596,7 @@ API Changes:
 
 OpenAPI SHA: cdd76a98a4fca7008572b3a94427566dd286c63b, Date: 2024-02-19
 
-## 0.19.1
+## Release v0.19.1 (2024-02-15)
 
 New features:
 
@@ -2605,7 +2605,7 @@ New features:
 Bugfix:
 
 * Create a deepcopy of config when creating workspace client from account client ([#542](https://github.com/databricks/databricks-sdk-py/pull/542)). This fixes an issue where `AccountClient` instances would stop working after calling `get_workspace_client()`.
-## 0.19.0
+## Release v0.19.0 (2024-02-09)
 
 ### Improvements and Bug Fixes
 * Construct workspace client from account client ([#527](https://github.com/databricks/databricks-sdk-py/pull/527)).
@@ -2707,7 +2707,7 @@ Changes:
 
 OpenAPI SHA: 6b897bc95b23abed8b9f5eff0e6b8ec034046180, Date: 2024-02-08
 
-## 0.18.0
+## Release v0.18.0 (2024-01-23)
 
 Bugfixes:
 
@@ -2748,7 +2748,7 @@ API Changes:
 
 OpenAPI SHA: e05401ed5dd4974c5333d737ec308a7d451f749f, Date: 2024-01-23
 
-## 0.17.0
+## Release v0.17.0 (2024-01-11)
 
 * Use covariant type for `@retried(on=[...])` ([#486](https://github.com/databricks/databricks-sdk-py/pull/486)).
 * Configure request timeout using existing parameter from Config ([#489](https://github.com/databricks/databricks-sdk-py/pull/489)).
@@ -2778,7 +2778,7 @@ API Changes:
 
 OpenAPI SHA: 0e0d4cbe87193e36c73b8b2be3b0dd0f1b013e00, Date: 2024-01-10
 
-## 0.16.0
+## Release v0.16.0 (2023-12-20)
 
 * Sort imports in service template ([#479](https://github.com/databricks/databricks-sdk-py/pull/479)).
 * Add `py.typed` to support PEP-561 ([#483](https://github.com/databricks/databricks-sdk-py/pull/483)).
@@ -2808,7 +2808,7 @@ API Changes:
 
 OpenAPI SHA: d3853c8dee5806d04da2ae8910f273ffb35719a5, Date: 2023-12-14
 
-## 0.15.0
+## Release v0.15.0 (2023-12-12)
 
 Bugfixes:
 
@@ -2933,7 +2933,7 @@ API Changes:
 
 OpenAPI SHA: 63caa3cb0c05045e81d3dcf2451fa990d8670f36, Date: 2023-12-12
 
-## 0.14.0
+## Release v0.14.0 (2023-11-29)
 
 Major changes:
 * GCP Auth is now supported in the Python SDK. To use Google credentials-based authentication, specify your Default Application Credentials in the `GOOGLE_CREDENTIALS` environment variable or corresponding `google_credentials` parameter in `Config` or the client constructors. You may provide either the path to the file containing your credentials or the credentials themselves serialized as JSON. To use Google impersonation, specify the service principal to impersonate in the `DATABRICKS_GOOGLE_SERVICE_ACCOUNT` environment variable or the corresponding `google_service_account` parameter in `Config` or the client constructors. See [#444](https://github.com/databricks/databricks-sdk-py/pull/444) for the changes.
@@ -2966,7 +2966,7 @@ Dependency updates:
  * Introduced "google-auth" dependency to support Google authentication.
 
 
-## 0.13.0
+## Release v0.13.0 (2023-11-14)
 
 * Introduce more specific exceptions, like `NotFound`, `AlreadyExists`, `BadRequest`, `PermissionDenied`, `InternalError`, and others ([#376](https://github.com/databricks/databricks-sdk-py/pull/376)). This makes it easier to handle errors thrown by the Databricks API. Instead of catching `DatabricksError` and checking the error_code field, you can catch one of these subtypes of `DatabricksError`, which is more ergonomic and removes the need to rethrow exceptions that you don't want to catch. For example:
 ```python
@@ -3030,7 +3030,7 @@ Internal changes:
 
 OpenAPI SHA: d136ad0541f036372601bad9a4382db06c3c912d, Date: 2023-11-14
 
-## 0.12.0
+## Release v0.12.0 (2023-10-24)
 
 * Retry on all 429 and 503, even when missing Retry-After header ([#402](https://github.com/databricks/databricks-sdk-py/pull/402)).
 * Add support for tokenless authentication for GitHub Actions configured with OpenID Connect with Azure User Managed Identity (or Service Principal) ([#385](https://github.com/databricks/databricks-sdk-py/pull/385)).
@@ -3047,7 +3047,7 @@ API Changes:
 
 OpenAPI SHA: 5903bb39137fd76ac384b2044e425f9c56840e00, Date: 2023-10-23
 
-## 0.11.0
+## Release v0.11.0 (2023-10-12)
 
 * Added Python 3.12 to project classifiers ([#381](https://github.com/databricks/databricks-sdk-py/pull/381)).
 * Fix serialization issues for generated resources ([#382](https://github.com/databricks/databricks-sdk-py/pull/382)).
@@ -3117,7 +3117,7 @@ API Changes:
 
 OpenAPI SHA: 493a76554afd3afdd15dc858773d01643f80352a, Date: 2023-10-12
 
-## 0.10.0
+## Release v0.10.0 (2023-10-03)
 
 * Respect `retry_timeout_seconds` config setting and align retry implementation with Go SDK ([#337](https://github.com/databricks/databricks-sdk-py/pull/337)).
 
@@ -3153,7 +3153,7 @@ API Changes:
 
 OpenAPI SHA: bcbf6e851e3d82fd910940910dd31c10c059746c, Date: 2023-10-02
 
-## 0.9.0
+## Release v0.9.0 (2023-09-20)
 
 * Don't try to import runtime_auth when not in runtime ([#327](https://github.com/databricks/databricks-sdk-py/pull/327)).
 * Handled Azure authentication when WorkspaceResourceID is provided ([#328](https://github.com/databricks/databricks-sdk-py/pull/328)).
@@ -3209,7 +3209,7 @@ API Changes:
 
 OpenAPI SHA: b52a3b410976501f08f76ca0b355fb2dca876953, Date: 2023-09-15
 
-## 0.8.0
+## Release v0.8.0 (2023-09-04)
 
 * Fixed redeclared `test_streaming_response_read_partial` test ([#335](https://github.com/databricks/databricks-sdk-py/pull/335)).
 * Fixed `Incorrect type` warning ([#336](https://github.com/databricks/databricks-sdk-py/pull/336)).
@@ -3245,12 +3245,12 @@ API Changes:
 * Added `databricks.sdk.service.sql.WidgetPosition` dataclass.
 
 OpenAPI SHA: 09a7fa63d9ae243e5407941f200960ca14d48b07, Date: 2023-09-04
-## 0.7.1
+## Release v0.7.1 (2023-08-31)
 
 * Improve file download performance ([#319](https://github.com/databricks/databricks-sdk-py/pull/319)).
 
 
-## 0.7.0
+## Release v0.7.0 (2023-08-29)
 
 * Added support for GZIP'ed streaming responses ([#306](https://github.com/databricks/databricks-sdk-py/pull/306)).
 * Added support for per-method request headers to ApiClient ([#302](https://github.com/databricks/databricks-sdk-py/pull/302)).
@@ -3332,7 +3332,7 @@ SDK Internal Changes:
 
 OpenAPI SHA: 5d0ccbb790d341eae8e85321a685a9e9e2d5bf24, Date: 2023-08-29
 
-## 0.6.0
+## Release v0.6.0 (2023-08-17)
 
 * Added collection of Databricks Runtime versions used together with Python SDK ([#287](https://github.com/databricks/databricks-sdk-py/pull/287)).
 * Applied attribute transformer when reading in attributes from the environment ([#293](https://github.com/databricks/databricks-sdk-py/pull/293)).
@@ -3405,7 +3405,7 @@ Service Renames:
 
 OpenAPI SHA: beff621d7b3e1d59244e2e34fc53a496f310e130, Date: 2023-08-17
 
-## 0.5.0
+## Release v0.5.0 (2023-08-11)
 
 * Added `connection_pool_size` configuration property (preview) ([#276](https://github.com/databricks/databricks-sdk-py/pull/276)).
 * Fixed OAuth M2M corner case in `WorkspaceClient` where `DATABRICKS_ACCOUNT_ID` is present in the environment ([#273](https://github.com/databricks/databricks-sdk-py/pull/273)).
@@ -3442,7 +3442,7 @@ API Changes:
 
 OpenAPI SHA: 1e3533f94335f0e6c5d9262bc1fea95b3ddcb0e1, Date: 2023-08-11
 
-## 0.4.0
+## Release v0.4.0 (2023-08-07)
 
 To simplify documentation and management of object permissions, this release features a major reorganization of how permissions APIs are structured in the SDK. Rather than using a single permissions.get() API for all services, each service supporting permissions has its own permissions APIs. Follow these steps to migrate to the current SDK:
 
@@ -3658,14 +3658,14 @@ API Changes:
 
 OpenAPI SHA: 386b65ecdc825b9c3ed4aa7ca88e2e5baf9d87df, Date: 2023-08-07
 
-## 0.3.1
+## Release v0.3.1 (2023-08-02)
 
 * Added timeout to `w.clusters.ensure_cluster_running()` ([#227](https://github.com/databricks/databricks-sdk-py/pull/227)).
 * Fixed `debug_headers` type hints for `WorkspaceClient` and `AccountClient` ([#258](https://github.com/databricks/databricks-sdk-py/pull/258)).
 * Made dbutils typecast use a valid type variable ([#259](https://github.com/databricks/databricks-sdk-py/pull/259)).
 
 
-## 0.3.0
+## Release v0.3.0 (2023-07-27)
 
 * Fixed serialization of lists of enum values ([#248](https://github.com/databricks/databricks-sdk-py/pull/248)).
 * Fixed examples that used incorrect keyword argument names. (https://github.com/databricks/databricks-sdk-go/pull/560)
@@ -3699,12 +3699,12 @@ API Changes:
 
 OpenAPI SHA: a1b6c1ecfaab6635911d3c060a8dd797ac6b2d4d, Date: 2023-07-27
 
-## 0.2.1
+## Release v0.2.1 (2023-07-18)
 
 * Support older versions of `urllib3` and Databricks Runtime with regards to `DEFAULT_METHOD_WHITELIST` change to `DEFAULT_ALLOWED_METHODS` ([#240](https://github.com/databricks/databricks-sdk-py/pull/240)).
 
 
-## 0.2.0
+## Release v0.2.0 (2023-07-18)
 
 * Add Issue Templates ([#208](https://github.com/databricks/databricks-sdk-py/pull/208)).
 * Fixed notebook native auth for jobs ([#209](https://github.com/databricks/databricks-sdk-py/pull/209)).
@@ -3793,7 +3793,7 @@ API Changes:
 
 OpenAPI SHA: 0a1949ba96f71680dad30e06973eaae85b1307bb, Date: 2023-07-18
 
-## 0.1.12
+## Release v0.1.12 (2023-06-28)
 
 * Beta release ([#198](https://github.com/databricks/databricks-sdk-py/pull/198)).
 * Documentation improvements ([#197](https://github.com/databricks/databricks-sdk-py/pull/197)).
@@ -3811,7 +3811,7 @@ API changes:
 * Renamed `jobs.GitSourceGitProvider` to `jobs.GitProvider`
 * Renamed `jobs.FileArrivalTriggerSettings` to `jobs.FileArrivalTriggerConfiguration`
 
-## 0.1.11
+## Release v0.1.11 (2023-06-21)
 
 * Added Sphinx documentation ([#184](https://github.com/databricks/databricks-sdk-py/pull/184), [#191](https://github.com/databricks/databricks-sdk-py/pull/191), [#183](https://github.com/databricks/databricks-sdk-py/pull/183), [#193](https://github.com/databricks/databricks-sdk-py/pull/193)).
 * Integrated with ReadTheDocs service ([#188](https://github.com/databricks/databricks-sdk-py/pull/188), [#189](https://github.com/databricks/databricks-sdk-py/pull/189), [#190](https://github.com/databricks/databricks-sdk-py/pull/190)).
@@ -3821,7 +3821,7 @@ API changes:
 * Move classes to other repository ([#192](https://github.com/databricks/databricks-sdk-py/pull/192)).
 * Relax `requests` version upper bound to <3 ([#138](https://github.com/databricks/databricks-sdk-py/pull/138)).
 
-## 0.1.10
+## Release v0.1.10 (2023-06-15)
 
 * Regenerate from OpenAPI spec ([#176](https://github.com/databricks/databricks-sdk-py/pull/176)).
 * Added improved notebook-native authentication ([#152](https://github.com/databricks/databricks-sdk-py/pull/152)).
@@ -3832,7 +3832,7 @@ API changes:
 * Mark non-required fields as `Optional` ([#170](https://github.com/databricks/databricks-sdk-py/pull/170)).
 * Synchronize auth permutation tests with Go SDK ([#165](https://github.com/databricks/databricks-sdk-py/pull/165)).
 
-## 0.1.9
+## Release v0.1.9 (2023-06-09)
 
 * Added new services from OpenAPI spec ([#145](https://github.com/databricks/databricks-sdk-py/pull/145), [#159](https://github.com/databricks/databricks-sdk-py/pull/159)).
 * Added consistent usage of the `upload(path, IO)` and `download(path) -> IO` across file-related operations ([#148](https://github.com/databricks/databricks-sdk-py/pull/148)).
@@ -3843,14 +3843,14 @@ API changes:
 * Fixed generation of external entities ([#146](https://github.com/databricks/databricks-sdk-py/pull/146)).
 * Make u2m authentication work with new CLI ([#150](https://github.com/databricks/databricks-sdk-py/pull/150)).
 
-## 0.1.8
+## Release v0.1.8 (2023-05-22)
 
  * Regenerated from OpenAPI spec ([#124](https://github.com/databricks/databricks-sdk-py/pull/124)).
  * Added `codecov.io` badge ([#126](https://github.com/databricks/databricks-sdk-py/pull/126)).
  * Improved readme with links to examples ([#125](https://github.com/databricks/databricks-sdk-py/pull/125)).
  * Fixed `AttributeError: 'NoneType' object has no attribute 'debug_truncate_bytes' when instantiating an ApiClient` with empty config ([#123](https://github.com/databricks/databricks-sdk-py/pull/123)).
 
-## 0.1.7
+## Release v0.1.7 (2023-05-17)
 
 * Added an extensive set of examples ([#113](https://github.com/databricks/databricks-sdk-py/pull/113)).
 * Fixed broken `dbutils.fs.mount` and `dbutils.fs.updateMount` ([#119](https://github.com/databricks/databricks-sdk-py/pull/119)).
@@ -3861,35 +3861,35 @@ API changes:
 * Rename `RefreshableCredentials` to `SessionCredentials` ([#116](https://github.com/databricks/databricks-sdk-py/pull/116)).
 * Use shell for opening `az` cli on Windows ([#117](https://github.com/databricks/databricks-sdk-py/pull/117)).
 
-## 0.1.6
+## Release v0.1.6 (2023-05-10)
 
 * Preserve original `databricks.sdk.runtime` for internal purposes ([#96](https://github.com/databricks/databricks-sdk-py/pull/96)).
 
-## 0.1.5
+## Release v0.1.5 (2023-05-08)
 
 * Pin version of `requests` to `>=2.28.1,<2.29.0`, so that we don't get `ImportError: urllib3 v2.0 only supports OpenSSL 1.1.1+, currently the 'ssl' module is compiled with LibreSSL 2.8.3`. See [this issue](https://github.com/psf/requests/issues/6432) for more information.
 
-## 0.1.4
+## Release v0.1.4 (2023-05-05)
 
 * Removed experimental redacting logger filter for `dbutils.secrets.get('scope', 'key')`, that was causing Jupyter Kernels to hang ([#92](https://github.com/databricks/databricks-sdk-py/pull/92)).
 * Fixed error handling for SCIM and CommandExecution APIs ([#94](https://github.com/databricks/databricks-sdk-py/pull/94)).
 * Created `dependabot.yml` ([#89](https://github.com/databricks/databricks-sdk-py/pull/89)).
 
-## 0.1.3
+## Release v0.1.3 (2023-05-03)
 
 * Added support for sdist ([#86](https://github.com/databricks/databricks-sdk-py/pull/86)).
 * Removed redundant newlines from AAD OAuth responses ([#85](https://github.com/databricks/databricks-sdk-py/pull/85)).
 * Update README.md with doc links ([#83](https://github.com/databricks/databricks-sdk-py/pull/83)).
 
-## 0.1.2
+## Release v0.1.2 (2023-05-03)
 
 * Fix `dbutils.fs.put()` utility ([#82](https://github.com/databricks/databricks-sdk-py/pull/82)).
 
-## 0.1.1
+## Release v0.1.1 (2023-04-28)
 
 * Improve Azure AD auth ([#80](https://github.com/databricks/databricks-sdk-py/pull/80)).
 
-## 0.1.0
+## Release v0.1.0 (2023-04-20)
 
 * Make code working with new OpenAPI packaging ([#78](https://github.com/databricks/databricks-sdk-py/pull/78)).
 * Added `bricks` CLI authentication ([#66](https://github.com/databricks/databricks-sdk-py/pull/66)).
