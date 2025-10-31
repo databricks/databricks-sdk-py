@@ -176,6 +176,42 @@ def runtime_native_auth(cfg: "Config") -> Optional[CredentialsProvider]:
     return None
 
 
+@oauth_credentials_strategy("runtime-oauth", ["scopes"])
+def runtime_oauth(cfg: "Config") -> Optional[CredentialsProvider]:
+    if "DATABRICKS_RUNTIME_VERSION" not in os.environ:
+        return None
+
+    def get_notebook_pat_token() -> Optional[str]:
+        native_auth = runtime_native_auth(cfg)
+        if native_auth is None:
+            return None
+        notebook_pat_token = None
+        notebook_pat_authorization = native_auth().get("Authorization", "").strip()
+        if notebook_pat_authorization.lower().startswith("bearer "):
+            notebook_pat_token = notebook_pat_authorization[len("bearer ") :].strip()
+        return notebook_pat_token
+
+    notebook_pat_token = get_notebook_pat_token()
+    if notebook_pat_token is None:
+        return None
+
+    token_source = oauth.PATOAuthTokenExchange(
+        get_original_token=get_notebook_pat_token,
+        host=cfg.host,
+        scopes=cfg.scopes,
+        authorization_details=cfg.authorization_details,
+    )
+
+    def inner() -> Dict[str, str]:
+        token = token_source.token()
+        return {"Authorization": f"{token.token_type} {token.access_token}"}
+
+    def token() -> oauth.Token:
+        return token_source.token()
+
+    return OAuthCredentialsProvider(inner, token)
+
+
 @oauth_credentials_strategy("oauth-m2m", ["host", "client_id", "client_secret"])
 def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
     """Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
@@ -189,9 +225,10 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
         client_id=cfg.client_id,
         client_secret=cfg.client_secret,
         token_url=oidc.token_endpoint,
-        scopes=["all-apis"],
+        scopes=cfg.scopes or "all-apis",
         use_header=True,
         disable_async=cfg.disable_async_token_refresh,
+        authorization_details=cfg.authorization_details,
     )
 
     def inner() -> Dict[str, str]:
@@ -292,6 +329,8 @@ def azure_service_principal(cfg: "Config") -> CredentialsProvider:
             endpoint_params={"resource": resource},
             use_params=True,
             disable_async=cfg.disable_async_token_refresh,
+            scopes=cfg.scopes,
+            authorization_details=cfg.authorization_details,
         )
 
     _ensure_host_present(cfg, token_source_for)
@@ -411,9 +450,10 @@ def _oidc_credentials_provider(
                 "subject_token": id_token,
                 "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
             },
-            scopes=["all-apis"],
+            scopes=cfg.scopes or "all-apis",
             use_params=True,
             disable_async=cfg.disable_async_token_refresh,
+            authorization_details=cfg.authorization_details,
         )
 
     def refreshed_headers() -> Dict[str, str]:
@@ -493,6 +533,8 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
         },
         use_params=True,
         disable_async=cfg.disable_async_token_refresh,
+        scopes=cfg.scopes,
+        authorization_details=cfg.authorization_details,
     )
 
     def refreshed_headers() -> Dict[str, str]:
@@ -1070,6 +1112,7 @@ class DefaultCredentials:
             azure_devops_oidc,
             external_browser,
             databricks_cli,
+            runtime_oauth,
             runtime_native_auth,
             google_credentials,
             google_id,
