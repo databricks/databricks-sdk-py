@@ -31,7 +31,7 @@ from databricks.sdk.mixins.files import FallbackToDownloadUsingFilesApi
 from databricks.sdk.mixins.files_utils import CreateDownloadUrlResponse
 from tests.clock import FakeClock
 
-from .test_files_utils import Utils
+from .test_files_utils import NonSeekableBuffer, Utils
 
 logger = logging.getLogger(__name__)
 
@@ -1286,8 +1286,8 @@ class UploadTestCase:
         custom_response_on_single_shot_upload: CustomResponse,
         # exception which is expected to be thrown (so upload is expected to have failed)
         expected_exception_type: Optional[Type[BaseException]],
-        # if abort is expected to be called for multipart/resumable upload
-        expected_multipart_upload_aborted: bool,
+        # Whether abort is expected to be called for multipart/resumable upload, set to None if we don't care.
+        expected_multipart_upload_aborted: Optional[bool],
         expected_single_shot_upload: bool,
     ):
         self.name = name
@@ -1303,7 +1303,7 @@ class UploadTestCase:
         self.multipart_upload_max_retries = multipart_upload_max_retries
         self.custom_response_on_single_shot_upload = custom_response_on_single_shot_upload
         self.expected_exception_type = expected_exception_type
-        self.expected_multipart_upload_aborted: bool = expected_multipart_upload_aborted
+        self.expected_multipart_upload_aborted: Optional[bool] = expected_multipart_upload_aborted
         self.expected_single_shot_upload = expected_single_shot_upload
 
         self.path = "/test.txt"
@@ -1323,7 +1323,9 @@ class UploadTestCase:
                 logger.warning("Failed to remove temp file: %s", file_path)
         self.created_temp_files = []
 
-    def get_upload_file(self, content: bytes, source_type: "UploadSourceType") -> Union[str, io.BytesIO]:
+    def get_upload_file(
+        self, content: bytes, source_type: "UploadSourceType"
+    ) -> Union[str, io.BytesIO, NonSeekableBuffer]:
         """Returns a file or stream to upload based on the source type."""
         if source_type == UploadSourceType.FILE:
             with NamedTemporaryFile(mode="wb", delete=False) as f:
@@ -1331,8 +1333,10 @@ class UploadTestCase:
                 file_path = f.name
             self.created_temp_files.append(file_path)
             return file_path
-        elif source_type == UploadSourceType.STREAM:
+        elif source_type == UploadSourceType.SEEKABLE_STREAM:
             return io.BytesIO(content)
+        elif source_type == UploadSourceType.NONSEEKABLE_STREAM:
+            return NonSeekableBuffer(content)
         else:
             raise ValueError(f"Unknown source type: {source_type}")
 
@@ -1446,7 +1450,8 @@ class UploadTestCase:
                         ), "Single-shot upload should not have succeeded"
 
             assert (
-                multipart_server_state.aborted == self.expected_multipart_upload_aborted
+                self.expected_multipart_upload_aborted is None
+                or multipart_server_state.aborted == self.expected_multipart_upload_aborted
             ), "Multipart upload aborted state mismatch"
 
         finally:
@@ -1462,7 +1467,8 @@ class UploadSourceType(Enum):
     """Source type for the upload. Used to determine how to upload the file."""
 
     FILE = "file"  # upload from a file on disk
-    STREAM = "stream"  # upload from a stream (e.g. BytesIO)
+    SEEKABLE_STREAM = "seekable_stream"  # upload from a seekable stream (e.g. BytesIO)
+    NONSEEKABLE_STREAM = "nonseekable_stream"  # upload from a non-seekable stream (e.g. network stream)
 
 
 class MultipartUploadTestCase(UploadTestCase):
@@ -1570,7 +1576,7 @@ class MultipartUploadTestCase(UploadTestCase):
         # if abort is expected to be called
         # expected part size
         expected_part_size: Optional[int] = None,
-        expected_multipart_upload_aborted: bool = False,
+        expected_multipart_upload_aborted: Optional[bool] = False,
         expected_single_shot_upload: bool = False,
     ):
         super().__init__(
@@ -1578,7 +1584,8 @@ class MultipartUploadTestCase(UploadTestCase):
             content_size,
             cloud,
             overwrite,
-            source_type or [UploadSourceType.FILE, UploadSourceType.STREAM],
+            source_type
+            or [UploadSourceType.FILE, UploadSourceType.SEEKABLE_STREAM, UploadSourceType.NONSEEKABLE_STREAM],
             use_parallel or [False, True],
             parallelism,
             multipart_upload_min_stream_size,
@@ -1710,6 +1717,7 @@ class MultipartUploadTestCase(UploadTestCase):
                 request_json = request.json()
                 etags = {}
 
+                assert len(request_json["parts"]) > 0
                 for part in request_json["parts"]:
                     etags[part["part_number"]] = part["etag"]
 
@@ -1786,10 +1794,22 @@ class MultipartUploadTestCase(UploadTestCase):
     [
         # -------------------------- happy cases --------------------------
         MultipartUploadTestCase(
-            "Multipart upload successful: single part",
+            "Multipart upload successful: single part because of small file",
             content_size=1024 * 1024,  # less than part size
-            multipart_upload_part_size=10 * 1024 * 1024,
+            multipart_upload_min_stream_size=10 * 1024 * 1024,
+            source_type=[
+                UploadSourceType.FILE,
+                UploadSourceType.SEEKABLE_STREAM,
+            ],  # non-seekable streams always use multipart upload
             expected_part_size=1024 * 1024,  # chunk size is used
+            expected_single_shot_upload=True,
+        ),
+        MultipartUploadTestCase(
+            "Multipart upload successful: empty file or empty seekable stream",
+            content_size=0,  # content with zero length
+            multipart_upload_min_stream_size=100 * 1024 * 1024,  # all files smaller than 100M goes to single-shot
+            expected_single_shot_upload=True,
+            expected_multipart_upload_aborted=None,
         ),
         MultipartUploadTestCase(
             "Multipart upload successful: multiple parts (aligned)",
@@ -2221,7 +2241,7 @@ class MultipartUploadTestCase(UploadTestCase):
             "Multipart parallel upload for stream: Upload errors are not retried",
             content_size=10 * 1024 * 1024,
             multipart_upload_part_size=1024 * 1024,
-            source_type=[UploadSourceType.STREAM],
+            source_type=[UploadSourceType.SEEKABLE_STREAM],
             use_parallel=[True],
             parallelism=1,
             custom_response_on_upload=CustomResponse(
@@ -2385,7 +2405,8 @@ class ResumableUploadTestCase(UploadTestCase):
             stream_size,
             cloud,
             overwrite,
-            source_type or [UploadSourceType.FILE, UploadSourceType.STREAM],
+            source_type
+            or [UploadSourceType.FILE, UploadSourceType.SEEKABLE_STREAM, UploadSourceType.NONSEEKABLE_STREAM],
             use_parallel
             or [True, False],  # Resumable Upload doesn't support parallel uploading of parts, but fallback should work
             parallelism,

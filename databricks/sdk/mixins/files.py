@@ -1134,7 +1134,9 @@ class FilesExt(files.FilesAPI):
             f"Upload context: part_size={ctx.part_size}, batch_size={ctx.batch_size}, content_length={ctx.content_length}"
         )
 
-        if ctx.use_parallel:
+        if ctx.use_parallel and (
+            ctx.content_length is None or ctx.content_length >= self._config.files_ext_multipart_upload_min_stream_size
+        ):
             self._parallel_upload_from_stream(ctx, contents)
             return UploadStreamResult()
         elif ctx.content_length is not None:
@@ -1206,7 +1208,7 @@ class FilesExt(files.FilesAPI):
             use_parallel=use_parallel,
             parallelism=parallelism,
         )
-        if ctx.use_parallel:
+        if ctx.use_parallel and ctx.content_length >= self._config.files_ext_multipart_upload_min_stream_size:
             self._parallel_upload_from_file(ctx)
             return UploadFileResult()
         else:
@@ -1459,8 +1461,9 @@ class FilesExt(files.FilesAPI):
         # Do the first part read ahead
         pre_read_buffer = content.read(ctx.part_size)
         if not pre_read_buffer:
-            self._complete_multipart_upload(ctx, {}, session_token)
-            return
+            raise FallbackToUploadUsingFilesApi(
+                b"", "Falling back to single-shot upload with Files API due to empty input stream"
+            )
         try:
             etag = self._do_upload_one_part(
                 ctx, cloud_provider_session, 1, 0, len(pre_read_buffer), session_token, BytesIO(pre_read_buffer)
