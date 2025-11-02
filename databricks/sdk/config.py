@@ -6,6 +6,7 @@ import os
 import pathlib
 import sys
 import urllib.parse
+from enum import Enum
 from typing import Dict, Iterable, List, Optional
 
 import requests
@@ -18,10 +19,24 @@ from .credentials_provider import (CredentialsStrategy, DefaultCredentials,
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import (OidcEndpoints, Token, get_account_endpoints,
-                    get_azure_entra_id_workspace_endpoints,
+                    get_azure_entra_id_workspace_endpoints, get_unified_endpoints,
                     get_workspace_endpoints)
 
 logger = logging.getLogger("databricks.sdk")
+
+
+class HostType(Enum):
+    """Represents the type of API the configured host supports."""
+    WORKSPACE_HOST = "WORKSPACE_HOST"  # Supports only workspace-level APIs
+    ACCOUNT_HOST = "ACCOUNT_HOST"  # Supports only account-level APIs
+    UNIFIED_HOST = "UNIFIED_HOST"  # Supports both workspace-level and account-level APIs
+
+
+class ConfigType(Enum):
+    """Represents the type of API this config is valid for."""
+    WORKSPACE_CONFIG = "WORKSPACE_CONFIG"  # Valid for workspace-level API requests
+    ACCOUNT_CONFIG = "ACCOUNT_CONFIG"  # Valid for account-level API requests
+    INVALID_CONFIG = "INVALID_CONFIG"  # Not valid for either workspace-level or account-level APIs
 
 
 class ConfigAttribute:
@@ -61,6 +76,9 @@ def with_user_agent_extra(key: str, value: str):
 class Config:
     host: str = ConfigAttribute(env="DATABRICKS_HOST")
     account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
+
+    # Databricks Workspace ID for Workspace clients when working with unified hosts
+    workspace_id: str = ConfigAttribute(env="DATABRICKS_WORKSPACE_ID")
 
     # PAT token.
     token: str = ConfigAttribute(env="DATABRICKS_TOKEN", auth="pat", sensitive=True)
@@ -107,6 +125,9 @@ class Config:
     max_connection_pools: int = ConfigAttribute()
     max_connections_per_pool: int = ConfigAttribute()
     databricks_environment: Optional[DatabricksEnvironment] = None
+
+    # Marker for unified hosts. Will be redundant once we can recognize unified hosts by their hostname.
+    experimental_is_unified_host: bool = ConfigAttribute(env="DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST")
 
     disable_async_token_refresh: bool = ConfigAttribute(env="DATABRICKS_DISABLE_ASYNC_TOKEN_REFRESH")
 
@@ -288,7 +309,13 @@ class Config:
 
     def authenticate(self) -> Dict[str, str]:
         """Returns a list of fresh authentication headers"""
-        return self._header_factory()
+        headers = self._header_factory()
+        # Unified hosts use X-Databricks-Org-Id header to determine which workspace to route the request to.
+        # The header must not be set for account-level API requests, otherwise the request will fail.
+        # This relies on the assumption that workspace_id is only set for workspace client configs.
+        if self.host_type() == HostType.UNIFIED_HOST and self.workspace_id:
+            headers["X-Databricks-Org-Id"] = self.workspace_id
+        return headers
 
     def as_dict(self) -> dict:
         return self._inner
@@ -337,9 +364,58 @@ class Config:
 
     @property
     def is_account_client(self) -> bool:
+        """Returns true if client is configured for Accounts API.
+
+        Deprecated: Use host_type() if possible, or config_type() if necessary.
+        Raises RuntimeError if the config has the unified host flag set.
+        """
+        if self.experimental_is_unified_host:
+            raise RuntimeError("is_account_client cannot be used with unified hosts; use host_type() instead")
         if not self.host:
             return False
         return self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")
+
+    def host_type(self) -> HostType:
+        """Returns the type of host that the client is configured for."""
+        if self.experimental_is_unified_host:
+            return HostType.UNIFIED_HOST
+
+        if not self.host:
+            return HostType.WORKSPACE_HOST
+
+        accounts_prefixes = [
+            "https://accounts.",
+            "https://accounts-dod.",
+        ]
+        for prefix in accounts_prefixes:
+            if self.host.startswith(prefix):
+                return HostType.ACCOUNT_HOST
+
+        return HostType.WORKSPACE_HOST
+
+    def config_type(self) -> ConfigType:
+        """Returns the type of config that the client is configured for.
+
+        Returns InvalidConfig if the config is invalid.
+        Use of this function should be avoided where possible, because we plan
+        to remove WorkspaceClient and AccountClient in favor of a single unified
+        client in the future.
+        """
+        host_type = self.host_type()
+
+        if host_type == HostType.ACCOUNT_HOST:
+            return ConfigType.ACCOUNT_CONFIG
+        elif host_type == HostType.WORKSPACE_HOST:
+            return ConfigType.WORKSPACE_CONFIG
+        elif host_type == HostType.UNIFIED_HOST:
+            if not self.account_id:
+                # All unified host configs must have an account ID
+                return ConfigType.INVALID_CONFIG
+            if self.workspace_id:
+                return ConfigType.WORKSPACE_CONFIG
+            return ConfigType.ACCOUNT_CONFIG
+        else:
+            return ConfigType.INVALID_CONFIG
 
     @property
     def arm_environment(self) -> AzureEnvironment:
@@ -391,9 +467,15 @@ class Config:
             return None
         if self.is_azure and self.azure_client_id:
             return get_azure_entra_id_workspace_endpoints(self.host)
-        if self.is_account_client and self.account_id:
+
+        host_type = self.host_type()
+        if host_type == HostType.ACCOUNT_HOST and self.account_id:
             return get_account_endpoints(self.host, self.account_id)
-        return get_workspace_endpoints(self.host)
+        elif host_type == HostType.UNIFIED_HOST and self.account_id:
+            return get_unified_endpoints(self.host, self.account_id)
+        elif host_type == HostType.WORKSPACE_HOST:
+            return get_workspace_endpoints(self.host)
+        return None
 
     def debug_string(self) -> str:
         """Returns log-friendly representation of configured attributes"""
