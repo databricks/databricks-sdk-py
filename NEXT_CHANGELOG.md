@@ -14,3 +14,4 @@
 ### Internal Changes
 
 ### API Changes
+* Add `google_ads`, `tiktok_ads`, `salesforce_marketing_cloud`, `hubspot`, `workday_hcm`, `guidewire` and `zendesk` enum values for `databricks.sdk.service.pipelines.IngestionSourceType`.
