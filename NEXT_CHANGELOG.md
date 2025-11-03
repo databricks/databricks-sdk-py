@@ -3,6 +3,7 @@
 ## Release v0.72.0
 
 ### New Features and Improvements
+* Add a new `_ProtobufErrorDeserializer` for handling Protobuf response errors.
 
 ### Bug Fixes
 - Fix `FilesExt` can fail to upload and download data when Presigned URLs are not available in certain environments (e.g. Serverless GPU clusters).

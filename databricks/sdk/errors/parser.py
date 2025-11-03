@@ -7,7 +7,8 @@ from ..logger import RoundTrip
 from .base import DatabricksError
 from .customizer import _ErrorCustomizer, _RetryAfterCustomizer
 from .deserializer import (_EmptyDeserializer, _ErrorDeserializer,
-                           _HtmlErrorDeserializer, _StandardErrorDeserializer,
+                           _HtmlErrorDeserializer, _ProtobufErrorDeserializer,
+                           _StandardErrorDeserializer,
                            _StringErrorDeserializer)
 from .mapper import _error_mapper
 from .private_link import (_get_private_link_validation_error,
@@ -21,6 +22,7 @@ _error_deserializers = [
     _StandardErrorDeserializer(),
     _StringErrorDeserializer(),
     _HtmlErrorDeserializer(),
+    _ProtobufErrorDeserializer(),
 ]
 
 # A list of _ErrorCustomizers that are applied to the error arguments after they are parsed. Customizers can modify the
