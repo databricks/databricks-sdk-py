@@ -7,8 +7,8 @@ from datetime import datetime
 
 import pytest
 
-from databricks.sdk import oauth, useragent
-from databricks.sdk.config import Config, with_product, with_user_agent_extra
+from databricks.sdk import AccountClient, WorkspaceClient, oauth, useragent
+from databricks.sdk.config import Config, ConfigType, HostType, with_product, with_user_agent_extra
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials, set_az_path
@@ -260,3 +260,268 @@ def test_oauth_token_reuses_existing_provider(mocker):
     # Both calls should work and use the same provider instance
     assert token1 == token2 == mock_token
     assert mock_oauth_provider.oauth_token.call_count == 2
+
+
+def test_host_type_aws_account():
+    """Test that host_type returns ACCOUNT_HOST for AWS accounts host."""
+    config = Config(
+        host="https://accounts.cloud.databricks.com",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        credentials_strategy=noop_credentials,
+    )
+    assert config.host_type() == HostType.ACCOUNT_HOST
+
+
+def test_host_type_aws_dod_account():
+    """Test that host_type returns ACCOUNT_HOST for AWS DoD accounts host."""
+    config = Config(
+        host="https://accounts-dod.cloud.databricks.us",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        credentials_strategy=noop_credentials,
+    )
+    assert config.host_type() == HostType.ACCOUNT_HOST
+
+
+def test_host_type_aws_workspace():
+    """Test that host_type returns WORKSPACE_HOST for AWS workspace host."""
+    config = Config(
+        host="https://my-workspace.cloud.databricks.us",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        credentials_strategy=noop_credentials,
+    )
+    assert config.host_type() == HostType.WORKSPACE_HOST
+
+
+def test_host_type_unified():
+    """Test that host_type returns UNIFIED_HOST for unified host."""
+    config = Config(
+        host="https://unified.cloud.databricks.com",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        experimental_is_unified_host=True,
+        credentials_strategy=noop_credentials,
+    )
+    assert config.host_type() == HostType.UNIFIED_HOST
+
+
+def test_is_account_client_raises_on_unified_host():
+    """Test that is_account_client raises RuntimeError on unified host."""
+    config = Config(
+        host="https://unified.cloud.databricks.com",
+        account_id="test-account",
+        experimental_is_unified_host=True,
+        credentials_strategy=noop_credentials,
+    )
+    with pytest.raises(RuntimeError) as exc_info:
+        _ = config.is_account_client
+    assert "is_account_client cannot be used with unified hosts" in str(exc_info.value)
+
+
+def test_config_type_account():
+    """Test that config_type returns ACCOUNT_CONFIG for account host."""
+    config = Config(
+        host="https://accounts.cloud.databricks.com",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        credentials_strategy=noop_credentials,
+    )
+    assert config.config_type() == ConfigType.ACCOUNT_CONFIG
+
+
+def test_config_type_workspace():
+    """Test that config_type returns WORKSPACE_CONFIG for workspace host."""
+    config = Config(
+        host="https://my-workspace.cloud.databricks.us",
+        credentials_strategy=noop_credentials,
+    )
+    assert config.config_type() == ConfigType.WORKSPACE_CONFIG
+
+
+def test_config_type_unified_with_workspace_id():
+    """Test that config_type returns WORKSPACE_CONFIG for unified host with workspace_id."""
+    config = Config(
+        host="https://unified.cloud.databricks.com",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        workspace_id="12345",
+        experimental_is_unified_host=True,
+        credentials_strategy=noop_credentials,
+    )
+    assert config.config_type() == ConfigType.WORKSPACE_CONFIG
+
+
+def test_config_type_unified_without_workspace_id():
+    """Test that config_type returns ACCOUNT_CONFIG for unified host without workspace_id."""
+    config = Config(
+        host="https://unified.cloud.databricks.com",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        experimental_is_unified_host=True,
+        credentials_strategy=noop_credentials,
+    )
+    assert config.config_type() == ConfigType.ACCOUNT_CONFIG
+
+
+def test_config_type_unified_invalid_without_account_id():
+    """Test that config_type returns INVALID_CONFIG for unified host without account_id."""
+    config = Config(
+        host="https://unified.cloud.databricks.com",
+        experimental_is_unified_host=True,
+        credentials_strategy=noop_credentials,
+    )
+    assert config.config_type() == ConfigType.INVALID_CONFIG
+
+
+def test_oidc_endpoints_unified(requests_mock):
+    """Test OIDC endpoints for unified host."""
+    mock = requests_mock.get(
+        "https://unified.cloud.databricks.com/oidc/accounts/abc/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize",
+            "token_endpoint": "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token",
+        },
+    )
+    config = Config(
+        host="https://unified.cloud.databricks.com",
+        account_id="abc",
+        experimental_is_unified_host=True,
+        credentials_strategy=noop_credentials,
+    )
+    endpoints = config.oidc_endpoints
+    assert endpoints is not None
+    assert endpoints.authorization_endpoint == "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/authorize"
+    assert endpoints.token_endpoint == "https://unified.cloud.databricks.com/oidc/accounts/abc/v1/token"
+    assert mock.called_once
+
+
+def test_authenticate_adds_org_id_header_for_unified_workspace():
+    """Test that authenticate() adds X-Databricks-Org-Id header for unified workspace config."""
+    config = Config(
+        host="https://unified.cloud.databricks.com",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        workspace_id="12345",
+        experimental_is_unified_host=True,
+        credentials_strategy=noop_credentials,
+    )
+    headers = config.authenticate()
+    assert "X-Databricks-Org-Id" in headers
+    assert headers["X-Databricks-Org-Id"] == "12345"
+
+
+def test_authenticate_no_org_id_header_for_unified_account():
+    """Test that authenticate() does not add X-Databricks-Org-Id header for unified account config."""
+    config = Config(
+        host="https://unified.cloud.databricks.com",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        experimental_is_unified_host=True,
+        credentials_strategy=noop_credentials,
+    )
+    headers = config.authenticate()
+    assert "X-Databricks-Org-Id" not in headers
+
+
+def test_authenticate_no_org_id_header_for_workspace_host():
+    """Test that authenticate() does not add X-Databricks-Org-Id header for non-unified workspace host."""
+    config = Config(
+        host="https://my-workspace.cloud.databricks.us",
+        credentials_strategy=noop_credentials,
+    )
+    headers = config.authenticate()
+    assert "X-Databricks-Org-Id" not in headers
+
+
+def test_workspace_client_rejects_account_host():
+    """Test that WorkspaceClient raises ValueError for account host."""
+    with pytest.raises(ValueError) as exc_info:
+        WorkspaceClient(
+            host="https://accounts.cloud.databricks.com",
+            account_id="123e4567-e89b-12d3-a456-426614174000",
+            credentials_strategy=noop_credentials,
+        )
+    assert "invalid Databricks Workspace configuration - host is not a workspace host" in str(exc_info.value)
+
+
+def test_workspace_client_rejects_unified_host_without_workspace_id():
+    """Test that WorkspaceClient raises ValueError for unified host without workspace_id."""
+    with pytest.raises(ValueError) as exc_info:
+        WorkspaceClient(
+            host="https://unified.cloud.databricks.com",
+            account_id="123e4567-e89b-12d3-a456-426614174000",
+            experimental_is_unified_host=True,
+            credentials_strategy=noop_credentials,
+        )
+    assert "workspace_id must be set when using WorkspaceClient with unified host" in str(exc_info.value)
+
+
+def test_workspace_client_accepts_unified_host_with_workspace_id():
+    """Test that WorkspaceClient accepts unified host with workspace_id."""
+    client = WorkspaceClient(
+        host="https://unified.cloud.databricks.com",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        workspace_id="12345",
+        experimental_is_unified_host=True,
+        credentials_strategy=noop_credentials,
+    )
+    assert client is not None
+    assert client.config.workspace_id == "12345"
+
+
+def test_workspace_client_accepts_workspace_host():
+    """Test that WorkspaceClient accepts workspace host."""
+    client = WorkspaceClient(
+        host="https://my-workspace.cloud.databricks.us",
+        credentials_strategy=noop_credentials,
+    )
+    assert client is not None
+
+
+def test_account_client_rejects_workspace_host():
+    """Test that AccountClient raises ValueError for workspace host."""
+    with pytest.raises(ValueError) as exc_info:
+        AccountClient(
+            host="https://my-workspace.cloud.databricks.us",
+            account_id="123e4567-e89b-12d3-a456-426614174000",
+            credentials_strategy=noop_credentials,
+        )
+    assert "invalid Databricks Account configuration - host incorrect or account_id missing" in str(exc_info.value)
+
+
+def test_account_client_rejects_missing_account_id():
+    """Test that AccountClient raises ValueError when account_id is missing."""
+    with pytest.raises(ValueError) as exc_info:
+        AccountClient(
+            host="https://accounts.cloud.databricks.com",
+            credentials_strategy=noop_credentials,
+        )
+    assert "invalid Databricks Account configuration - host incorrect or account_id missing" in str(exc_info.value)
+
+
+def test_account_client_rejects_workspace_id():
+    """Test that AccountClient raises ValueError when workspace_id is set."""
+    with pytest.raises(ValueError) as exc_info:
+        AccountClient(
+            host="https://accounts.cloud.databricks.com",
+            account_id="123e4567-e89b-12d3-a456-426614174000",
+            workspace_id="12345",
+            credentials_strategy=noop_credentials,
+        )
+    assert "workspace_id must not be set when using AccountClient" in str(exc_info.value)
+
+
+def test_account_client_accepts_account_host():
+    """Test that AccountClient accepts account host."""
+    client = AccountClient(
+        host="https://accounts.cloud.databricks.com",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        credentials_strategy=noop_credentials,
+    )
+    assert client is not None
+    assert client.config.account_id == "123e4567-e89b-12d3-a456-426614174000"
+
+
+def test_account_client_accepts_unified_host():
+    """Test that AccountClient accepts unified host without workspace_id."""
+    client = AccountClient(
+        host="https://unified.cloud.databricks.com",
+        account_id="123e4567-e89b-12d3-a456-426614174000",
+        experimental_is_unified_host=True,
+        credentials_strategy=noop_credentials,
+    )
+    assert client is not None
+    assert client.config.account_id == "123e4567-e89b-12d3-a456-426614174000"

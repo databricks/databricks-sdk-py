@@ -247,6 +247,15 @@ class WorkspaceClient:
                 product_version=product_version,
                 token_audience=token_audience,
             )
+
+        # Validate that the config is appropriate for a WorkspaceClient
+        from .config import HostType
+        host_type = config.host_type()
+        if host_type == HostType.ACCOUNT_HOST:
+            raise ValueError("invalid Databricks Workspace configuration - host is not a workspace host")
+        if host_type == HostType.UNIFIED_HOST and not config.workspace_id:
+            raise ValueError("workspace_id must be set when using WorkspaceClient with unified host")
+
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
         self._api_client = client.ApiClient(self._config)
@@ -1081,6 +1090,16 @@ class AccountClient:
                 product_version=product_version,
                 token_audience=token_audience,
             )
+
+        # Validate that the config is appropriate for an AccountClient
+        from .config import HostType
+        if not config.account_id or config.host_type() == HostType.WORKSPACE_HOST:
+            raise ValueError("invalid Databricks Account configuration - host incorrect or account_id missing")
+        # WorkspaceId must NOT be present in a config used with account client because
+        # unified hosts route calls based on the presence of the X-Databricks-Org-Id header.
+        if config.workspace_id:
+            raise ValueError("workspace_id must not be set when using AccountClient")
+
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)
         self._access_control = pkg_iam.AccountAccessControlAPI(self._api_client)
@@ -1333,6 +1352,7 @@ class AccountClient:
         config = self._config.deep_copy()
         config.host = config.environment.deployment_url(workspace.deployment_name)
         config.azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
+        config.workspace_id = str(workspace.workspace_id)
         config.account_id = None
         config.init_auth()
         return WorkspaceClient(config=config)

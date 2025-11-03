@@ -1,5 +1,13 @@
 # Version changelog
 
+## [Unreleased]
+
+### New Features and Improvements
+
+* Add support for unified hosts, i.e. hosts that support both workspace-level and account-level operations
+* Deprecate `Config.is_account_client`, which will not work for unified hosts, and replace it with `Config.host_type()` and `Config.config_type()` methods
+* Add validation in `WorkspaceClient` and `AccountClient` constructors to ensure configs are appropriate for the client type
+
 ## Release v0.71.0 (2025-10-30)
 
 ### Bug Fixes
