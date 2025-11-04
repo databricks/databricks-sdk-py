@@ -12,6 +12,5 @@ class LroOptions:
         """
         Args:
             timeout: The timeout for the Long Running Operations.
-                    If not set, the default timeout is 20 minutes.
         """
-        self.timeout = timeout or timedelta(minutes=20)
+        self.timeout = timeout

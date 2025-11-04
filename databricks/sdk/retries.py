@@ -103,7 +103,7 @@ def _backoff(attempt: int) -> float:
 
 def poll(
     fn: Callable[[], Tuple[Optional[T], Optional[RetryError]]],
-    timeout: timedelta = timedelta(minutes=20),
+    timeout: Optional[timedelta] = None,
     clock: Optional[Clock] = None,
 ) -> T:
     """Poll a function until it succeeds or times out.
@@ -118,7 +118,7 @@ def poll(
                Return (None, RetryError.continues("msg")) to continue polling.
                Return (None, RetryError.halt(err)) to stop with error.
                Return (result, None) on success.
-    :param timeout: Maximum time to poll (default: 20 minutes)
+    :param timeout: Maximum time to poll. If None, polls indefinitely.
     :param clock: Clock implementation for testing (default: RealClock)
     :returns: The result of the successful function call
     :raises TimeoutError: If the timeout is reached
@@ -138,7 +138,7 @@ def poll(
     if clock is None:
         clock = RealClock()
 
-    deadline = clock.time() + timeout.total_seconds()
+    deadline = float("inf") if timeout is None else clock.time() + timeout.total_seconds()
     attempt = 0
     last_err = None
 
