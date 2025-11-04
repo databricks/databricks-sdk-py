@@ -66,6 +66,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: BatchCreateMaterializedFeaturesResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: CommentActivityAction
 
    An action that a user (with sufficient permissions) could take on an activity or comment.
@@ -111,6 +115,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: CreateLoggedModelResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: CreateMaterializedFeatureRequest
    :members:
    :undoc-members:
 
@@ -405,11 +413,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: JobContext
+   :members:
+   :undoc-members:
+
 .. autoclass:: JobSpec
    :members:
    :undoc-members:
 
 .. autoclass:: JobSpecWithoutSecret
+   :members:
+   :undoc-members:
+
+.. autoclass:: LineageContext
    :members:
    :undoc-members:
 

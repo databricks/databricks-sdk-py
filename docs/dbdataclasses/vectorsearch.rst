@@ -80,6 +80,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PROVISIONING
       :value: "PROVISIONING"
 
+   .. py:attribute:: RED_STATE
+      :value: "RED_STATE"
+
+   .. py:attribute:: YELLOW_STATE
+      :value: "YELLOW_STATE"
+
 .. py:class:: EndpointType
 
    Type of endpoint.

@@ -7243,16 +7243,16 @@ class TableTriggerState:
 
 @dataclass
 class TableUpdateTriggerConfiguration:
+    table_names: List[str]
+    """A list of tables to monitor for changes. The table name must be in the format
+    `catalog_name.schema_name.table_name`."""
+
     condition: Optional[Condition] = None
     """The table(s) condition based on which to trigger a job run."""
 
     min_time_between_triggers_seconds: Optional[int] = None
     """If set, the trigger starts a run only after the specified amount of time has passed since the
     last time the trigger fired. The minimum allowed value is 60 seconds."""
-
-    table_names: Optional[List[str]] = None
-    """A list of tables to monitor for changes. The table name must be in the format
-    `catalog_name.schema_name.table_name`."""
 
     wait_after_last_change_seconds: Optional[int] = None
     """If set, the trigger starts a run only after no table updates have occurred for the specified
