@@ -1168,8 +1168,8 @@ class MultipartUploadServerState:
     abort_upload_url_prefix = "https://cloud_provider.com/abort-upload/"
 
     def __init__(self, expected_part_size: Optional[int] = None):
-        self.issued_multipart_urls = {}  # part_number -> expiration_time
-        self.uploaded_parts = {}  # part_number -> [part file path, etag]
+        self.issued_multipart_urls = {}  # type: ignore[var-annotated]  # part_number -> expiration_time
+        self.uploaded_parts = {}  # type: ignore[var-annotated]  # part_number -> [part file path, etag]
         self.session_token = "token-" + MultipartUploadServerState.randomstr()
         self.file_content = None
         self.issued_abort_url_expire_time = None

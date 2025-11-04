@@ -437,7 +437,7 @@ class RetryTestCase:
     @classmethod
     def create_non_seekable_stream(cls, data: bytes):  # type: ignore[no-untyped-def]
         result = io.BytesIO(data)
-        result.seekable = lambda: False  # makes the stream appear non-seekable
+        result.seekable = lambda: False  # type: ignore[method-assign]  # makes the stream appear non-seekable
         return result
 
 

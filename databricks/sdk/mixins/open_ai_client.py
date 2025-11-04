@@ -164,7 +164,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
 
         # Read the content from the HttpRequestResponse object
         if hasattr(server_response, "contents") and hasattr(server_response.contents, "read"):
-            raw_content = server_response.contents.read()  # Read the bytes
+            raw_content = server_response.contents.read()  # type: ignore[union-attr]  # Read the bytes
         else:
             raise ValueError("Invalid response from the server.")
 

@@ -216,7 +216,7 @@ def test_iterator(config, test_case: ConcatenatedInputStreamTestCase):  # type: 
     verify(test_case, apply)
 
 
-def seeks_to_string(seeks: [Tuple[int, int]]):  # type: ignore[no-untyped-def, valid-type]
+def seeks_to_string(seeks: [Tuple[int, int]]):  # type: ignore[misc, no-untyped-def, valid-type]
     ", ".join(list(map(lambda seek: f"Seek: offset={seek[0]}, whence={seek[1]}", seeks)))
 
 

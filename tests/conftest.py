@@ -9,7 +9,7 @@ from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import credentials_strategy
 
 from .clock import FakeClock
-from .integration.conftest import restorable_env  # type: ignore
+from .integration.conftest import restorable_env
 
 
 @credentials_strategy("noop", [])  # type: ignore[misc]

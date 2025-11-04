@@ -16,7 +16,7 @@ from typing import Any, Callable, Dict, List, Optional, Tuple, Union
 
 import google.auth  # type: ignore
 import requests
-from google.auth import impersonated_credentials  # type: ignore
+from google.auth import impersonated_credentials
 from google.auth.transport.requests import Request  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 

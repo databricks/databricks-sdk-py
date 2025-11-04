@@ -110,7 +110,7 @@ except ImportError:
         # We expect this to fail and only do this for providing types
         from pyspark.sql.context import SQLContext  # type: ignore[import-not-found]
 
-        sqlContext: SQLContext = None  # type: ignore
+        sqlContext: SQLContext = None
         table = sqlContext.table
     except Exception as e:
         logging.debug(f"Failed to initialize globals 'sqlContext' and 'table', continuing. Cause: {e}")
@@ -124,7 +124,7 @@ except ImportError:
         from databricks.connect import DatabricksSession  # type: ignore
 
         spark = DatabricksSession.builder.getOrCreate()
-        sql = spark.sql  # type: ignore
+        sql = spark.sql
     except Exception as e:
         # We are ignoring all failures here because user might want to initialize
         # spark session themselves and we don't want to interfere with that
@@ -132,7 +132,7 @@ except ImportError:
 
     try:
         # We expect this to fail locally since dbconnect does not support sparkcontext. This is just for typing
-        sc = spark.sparkContext  # type: ignore
+        sc = spark.sparkContext
     except Exception as e:
         logging.debug(f"Failed to initialize global 'sc', continuing. Cause: {e}")
 

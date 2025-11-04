@@ -1452,7 +1452,7 @@ class FilesExt(files.FilesAPI):
         cloud_provider_session: requests.Session,
     ) -> None:
 
-        task_queue = Queue(maxsize=ctx.parallelism)  # Limit queue size to control memory usage
+        task_queue = Queue(maxsize=ctx.parallelism)  # type: ignore[arg-type, var-annotated]  # Limit queue size to control memory usage
         etags_result_queue = Queue()  # type: ignore[var-annotated]
         exception_queue = Queue()  # type: ignore[var-annotated]
         all_produced = Event()
