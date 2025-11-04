@@ -1,23 +1,23 @@
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk import errors
 from databricks.sdk.core import DatabricksError
 
 
-def test_filtering_groups(w, random):
+def test_filtering_groups(w, random):  # type: ignore[no-untyped-def]
     all = w.groups.list(filter=f"displayName eq any-{random(12)}")
     found = len(list(all))
     assert found == 0
 
 
-def test_scim_error_unmarshall(w, random):
+def test_scim_error_unmarshall(w, random):  # type: ignore[no-untyped-def]
     with pytest.raises(DatabricksError) as exc_info:
         groups = w.groups.list(filter=random(12))
         next(groups)
     assert isinstance(exc_info.value, errors.BadRequest)
 
 
-def test_scim_get_user_as_dict(w):
+def test_scim_get_user_as_dict(w):  # type: ignore[no-untyped-def]
     first_user = next(w.users.list())
     user = w.users.get(first_user.id)
     # should not throw
@@ -35,7 +35,7 @@ def test_scim_get_user_as_dict(w):
         ),
     ],
 )
-def test_workspace_users_list_pagination(w, path, call):
+def test_workspace_users_list_pagination(w, path, call):  # type: ignore[no-untyped-def]
     raw = w.api_client.do("GET", path)
     total = raw["totalResults"]
     all = call(w)
@@ -60,7 +60,7 @@ def test_workspace_users_list_pagination(w, path, call):
         ),
     ],
 )
-def test_account_users_list_pagination(a, path, call):
+def test_account_users_list_pagination(a, path, call):  # type: ignore[no-untyped-def]
     raw = a.api_client.do("GET", path.replace("%s", a.config.account_id))
     total = raw["totalResults"]
     all = call(a)

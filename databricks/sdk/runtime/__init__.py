@@ -26,7 +26,7 @@ dbruntime_objects = [
 try:
     # We don't want to expose additional entity to user namespace, so
     # a workaround here for exposing required information in notebook environment
-    from dbruntime.sdk_credential_provider import init_runtime_native_auth
+    from dbruntime.sdk_credential_provider import init_runtime_native_auth  # type: ignore[import-not-found]
 
     logger.debug("runtime SDK credential provider available")
     dbruntime_objects.append("init_runtime_native_auth")
@@ -36,9 +36,9 @@ except ImportError:
 globals()["init_runtime_native_auth"] = init_runtime_native_auth
 
 
-def init_runtime_repl_auth():
+def init_runtime_repl_auth():  # type: ignore[no-untyped-def]
     try:
-        from dbruntime.databricks_repl_context import get_context
+        from dbruntime.databricks_repl_context import get_context  # type: ignore[import-not-found]
 
         ctx = get_context()
         if ctx is None:
@@ -58,9 +58,9 @@ def init_runtime_repl_auth():
         return None, None
 
 
-def init_runtime_legacy_auth():
+def init_runtime_legacy_auth():  # type: ignore[no-untyped-def]
     try:
-        import IPython
+        import IPython  # type: ignore[import-not-found]
 
         ip_shell = IPython.get_ipython()
         if ip_shell is None:
@@ -88,7 +88,7 @@ def init_runtime_legacy_auth():
 try:
     # Internal implementation
     # Separated from above for backward compatibility
-    from dbruntime import UserNamespaceInitializer
+    from dbruntime import UserNamespaceInitializer  # type: ignore[import-not-found]
 
     userNamespaceGlobals = UserNamespaceInitializer.getOrCreate().get_namespace_globals()
     _globals = globals()
@@ -108,7 +108,7 @@ except ImportError:
     # mannaer. We separate them to try to get as many of them working as possible
     try:
         # We expect this to fail and only do this for providing types
-        from pyspark.sql.context import SQLContext
+        from pyspark.sql.context import SQLContext  # type: ignore[import-not-found]
 
         sqlContext: SQLContext = None  # type: ignore
         table = sqlContext.table
@@ -187,12 +187,12 @@ except ImportError:
     dbutils_type = Union[dbutils_stub.dbutils, RemoteDbUtils]
 
     dbutils = RemoteDbUtils()
-    dbutils = cast(dbutils_type, dbutils)
+    dbutils = cast(dbutils_type, dbutils)  # type: ignore[assignment]
 
     # We do this to prevent importing widgets implementation prematurely
     # The widget import should prompt users to use the implementation
     # which has ipywidget support.
-    def getArgument(name: str, defaultValue: Optional[str] = None):
+    def getArgument(name: str, defaultValue: Optional[str] = None):  # type: ignore[no-untyped-def]
         return dbutils.widgets.getArgument(name, defaultValue)
 
 

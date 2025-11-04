@@ -1,4 +1,4 @@
-import pytest as pytest
+import pytest as pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.dbutils import FileInfo as DBUtilsFileInfo
 from databricks.sdk.service.files import FileInfo, ReadResponse
@@ -7,13 +7,13 @@ from .conftest import raises
 
 
 @pytest.fixture
-def dbutils(config):
+def dbutils(config):  # type: ignore[no-untyped-def]
     from databricks.sdk.dbutils import RemoteDbUtils
 
     return RemoteDbUtils(config)
 
 
-def test_fs_cp(dbutils, mocker):
+def test_fs_cp(dbutils, mocker):  # type: ignore[no-untyped-def]
     inner = mocker.patch("databricks.sdk.mixins.files.DbfsExt.copy")
 
     dbutils.fs.cp("a", "b", recurse=True)
@@ -21,7 +21,7 @@ def test_fs_cp(dbutils, mocker):
     inner.assert_called_with("a", "b", recursive=True)
 
 
-def test_fs_head(dbutils, mocker):
+def test_fs_head(dbutils, mocker):  # type: ignore[no-untyped-def]
     inner = mocker.patch(
         "databricks.sdk.service.files.DbfsAPI.read",
         return_value=ReadResponse(data="aGVsbG8=", bytes_read=5),
@@ -38,7 +38,7 @@ def test_fs_head(dbutils, mocker):
     assert result == "hello"
 
 
-def test_fs_ls(dbutils, mocker):
+def test_fs_ls(dbutils, mocker):  # type: ignore[no-untyped-def]
     inner = mocker.patch(
         "databricks.sdk.service.files.DbfsAPI.list",
         return_value=[
@@ -63,7 +63,7 @@ def test_fs_ls(dbutils, mocker):
     assert result[1] == DBUtilsFileInfo("a/c", "c", 30, 40)
 
 
-def test_fs_mkdirs(dbutils, mocker):
+def test_fs_mkdirs(dbutils, mocker):  # type: ignore[no-untyped-def]
     inner = mocker.patch("databricks.sdk.service.files.DbfsAPI.mkdirs")
 
     dbutils.fs.mkdirs("a")
@@ -71,7 +71,7 @@ def test_fs_mkdirs(dbutils, mocker):
     inner.assert_called_with("a")
 
 
-def test_fs_mv(dbutils, mocker):
+def test_fs_mv(dbutils, mocker):  # type: ignore[no-untyped-def]
     inner = mocker.patch("databricks.sdk.mixins.files.DbfsExt.move_")
 
     dbutils.fs.mv("a", "b")
@@ -79,18 +79,18 @@ def test_fs_mv(dbutils, mocker):
     inner.assert_called_with("a", "b", recursive=False, overwrite=True)
 
 
-def test_fs_put(dbutils, mocker):
+def test_fs_put(dbutils, mocker):  # type: ignore[no-untyped-def]
 
     class _MockOpen:
         _written = None
 
-        def __enter__(self):
+        def __enter__(self):  # type: ignore[no-untyped-def]
             return self
 
-        def __exit__(self, *ignored):
+        def __exit__(self, *ignored):  # type: ignore[no-untyped-def]
             pass
 
-        def write(self, contents):
+        def write(self, contents):  # type: ignore[no-untyped-def]
             self._written = contents
 
     mock_open = _MockOpen()
@@ -102,7 +102,7 @@ def test_fs_put(dbutils, mocker):
     assert mock_open._written == b"b"
 
 
-def test_fs_rm(dbutils, mocker):
+def test_fs_rm(dbutils, mocker):  # type: ignore[no-untyped-def]
     inner = mocker.patch("databricks.sdk.service.files.DbfsAPI.delete")
     inner2 = mocker.patch(
         "databricks.sdk.service.files.DbfsAPI.get_status",
@@ -114,13 +114,13 @@ def test_fs_rm(dbutils, mocker):
     inner.assert_called_with("a", recursive=False)
 
 
-@raises("cluster_id is required in the configuration. Config: host=http://localhost, auth_type=noop")
-def test_fs_mount_without_cluster_fails(dbutils):
+@raises("cluster_id is required in the configuration. Config: host=http://localhost, auth_type=noop")  # type: ignore[no-untyped-call]
+def test_fs_mount_without_cluster_fails(dbutils):  # type: ignore[no-untyped-def]
     dbutils.fs.mount("s3://foo", "bar")
 
 
 @pytest.fixture
-def dbutils_proxy(mocker):
+def dbutils_proxy(mocker):  # type: ignore[no-untyped-def]
     from databricks.sdk.core import Config
     from databricks.sdk.dbutils import RemoteDbUtils
     from databricks.sdk.service._internal import Wait
@@ -139,7 +139,7 @@ def dbutils_proxy(mocker):
         return_value=Wait(lambda **kwargs: Created("y")),
     )
 
-    def inner(results_data: any, expect_command: str):
+    def inner(results_data: any, expect_command: str):  # type: ignore[no-untyped-def, valid-type]
         import json
 
         command_execute = mocker.patch(
@@ -152,7 +152,7 @@ def dbutils_proxy(mocker):
             ),
         )
 
-        def assertions():
+        def assertions():  # type: ignore[no-untyped-def]
             cluster_get.assert_called_with("x")
             context_create.assert_called_with(cluster_id="x", language=Language.PYTHON)
             command_execute.assert_called_with(
@@ -174,7 +174,7 @@ def dbutils_proxy(mocker):
     return inner
 
 
-def test_fs_mount(dbutils_proxy):
+def test_fs_mount(dbutils_proxy):  # type: ignore[no-untyped-def]
     command = (
         "\n"
         "        import json\n"
@@ -190,7 +190,7 @@ def test_fs_mount(dbutils_proxy):
     assertions()
 
 
-def test_fs_update_mount(dbutils_proxy):
+def test_fs_update_mount(dbutils_proxy):  # type: ignore[no-untyped-def]
     command = (
         "\n"
         "        import json\n"
@@ -206,7 +206,7 @@ def test_fs_update_mount(dbutils_proxy):
     assertions()
 
 
-def test_fs_mounts(dbutils_proxy):
+def test_fs_mounts(dbutils_proxy):  # type: ignore[no-untyped-def]
     command = (
         "\n"
         "        import json\n"
@@ -232,7 +232,7 @@ def test_fs_mounts(dbutils_proxy):
     assertions()
 
 
-def test_any_proxy(dbutils_proxy):
+def test_any_proxy(dbutils_proxy):  # type: ignore[no-untyped-def]
     command = (
         "\n"
         "        import json\n"
@@ -250,7 +250,7 @@ def test_any_proxy(dbutils_proxy):
     assertions()
 
 
-def test_secrets_get_and_redacting_logs(dbutils, mocker):
+def test_secrets_get_and_redacting_logs(dbutils, mocker):  # type: ignore[no-untyped-def]
     inner = mocker.patch("databricks.sdk.core.ApiClient.do", return_value={"value": "aGVsbG8="})
 
     value = dbutils.secrets.get("foo", "bar")
@@ -260,11 +260,11 @@ def test_secrets_get_and_redacting_logs(dbutils, mocker):
     assert value == "hello"
 
 
-def test_jobs_task_values_set(dbutils):
+def test_jobs_task_values_set(dbutils):  # type: ignore[no-untyped-def]
     dbutils.jobs.taskValues.set("key", "value")
 
 
-def test_jobs_task_values_get(dbutils):
+def test_jobs_task_values_get(dbutils):  # type: ignore[no-untyped-def]
     assert dbutils.jobs.taskValues.get("taskKey", "key", debugValue="debug") == "debug"
 
     dbutils.jobs.taskValues.set("key", "value")
@@ -273,7 +273,7 @@ def test_jobs_task_values_get(dbutils):
     assert dbutils.jobs.taskValues.get("taskKey", "key", debugValue="debug") == "debug"
 
 
-def test_jobs_task_values_get_throws(dbutils):
+def test_jobs_task_values_get_throws(dbutils):  # type: ignore[no-untyped-def]
     try:
         dbutils.jobs.taskValues.get("taskKey", "key")
         assert False
@@ -281,7 +281,7 @@ def test_jobs_task_values_get_throws(dbutils):
         assert str(e) == "Must pass debugValue when calling get outside of a job context. debugValue cannot be None."
 
 
-def test_dbutils_proxy_overrides(dbutils, mocker, restorable_env):
+def test_dbutils_proxy_overrides(dbutils, mocker, restorable_env):  # type: ignore[no-untyped-def]
     import os
 
     os.environ["DATABRICKS_SOURCE_FILE"] = "test_source_file"
@@ -292,17 +292,17 @@ def test_dbutils_proxy_overrides(dbutils, mocker, restorable_env):
     assert dbutils.notebook.entry_point.getDbutils().notebook().getContext().notebookPath().get() == "test_source_file"
 
 
-@raises("Method 'credentials.getServiceCredentialsProvider' is not supported in the SDK version of DBUtils")
-def test_dbutils_credentials_get_service_credential_provider(config, mocker):
+@raises("Method 'credentials.getServiceCredentialsProvider' is not supported in the SDK version of DBUtils")  # type: ignore[no-untyped-call]
+def test_dbutils_credentials_get_service_credential_provider(config, mocker):  # type: ignore[no-untyped-def]
     from databricks.sdk.dbutils import RemoteDbUtils
 
     config.cluster_id = "test_cluster_id"
     dbutils = RemoteDbUtils(config)
 
-    dbutils.credentials.getServiceCredentialsProvider("creds")
+    dbutils.credentials.getServiceCredentialsProvider("creds")  # type: ignore[call-arg]
 
 
-def test_dbutils_adds_user_agent(config):
+def test_dbutils_adds_user_agent(config):  # type: ignore[no-untyped-def]
     from databricks.sdk.dbutils import RemoteDbUtils
 
     # Create dbutils and check that user-agent includes sdk-feature/dbutils

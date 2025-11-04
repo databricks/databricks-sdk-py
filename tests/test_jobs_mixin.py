@@ -35,7 +35,7 @@ def make_listruns_path_pattern(page_token: str) -> Pattern[str]:
     )
 
 
-def test_get_run_with_no_pagination(config, requests_mock):
+def test_get_run_with_no_pagination(config, requests_mock):  # type: ignore[no-untyped-def]
     run1 = {
         "tasks": [{"run_id": 0}, {"run_id": 1}],
     }
@@ -49,7 +49,7 @@ def test_get_run_with_no_pagination(config, requests_mock):
     }
 
 
-def test_get_run_pagination_with_tasks(config, requests_mock):
+def test_get_run_pagination_with_tasks(config, requests_mock):  # type: ignore[no-untyped-def]
     from databricks.sdk.service import compute, jobs
 
     cluster_spec = compute.ClusterSpec(
@@ -115,7 +115,7 @@ def test_get_run_pagination_with_tasks(config, requests_mock):
     }
 
 
-def test_get_run_pagination_with_iterations(config, requests_mock):
+def test_get_run_pagination_with_iterations(config, requests_mock):  # type: ignore[no-untyped-def]
     run1 = {
         "tasks": [{"run_id": 1337}],
         "iterations": [{"run_id": 0}, {"run_id": 1}],
@@ -155,7 +155,7 @@ def test_get_run_pagination_with_iterations(config, requests_mock):
     }
 
 
-def test_get_job_with_no_pagination(config, requests_mock):
+def test_get_job_with_no_pagination(config, requests_mock):  # type: ignore[no-untyped-def]
     job1 = {
         "settings": {
             "tasks": [{"task_key": "taskKey1"}, {"task_key": "taskKey2"}],
@@ -173,7 +173,7 @@ def test_get_job_with_no_pagination(config, requests_mock):
     }
 
 
-def test_get_job_pagination_with_tasks(config, requests_mock):
+def test_get_job_pagination_with_tasks(config, requests_mock):  # type: ignore[no-untyped-def]
     from databricks.sdk.service import compute, jobs
 
     cluster_spec = compute.ClusterSpec(
@@ -256,7 +256,7 @@ def test_get_job_pagination_with_tasks(config, requests_mock):
     }
 
 
-def test_list_jobs_without_task_expansion(config, requests_mock):
+def test_list_jobs_without_task_expansion(config, requests_mock):  # type: ignore[no-untyped-def]
     listjobs_page1 = {
         "jobs": [
             {
@@ -348,7 +348,7 @@ def test_list_jobs_without_task_expansion(config, requests_mock):
     assert requests_mock.call_count == 2
 
 
-def test_list_jobs_with_many_tasks(config, requests_mock):
+def test_list_jobs_with_many_tasks(config, requests_mock):  # type: ignore[no-untyped-def]
     from databricks.sdk.service import compute, jobs
 
     cluster_spec = compute.ClusterSpec(
@@ -580,7 +580,7 @@ def test_list_jobs_with_many_tasks(config, requests_mock):
     assert all("300" not in request.qs.get("job_id", [""]) for request in history)
 
 
-def test_list_runs_without_task_expansion(config, requests_mock):
+def test_list_runs_without_task_expansion(config, requests_mock):  # type: ignore[no-untyped-def]
     listruns_page1 = {
         "runs": [
             {
@@ -667,7 +667,7 @@ def test_list_runs_without_task_expansion(config, requests_mock):
     assert requests_mock.call_count == 2
 
 
-def test_list_runs(config, requests_mock):
+def test_list_runs(config, requests_mock):  # type: ignore[no-untyped-def]
     listruns_page1 = {
         "runs": [
             {

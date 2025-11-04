@@ -11,13 +11,13 @@ logger = logging.getLogger(__name__)
 T = TypeVar("T")
 
 
-def retried(
+def retried(  # type: ignore[no-untyped-def]
     *,
     on: Optional[Sequence[Type[BaseException]]] = None,
     is_retryable: Optional[Callable[[BaseException], Optional[str]]] = None,
     timeout=timedelta(minutes=20),
     clock: Optional[Clock] = None,
-    before_retry: Optional[Callable] = None,
+    before_retry: Optional[Callable] = None,  # type: ignore[type-arg]
 ):
     has_allowlist = on is not None
     has_callback = is_retryable is not None
@@ -26,10 +26,10 @@ def retried(
     if clock is None:
         clock = RealClock()
 
-    def decorator(func):
+    def decorator(func):  # type: ignore[no-untyped-def]
 
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):  # type: ignore[no-untyped-def]
             deadline = clock.time() + timeout.total_seconds()
             attempt = 1
             last_err = None
@@ -76,7 +76,7 @@ class RetryError(Exception):
 
     def __init__(self, err: Exception, halt: bool = False):
         self.err = err
-        self.halt = halt
+        self.halt = halt  # type: ignore[assignment, method-assign]
         super().__init__(str(err))
 
     @staticmethod
@@ -149,9 +149,9 @@ def poll(
             result, err = fn()
 
             if err is None:
-                return result
+                return result  # type: ignore[return-value]
 
-            if err.halt:
+            if err.halt:  # type: ignore[truthy-function]
                 raise err.err
 
             # Continue polling.

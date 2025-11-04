@@ -51,8 +51,8 @@ _LOG = logging.getLogger(__name__)
 class _DbfsIO(BinaryIO):
     MAX_CHUNK_SIZE = 1024 * 1024
 
-    _status: files.FileInfo = None
-    _created: files.CreateResponse = None
+    _status: files.FileInfo = None  # type: ignore[assignment]
+    _created: files.CreateResponse = None  # type: ignore[assignment]
     _offset = 0
     _closed = False
 
@@ -76,8 +76,8 @@ class _DbfsIO(BinaryIO):
         else:
             raise IOError(f"need to open either for reading or writing")
 
-    def __enter__(self) -> Self:
-        return self
+    def __enter__(self) -> Self:  # type: ignore[type-var]
+        return self  # type: ignore[return-value]
 
     @property
     def name(self) -> str:
@@ -91,7 +91,7 @@ class _DbfsIO(BinaryIO):
         """
         return self._created is not None
 
-    def write(self, buffer: bytes) -> int:
+    def write(self, buffer: bytes) -> int:  # type: ignore[override]
         """Write bytes to file.
 
         :return: Return the number of bytes written.
@@ -107,21 +107,21 @@ class _DbfsIO(BinaryIO):
             if len(chunk) > self.MAX_CHUNK_SIZE:
                 chunk = chunk[: self.MAX_CHUNK_SIZE]
             encoded = base64.b64encode(chunk).decode()
-            self._api.add_block(self._created.handle, encoded)
+            self._api.add_block(self._created.handle, encoded)  # type: ignore[arg-type]
             total += len(chunk)
         return total
 
     def close(self) -> None:
         """Disable all I/O operations."""
         if self.writable():
-            self._api.close(self._created.handle)
+            self._api.close(self._created.handle)  # type: ignore[arg-type]
         self._closed = True
 
     @property
     def closed(self) -> bool:
         return self._closed
 
-    def __exit__(
+    def __exit__(  # type: ignore[no-untyped-def]
         self,
         __t: Type[BaseException] | None,
         __value: BaseException | None,
@@ -132,7 +132,7 @@ class _DbfsIO(BinaryIO):
     def readable(self) -> bool:
         return self._status is not None
 
-    def read(self, size: int = ...) -> bytes:
+    def read(self, size: int = ...) -> bytes:  # type: ignore[assignment]
         """Read at most size bytes, returned as a bytes object.
 
         :param size: If the size argument is negative, read until EOF is reached.
@@ -143,7 +143,7 @@ class _DbfsIO(BinaryIO):
             raise IOError("file not open for reading")
 
         # call __iter__() and read until EOF is reached
-        if size is ... or size < 0:
+        if size is ... or size < 0:  # type: ignore[comparison-overlap]
             buffer = b""
             for chunk in self:
                 buffer += chunk
@@ -158,12 +158,12 @@ class _DbfsIO(BinaryIO):
             # and not the EOFError as in other SDKs
             return b""
 
-        raw = base64.b64decode(response.data)
-        self._offset += response.bytes_read
+        raw = base64.b64decode(response.data)  # type: ignore[arg-type]
+        self._offset += response.bytes_read  # type: ignore[operator]
         return raw
 
     def __iter__(self) -> Iterator[bytes]:
-        while self._offset < self._status.file_size:
+        while self._offset < self._status.file_size:  # type: ignore[operator]
             yield self.__next__()
 
     def __next__(self) -> bytes:
@@ -179,7 +179,7 @@ class _DbfsIO(BinaryIO):
     def isatty(self) -> bool:
         return False
 
-    def readline(self, __limit: int = ...) -> AnyStr:
+    def readline(self, __limit: int = ...) -> AnyStr:  # type: ignore[type-var]
         raise NotImplementedError
 
     def readlines(self, __hint: int = ...) -> list[AnyStr]:
@@ -197,7 +197,7 @@ class _DbfsIO(BinaryIO):
     def truncate(self, __size: int | None = ...) -> int:
         raise NotImplementedError
 
-    def writelines(self, __lines: Iterable[AnyStr]) -> None:
+    def writelines(self, __lines: Iterable[AnyStr]) -> None:  # type: ignore[override]
         raise NotImplementedError
 
     def __repr__(self) -> str:
@@ -215,7 +215,7 @@ class _VolumesIO(BinaryIO):
         write: bool,
         overwrite: bool,
     ):
-        self._buffer = []
+        self._buffer = []  # type: ignore[var-annotated]
         self._api = api
         self._path = path
         self._read = read
@@ -225,12 +225,12 @@ class _VolumesIO(BinaryIO):
         self._read_handle = None
         self._offset = 0
 
-    def __enter__(self):
+    def __enter__(self):  # type: ignore[no-untyped-def]
         if self._read:
-            self.__open_read()
+            self.__open_read()  # type: ignore[no-untyped-call]
         return self
 
-    def close(self):
+    def close(self):  # type: ignore[no-untyped-def]
         if self._closed:
             return
         if self._write:
@@ -241,83 +241,83 @@ class _VolumesIO(BinaryIO):
                 overwrite=self._overwrite,
             )
         elif self._read:
-            self._read_handle.close()
+            self._read_handle.close()  # type: ignore[attr-defined]
         self._closed = True
 
     def fileno(self) -> int:
         return 0
 
-    def flush(self):
+    def flush(self):  # type: ignore[no-untyped-def]
         raise NotImplementedError()
 
     def isatty(self) -> bool:
         return False
 
-    def __check_closed(self):
+    def __check_closed(self):  # type: ignore[no-untyped-def]
         if self._closed:
             raise ValueError("I/O operation on closed file")
 
-    def __open_read(self):
+    def __open_read(self):  # type: ignore[no-untyped-def]
         if self._read_handle is None:
-            self._read_handle = self._api.download(self._path).contents
+            self._read_handle = self._api.download(self._path).contents  # type: ignore[assignment]
 
-    def read(self, __n=...):
-        self.__check_closed()
-        self.__open_read()
-        return self._read_handle.read(__n)
+    def read(self, __n=...):  # type: ignore[no-untyped-def]
+        self.__check_closed()  # type: ignore[no-untyped-call]
+        self.__open_read()  # type: ignore[no-untyped-call]
+        return self._read_handle.read(__n)  # type: ignore[attr-defined]
 
-    def readable(self):
+    def readable(self):  # type: ignore[no-untyped-def]
         return self._read
 
-    def readline(self, __limit=...):
+    def readline(self, __limit=...):  # type: ignore[no-untyped-def]
         raise NotImplementedError()
 
-    def readlines(self, __hint=...):
+    def readlines(self, __hint=...):  # type: ignore[no-untyped-def]
         raise NotImplementedError()
 
-    def seek(self, __offset, __whence=...):
+    def seek(self, __offset, __whence=...):  # type: ignore[no-untyped-def]
         raise NotImplementedError()
 
-    def seekable(self):
+    def seekable(self):  # type: ignore[no-untyped-def]
         return False
 
-    def tell(self):
+    def tell(self):  # type: ignore[no-untyped-def]
         if self._read_handle is not None:
             return self._read_handle.tell()
         return self._offset
 
-    def truncate(self, __size=...):
+    def truncate(self, __size=...):  # type: ignore[no-untyped-def]
         raise NotImplementedError()
 
-    def writable(self):
+    def writable(self):  # type: ignore[no-untyped-def]
         return self._write
 
-    def write(self, __s):
-        self.__check_closed()
+    def write(self, __s):  # type: ignore[no-untyped-def]
+        self.__check_closed()  # type: ignore[no-untyped-call]
         self._buffer.append(__s)
 
-    def writelines(self, __lines):
+    def writelines(self, __lines):  # type: ignore[no-untyped-def]
         raise NotImplementedError()
 
-    def __next__(self):
-        self.__check_closed()
-        return self._read_handle.__next__()
+    def __next__(self):  # type: ignore[no-untyped-def]
+        self.__check_closed()  # type: ignore[no-untyped-call]
+        return self._read_handle.__next__()  # type: ignore[attr-defined]
 
-    def __iter__(self):
-        self.__check_closed()
-        return self._read_handle.__iter__()
+    def __iter__(self):  # type: ignore[no-untyped-def]
+        self.__check_closed()  # type: ignore[no-untyped-call]
+        return self._read_handle.__iter__()  # type: ignore[attr-defined]
 
-    def __exit__(self, __t, __value, __traceback):
-        self.close()
+    def __exit__(self, __t, __value, __traceback):  # type: ignore[no-untyped-def]
+        self.close()  # type: ignore[no-untyped-call]
 
     def __repr__(self) -> str:
-        return f"<_VolumesIO {self._path} {'read' if self.readable() else 'write'}=True>"
+        return f"<_VolumesIO {self._path} {'read' if self.readable() else 'write'}=True>"  # type: ignore[no-untyped-call]
 
 
 class _Path(ABC):
 
     @abstractmethod
-    def __init__(self): ...
+    def __init__(self): ...  # type: ignore[no-untyped-def]
 
     @property
     def is_local(self) -> bool:
@@ -347,23 +347,23 @@ class _Path(ABC):
     def exists(self) -> bool: ...
 
     @abstractmethod
-    def open(self, *, read=False, write=False, overwrite=False): ...
+    def open(self, *, read=False, write=False, overwrite=False): ...  # type: ignore[no-untyped-def]
 
-    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]: ...
-
-    @abstractmethod
-    def mkdir(self): ...
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]: ...  # type: ignore[empty-body, no-untyped-def]
 
     @abstractmethod
-    def delete(self, *, recursive=False): ...
+    def mkdir(self): ...  # type: ignore[no-untyped-def]
+
+    @abstractmethod
+    def delete(self, *, recursive=False): ...  # type: ignore[no-untyped-def]
 
     @property
     def name(self) -> str:
-        return self._path.name
+        return self._path.name  # type: ignore[attr-defined, no-any-return]
 
     @property
     def as_string(self) -> str:
-        return str(self._path)
+        return str(self._path)  # type: ignore[attr-defined]
 
 
 class _LocalPath(_Path):
@@ -380,24 +380,24 @@ class _LocalPath(_Path):
     def _is_dbfs(self) -> bool:
         return False
 
-    def child(self, path: str) -> Self:
-        return _LocalPath(str(self._path / path))
+    def child(self, path: str) -> Self:  # type: ignore[type-var]
+        return _LocalPath(str(self._path / path))  # type: ignore[return-value]
 
     def _is_dir(self) -> bool:
         return self._path.is_dir()
 
-    def mkdir(self):
+    def mkdir(self):  # type: ignore[no-untyped-def]
         self._path.mkdir(mode=0o755, parents=True, exist_ok=True)
 
     def exists(self) -> bool:
         return self._path.exists()
 
-    def open(self, *, read=False, write=False, overwrite=False):
+    def open(self, *, read=False, write=False, overwrite=False):  # type: ignore[no-untyped-def]
         # make local fs follow the similar semantics as DBFS
         self._path.parent.mkdir(mode=0o755, parents=True, exist_ok=True)
         return self._path.open(mode="wb" if overwrite else "rb" if read else "xb")
 
-    def list(self, recursive=False) -> Generator[files.FileInfo, None, None]:
+    def list(self, recursive=False) -> Generator[files.FileInfo, None, None]:  # type: ignore[no-untyped-def]
         if not self.is_dir:
             st = self._path.stat()
             yield files.FileInfo(
@@ -423,11 +423,11 @@ class _LocalPath(_Path):
                     modification_time=int(info.st_mtime_ns / 1e6),
                 )
 
-    def delete(self, *, recursive=False):
+    def delete(self, *, recursive=False):  # type: ignore[no-untyped-def]
         if self.is_dir:
             if recursive:
                 for leaf in self.list(recursive=True):
-                    _LocalPath(leaf.path).delete()
+                    _LocalPath(leaf.path).delete()  # type: ignore[arg-type, no-untyped-call]
             self._path.rmdir()
         else:
             kw = {}
@@ -451,8 +451,8 @@ class _VolumesPath(_Path):
     def _is_dbfs(self) -> bool:
         return False
 
-    def child(self, path: str) -> Self:
-        return _VolumesPath(self._api, str(self._path / path))
+    def child(self, path: str) -> Self:  # type: ignore[type-var]
+        return _VolumesPath(self._api, str(self._path / path))  # type: ignore[return-value]
 
     def _is_dir(self) -> bool:
         try:
@@ -461,7 +461,7 @@ class _VolumesPath(_Path):
         except NotFound:
             return False
 
-    def mkdir(self):
+    def mkdir(self):  # type: ignore[no-untyped-def]
         self._api.create_directory(self.as_string)
 
     def exists(self) -> bool:
@@ -469,9 +469,9 @@ class _VolumesPath(_Path):
             self._api.get_metadata(self.as_string)
             return True
         except NotFound:
-            return self.is_dir
+            return self.is_dir  # type: ignore[no-any-return]
 
-    def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:
+    def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:  # type: ignore[no-untyped-def]
         return _VolumesIO(
             self._api,
             self.as_string,
@@ -480,14 +480,14 @@ class _VolumesPath(_Path):
             overwrite=overwrite,
         )
 
-    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:  # type: ignore[no-untyped-def]
         if not self.is_dir:
             meta = self._api.get_metadata(self.as_string)
             yield files.FileInfo(
                 path=self.as_string,
                 is_dir=False,
                 file_size=meta.content_length,
-                modification_time=meta.last_modified,
+                modification_time=meta.last_modified,  # type: ignore[arg-type]
             )
             return
         queue = deque([self])
@@ -495,7 +495,7 @@ class _VolumesPath(_Path):
             next_path = queue.popleft()
             for file in self._api.list_directory_contents(next_path.as_string):
                 if recursive and file.is_directory:
-                    queue.append(self.child(file.name))
+                    queue.append(self.child(file.name))  # type: ignore[arg-type]
                 if not recursive or not file.is_directory:
                     yield files.FileInfo(
                         path=file.path,
@@ -504,10 +504,10 @@ class _VolumesPath(_Path):
                         modification_time=file.last_modified,
                     )
 
-    def delete(self, *, recursive=False):
+    def delete(self, *, recursive=False):  # type: ignore[no-untyped-def]
         if self.is_dir:
             for entry in self.list(recursive=False):
-                _VolumesPath(self._api, entry.path).delete(recursive=True)
+                _VolumesPath(self._api, entry.path).delete(recursive=True)  # type: ignore[arg-type, no-untyped-call]
             self._api.delete_directory(self.as_string)
         else:
             self._api.delete(self.as_string)
@@ -528,18 +528,18 @@ class _DbfsPath(_Path):
     def _is_dbfs(self) -> bool:
         return True
 
-    def child(self, path: str) -> Self:
+    def child(self, path: str) -> Self:  # type: ignore[type-var]
         child = self._path / path
-        return _DbfsPath(self._api, str(child))
+        return _DbfsPath(self._api, str(child))  # type: ignore[return-value]
 
     def _is_dir(self) -> bool:
         try:
             remote = self._api.get_status(self.as_string)
-            return remote.is_dir
+            return remote.is_dir  # type: ignore[return-value]
         except NotFound:
             return False
 
-    def mkdir(self):
+    def mkdir(self):  # type: ignore[no-untyped-def]
         self._api.mkdirs(self.as_string)
 
     def exists(self) -> bool:
@@ -549,7 +549,7 @@ class _DbfsPath(_Path):
         except NotFound:
             return False
 
-    def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:
+    def open(self, *, read=False, write=False, overwrite=False) -> BinaryIO:  # type: ignore[no-untyped-def]
         return _DbfsIO(
             self._api,
             self.as_string,
@@ -558,7 +558,7 @@ class _DbfsPath(_Path):
             overwrite=overwrite,
         )
 
-    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]:  # type: ignore[no-untyped-def]
         if not self.is_dir:
             meta = self._api.get_status(self.as_string)
             yield files.FileInfo(
@@ -573,11 +573,11 @@ class _DbfsPath(_Path):
             next_path = queue.popleft()
             for file in self._api.list(next_path.as_string):
                 if recursive and file.is_dir:
-                    queue.append(self.child(file.path))
+                    queue.append(self.child(file.path))  # type: ignore[arg-type]
                 if not recursive or not file.is_dir:
                     yield file
 
-    def delete(self, *, recursive=False):
+    def delete(self, *, recursive=False):  # type: ignore[no-untyped-def]
         self._api.delete(self.as_string, recursive=recursive)
 
     def __repr__(self) -> str:
@@ -608,10 +608,10 @@ class _RetryableException(Exception):
 class DbfsExt(files.DbfsAPI):
     __doc__ = files.DbfsAPI.__doc__
 
-    def __init__(self, api_client):
-        super().__init__(api_client)
-        self._files_api = files.FilesAPI(api_client)
-        self._dbfs_api = files.DbfsAPI(api_client)
+    def __init__(self, api_client):  # type: ignore[no-untyped-def]
+        super().__init__(api_client)  # type: ignore[no-untyped-call]
+        self._files_api = files.FilesAPI(api_client)  # type: ignore[no-untyped-call]
+        self._dbfs_api = files.DbfsAPI(api_client)  # type: ignore[no-untyped-call]
 
     def open(
         self,
@@ -621,9 +621,9 @@ class DbfsExt(files.DbfsAPI):
         write: bool = False,
         overwrite: bool = False,
     ) -> BinaryIO:
-        return self._path(path).open(read=read, write=write, overwrite=overwrite)
+        return self._path(path).open(read=read, write=write, overwrite=overwrite)  # type: ignore[no-any-return, no-untyped-call]
 
-    def upload(self, path: str, src: BinaryIO, *, overwrite: bool = False):
+    def upload(self, path: str, src: BinaryIO, *, overwrite: bool = False):  # type: ignore[no-untyped-def]
         """Upload file to DBFS"""
         with self.open(path, write=True, overwrite=overwrite) as dst:
             shutil.copyfileobj(src, dst, length=_DbfsIO.MAX_CHUNK_SIZE)
@@ -632,7 +632,7 @@ class DbfsExt(files.DbfsAPI):
         """Download file from DBFS"""
         return self.open(path, read=True)
 
-    def list(self, path: str, *, recursive=False) -> Iterator[files.FileInfo]:
+    def list(self, path: str, *, recursive=False) -> Iterator[files.FileInfo]:  # type: ignore[no-untyped-def]
         """List directory contents or file details.
 
         List the contents of a directory, or details of the file. If the file or directory does not exist,
@@ -645,22 +645,22 @@ class DbfsExt(files.DbfsAPI):
         :param recursive: traverse deep into directory tree
         :returns iterator of metadata for every file
         """
-        p = self._path(path)
+        p = self._path(path)  # type: ignore[no-untyped-call]
         yield from p.list(recursive=recursive)
 
-    def mkdirs(self, path: str):
+    def mkdirs(self, path: str):  # type: ignore[no-untyped-def]
         """Create directory on DBFS"""
-        p = self._path(path)
+        p = self._path(path)  # type: ignore[no-untyped-call]
         p.mkdir()
 
     def exists(self, path: str) -> bool:
         """If file exists on DBFS"""
-        p = self._path(path)
-        return p.exists()
+        p = self._path(path)  # type: ignore[no-untyped-call]
+        return p.exists()  # type: ignore[no-any-return]
 
     __ALLOWED_SCHEMES = [None, "file", "dbfs"]
 
-    def _path(self, src):
+    def _path(self, src):  # type: ignore[no-untyped-def]
         src = parse.urlparse(str(src))
         if src.scheme and src.scheme not in self.__ALLOWED_SCHEMES:
             raise ValueError(
@@ -673,29 +673,29 @@ class DbfsExt(files.DbfsAPI):
             return _VolumesPath(self._files_api, src.geturl())
         return _DbfsPath(self._dbfs_api, src.geturl())
 
-    def copy(self, src: str, dst: str, *, recursive=False, overwrite=False):
+    def copy(self, src: str, dst: str, *, recursive=False, overwrite=False):  # type: ignore[no-untyped-def]
         """Copy files between DBFS and local filesystems"""
-        src = self._path(src)
-        dst = self._path(dst)
-        if src.is_local and dst.is_local:
+        src = self._path(src)  # type: ignore[no-untyped-call]
+        dst = self._path(dst)  # type: ignore[no-untyped-call]
+        if src.is_local and dst.is_local:  # type: ignore[attr-defined]
             raise IOError("both destinations are on local FS")
-        if dst.exists() and dst.is_dir:
+        if dst.exists() and dst.is_dir:  # type: ignore[attr-defined]
             # if target is a folder, make file with the same name there
-            dst = dst.child(src.name)
-        if src.is_dir:
-            queue = [self._path(x.path) for x in src.list(recursive=recursive) if not x.is_dir]
+            dst = dst.child(src.name)  # type: ignore[attr-defined]
+        if src.is_dir:  # type: ignore[attr-defined]
+            queue = [self._path(x.path) for x in src.list(recursive=recursive) if not x.is_dir]  # type: ignore[attr-defined, no-untyped-call]
         else:
             queue = [src]
         for child in queue:
-            child_dst = dst.child(os.path.relpath(child.as_string, src.as_string))
+            child_dst = dst.child(os.path.relpath(child.as_string, src.as_string))  # type: ignore[attr-defined]
             with child.open(read=True) as reader:
                 with child_dst.open(write=True, overwrite=overwrite) as writer:
                     shutil.copyfileobj(reader, writer, length=_DbfsIO.MAX_CHUNK_SIZE)
 
-    def move_(self, src: str, dst: str, *, recursive=False, overwrite=False):
+    def move_(self, src: str, dst: str, *, recursive=False, overwrite=False):  # type: ignore[no-untyped-def]
         """Move files between local and DBFS systems"""
-        source = self._path(src)
-        target = self._path(dst)
+        source = self._path(src)  # type: ignore[no-untyped-call]
+        target = self._path(dst)  # type: ignore[no-untyped-call]
         if source.is_dbfs and target.is_dbfs:
             # Moves a file from one location to another location within DBFS.
             # this operation is recursive by default.
@@ -710,9 +710,9 @@ class DbfsExt(files.DbfsAPI):
         self.copy(src, dst, recursive=recursive, overwrite=overwrite)
         self.delete(src, recursive=recursive)
 
-    def delete(self, path: str, *, recursive=False):
+    def delete(self, path: str, *, recursive=False):  # type: ignore[no-untyped-def]
         """Delete file or directory on DBFS"""
-        p = self._path(path)
+        p = self._path(path)  # type: ignore[no-untyped-call]
         if p.is_dir and not recursive:
             raise IOError("deleting directories requires recursive flag")
         p.delete(recursive=recursive)
@@ -721,7 +721,7 @@ class DbfsExt(files.DbfsAPI):
 class FallbackToUploadUsingFilesApi(Exception):
     """Custom exception that signals to fallback to FilesAPI for upload"""
 
-    def __init__(self, buffer, message):
+    def __init__(self, buffer, message):  # type: ignore[no-untyped-def]
         super().__init__(message)
         self.buffer = buffer
 
@@ -729,7 +729,7 @@ class FallbackToUploadUsingFilesApi(Exception):
 class FallbackToDownloadUsingFilesApi(Exception):
     """Custom exception that signals to fallback to FilesAPI for download"""
 
-    def __init__(self, message):
+    def __init__(self, message):  # type: ignore[no-untyped-def]
         super().__init__(message)
 
 
@@ -773,9 +773,9 @@ class FilesExt(files.FilesAPI):
         parallelism: Optional[int] = None
         """The number of threads to use for parallel upload, if applicable."""
 
-    def __init__(self, api_client, config: Config):
-        super().__init__(api_client)
-        self._config = config.copy()
+    def __init__(self, api_client, config: Config):  # type: ignore[no-untyped-def]
+        super().__init__(api_client)  # type: ignore[no-untyped-call]
+        self._config = config.copy()  # type: ignore[no-untyped-call]
         self._multipart_upload_read_ahead_bytes = 1
 
     def download(
@@ -805,7 +805,7 @@ class FilesExt(files.FilesAPI):
         )
 
         wrapped_response = self._wrap_stream(file_path, initial_response)
-        initial_response.contents._response = wrapped_response
+        initial_response.contents._response = wrapped_response  # type: ignore[union-attr]
         return initial_response
 
     def download_to(
@@ -890,11 +890,11 @@ class FilesExt(files.FilesAPI):
                 if_unmodified_since_timestamp=last_modified,
             )
             wrapped_response = self._wrap_stream(remote_path, response, 0)
-            response.contents._response = wrapped_response
-            shutil.copyfileobj(response.contents, f)
+            response.contents._response = wrapped_response  # type: ignore[union-attr]
+            shutil.copyfileobj(response.contents, f)  # type: ignore[arg-type]
 
     def _do_parallel_download(
-        self, remote_path: str, destination: str, parallelism: int, download_chunk: Callable
+        self, remote_path: str, destination: str, parallelism: int, download_chunk: Callable  # type: ignore[type-arg]
     ) -> None:
 
         file_info = self.get_metadata(remote_path)
@@ -909,7 +909,7 @@ class FilesExt(files.FilesAPI):
 
         fd, temp_file = mkstemp()
         # We are preallocate the file size to the same as the remote file to avoid seeking beyond the file size.
-        os.truncate(temp_file, file_size)
+        os.truncate(temp_file, file_size)  # type: ignore[arg-type]
         os.close(fd)
         try:
             aborted = Event()
@@ -935,7 +935,7 @@ class FilesExt(files.FilesAPI):
                 # Start the threads to download parts of the file.
                 for i in range(part_count):
                     start = i * part_size
-                    end = min(start + part_size - 1, file_size - 1)
+                    end = min(start + part_size - 1, file_size - 1)  # type: ignore[operator]
                     futures.append(executor.submit(wrapped_download_chunk, start, end, last_modified, temp_file))
 
                 # Wait for all threads to complete and check for exceptions.
@@ -983,7 +983,7 @@ class FilesExt(files.FilesAPI):
                     retry_count += 1
                     continue
                 elif raw_resp.status_code == 403:
-                    raise FallbackToDownloadUsingFilesApi("Received 403 Forbidden from presigned URL")
+                    raise FallbackToDownloadUsingFilesApi("Received 403 Forbidden from presigned URL")  # type: ignore[no-untyped-call]
 
                 raw_resp.raise_for_status()
                 return BytesIO(raw_resp.content)
@@ -1005,19 +1005,19 @@ class FilesExt(files.FilesAPI):
         """
 
         def download_chunk(additional_headers: dict[str, str]) -> BinaryIO:
-            raw_response: dict = self._api.do(
+            raw_response: dict = self._api.do(  # type: ignore[type-arg]
                 method="GET",
                 path=f"/api/2.0/fs/files{remote_path}",
                 headers=additional_headers,
                 raw=True,
             )
-            return raw_response["contents"]
+            return raw_response["contents"]  # type: ignore[no-any-return]
 
         self._do_parallel_download(remote_path, destination, parallelism, download_chunk)
 
     def _get_optimized_performance_parameters_for_upload(
         self, content_length: Optional[int], part_size_overwrite: Optional[int]
-    ) -> (int, int):
+    ) -> (int, int):  # type: ignore[syntax]
         """Get optimized part size and batch size for upload based on content length and provided part size.
 
         Returns tuple of (part_size, batch_size).
@@ -1228,19 +1228,19 @@ class FilesExt(files.FilesAPI):
     def _single_thread_single_shot_upload(self, ctx: _UploadContext, contents: BinaryIO) -> None:
         """Upload a file with a known size."""
         _LOG.debug(f"Using single-shot upload for input stream")
-        return super().upload(file_path=ctx.target_path, contents=contents, overwrite=ctx.overwrite)
+        return super().upload(file_path=ctx.target_path, contents=contents, overwrite=ctx.overwrite)  # type: ignore[no-any-return]
 
-    def _initiate_multipart_upload(self, ctx: _UploadContext) -> dict:
+    def _initiate_multipart_upload(self, ctx: _UploadContext) -> dict:  # type: ignore[type-arg]
         """Initiate a multipart upload and return the response."""
         query = {"action": "initiate-upload"}
         if ctx.overwrite is not None:
-            query["overwrite"] = ctx.overwrite
+            query["overwrite"] = ctx.overwrite  # type: ignore[assignment]
 
         # Method _api.do() takes care of retrying and will raise an exception in case of failure.
         initiate_upload_response = self._api.do(
             "POST", f"/api/2.0/fs/files{_escape_multi_segment_path_parameter(ctx.target_path)}", query=query
         )
-        return initiate_upload_response
+        return initiate_upload_response  # type: ignore[no-any-return]
 
     def _single_thread_multipart_upload(self, ctx: _UploadContext, contents: BinaryIO) -> None:
 
@@ -1366,8 +1366,8 @@ class FilesExt(files.FilesAPI):
 
                 _LOG.info(f"Falling back to single-shot upload with Files API: {e}")
                 # Concatenate the buffered part and the rest of the stream.
-                with open(ctx.source_file_path, "rb") as f:
-                    return self._single_thread_single_shot_upload(ctx, f)
+                with open(ctx.source_file_path, "rb") as f:  # type: ignore[arg-type]
+                    return self._single_thread_single_shot_upload(ctx, f)  # type: ignore[arg-type]
 
             except Exception as e:
                 _LOG.info(f"Aborting multipart upload on error: {e}")
@@ -1381,8 +1381,8 @@ class FilesExt(files.FilesAPI):
 
         elif initiate_upload_response.get("resumable_upload"):
             _LOG.warning("GCP does not support parallel resumable uploads, falling back to single-threaded upload")
-            with open(ctx.source_file_path, "rb") as f:
-                return self._upload_single_thread_with_known_size(ctx, f)
+            with open(ctx.source_file_path, "rb") as f:  # type: ignore[arg-type]
+                return self._upload_single_thread_with_known_size(ctx, f)  # type: ignore[arg-type]
         else:
             raise ValueError(f"Unexpected server response: {initiate_upload_response}")
 
@@ -1400,19 +1400,19 @@ class FilesExt(files.FilesAPI):
         session_token: str,
     ) -> None:
         # Calculate the number of parts.
-        file_size = os.path.getsize(ctx.source_file_path)
+        file_size = os.path.getsize(ctx.source_file_path)  # type: ignore[arg-type]
         part_size = ctx.part_size
         num_parts = (file_size + part_size - 1) // part_size
         _LOG.debug(f"Uploading file of size {file_size} bytes in {num_parts} parts using {ctx.parallelism} threads")
 
         # Create queues and worker threads.
-        task_queue = Queue()
-        etags_result_queue = Queue()
-        exception_queue = Queue()
+        task_queue = Queue()  # type: ignore[var-annotated]
+        etags_result_queue = Queue()  # type: ignore[var-annotated]
+        exception_queue = Queue()  # type: ignore[var-annotated]
         aborted = Event()
         workers = [
             Thread(target=self._upload_file_consumer, args=(task_queue, etags_result_queue, exception_queue, aborted))
-            for _ in range(ctx.parallelism)
+            for _ in range(ctx.parallelism)  # type: ignore[arg-type]
         ]
         _LOG.debug(f"Starting {len(workers)} worker threads for parallel upload")
 
@@ -1437,12 +1437,12 @@ class FilesExt(files.FilesAPI):
             raise first_exception
 
         # Collect results from the etags queue.
-        etags: dict = {}
+        etags: dict = {}  # type: ignore[type-arg]
         while not etags_result_queue.empty():
             part_number, etag = etags_result_queue.get()
             etags[part_number] = etag
 
-        self._complete_multipart_upload(ctx, etags, session_token)
+        self._complete_multipart_upload(ctx, etags, session_token)  # type: ignore[no-untyped-call]
 
     def _parallel_multipart_upload_from_stream(
         self,
@@ -1453,15 +1453,15 @@ class FilesExt(files.FilesAPI):
     ) -> None:
 
         task_queue = Queue(maxsize=ctx.parallelism)  # Limit queue size to control memory usage
-        etags_result_queue = Queue()
-        exception_queue = Queue()
+        etags_result_queue = Queue()  # type: ignore[var-annotated]
+        exception_queue = Queue()  # type: ignore[var-annotated]
         all_produced = Event()
         aborted = Event()
 
         # Do the first part read ahead
         pre_read_buffer = content.read(ctx.part_size)
         if not pre_read_buffer:
-            raise FallbackToUploadUsingFilesApi(
+            raise FallbackToUploadUsingFilesApi(  # type: ignore[no-untyped-call]
                 b"", "Falling back to single-shot upload with Files API due to empty input stream"
             )
         try:
@@ -1470,12 +1470,12 @@ class FilesExt(files.FilesAPI):
             )
             etags_result_queue.put((1, etag))
         except FallbackToUploadUsingFilesApi as e:
-            raise FallbackToUploadUsingFilesApi(
+            raise FallbackToUploadUsingFilesApi(  # type: ignore[no-untyped-call]
                 pre_read_buffer, "Falling back to single-shot upload with Files API"
             ) from e
 
         if len(pre_read_buffer) < ctx.part_size:
-            self._complete_multipart_upload(ctx, {1: etag}, session_token)
+            self._complete_multipart_upload(ctx, {1: etag}, session_token)  # type: ignore[no-untyped-call]
             return
 
         def producer() -> None:
@@ -1502,7 +1502,7 @@ class FilesExt(files.FilesAPI):
                 target=self._upload_stream_consumer,
                 args=(task_queue, etags_result_queue, exception_queue, all_produced, aborted),
             )
-            for _ in range(ctx.parallelism)
+            for _ in range(ctx.parallelism)  # type: ignore[arg-type]
         ]
         _LOG.debug(f"Starting {len(consumers)} worker threads for parallel upload")
         # Start producer and consumer threads
@@ -1525,17 +1525,17 @@ class FilesExt(files.FilesAPI):
             raise first_exception
 
         # Collect results from the etags queue
-        etags: dict = {}
+        etags: dict = {}  # type: ignore[type-arg]
         while not etags_result_queue.empty():
             part_number, etag = etags_result_queue.get()
             etags[part_number] = etag
 
-        self._complete_multipart_upload(ctx, etags, session_token)
+        self._complete_multipart_upload(ctx, etags, session_token)  # type: ignore[no-untyped-call]
 
-    def _complete_multipart_upload(self, ctx, etags, session_token):
+    def _complete_multipart_upload(self, ctx, etags, session_token):  # type: ignore[no-untyped-def]
         query = {"action": "complete-upload", "upload_type": "multipart", "session_token": session_token}
         headers = {"Content-Type": "application/json"}
-        body: dict = {}
+        body: dict = {}  # type: ignore[type-arg]
         parts = []
         for part_number, etag in sorted(etags.items()):
             part = {"part_number": part_number, "etag": etag}
@@ -1565,7 +1565,7 @@ class FilesExt(files.FilesAPI):
                 break
 
             try:
-                with open(part.ctx.source_file_path, "rb") as f:
+                with open(part.ctx.source_file_path, "rb") as f:  # type: ignore[arg-type]
                     f.seek(part.part_offset, os.SEEK_SET)
                     part_content = BytesIO(f.read(part.part_size))
                     etag = self._do_upload_one_part(
@@ -1632,7 +1632,7 @@ class FilesExt(files.FilesAPI):
 
         # Try to upload the part, retrying if the upload URL expires.
         while True:
-            body: dict = {
+            body: dict = {  # type: ignore[type-arg]
                 "path": ctx.target_path,
                 "session_token": session_token,
                 "start_part_number": part_index,
@@ -1650,12 +1650,12 @@ class FilesExt(files.FilesAPI):
                 )
             except PermissionDenied as e:
                 if self._is_presigned_urls_disabled_error(e):
-                    raise FallbackToUploadUsingFilesApi(None, "Presigned URLs are disabled")
+                    raise FallbackToUploadUsingFilesApi(None, "Presigned URLs are disabled")  # type: ignore[no-untyped-call]
                 else:
                     raise e from None
             except InternalError as e:
                 if self._is_presigned_urls_network_zone_error(e):
-                    raise FallbackToUploadUsingFilesApi(
+                    raise FallbackToUploadUsingFilesApi(  # type: ignore[no-untyped-call]
                         None, "Presigned URLs are not supported in the current network zone"
                     )
                 else:
@@ -1669,7 +1669,7 @@ class FilesExt(files.FilesAPI):
             required_headers = upload_part_url.get("headers", [])
             assert part_index == upload_part_url["part_number"]
 
-            headers: dict = {"Content-Type": "application/octet-stream"}
+            headers: dict = {"Content-Type": "application/octet-stream"}  # type: ignore[no-redef, type-arg]
             for h in required_headers:
                 headers[h["name"]] = h["value"]
 
@@ -1700,9 +1700,9 @@ class FilesExt(files.FilesAPI):
                 else:
                     raise ValueError(f"Unsuccessful chunk upload: upload URL expired after {retry_count} retries")
             elif upload_response.status_code == 403:
-                raise FallbackToUploadUsingFilesApi(None, f"Direct upload forbidden: {upload_response.content}")
+                raise FallbackToUploadUsingFilesApi(None, f"Direct upload forbidden: {upload_response.content}")  # type: ignore[no-untyped-call, str-bytes-safe]
             else:
-                message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"
+                message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"  # type: ignore[str-bytes-safe]
                 _LOG.warning(message)
                 mapped_error = _error_mapper(upload_response, {})
                 raise mapped_error or ValueError(message)
@@ -1720,7 +1720,7 @@ class FilesExt(files.FilesAPI):
         https://docs.aws.amazon.com/AmazonS3/latest/userguide/mpuoverview.html
         """
         current_part_number = 1
-        etags: dict = {}
+        etags: dict = {}  # type: ignore[type-arg]
 
         # Why are we buffering the current chunk?
         # AWS and Azure don't support traditional "Transfer-encoding: chunked", so we must
@@ -1749,7 +1749,7 @@ class FilesExt(files.FilesAPI):
                 f"Multipart upload: requesting next {ctx.batch_size} upload URLs starting from part {current_part_number}"
             )
 
-            body: dict = {
+            body: dict = {  # type: ignore[type-arg]
                 "path": ctx.target_path,
                 "session_token": session_token,
                 "start_part_number": current_part_number,
@@ -1767,12 +1767,12 @@ class FilesExt(files.FilesAPI):
                 )
             except PermissionDenied as e:
                 if chunk_offset == 0 and self._is_presigned_urls_disabled_error(e):
-                    raise FallbackToUploadUsingFilesApi(buffer, "Presigned URLs are disabled")
+                    raise FallbackToUploadUsingFilesApi(buffer, "Presigned URLs are disabled")  # type: ignore[no-untyped-call]
                 else:
                     raise e from None
             except InternalError as e:
                 if chunk_offset == 0 and self._is_presigned_urls_network_zone_error(e):
-                    raise FallbackToUploadUsingFilesApi(
+                    raise FallbackToUploadUsingFilesApi(  # type: ignore[no-untyped-call]
                         buffer, "Presigned URLs are not supported in the current network zone"
                     )
                 else:
@@ -1793,7 +1793,7 @@ class FilesExt(files.FilesAPI):
                 required_headers = upload_part_url.get("headers", [])
                 assert current_part_number == upload_part_url["part_number"]
 
-                headers: dict = {"Content-Type": "application/octet-stream"}
+                headers: dict = {"Content-Type": "application/octet-stream"}  # type: ignore[no-redef, type-arg]
                 for h in required_headers:
                     headers[h["name"]] = h["value"]
 
@@ -1804,10 +1804,10 @@ class FilesExt(files.FilesAPI):
 
                 chunk = BytesIO(buffer[:actual_chunk_length])
 
-                def rewind():
+                def rewind():  # type: ignore[no-untyped-def]
                     chunk.seek(0, os.SEEK_SET)
 
-                def perform():
+                def perform():  # type: ignore[no-untyped-def]
                     return cloud_provider_session.request(
                         "PUT",
                         url,
@@ -1846,10 +1846,10 @@ class FilesExt(files.FilesAPI):
                     # This might happen due to Azure firewall enabled for the customer bucket.
                     # Let's fallback to using Files API which might be allowlisted to upload, passing
                     # currently buffered (but not yet uploaded) part of the stream.
-                    raise FallbackToUploadUsingFilesApi(buffer, f"Direct upload forbidden: {upload_response.content}")
+                    raise FallbackToUploadUsingFilesApi(buffer, f"Direct upload forbidden: {upload_response.content}")  # type: ignore[no-untyped-call, str-bytes-safe]
 
                 else:
-                    message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"
+                    message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"  # type: ignore[str-bytes-safe]
                     _LOG.warning(message)
                     mapped_error = _error_mapper(upload_response, {})
                     raise mapped_error or ValueError(message)
@@ -1860,10 +1860,10 @@ class FilesExt(files.FilesAPI):
 
         query = {"action": "complete-upload", "upload_type": "multipart", "session_token": session_token}
         headers = {"Content-Type": "application/json"}
-        body: dict = {}
+        body: dict = {}  # type: ignore[no-redef, type-arg]
 
         parts = []
-        for etag in sorted(etags.items()):
+        for etag in sorted(etags.items()):  # type: ignore[assignment]
             part = {"part_number": etag[0], "etag": etag[1]}
             parts.append(part)
 
@@ -1913,7 +1913,7 @@ class FilesExt(files.FilesAPI):
             if code.text == "AuthenticationFailed":
                 # Azure
                 details = xml_root.find("AuthenticationErrorDetail")
-                if details is not None and "Signature not valid in the specified time frame" in details.text:
+                if details is not None and "Signature not valid in the specified time frame" in details.text:  # type: ignore[operator]
                     return True
 
             if code.text == "AccessDenied":
@@ -1976,7 +1976,7 @@ class FilesExt(files.FilesAPI):
         # On the contrary, in multipart upload we can decide to complete upload *after*
         # last chunk has been sent.
 
-        body: dict = {"path": ctx.target_path, "session_token": session_token}
+        body: dict = {"path": ctx.target_path, "session_token": session_token}  # type: ignore[type-arg]
 
         headers = {"Content-Type": "application/json"}
 
@@ -1987,12 +1987,12 @@ class FilesExt(files.FilesAPI):
             )
         except PermissionDenied as e:
             if self._is_presigned_urls_disabled_error(e):
-                raise FallbackToUploadUsingFilesApi(pre_read_buffer, "Presigned URLs are disabled")
+                raise FallbackToUploadUsingFilesApi(pre_read_buffer, "Presigned URLs are disabled")  # type: ignore[no-untyped-call]
             else:
                 raise e from None
         except InternalError as e:
             if self._is_presigned_urls_network_zone_error(e):
-                raise FallbackToUploadUsingFilesApi(
+                raise FallbackToUploadUsingFilesApi(  # type: ignore[no-untyped-call]
                     pre_read_buffer, "Presigned URLs are not supported in the current network zone"
                 )
             else:
@@ -2037,9 +2037,9 @@ class FilesExt(files.FilesAPI):
                 else:
                     # More chunks expected, let's upload current chunk (excluding read-ahead block).
                     actual_chunk_length = ctx.part_size
-                    file_size = "*"
+                    file_size = "*"  # type: ignore[assignment]
 
-                headers: dict = {"Content-Type": "application/octet-stream"}
+                headers: dict = {"Content-Type": "application/octet-stream"}  # type: ignore[no-redef, type-arg]
                 for h in required_headers:
                     headers[h["name"]] = h["value"]
 
@@ -2049,7 +2049,7 @@ class FilesExt(files.FilesAPI):
                 headers["Content-Range"] = content_range_header
 
                 def retrieve_upload_status() -> Optional[requests.Response]:
-                    def perform():
+                    def perform():  # type: ignore[no-untyped-def]
                         return cloud_provider_session.request(
                             "PUT",
                             resumable_upload_url,
@@ -2094,7 +2094,7 @@ class FilesExt(files.FilesAPI):
                         and retry_count < self._config.files_ext_multipart_upload_max_retries
                     ):
                         retry_count += 1
-                        upload_response = retrieve_upload_status()
+                        upload_response = retrieve_upload_status()  # type: ignore[assignment]
                         if not upload_response:
                             # rethrow original exception
                             raise e from None
@@ -2103,7 +2103,7 @@ class FilesExt(files.FilesAPI):
                         raise e from None
 
                 if upload_response.status_code in (200, 201):
-                    if file_size == "*":
+                    if file_size == "*":  # type: ignore[comparison-overlap]
                         raise ValueError(
                             f"Received unexpected status {upload_response.status_code} before reaching end of stream"
                         )
@@ -2144,7 +2144,7 @@ class FilesExt(files.FilesAPI):
                     raise AlreadyExists("The file being created already exists.")
 
                 else:
-                    message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"
+                    message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"  # type: ignore[str-bytes-safe]
                     _LOG.warning(message)
                     mapped_error = _error_mapper(upload_response, {})
                     raise mapped_error or ValueError(message)
@@ -2198,7 +2198,7 @@ class FilesExt(files.FilesAPI):
         self, ctx: _UploadContext, session_token: str, cloud_provider_session: requests.Session
     ) -> None:
         """Aborts ongoing multipart upload session to clean up incomplete file."""
-        body: dict = {
+        body: dict = {  # type: ignore[type-arg]
             "path": ctx.target_path,
             "session_token": session_token,
             "expire_time": self._get_upload_url_expire_time(),
@@ -2213,7 +2213,7 @@ class FilesExt(files.FilesAPI):
         abort_url = abort_upload_url_node["url"]
         required_headers = abort_upload_url_node.get("headers", [])
 
-        headers: dict = {"Content-Type": "application/octet-stream"}
+        headers: dict = {"Content-Type": "application/octet-stream"}  # type: ignore[no-redef, type-arg]
         for h in required_headers:
             headers[h["name"]] = h["value"]
 
@@ -2232,10 +2232,10 @@ class FilesExt(files.FilesAPI):
             raise ValueError(abort_response)
 
     def _abort_resumable_upload(
-        self, resumable_upload_url: str, required_headers: list, cloud_provider_session: requests.Session
+        self, resumable_upload_url: str, required_headers: list, cloud_provider_session: requests.Session  # type: ignore[type-arg]
     ) -> None:
         """Aborts ongoing resumable upload session to clean up incomplete file."""
-        headers: dict = {}
+        headers: dict = {}  # type: ignore[type-arg]
         for h in required_headers:
             headers[h["name"]] = h["value"]
 
@@ -2267,7 +2267,7 @@ class FilesExt(files.FilesAPI):
         return session
 
     def _retry_cloud_idempotent_operation(
-        self, operation: Callable[[], requests.Response], before_retry: Optional[Callable] = None
+        self, operation: Callable[[], requests.Response], before_retry: Optional[Callable] = None  # type: ignore[type-arg]
     ) -> requests.Response:
         """Perform given idempotent operation with necessary retries for requests to non Databricks APIs.
         For cloud APIs, we will retry on network errors and on server response codes.
@@ -2294,7 +2294,7 @@ class FilesExt(files.FilesAPI):
         # following _BaseClient timeout
         retry_timeout_seconds = self._config.retry_timeout_seconds or 300
 
-        return retried(
+        return retried(  # type: ignore[no-any-return]
             timeout=timedelta(seconds=retry_timeout_seconds),
             # also retry on network errors (connection error, connection timeout)
             # where we believe request didn't reach the server
@@ -2378,12 +2378,12 @@ class FilesExt(files.FilesAPI):
             return CreateDownloadUrlResponse.from_dict(raw_response)
         except PermissionDenied as e:
             if self._is_presigned_urls_disabled_error(e):
-                raise FallbackToDownloadUsingFilesApi(f"Presigned URLs are disabled")
+                raise FallbackToDownloadUsingFilesApi(f"Presigned URLs are disabled")  # type: ignore[no-untyped-call]
             else:
                 raise e from None
         except InternalError as e:
             if self._is_presigned_urls_network_zone_error(e):
-                raise FallbackToDownloadUsingFilesApi("Presigned URLs are not supported in the current network zone")
+                raise FallbackToDownloadUsingFilesApi("Presigned URLs are not supported in the current network zone")  # type: ignore[no-untyped-call]
             else:
                 raise e from None
 
@@ -2417,27 +2417,27 @@ class FilesExt(files.FilesAPI):
                 stream=True,
             )
 
-        csp_response: _RawResponse = self._retry_cloud_idempotent_operation(perform)
+        csp_response: _RawResponse = self._retry_cloud_idempotent_operation(perform)  # type: ignore[assignment]
 
         # Mapping the error if the response is not successful.
-        if csp_response.status_code in (200, 201, 206):
+        if csp_response.status_code in (200, 201, 206):  # type: ignore[attr-defined]
             resp = DownloadResponse(
-                content_length=int(csp_response.headers.get("content-length")),
-                content_type=csp_response.headers.get("content-type"),
-                last_modified=csp_response.headers.get("last-modified"),
+                content_length=int(csp_response.headers.get("content-length")),  # type: ignore[attr-defined]
+                content_type=csp_response.headers.get("content-type"),  # type: ignore[attr-defined]
+                last_modified=csp_response.headers.get("last-modified"),  # type: ignore[attr-defined]
                 contents=_StreamingResponse(csp_response, self._config.files_ext_client_download_streaming_chunk_size),
             )
             return resp
-        elif csp_response.status_code == 403:
+        elif csp_response.status_code == 403:  # type: ignore[attr-defined]
             # We got 403 failure when downloading the file. This might happen due to Azure firewall enabled for the customer bucket.
             # Let's fallback to using Files API which might be allowlisted to download.
-            raise FallbackToDownloadUsingFilesApi(f"Direct download forbidden: {csp_response.content}")
+            raise FallbackToDownloadUsingFilesApi(f"Direct download forbidden: {csp_response.content}")  # type: ignore[attr-defined, no-untyped-call]
         else:
             message = (
-                f"Unsuccessful download. Response status: {csp_response.status_code}, body: {csp_response.content}"
+                f"Unsuccessful download. Response status: {csp_response.status_code}, body: {csp_response.content}"  # type: ignore[attr-defined]
             )
             _LOG.warning(message)
-            mapped_error = _error_mapper(csp_response, {})
+            mapped_error = _error_mapper(csp_response, {})  # type: ignore[arg-type]
             raise mapped_error or ValueError(message)
 
     def _init_download_response_mode_csp_with_fallback(
@@ -2469,7 +2469,7 @@ class FilesExt(files.FilesAPI):
         return _ResilientResponse(
             self,
             file_path,
-            download_response.last_modified,
+            download_response.last_modified,  # type: ignore[arg-type]
             offset=start_byte_offset,
             underlying_response=underlying_response,
         )
@@ -2505,7 +2505,7 @@ class _ResilientResponse(_RawResponse):
         self.iterator.close()
 
 
-class _ResilientIterator(Iterator):
+class _ResilientIterator(Iterator):  # type: ignore[type-arg]
     # This class tracks current offset (returned to the client code)
     # and recovers from failures by requesting download from the current offset.
 
@@ -2513,7 +2513,7 @@ class _ResilientIterator(Iterator):
     def _extract_raw_response(
         download_response: DownloadResponse,
     ) -> _RawResponse:
-        streaming_response: _StreamingResponse = download_response.contents
+        streaming_response: _StreamingResponse = download_response.contents  # type: ignore[assignment]
         return streaming_response._response
 
     def __init__(
@@ -2560,7 +2560,7 @@ class _ResilientIterator(Iterator):
         self._recovers_without_progressing_count += 1
 
         try:
-            self._underlying_iterator.close()
+            self._underlying_iterator.close()  # type: ignore[attr-defined]
 
             _LOG.debug(f"Trying to recover from offset {self._offset}")
 
@@ -2596,5 +2596,5 @@ class _ResilientIterator(Iterator):
                     raise
 
     def close(self) -> None:
-        self._underlying_iterator.close()
+        self._underlying_iterator.close()  # type: ignore[attr-defined]
         self._closed = True

@@ -1,23 +1,23 @@
 import logging
 from datetime import timedelta
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.compute import EventType
 
 
-def test_smallest_node_type(w):
+def test_smallest_node_type(w):  # type: ignore[no-untyped-def]
     node_type_id = w.clusters.select_node_type(local_disk=True)
     assert node_type_id is not None
 
 
-def test_latest_runtime(w):
+def test_latest_runtime(w):  # type: ignore[no-untyped-def]
     spark_version = w.clusters.select_spark_version(long_term_support=True)
     assert spark_version is not None
 
 
-def test_cluster_events(w, env_or_skip):
+def test_cluster_events(w, env_or_skip):  # type: ignore[no-untyped-def]
     cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
     count = 0
     for e in w.clusters.events(cluster_id, event_types=[EventType.STARTING, EventType.TERMINATING]):
@@ -25,12 +25,12 @@ def test_cluster_events(w, env_or_skip):
     assert count > 0
 
 
-def test_ensure_cluster_is_running(w, env_or_skip):
+def test_ensure_cluster_is_running(w, env_or_skip):  # type: ignore[no-untyped-def]
     cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
     w.clusters.ensure_cluster_is_running(cluster_id)
 
 
-def test_create_cluster(w, env_or_skip, random):
+def test_create_cluster(w, env_or_skip, random):  # type: ignore[no-untyped-def]
     info = w.clusters.create(
         cluster_name=f"databricks-sdk-py-{random(8)}",
         spark_version=w.clusters.select_spark_version(long_term_support=True),
@@ -41,7 +41,7 @@ def test_create_cluster(w, env_or_skip, random):
     logging.info(f"Created: {info}")
 
 
-def test_error_unmarshall(w, random):
+def test_error_unmarshall(w, random):  # type: ignore[no-untyped-def]
     with pytest.raises(DatabricksError) as exc_info:
         w.clusters.get("123__non_existing__")
     err = exc_info.value

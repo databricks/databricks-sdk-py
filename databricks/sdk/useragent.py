@@ -33,17 +33,17 @@ semver_pattern = re.compile(
 )
 
 
-def _match_alphanum(value):
+def _match_alphanum(value):  # type: ignore[no-untyped-def]
     if not alphanum_pattern.match(value):
         raise ValueError(f"Invalid alphanumeric value: {value}")
 
 
-def _match_semver(value):
+def _match_semver(value):  # type: ignore[no-untyped-def]
     if not semver_pattern.match(value):
         raise ValueError(f"Invalid semantic version: {value}")
 
 
-def _match_alphanum_or_semver(value):
+def _match_alphanum_or_semver(value):  # type: ignore[no-untyped-def]
     if not alphanum_pattern.match(value) and not semver_pattern.match(value):
         raise ValueError(f"Invalid value: {value}")
 
@@ -53,17 +53,17 @@ def product() -> Tuple[str, str]:
     return _product_name, _product_version
 
 
-def with_product(name: str, version: str):
+def with_product(name: str, version: str):  # type: ignore[no-untyped-def]
     """Change the product name and version that will be submitted to Databricks on every request."""
     global _product_name, _product_version
-    _match_alphanum(name)
-    _match_semver(version)
+    _match_alphanum(name)  # type: ignore[no-untyped-call]
+    _match_semver(version)  # type: ignore[no-untyped-call]
     logger.debug(f"Changing product from {_product_name}/{_product_version} to {name}/{version}")
     _product_name = name
     _product_version = version
 
 
-def _reset_product():
+def _reset_product():  # type: ignore[no-untyped-def]
     """[Internal API] Reset product name and version to the default values.
 
     Used for testing purposes only."""
@@ -72,7 +72,7 @@ def _reset_product():
     _product_version = "0.0.0"
 
 
-def with_extra(key: str, value: str):
+def with_extra(key: str, value: str):  # type: ignore[no-untyped-def]
     """Add extra metadata to all requests submitted to Databricks.
 
     User-specified extra metadata can be inserted into request headers to provide additional context to Databricks
@@ -80,8 +80,8 @@ def with_extra(key: str, value: str):
     usage from tools that are built on top of the SDK.
     """
     global _extra
-    _match_alphanum(key)
-    _match_alphanum_or_semver(value)
+    _match_alphanum(key)  # type: ignore[no-untyped-call]
+    _match_alphanum_or_semver(value)  # type: ignore[no-untyped-call]
     logger.debug(f"Adding {key}/{value} to User-Agent")
     _extra.append((key, value))
 
@@ -91,7 +91,7 @@ def extra() -> List[Tuple[str, str]]:
     return copy.deepcopy(_extra)
 
 
-def _reset_extra(extra: List[Tuple[str, str]]):
+def _reset_extra(extra: List[Tuple[str, str]]):  # type: ignore[no-untyped-def]
     """[INTERNAL API] Reset the extra metadata to a new list.
 
     Prefer using with_user_agent_extra instead of this method to avoid overwriting other information included in the
@@ -100,7 +100,7 @@ def _reset_extra(extra: List[Tuple[str, str]]):
     _extra = extra
 
 
-def with_partner(partner: str):
+def with_partner(partner: str):  # type: ignore[no-untyped-def]
     """Adds the given partner to the metadata submitted to Databricks on every request."""
     with_extra("partner", partner)
 

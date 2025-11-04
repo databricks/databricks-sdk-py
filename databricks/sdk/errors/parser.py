@@ -3,7 +3,7 @@ from typing import List, Optional
 
 import requests
 
-from ..logger import RoundTrip
+from ..logger import RoundTrip  # type: ignore[attr-defined]
 from .base import DatabricksError
 from .customizer import _ErrorCustomizer, _RetryAfterCustomizer
 from .deserializer import (_EmptyDeserializer, _ErrorDeserializer,

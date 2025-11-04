@@ -4,7 +4,7 @@ from http.server import BaseHTTPRequestHandler
 from typing import Callable, Iterator, List, Optional, Tuple, Type
 from unittest.mock import Mock
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 from requests import PreparedRequest, Response, Timeout
 
 from databricks.sdk import errors, useragent
@@ -24,40 +24,40 @@ class DummyResponse(_RawResponse):
         super().__init__()
         self._content = iter(content)
 
-    def iter_content(self, chunk_size: int = 1, decode_unicode=False) -> Iterator[bytes]:
+    def iter_content(self, chunk_size: int = 1, decode_unicode=False) -> Iterator[bytes]:  # type: ignore[no-untyped-def]
         return self._content
 
-    def close(self):
+    def close(self):  # type: ignore[no-untyped-def]
         self._closed = True
 
-    def isClosed(self):
+    def isClosed(self):  # type: ignore[no-untyped-def]
         return self._closed
 
 
-def test_streaming_response_read(config):
+def test_streaming_response_read(config):  # type: ignore[no-untyped-def]
     content = b"some initial binary data: \x00\x01"
     response = _StreamingResponse(DummyResponse([content]))
     assert response.read() == content
 
 
-def test_streaming_response_read_partial(config):
+def test_streaming_response_read_partial(config):  # type: ignore[no-untyped-def]
     content = b"some initial binary data: \x00\x01"
     response = _StreamingResponse(DummyResponse([content]))
     assert response.read(8) == b"some ini"
 
 
-def test_streaming_response_read_full(config):
+def test_streaming_response_read_full(config):  # type: ignore[no-untyped-def]
     content = b"some initial binary data: \x00\x01"
     response = _StreamingResponse(DummyResponse([content, content]))
     assert response.read() == content + content
 
 
-def test_streaming_response_read_closes(config):
+def test_streaming_response_read_closes(config):  # type: ignore[no-untyped-def]
     content = b"some initial binary data: \x00\x01"
     dummy_response = DummyResponse([content])
     with _StreamingResponse(dummy_response) as response:
         assert response.read() == content
-    assert dummy_response.isClosed()
+    assert dummy_response.isClosed()  # type: ignore[no-untyped-call]
 
 
 @pytest.mark.parametrize(
@@ -177,7 +177,7 @@ def test_streaming_response_read_closes(config):
         ),
     ],
 )
-def test_error(requests_mock, status_code, headers, body, expected_error):
+def test_error(requests_mock, status_code, headers, body, expected_error):  # type: ignore[no-untyped-def]
     client = _BaseClient(clock=FakeClock())
     requests_mock.get("/test", json=body, status_code=status_code, headers=headers)
     with pytest.raises(DatabricksError) as raised:
@@ -199,7 +199,7 @@ def test_error(requests_mock, status_code, headers, body, expected_error):
         assert expected.metadata == actual.metadata
 
 
-def test_api_client_do_custom_headers(requests_mock):
+def test_api_client_do_custom_headers(requests_mock):  # type: ignore[no-untyped-def]
     client = _BaseClient()
     requests_mock.get(
         "/test",
@@ -214,10 +214,10 @@ def test_api_client_do_custom_headers(requests_mock):
     "status_code,include_retry_after",
     ((429, False), (429, True), (503, False), (503, True)),
 )
-def test_http_retry_after(status_code, include_retry_after):
-    requests = []
+def test_http_retry_after(status_code, include_retry_after):  # type: ignore[no-untyped-def]
+    requests = []  # type: ignore[var-annotated]
 
-    def inner(h: BaseHTTPRequestHandler):
+    def inner(h: BaseHTTPRequestHandler):  # type: ignore[no-untyped-def]
         if len(requests) == 0:
             h.send_response(status_code)
             if include_retry_after:
@@ -239,10 +239,10 @@ def test_http_retry_after(status_code, include_retry_after):
     assert len(requests) == 2
 
 
-def test_http_retry_after_wrong_format():
-    requests = []
+def test_http_retry_after_wrong_format():  # type: ignore[no-untyped-def]
+    requests = []  # type: ignore[var-annotated]
 
-    def inner(h: BaseHTTPRequestHandler):
+    def inner(h: BaseHTTPRequestHandler):  # type: ignore[no-untyped-def]
         if len(requests) == 0:
             h.send_response(429)
             h.send_header("Retry-After", "1.58")
@@ -262,10 +262,10 @@ def test_http_retry_after_wrong_format():
     assert len(requests) == 2
 
 
-def test_http_retried_exceed_limit():
+def test_http_retried_exceed_limit():  # type: ignore[no-untyped-def]
     requests = []
 
-    def inner(h: BaseHTTPRequestHandler):
+    def inner(h: BaseHTTPRequestHandler):  # type: ignore[no-untyped-def]
         h.send_response(429)
         h.send_header("Retry-After", "1")
         h.end_headers()
@@ -279,10 +279,10 @@ def test_http_retried_exceed_limit():
     assert len(requests) == 1
 
 
-def test_http_retried_on_match():
-    requests = []
+def test_http_retried_on_match():  # type: ignore[no-untyped-def]
+    requests = []  # type: ignore[var-annotated]
 
-    def inner(h: BaseHTTPRequestHandler):
+    def inner(h: BaseHTTPRequestHandler):  # type: ignore[no-untyped-def]
         if len(requests) == 0:
             h.send_response(400)
             h.end_headers()
@@ -301,10 +301,10 @@ def test_http_retried_on_match():
     assert len(requests) == 2
 
 
-def test_http_not_retried_on_normal_errors():
-    requests = []
+def test_http_not_retried_on_normal_errors():  # type: ignore[no-untyped-def]
+    requests = []  # type: ignore[var-annotated]
 
-    def inner(h: BaseHTTPRequestHandler):
+    def inner(h: BaseHTTPRequestHandler):  # type: ignore[no-untyped-def]
         if len(requests) == 0:
             h.send_response(400)
             h.end_headers()
@@ -319,10 +319,10 @@ def test_http_not_retried_on_normal_errors():
     assert len(requests) == 1
 
 
-def test_http_retried_on_connection_error():
-    requests = []
+def test_http_retried_on_connection_error():  # type: ignore[no-untyped-def]
+    requests = []  # type: ignore[var-annotated]
 
-    def inner(h: BaseHTTPRequestHandler):
+    def inner(h: BaseHTTPRequestHandler):  # type: ignore[no-untyped-def]
         if len(requests) > 0:
             h.send_response(200)
             h.end_headers()
@@ -345,14 +345,14 @@ def test_http_retried_on_connection_error():
         (200, 1, 100),  # 100 / 200 bytes per chunk = 1 chunk
     ],
 )
-def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
+def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):  # type: ignore[no-untyped-def]
     rng = random.Random(42)
     test_data = bytes(rng.getrandbits(8) for _ in range(data_size))
 
     content_chunks = []
     mock_response = Mock(spec=_RawResponse)
 
-    def mock_iter_content(chunk_size: int, decode_unicode: bool):
+    def mock_iter_content(chunk_size: int, decode_unicode: bool):  # type: ignore[no-untyped-def]
         # Simulate how requests would chunk the data.
         for i in range(0, len(test_data), chunk_size):
             chunk = test_data[i : i + chunk_size]
@@ -376,7 +376,7 @@ def test_streaming_response_chunk_size(chunk_size, expected_chunks, data_size):
     assert all(len(c) <= chunk_size for c in content_chunks)  # chunks don't exceed size
 
 
-def test_is_seekable_stream():
+def test_is_seekable_stream():  # type: ignore[no-untyped-def]
     client = _BaseClient()
 
     # Test various input types that are not streams.
@@ -388,7 +388,7 @@ def test_is_seekable_stream():
 
     # Test non-seekable stream.
     non_seekable = io.BytesIO(b"test data")
-    non_seekable.seekable = lambda: False
+    non_seekable.seekable = lambda: False  # type: ignore[method-assign]
     assert not client._is_seekable_stream(non_seekable)
 
     # Test seekable streams.
@@ -402,13 +402,13 @@ def test_is_seekable_stream():
     # Test custom seekable stream.
     class CustomSeekableStream(io.IOBase):
 
-        def seekable(self):
+        def seekable(self):  # type: ignore[no-untyped-def]
             return True
 
-        def seek(self, offset, whence=0):
+        def seek(self, offset, whence=0):  # type: ignore[no-untyped-def]
             return 0
 
-        def tell(self):
+        def tell(self):  # type: ignore[no-untyped-def]
             return 0
 
     assert client._is_seekable_stream(CustomSeekableStream())
@@ -418,7 +418,7 @@ class RetryTestCase:
 
     def __init__(
         self,
-        data_provider: Callable,
+        data_provider: Callable,  # type: ignore[type-arg]
         offset: Optional[int],
         expected_failure: bool,
         expected_result: bytes,
@@ -428,14 +428,14 @@ class RetryTestCase:
         self._expected_result = expected_result
         self._expected_failure = expected_failure
 
-    def get_data(self):
+    def get_data(self):  # type: ignore[no-untyped-def]
         data = self._data_provider()
         if self._offset is not None:
             data.seek(self._offset)
         return data
 
     @classmethod
-    def create_non_seekable_stream(cls, data: bytes):
+    def create_non_seekable_stream(cls, data: bytes):  # type: ignore[no-untyped-def]
         result = io.BytesIO(data)
         result.seekable = lambda: False  # makes the stream appear non-seekable
         return result
@@ -449,27 +449,27 @@ class MockSession:
         self._failure_provider = failure_provider
 
     @classmethod
-    def raise_timeout_exception(cls):
+    def raise_timeout_exception(cls):  # type: ignore[no-untyped-def]
         raise Timeout("Fake timeout")
 
     @classmethod
-    def return_retryable_response(cls):
+    def return_retryable_response(cls):  # type: ignore[no-untyped-def]
         # fill response fields so that logging does not fail
         response = Response()
         response._content = b""
         response.status_code = 429
-        response.headers = {"Retry-After": "1"}
+        response.headers = {"Retry-After": "1"}  # type: ignore[assignment]
         response.url = "http://test.com/"
 
         response.request = PreparedRequest()
         response.request.url = response.url
         response.request.method = "POST"
-        response.request.headers = None
+        response.request.headers = None  # type: ignore[assignment]
         response.request.body = b""
         return response
 
     # following the signature of Session.request()
-    def request(
+    def request(  # type: ignore[no-untyped-def]
         self,
         method,
         url,
@@ -514,7 +514,7 @@ class MockSession:
             return response
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore[misc]
     "test_case",
     [
         # bytes -> BytesIO
@@ -536,32 +536,32 @@ class MockSession:
         ),
     ],
 )
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore[misc]
     "failure",
     [
         [MockSession.raise_timeout_exception, Timeout],
         [MockSession.return_retryable_response, errors.TooManyRequests],
     ],
 )
-def test_rewind_seekable_stream(test_case: RetryTestCase, failure: Tuple[Callable[[], Response], Type]):
+def test_rewind_seekable_stream(test_case: RetryTestCase, failure: Tuple[Callable[[], Response], Type]):  # type: ignore[no-untyped-def, type-arg]
     failure_count = 2
 
-    data = test_case.get_data()
+    data = test_case.get_data()  # type: ignore[no-untyped-call]
 
     session = MockSession(failure_count, failure[0])
     client = _BaseClient()
-    client._session = session
+    client._session = session  # type: ignore[assignment]
 
-    def do():
+    def do():  # type: ignore[no-untyped-def]
         client.do("POST", "test.com/foo", data=data)
 
     if test_case._expected_failure:
         expected_attempts_made = 1
         exception_class = failure[1]
         with pytest.raises(exception_class):
-            do()
+            do()  # type: ignore[no-untyped-call]
     else:
         expected_attempts_made = failure_count + 1
-        do()
+        do()  # type: ignore[no-untyped-call]
 
     assert session._received_requests == [test_case._expected_result for _ in range(expected_attempts_made)]

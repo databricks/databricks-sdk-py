@@ -2,7 +2,7 @@ from databricks.sdk.service import catalog
 
 
 # https://github.com/databricks/databricks-sdk-py/issues/135
-def test_issue_135():
+def test_issue_135():  # type: ignore[no-untyped-def]
     from databricks.sdk.service.compute import Library, PythonPyPiLibrary
     from databricks.sdk.service.jobs import Task
 
@@ -18,7 +18,7 @@ def test_issue_135():
 
 
 # https://github.com/databricks/databricks-sdk-py/issues/103
-def test_issue_103():
+def test_issue_103():  # type: ignore[no-untyped-def]
     from databricks.sdk.service.compute import ClusterSpec
     from databricks.sdk.service.jobs import JobCluster
 
@@ -43,7 +43,7 @@ def test_issue_103():
     }
 
 
-def test_serde_with_empty_dataclass():
+def test_serde_with_empty_dataclass():  # type: ignore[no-untyped-def]
     inst = catalog.OnlineTableSpec(
         pipeline_id="123",
         run_continuously=catalog.OnlineTableSpecContinuousSchedulingPolicy(),

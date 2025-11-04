@@ -8,7 +8,7 @@ class _ErrorCustomizer(abc.ABC):
     """A customizer for errors from the Databricks REST API."""
 
     @abc.abstractmethod
-    def customize_error(self, response: requests.Response, kwargs: dict):
+    def customize_error(self, response: requests.Response, kwargs: dict):  # type: ignore[no-untyped-def, type-arg]
         """Customize the error constructor parameters."""
 
 
@@ -45,6 +45,6 @@ class _RetryAfterCustomizer(_ErrorCustomizer):
             # defaulting to 1 sleep second to make self._is_retryable() simpler
             return cls._DEFAULT_RETRY_AFTER_SECONDS
 
-    def customize_error(self, response: requests.Response, kwargs: dict):
+    def customize_error(self, response: requests.Response, kwargs: dict):  # type: ignore[no-untyped-def, type-arg]
         if response.status_code in (429, 503):
             kwargs["retry_after_secs"] = self._parse_retry_after(response)

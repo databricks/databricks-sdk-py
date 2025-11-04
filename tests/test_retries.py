@@ -1,30 +1,30 @@
 from datetime import timedelta
 from typing import Any, Literal, Optional, Tuple, Type
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.errors import NotFound, ResourceDoesNotExist
 from databricks.sdk.retries import RetryError, poll, retried
 from tests.clock import FakeClock
 
 
-def test_match_retry_condition_on_no_qualifier():
+def test_match_retry_condition_on_no_qualifier():  # type: ignore[no-untyped-def]
     with pytest.raises(SyntaxError):
 
         @retried()
-        def foo():
+        def foo():  # type: ignore[no-untyped-def]
             return 1
 
 
-def test_match_retry_condition_on_conflict():
+def test_match_retry_condition_on_conflict():  # type: ignore[no-untyped-def]
     with pytest.raises(SyntaxError):
 
         @retried(on=[IOError], is_retryable=lambda _: "always", clock=FakeClock())
-        def foo():
+        def foo():  # type: ignore[no-untyped-def]
             return 1
 
 
-def test_match_retry_always():
+def test_match_retry_always():  # type: ignore[no-untyped-def]
     with pytest.raises(TimeoutError):
 
         @retried(
@@ -32,13 +32,13 @@ def test_match_retry_always():
             timeout=timedelta(seconds=1),
             clock=FakeClock(),
         )
-        def foo():
+        def foo():  # type: ignore[no-untyped-def]
             raise StopIteration()
 
         foo()
 
 
-def test_match_on_errors():
+def test_match_on_errors():  # type: ignore[no-untyped-def]
     with pytest.raises(TimeoutError):
 
         @retried(
@@ -46,23 +46,23 @@ def test_match_on_errors():
             timeout=timedelta(seconds=0.5),
             clock=FakeClock(),
         )
-        def foo():
+        def foo():  # type: ignore[no-untyped-def]
             raise KeyError(1)
 
         foo()
 
 
-def test_match_on_subclass():
+def test_match_on_subclass():  # type: ignore[no-untyped-def]
     with pytest.raises(TimeoutError):
 
         @retried(on=[NotFound], timeout=timedelta(seconds=0.5), clock=FakeClock())
-        def foo():
-            raise ResourceDoesNotExist(...)
+        def foo():  # type: ignore[no-untyped-def]
+            raise ResourceDoesNotExist(...)  # type: ignore[arg-type]
 
         foo()
 
 
-def test_propagates_outside_exception():
+def test_propagates_outside_exception():  # type: ignore[no-untyped-def]
     with pytest.raises(KeyError):
 
         @retried(
@@ -70,13 +70,13 @@ def test_propagates_outside_exception():
             timeout=timedelta(seconds=0.5),
             clock=FakeClock(),
         )
-        def foo():
+        def foo():  # type: ignore[no-untyped-def]
             raise KeyError(1)
 
         foo()
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore[misc]
     "scenario,attempts,result_value,exception_type,exception_msg,timeout,min_time,max_time",
     [
         pytest.param(
@@ -257,7 +257,7 @@ def test_poll_behavior(
         call_count += 1
 
         if scenario == "success":
-            if call_count < attempts:
+            if call_count < attempts:  # type: ignore[operator]
                 return None, RetryError.continues(f"attempt {call_count}")
             return result_value, None
 
@@ -265,12 +265,12 @@ def test_poll_behavior(
             return None, RetryError.continues("retrying")
 
         elif scenario == "halt":
-            if call_count < attempts:
+            if call_count < attempts:  # type: ignore[operator]
                 return None, RetryError.continues("retrying")
             return None, RetryError.halt(ValueError(exception_msg))
 
         elif scenario == "unexpected":
-            if call_count < attempts:
+            if call_count < attempts:  # type: ignore[operator]
                 return None, RetryError.continues("retrying")
             raise RuntimeError(exception_msg)
 
@@ -286,10 +286,10 @@ def test_poll_behavior(
         with pytest.raises(exception_type) as exc_info:
             poll(fn, timeout=timedelta(seconds=timeout), clock=clock)
 
-        assert exception_msg in str(exc_info.value)
+        assert exception_msg in str(exc_info.value)  # type: ignore[operator]
         assert call_count >= 1
 
         if scenario == "timeout":
-            assert clock.time() >= min_time
+            assert clock.time() >= min_time  # type: ignore[operator]
         elif scenario in ("halt", "unexpected"):
             assert call_count == attempts

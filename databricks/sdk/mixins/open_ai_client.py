@@ -12,12 +12,12 @@ class ServingEndpointsExt(ServingEndpointsAPI):
 
     # Using the HTTP Client to pass in the databricks authorization
     # This method will be called on every invocation, so when using with model serving will always get the refreshed token
-    def _get_authorized_http_client(self):
-        import httpx
+    def _get_authorized_http_client(self):  # type: ignore[no-untyped-def]
+        import httpx  # type: ignore[import-not-found]
 
-        class BearerAuth(httpx.Auth):
+        class BearerAuth(httpx.Auth):  # type: ignore[misc]
 
-            def __init__(self, get_headers_func):
+            def __init__(self, get_headers_func):  # type: ignore[no-untyped-def]
                 self.get_headers_func = get_headers_func
 
             def auth_flow(self, request: httpx.Request) -> httpx.Request:
@@ -25,13 +25,13 @@ class ServingEndpointsExt(ServingEndpointsAPI):
                 request.headers["Authorization"] = auth_headers["Authorization"]
                 yield request
 
-        databricks_token_auth = BearerAuth(self._api._cfg.authenticate)
+        databricks_token_auth = BearerAuth(self._api._cfg.authenticate)  # type: ignore[no-untyped-call]
 
         # Create an HTTP client with Bearer Token authentication
         http_client = httpx.Client(auth=databricks_token_auth)
         return http_client
 
-    def get_open_ai_client(self, **kwargs):
+    def get_open_ai_client(self, **kwargs):  # type: ignore[no-untyped-def]
         """Create an OpenAI client configured for Databricks Model Serving.
 
         Returns an OpenAI client instance that is pre-configured to send requests to
@@ -67,7 +67,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             ... )
         """
         try:
-            from openai import OpenAI
+            from openai import OpenAI  # type: ignore[import-not-found]
         except Exception:
             raise ImportError(
                 "Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]`"
@@ -86,7 +86,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
         client_params = {
             "base_url": self._api._cfg.host + "/serving-endpoints",
             "api_key": "no-token",  # Passing in a placeholder to pass validations, this will not be used
-            "http_client": self._get_authorized_http_client(),
+            "http_client": self._get_authorized_http_client(),  # type: ignore[no-untyped-call]
         }
 
         # Update with any additional parameters passed by the user
@@ -94,9 +94,9 @@ class ServingEndpointsExt(ServingEndpointsAPI):
 
         return OpenAI(**client_params)
 
-    def get_langchain_chat_open_ai_client(self, model):
+    def get_langchain_chat_open_ai_client(self, model):  # type: ignore[no-untyped-def]
         try:
-            from langchain_openai import ChatOpenAI
+            from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
         except Exception:
             raise ImportError(
                 "Langchain Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]` and ensure you are using python>3.7"
@@ -106,18 +106,18 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             model=model,
             openai_api_base=self._api._cfg.host + "/serving-endpoints",
             api_key="no-token",  # Passing in a placeholder to pass validations, this will not be used
-            http_client=self._get_authorized_http_client(),
+            http_client=self._get_authorized_http_client(),  # type: ignore[no-untyped-call]
         )
 
-    def http_request(
+    def http_request(  # type: ignore[override]
         self,
         conn: str,
         method: ExternalFunctionRequestHttpMethod,
         path: str,
         *,
-        headers: Optional[Dict[str, str]] = None,
-        json: Optional[Dict[str, str]] = None,
-        params: Optional[Dict[str, str]] = None,
+        headers: Optional[Dict[str, str]] = None,  # type: ignore[override]
+        json: Optional[Dict[str, str]] = None,  # type: ignore[override]
+        params: Optional[Dict[str, str]] = None,  # type: ignore[override]
     ) -> Response:
         """Make external services call using the credentials stored in UC Connection.
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.

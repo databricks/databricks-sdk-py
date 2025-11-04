@@ -16,9 +16,9 @@ from threading import Lock
 from typing import Any, Callable, Dict, List, Optional, Type, Union
 from urllib.parse import parse_qs, urlparse
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 import requests
-import requests_mock
+import requests_mock  # type: ignore[import-not-found]
 from requests import RequestException
 
 from databricks.sdk import WorkspaceClient
@@ -101,8 +101,8 @@ class CustomResponse:
             return False
         return True
 
-    def generate_response(
-        self, request: requests.Request, processor: Callable[[], list], stream=False
+    def generate_response(  # type: ignore[no-untyped-def]
+        self, request: requests.Request, processor: Callable[[], list], stream=False  # type: ignore[type-arg]
     ) -> requests.Response:
         if self.delayed_response_seconds:
             time.sleep(self.delayed_response_seconds)
@@ -113,7 +113,7 @@ class CustomResponse:
             # if server actually processed the request (and so changed its state)
             raise self.exception
 
-        custom_response = [self.code, self.body or "", {}]
+        custom_response = [self.code, self.body or "", {}]  # type: ignore[var-annotated]
 
         if activate_for_current_invocation:
             if self.code and 400 <= self.code < 500:
@@ -133,22 +133,22 @@ class CustomResponse:
 
         resp = requests.Response()
 
-        resp.request = request
-        resp.status_code = code
+        resp.request = request  # type: ignore[assignment]
+        resp.status_code = code  # type: ignore[assignment]
         if stream:
-            if type(body_or_stream) != bytes:
-                resp.raw = io.BytesIO(body_or_stream.encode())
+            if type(body_or_stream) != bytes:  # type: ignore[comparison-overlap]
+                resp.raw = io.BytesIO(body_or_stream.encode())  # type: ignore[union-attr]
             else:
-                resp.raw = io.BytesIO(body_or_stream)
+                resp.raw = io.BytesIO(body_or_stream)  # type: ignore[arg-type]
         else:
-            resp._content = body_or_stream.encode()
+            resp._content = body_or_stream.encode()  # type: ignore[union-attr]
 
-        for key in headers:
-            resp.headers[key] = headers[key]
+        for key in headers:  # type: ignore[union-attr]
+            resp.headers[key] = headers[key]  # type: ignore[index]
 
         return resp
 
-    def clear_state(self):
+    def clear_state(self):  # type: ignore[no-untyped-def]
         self.invocation_count = 0
 
 
@@ -199,14 +199,14 @@ class FilesApiDownloadTestCase:
     def to_string(test_case: "FilesApiDownloadTestCase") -> str:
         return test_case.name
 
-    def run(self, config: Config, monkeypatch) -> None:
+    def run(self, config: Config, monkeypatch) -> None:  # type: ignore[no-untyped-def]
         if self.use_parallel and platform.system() == "Windows":
             pytest.skip("Skipping parallel download tests on Windows")
-        config = config.copy()
+        config = config.copy()  # type: ignore[no-untyped-call]
         config.disable_experimental_files_api_client = not self.enable_new_client
         config.files_ext_client_download_max_total_recovers = self.max_recovers_total
-        config.files_ext_client_download_max_total_recovers_without_progressing = self.max_recovers_without_progressing
-        config.enable_presigned_download_api = False
+        config.files_ext_client_download_max_total_recovers_without_progressing = self.max_recovers_without_progressing  # type: ignore[assignment]
+        config.enable_presigned_download_api = False  # type: ignore[attr-defined]
 
         w = WorkspaceClient(config=config)
 
@@ -216,13 +216,13 @@ class FilesApiDownloadTestCase:
         if self.download_mode == DownloadMode.STREAM:
             if self.expected_exception is None:
                 response = w.files.download("/test").contents
-                actual_content = response.read()
+                actual_content = response.read()  # type: ignore[union-attr]
                 assert len(actual_content) == len(session.content)
                 assert actual_content == session.content
             else:
                 with pytest.raises(self.expected_exception):
                     response = w.files.download("/test").contents
-                    response.read()
+                    response.read()  # type: ignore[union-attr]
         elif self.download_mode == DownloadMode.FILE:  # FILE mode
             with NamedTemporaryFile(delete=False) as temp_file:
                 file_path = temp_file.name
@@ -277,7 +277,7 @@ class MockFilesystemSession:
         self.last_modified = "Thu, 28 Nov 2024 16:39:14 GMT"
 
     # following the signature of Session.request()
-    def request(
+    def request(  # type: ignore[no-untyped-def]
         self,
         method: str,
         url: str,
@@ -291,7 +291,7 @@ class MockFilesystemSession:
         allow_redirects: bool = True,
         proxies=None,
         hooks=None,
-        stream: bool = None,
+        stream: bool = None,  # type: ignore[assignment]
         verify=None,
         cert=None,
         json=None,
@@ -303,13 +303,13 @@ class MockFilesystemSession:
         elif method == "HEAD":
             return self._handle_head_file(headers, url)
         else:
-            raise FallbackToDownloadUsingFilesApi("method must be HEAD or GET")
+            raise FallbackToDownloadUsingFilesApi("method must be HEAD or GET")  # type: ignore[no-untyped-call]
 
     def _handle_head_file(self, headers: Dict[str, str], url: str) -> "MockFilesApiDownloadResponse":
         if "If-Unmodified-Since" in headers:
             assert headers["If-Unmodified-Since"] == self.last_modified
         resp = MockFilesApiDownloadResponse(self, 0, None, MockFilesApiDownloadRequest(url))
-        resp.content = ""
+        resp.content = ""  # type: ignore[attr-defined]
         return resp
 
     def _handle_get_file(self, headers: Dict[str, str], url: str) -> "MockFilesApiDownloadResponse":
@@ -345,7 +345,7 @@ class MockFilesApiDownloadRequest:
     def __init__(self, url: str):
         self.url = url
         self.method = "GET"
-        self.headers = dict()
+        self.headers = dict()  # type: ignore[var-annotated]
         self.body = None
 
 
@@ -368,8 +368,8 @@ class MockFilesApiDownloadResponse:
         self.headers["Content-Length"] = (
             len(session.content) if end_byte_offset is None else end_byte_offset + 1
         ) - offset
-        self.headers["Content-Type"] = "application/octet-stream"
-        self.headers["Last-Modified"] = session.last_modified
+        self.headers["Content-Type"] = "application/octet-stream"  # type: ignore[assignment]
+        self.headers["Last-Modified"] = session.last_modified  # type: ignore[assignment]
         self.ok = True
         self.url = request.url
 
@@ -410,7 +410,7 @@ class _Constants:
     underlying_chunk_size = 1024 * 1024  # see ticket #832
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore[misc]
     "test_case",
     [
         FilesApiDownloadTestCase(
@@ -729,7 +729,7 @@ class _Constants:
     ],
     ids=FilesApiDownloadTestCase.to_string,
 )
-def test_download_recover(config: Config, test_case: FilesApiDownloadTestCase, monkeypatch):
+def test_download_recover(config: Config, test_case: FilesApiDownloadTestCase, monkeypatch):  # type: ignore[no-untyped-def]
     test_case.run(config, monkeypatch)
 
 
@@ -743,10 +743,10 @@ class PresignedUrlDownloadServerState:
         self.api_used: Optional[str] = None
         self.last_modified = last_modified
 
-    def get_presigned_url(self, path: str):
+    def get_presigned_url(self, path: str):  # type: ignore[no-untyped-def]
         return f"https://{PresignedUrlDownloadServerState.HOSTNAME}{path}"
 
-    def get_content(self, request: requests.Request, api_used: str):
+    def get_content(self, request: requests.Request, api_used: str):  # type: ignore[no-untyped-def]
         self.requested = True
         self.api_used = api_used
         offset = 0
@@ -765,7 +765,7 @@ class PresignedUrlDownloadServerState:
         resp = requests.Response()
         resp.status_code = 200
         resp._content = b""
-        resp.request = request
+        resp.request = request  # type: ignore[assignment]
         resp.headers["Content-Length"] = str(self.file_size)
         resp.headers["Content-Type"] = "application/octet-stream"
         resp.headers["Last-Modified"] = self.last_modified
@@ -890,17 +890,17 @@ class PresignedUrlDownloadTestCase:
         self.parallel_download_min_file_size = parallel_download_min_file_size
         self.parallel_upload_part_size = parallel_upload_part_size
 
-    def _clear_state(self):
-        self.custom_response_get_file_status_api.clear_state()
-        self.custom_response_create_presigned_url.clear_state()
-        self.custom_response_download_from_files_api.clear_state()
-        self.custom_response_download_from_url.clear_state()
+    def _clear_state(self):  # type: ignore[no-untyped-def]
+        self.custom_response_get_file_status_api.clear_state()  # type: ignore[union-attr]
+        self.custom_response_create_presigned_url.clear_state()  # type: ignore[union-attr]
+        self.custom_response_download_from_files_api.clear_state()  # type: ignore[union-attr]
+        self.custom_response_download_from_url.clear_state()  # type: ignore[union-attr]
 
     def __str__(self) -> str:
         return self.name
 
     @staticmethod
-    def to_string(test_case) -> str:
+    def to_string(test_case) -> str:  # type: ignore[no-untyped-def]
         return str(test_case)
 
     def match_request_to_response(
@@ -917,13 +917,13 @@ class PresignedUrlDownloadTestCase:
             and request_url.path == "/api/2.0/fs/create-download-url"
         ):
             assert "path" in request_query, "Expected 'path' in query parameters"
-            file_path = request_query.get("path")[0]
+            file_path = request_query.get("path")[0]  # type: ignore[index]
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 url = server_state.get_presigned_url(file_path)
                 return [200, json.dumps({"url": url, "headers": {}}), {}]
 
-            return self.custom_response_create_presigned_url.generate_response(request, processor)
+            return self.custom_response_create_presigned_url.generate_response(request, processor)  # type: ignore[union-attr]
 
         # Get files status request
         elif (
@@ -932,11 +932,11 @@ class PresignedUrlDownloadTestCase:
             and request_url.path == f"/api/2.0/fs/files{self._FILE_PATH}"
         ):
             # HEAD request to check if file exists
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 resp = server_state.get_header(request)
                 return [resp.status_code, resp._content, resp.headers]
 
-            return self.custom_response_get_file_status_api.generate_response(request, processor, stream=True)
+            return self.custom_response_get_file_status_api.generate_response(request, processor, stream=True)  # type: ignore[union-attr]
 
         # Direct Files API download request
         elif (
@@ -945,36 +945,36 @@ class PresignedUrlDownloadTestCase:
             and request_url.path == f"/api/2.0/fs/files{self._FILE_PATH}"
         ):
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 resp = server_state.get_content(request, api_used="files_api")
                 return [resp.status_code, resp._content, resp.headers]
 
-            return self.custom_response_download_from_files_api.generate_response(request, processor, stream=True)
+            return self.custom_response_download_from_files_api.generate_response(request, processor, stream=True)  # type: ignore[union-attr]
 
         # Download from Presigned URL request
         elif request_url.hostname == PresignedUrlDownloadServerState.HOSTNAME and request.method == "GET":
             logger.debug(f"headers = {request.headers}")
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 resp = server_state.get_content(request, api_used="presigned_url")
                 return [resp.status_code, resp._content, resp.headers]
 
-            return self.custom_response_download_from_url.generate_response(request, processor, stream=True)
+            return self.custom_response_download_from_url.generate_response(request, processor, stream=True)  # type: ignore[union-attr]
 
         else:
             raise RuntimeError("Unexpected request " + str(request))
 
-    def run_one_case(self, config: Config, monkeypatch, download_mode: DownloadMode, use_parallel: bool) -> None:
+    def run_one_case(self, config: Config, monkeypatch, download_mode: DownloadMode, use_parallel: bool) -> None:  # type: ignore[no-untyped-def]
         if use_parallel and platform.system() == "Windows":
             logger.debug("Parallel download is not supported on Windows. Falling back to sequential download.")
             return
-        config = config.copy()
-        config.enable_presigned_download_api = True
+        config = config.copy()  # type: ignore[no-untyped-call]
+        config.enable_presigned_download_api = True  # type: ignore[attr-defined]
         config._clock = FakeClock()
         if self.parallel_download_min_file_size is not None:
             config.files_ext_parallel_download_min_file_size = self.parallel_download_min_file_size
         if self.parallel_upload_part_size is not None:
-            config.files_ext_parallel_upload_part_size = self.parallel_upload_part_size
+            config.files_ext_parallel_upload_part_size = self.parallel_upload_part_size  # type: ignore[attr-defined]
 
         w = WorkspaceClient(config=config)
         state = PresignedUrlDownloadServerState(self.file_size, self.last_modified)
@@ -994,7 +994,7 @@ class PresignedUrlDownloadTestCase:
                 else:
                     download_resp = w.files.download(PresignedUrlDownloadTestCase._FILE_PATH)
                     assert download_resp.content_length == self.file_size
-                    assert download_resp.contents.read() == state.content
+                    assert download_resp.contents.read() == state.content  # type: ignore[union-attr]
                     if self.expected_download_api is not None:
                         assert state.api_used == self.expected_download_api
             elif download_mode == DownloadMode.FILE:
@@ -1033,16 +1033,16 @@ class PresignedUrlDownloadTestCase:
             else:
                 raise ValueError("Unexpected download mode")
 
-    def run(self, config: Config, monkeypatch) -> None:
+    def run(self, config: Config, monkeypatch) -> None:  # type: ignore[no-untyped-def]
         # Run all combinations of download modes and parallelism settings
         for download_mode in self.download_mode:
             for use_parallel in self.use_parallel:
                 logger.info(f"Downloading {download_mode.name} with parallelism={use_parallel}")
                 self.run_one_case(config, monkeypatch, download_mode, use_parallel)
-                self._clear_state()
+                self._clear_state()  # type: ignore[no-untyped-call]
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore[misc]
     "test_case",
     [
         # Happy cases
@@ -1136,7 +1136,7 @@ class PresignedUrlDownloadTestCase:
     ],
     ids=PresignedUrlDownloadTestCase.to_string,
 )
-def test_presigned_url_download(config: Config, test_case: PresignedUrlDownloadTestCase, monkeypatch) -> None:
+def test_presigned_url_download(config: Config, test_case: PresignedUrlDownloadTestCase, monkeypatch) -> None:  # type: ignore[no-untyped-def]
     test_case.run(config, monkeypatch)
 
 
@@ -1157,7 +1157,7 @@ class FileContent:
 
     def __eq__(self, other: object) -> bool:
         if not isinstance(other, FileContent):
-            return NotImplemented
+            return NotImplemented  # type: ignore[return-value]
         return self._length == other._length and self.checksum == other.checksum
 
 
@@ -1185,7 +1185,7 @@ class MultipartUploadServerState:
 
     def create_abort_url(self, path: str, expire_time: datetime) -> str:
         assert not self.aborted
-        self.issued_abort_url_expire_time = expire_time
+        self.issued_abort_url_expire_time = expire_time  # type: ignore[assignment]
         return f"{self.abort_upload_url_prefix}{path}"
 
     def save_part(self, part_number: int, part_content: bytes, etag: str) -> None:
@@ -1221,7 +1221,7 @@ class MultipartUploadServerState:
         # in case single-shot upload was used due to small stream size.
         return self.file_content
 
-    def upload_complete(self, etags: dict) -> None:
+    def upload_complete(self, etags: dict) -> None:  # type: ignore[type-arg]
         assert not self.aborted
         # validate etags
         expected_etags = {}
@@ -1241,7 +1241,7 @@ class MultipartUploadServerState:
                     part_content = f.read()
                     sha256.update(part_content)
 
-        self.file_content = FileContent(size, sha256.hexdigest())
+        self.file_content = FileContent(size, sha256.hexdigest())  # type: ignore[assignment]
 
     def abort_upload(self) -> None:
         self.aborted = True
@@ -1254,7 +1254,7 @@ class MultipartUploadServerState:
 class SingleShotUploadServerState:
     """This server state is updated on single-shot upload"""
 
-    def __init__(self):
+    def __init__(self):  # type: ignore[no-untyped-def]
         self.file_content: Optional[FileContent] = None
 
     def cleanup(self) -> None:
@@ -1307,7 +1307,7 @@ class UploadTestCase:
         self.expected_single_shot_upload = expected_single_shot_upload
 
         self.path = "/test.txt"
-        self.created_temp_files = []
+        self.created_temp_files = []  # type: ignore[var-annotated]
 
     def customize_config(self, config: Config) -> None:
         pass
@@ -1353,7 +1353,7 @@ class UploadTestCase:
     def run_one_case(self, config: Config, use_parallel: bool, source_type: "UploadSourceType") -> None:
 
         logger.debug(f"Running test case: {self.name}, source_type={source_type}, use_parallel={use_parallel}")
-        config = config.copy()
+        config = config.copy()  # type: ignore[no-untyped-call]
         config._clock = FakeClock()
 
         if self.cloud:
@@ -1362,19 +1362,19 @@ class UploadTestCase:
         if self.sdk_retry_timeout_seconds:
             config.retry_timeout_seconds = self.sdk_retry_timeout_seconds
         if self.multipart_upload_part_size:
-            config.multipart_upload_part_size = self.multipart_upload_part_size
+            config.multipart_upload_part_size = self.multipart_upload_part_size  # type: ignore[attr-defined]
         if self.multipart_upload_max_retries:
             config.files_ext_multipart_upload_max_retries = self.multipart_upload_max_retries
 
         config.files_ext_multipart_upload_min_stream_size = self.multipart_upload_min_stream_size
 
         pat_token = "some_pat_token"
-        config._header_factory = lambda: {"Authorization": f"Bearer {pat_token}"}
+        config._header_factory = lambda: {"Authorization": f"Bearer {pat_token}"}  # type: ignore[assignment]
 
         self.customize_config(config)
 
         multipart_server_state = self.create_multipart_upload_server_state()
-        single_shot_server_state = SingleShotUploadServerState()
+        single_shot_server_state = SingleShotUploadServerState()  # type: ignore[no-untyped-call]
 
         file_content = fast_random_bytes(self.stream_size)
         content_or_source = self.get_upload_file(file_content, source_type)
@@ -1393,8 +1393,8 @@ class UploadTestCase:
                         and not parsed_url.params
                     ):
 
-                        def processor() -> list:
-                            body = request.body.read()
+                        def processor() -> list:  # type: ignore[type-arg]
+                            body = request.body.read()  # type: ignore[attr-defined]
                             single_shot_server_state.upload(body)
                             return [200, "", {}]
 
@@ -1409,7 +1409,7 @@ class UploadTestCase:
                     if source_type == UploadSourceType.FILE:
                         w.files.upload_from(
                             file_path=self.path,
-                            source_path=content_or_source,
+                            source_path=content_or_source,  # type: ignore[arg-type]
                             overwrite=self.overwrite,
                             part_size=self.multipart_upload_part_size,
                             use_parallel=use_parallel,
@@ -1418,7 +1418,7 @@ class UploadTestCase:
                     else:
                         w.files.upload(
                             file_path=self.path,
-                            contents=content_or_source,
+                            contents=content_or_source,  # type: ignore[arg-type]
                             overwrite=self.overwrite,
                             part_size=self.multipart_upload_part_size,
                             use_parallel=use_parallel,
@@ -1617,15 +1617,15 @@ class MultipartUploadTestCase(UploadTestCase):
 
     def clear_state(self) -> None:
         super().clear_state()
-        self.custom_response_on_initiate.clear_state()
-        self.custom_response_on_create_multipart_url.clear_state()
-        self.custom_response_on_upload.clear_state()
-        self.custom_response_on_complete.clear_state()
-        self.custom_response_on_create_abort_url.clear_state()
-        self.custom_response_on_abort.clear_state()
+        self.custom_response_on_initiate.clear_state()  # type: ignore[no-untyped-call]
+        self.custom_response_on_create_multipart_url.clear_state()  # type: ignore[no-untyped-call]
+        self.custom_response_on_upload.clear_state()  # type: ignore[no-untyped-call]
+        self.custom_response_on_complete.clear_state()  # type: ignore[no-untyped-call]
+        self.custom_response_on_create_abort_url.clear_state()  # type: ignore[no-untyped-call]
+        self.custom_response_on_abort.clear_state()  # type: ignore[no-untyped-call]
 
     def match_request_to_response(
-        self, request: requests.Request, server_state: MultipartUploadServerState
+        self, request: requests.Request, server_state: MultipartUploadServerState  # type: ignore[override]
     ) -> Optional[requests.Response]:
         request_url = urlparse(request.url)
         request_query = parse_qs(request_url.query)
@@ -1639,9 +1639,9 @@ class MultipartUploadTestCase(UploadTestCase):
         ):
 
             assert UploadTestCase.is_auth_header_present(request)
-            assert request.text is None
+            assert request.text is None  # type: ignore[attr-defined]
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 response_json = {"multipart_upload": {"session_token": server_state.session_token}}
                 return [200, json.dumps(response_json), {}]
 
@@ -1667,7 +1667,7 @@ class MultipartUploadTestCase(UploadTestCase):
 
             expire_time = MultipartUploadTestCase.parse_and_validate_expire_time(request_json["expire_time"])
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 response_nodes = []
                 for part_number in range(start_part_number, start_part_number + count):
                     upload_part_url = server_state.create_upload_part_url(self.path, part_number, expire_time)
@@ -1693,8 +1693,8 @@ class MultipartUploadTestCase(UploadTestCase):
             part_num = url_path.split("/")[-1]
             assert url_path[: -len(part_num) - 1] == self.path
 
-            def processor() -> list:
-                body = request.body.read()
+            def processor() -> list:  # type: ignore[type-arg]
+                body = request.body.read()  # type: ignore[attr-defined]
                 etag = "etag-" + MultipartUploadServerState.randomstr()
                 server_state.save_part(int(part_num), body, etag)
                 return [200, "", {"ETag": etag}]
@@ -1713,7 +1713,7 @@ class MultipartUploadTestCase(UploadTestCase):
             assert UploadTestCase.is_auth_header_present(request)
             assert [server_state.session_token] == request_query.get("session_token")
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 request_json = request.json()
                 etags = {}
 
@@ -1733,7 +1733,7 @@ class MultipartUploadTestCase(UploadTestCase):
             assert request_json["path"] == self.path
             expire_time = MultipartUploadTestCase.parse_and_validate_expire_time(request_json["expire_time"])
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 response_json = {
                     "abort_upload_url": {
                         "url": server_state.create_abort_url(self.path, expire_time),
@@ -1749,7 +1749,7 @@ class MultipartUploadTestCase(UploadTestCase):
             assert not UploadTestCase.is_auth_header_present(request)
             assert request.url[len(MultipartUploadServerState.abort_upload_url_prefix) :] == self.path
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 server_state.abort_upload()
                 return [200, "", {}]
 
@@ -1762,10 +1762,10 @@ class MultipartUploadTestCase(UploadTestCase):
             and request.method == "PUT"
         ):
             assert MultipartUploadTestCase.is_auth_header_present(request)
-            assert request.content is not None
+            assert request.content is not None  # type: ignore[attr-defined]
 
-            def processor():
-                server_state.file_content = FileContent.from_bytes(request.content)
+            def processor():  # type: ignore[misc, no-untyped-def]
+                server_state.file_content = FileContent.from_bytes(request.content)  # type: ignore[assignment, attr-defined]
                 return [200, "", {}]
 
             return self.custom_response_on_upload.generate_response(request, processor)
@@ -1789,7 +1789,7 @@ class MultipartUploadTestCase(UploadTestCase):
         return str(test_case)
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore[misc]
     "test_case",
     [
         # -------------------------- happy cases --------------------------
@@ -2266,10 +2266,10 @@ class ResumableUploadServerState:
     resumable_upload_url_prefix = "https://cloud_provider.com/resumable-upload/"
     abort_upload_url_prefix = "https://cloud_provider.com/abort-upload/"
 
-    def __init__(self, unconfirmed_delta: Union[int, list], expected_part_size: Optional[int]):
+    def __init__(self, unconfirmed_delta: Union[int, list], expected_part_size: Optional[int]):  # type: ignore[type-arg]
         self.unconfirmed_delta = unconfirmed_delta
         self.confirmed_last_byte: Optional[int] = None  # inclusive
-        self.uploaded_parts = []
+        self.uploaded_parts = []  # type: ignore[var-annotated]
         self.session_token = "token-" + MultipartUploadServerState.randomstr()
         self.file_content: Optional[FileContent] = None
         self.aborted = False
@@ -2372,7 +2372,7 @@ class ResumableUploadTestCase(UploadTestCase):
         self,
         name: str,
         stream_size: int,
-        cloud: Cloud = None,
+        cloud: Cloud = None,  # type: ignore[assignment]
         overwrite: bool = True,
         source_type: Optional[List[UploadSourceType]] = None,
         use_parallel: Optional[List[bool]] = None,
@@ -2387,7 +2387,7 @@ class ResumableUploadTestCase(UploadTestCase):
         # `unconfirmed_delta` defines offset from the end of the part that remains
         # "unconfirmed", i.e. the last accepted offset would be (range_end - unconfirmed_delta).
         # Can be int (same for all parts) or list (individual for each part).
-        unconfirmed_delta: Union[int, list] = 0,
+        unconfirmed_delta: Union[int, list] = 0,  # type: ignore[type-arg]
         custom_response_on_single_shot_upload: CustomResponse = CustomResponse(enabled=False),
         custom_response_on_create_resumable_url: CustomResponse = CustomResponse(enabled=False),
         custom_response_on_upload: CustomResponse = CustomResponse(enabled=False),
@@ -2433,13 +2433,13 @@ class ResumableUploadTestCase(UploadTestCase):
 
     def clear_state(self) -> None:
         super().clear_state()
-        self.custom_response_on_create_resumable_url.clear_state()
-        self.custom_response_on_upload.clear_state()
-        self.custom_response_on_status_check.clear_state()
-        self.custom_response_on_abort.clear_state()
+        self.custom_response_on_create_resumable_url.clear_state()  # type: ignore[no-untyped-call]
+        self.custom_response_on_upload.clear_state()  # type: ignore[no-untyped-call]
+        self.custom_response_on_status_check.clear_state()  # type: ignore[no-untyped-call]
+        self.custom_response_on_abort.clear_state()  # type: ignore[no-untyped-call]
 
     def match_request_to_response(
-        self, request: requests.Request, server_state: ResumableUploadServerState
+        self, request: requests.Request, server_state: ResumableUploadServerState  # type: ignore[override]
     ) -> Optional[requests.Response]:
         request_url = urlparse(request.url)
         request_query = parse_qs(request_url.query)
@@ -2453,9 +2453,9 @@ class ResumableUploadTestCase(UploadTestCase):
         ):
 
             assert UploadTestCase.is_auth_header_present(request)
-            assert request.text is None
+            assert request.text is None  # type: ignore[attr-defined]
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 response_json = {"resumable_upload": {"session_token": server_state.session_token}}
                 return [200, json.dumps(response_json), {}]
 
@@ -2476,7 +2476,7 @@ class ResumableUploadTestCase(UploadTestCase):
             assert request_json["path"] == self.path
             assert request_json["session_token"] == server_state.session_token
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 resumable_upload_url = f"{ResumableUploadServerState.resumable_upload_url_prefix}{self.path}"
 
                 response_json = {
@@ -2499,17 +2499,17 @@ class ResumableUploadTestCase(UploadTestCase):
             content_range_header = request.headers["Content-range"]
             is_status_check_request = re.match("bytes \\*/\\*", content_range_header)
             if is_status_check_request:
-                assert not request.body
+                assert not request.body  # type: ignore[attr-defined]
                 response_customizer = self.custom_response_on_status_check
             else:
                 response_customizer = self.custom_response_on_upload
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 if not is_status_check_request:
-                    body = request.body.read()
+                    body = request.body.read()  # type: ignore[attr-defined]
 
                     match = re.match("bytes (\\d+)-(\\d+)/(.+)", content_range_header)
-                    [range_start_s, range_end_s, file_size_s] = match.groups()
+                    [range_start_s, range_end_s, file_size_s] = match.groups()  # type: ignore[union-attr]
 
                     server_state.save_part(int(range_start_s), int(range_end_s), body, file_size_s)
 
@@ -2536,7 +2536,7 @@ class ResumableUploadTestCase(UploadTestCase):
             url_path = request.url[len(ResumableUploadServerState.resumable_upload_url_prefix) :]
             assert url_path == self.path
 
-            def processor() -> list:
+            def processor() -> list:  # type: ignore[type-arg]
                 server_state.abort_upload()
                 return [200, "", {}]
 
@@ -2552,7 +2552,7 @@ class ResumableUploadTestCase(UploadTestCase):
         return str(test_case)
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore[misc]
     "test_case",
     [
         # ------------------ failures on creating resumable upload URL ------------------
@@ -2803,7 +2803,7 @@ class CreateDownloadUrlResponseTestCase:
         return f"CreateDownloadUrlResponseTestCase(data={self.data})"
 
 
-@pytest.mark.parametrize(
+@pytest.mark.parametrize(  # type: ignore[misc]
     "test_case",
     [
         CreateDownloadUrlResponseTestCase(

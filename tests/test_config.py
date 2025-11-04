@@ -5,7 +5,7 @@ import random
 import string
 from datetime import datetime
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk import oauth, useragent
 from databricks.sdk.config import Config, with_product, with_user_agent_extra
@@ -16,13 +16,13 @@ from .conftest import noop_credentials, set_az_path
 __tests__ = os.path.dirname(__file__)
 
 
-def test_config_supports_legacy_credentials_provider():
+def test_config_supports_legacy_credentials_provider():  # type: ignore[no-untyped-def]
     c = Config(
         credentials_provider=noop_credentials,
         product="foo",
         product_version="1.2.3",
     )
-    c2 = c.copy()
+    c2 = c.copy()  # type: ignore[no-untyped-call]
     assert c2._product_info == ("foo", "1.2.3")
 
 
@@ -37,17 +37,17 @@ def test_config_supports_legacy_credentials_provider():
         ("abc.def.ghi:443", "https://abc.def.ghi"),
     ],
 )
-def test_config_host_url_format_check(mocker, host, expected):
+def test_config_host_url_format_check(mocker, host, expected):  # type: ignore[no-untyped-def]
     mocker.patch("databricks.sdk.config.Config.init_auth")
     assert Config(host=host).host == expected
 
 
-def test_extra_and_upstream_user_agent(monkeypatch):
+def test_extra_and_upstream_user_agent(monkeypatch):  # type: ignore[no-untyped-def]
 
     class MockUname:
 
         @property
-        def system(self):
+        def system(self):  # type: ignore[no-untyped-def]
             return "TestOS"
 
     # Clear all environment variables and cached CICD provider.
@@ -92,7 +92,7 @@ def test_extra_and_upstream_user_agent(monkeypatch):
     assert not config3.user_agent.startswith("some-product/0.32.1")
 
 
-def test_config_copy_deep_copies_user_agent_other_info(config):
+def test_config_copy_deep_copies_user_agent_other_info(config):  # type: ignore[no-untyped-def]
     config_copy = config.copy()
 
     config.with_user_agent_extra("test", "test1")
@@ -110,7 +110,7 @@ def test_config_copy_deep_copies_user_agent_other_info(config):
     useragent._reset_extra(original_extra)
 
 
-def test_config_deep_copy(monkeypatch, mocker, tmp_path):
+def test_config_deep_copy(monkeypatch, mocker, tmp_path):  # type: ignore[no-untyped-def]
     mocker.patch(
         "databricks.sdk.credentials_provider.CliTokenSource.refresh",
         return_value=oauth.Token(
@@ -124,11 +124,11 @@ def test_config_deep_copy(monkeypatch, mocker, tmp_path):
     monkeypatch.setenv("PATH", tmp_path.as_posix())
 
     config = Config(host="https://abc123.azuredatabricks.net", auth_type="databricks-cli")
-    config_copy = config.deep_copy()
+    config_copy = config.deep_copy()  # type: ignore[no-untyped-call]
     assert config_copy.host == config.host
 
 
-def write_large_dummy_executable(path: pathlib.Path):
+def write_large_dummy_executable(path: pathlib.Path):  # type: ignore[no-untyped-def]
     cli = path.joinpath("databricks")
 
     # Generate a long random string to inflate the file size.
@@ -151,24 +151,24 @@ exit 0
     return cli
 
 
-def test_load_azure_tenant_id_404(requests_mock, monkeypatch):
-    set_az_path(monkeypatch)
+def test_load_azure_tenant_id_404(requests_mock, monkeypatch):  # type: ignore[no-untyped-def]
+    set_az_path(monkeypatch)  # type: ignore[no-untyped-call]
     mock = requests_mock.get("https://abc123.azuredatabricks.net/aad/auth", status_code=404)
     cfg = Config(host="https://abc123.azuredatabricks.net")
     assert cfg.azure_tenant_id is None
     assert mock.called_once
 
 
-def test_load_azure_tenant_id_no_location_header(requests_mock, monkeypatch):
-    set_az_path(monkeypatch)
+def test_load_azure_tenant_id_no_location_header(requests_mock, monkeypatch):  # type: ignore[no-untyped-def]
+    set_az_path(monkeypatch)  # type: ignore[no-untyped-call]
     mock = requests_mock.get("https://abc123.azuredatabricks.net/aad/auth", status_code=302)
     cfg = Config(host="https://abc123.azuredatabricks.net")
     assert cfg.azure_tenant_id is None
     assert mock.called_once
 
 
-def test_load_azure_tenant_id_unparsable_location_header(requests_mock, monkeypatch):
-    set_az_path(monkeypatch)
+def test_load_azure_tenant_id_unparsable_location_header(requests_mock, monkeypatch):  # type: ignore[no-untyped-def]
+    set_az_path(monkeypatch)  # type: ignore[no-untyped-call]
     mock = requests_mock.get(
         "https://abc123.azuredatabricks.net/aad/auth",
         status_code=302,
@@ -179,8 +179,8 @@ def test_load_azure_tenant_id_unparsable_location_header(requests_mock, monkeypa
     assert mock.called_once
 
 
-def test_load_azure_tenant_id_happy_path(requests_mock, monkeypatch):
-    set_az_path(monkeypatch)
+def test_load_azure_tenant_id_happy_path(requests_mock, monkeypatch):  # type: ignore[no-untyped-def]
+    set_az_path(monkeypatch)  # type: ignore[no-untyped-call]
     mock = requests_mock.get(
         "https://abc123.azuredatabricks.net/aad/auth",
         status_code=302,
@@ -191,7 +191,7 @@ def test_load_azure_tenant_id_happy_path(requests_mock, monkeypatch):
     assert mock.called_once
 
 
-def test_oauth_token_with_pat_auth():
+def test_oauth_token_with_pat_auth():  # type: ignore[no-untyped-def]
     """Test that oauth_token() raises an error for PAT authentication."""
     config = Config(host="https://test.databricks.com", token="dapi1234567890abcdef")
 
@@ -201,7 +201,7 @@ def test_oauth_token_with_pat_auth():
     assert "OAuth tokens are not available for pat authentication" in str(exc_info.value)
 
 
-def test_oauth_token_with_basic_auth():
+def test_oauth_token_with_basic_auth():  # type: ignore[no-untyped-def]
     """Test that oauth_token() raises an error for basic authentication."""
     config = Config(host="https://test.databricks.com", username="testuser", password="testpass")
 
@@ -211,7 +211,7 @@ def test_oauth_token_with_basic_auth():
     assert "OAuth tokens are not available for basic authentication" in str(exc_info.value)
 
 
-def test_oauth_token_with_oauth_provider(mocker):
+def test_oauth_token_with_oauth_provider(mocker):  # type: ignore[no-untyped-def]
     """Test that oauth_token() works correctly for OAuth authentication."""
     from databricks.sdk.credentials_provider import OAuthCredentialsProvider
     from databricks.sdk.oauth import Token
@@ -235,7 +235,7 @@ def test_oauth_token_with_oauth_provider(mocker):
     mock_oauth_provider.oauth_token.assert_called_once()
 
 
-def test_oauth_token_reuses_existing_provider(mocker):
+def test_oauth_token_reuses_existing_provider(mocker):  # type: ignore[no-untyped-def]
     """Test that oauth_token() reuses the existing OAuthCredentialsProvider."""
     from databricks.sdk.credentials_provider import OAuthCredentialsProvider
     from databricks.sdk.oauth import Token

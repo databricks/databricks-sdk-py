@@ -10,7 +10,7 @@ import urllib.parse
 from functools import partial
 from pathlib import Path
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.service import iam, oauth2
@@ -20,8 +20,8 @@ from databricks.sdk.service.jobs import NotebookTask, Task, ViewType
 from databricks.sdk.service.workspace import ImportFormat
 
 
-@pytest.fixture
-def fresh_wheel_file(tmp_path) -> Path:
+@pytest.fixture  # type: ignore[misc]
+def fresh_wheel_file(tmp_path) -> Path:  # type: ignore[no-untyped-def]
     this_file = Path(__file__)
     project_root = this_file.parent.parent.parent.absolute()
     build_root = tmp_path / "databricks-sdk-py"
@@ -40,13 +40,13 @@ def fresh_wheel_file(tmp_path) -> Path:
         filename = f"databricks_sdk-{__version__}-py3-none-any.whl"
         wheel_file = build_root / "dist" / filename
 
-        return wheel_file
+        return wheel_file  # type: ignore[no-any-return]
     except subprocess.CalledProcessError as e:
         raise RuntimeError(e.stderr)
 
 
 @pytest.mark.parametrize("mode", [DataSecurityMode.SINGLE_USER, DataSecurityMode.USER_ISOLATION])
-def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip, random, mode):
+def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip, random, mode):  # type: ignore[no-untyped-def]
     instance_pool_id = env_or_skip("TEST_INSTANCE_POOL_ID")
     latest = ucws.clusters.select_spark_version(latest=True)
 
@@ -100,7 +100,7 @@ def test_runtime_auth_from_interactive_on_uc(ucws, fresh_wheel_file, env_or_skip
         ucws.clusters.permanent_delete(interactive_cluster.cluster_id)
 
 
-def _get_lts_versions(w) -> typing.List[SparkVersion]:
+def _get_lts_versions(w) -> typing.List[SparkVersion]:  # type: ignore[no-untyped-def]
     v = w.clusters.spark_versions()
     lts_runtimes = [
         x
@@ -110,30 +110,30 @@ def _get_lts_versions(w) -> typing.List[SparkVersion]:
     return lts_runtimes
 
 
-def test_runtime_auth_from_jobs_volumes(ucws, files_api, fresh_wheel_file, env_or_skip, random, volume):
-    dbr_versions = [v for v in _get_lts_versions(ucws) if int(v.key.split(".")[0]) >= 15]
+def test_runtime_auth_from_jobs_volumes(ucws, files_api, fresh_wheel_file, env_or_skip, random, volume):  # type: ignore[no-untyped-def]
+    dbr_versions = [v for v in _get_lts_versions(ucws) if int(v.key.split(".")[0]) >= 15]  # type: ignore[union-attr]
 
     volume_wheel = f"{volume}/tmp/wheels/{random(10)}/{fresh_wheel_file.name}"
     with fresh_wheel_file.open("rb") as f:
         files_api.upload(volume_wheel, f)
 
     lib = Library(whl=volume_wheel)
-    return _test_runtime_auth_from_jobs_inner(ucws, env_or_skip, random, dbr_versions, lib)
+    return _test_runtime_auth_from_jobs_inner(ucws, env_or_skip, random, dbr_versions, lib)  # type: ignore[no-untyped-call]
 
 
-def test_runtime_auth_from_jobs_dbfs(w, fresh_wheel_file, env_or_skip, random):
+def test_runtime_auth_from_jobs_dbfs(w, fresh_wheel_file, env_or_skip, random):  # type: ignore[no-untyped-def]
     # Library installation from DBFS is not supported past DBR 14.3
-    dbr_versions = [v for v in _get_lts_versions(w) if int(v.key.split(".")[0]) < 15]
+    dbr_versions = [v for v in _get_lts_versions(w) if int(v.key.split(".")[0]) < 15]  # type: ignore[union-attr]
 
     dbfs_wheel = f"/tmp/wheels/{random(10)}/{fresh_wheel_file.name}"
     with fresh_wheel_file.open("rb") as f:
         w.dbfs.upload(dbfs_wheel, f)
 
     lib = Library(whl=f"dbfs:{dbfs_wheel}")
-    return _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, lib)
+    return _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, lib)  # type: ignore[no-untyped-call]
 
 
-def _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, library):
+def _test_runtime_auth_from_jobs_inner(w, env_or_skip, random, dbr_versions, library):  # type: ignore[no-untyped-def]
     instance_pool_id = env_or_skip("TEST_INSTANCE_POOL_ID")
 
     my_name = w.current_user.me().user_name
@@ -173,11 +173,11 @@ print(me.user_name)"""
 
     waiter = w.jobs.submit(run_name=f"Runtime Native Auth {random(10)}", tasks=tasks)
     run = waiter.result()
-    for task_key, output in _task_outputs(w, run).items():
+    for task_key, output in _task_outputs(w, run).items():  # type: ignore[no-untyped-call]
         assert my_name in output, f"{task_key} does not work with notebook native auth"
 
 
-def _task_outputs(w, run):
+def _task_outputs(w, run):  # type: ignore[no-untyped-def]
     notebook_model_re = re.compile(r"var __DATABRICKS_NOTEBOOK_MODEL = '(.*)';", re.MULTILINE)
 
     task_outputs = {}
@@ -202,7 +202,7 @@ def _task_outputs(w, run):
     return task_outputs
 
 
-def test_wif_account(ucacct, env_or_skip, random):
+def test_wif_account(ucacct, env_or_skip, random):  # type: ignore[no-untyped-def]
 
     sp = ucacct.service_principals.create(
         active=True,
@@ -234,7 +234,7 @@ def test_wif_account(ucacct, env_or_skip, random):
     next(groups)
 
 
-def test_wif_workspace(ucacct, env_or_skip, random):
+def test_wif_workspace(ucacct, env_or_skip, random):  # type: ignore[no-untyped-def]
 
     workspace_id = env_or_skip("TEST_WORKSPACE_ID")
     workspace_url = env_or_skip("TEST_WORKSPACE_URL")

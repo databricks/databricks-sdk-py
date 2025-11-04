@@ -1,7 +1,7 @@
 import threading
 import time
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import ModelServingUserCredentials
@@ -52,7 +52,7 @@ default_auth_base_error_message = (
         ),
     ],
 )
-def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeypatch, mocker):
+def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeypatch, mocker):  # type: ignore[no-untyped-def]
     ## In mlflow we check for these two environment variables to return the correct config
     for env_name, env_value in env_values:
         monkeypatch.setenv(env_name, env_value)
@@ -96,8 +96,8 @@ def test_model_serving_auth(env_values, del_env_values, oauth_file_name, monkeyp
         ),  # Not in Model Serving and Valid File Name
     ],
 )
-@raises(default_auth_base_error_message)
-def test_model_serving_auth_errors(env_values, oauth_file_name, monkeypatch):
+@raises(default_auth_base_error_message)  # type: ignore[no-untyped-call]
+def test_model_serving_auth_errors(env_values, oauth_file_name, monkeypatch):  # type: ignore[no-untyped-def]
     # Guarantee that the tests defaults to env variables rather than config file.
     #
     # TODO: this is hacky and we should find a better way to tell the config
@@ -114,7 +114,7 @@ def test_model_serving_auth_errors(env_values, oauth_file_name, monkeypatch):
     Config()
 
 
-def test_model_serving_auth_refresh(monkeypatch, mocker):
+def test_model_serving_auth_refresh(monkeypatch, mocker):  # type: ignore[no-untyped-def]
     ## In mlflow we check for these two environment variables to return the correct config
     monkeypatch.setenv("IS_IN_DB_MODEL_SERVING_ENV", "true")
     monkeypatch.setenv("DB_MODEL_SERVING_HOST_URL", "x")
@@ -161,7 +161,7 @@ def test_model_serving_auth_refresh(monkeypatch, mocker):
     assert headers.get("Authorization") == "Bearer databricks_sdk_unit_test_token_v2"
 
 
-def test_agent_user_credentials(monkeypatch, mocker):
+def test_agent_user_credentials(monkeypatch, mocker):  # type: ignore[no-untyped-def]
     # Guarantee that the tests defaults to env variables rather than config file.
     #
     # TODO: this is hacky and we should find a better way to tell the config
@@ -180,7 +180,7 @@ def test_agent_user_credentials(monkeypatch, mocker):
     thread_data = current_thread.__dict__
     thread_data["invokers_token"] = invokers_token_val
 
-    cfg = Config(credentials_strategy=ModelServingUserCredentials())
+    cfg = Config(credentials_strategy=ModelServingUserCredentials())  # type: ignore[no-untyped-call]
     assert cfg.auth_type == "model_serving_user_credentials"
 
     headers = cfg.authenticate()
@@ -202,9 +202,9 @@ def test_agent_user_credentials(monkeypatch, mocker):
 
     successful_authentication_event = threading.Event()
 
-    def authenticate():
+    def authenticate():  # type: ignore[no-untyped-def]
         try:
-            cfg = Config(credentials_strategy=ModelServingUserCredentials())
+            cfg = Config(credentials_strategy=ModelServingUserCredentials())  # type: ignore[no-untyped-call]
             headers = cfg.authenticate()
             assert cfg.host == "x"
             assert headers.get("Authorization") == f"Bearer databricks_invokers_token_v2"
@@ -220,12 +220,12 @@ def test_agent_user_credentials(monkeypatch, mocker):
 
 
 # If this credential strategy is being used in a non model serving environments then use default credential strategy instead
-def test_agent_user_credentials_in_non_model_serving_environments(monkeypatch):
+def test_agent_user_credentials_in_non_model_serving_environments(monkeypatch):  # type: ignore[no-untyped-def]
 
     monkeypatch.setenv("DATABRICKS_HOST", "x")
     monkeypatch.setenv("DATABRICKS_TOKEN", "token")
 
-    cfg = Config(credentials_strategy=ModelServingUserCredentials())
+    cfg = Config(credentials_strategy=ModelServingUserCredentials())  # type: ignore[no-untyped-call]
     assert cfg.auth_type == "pat"  # Auth type is PAT as it is no longer in a model serving environment
 
     headers = cfg.authenticate()

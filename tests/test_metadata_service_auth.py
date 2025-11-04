@@ -7,10 +7,10 @@ from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import MetadataServiceTokenSource
 
 
-def get_test_server(host: str, token: str, expires_after: int):
+def get_test_server(host: str, token: str, expires_after: int):  # type: ignore[no-untyped-def]
     counter = 0
 
-    def inner(*args, **kwargs):
+    def inner(*args, **kwargs):  # type: ignore[no-untyped-def]
         nonlocal counter
         headers = kwargs["headers"]
         if (
@@ -39,7 +39,7 @@ def get_test_server(host: str, token: str, expires_after: int):
     return inner
 
 
-def test_config_metadata_service(monkeypatch):
+def test_config_metadata_service(monkeypatch):  # type: ignore[no-untyped-def]
     monkeypatch.setattr(requests, "get", get_test_server("https://x", "token", 100))
     monkeypatch.setenv("DATABRICKS_HOST", "x")
     monkeypatch.setenv("DATABRICKS_METADATA_SERVICE_URL", "http://y")
@@ -50,7 +50,7 @@ def test_config_metadata_service(monkeypatch):
     assert cfg.metadata_service_url == "http://y"
 
 
-def test_config_metadata_service_athenticate(monkeypatch):
+def test_config_metadata_service_athenticate(monkeypatch):  # type: ignore[no-untyped-def]
     monkeypatch.setattr(requests, "get", get_test_server("https://x", "token", 1000))
     monkeypatch.setenv("DATABRICKS_HOST", "x")
     monkeypatch.setenv("DATABRICKS_METADATA_SERVICE_URL", "http://y")
@@ -64,7 +64,7 @@ def test_config_metadata_service_athenticate(monkeypatch):
     assert headers.get("Authorization") == "Bearer token-0"
 
 
-def test_config_metadata_service_refresh(monkeypatch):
+def test_config_metadata_service_refresh(monkeypatch):  # type: ignore[no-untyped-def]
     monkeypatch.setattr(requests, "get", get_test_server("https://x", "token", 10))
     monkeypatch.setenv("DATABRICKS_HOST", "x")
     monkeypatch.setenv("DATABRICKS_METADATA_SERVICE_URL", "http://y")

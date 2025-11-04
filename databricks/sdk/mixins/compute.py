@@ -54,7 +54,7 @@ class SemVer:
             build=m.group("build"),
         )
 
-    def __lt__(self, other: "SemVer"):
+    def __lt__(self, other: "SemVer"):  # type: ignore[no-untyped-def]
         if not other:
             return False
         if self.major != other.major:
@@ -64,9 +64,9 @@ class SemVer:
         if self.patch != other.patch:
             return self.patch < other.patch
         if self.pre_release != other.pre_release:
-            return self.pre_release < other.pre_release
+            return self.pre_release < other.pre_release  # type: ignore[operator]
         if self.build != other.build:
-            return self.build < other.build
+            return self.build < other.build  # type: ignore[operator]
         return False
 
 
@@ -82,7 +82,7 @@ class ClustersExt(compute.ClustersAPI):
         genomics: bool = False,
         gpu: bool = False,
         scala: str = "2.12",
-        spark_version: str = None,
+        spark_version: str = None,  # type: ignore[assignment]
         photon: bool = False,
         graviton: bool = False,
     ) -> str:
@@ -104,22 +104,22 @@ class ClustersExt(compute.ClustersAPI):
         # Logic ported from https://github.com/databricks/databricks-sdk-go/blob/main/service/compute/spark_version.go
         versions = []
         sv = self.spark_versions()
-        for version in sv.versions:
-            if "-scala" + scala not in version.key:
+        for version in sv.versions:  # type: ignore[union-attr]
+            if "-scala" + scala not in version.key:  # type: ignore[operator]
                 continue
             matches = (
-                ("apache-spark-" not in version.key)
-                and (("-ml-" in version.key) == ml)
-                and (("-hls-" in version.key) == genomics)
-                and (("-gpu-" in version.key) == gpu)
-                and (("-photon-" in version.key) == photon)
-                and (("-aarch64-" in version.key) == graviton)
-                and (("Beta" in version.name) == beta)
+                ("apache-spark-" not in version.key)  # type: ignore[operator]
+                and (("-ml-" in version.key) == ml)  # type: ignore[operator]
+                and (("-hls-" in version.key) == genomics)  # type: ignore[operator]
+                and (("-gpu-" in version.key) == gpu)  # type: ignore[operator]
+                and (("-photon-" in version.key) == photon)  # type: ignore[operator]
+                and (("-aarch64-" in version.key) == graviton)  # type: ignore[operator]
+                and (("Beta" in version.name) == beta)  # type: ignore[operator]
             )
             if matches and long_term_support:
-                matches = matches and (("LTS" in version.name) or ("-esr-" in version.key))
+                matches = matches and (("LTS" in version.name) or ("-esr-" in version.key))  # type: ignore[operator]
             if matches and spark_version:
-                matches = matches and ("Apache Spark " + spark_version in version.name)
+                matches = matches and ("Apache Spark " + spark_version in version.name)  # type: ignore[operator]
             if matches:
                 versions.append(version.key)
         if len(versions) < 1:
@@ -127,17 +127,17 @@ class ClustersExt(compute.ClustersAPI):
         if len(versions) > 1:
             if not latest:
                 raise ValueError("spark versions query returned multiple results")
-            versions = sorted(versions, key=SemVer.parse, reverse=True)
-        return versions[0]
+            versions = sorted(versions, key=SemVer.parse, reverse=True)  # type: ignore[arg-type]
+        return versions[0]  # type: ignore[return-value]
 
     @staticmethod
-    def _node_sorting_tuple(item: compute.NodeType) -> tuple:
+    def _node_sorting_tuple(item: compute.NodeType) -> tuple:  # type: ignore[type-arg]
         local_disks = local_disk_size_gb = local_nvme_disk = local_nvme_disk_size_gb = 0
         if item.node_instance_type is not None:
-            local_disks = item.node_instance_type.local_disks
-            local_nvme_disk = item.node_instance_type.local_nvme_disks
-            local_disk_size_gb = item.node_instance_type.local_disk_size_gb
-            local_nvme_disk_size_gb = item.node_instance_type.local_nvme_disk_size_gb
+            local_disks = item.node_instance_type.local_disks  # type: ignore[assignment]
+            local_nvme_disk = item.node_instance_type.local_nvme_disks  # type: ignore[assignment]
+            local_disk_size_gb = item.node_instance_type.local_disk_size_gb  # type: ignore[assignment]
+            local_nvme_disk_size_gb = item.node_instance_type.local_nvme_disk_size_gb  # type: ignore[assignment]
         return (
             item.is_deprecated,
             item.num_cores,
@@ -167,19 +167,19 @@ class ClustersExt(compute.ClustersAPI):
 
     def select_node_type(
         self,
-        min_memory_gb: int = None,
-        gb_per_core: int = None,
-        min_cores: int = None,
-        min_gpus: int = None,
-        local_disk: bool = None,
-        local_disk_min_size: int = None,
-        category: str = None,
-        photon_worker_capable: bool = None,
-        photon_driver_capable: bool = None,
-        graviton: bool = None,
-        is_io_cache_enabled: bool = None,
-        support_port_forwarding: bool = None,
-        fleet: str = None,
+        min_memory_gb: int = None,  # type: ignore[assignment]
+        gb_per_core: int = None,  # type: ignore[assignment]
+        min_cores: int = None,  # type: ignore[assignment]
+        min_gpus: int = None,  # type: ignore[assignment]
+        local_disk: bool = None,  # type: ignore[assignment]
+        local_disk_min_size: int = None,  # type: ignore[assignment]
+        category: str = None,  # type: ignore[assignment]
+        photon_worker_capable: bool = None,  # type: ignore[assignment]
+        photon_driver_capable: bool = None,  # type: ignore[assignment]
+        graviton: bool = None,  # type: ignore[assignment]
+        is_io_cache_enabled: bool = None,  # type: ignore[assignment]
+        support_port_forwarding: bool = None,  # type: ignore[assignment]
+        fleet: str = None,  # type: ignore[assignment]
     ) -> str:
         """Selects smallest available node type given the conditions.
 
@@ -201,7 +201,7 @@ class ClustersExt(compute.ClustersAPI):
         """
         # Logic ported from https://github.com/databricks/databricks-sdk-go/blob/main/service/clusters/node_type.go
         res = self.list_node_types()
-        types = sorted(res.node_types, key=self._node_sorting_tuple)
+        types = sorted(res.node_types, key=self._node_sorting_tuple)  # type: ignore[arg-type]
         for nt in types:
             if self._should_node_be_skipped(nt):
                 continue
@@ -214,12 +214,12 @@ class ClustersExt(compute.ClustersAPI):
                 continue
             if min_cores is not None and nt.num_cores < min_cores:
                 continue
-            if (min_gpus is not None and nt.num_gpus < min_gpus) or (min_gpus == 0 and nt.num_gpus > 0):
+            if (min_gpus is not None and nt.num_gpus < min_gpus) or (min_gpus == 0 and nt.num_gpus > 0):  # type: ignore[operator]
                 continue
             if local_disk or local_disk_min_size is not None:
                 instance_type = nt.node_instance_type
-                local_disks = int(instance_type.local_disks) if instance_type.local_disks else 0
-                local_nvme_disks = int(instance_type.local_nvme_disks) if instance_type.local_nvme_disks else 0
+                local_disks = int(instance_type.local_disks) if instance_type.local_disks else 0  # type: ignore[union-attr]
+                local_nvme_disks = int(instance_type.local_nvme_disks) if instance_type.local_nvme_disks else 0  # type: ignore[union-attr]
                 if instance_type is None or (local_disks < 1 and local_nvme_disks < 1):
                     continue
                 local_disk_size_gb = instance_type.local_disk_size_gb if instance_type.local_disk_size_gb else 0

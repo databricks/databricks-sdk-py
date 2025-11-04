@@ -1,12 +1,12 @@
 import os
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.version import __version__
 
 
 @pytest.fixture(scope="function")
-def user_agent():
+def user_agent():  # type: ignore[no-untyped-def]
     from databricks.sdk import useragent
 
     orig_product_name = useragent._product_name
@@ -21,7 +21,7 @@ def user_agent():
 
 
 @pytest.mark.xdist_group(name="user_agent")
-def test_user_agent(user_agent):
+def test_user_agent(user_agent):  # type: ignore[no-untyped-def]
     user_agent._reset_product()
     default = user_agent.to_string()
 
@@ -32,13 +32,13 @@ def test_user_agent(user_agent):
 
 
 @pytest.mark.xdist_group(name="user_agent")
-def test_user_agent_with_product(user_agent):
+def test_user_agent_with_product(user_agent):  # type: ignore[no-untyped-def]
     user_agent.with_product("test", "1.0.0")
     assert "test/1.0.0" in user_agent.to_string()
 
 
 @pytest.mark.xdist_group(name="user_agent")
-def test_user_agent_with_partner(user_agent):
+def test_user_agent_with_partner(user_agent):  # type: ignore[no-untyped-def]
     user_agent.with_partner("test")
     user_agent.with_partner("differenttest")
     assert "partner/test" in user_agent.to_string()
@@ -46,7 +46,7 @@ def test_user_agent_with_partner(user_agent):
 
 
 @pytest.fixture(scope="function")
-def clear_cicd():
+def clear_cicd():  # type: ignore[no-untyped-def]
     # Save and clear env vars.
     original_env = os.environ.copy()
     os.environ.clear()
@@ -59,10 +59,10 @@ def clear_cicd():
     yield
 
     # Restore env vars.
-    os.environ = original_env
+    os.environ = original_env  # type: ignore[assignment]
 
 
-def test_user_agent_cicd_no_provider(clear_cicd):
+def test_user_agent_cicd_no_provider(clear_cicd):  # type: ignore[no-untyped-def]
     from databricks.sdk import useragent
 
     user_agent = useragent.to_string()
@@ -70,7 +70,7 @@ def test_user_agent_cicd_no_provider(clear_cicd):
     assert "cicd" not in user_agent
 
 
-def test_user_agent_cicd_one_provider(clear_cicd):
+def test_user_agent_cicd_one_provider(clear_cicd):  # type: ignore[no-untyped-def]
     os.environ["GITHUB_ACTIONS"] = "true"
 
     from databricks.sdk import useragent
@@ -80,7 +80,7 @@ def test_user_agent_cicd_one_provider(clear_cicd):
     assert "cicd/github" in user_agent
 
 
-def test_user_agent_cicd_two_provider(clear_cicd):
+def test_user_agent_cicd_two_provider(clear_cicd):  # type: ignore[no-untyped-def]
     os.environ["GITHUB_ACTIONS"] = "true"
     os.environ["GITLAB_CI"] = "true"
 

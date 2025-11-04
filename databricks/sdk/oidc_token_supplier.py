@@ -29,7 +29,7 @@ class GitHubOIDCTokenSupplier:
         if "value" not in response_json:
             return None
 
-        return response_json["value"]
+        return response_json["value"]  # type: ignore[no-any-return]
 
 
 class AzureDevOpsOIDCTokenSupplier:
@@ -40,7 +40,7 @@ class AzureDevOpsOIDCTokenSupplier:
     See: https://docs.microsoft.com/en-us/azure/devops/pipelines/build/variables
     """
 
-    def __init__(self):
+    def __init__(self):  # type: ignore[no-untyped-def]
         """Initialize and validate Azure DevOps environment variables."""
         # Get Azure DevOps environment variables.
         self.access_token = os.environ.get("SYSTEM_ACCESSTOKEN")
@@ -102,7 +102,7 @@ class AzureDevOpsOIDCTokenSupplier:
                 return None
 
             logger.debug("Azure DevOps OIDC: successfully obtained token")
-            return response_json["oidcToken"]
+            return response_json["oidcToken"]  # type: ignore[no-any-return]
         except Exception as e:
             logger.debug(f"Azure DevOps OIDC: failed to get token: {e}")
             return None

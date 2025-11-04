@@ -1,9 +1,9 @@
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.core import DatabricksError
 
 
-def test_error_unmarshall(w, random):
+def test_error_unmarshall(w, random):  # type: ignore[no-untyped-def]
     with pytest.raises(DatabricksError) as exc_info:
         w.command_execution.execute(cluster_id="__non_existing__")
     err = exc_info.value

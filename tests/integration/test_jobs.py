@@ -2,7 +2,7 @@ import datetime
 import logging
 
 
-def test_jobs(w):
+def test_jobs(w):  # type: ignore[no-untyped-def]
     found = 0
     for job in w.jobs.list():
         logging.info(f"Looking at {job.settings.name}")
@@ -10,7 +10,7 @@ def test_jobs(w):
     assert found > 0
 
 
-def test_submitting_jobs(w, random, env_or_skip):
+def test_submitting_jobs(w, random, env_or_skip):  # type: ignore[no-untyped-def]
     from databricks.sdk.service import compute, jobs
 
     py_on_dbfs = f"/home/{w.current_user.me().user_name}/sample.py"
@@ -35,8 +35,8 @@ def test_submitting_jobs(w, random, env_or_skip):
 
     logging.info(f"starting to poll: {waiter.run_id}")
 
-    def print_status(run: jobs.Run):
-        statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in run.tasks]
+    def print_status(run: jobs.Run):  # type: ignore[no-untyped-def]
+        statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in run.tasks]  # type: ignore[union-attr]
         logging.info(f'workflow intermediate status: {", ".join(statuses)}')
 
     run = waiter.result(timeout=datetime.timedelta(minutes=15), callback=print_status)
@@ -44,7 +44,7 @@ def test_submitting_jobs(w, random, env_or_skip):
     logging.info(f"job finished: {run.run_page_url}")
 
 
-def test_last_job_runs(w):
+def test_last_job_runs(w):  # type: ignore[no-untyped-def]
     from collections import defaultdict
     from datetime import datetime, timezone
 
@@ -78,7 +78,7 @@ def test_last_job_runs(w):
         logging.info(f"Latest: {line}")
 
 
-def test_create_job(w):
+def test_create_job(w):  # type: ignore[no-untyped-def]
     from databricks.sdk.service import compute, jobs
 
     cluster = jobs.JobCluster(

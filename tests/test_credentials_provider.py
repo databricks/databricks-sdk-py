@@ -5,7 +5,7 @@ from databricks.sdk import credentials_provider, oauth, oidc
 
 
 # Tests for external_browser function
-def test_external_browser_refresh_success(mocker):
+def test_external_browser_refresh_success(mocker):  # type: ignore[no-untyped-def]
     """Tests successful refresh of existing credentials."""
 
     # Mock Config.
@@ -23,7 +23,7 @@ def test_external_browser_refresh_success(mocker):
     mock_token_cache.load.return_value = mock_session_credentials
 
     # Mock SessionCredentials.
-    def want_credentials_provider(_):
+    def want_credentials_provider(_):  # type: ignore[no-untyped-def]
         return "new_credentials"
 
     mock_session_credentials.return_value = want_credentials_provider
@@ -41,7 +41,7 @@ def test_external_browser_refresh_success(mocker):
     assert got_credentials_provider == want_credentials_provider
 
 
-def test_external_browser_refresh_failure_new_oauth_flow(mocker):
+def test_external_browser_refresh_failure_new_oauth_flow(mocker):  # type: ignore[no-untyped-def]
     """Tests failed refresh, triggering a new OAuth flow."""
 
     # Mock Config.
@@ -59,7 +59,7 @@ def test_external_browser_refresh_failure_new_oauth_flow(mocker):
     mock_token_cache.load.return_value = mock_session_credentials
 
     # Mock SessionCredentials.
-    def want_credentials_provider(_):
+    def want_credentials_provider(_):  # type: ignore[no-untyped-def]
         return "new_credentials"
 
     mock_session_credentials.return_value = want_credentials_provider
@@ -90,7 +90,7 @@ def test_external_browser_refresh_failure_new_oauth_flow(mocker):
     assert got_credentials_provider == want_credentials_provider
 
 
-def test_external_browser_no_cached_credentials(mocker):
+def test_external_browser_no_cached_credentials(mocker):  # type: ignore[no-untyped-def]
     """Tests the case where there are no cached credentials, initiating a new OAuth flow."""
 
     # Mock Config.
@@ -108,7 +108,7 @@ def test_external_browser_no_cached_credentials(mocker):
     # Mock SessionCredentials.
     mock_session_credentials = Mock()
 
-    def want_credentials_provider(_):
+    def want_credentials_provider(_):  # type: ignore[no-untyped-def]
         return "new_credentials"
 
     mock_session_credentials.return_value = want_credentials_provider
@@ -138,7 +138,7 @@ def test_external_browser_no_cached_credentials(mocker):
     assert got_credentials_provider == want_credentials_provider
 
 
-def test_external_browser_consent_fails(mocker):
+def test_external_browser_consent_fails(mocker):  # type: ignore[no-untyped-def]
     """Tests the case where OAuth consent initiation fails."""
 
     # Mock Config.
@@ -174,7 +174,7 @@ def test_external_browser_consent_fails(mocker):
     assert got_credentials_provider is None
 
 
-def test_oidc_credentials_provider_invalid_id_token_source():
+def test_oidc_credentials_provider_invalid_id_token_source():  # type: ignore[no-untyped-def]
     # Use a mock config object to avoid initializing the auth initialization.
     mock_cfg = Mock()
     mock_cfg.host = "https://test-workspace.cloud.databricks.com"
@@ -192,7 +192,7 @@ def test_oidc_credentials_provider_invalid_id_token_source():
     assert cp is None
 
 
-def test_oidc_credentials_provider_valid_id_token_source(mocker):
+def test_oidc_credentials_provider_valid_id_token_source(mocker):  # type: ignore[no-untyped-def]
     # Use a mock config object to avoid initializing the auth initialization.
     mock_cfg = Mock()
     mock_cfg.host = "https://test-workspace.cloud.databricks.com"
@@ -208,7 +208,7 @@ def test_oidc_credentials_provider_valid_id_token_source(mocker):
 
     # Mock the _exchange_id_token method on DatabricksOidcTokenSource to return
     # a valid oauth.Token based on the IdToken.
-    def mock_exchange_id_token(id_token: oidc.IdToken):
+    def mock_exchange_id_token(id_token: oidc.IdToken):  # type: ignore[no-untyped-def]
         # Create a token based on the input ID token
         return oauth.Token(
             access_token=f"exchanged-{id_token.jwt}", token_type="Bearer", expiry=datetime.now() + timedelta(hours=1)

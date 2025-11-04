@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.oidc_token_supplier import AzureDevOpsOIDCTokenSupplier
 
@@ -172,8 +172,8 @@ _azure_devops_oidc_token_request_test_cases = [
 ]
 
 
-@pytest.mark.parametrize("test_case", _azure_devops_oidc_constructor_test_cases)
-def test_azure_devops_oidc_constructor_validation(test_case: AzureDevOpsOIDCConstructorTestCase, monkeypatch):
+@pytest.mark.parametrize("test_case", _azure_devops_oidc_constructor_test_cases)  # type: ignore[misc]
+def test_azure_devops_oidc_constructor_validation(test_case: AzureDevOpsOIDCConstructorTestCase, monkeypatch):  # type: ignore[no-untyped-def]
     """Test AzureDevOpsOIDCTokenSupplier constructor validation with various environment variable scenarios."""
     # Set up environment variables.
     if test_case.env_vars:
@@ -183,7 +183,7 @@ def test_azure_devops_oidc_constructor_validation(test_case: AzureDevOpsOIDCCons
     if test_case.should_raise_exception:
         # Test that constructor raises ValueError with expected message.
         with pytest.raises(ValueError) as exc_info:
-            AzureDevOpsOIDCTokenSupplier()
+            AzureDevOpsOIDCTokenSupplier()  # type: ignore[no-untyped-call]
 
         # Verify the exception message contains the expected text.
         if test_case.expected_exception_message:
@@ -192,7 +192,7 @@ def test_azure_devops_oidc_constructor_validation(test_case: AzureDevOpsOIDCCons
             ), f"Exception message should contain '{test_case.expected_exception_message}', but got: {str(exc_info.value)}"
     else:
         # Test that constructor succeeds.
-        supplier = AzureDevOpsOIDCTokenSupplier()
+        supplier = AzureDevOpsOIDCTokenSupplier()  # type: ignore[no-untyped-call]
         assert supplier is not None
         # Verify that all required attributes are set.
         assert supplier.access_token is not None
@@ -203,8 +203,8 @@ def test_azure_devops_oidc_constructor_validation(test_case: AzureDevOpsOIDCCons
         assert supplier.hub_name is not None
 
 
-@pytest.mark.parametrize("test_case", _azure_devops_oidc_token_request_test_cases)
-def test_azure_devops_oidc_token_request(test_case: AzureDevOpsOIDCTokenRequestTestCase, monkeypatch, mocker):
+@pytest.mark.parametrize("test_case", _azure_devops_oidc_token_request_test_cases)  # type: ignore[misc]
+def test_azure_devops_oidc_token_request(test_case: AzureDevOpsOIDCTokenRequestTestCase, monkeypatch, mocker):  # type: ignore[no-untyped-def]
     """Test OIDC token request/response handling (assumes constructor succeeds)."""
     # Set up environment variables.
     for key, value in test_case.env_vars.items():
@@ -218,7 +218,7 @@ def test_azure_devops_oidc_token_request(test_case: AzureDevOpsOIDCTokenRequestT
     mock_post = mocker.patch("requests.post", return_value=mock_response)
 
     # Initialize supplier (should succeed for these test cases since they have all required environment variables).
-    supplier = AzureDevOpsOIDCTokenSupplier()
+    supplier = AzureDevOpsOIDCTokenSupplier()  # type: ignore[no-untyped-call]
 
     # Get token.
     token = supplier.get_oidc_token("ignored-audience")  # Audience is ignored for Azure DevOps.

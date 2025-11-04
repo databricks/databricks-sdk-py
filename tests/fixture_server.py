@@ -5,7 +5,7 @@ from http.server import BaseHTTPRequestHandler
 
 
 @contextlib.contextmanager
-def http_fixture_server(
+def http_fixture_server(  # type: ignore[no-untyped-def]
     handler: typing.Callable[[BaseHTTPRequestHandler], None],
 ):
     from http.server import HTTPServer
@@ -13,7 +13,7 @@ def http_fixture_server(
 
     class _handler(BaseHTTPRequestHandler):
 
-        def __init__(
+        def __init__(  # type: ignore[no-untyped-def]
             self,
             handler: typing.Callable[[BaseHTTPRequestHandler], None],
             *args,
@@ -21,7 +21,7 @@ def http_fixture_server(
             self._handler = handler
             super().__init__(*args)
 
-        def __getattr__(self, item):
+        def __getattr__(self, item):  # type: ignore[no-untyped-def]
             if "do_" != item[0:3]:
                 raise AttributeError(f"method {item} not found")
             return functools.partial(self._handler, self)

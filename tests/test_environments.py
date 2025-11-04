@@ -2,19 +2,19 @@ from databricks.sdk.core import Config
 from databricks.sdk.environments import ALL_ENVS, Cloud
 
 
-def test_environment_aws():
+def test_environment_aws():  # type: ignore[no-untyped-def]
     c = Config(host="https://test.cloud.databricks.com", token="token")
     assert c.environment.cloud == Cloud.AWS
     assert c.environment.dns_zone == ".cloud.databricks.com"
 
 
-def test_environment_azure():
+def test_environment_azure():  # type: ignore[no-untyped-def]
     c = Config(host="https://test.dev.azuredatabricks.net", token="token")
     assert c.environment.cloud == Cloud.AZURE
     assert c.environment.dns_zone == ".dev.azuredatabricks.net"
 
 
-def test_default_environment_can_be_overridden():
+def test_default_environment_can_be_overridden():  # type: ignore[no-untyped-def]
     c = Config(
         host="https://test.cloud.databricks.com",
         token="token",

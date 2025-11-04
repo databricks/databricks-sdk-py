@@ -1,10 +1,10 @@
 import typing
 
-from IPython.core.display_functions import display
-from ipywidgets.widgets import (ValueWidget, Widget, widget_box,
+from IPython.core.display_functions import display  # type: ignore[import-not-found]
+from ipywidgets.widgets import (ValueWidget, Widget, widget_box,  # type: ignore[import-not-found]
                                 widget_selection, widget_string)
 
-from .default_widgets_utils import WidgetUtils
+from .default_widgets_utils import WidgetUtils  # type: ignore[attr-defined]
 
 
 class DbUtilsWidget:
@@ -14,16 +14,16 @@ class DbUtilsWidget:
         self.value_widget = value_widget
         self.box = widget_box.Box([self.label_widget, self.value_widget])
 
-    def display(self):
+    def display(self):  # type: ignore[no-untyped-def]
         display(self.box)
 
-    def close(self):
+    def close(self):  # type: ignore[no-untyped-def]
         self.label_widget.close()
         self.value_widget.close()
         self.box.close()
 
     @property
-    def value(self):
+    def value(self):  # type: ignore[no-untyped-def]
         value = self.value_widget.value
         if type(value) == str or value is None:
             return value
@@ -38,7 +38,7 @@ class IPyWidgetUtil(WidgetUtils):
     def __init__(self) -> None:
         self._widgets: typing.Dict[str, DbUtilsWidget] = {}
 
-    def _register(
+    def _register(  # type: ignore[no-untyped-def]
         self,
         name: str,
         widget: ValueWidget,
@@ -51,12 +51,12 @@ class IPyWidgetUtil(WidgetUtils):
             self.remove(name)
 
         self._widgets[name] = w
-        w.display()
+        w.display()  # type: ignore[no-untyped-call]
 
-    def text(self, name: str, defaultValue: str, label: typing.Optional[str] = None):
+    def text(self, name: str, defaultValue: str, label: typing.Optional[str] = None):  # type: ignore[no-untyped-def]
         self._register(name, widget_string.Text(defaultValue), label)
 
-    def dropdown(
+    def dropdown(  # type: ignore[no-untyped-def]
         self,
         name: str,
         defaultValue: str,
@@ -69,7 +69,7 @@ class IPyWidgetUtil(WidgetUtils):
             label,
         )
 
-    def combobox(
+    def combobox(  # type: ignore[no-untyped-def]
         self,
         name: str,
         defaultValue: str,
@@ -82,7 +82,7 @@ class IPyWidgetUtil(WidgetUtils):
             label,
         )
 
-    def multiselect(
+    def multiselect(  # type: ignore[no-untyped-def]
         self,
         name: str,
         defaultValue: str,
@@ -99,12 +99,12 @@ class IPyWidgetUtil(WidgetUtils):
         )
 
     def _get(self, name: str) -> str:
-        return self._widgets[name].value
+        return self._widgets[name].value  # type: ignore[no-any-return]
 
-    def _remove(self, name: str):
-        self._widgets[name].close()
+    def _remove(self, name: str):  # type: ignore[no-untyped-def]
+        self._widgets[name].close()  # type: ignore[no-untyped-call]
         del self._widgets[name]
 
-    def _remove_all(self):
+    def _remove_all(self):  # type: ignore[no-untyped-def]
         Widget.close_all()
         self._widgets = {}

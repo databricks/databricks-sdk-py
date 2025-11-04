@@ -25,7 +25,7 @@ class MountInfo(namedtuple("MountInfo", ["mountPoint", "source", "encryptionType
 
 class SecretScope(namedtuple("SecretScope", ["name"])):
 
-    def getName(self):
+    def getName(self):  # type: ignore[no-untyped-def]
         return self.name
 
 
@@ -59,7 +59,7 @@ class _FsUtil:
         return [
             FileInfo(
                 f.path,
-                os.path.basename(f.path),
+                os.path.basename(f.path),  # type: ignore[type-var]
                 f.file_size,
                 f.modification_time,
             )
@@ -91,9 +91,9 @@ class _FsUtil:
         self,
         source: str,
         mount_point: str,
-        encryption_type: str = None,
-        owner: str = None,
-        extra_configs: Dict[str, str] = None,
+        encryption_type: str = None,  # type: ignore[assignment]
+        owner: str = None,  # type: ignore[assignment]
+        extra_configs: Dict[str, str] = None,  # type: ignore[assignment]
     ) -> bool:
         """Mounts the given source directory into DBFS at the given mount point"""
         fs = self._proxy_factory("fs")
@@ -103,21 +103,21 @@ class _FsUtil:
         if owner:
             kwargs["owner"] = owner
         if extra_configs:
-            kwargs["extra_configs"] = extra_configs
-        return fs.mount(source, mount_point, **kwargs)
+            kwargs["extra_configs"] = extra_configs  # type: ignore[assignment]
+        return fs.mount(source, mount_point, **kwargs)  # type: ignore[call-arg, no-any-return]
 
     def unmount(self, mount_point: str) -> bool:
         """Deletes a DBFS mount point"""
         fs = self._proxy_factory("fs")
-        return fs.unmount(mount_point)
+        return fs.unmount(mount_point)  # type: ignore[call-arg, no-any-return]
 
     def updateMount(
         self,
         source: str,
         mount_point: str,
-        encryption_type: str = None,
-        owner: str = None,
-        extra_configs: Dict[str, str] = None,
+        encryption_type: str = None,  # type: ignore[assignment]
+        owner: str = None,  # type: ignore[assignment]
+        extra_configs: Dict[str, str] = None,  # type: ignore[assignment]
     ) -> bool:
         """Similar to mount(), but updates an existing mount point (if present) instead of creating a new one"""
         fs = self._proxy_factory("fs")
@@ -127,8 +127,8 @@ class _FsUtil:
         if owner:
             kwargs["owner"] = owner
         if extra_configs:
-            kwargs["extra_configs"] = extra_configs
-        return fs.updateMount(source, mount_point, **kwargs)
+            kwargs["extra_configs"] = extra_configs  # type: ignore[assignment]
+        return fs.updateMount(source, mount_point, **kwargs)  # type: ignore[call-arg, no-any-return]
 
     def mounts(self) -> List[MountInfo]:
         """Displays information about what is mounted within DBFS"""
@@ -142,7 +142,7 @@ class _FsUtil:
         """Forces all machines in this cluster to refresh their mount cache,
         ensuring they receive the most recent information"""
         fs = self._proxy_factory("fs")
-        return fs.refreshMounts()
+        return fs.refreshMounts()  # type: ignore[no-any-return]
 
 
 class _SecretsUtil:
@@ -163,7 +163,7 @@ class _SecretsUtil:
         string_value = val.decode()
         return string_value
 
-    def list(self, scope) -> List[SecretMetadata]:
+    def list(self, scope) -> List[SecretMetadata]:  # type: ignore[no-untyped-def]
         """Lists the metadata for secrets within the specified scope."""
 
         # transform from SDK dataclass to dbutils-compatible namedtuple
@@ -186,8 +186,8 @@ class _JobsUtil:
             self,
             taskKey: str,
             key: str,
-            default: any = None,
-            debugValue: any = None,
+            default: any = None,  # type: ignore[valid-type]
+            debugValue: any = None,  # type: ignore[valid-type]
         ) -> None:
             """
             Returns `debugValue` if present, throws an error otherwise as this implementation is always run outside of a job run
@@ -198,7 +198,7 @@ class _JobsUtil:
                 )
             return debugValue
 
-        def set(self, key: str, value: any) -> None:
+        def set(self, key: str, value: any) -> None:  # type: ignore[valid-type]
             """
             Sets a task value on the current task run
             """
@@ -209,20 +209,20 @@ class _JobsUtil:
 
 class RemoteDbUtils:
 
-    def __init__(self, config: "Config" = None):
+    def __init__(self, config: "Config" = None):  # type: ignore[assignment]
         # Create a shallow copy of the config to allow the use of a custom
         # user-agent while avoiding modifying the original config.
-        self._config = Config() if not config else config.copy()
+        self._config = Config() if not config else config.copy()  # type: ignore[no-untyped-call]
         self._config.with_user_agent_extra("dbutils", "remote")
 
         self._client = ApiClient(self._config)
-        self._clusters = compute_ext.ClustersExt(self._client)
-        self._commands = compute.CommandExecutionAPI(self._client)
+        self._clusters = compute_ext.ClustersExt(self._client)  # type: ignore[no-untyped-call]
+        self._commands = compute.CommandExecutionAPI(self._client)  # type: ignore[no-untyped-call]
         self._lock = threading.Lock()
         self._ctx = None
 
-        self.fs = _FsUtil(dbfs_ext.DbfsExt(self._client), self.__getattr__)
-        self.secrets = _SecretsUtil(workspace.SecretsAPI(self._client))
+        self.fs = _FsUtil(dbfs_ext.DbfsExt(self._client), self.__getattr__)  # type: ignore[no-untyped-call]
+        self.secrets = _SecretsUtil(workspace.SecretsAPI(self._client))  # type: ignore[no-untyped-call]
         self.jobs = _JobsUtil()
         self._widgets = None
 
@@ -231,11 +231,11 @@ class RemoteDbUtils:
     # We only want these checks (and the subsequent errors and warnings), to
     # happen when the user actually uses widgets.
     @property
-    def widgets(self):
+    def widgets(self):  # type: ignore[no-untyped-def]
         if self._widgets is None:
             from ._widgets import widget_impl
 
-            self._widgets = widget_impl()
+            self._widgets = widget_impl()  # type: ignore[assignment]
 
         return self._widgets
 
@@ -254,10 +254,10 @@ class RemoteDbUtils:
             if self._ctx:
                 return self._ctx
             self._clusters.ensure_cluster_is_running(self._cluster_id)
-            self._ctx = self._commands.create(cluster_id=self._cluster_id, language=compute.Language.PYTHON).result()
-        return self._ctx
+            self._ctx = self._commands.create(cluster_id=self._cluster_id, language=compute.Language.PYTHON).result()  # type: ignore[assignment]
+        return self._ctx  # type: ignore[return-value]
 
-    def __getattr__(self, util) -> "_ProxyUtil":
+    def __getattr__(self, util) -> "_ProxyUtil":  # type: ignore[no-untyped-def]
         return _ProxyUtil(
             command_execution=self._commands,
             context_factory=self._running_command_context,
@@ -271,7 +271,7 @@ class OverrideResult:
     result: Any
 
 
-def get_local_notebook_path():
+def get_local_notebook_path():  # type: ignore[no-untyped-def]
     value = os.getenv("DATABRICKS_SOURCE_FILE")
     if value is None:
         raise ValueError(
@@ -281,14 +281,14 @@ def get_local_notebook_path():
     return value
 
 
-def not_supported_method_err_msg(methodName):
+def not_supported_method_err_msg(methodName):  # type: ignore[no-untyped-def]
     return f"Method '{methodName}' is not supported in the SDK version of DBUtils"
 
 
 class _OverrideProxyUtil:
 
     @classmethod
-    def new(cls, path: str):
+    def new(cls, path: str):  # type: ignore[no-untyped-def]
         if path in cls.not_supported_override_paths:
             raise ValueError(cls.not_supported_override_paths[path])
 
@@ -313,26 +313,26 @@ class _OverrideProxyUtil:
         # The object returned by 'credentials.getServiceCredentialProvider()' can't be serialized to JSON.
         # Without this override, the command would fail with an error 'TypeError: Object of type Session is not JSON serializable'.
         # We override it to show a better error message
-        "credentials.getServiceCredentialsProvider": not_supported_method_err_msg(
+        "credentials.getServiceCredentialsProvider": not_supported_method_err_msg(  # type: ignore[no-untyped-call]
             "credentials.getServiceCredentialsProvider"
         ),
     }
 
     @classmethod
-    def __get_matching_overrides(cls, path: str):
+    def __get_matching_overrides(cls, path: str):  # type: ignore[no-untyped-def]
         return [x for x in cls.proxy_override_paths.keys() if x.startswith(path)]
 
     def __run_override(self, path: str) -> Optional[OverrideResult]:
         overrides = self.__get_matching_overrides(path)
         if len(overrides) == 1 and overrides[0] == path:
-            return OverrideResult(self.proxy_override_paths[overrides[0]]())
+            return OverrideResult(self.proxy_override_paths[overrides[0]]())  # type: ignore[no-untyped-call]
 
         if len(overrides) > 0:
             return OverrideResult(_OverrideProxyUtil(name=path))
 
         return None
 
-    def __call__(self, *args, **kwds) -> Any:
+    def __call__(self, *args, **kwds) -> Any:  # type: ignore[no-untyped-def]
         if len(args) != 0 or len(kwds) != 0:
             raise TypeError(
                 f"Arguments are not supported for overridden method {self._name}. Invoke as: {self._name}()"
@@ -369,13 +369,13 @@ class _ProxyUtil:
         self._context_factory = context_factory
         self._name = name
 
-    def __call__(self):
+    def __call__(self):  # type: ignore[no-untyped-def]
         raise NotImplementedError(f"dbutils.{self._name} is not callable")
 
     def __getattr__(self, method: str) -> "_ProxyCall | _ProxyUtil | _OverrideProxyUtil":
         override = _OverrideProxyUtil.new(f"{self._name}.{method}")
         if override:
-            return override
+            return override  # type: ignore[no-any-return]
 
         return _ProxyCall(
             command_execution=self._commands,
@@ -422,18 +422,18 @@ class _ProxyCall:
             return ""
         return self._out_re.sub("", str(results.data))
 
-    def _raise_if_failed(self, results: compute.Results):
+    def _raise_if_failed(self, results: compute.Results):  # type: ignore[no-untyped-def]
         if not self._is_failed(results):
             return
         raise DatabricksError(self._error_from_results(results))
 
-    def _error_from_results(self, results: compute.Results):
+    def _error_from_results(self, results: compute.Results):  # type: ignore[no-untyped-def]
         if not self._is_failed(results):
             return
         if results.cause:
             _LOG.debug(f'{self._ascii_escape_re.sub("", results.cause)}')
 
-        summary = self._tag_re.sub("", results.summary)
+        summary = self._tag_re.sub("", results.summary)  # type: ignore[arg-type]
         summary = html.unescape(summary)
 
         exception_matches = self._exception_re.findall(summary)
@@ -442,17 +442,17 @@ class _ProxyCall:
             summary = summary.rstrip(" ")
             return summary
 
-        execution_error_matches = self._execution_error_re.findall(results.cause)
+        execution_error_matches = self._execution_error_re.findall(results.cause)  # type: ignore[arg-type]
         if len(execution_error_matches) == 1:
             return "\n".join(execution_error_matches[0])
 
-        error_message_matches = self._error_message_re.findall(results.cause)
+        error_message_matches = self._error_message_re.findall(results.cause)  # type: ignore[arg-type]
         if len(error_message_matches) == 1:
             return error_message_matches[0]
 
         return summary
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs):  # type: ignore[no-untyped-def]
         raw = json.dumps((args, kwargs))
         code = f"""
         import json
@@ -468,8 +468,8 @@ class _ProxyCall:
             command=code,
         ).result()
         if result.status == compute.CommandStatus.FINISHED:
-            self._raise_if_failed(result.results)
-            raw = result.results.data
+            self._raise_if_failed(result.results)  # type: ignore[arg-type]
+            raw = result.results.data  # type: ignore[assignment, union-attr]
             return json.loads(raw)
         else:
-            raise Exception(result.results.summary)
+            raise Exception(result.results.summary)  # type: ignore[union-attr]

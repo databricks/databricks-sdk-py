@@ -194,7 +194,7 @@ class DatabricksOidcTokenSource(oauth.TokenSource):
     # It exists to make it easier to test.
     def _exchange_id_token(self, id_token: IdToken) -> oauth.Token:
         client = oauth.ClientCredentials(
-            client_id=self._client_id,
+            client_id=self._client_id,  # type: ignore[arg-type]
             client_secret="",  # there is no (rotatable) secrets in the OIDC flow
             token_url=self._token_endpoint,
             endpoint_params={

@@ -15,7 +15,7 @@ class RoundTrip:
     :param raw: Whether the response is a stream or not. If True, the response will not be logged directly.
     """
 
-    def __init__(
+    def __init__(  # type: ignore[no-untyped-def]
         self,
         response: requests.Response,
         debug_headers: bool,
@@ -38,13 +38,13 @@ class RoundTrip:
         url = urllib.parse.urlparse(request.url)
         query = ""
         if url.query:
-            query = f"?{urllib.parse.unquote(url.query)}"
-        sb = [f"{request.method} {urllib.parse.unquote(url.path)}{query}"]
+            query = f"?{urllib.parse.unquote(url.query)}"  # type: ignore[arg-type]
+        sb = [f"{request.method} {urllib.parse.unquote(url.path)}{query}"]  # type: ignore[arg-type]
         if self._debug_headers:
             for k, v in request.headers.items():
                 sb.append(f"> * {k}: {self._only_n_bytes(v, self._debug_truncate_bytes)}")
         if request.body:
-            sb.append("> [raw stream]" if self._raw else self._redacted_dump("> ", request.body))
+            sb.append("> [raw stream]" if self._raw else self._redacted_dump("> ", request.body))  # type: ignore[arg-type]
         sb.append(f"< {self._response.status_code} {self._response.reason}")
         if self._raw and self._response.headers.get("Content-Type", None) != "application/json":
             # Raw streams with `Transfer-Encoding: chunked` do not have `Content-Type` header
@@ -55,7 +55,7 @@ class RoundTrip:
         return "\n".join(sb)
 
     @staticmethod
-    def _mask(m: Dict[str, any]):
+    def _mask(m: Dict[str, any]):  # type: ignore[no-untyped-def, valid-type]
         for k in m:
             if k in {
                 "bytes_value",
@@ -67,7 +67,7 @@ class RoundTrip:
                 m[k] = "**REDACTED**"
 
     @staticmethod
-    def _map_keys(m: Dict[str, any]) -> List[str]:
+    def _map_keys(m: Dict[str, any]) -> List[str]:  # type: ignore[valid-type]
         keys = list(m.keys())
         keys.sort()
         return keys
@@ -79,7 +79,7 @@ class RoundTrip:
             return f"{j[:num_bytes]}... ({diff} more bytes)"
         return j
 
-    def _recursive_marshal_dict(self, m, budget) -> dict:
+    def _recursive_marshal_dict(self, m, budget) -> dict:  # type: ignore[no-untyped-def, type-arg]
         out = {}
         self._mask(m)
         for k in sorted(m.keys()):
@@ -88,8 +88,8 @@ class RoundTrip:
             budget -= len(str(raw))
         return out
 
-    def _recursive_marshal_list(self, s, budget) -> list:
-        out = []
+    def _recursive_marshal_list(self, s, budget) -> list:  # type: ignore[no-untyped-def, type-arg]
+        out = []  # type: ignore[var-annotated]
         for i in range(len(s)):
             if i > 0 >= budget:
                 out.append("... (%d additional elements)" % (len(s) - len(out)))

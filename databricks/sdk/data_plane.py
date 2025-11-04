@@ -22,11 +22,11 @@ class DataPlaneTokenSource:
     def __init__(self, token_exchange_host: str, cpts: Callable[[], Token], disable_async: Optional[bool] = True):
         self._cpts = cpts
         self._token_exchange_host = token_exchange_host
-        self._token_sources = {}
+        self._token_sources = {}  # type: ignore[var-annotated]
         self._disable_async = disable_async
         self._lock = threading.Lock()
 
-    def token(self, endpoint, auth_details):
+    def token(self, endpoint, auth_details):  # type: ignore[no-untyped-def]
         key = f"{endpoint}:{auth_details}"
 
         # First, try to read without acquiring the lock to avoid contention.
@@ -41,7 +41,7 @@ class DataPlaneTokenSource:
             token_source = self._token_sources.get(key)
             if not token_source:
                 token_source = DataPlaneEndpointTokenSource(
-                    self._token_exchange_host, self._cpts, auth_details, self._disable_async
+                    self._token_exchange_host, self._cpts, auth_details, self._disable_async  # type: ignore[arg-type]
                 )
                 self._token_sources[key] = token_source
 

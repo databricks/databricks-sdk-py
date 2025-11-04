@@ -1,7 +1,7 @@
 import hashlib
 
 
-def test_init_file_contents():
+def test_init_file_contents():  # type: ignore[no-untyped-def]
     """
     Micro test to confirm the contents of `databricks/__init__.py` does not change.
 

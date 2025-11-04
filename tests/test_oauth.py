@@ -6,38 +6,38 @@ from databricks.sdk.oauth import (OidcEndpoints, TokenCache,
 from .clock import FakeClock
 
 
-def test_token_cache_unique_filename_by_host():
+def test_token_cache_unique_filename_by_host():  # type: ignore[no-untyped-def]
     common_args = dict(
         client_id="abc",
         redirect_url="http://localhost:8020",
         oidc_endpoints=OidcEndpoints("http://localhost:1234", "http://localhost:1234"),
     )
     assert (
-        TokenCache(host="http://localhost:", **common_args).filename
-        != TokenCache("https://bar.cloud.databricks.com", **common_args).filename
+        TokenCache(host="http://localhost:", **common_args).filename  # type: ignore[arg-type]
+        != TokenCache("https://bar.cloud.databricks.com", **common_args).filename  # type: ignore[arg-type]
     )
 
 
-def test_token_cache_unique_filename_by_client_id():
+def test_token_cache_unique_filename_by_client_id():  # type: ignore[no-untyped-def]
     common_args = dict(
         host="http://localhost:",
         redirect_url="http://localhost:8020",
         oidc_endpoints=OidcEndpoints("http://localhost:1234", "http://localhost:1234"),
     )
-    assert TokenCache(client_id="abc", **common_args).filename != TokenCache(client_id="def", **common_args).filename
+    assert TokenCache(client_id="abc", **common_args).filename != TokenCache(client_id="def", **common_args).filename  # type: ignore[arg-type]
 
 
-def test_token_cache_unique_filename_by_scopes():
+def test_token_cache_unique_filename_by_scopes():  # type: ignore[no-untyped-def]
     common_args = dict(
         host="http://localhost:",
         client_id="abc",
         redirect_url="http://localhost:8020",
         oidc_endpoints=OidcEndpoints("http://localhost:1234", "http://localhost:1234"),
     )
-    assert TokenCache(scopes=["foo"], **common_args).filename != TokenCache(scopes=["bar"], **common_args).filename
+    assert TokenCache(scopes=["foo"], **common_args).filename != TokenCache(scopes=["bar"], **common_args).filename  # type: ignore[arg-type]
 
 
-def test_account_oidc_endpoints(requests_mock):
+def test_account_oidc_endpoints(requests_mock):  # type: ignore[no-untyped-def]
     requests_mock.get(
         "https://accounts.cloud.databricks.com/oidc/accounts/abc-123/.well-known/oauth-authorization-server",
         json={
@@ -53,15 +53,15 @@ def test_account_oidc_endpoints(requests_mock):
     )
 
 
-def test_account_oidc_endpoints_retry_on_429(requests_mock):
+def test_account_oidc_endpoints_retry_on_429(requests_mock):  # type: ignore[no-untyped-def]
     # It doesn't seem possible to use requests_mock to return different responses for the same request, e.g. when
     # simulating a transient failure. Instead, the nth_request matcher increments a test-wide counter and only matches
     # the nth request.
     request_count = 0
 
-    def nth_request(n):
+    def nth_request(n):  # type: ignore[no-untyped-def]
 
-        def observe_request(_request):
+        def observe_request(_request):  # type: ignore[no-untyped-def]
             nonlocal request_count
             is_match = request_count == n
             if is_match:
@@ -72,12 +72,12 @@ def test_account_oidc_endpoints_retry_on_429(requests_mock):
 
     requests_mock.get(
         "https://accounts.cloud.databricks.com/oidc/accounts/abc-123/.well-known/oauth-authorization-server",
-        additional_matcher=nth_request(0),
+        additional_matcher=nth_request(0),  # type: ignore[no-untyped-call]
         status_code=429,
     )
     requests_mock.get(
         "https://accounts.cloud.databricks.com/oidc/accounts/abc-123/.well-known/oauth-authorization-server",
-        additional_matcher=nth_request(1),
+        additional_matcher=nth_request(1),  # type: ignore[no-untyped-call]
         json={
             "authorization_endpoint": "https://accounts.cloud.databricks.com/oidc/accounts/abc-123/oauth/authorize",
             "token_endpoint": "https://accounts.cloud.databricks.com/oidc/accounts/abc-123/oauth/token",
@@ -91,7 +91,7 @@ def test_account_oidc_endpoints_retry_on_429(requests_mock):
     )
 
 
-def test_workspace_oidc_endpoints(requests_mock):
+def test_workspace_oidc_endpoints(requests_mock):  # type: ignore[no-untyped-def]
     requests_mock.get(
         "https://my-workspace.cloud.databricks.com/oidc/.well-known/oauth-authorization-server",
         json={
@@ -107,12 +107,12 @@ def test_workspace_oidc_endpoints(requests_mock):
     )
 
 
-def test_workspace_oidc_endpoints_retry_on_429(requests_mock):
+def test_workspace_oidc_endpoints_retry_on_429(requests_mock):  # type: ignore[no-untyped-def]
     request_count = 0
 
-    def nth_request(n):
+    def nth_request(n):  # type: ignore[no-untyped-def]
 
-        def observe_request(_request):
+        def observe_request(_request):  # type: ignore[no-untyped-def]
             nonlocal request_count
             is_match = request_count == n
             if is_match:
@@ -123,12 +123,12 @@ def test_workspace_oidc_endpoints_retry_on_429(requests_mock):
 
     requests_mock.get(
         "https://my-workspace.cloud.databricks.com/oidc/.well-known/oauth-authorization-server",
-        additional_matcher=nth_request(0),
+        additional_matcher=nth_request(0),  # type: ignore[no-untyped-call]
         status_code=429,
     )
     requests_mock.get(
         "https://my-workspace.cloud.databricks.com/oidc/.well-known/oauth-authorization-server",
-        additional_matcher=nth_request(1),
+        additional_matcher=nth_request(1),  # type: ignore[no-untyped-call]
         json={
             "authorization_endpoint": "https://my-workspace.cloud.databricks.com/oidc/oauth/authorize",
             "token_endpoint": "https://my-workspace.cloud.databricks.com/oidc/oauth/token",

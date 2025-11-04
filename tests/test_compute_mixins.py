@@ -1,4 +1,4 @@
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.mixins.compute import SemVer
 
@@ -18,11 +18,11 @@ from databricks.sdk.mixins.compute import SemVer
         ),
     ],
 )
-def test_parse_semver(given, expected):
+def test_parse_semver(given, expected):  # type: ignore[no-untyped-def]
     assert SemVer.parse(given) == expected
 
 
-def test_sorting_semver():
+def test_sorting_semver():  # type: ignore[no-untyped-def]
     unsorted = [
         SemVer(1, 0, 0),
         SemVer(0, 1, 0),

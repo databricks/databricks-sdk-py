@@ -6,31 +6,31 @@ from abc import ABC, abstractmethod
 
 class WidgetUtils(ABC):
 
-    def get(self, name: str):
+    def get(self, name: str):  # type: ignore[no-untyped-def]
         return self._get(name)
 
     @abstractmethod
     def _get(self, name: str) -> str:
         pass
 
-    def getArgument(self, name: str, defaultValue: typing.Optional[str] = None):
+    def getArgument(self, name: str, defaultValue: typing.Optional[str] = None):  # type: ignore[no-untyped-def]
         try:
             return self.get(name)
         except Exception:
             return defaultValue
 
-    def remove(self, name: str):
+    def remove(self, name: str):  # type: ignore[no-untyped-def]
         self._remove(name)
 
     @abstractmethod
-    def _remove(self, name: str):
+    def _remove(self, name: str):  # type: ignore[no-untyped-def]
         pass
 
-    def removeAll(self):
-        self._remove_all()
+    def removeAll(self):  # type: ignore[no-untyped-def]
+        self._remove_all()  # type: ignore[no-untyped-call]
 
     @abstractmethod
-    def _remove_all(self):
+    def _remove_all(self):  # type: ignore[no-untyped-def]
         pass
 
 
@@ -38,7 +38,7 @@ try:
     # We only use ipywidgets if we are in a notebook interactive shell otherwise we raise error,
     # to fallback to using default_widgets. Also, users WILL have IPython in their notebooks (jupyter),
     # because we DO NOT SUPPORT any other notebook backends, and hence fallback to default_widgets.
-    from IPython.core.getipython import get_ipython
+    from IPython.core.getipython import get_ipython  # type: ignore[import-not-found]
 
     # Detect if we are in an interactive notebook by iterating over the mro of the current ipython instance,
     # to find ZMQInteractiveShell (jupyter). When used from REPL or file, this check will fail, since the
@@ -79,5 +79,5 @@ try:
 except:
     from .default_widgets_utils import DefaultValueOnlyWidgetUtils
 
-    widget_impl = DefaultValueOnlyWidgetUtils
+    widget_impl = DefaultValueOnlyWidgetUtils  # type: ignore[assignment, misc]
     logging.debug("Using default_value_only implementation for dbutils.")

@@ -1,7 +1,7 @@
 from databricks.sdk.data_plane import DataPlaneTokenSource
 
 
-def test_data_plane_token_source(ucws, env_or_skip):
+def test_data_plane_token_source(ucws, env_or_skip):  # type: ignore[no-untyped-def]
     endpoint = env_or_skip("SERVING_ENDPOINT_NAME")
     serving_endpoint = ucws.serving_endpoints.get(endpoint)
     assert serving_endpoint.data_plane_info is not None
@@ -10,12 +10,12 @@ def test_data_plane_token_source(ucws, env_or_skip):
     info = serving_endpoint.data_plane_info.query_info
 
     ts = DataPlaneTokenSource(ucws.config.host, ucws._config.oauth_token)
-    dp_token = ts.token(info.endpoint_url, info.authorization_details)
+    dp_token = ts.token(info.endpoint_url, info.authorization_details)  # type: ignore[no-untyped-call]
 
     assert dp_token.valid
 
 
-def test_model_serving_data_plane(ucws, env_or_skip):
+def test_model_serving_data_plane(ucws, env_or_skip):  # type: ignore[no-untyped-def]
     endpoint = env_or_skip("SERVING_ENDPOINT_NAME")
     serving_endpoints = ucws.serving_endpoints_data_plane
     response = serving_endpoints.query(name=endpoint, dataframe_records=[{"col": 1.0}])

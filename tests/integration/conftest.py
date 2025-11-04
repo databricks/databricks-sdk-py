@@ -5,13 +5,13 @@ import pathlib
 import string
 import sys
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
-from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient
+from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient  # type: ignore[attr-defined]
 from databricks.sdk.service.catalog import VolumeType
 
 
-def pytest_addoption(parser):
+def pytest_addoption(parser):  # type: ignore[no-untyped-def]
     # make logging sensible and readable.
     parser.addini(
         "log_format",
@@ -22,7 +22,7 @@ def pytest_addoption(parser):
     parser.addini("log_date_format", "...", "string", "%H:%M")
 
 
-def pytest_configure(config):
+def pytest_configure(config):  # type: ignore[no-untyped-def]
     # disable urllib3, as it adds more noise
     logger = logging.getLogger("urllib3.connectionpool")
     logger.propagate = False
@@ -37,7 +37,7 @@ def pytest_configure(config):
     )
 
 
-def pytest_collection_modifyitems(items):
+def pytest_collection_modifyitems(items):  # type: ignore[no-untyped-def]
     # safer to refer to fixture fns instead of strings
     client_fixtures = [x.__name__ for x in [a, w, ucws, ucacct]]
     for item in items:
@@ -48,18 +48,18 @@ def pytest_collection_modifyitems(items):
 
 
 @pytest.fixture(scope="session")
-def random():
+def random():  # type: ignore[no-untyped-def]
     import random
 
-    def inner(k=16) -> str:
+    def inner(k=16) -> str:  # type: ignore[no-untyped-def]
         charset = string.ascii_uppercase + string.ascii_lowercase + string.digits
         return "".join(random.choices(charset, k=int(k)))
 
     return inner
 
 
-@pytest.fixture(scope="session")
-def a(env_or_skip) -> AccountClient:
+@pytest.fixture(scope="session")  # type: ignore[misc]
+def a(env_or_skip) -> AccountClient:  # type: ignore[no-untyped-def]
     _load_debug_env_if_runs_from_ide("account")
     env_or_skip("CLOUD_ENV")
     account_client = AccountClient()
@@ -68,8 +68,8 @@ def a(env_or_skip) -> AccountClient:
     return account_client
 
 
-@pytest.fixture(scope="session")
-def ucacct(env_or_skip) -> AccountClient:
+@pytest.fixture(scope="session")  # type: ignore[misc]
+def ucacct(env_or_skip) -> AccountClient:  # type: ignore[no-untyped-def]
     _load_debug_env_if_runs_from_ide("ucacct")
     env_or_skip("CLOUD_ENV")
     account_client = AccountClient()
@@ -80,8 +80,8 @@ def ucacct(env_or_skip) -> AccountClient:
     return account_client
 
 
-@pytest.fixture(scope="session")
-def w(env_or_skip) -> WorkspaceClient:
+@pytest.fixture(scope="session")  # type: ignore[misc]
+def w(env_or_skip) -> WorkspaceClient:  # type: ignore[no-untyped-def]
     _load_debug_env_if_runs_from_ide("workspace")
     env_or_skip("CLOUD_ENV")
     if "DATABRICKS_ACCOUNT_ID" in os.environ:
@@ -89,8 +89,8 @@ def w(env_or_skip) -> WorkspaceClient:
     return WorkspaceClient()
 
 
-@pytest.fixture(scope="session")
-def ucws(env_or_skip) -> WorkspaceClient:
+@pytest.fixture(scope="session")  # type: ignore[misc]
+def ucws(env_or_skip) -> WorkspaceClient:  # type: ignore[no-untyped-def]
     _load_debug_env_if_runs_from_ide("ucws")
     env_or_skip("CLOUD_ENV")
     if "DATABRICKS_ACCOUNT_ID" in os.environ:
@@ -101,7 +101,7 @@ def ucws(env_or_skip) -> WorkspaceClient:
 
 
 @pytest.fixture(scope="session")
-def env_or_skip():
+def env_or_skip():  # type: ignore[no-untyped-def]
 
     def inner(var: str) -> str:
         if var not in os.environ:
@@ -112,21 +112,21 @@ def env_or_skip():
 
 
 @pytest.fixture(scope="session")
-def schema(ucws, random):
+def schema(ucws, random):  # type: ignore[no-untyped-def]
     schema = ucws.schemas.create("dbfs-" + random(), "main")
     yield schema
     ucws.schemas.delete(schema.full_name)
 
 
 @pytest.fixture(scope="session")
-def volume(ucws, schema):
+def volume(ucws, schema):  # type: ignore[no-untyped-def]
     volume = ucws.volumes.create("main", schema.name, "dbfs-test", VolumeType.MANAGED)
     yield "/Volumes/" + volume.full_name.replace(".", "/")
     ucws.volumes.delete(volume.full_name)
 
 
-@pytest.fixture(scope="session", params=[False, True])
-def files_api(request, ucws) -> FilesAPI:
+@pytest.fixture(scope="session", params=[False, True])  # type: ignore[misc]
+def files_api(request, ucws) -> FilesAPI:  # type: ignore[no-untyped-def]
     if request.param:
         # ensure new Files API client is used for files of any size
         ucws.config.multipart_upload_min_stream_size = 0
@@ -134,18 +134,18 @@ def files_api(request, ucws) -> FilesAPI:
         return FilesExt(ucws.api_client, ucws.config)
     else:
         # use the default client
-        return ucws.files
+        return ucws.files  # type: ignore[no-any-return]
 
 
 @pytest.fixture()
-def workspace_dir(w, random):
+def workspace_dir(w, random):  # type: ignore[no-untyped-def]
     directory = f"/Users/{w.current_user.me().user_name}/dir-{random(12)}"
     w.workspace.mkdirs(directory)
     yield directory
     w.workspace.delete(directory, recursive=True)
 
 
-def _load_debug_env_if_runs_from_ide(key) -> bool:
+def _load_debug_env_if_runs_from_ide(key) -> bool:  # type: ignore[no-untyped-def]
     if not _is_in_debug():
         return False
     conf_file = pathlib.Path.home() / ".databricks/debug-env.json"
@@ -166,7 +166,7 @@ def _is_in_debug() -> bool:
 
 
 @pytest.fixture(scope="function")
-def restorable_env():
+def restorable_env():  # type: ignore[no-untyped-def]
     import os
 
     current_env = os.environ.copy()

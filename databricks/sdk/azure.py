@@ -4,17 +4,17 @@ from .oauth import TokenSource
 from .service.provisioning import Workspace
 
 
-def add_workspace_id_header(cfg: "Config", headers: Dict[str, str]):
+def add_workspace_id_header(cfg: "Config", headers: Dict[str, str]):  # type: ignore[name-defined, no-untyped-def]
     if cfg.azure_workspace_resource_id:
         headers["X-Databricks-Azure-Workspace-Resource-Id"] = cfg.azure_workspace_resource_id
 
 
-def add_sp_management_token(token_source: "TokenSource", headers: Dict[str, str]):
+def add_sp_management_token(token_source: "TokenSource", headers: Dict[str, str]):  # type: ignore[no-untyped-def]
     mgmt_token = token_source.token()
     headers["X-Databricks-Azure-SP-Management-Token"] = mgmt_token.access_token
 
 
-def get_azure_resource_id(workspace: Workspace):
+def get_azure_resource_id(workspace: Workspace):  # type: ignore[no-untyped-def]
     """
     Returns the Azure Resource ID for the given workspace, if it is an Azure workspace.
     :param workspace:

@@ -6,13 +6,13 @@ _NOT_FOUND = object()
 
 class _cached_property:
 
-    def __init__(self, func):
+    def __init__(self, func):  # type: ignore[no-untyped-def]
         self.func = func
         self.attrname = None
         self.__doc__ = func.__doc__
         self.__module__ = func.__module__
 
-    def __set_name__(self, owner, name):
+    def __set_name__(self, owner, name):  # type: ignore[no-untyped-def]
         if self.attrname is None:
             self.attrname = name
         elif name != self.attrname:
@@ -20,7 +20,7 @@ class _cached_property:
                 "Cannot assign the same cached_property to two different names " f"({self.attrname!r} and {name!r})."
             )
 
-    def __get__(self, instance, owner=None):
+    def __get__(self, instance, owner=None):  # type: ignore[no-untyped-def]
         if instance is None:
             return self
         if self.attrname is None:

@@ -138,13 +138,13 @@ class _ConcatenatedInputStream(BinaryIO):
 
     def _get_head_size(self) -> int:
         if self._head_size is None:
-            self._head_size = self._get_stream_size(self._head_stream)
-        return self._head_size
+            self._head_size = self._get_stream_size(self._head_stream)  # type: ignore[assignment]
+        return self._head_size  # type: ignore[return-value]
 
     def _get_tail_size(self) -> int:
         if self._tail_size is None:
-            self._tail_size = self._get_stream_size(self._tail_stream)
-        return self._tail_size
+            self._tail_size = self._get_stream_size(self._tail_stream)  # type: ignore[assignment]
+        return self._tail_size  # type: ignore[return-value]
 
     def seek(self, __offset: int, __whence: int = os.SEEK_SET) -> int:
         if not self.seekable():
@@ -217,10 +217,10 @@ class _ConcatenatedInputStream(BinaryIO):
     def writable(self) -> bool:
         return False
 
-    def write(self, __s: bytes) -> int:
+    def write(self, __s: bytes) -> int:  # type: ignore[override]
         raise NotImplementedError("Stream is not writable")
 
-    def writelines(self, __lines: Iterable[bytes]) -> None:
+    def writelines(self, __lines: Iterable[bytes]) -> None:  # type: ignore[override]
         raise NotImplementedError("Stream is not writable")
 
     def __next__(self) -> bytes:
@@ -239,7 +239,7 @@ class _ConcatenatedInputStream(BinaryIO):
         self._tail_stream.__enter__()
         return self
 
-    def __exit__(self, __type, __value, __traceback) -> None:
+    def __exit__(self, __type, __value, __traceback) -> None:  # type: ignore[no-untyped-def]
         self._head_stream.__exit__(__type, __value, __traceback)
         self._tail_stream.__exit__(__type, __value, __traceback)
 
@@ -276,8 +276,8 @@ class _PresignedUrlDistributor:
         """
         with self.lock:
             if self._current_url is None:
-                self._current_url = self._get_new_url_func()
-            return self._current_url, self.current_version
+                self._current_url = self._get_new_url_func()  # type: ignore[assignment]
+            return self._current_url, self.current_version  # type: ignore[return-value]
 
     def invalidate_url(self, version: int) -> None:
         """

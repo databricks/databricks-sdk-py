@@ -1,4 +1,4 @@
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.casing import Casing
 
@@ -16,5 +16,5 @@ from databricks.sdk.casing import Casing
         ("AbcDef", "Abc-Def"),
     ],
 )
-def test_to_header_case(name, expected):
+def test_to_header_case(name, expected):  # type: ignore[no-untyped-def]
     assert Casing.to_header_case(name) == expected

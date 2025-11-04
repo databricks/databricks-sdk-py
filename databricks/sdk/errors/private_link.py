@@ -13,7 +13,7 @@ class _PrivateLinkInfo:
     endpointName: str
     referencePage: str
 
-    def error_message(self):
+    def error_message(self):  # type: ignore[no-untyped-def]
         return (
             f"The requested workspace has {self.serviceName} enabled and is not accessible from the current network. "
             f"Ensure that {self.serviceName} is properly configured and that your device has access to the "
@@ -54,7 +54,7 @@ def _get_private_link_validation_error(url: str) -> PrivateLinkValidationError:
     parsed = parse.urlparse(url)
     env = get_environment_for_hostname(parsed.hostname)
     return PrivateLinkValidationError(
-        message=_private_link_info_map[env.cloud].error_message(),
+        message=_private_link_info_map[env.cloud].error_message(),  # type: ignore[no-untyped-call]
         error_code="PRIVATE_LINK_VALIDATION_ERROR",
         status_code=403,
     )

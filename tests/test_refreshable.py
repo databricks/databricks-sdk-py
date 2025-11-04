@@ -8,19 +8,19 @@ from databricks.sdk.oauth import Refreshable, Token
 
 class _MockRefreshable(Refreshable):
 
-    def __init__(
+    def __init__(  # type: ignore[no-untyped-def]
         self,
         disable_async,
         token=None,
         stale_duration=timedelta(seconds=60),
-        refresh_effect: Callable[[], Token] = None,
+        refresh_effect: Callable[[], Token] = None,  # type: ignore[assignment]
     ):
         super().__init__(token, disable_async, stale_duration)
         self._refresh_effect = refresh_effect
         self._refresh_count = 0
 
     def refresh(self) -> Token:
-        if self._refresh_effect:
+        if self._refresh_effect:  # type: ignore[truthy-function]
             self._token = self._refresh_effect()
         self._refresh_count += 1
         return self._token
@@ -41,7 +41,7 @@ def static_token(token: Token, wait: int = 0) -> Callable[[], Token]:
 
 def blocking_refresh(
     token: Token,
-) -> (Callable[[], Token], Callable[[], None]):
+) -> (Callable[[], Token], Callable[[], None]):  # type: ignore[syntax]
     """
     Create a refresh function that blocks until unblock is called.
 
@@ -54,19 +54,19 @@ def blocking_refresh(
     """
     blocking = True
 
-    def refresh():
+    def refresh():  # type: ignore[no-untyped-def]
         while blocking:
             sleep(0.1)
         return token
 
-    def unblock():
+    def unblock():  # type: ignore[no-untyped-def]
         nonlocal blocking
         blocking = False
 
     return refresh, unblock
 
 
-def test_disable_async_stale_does_not_refresh():
+def test_disable_async_stale_does_not_refresh():  # type: ignore[no-untyped-def]
     stale_token = Token(
         access_token="access_token",
         expiry=datetime.now() + timedelta(seconds=50),
@@ -77,7 +77,7 @@ def test_disable_async_stale_does_not_refresh():
     assert result == stale_token
 
 
-def test_disable_async_no_token_does_refresh():
+def test_disable_async_no_token_does_refresh():  # type: ignore[no-untyped-def]
     token = Token(
         access_token="access_token",
         expiry=datetime.now() + timedelta(seconds=50),
@@ -88,7 +88,7 @@ def test_disable_async_no_token_does_refresh():
     assert result == token
 
 
-def test_disable_async_no_expiration_does_not_refresh():
+def test_disable_async_no_expiration_does_not_refresh():  # type: ignore[no-untyped-def]
     non_expiring_token = Token(
         access_token="access_token",
     )
@@ -98,7 +98,7 @@ def test_disable_async_no_expiration_does_not_refresh():
     assert result == non_expiring_token
 
 
-def test_disable_async_fresh_does_not_refresh():
+def test_disable_async_fresh_does_not_refresh():  # type: ignore[no-untyped-def]
     # Create a token that is already stale. If async is disabled, the token should not be refreshed.
     token = Token(
         access_token="access_token",
@@ -110,7 +110,7 @@ def test_disable_async_fresh_does_not_refresh():
     assert result == token
 
 
-def test_disable_async_expired_does_refresh():
+def test_disable_async_expired_does_refresh():  # type: ignore[no-untyped-def]
     expired_token = Token(
         access_token="access_token",
         expiry=datetime.now() - timedelta(seconds=300),
@@ -132,7 +132,7 @@ def test_disable_async_expired_does_refresh():
     assert result == new_token
 
 
-def test_expired_does_refresh():
+def test_expired_does_refresh():  # type: ignore[no-untyped-def]
     expired_token = Token(
         access_token="access_token",
         expiry=datetime.now() - timedelta(seconds=300),
@@ -154,7 +154,7 @@ def test_expired_does_refresh():
     assert result == new_token
 
 
-def test_stale_does_refresh_async():
+def test_stale_does_refresh_async():  # type: ignore[no-untyped-def]
     stale_token = Token(
         access_token="access_token",
         expiry=datetime.now() + timedelta(seconds=50),
@@ -182,7 +182,7 @@ def test_stale_does_refresh_async():
     assert r._refresh_count == 1
 
 
-def test_no_token_does_refresh():
+def test_no_token_does_refresh():  # type: ignore[no-untyped-def]
     new_token = Token(
         access_token="access_token",
         expiry=datetime.now() + timedelta(seconds=300),
@@ -200,7 +200,7 @@ def test_no_token_does_refresh():
     assert result == new_token
 
 
-def test_fresh_does_not_refresh():
+def test_fresh_does_not_refresh():  # type: ignore[no-untyped-def]
     fresh_token = Token(
         access_token="access_token",
         expiry=datetime.now() + timedelta(seconds=300),
@@ -211,7 +211,7 @@ def test_fresh_does_not_refresh():
     assert result == fresh_token
 
 
-def test_multiple_calls_dont_start_many_threads():
+def test_multiple_calls_dont_start_many_threads():  # type: ignore[no-untyped-def]
     stale_token = Token(
         access_token="access_token",
         expiry=datetime.now() + timedelta(seconds=59),
@@ -236,7 +236,7 @@ def test_multiple_calls_dont_start_many_threads():
     assert result == new_token
 
 
-def test_async_failure_disables_async():
+def test_async_failure_disables_async():  # type: ignore[no-untyped-def]
     stale_token = Token(
         access_token="access_token",
         expiry=datetime.now() + timedelta(seconds=59),

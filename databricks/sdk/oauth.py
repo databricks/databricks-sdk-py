@@ -44,7 +44,7 @@ class IgnoreNetrcAuth(requests.auth.AuthBase):
     See issue #121
     """
 
-    def __call__(self, r):
+    def __call__(self, r):  # type: ignore[no-untyped-def]
         return r
 
 
@@ -62,13 +62,13 @@ class OidcEndpoints:
     """The token endpoint for the OAuth flow."""
 
     @staticmethod
-    def from_dict(d: dict) -> "OidcEndpoints":
+    def from_dict(d: dict) -> "OidcEndpoints":  # type: ignore[type-arg]
         return OidcEndpoints(
-            authorization_endpoint=d.get("authorization_endpoint"),
-            token_endpoint=d.get("token_endpoint"),
+            authorization_endpoint=d.get("authorization_endpoint"),  # type: ignore[arg-type]
+            token_endpoint=d.get("token_endpoint"),  # type: ignore[arg-type]
         )
 
-    def as_dict(self) -> dict:
+    def as_dict(self) -> dict:  # type: ignore[type-arg]
         return {
             "authorization_endpoint": self.authorization_endpoint,
             "token_endpoint": self.token_endpoint,
@@ -83,7 +83,7 @@ class Token:
     expiry: Optional[datetime] = None
 
     @property
-    def expired(self):
+    def expired(self):  # type: ignore[no-untyped-def]
         if not self.expiry:
             return False
         # Azure Databricks rejects tokens that expire in 30 seconds or less,
@@ -94,10 +94,10 @@ class Token:
         return is_expired
 
     @property
-    def valid(self):
+    def valid(self):  # type: ignore[no-untyped-def]
         return self.access_token and not self.expired
 
-    def as_dict(self) -> dict:
+    def as_dict(self) -> dict:  # type: ignore[type-arg]
         raw = {
             "access_token": self.access_token,
             "token_type": self.token_type,
@@ -109,7 +109,7 @@ class Token:
         return raw
 
     @staticmethod
-    def from_dict(raw: dict) -> "Token":
+    def from_dict(raw: dict) -> "Token":  # type: ignore[type-arg]
         return Token(
             access_token=raw["access_token"],
             token_type=raw["token_type"],
@@ -149,7 +149,7 @@ class Token:
             payload_bytes = base64.standard_b64decode(payload_with_padding)
             payload_json = payload_bytes.decode("utf8")
             claims = json.loads(payload_json)
-            return claims
+            return claims  # type: ignore[no-any-return]
         except ValueError as err:
             logger.debug(f"Tried to decode access token as JWT, but failed: {err}")
             return {}
@@ -161,7 +161,7 @@ class TokenSource:
         pass
 
 
-def retrieve_token(
+def retrieve_token(  # type: ignore[no-untyped-def]
     client_id,
     client_secret,
     token_url,
@@ -180,7 +180,7 @@ def retrieve_token(
     if use_header:
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
     else:
-        auth = IgnoreNetrcAuth()
+        auth = IgnoreNetrcAuth()  # type: ignore[assignment]
     resp = requests.post(token_url, params, auth=auth, headers=headers)
     if not resp.ok:
         if resp.headers["Content-Type"].startswith("application/json"):
@@ -226,7 +226,7 @@ class Refreshable(TokenSource):
     _DEFAULT_STALE_DURATION = timedelta(minutes=3)
 
     @classmethod
-    def _get_executor(cls):
+    def _get_executor(cls):  # type: ignore[no-untyped-def]
         """Lazy initialization of the ThreadPoolExecutor."""
         if cls._EXECUTOR is None:
             with cls._EXECUTOR_LOCK:
@@ -272,7 +272,7 @@ class Refreshable(TokenSource):
         if state == _TokenState.FRESH:
             return token
         if state == _TokenState.STALE:
-            self._trigger_async_refresh()
+            self._trigger_async_refresh()  # type: ignore[no-untyped-call]
             return token
         return self._blocking_token()
 
@@ -307,10 +307,10 @@ class Refreshable(TokenSource):
         self._token = self.refresh()
         return self._token
 
-    def _trigger_async_refresh(self):
+    def _trigger_async_refresh(self):  # type: ignore[no-untyped-def]
         """Starts an asynchronous refresh if none is in progress."""
 
-        def _refresh_internal():
+        def _refresh_internal():  # type: ignore[no-untyped-def]
             new_token = None
             try:
                 new_token = self.refresh()
@@ -332,7 +332,7 @@ class Refreshable(TokenSource):
             return
         if not self._is_refreshing and not self._refresh_err:
             self._is_refreshing = True
-            Refreshable._get_executor().submit(_refresh_internal)
+            Refreshable._get_executor().submit(_refresh_internal)  # type: ignore[no-untyped-call]
 
     @abstractmethod
     def refresh(self) -> Token:
@@ -340,14 +340,14 @@ class Refreshable(TokenSource):
 
 
 class _OAuthCallback(BaseHTTPRequestHandler):
-    def __init__(self, feedback: list, *args):
+    def __init__(self, feedback: list, *args):  # type: ignore[no-untyped-def, type-arg]
         self._feedback = feedback
         super().__init__(*args)
 
     def log_message(self, fmt: str, *args: Any) -> None:
         logger.debug(fmt, *args)
 
-    def do_GET(self):
+    def do_GET(self):  # type: ignore[no-untyped-def]
         from urllib.parse import parse_qsl
 
         parts = self.path.split("?")
@@ -376,10 +376,10 @@ def get_account_endpoints(host: str, account_id: str, client: _BaseClient = _Bas
     :param account_id: The account ID.
     :return: The account's OIDC endpoints.
     """
-    host = _fix_host_if_needed(host)
+    host = _fix_host_if_needed(host)  # type: ignore[assignment]
     oidc = f"{host}/oidc/accounts/{account_id}/.well-known/oauth-authorization-server"
     resp = client.do("GET", oidc)
-    return OidcEndpoints.from_dict(resp)
+    return OidcEndpoints.from_dict(resp)  # type: ignore[arg-type]
 
 
 def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
@@ -388,10 +388,10 @@ def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> O
     :param host: The Databricks workspace host.
     :return: The workspace's OIDC endpoints.
     """
-    host = _fix_host_if_needed(host)
+    host = _fix_host_if_needed(host)  # type: ignore[assignment]
     oidc = f"{host}/oidc/.well-known/oauth-authorization-server"
     resp = client.do("GET", oidc)
-    return OidcEndpoints.from_dict(resp)
+    return OidcEndpoints.from_dict(resp)  # type: ignore[arg-type]
 
 
 def get_azure_entra_id_workspace_endpoints(
@@ -404,7 +404,7 @@ def get_azure_entra_id_workspace_endpoints(
     :return: The OIDC endpoints for the workspace's Azure Entra ID tenant.
     """
     # In Azure, this workspace endpoint redirects to the Entra ID authorization endpoint
-    host = _fix_host_if_needed(host)
+    host = _fix_host_if_needed(host)  # type: ignore[assignment]
     res = requests.get(f"{host}/oidc/oauth2/v2.0/authorize", allow_redirects=False)
     real_auth_url = res.headers.get("location")
     if not real_auth_url:
@@ -421,8 +421,8 @@ class SessionCredentials(Refreshable):
         token: Token,
         token_endpoint: str,
         client_id: str,
-        client_secret: str = None,
-        redirect_url: str = None,
+        client_secret: str = None,  # type: ignore[assignment]
+        redirect_url: str = None,  # type: ignore[assignment]
         disable_async: bool = True,
     ):
         self._token_endpoint = token_endpoint
@@ -434,16 +434,16 @@ class SessionCredentials(Refreshable):
             disable_async=disable_async,
         )
 
-    def as_dict(self) -> dict:
+    def as_dict(self) -> dict:  # type: ignore[type-arg]
         return {"token": self.token().as_dict()}
 
     @staticmethod
     def from_dict(
-        raw: dict,
+        raw: dict,  # type: ignore[type-arg]
         token_endpoint: str,
         client_id: str,
-        client_secret: str = None,
-        redirect_url: str = None,
+        client_secret: str = None,  # type: ignore[assignment]
+        redirect_url: str = None,  # type: ignore[assignment]
     ) -> "SessionCredentials":
         return SessionCredentials(
             token=Token.from_dict(raw["token"]),
@@ -453,12 +453,12 @@ class SessionCredentials(Refreshable):
             redirect_url=redirect_url,
         )
 
-    def auth_type(self):
+    def auth_type(self):  # type: ignore[no-untyped-def]
         """Implementing CredentialsProvider protocol"""
         # TODO: distinguish between Databricks IDP and Azure AD
         return "oauth"
 
-    def __call__(self, *args, **kwargs):
+    def __call__(self, *args, **kwargs):  # type: ignore[no-untyped-def]
         """Implementing CredentialsProvider protocol"""
 
         def inner() -> Dict[str, str]:
@@ -498,7 +498,7 @@ class Consent:
         redirect_url: str,
         token_endpoint: str,
         client_id: str,
-        client_secret: str = None,
+        client_secret: str = None,  # type: ignore[assignment]
     ) -> None:
         self._verifier = verifier
         self._state = state
@@ -508,7 +508,7 @@ class Consent:
         self._client_id = client_id
         self._client_secret = client_secret
 
-    def as_dict(self) -> dict:
+    def as_dict(self) -> dict:  # type: ignore[type-arg]
         return {
             "state": self._state,
             "verifier": self._verifier,
@@ -523,7 +523,7 @@ class Consent:
         return self._authorization_url
 
     @staticmethod
-    def from_dict(raw: dict, client_secret: str = None) -> "Consent":
+    def from_dict(raw: dict, client_secret: str = None) -> "Consent":  # type: ignore[assignment, type-arg]
         return Consent(
             raw["state"],
             raw["verifier"],
@@ -538,12 +538,12 @@ class Consent:
         redirect_url = urllib.parse.urlparse(self._redirect_url)
         if redirect_url.hostname not in ("localhost", "127.0.0.1"):
             raise ValueError(f"cannot listen on {redirect_url.hostname}")
-        feedback = []
+        feedback = []  # type: ignore[var-annotated]
         logger.info(f"Opening {self._authorization_url} in a browser")
         webbrowser.open_new(self._authorization_url)
         port = redirect_url.port
         handler_factory = functools.partial(_OAuthCallback, feedback)
-        with HTTPServer(("localhost", port), handler_factory) as httpd:
+        with HTTPServer(("localhost", port), handler_factory) as httpd:  # type: ignore[arg-type]
             logger.info(f"Waiting for redirect to http://localhost:{port}")
             httpd.handle_request()
         if not feedback:
@@ -567,7 +567,7 @@ class Consent:
             "code_verifier": self._verifier,
             "code": code,
         }
-        headers = {}
+        headers = {}  # type: ignore[var-annotated]
         while True:
             try:
                 token = retrieve_token(
@@ -620,8 +620,8 @@ class OAuthClient:
         oidc_endpoints: OidcEndpoints,
         redirect_url: str,
         client_id: str,
-        scopes: List[str] = None,
-        client_secret: str = None,
+        scopes: List[str] = None,  # type: ignore[assignment]
+        client_secret: str = None,  # type: ignore[assignment]
     ):
         if not scopes:
             # all-apis ensures that the returned OAuth token can be used with all APIs, aside
@@ -642,14 +642,14 @@ class OAuthClient:
         client_id: str,
         redirect_url: str,
         *,
-        scopes: List[str] = None,
-        client_secret: str = None,
+        scopes: List[str] = None,  # type: ignore[assignment]
+        client_secret: str = None,  # type: ignore[assignment]
     ) -> "OAuthClient":
         from .core import Config
         from .credentials_provider import credentials_strategy
 
-        @credentials_strategy("noop", [])
-        def noop_credentials(_: any):
+        @credentials_strategy("noop", [])  # type: ignore[misc]
+        def noop_credentials(_: any):  # type: ignore[no-untyped-def, valid-type]
             return lambda: {}
 
         config = Config(host=host, credentials_strategy=noop_credentials)
@@ -705,13 +705,13 @@ class ClientCredentials(Refreshable):
     client_id: str
     client_secret: str
     token_url: str
-    endpoint_params: dict = None
-    scopes: List[str] = None
+    endpoint_params: dict = None  # type: ignore[assignment, type-arg]
+    scopes: List[str] = None  # type: ignore[assignment]
     use_params: bool = False
     use_header: bool = False
     disable_async: bool = True
 
-    def __post_init__(self):
+    def __post_init__(self):  # type: ignore[no-untyped-def]
         super().__init__(disable_async=self.disable_async)
 
     def refresh(self) -> Token:
@@ -776,8 +776,8 @@ class TokenCache:
                     raw,
                     token_endpoint=self._oidc_endpoints.token_endpoint,
                     client_id=self._client_id,
-                    client_secret=self._client_secret,
-                    redirect_url=self._redirect_url,
+                    client_secret=self._client_secret,  # type: ignore[arg-type]
+                    redirect_url=self._redirect_url,  # type: ignore[arg-type]
                 )
         except Exception:
             return None

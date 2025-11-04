@@ -12,7 +12,7 @@ def _fqcn(x: Any) -> str:
 class WorkspaceExt(WorkspaceAPI):
     __doc__ = WorkspaceAPI.__doc__
 
-    def list(
+    def list(  # type: ignore[no-untyped-def]
         self,
         path: str,
         *,
@@ -33,7 +33,7 @@ class WorkspaceExt(WorkspaceAPI):
             path, queue = queue[0], queue[1:]
             for object_info in parent_list(path, notebooks_modified_after=notebooks_modified_after):
                 if recursive and object_info.object_type == ObjectType.DIRECTORY:
-                    queue.append(object_info.path)
+                    queue.append(object_info.path)  # type: ignore[arg-type]
                     continue
                 yield object_info
 
@@ -86,7 +86,7 @@ class WorkspaceExt(WorkspaceAPI):
         if overwrite:
             data["overwrite"] = "true"
         try:
-            return self._api.do(
+            return self._api.do(  # type: ignore[no-any-return]
                 "POST",
                 "/api/2.0/workspace/import",
                 files={"content": content},
@@ -114,4 +114,4 @@ class WorkspaceExt(WorkspaceAPI):
         if format:
             query["format"] = format.value
         response = self._api.do("GET", "/api/2.0/workspace/export", query=query, raw=True)
-        return response["contents"]
+        return response["contents"]  # type: ignore[no-any-return]

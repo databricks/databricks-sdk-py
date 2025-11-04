@@ -6,10 +6,10 @@ from databricks.sdk.errors.base import DatabricksError
 from .overrides import _ALL_OVERRIDES
 
 
-def _error_mapper(response: requests.Response, raw: dict) -> DatabricksError:
+def _error_mapper(response: requests.Response, raw: dict) -> DatabricksError:  # type: ignore[type-arg]
     for override in _ALL_OVERRIDES:
         if override.matches(response, raw):
-            return override.custom_error(**raw)
+            return override.custom_error(**raw)  # type: ignore[no-any-return]
     status_code = response.status_code
     error_code = raw.get("error_code", None)
     if error_code in platform.ERROR_CODE_MAPPING:

@@ -8,10 +8,10 @@ class DefaultValueOnlyWidgetUtils(WidgetUtils):
     def __init__(self) -> None:
         self._widgets: typing.Dict[str, str] = {}
 
-    def text(self, name: str, defaultValue: str, label: typing.Optional[str] = None):
+    def text(self, name: str, defaultValue: str, label: typing.Optional[str] = None):  # type: ignore[no-untyped-def]
         self._widgets[name] = defaultValue
 
-    def dropdown(
+    def dropdown(  # type: ignore[no-untyped-def]
         self,
         name: str,
         defaultValue: str,
@@ -20,7 +20,7 @@ class DefaultValueOnlyWidgetUtils(WidgetUtils):
     ):
         self._widgets[name] = defaultValue
 
-    def combobox(
+    def combobox(  # type: ignore[no-untyped-def]
         self,
         name: str,
         defaultValue: str,
@@ -29,7 +29,7 @@ class DefaultValueOnlyWidgetUtils(WidgetUtils):
     ):
         self._widgets[name] = defaultValue
 
-    def multiselect(
+    def multiselect(  # type: ignore[no-untyped-def]
         self,
         name: str,
         defaultValue: str,
@@ -41,8 +41,8 @@ class DefaultValueOnlyWidgetUtils(WidgetUtils):
     def _get(self, name: str) -> str:
         return self._widgets[name]
 
-    def _remove(self, name: str):
+    def _remove(self, name: str):  # type: ignore[no-untyped-def]
         del self._widgets[name]
 
-    def _remove_all(self):
+    def _remove_all(self):  # type: ignore[no-untyped-def]
         self._widgets = {}

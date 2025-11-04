@@ -1,9 +1,9 @@
 import logging
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 
-def test_workspaces(a):
+def test_workspaces(a):  # type: ignore[no-untyped-def]
     if a.config.is_azure:
         pytest.skip("not available on Azure")
     for w in a.workspaces.list():

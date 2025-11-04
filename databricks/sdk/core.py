@@ -6,12 +6,12 @@ from ._base_client import _BaseClient
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
-from .errors import DatabricksError, _ErrorCustomizer
+from .errors import DatabricksError, _ErrorCustomizer  # type: ignore[attr-defined]
 from .oauth import retrieve_token
 
 __all__ = ["Config", "DatabricksError"]
 
-logger = logging.getLogger("databricks.sdk")
+logger = logging.getLogger("databricks.sdk")  # type: ignore[name-defined]
 
 URL_ENCODED_CONTENT_TYPE = "application/x-www-form-urlencoded"
 JWT_BEARER_GRANT_TYPE = "urn:ietf:params:oauth:grant-type:jwt-bearer"
@@ -43,7 +43,7 @@ class ApiClient:
     def is_account_client(self) -> bool:
         return self._cfg.is_account_client
 
-    def get_oauth_token(self, auth_details: str) -> Token:
+    def get_oauth_token(self, auth_details: str) -> Token:  # type: ignore[name-defined]
         if not self._cfg.auth_type:
             self._cfg.authenticate()
         original_token = self._cfg.oauth_token()
@@ -63,20 +63,20 @@ class ApiClient:
             headers=headers,
         )
 
-    def do(
+    def do(  # type: ignore[no-untyped-def]
         self,
         method: str,
-        path: Optional[str] = None,
-        url: Optional[str] = None,
-        query: Optional[dict] = None,
-        headers: Optional[dict] = None,
-        body: Optional[dict] = None,
+        path: Optional[str] = None,  # type: ignore[name-defined]
+        url: Optional[str] = None,  # type: ignore[name-defined]
+        query: Optional[dict] = None,  # type: ignore[name-defined]
+        headers: Optional[dict] = None,  # type: ignore[name-defined]
+        body: Optional[dict] = None,  # type: ignore[name-defined]
         raw: bool = False,
         files=None,
         data=None,
-        auth: Optional[Callable[[requests.PreparedRequest], requests.PreparedRequest]] = None,
-        response_headers: Optional[List[str]] = None,
-    ) -> Union[dict, list, BinaryIO]:
+        auth: Optional[Callable[[requests.PreparedRequest], requests.PreparedRequest]] = None,  # type: ignore[name-defined]
+        response_headers: Optional[List[str]] = None,  # type: ignore[name-defined]
+    ) -> Union[dict, list, BinaryIO]:  # type: ignore[name-defined]
         if url is None:
             # Remove extra `/` from path for Files API
             # Once we've fixed the OpenAPI spec, we can remove this
@@ -103,7 +103,7 @@ class _AddDebugErrorCustomizer(_ErrorCustomizer):
     def __init__(self, cfg: Config):
         self._cfg = cfg
 
-    def customize_error(self, response: requests.Response, kwargs: dict):
+    def customize_error(self, response: requests.Response, kwargs: dict):  # type: ignore[name-defined, no-untyped-def, type-arg]
         if response.status_code in (401, 403):
             message = kwargs.get("message", "request failed")
             kwargs["message"] = self._cfg.wrap_debug_info(message)

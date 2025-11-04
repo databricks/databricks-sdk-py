@@ -2,8 +2,8 @@ import functools
 import os
 import platform
 
-import pytest as pytest
-from pyfakefs.fake_filesystem_unittest import Patcher
+import pytest as pytest  # type: ignore[import-not-found]
+from pyfakefs.fake_filesystem_unittest import Patcher  # type: ignore[import-not-found]
 
 from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import credentials_strategy
@@ -12,18 +12,18 @@ from .clock import FakeClock
 from .integration.conftest import restorable_env  # type: ignore
 
 
-@credentials_strategy("noop", [])
-def noop_credentials(_: any):
+@credentials_strategy("noop", [])  # type: ignore[misc]
+def noop_credentials(_: any):  # type: ignore[no-untyped-def, valid-type]
     return lambda: {}
 
 
 @pytest.fixture
-def config():
+def config():  # type: ignore[no-untyped-def]
     return Config(host="http://localhost", credentials_strategy=noop_credentials, clock=FakeClock())
 
 
 @pytest.fixture
-def w(config):
+def w(config):  # type: ignore[no-untyped-def]
     from databricks.sdk import WorkspaceClient
 
     return WorkspaceClient(config=config)
@@ -32,12 +32,12 @@ def w(config):
 __tests__ = os.path.dirname(__file__)
 
 
-def raises(msg):
+def raises(msg):  # type: ignore[no-untyped-def]
 
-    def inner(func):
+    def inner(func):  # type: ignore[no-untyped-def]
 
         @functools.wraps(func)
-        def wrapper(*args, **kwargs):
+        def wrapper(*args, **kwargs):  # type: ignore[no-untyped-def]
             with pytest.raises(ValueError) as info:
                 func(*args, **kwargs)
             exception_str = str(info.value)
@@ -56,7 +56,7 @@ def raises(msg):
 # When we apply this to a test, it'll use a fake file system instead of the local disk.
 # Example usage: test_config_no_params under test_auth.py
 @pytest.fixture
-def fake_fs():
+def fake_fs():  # type: ignore[no-untyped-def]
     with Patcher() as patcher:
 
         # Include the tests directory in the fake filesystem
@@ -66,14 +66,14 @@ def fake_fs():
         yield patcher.fs  # This will return a fake file system
 
 
-def set_home(monkeypatch, path):
+def set_home(monkeypatch, path):  # type: ignore[no-untyped-def]
     if platform.system() == "Windows":
         monkeypatch.setenv("USERPROFILE", __tests__ + path)
     else:
         monkeypatch.setenv("HOME", __tests__ + path)
 
 
-def set_az_path(monkeypatch):
+def set_az_path(monkeypatch):  # type: ignore[no-untyped-def]
     if platform.system() == "Windows":
         monkeypatch.setenv("Path", __tests__ + "\\testdata\\windows\\")
         monkeypatch.setenv(
@@ -85,9 +85,9 @@ def set_az_path(monkeypatch):
 
 
 @pytest.fixture
-def mock_tenant(requests_mock):
+def mock_tenant(requests_mock):  # type: ignore[no-untyped-def]
 
-    def stub_tenant_request(host, tenant_id="test-tenant-id"):
+    def stub_tenant_request(host, tenant_id="test-tenant-id"):  # type: ignore[no-untyped-def]
         mock = requests_mock.get(
             f"https://{host}/aad/auth",
             status_code=302,

@@ -13,8 +13,8 @@ import requests.adapters
 from . import useragent
 from .casing import Casing
 from .clock import Clock, RealClock
-from .errors import DatabricksError, _ErrorCustomizer, _Parser
-from .logger import RoundTrip
+from .errors import DatabricksError, _ErrorCustomizer, _Parser  # type: ignore[attr-defined]
+from .logger import RoundTrip  # type: ignore[attr-defined]
 from .retries import retried
 
 logger = logging.getLogger("databricks.sdk")
@@ -46,7 +46,7 @@ class _BaseClient:
         debug_truncate_bytes: Optional[int] = None,
         retry_timeout_seconds: Optional[int] = None,
         user_agent_base: Optional[str] = None,
-        header_factory: Optional[Callable[[], dict]] = None,
+        header_factory: Optional[Callable[[], dict]] = None,  # type: ignore[type-arg]
         max_connection_pools: Optional[int] = None,
         max_connections_per_pool: Optional[int] = None,
         pool_block: Optional[bool] = True,
@@ -92,7 +92,7 @@ class _BaseClient:
         http_adapter = requests.adapters.HTTPAdapter(
             pool_connections=max_connections_per_pool or 20,
             pool_maxsize=max_connection_pools or 20,
-            pool_block=pool_block,
+            pool_block=pool_block,  # type: ignore[arg-type]
         )
         self._session.mount("https://", http_adapter)
 
@@ -100,8 +100,8 @@ class _BaseClient:
         self._http_timeout_seconds = http_timeout_seconds or 60
 
         self._error_parser = _Parser(
-            extra_error_customizers=extra_error_customizers,
-            debug_headers=debug_headers,
+            extra_error_customizers=extra_error_customizers,  # type: ignore[arg-type]
+            debug_headers=debug_headers,  # type: ignore[arg-type]
         )
 
     def _authenticate(self, r: requests.PreparedRequest) -> requests.PreparedRequest:
@@ -112,7 +112,7 @@ class _BaseClient:
         return r
 
     @staticmethod
-    def _fix_query_string(query: Optional[dict] = None) -> Optional[dict]:
+    def _fix_query_string(query: Optional[dict] = None) -> Optional[dict]:  # type: ignore[type-arg]
         # Convert True -> "true" for Databricks APIs to understand booleans.
         # See: https://github.com/databricks/databricks-sdk-py/issues/142
         if query is None:
@@ -127,7 +127,7 @@ class _BaseClient:
         # {'filter_by.user_ids': [123, 456]}
         # See the following for more information:
         # https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#google.api.HttpRule
-        def flatten_dict(d: Dict[str, Any]) -> Dict[str, Any]:
+        def flatten_dict(d: Dict[str, Any]) -> Dict[str, Any]:  # type: ignore[misc]
             for k1, v1 in d.items():
                 if isinstance(v1, dict):
                     v1 = dict(flatten_dict(v1))
@@ -140,26 +140,26 @@ class _BaseClient:
         return flattened
 
     @staticmethod
-    def _is_seekable_stream(data) -> bool:
+    def _is_seekable_stream(data) -> bool:  # type: ignore[no-untyped-def]
         if data is None:
             return False
         if not isinstance(data, io.IOBase):
             return False
         return data.seekable()
 
-    def do(
+    def do(  # type: ignore[no-untyped-def]
         self,
         method: str,
         url: str,
-        query: Optional[dict] = None,
-        headers: Optional[dict] = None,
-        body: Optional[dict] = None,
+        query: Optional[dict] = None,  # type: ignore[type-arg]
+        headers: Optional[dict] = None,  # type: ignore[type-arg]
+        body: Optional[dict] = None,  # type: ignore[type-arg]
         raw: bool = False,
         files=None,
         data=None,
         auth: Optional[Callable[[requests.PreparedRequest], requests.PreparedRequest]] = None,
         response_headers: Optional[List[str]] = None,
-    ) -> Union[dict, list, BinaryIO]:
+    ) -> Union[dict, list, BinaryIO]:  # type: ignore[type-arg]
         if headers is None:
             headers = {}
         headers["User-Agent"] = self._user_agent_base
@@ -180,7 +180,7 @@ class _BaseClient:
             # if we need to retry the request.
             initial_data_position = data.tell()
 
-            def rewind():
+            def rewind():  # type: ignore[no-untyped-def]
                 logger.debug(f"Rewinding input data to offset {initial_data_position} before retry")
                 data.seek(initial_data_position)
 
@@ -271,17 +271,17 @@ class _BaseClient:
                 return f"matched {substring}"
         return None
 
-    def _perform(
+    def _perform(  # type: ignore[no-untyped-def]
         self,
         method: str,
         url: str,
-        query: Optional[dict] = None,
-        headers: Optional[dict] = None,
-        body: Optional[dict] = None,
+        query: Optional[dict] = None,  # type: ignore[type-arg]
+        headers: Optional[dict] = None,  # type: ignore[type-arg]
+        body: Optional[dict] = None,  # type: ignore[type-arg]
         raw: bool = False,
         files=None,
         data=None,
-        auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
+        auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,  # type: ignore[assignment]
     ):
         response = self._session.request(
             method,
@@ -305,18 +305,18 @@ class _BaseClient:
     def _record_request_log(self, response: requests.Response, raw: bool = False) -> None:
         if not logger.isEnabledFor(logging.DEBUG):
             return
-        logger.debug(RoundTrip(response, self._debug_headers, self._debug_truncate_bytes, raw).generate())
+        logger.debug(RoundTrip(response, self._debug_headers, self._debug_truncate_bytes, raw).generate())  # type: ignore[arg-type]
 
 
 class _RawResponse(ABC):
 
     @abstractmethod
     # follows Response signature: https://github.com/psf/requests/blob/main/src/requests/models.py#L799
-    def iter_content(self, chunk_size: int = 1, decode_unicode: bool = False):
+    def iter_content(self, chunk_size: int = 1, decode_unicode: bool = False):  # type: ignore[no-untyped-def]
         pass
 
     @abstractmethod
-    def close(self):
+    def close(self):  # type: ignore[no-untyped-def]
         pass
 
 
@@ -343,7 +343,7 @@ class _StreamingResponse(BinaryIO):
         if self._closed:
             raise ValueError("I/O operation on closed file")
         if not self._content:
-            self._content = self._response.iter_content(chunk_size=self._chunk_size, decode_unicode=False)
+            self._content = self._response.iter_content(chunk_size=self._chunk_size, decode_unicode=False)  # type: ignore[arg-type]
 
     def __enter__(self) -> BinaryIO:
         self._open()
@@ -353,7 +353,7 @@ class _StreamingResponse(BinaryIO):
         self._chunk_size = chunk_size
 
     def close(self) -> None:
-        self._response.close()
+        self._response.close()  # type: ignore[no-untyped-call]
         self._closed = True
 
     def isatty(self) -> bool:
@@ -372,7 +372,7 @@ class _StreamingResponse(BinaryIO):
         while remaining_bytes > 0 or read_everything:
             if len(self._buffer) == 0:
                 try:
-                    self._buffer = next(self._content)
+                    self._buffer = next(self._content)  # type: ignore[arg-type]
                 except StopIteration:
                     break
             bytes_available = len(self._buffer)
@@ -416,7 +416,7 @@ class _StreamingResponse(BinaryIO):
         return self.read(1)
 
     def __iter__(self) -> Iterator[bytes]:
-        return self._content
+        return self._content  # type: ignore[return-value]
 
     def __exit__(
         self,

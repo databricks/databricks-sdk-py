@@ -6,7 +6,7 @@ class FieldMask(object):
     # The original implementation only works with proto generated classes.
     # Since our classes are not generated from proto files, we need to implement it manually.
 
-    def __init__(self, field_mask=None):
+    def __init__(self, field_mask=None):  # type: ignore[no-untyped-def]
         """Initializes the FieldMask."""
         if field_mask:
             self.paths = field_mask
@@ -24,11 +24,11 @@ class FieldMask(object):
         else:
             self.paths = []
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other) -> bool:  # type: ignore[no-untyped-def]
         """Check equality based on paths."""
         if not isinstance(other, FieldMask):
             return False
-        return self.paths == other.paths
+        return self.paths == other.paths  # type: ignore[no-any-return]
 
     def __hash__(self) -> int:
         """Hash based on paths tuple."""

@@ -6,7 +6,7 @@ import string
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk import WorkspaceClient, errors, useragent
 from databricks.sdk.core import ApiClient, Config, DatabricksError
@@ -26,7 +26,7 @@ from .conftest import noop_credentials
 from .fixture_server import http_fixture_server
 
 
-def test_parse_dsn():
+def test_parse_dsn():  # type: ignore[no-untyped-def]
     cfg = Config.parse_dsn("databricks://user:pass@foo.databricks.com?retry_timeout_seconds=600")
 
     headers = cfg.authenticate()
@@ -35,19 +35,19 @@ def test_parse_dsn():
     assert "basic" == cfg.auth_type
 
 
-def test_databricks_cli_token_source_relative_path(config):
+def test_databricks_cli_token_source_relative_path(config):  # type: ignore[no-untyped-def]
     config.databricks_cli_path = "./relative/path/to/cli"
     ts = DatabricksCliTokenSource(config)
     assert ts._cmd[0] == config.databricks_cli_path
 
 
-def test_databricks_cli_token_source_absolute_path(config):
+def test_databricks_cli_token_source_absolute_path(config):  # type: ignore[no-untyped-def]
     config.databricks_cli_path = "/absolute/path/to/cli"
     ts = DatabricksCliTokenSource(config)
     assert ts._cmd[0] == config.databricks_cli_path
 
 
-def test_databricks_cli_token_source_not_installed(config, monkeypatch):
+def test_databricks_cli_token_source_not_installed(config, monkeypatch):  # type: ignore[no-untyped-def]
     monkeypatch.setenv("PATH", "whatever")
     with pytest.raises(FileNotFoundError, match="not installed"):
         DatabricksCliTokenSource(config)
@@ -61,11 +61,11 @@ def test_databricks_cli_token_source_not_installed(config, monkeypatch):
         ("2023-12-06 10:06:05", datetime(2023, 12, 6, 10, 6, 5)),
     ],
 )
-def test_databricks_cli_token_parse_expiry(date_string, expected):
+def test_databricks_cli_token_parse_expiry(date_string, expected):  # type: ignore[no-untyped-def]
     assert CliTokenSource._parse_expiry(date_string) == expected
 
 
-def write_small_dummy_executable(path: pathlib.Path):
+def write_small_dummy_executable(path: pathlib.Path):  # type: ignore[no-untyped-def]
     if platform.system() == "Windows":
         cli = path.joinpath("databricks.exe")
         cli.touch()
@@ -78,7 +78,7 @@ def write_small_dummy_executable(path: pathlib.Path):
     return cli
 
 
-def write_large_dummy_executable(path: pathlib.Path):
+def write_large_dummy_executable(path: pathlib.Path):  # type: ignore[no-untyped-def]
     cli = path.joinpath("databricks")
 
     # Generate a long random string to inflate the file size.
@@ -101,14 +101,14 @@ exit 0
     return cli
 
 
-def test_databricks_cli_token_source_installed_legacy(config, monkeypatch, tmp_path):
+def test_databricks_cli_token_source_installed_legacy(config, monkeypatch, tmp_path):  # type: ignore[no-untyped-def]
     write_small_dummy_executable(tmp_path)
     monkeypatch.setenv("PATH", tmp_path.as_posix())
     with pytest.raises(FileNotFoundError, match="version <0.100.0 detected"):
         DatabricksCliTokenSource(config)
 
 
-def test_databricks_cli_token_source_installed_legacy_with_symlink(config, monkeypatch, tmp_path):
+def test_databricks_cli_token_source_installed_legacy_with_symlink(config, monkeypatch, tmp_path):  # type: ignore[no-untyped-def]
     dir1 = tmp_path.joinpath("dir1")
     dir2 = tmp_path.joinpath("dir2")
     dir1.mkdir()
@@ -120,20 +120,20 @@ def test_databricks_cli_token_source_installed_legacy_with_symlink(config, monke
         (dir1 / "databricks").symlink_to(write_small_dummy_executable(dir2))
 
     path = pathlib.Path(dir1)
-    path = str(path)
+    path = str(path)  # type: ignore[assignment]
     monkeypatch.setenv("PATH", path)
 
     with pytest.raises(FileNotFoundError, match="version <0.100.0 detected"):
         DatabricksCliTokenSource(config)
 
 
-def test_databricks_cli_token_source_installed_new(config, monkeypatch, tmp_path):
+def test_databricks_cli_token_source_installed_new(config, monkeypatch, tmp_path):  # type: ignore[no-untyped-def]
     write_large_dummy_executable(tmp_path)
     monkeypatch.setenv("PATH", tmp_path.as_posix())
     DatabricksCliTokenSource(config)
 
 
-def test_databricks_cli_token_source_installed_both(config, monkeypatch, tmp_path):
+def test_databricks_cli_token_source_installed_both(config, monkeypatch, tmp_path):  # type: ignore[no-untyped-def]
     dir1 = tmp_path.joinpath("dir1")
     dir2 = tmp_path.joinpath("dir2")
     dir1.mkdir()
@@ -151,18 +151,18 @@ def test_databricks_cli_token_source_installed_both(config, monkeypatch, tmp_pat
     DatabricksCliTokenSource(config)
 
 
-def test_databricks_cli_credential_provider_not_installed(config, monkeypatch):
+def test_databricks_cli_credential_provider_not_installed(config, monkeypatch):  # type: ignore[no-untyped-def]
     monkeypatch.setenv("PATH", "whatever")
     assert databricks_cli(config) == None
 
 
-def test_databricks_cli_credential_provider_installed_legacy(config, monkeypatch, tmp_path):
+def test_databricks_cli_credential_provider_installed_legacy(config, monkeypatch, tmp_path):  # type: ignore[no-untyped-def]
     write_small_dummy_executable(tmp_path)
     monkeypatch.setenv("PATH", tmp_path.as_posix())
     assert databricks_cli(config) == None
 
 
-def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path, mocker):
+def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, tmp_path, mocker):  # type: ignore[no-untyped-def]
     get_mock = mocker.patch(
         "databricks.sdk.credentials_provider.CliTokenSource.refresh",
         return_value=Token(
@@ -173,7 +173,7 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
     )
     write_large_dummy_executable(tmp_path)
     path = str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]])
-    path = pathlib.Path(path)
+    path = pathlib.Path(path)  # type: ignore[assignment]
     path = str(path)
     monkeypatch.setenv("PATH", path)
 
@@ -181,12 +181,12 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
     assert get_mock.call_count == 1
 
 
-def test_extra_and_upstream_user_agent(monkeypatch):
+def test_extra_and_upstream_user_agent(monkeypatch):  # type: ignore[no-untyped-def]
 
     class MockUname:
 
         @property
-        def system(self):
+        def system(self):  # type: ignore[no-untyped-def]
             return "TestOS"
 
     # Clear all environment variables and cached CICD provider.
@@ -218,11 +218,11 @@ def test_extra_and_upstream_user_agent(monkeypatch):
     )
 
 
-def test_config_copy_shallow_copies_credential_provider():
+def test_config_copy_shallow_copies_credential_provider():  # type: ignore[no-untyped-def]
 
     class TestCredentialsStrategy(CredentialsStrategy):
 
-        def __init__(self):
+        def __init__(self):  # type: ignore[no-untyped-def]
             super().__init__()
             self._token = "token1"
 
@@ -232,85 +232,85 @@ def test_config_copy_shallow_copies_credential_provider():
         def __call__(self, cfg: "Config") -> CredentialsProvider:
             return lambda: {"token": self._token}
 
-        def refresh(self):
+        def refresh(self):  # type: ignore[no-untyped-def]
             self._token = "token2"
 
-    credentials_strategy = TestCredentialsStrategy()
+    credentials_strategy = TestCredentialsStrategy()  # type: ignore[no-untyped-call]
     config = Config(credentials_strategy=credentials_strategy)
-    config_copy = config.copy()
+    config_copy = config.copy()  # type: ignore[no-untyped-call]
 
     assert config.authenticate()["token"] == "token1"
     assert config_copy.authenticate()["token"] == "token1"
 
-    credentials_strategy.refresh()
+    credentials_strategy.refresh()  # type: ignore[no-untyped-call]
 
     assert config.authenticate()["token"] == "token2"
     assert config_copy.authenticate()["token"] == "token2"
     assert config._credentials_strategy == config_copy._credentials_strategy
 
 
-def test_config_accounts_aws_is_accounts_host(config):
+def test_config_accounts_aws_is_accounts_host(config):  # type: ignore[no-untyped-def]
     config.host = "https://accounts.cloud.databricks.com"
     assert config.is_account_client
 
 
-def test_config_accounts_dod_is_accounts_host(config):
+def test_config_accounts_dod_is_accounts_host(config):  # type: ignore[no-untyped-def]
     config.host = "https://accounts-dod.cloud.databricks.us"
     assert config.is_account_client
 
 
-def test_config_workspace_is_not_accounts_host(config):
+def test_config_workspace_is_not_accounts_host(config):  # type: ignore[no-untyped-def]
     config.host = "https://westeurope.azuredatabricks.net"
     assert not config.is_account_client
 
 
 # This test uses the fake file system to avoid interference from local default profile.
-def test_config_can_be_subclassed(fake_fs):
+def test_config_can_be_subclassed(fake_fs):  # type: ignore[no-untyped-def]
 
     class DatabricksConfig(Config):
 
-        def __init__(self):
+        def __init__(self):  # type: ignore[no-untyped-def]
             super().__init__()
 
     with pytest.raises(ValueError):  # As opposed to `KeyError`.
-        DatabricksConfig()
+        DatabricksConfig()  # type: ignore[no-untyped-call]
 
 
-def test_config_parsing_non_string_env_vars(monkeypatch):
+def test_config_parsing_non_string_env_vars(monkeypatch):  # type: ignore[no-untyped-def]
     monkeypatch.setenv("DATABRICKS_DEBUG_TRUNCATE_BYTES", "100")
     c = Config(host="http://localhost", credentials_strategy=noop_credentials)
     assert c.debug_truncate_bytes == 100
 
 
-def test_access_control_list(config, requests_mock):
+def test_access_control_list(config, requests_mock):  # type: ignore[no-untyped-def]
     requests_mock.post(
         "http://localhost/api/2.2/jobs/create",
         request_headers={"User-Agent": config.user_agent},
     )
 
     w = WorkspaceClient(config=config)
-    res = w.jobs.create(access_control_list=[AccessControlRequest(group_name="group")])
+    res = w.jobs.create(access_control_list=[AccessControlRequest(group_name="group")])  # type: ignore[list-item]
 
     assert requests_mock.call_count == 1
     assert requests_mock.called
     assert requests_mock.last_request.json() == {"access_control_list": [{"group_name": "group"}]}
 
 
-def test_shares(config, requests_mock):
+def test_shares(config, requests_mock):  # type: ignore[no-untyped-def]
     requests_mock.patch(
         "http://localhost/api/2.1/unity-catalog/shares/jobId/permissions",
         request_headers={"User-Agent": config.user_agent},
     )
 
     w = WorkspaceClient(config=config)
-    res = w.shares.update_permissions(name="jobId", changes=[PermissionsChange(principal="principal")])
+    res = w.shares.update_permissions(name="jobId", changes=[PermissionsChange(principal="principal")])  # type: ignore[list-item]
 
     assert requests_mock.call_count == 1
     assert requests_mock.called
     assert requests_mock.last_request.json() == {"changes": [{"principal": "principal"}]}
 
 
-def test_deletes(config, requests_mock):
+def test_deletes(config, requests_mock):  # type: ignore[no-untyped-def]
     requests_mock.delete(
         "http://localhost/api/2.0/sql/alerts/alertId",
         request_headers={"User-Agent": config.user_agent},
@@ -355,7 +355,7 @@ def test_deletes(config, requests_mock):
         ),
     ],
 )
-def test_error(config, requests_mock, status_code, headers, body, expected_error):
+def test_error(config, requests_mock, status_code, headers, body, expected_error):  # type: ignore[no-untyped-def]
     client = ApiClient(config)
     requests_mock.get("/test", json=body, status_code=status_code, headers=headers)
     with pytest.raises(DatabricksError) as raised:
@@ -377,9 +377,9 @@ def test_error(config, requests_mock, status_code, headers, body, expected_error
         assert expected.metadata == actual.metadata
 
 
-def test_github_oidc_flow_works_with_azure(monkeypatch):
+def test_github_oidc_flow_works_with_azure(monkeypatch):  # type: ignore[no-untyped-def]
 
-    def inner(h: BaseHTTPRequestHandler):
+    def inner(h: BaseHTTPRequestHandler):  # type: ignore[no-untyped-def]
         if "audience=api://AzureADTokenExchange" in h.path:
             auth = h.headers["Authorization"]
             assert "Bearer gh-actions-token" == auth
@@ -437,7 +437,7 @@ def test_github_oidc_flow_works_with_azure(monkeypatch):
         ("AzureChinaCloud", ENVIRONMENTS["CHINA"]),
     ],
 )
-def test_azure_environment(azure_environment, expected):
+def test_azure_environment(azure_environment, expected):  # type: ignore[no-untyped-def]
     c = Config(
         credentials_strategy=noop_credentials,
         azure_workspace_resource_id="...",

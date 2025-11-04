@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from enum import Enum
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 from google.protobuf.duration_pb2 import Duration
 from google.protobuf.timestamp_pb2 import Timestamp
 
@@ -17,19 +17,19 @@ class A(Enum):
     b = "b"
 
 
-def test_enum():
+def test_enum():  # type: ignore[no-untyped-def]
     assert _enum({"field": "a"}, "field", A) == A.a
 
 
-def test_enum_unknown():
+def test_enum_unknown():  # type: ignore[no-untyped-def]
     assert _enum({"field": "c"}, "field", A) is None
 
 
-def test_repeated_enum():
+def test_repeated_enum():  # type: ignore[no-untyped-def]
     assert _repeated_enum({"field": ["a", "b"]}, "field", A) == [A.a, A.b]
 
 
-def test_repeated_enum_unknown():
+def test_repeated_enum_unknown():  # type: ignore[no-untyped-def]
     assert _repeated_enum({"field": ["a", "c"]}, "field", A) == [A.a]
 
 
@@ -38,22 +38,22 @@ class B:
     field: str
 
     @classmethod
-    def from_dict(cls, d: dict) -> "B":
+    def from_dict(cls, d: dict) -> "B":  # type: ignore[type-arg]
         return cls(d["field"])
 
 
-def test_from_dict():
+def test_from_dict():  # type: ignore[no-untyped-def]
     assert _from_dict({"x": {"field": "a"}}, "x", B) == B("a")
 
 
-def test_repeated_dict():
+def test_repeated_dict():  # type: ignore[no-untyped-def]
     assert _repeated_dict({"x": [{"field": "a"}, {"field": "c"}]}, "x", B) == [
         B("a"),
         B("c"),
     ]
 
 
-def test_escape_multi_segment_path_parameter():
+def test_escape_multi_segment_path_parameter():  # type: ignore[no-untyped-def]
     assert _escape_multi_segment_path_parameter("a b") == "a%20b"
     assert _escape_multi_segment_path_parameter("a/b") == "a/b"
     assert _escape_multi_segment_path_parameter("a?b") == "a%3Fb"
@@ -74,7 +74,7 @@ def test_escape_multi_segment_path_parameter():
         ({"field": ""}, "field", None, "empty value"),
     ],
 )
-def test_timestamp(input_dict, field_name, expected_timestamp, description):
+def test_timestamp(input_dict, field_name, expected_timestamp, description):  # type: ignore[no-untyped-def]
     """Test _timestamp function with various input scenarios."""
     result = _timestamp(input_dict, field_name)
 
@@ -99,17 +99,17 @@ def test_timestamp(input_dict, field_name, expected_timestamp, description):
         ({"field": []}, "field", [], "empty list"),
     ],
 )
-def test_repeated_timestamp(input_dict, field_name, expected_timestamp_list, description):
+def test_repeated_timestamp(input_dict, field_name, expected_timestamp_list, description):  # type: ignore[no-untyped-def]
     """Test _repeated_timestamp function with various input scenarios."""
     result = _repeated_timestamp(input_dict, field_name)
 
     if expected_timestamp_list is None or len(expected_timestamp_list) == 0:
         assert result is None
     else:
-        assert len(result) == len(expected_timestamp_list)
-        assert all(isinstance(ts, Timestamp) for ts in result)
+        assert len(result) == len(expected_timestamp_list)  # type: ignore[arg-type]
+        assert all(isinstance(ts, Timestamp) for ts in result)  # type: ignore[union-attr]
         for i, expected_timestamp in enumerate(expected_timestamp_list):
-            assert result[i] == expected_timestamp
+            assert result[i] == expected_timestamp  # type: ignore[index]
 
 
 @pytest.mark.parametrize(
@@ -121,7 +121,7 @@ def test_repeated_timestamp(input_dict, field_name, expected_timestamp_list, des
         ({"field": ""}, "field", None, "empty value"),
     ],
 )
-def test_duration(input_dict, field_name, expected_duration, description):
+def test_duration(input_dict, field_name, expected_duration, description):  # type: ignore[no-untyped-def]
     """Test _duration function with various input scenarios."""
     result = _duration(input_dict, field_name)
 
@@ -146,17 +146,17 @@ def test_duration(input_dict, field_name, expected_duration, description):
         ({"field": []}, "field", [], "empty list"),
     ],
 )
-def test_repeated_duration(input_dict, field_name, expected_duration_list, description):
+def test_repeated_duration(input_dict, field_name, expected_duration_list, description):  # type: ignore[no-untyped-def]
     """Test _repeated_duration function with various input scenarios."""
     result = _repeated_duration(input_dict, field_name)
 
     if expected_duration_list is None or len(expected_duration_list) == 0:
         assert result is None
     else:
-        assert len(result) == len(expected_duration_list)
-        assert all(isinstance(dur, Duration) for dur in result)
+        assert len(result) == len(expected_duration_list)  # type: ignore[arg-type]
+        assert all(isinstance(dur, Duration) for dur in result)  # type: ignore[union-attr]
         for i, expected_duration in enumerate(expected_duration_list):
-            assert result[i] == expected_duration
+            assert result[i] == expected_duration  # type: ignore[index]
 
 
 @pytest.mark.parametrize(
@@ -165,7 +165,7 @@ def test_repeated_duration(input_dict, field_name, expected_duration_list, descr
         (
             {"field": "path1,path2"},
             "field",
-            FieldMask(field_mask=["path1", "path2"]),
+            FieldMask(field_mask=["path1", "path2"]),  # type: ignore[no-untyped-call]
             "valid fieldmask",
         ),
         ({}, "field", None, "missing field"),
@@ -173,7 +173,7 @@ def test_repeated_duration(input_dict, field_name, expected_duration_list, descr
         ({"field": ""}, "field", None, "empty value"),
     ],
 )
-def test_fieldmask(input_dict, field_name, expected_fieldmask, description):
+def test_fieldmask(input_dict, field_name, expected_fieldmask, description):  # type: ignore[no-untyped-def]
     """Test _fieldmask function with various input scenarios."""
     result = _fieldmask(input_dict, field_name)
 
@@ -190,7 +190,7 @@ def test_fieldmask(input_dict, field_name, expected_fieldmask, description):
         (
             {"field": ["path1,path2", "path3,path4"]},
             "field",
-            [FieldMask(field_mask=["path1", "path2"]), FieldMask(field_mask=["path3", "path4"])],
+            [FieldMask(field_mask=["path1", "path2"]), FieldMask(field_mask=["path3", "path4"])],  # type: ignore[no-untyped-call]
             "valid repeated fieldmasks",
         ),
         ({}, "field", [], "missing field"),
@@ -198,14 +198,14 @@ def test_fieldmask(input_dict, field_name, expected_fieldmask, description):
         ({"field": []}, "field", [], "empty list"),
     ],
 )
-def test_repeated_fieldmask(input_dict, field_name, expected_fieldmask_list, description):
+def test_repeated_fieldmask(input_dict, field_name, expected_fieldmask_list, description):  # type: ignore[no-untyped-def]
     """Test _repeated_fieldmask function with various input scenarios."""
     result = _repeated_fieldmask(input_dict, field_name)
 
     if expected_fieldmask_list is None or len(expected_fieldmask_list) == 0:
         assert result is None
     else:
-        assert len(result) == len(expected_fieldmask_list)
-        assert all(isinstance(fm, FieldMask) for fm in result)
+        assert len(result) == len(expected_fieldmask_list)  # type: ignore[arg-type]
+        assert all(isinstance(fm, FieldMask) for fm in result)  # type: ignore[union-attr]
         for i, expected_fieldmask in enumerate(expected_fieldmask_list):
-            assert result[i] == expected_fieldmask
+            assert result[i] == expected_fieldmask  # type: ignore[index]

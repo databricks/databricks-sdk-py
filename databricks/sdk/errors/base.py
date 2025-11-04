@@ -9,12 +9,12 @@ from . import details as errdetails
 
 # Deprecated.
 class ErrorDetail:
-    def __init__(
+    def __init__(  # type: ignore[no-untyped-def]
         self,
         type: Optional[str] = None,
         reason: Optional[str] = None,
         domain: Optional[str] = None,
-        metadata: Optional[dict] = None,
+        metadata: Optional[dict] = None,  # type: ignore[type-arg]
         **kwargs,
     ):
         self.type = type
@@ -36,7 +36,7 @@ class ErrorDetail:
 class DatabricksError(IOError):
     """Generic error from Databricks REST API"""
 
-    def __init__(
+    def __init__(  # type: ignore[no-untyped-def]
         self,
         message: Optional[str] = None,
         *,
@@ -102,7 +102,7 @@ class _ErrorOverride:
     debug_name: str
 
     # A regex that must match the path of the request for this override to be applied.
-    path_regex: re.Pattern
+    path_regex: re.Pattern  # type: ignore[type-arg]
 
     # The HTTP method of the request for the override to apply
     verb: str
@@ -112,17 +112,17 @@ class _ErrorOverride:
 
     # A regular expression that must match the error code for this override to be applied. If None,
     # this field is ignored.
-    status_code_matcher: Optional[re.Pattern] = None
+    status_code_matcher: Optional[re.Pattern] = None  # type: ignore[type-arg]
 
     # A regular expression that must match the error code for this override to be applied. If None,
     # this field is ignored.
-    error_code_matcher: Optional[re.Pattern] = None
+    error_code_matcher: Optional[re.Pattern] = None  # type: ignore[type-arg]
 
     # A regular expression that must match the message for this override to be applied. If None,
     # this field is ignored.
-    message_matcher: Optional[re.Pattern] = None
+    message_matcher: Optional[re.Pattern] = None  # type: ignore[type-arg]
 
-    def matches(self, response: requests.Response, raw_error: dict):
+    def matches(self, response: requests.Response, raw_error: dict):  # type: ignore[no-untyped-def, type-arg]
         if response.request.method != self.verb:
             return False
         if not self.path_regex.match(response.request.path_url):

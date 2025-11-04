@@ -3,7 +3,7 @@ import json
 from dataclasses import dataclass, field
 from typing import Any, List, Optional
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 import requests
 
 from databricks.sdk import errors
@@ -47,7 +47,7 @@ def fake_valid_response(
     if error_code:
         body["error_code"] = error_code
     if len(details) > 0:
-        body["details"] = details
+        body["details"] = details  # type: ignore[assignment]
 
     return fake_response(method, status_code, json.dumps(body), path)
 
@@ -115,7 +115,7 @@ _basic_test_cases_no_details = [
         (503, "", IOError),
         (504, "", errors.DeadlineExceeded),
         (504, "", IOError),
-        (444, "", errors.DatabricksError),
+        (444, "", errors.DatabricksError),  # type: ignore[attr-defined]
         (444, "", IOError),
     ]
 ]
@@ -275,7 +275,7 @@ _test_case_other_errors = [
     TestCase(
         name="private_link_validation_error",
         response=make_private_link_response(),
-        want_err_type=errors.PrivateLinkValidationError,
+        want_err_type=errors.PrivateLinkValidationError,  # type: ignore[attr-defined]
         want_message=(
             "The requested workspace has AWS PrivateLink enabled and is not accessible from the current network. "
             "Ensure that AWS PrivateLink is properly configured and that your device has access to the AWS VPC "
@@ -361,19 +361,19 @@ _test_case_other_errors = [
 _all_test_cases = _basic_test_cases_no_details + _test_case_with_details + _test_case_other_errors
 
 
-@pytest.mark.parametrize("test_case", [pytest.param(x, id=x.name) for x in _all_test_cases])
-def test_get_api_error(test_case: TestCase):
-    parser = errors._Parser()
+@pytest.mark.parametrize("test_case", [pytest.param(x, id=x.name) for x in _all_test_cases])  # type: ignore[misc]
+def test_get_api_error(test_case: TestCase):  # type: ignore[no-untyped-def]
+    parser = errors._Parser()  # type: ignore[attr-defined]
 
-    with pytest.raises(errors.DatabricksError) as e:
-        raise parser.get_api_error(test_case.response)
+    with pytest.raises(errors.DatabricksError) as e:  # type: ignore[attr-defined]
+        raise parser.get_api_error(test_case.response)  # type: ignore[misc]
 
     assert isinstance(e.value, test_case.want_err_type)
     assert str(e.value) == test_case.want_message
     assert e.value.get_error_details() == test_case.want_details
 
 
-def test_debug_headers_disabled_by_default():
+def test_debug_headers_disabled_by_default():  # type: ignore[no-untyped-def]
     """Test that debug_headers=False by default does not leak sensitive headers in unparseable errors."""
     # Create a response with Authorization header that cannot be parsed.
     resp = requests.Response()
@@ -384,7 +384,7 @@ def test_debug_headers_disabled_by_default():
     resp.request.headers["X-Databricks-Azure-SP-Management-Token"] = "secret-azure-token-67890"
     resp._content = b"unparseable response"
 
-    parser = errors._Parser(debug_headers=False)
+    parser = errors._Parser(debug_headers=False)  # type: ignore[attr-defined]
     error = parser.get_api_error(resp)
 
     error_message = str(error)
@@ -395,7 +395,7 @@ def test_debug_headers_disabled_by_default():
     assert "X-Databricks-Azure-SP-Management-Token" not in error_message
 
 
-def test_debug_headers_enabled_shows_headers():
+def test_debug_headers_enabled_shows_headers():  # type: ignore[no-untyped-def]
     """Test that debug_headers=True includes headers in unparseable error messages."""
     # Create a response with Authorization header that cannot be parsed.
     resp = requests.Response()
@@ -406,7 +406,7 @@ def test_debug_headers_enabled_shows_headers():
     resp.request.headers["X-Databricks-Azure-SP-Management-Token"] = "debug-azure-token-67890"
     resp._content = b"unparseable response"
 
-    parser = errors._Parser(debug_headers=True)
+    parser = errors._Parser(debug_headers=True)  # type: ignore[attr-defined]
     error = parser.get_api_error(resp)
 
     error_message = str(error)

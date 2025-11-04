@@ -12,7 +12,7 @@ class MountInfo(namedtuple("MountInfo", ["mountPoint", "source", "encryptionType
 
 class SecretScope(namedtuple("SecretScope", ["name"])):
 
-    def getName(self):
+    def getName(self):  # type: ignore[no-untyped-def]
         return self.name
 
 
@@ -28,28 +28,28 @@ class dbutils:
         """
 
         @staticmethod
-        def assumeRole(role: str) -> bool:
+        def assumeRole(role: str) -> bool:  # type: ignore[empty-body]
             """
             Sets the role ARN to assume when looking for credentials to authenticate with S3
             """
             ...
 
         @staticmethod
-        def showCurrentRole() -> typing.List[str]:
+        def showCurrentRole() -> typing.List[str]:  # type: ignore[empty-body]
             """
             Shows the currently set role
             """
             ...
 
         @staticmethod
-        def showRoles() -> typing.List[str]:
+        def showRoles() -> typing.List[str]:  # type: ignore[empty-body]
             """
             Shows the set of possibly assumed roles
             """
             ...
 
         @staticmethod
-        def getCurrentCredentials() -> typing.Mapping[str, str]: ...
+        def getCurrentCredentials() -> typing.Mapping[str, str]: ...  # type: ignore[empty-body]
 
     class data:
         """
@@ -57,7 +57,7 @@ class dbutils:
         """
 
         @staticmethod
-        def summarize(df: any, precise: bool = False) -> None:
+        def summarize(df: any, precise: bool = False) -> None:  # type: ignore[valid-type]
             """Summarize a Spark/pandas/Koalas DataFrame and visualize the statistics to get quick insights.
 
             Example: dbutils.data.summarize(df)
@@ -79,68 +79,68 @@ class dbutils:
         """
 
         @staticmethod
-        def cp(source: str, dest: str, recurse: bool = False) -> bool:
+        def cp(source: str, dest: str, recurse: bool = False) -> bool:  # type: ignore[empty-body]
             """
             Copies a file or directory, possibly across FileSystems
             """
             ...
 
         @staticmethod
-        def head(file: str, max_bytes: int = 65536) -> str:
+        def head(file: str, max_bytes: int = 65536) -> str:  # type: ignore[empty-body]
             """
             Returns up to the first 'maxBytes' bytes of the given file as a String encoded in UTF-8
             """
             ...
 
         @staticmethod
-        def ls(path: str) -> typing.List[FileInfo]:
+        def ls(path: str) -> typing.List[FileInfo]:  # type: ignore[empty-body]
             """
             Lists the contents of a directory
             """
             ...
 
         @staticmethod
-        def mkdirs(dir: str) -> bool:
+        def mkdirs(dir: str) -> bool:  # type: ignore[empty-body]
             """
             Creates the given directory if it does not exist, also creating any necessary parent directories
             """
             ...
 
         @staticmethod
-        def mv(source: str, dest: str, recurse: bool = False) -> bool:
+        def mv(source: str, dest: str, recurse: bool = False) -> bool:  # type: ignore[empty-body]
             """
             Moves a file or directory, possibly across FileSystems
             """
             ...
 
         @staticmethod
-        def put(file: str, contents: str, overwrite: bool = False) -> bool:
+        def put(file: str, contents: str, overwrite: bool = False) -> bool:  # type: ignore[empty-body]
             """
             Writes the given String out to a file, encoded in UTF-8
             """
             ...
 
         @staticmethod
-        def rm(dir: str, recurse: bool = False) -> bool:
+        def rm(dir: str, recurse: bool = False) -> bool:  # type: ignore[empty-body]
             """
             Removes a file or directory
             """
             ...
 
         @staticmethod
-        def cacheFiles(*files): ...
+        def cacheFiles(*files): ...  # type: ignore[no-untyped-def]
 
         @staticmethod
-        def cacheTable(name: str): ...
+        def cacheTable(name: str): ...  # type: ignore[no-untyped-def]
 
         @staticmethod
-        def uncacheFiles(*files): ...
+        def uncacheFiles(*files): ...  # type: ignore[no-untyped-def]
 
         @staticmethod
-        def uncacheTable(name: str): ...
+        def uncacheTable(name: str): ...  # type: ignore[no-untyped-def]
 
         @staticmethod
-        def mount(
+        def mount(  # type: ignore[empty-body]
             source: str,
             mount_point: str,
             encryption_type: str = "",
@@ -153,7 +153,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def updateMount(
+        def updateMount(  # type: ignore[empty-body]
             source: str,
             mount_point: str,
             encryption_type: str = "",
@@ -166,21 +166,21 @@ class dbutils:
             ...
 
         @staticmethod
-        def mounts() -> typing.List[MountInfo]:
+        def mounts() -> typing.List[MountInfo]:  # type: ignore[empty-body]
             """
             Displays information about what is mounted within DBFS
             """
             ...
 
         @staticmethod
-        def refreshMounts() -> bool:
+        def refreshMounts() -> bool:  # type: ignore[empty-body]
             """
             Forces all machines in this cluster to refresh their mount cache, ensuring they receive the most recent information
             """
             ...
 
         @staticmethod
-        def unmount(mount_point: str) -> bool:
+        def unmount(mount_point: str) -> bool:  # type: ignore[empty-body]
             """
             Deletes a DBFS mount point
             """
@@ -200,8 +200,8 @@ class dbutils:
             def get(
                 taskKey: str,
                 key: str,
-                default: any = None,
-                debugValue: any = None,
+                default: any = None,  # type: ignore[valid-type]
+                debugValue: any = None,  # type: ignore[valid-type]
             ) -> None:
                 """
                 Returns the latest task value that belongs to the current job run
@@ -209,7 +209,7 @@ class dbutils:
                 ...
 
             @staticmethod
-            def set(key: str, value: any) -> None:
+            def set(key: str, value: any) -> None:  # type: ignore[valid-type]
                 """
                 Sets a task value on the current task run
                 """
@@ -240,7 +240,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def run(
+        def run(  # type: ignore[empty-body]
             path: str,
             timeout_seconds: int,
             arguments: typing.Mapping[str, str],
@@ -256,25 +256,25 @@ class dbutils:
         """
 
         @staticmethod
-        def get(scope: str, key: str) -> str:
+        def get(scope: str, key: str) -> str:  # type: ignore[empty-body]
             """
             Gets the string representation of a secret value with scope and key
             """
             ...
 
         @staticmethod
-        def getBytes(self, scope: str, key: str) -> bytes:
+        def getBytes(self, scope: str, key: str) -> bytes:  # type: ignore[empty-body, no-untyped-def]
             """Gets the bytes representation of a secret value for the specified scope and key."""
 
         @staticmethod
-        def list(scope: str) -> typing.List[SecretMetadata]:
+        def list(scope: str) -> typing.List[SecretMetadata]:  # type: ignore[empty-body]
             """
             Lists secret metadata for secrets within a scope
             """
             ...
 
         @staticmethod
-        def listScopes() -> typing.List[SecretScope]:
+        def listScopes() -> typing.List[SecretScope]:  # type: ignore[empty-body]
             """
             Lists secret scopes
             """
@@ -286,7 +286,7 @@ class dbutils:
         """
 
         @staticmethod
-        def get(name: str) -> str:
+        def get(name: str) -> str:  # type: ignore[empty-body]
             """Returns the current value of a widget with give name.
             :param name: Name of the argument to be accessed
             :return: Current value of the widget or default value
@@ -303,7 +303,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def text(name: str, defaultValue: str, label: str = None):
+        def text(name: str, defaultValue: str, label: str = None):  # type: ignore[assignment, no-untyped-def]
             """Creates a text input widget with given name, default value and optional label for
             display
             :param name: Name of argument associated with the new input widget
@@ -313,11 +313,11 @@ class dbutils:
             ...
 
         @staticmethod
-        def dropdown(
+        def dropdown(  # type: ignore[no-untyped-def]
             name: str,
             defaultValue: str,
             choices: typing.List[str],
-            label: str = None,
+            label: str = None,  # type: ignore[assignment]
         ):
             """Creates a dropdown input widget with given specification.
             :param name: Name of argument associated with the new input widget
@@ -328,7 +328,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def combobox(
+        def combobox(  # type: ignore[no-untyped-def]
             name: str,
             defaultValue: str,
             choices: typing.List[str],
@@ -343,7 +343,7 @@ class dbutils:
             ...
 
         @staticmethod
-        def multiselect(
+        def multiselect(  # type: ignore[no-untyped-def]
             name: str,
             defaultValue: str,
             choices: typing.List[str],
@@ -358,14 +358,14 @@ class dbutils:
             ...
 
         @staticmethod
-        def remove(name: str):
+        def remove(name: str):  # type: ignore[no-untyped-def]
             """Removes given input widget. If widget does not exist it will throw an error.
             :param name: Name of argument associated with input widget to be removed
             """
             ...
 
         @staticmethod
-        def removeAll():
+        def removeAll():  # type: ignore[no-untyped-def]
             """Removes all input widgets in the notebook."""
             ...
 

@@ -3,7 +3,7 @@ import io
 from databricks.sdk.service.workspace import ImportFormat, Language
 
 
-def test_workspace_recursive_list(w, workspace_dir, random):
+def test_workspace_recursive_list(w, workspace_dir, random):  # type: ignore[no-untyped-def]
     # create a file in the directory
     file = f"{workspace_dir}/file-{random(12)}.py"
     w.workspace.upload(file, io.BytesIO(b"print(1)"))
@@ -20,7 +20,7 @@ def test_workspace_recursive_list(w, workspace_dir, random):
     assert len(names) == 2
 
 
-def test_workspace_upload_download_notebooks(w, random):
+def test_workspace_upload_download_notebooks(w, random):  # type: ignore[no-untyped-def]
     notebook = f"/Users/{w.current_user.me().user_name}/notebook-{random(12)}.py"
 
     w.workspace.upload(notebook, io.BytesIO(b"print(1)"))
@@ -31,7 +31,7 @@ def test_workspace_upload_download_notebooks(w, random):
     w.workspace.delete(notebook)
 
 
-def test_workspace_unzip_notebooks(w, random):
+def test_workspace_unzip_notebooks(w, random):  # type: ignore[no-untyped-def]
     notebook = f"/Users/{w.current_user.me().user_name}/notebook-{random(12)}.py"
 
     # Big notebooks can be gzipped during transfer by the API (out of our control)
@@ -47,7 +47,7 @@ def test_workspace_unzip_notebooks(w, random):
     w.workspace.delete(notebook)
 
 
-def test_workspace_download_connection_closed(w, random):
+def test_workspace_download_connection_closed(w, random):  # type: ignore[no-untyped-def]
     notebook = f"/Users/{w.current_user.me().user_name}/notebook-{random(12)}.py"
 
     w.workspace.upload(notebook, io.BytesIO(b"print(1)"))
@@ -60,7 +60,7 @@ def test_workspace_download_connection_closed(w, random):
     w.workspace.delete(notebook)
 
 
-def test_workspace_upload_download_files(w, random):
+def test_workspace_upload_download_files(w, random):  # type: ignore[no-untyped-def]
     py_file = f"/Users/{w.current_user.me().user_name}/file-{random(12)}.py"
 
     w.workspace.upload(py_file, io.BytesIO(b"print(1)"), format=ImportFormat.AUTO)
@@ -71,7 +71,7 @@ def test_workspace_upload_download_files(w, random):
     w.workspace.delete(py_file)
 
 
-def test_workspace_upload_download_txt_files(w, random):
+def test_workspace_upload_download_txt_files(w, random):  # type: ignore[no-untyped-def]
     txt_file = f"/Users/{w.current_user.me().user_name}/txt-{random(12)}.txt"
 
     w.workspace.upload(txt_file, io.BytesIO(b"print(1)"), format=ImportFormat.AUTO)
@@ -82,7 +82,7 @@ def test_workspace_upload_download_txt_files(w, random):
     w.workspace.delete(txt_file)
 
 
-def test_workspace_upload_download_notebooks_no_extension(w, random):
+def test_workspace_upload_download_notebooks_no_extension(w, random):  # type: ignore[no-untyped-def]
     nb = f"/Users/{w.current_user.me().user_name}/notebook-{random(12)}"
 
     w.workspace.upload(

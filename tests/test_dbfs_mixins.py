@@ -1,11 +1,11 @@
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.errors import NotFound
 from databricks.sdk.mixins.files import (DbfsExt, _DbfsPath, _LocalPath,
                                          _VolumesPath)
 
 
-def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
+def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):  # type: ignore[no-untyped-def]
     from databricks.sdk import WorkspaceClient
     from databricks.sdk.service.files import FileInfo, ReadResponse
 
@@ -14,7 +14,7 @@ def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
         return_value=FileInfo(path="a", is_dir=False, file_size=4),
     )
 
-    def fake_read(path: str, *, length: int = None, offset: int = None):
+    def fake_read(path: str, *, length: int = None, offset: int = None):  # type: ignore[assignment, no-untyped-def]
         assert path == "a"
         assert length == 1048576
         if not offset:
@@ -34,7 +34,7 @@ def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
         assert f.read() == b"hello"
 
 
-def test_moving_local_dir_to_dbfs(config, tmp_path, mocker):
+def test_moving_local_dir_to_dbfs(config, tmp_path, mocker):  # type: ignore[no-untyped-def]
     from databricks.sdk import WorkspaceClient
     from databricks.sdk.service.files import CreateResponse
 
@@ -73,27 +73,27 @@ def test_moving_local_dir_to_dbfs(config, tmp_path, mocker):
         ("file:/Volumes/path/to/file", _LocalPath),
     ],
 )
-def test_fs_path(config, path, expected_type):
-    dbfs_ext = DbfsExt(config)
-    assert isinstance(dbfs_ext._path(path), expected_type)
+def test_fs_path(config, path, expected_type):  # type: ignore[no-untyped-def]
+    dbfs_ext = DbfsExt(config)  # type: ignore[no-untyped-call]
+    assert isinstance(dbfs_ext._path(path), expected_type)  # type: ignore[no-untyped-call]
 
 
-def test_fs_path_invalid(config):
-    dbfs_ext = DbfsExt(config)
+def test_fs_path_invalid(config):  # type: ignore[no-untyped-def]
+    dbfs_ext = DbfsExt(config)  # type: ignore[no-untyped-call]
     with pytest.raises(ValueError) as e:
-        dbfs_ext._path("s3://path/to/file")
+        dbfs_ext._path("s3://path/to/file")  # type: ignore[no-untyped-call]
     assert 'unsupported scheme "s3"' in str(e.value)
 
 
-def test_dbfs_local_path_mkdir(config, tmp_path):
+def test_dbfs_local_path_mkdir(config, tmp_path):  # type: ignore[no-untyped-def]
     from databricks.sdk import WorkspaceClient
 
     w = WorkspaceClient(config=config)
-    w.dbfs._path(f"file:{tmp_path}/test_dir").mkdir()
+    w.dbfs._path(f"file:{tmp_path}/test_dir").mkdir()  # type: ignore[no-untyped-call]
     assert w.dbfs.exists(f"file:{tmp_path}/test_dir")
 
 
-def test_dbfs_exists(config, mocker):
+def test_dbfs_exists(config, mocker):  # type: ignore[no-untyped-def]
     from databricks.sdk import WorkspaceClient
 
     get_status = mocker.patch(
@@ -107,7 +107,7 @@ def test_dbfs_exists(config, mocker):
     get_status.assert_called_with("/abc/def/ghi")
 
 
-def test_volume_exists(config, mocker):
+def test_volume_exists(config, mocker):  # type: ignore[no-untyped-def]
     from databricks.sdk import WorkspaceClient
 
     get_metadata = mocker.patch("databricks.sdk.service.files.FilesAPI.get_metadata")

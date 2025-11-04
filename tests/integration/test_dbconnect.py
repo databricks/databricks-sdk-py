@@ -1,4 +1,4 @@
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 DBCONNECT_DBR_CLIENT = {
     "13.3": "13.3.3",
@@ -6,7 +6,7 @@ DBCONNECT_DBR_CLIENT = {
 }
 
 
-def reload_modules(name: str):
+def reload_modules(name: str):  # type: ignore[no-untyped-def]
     """
     Reloads the specified module. This is useful when testing Databricks Connect, since both
     the `databricks.connect` and `databricks.sdk.runtime` modules are stateful, and we need
@@ -27,7 +27,7 @@ def reload_modules(name: str):
 
 
 @pytest.fixture(params=list(DBCONNECT_DBR_CLIENT.keys()))
-def setup_dbconnect_test(request, env_or_skip, restorable_env):
+def setup_dbconnect_test(request, env_or_skip, restorable_env):  # type: ignore[no-untyped-def]
     dbr = request.param
     assert (
         dbr in DBCONNECT_DBR_CLIENT
@@ -49,16 +49,16 @@ def setup_dbconnect_test(request, env_or_skip, restorable_env):
 
 
 @pytest.mark.xdist_group(name="databricks-connect")
-def test_dbconnect_initialisation(w, setup_dbconnect_test):
+def test_dbconnect_initialisation(w, setup_dbconnect_test):  # type: ignore[no-untyped-def]
     reload_modules("databricks.connect")
-    from databricks.connect import DatabricksSession
+    from databricks.connect import DatabricksSession  # type: ignore[import-not-found]
 
     spark = DatabricksSession.builder.getOrCreate()
     assert spark.sql("SELECT 1").collect()[0][0] == 1
 
 
 @pytest.mark.xdist_group(name="databricks-connect")
-def test_dbconnect_runtime_import(w, setup_dbconnect_test):
+def test_dbconnect_runtime_import(w, setup_dbconnect_test):  # type: ignore[no-untyped-def]
     reload_modules("databricks.sdk.runtime")
     from databricks.sdk.runtime import spark
 
@@ -66,7 +66,7 @@ def test_dbconnect_runtime_import(w, setup_dbconnect_test):
 
 
 @pytest.mark.xdist_group(name="databricks-connect")
-def test_dbconnect_runtime_import_no_error_if_doesnt_exist(w):
+def test_dbconnect_runtime_import_no_error_if_doesnt_exist(w):  # type: ignore[no-untyped-def]
     reload_modules("databricks.sdk.runtime")
     from databricks.sdk.runtime import spark
 

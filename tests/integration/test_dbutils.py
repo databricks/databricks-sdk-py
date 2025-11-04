@@ -2,13 +2,13 @@ import base64
 import logging
 import os
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.errors import NotFound
 
 
-def test_rest_dbfs_ls(w, env_or_skip):
+def test_rest_dbfs_ls(w, env_or_skip):  # type: ignore[no-untyped-def]
     from databricks.sdk.runtime import dbutils
 
     x = dbutils.fs.ls("/")
@@ -16,7 +16,7 @@ def test_rest_dbfs_ls(w, env_or_skip):
     assert len(x) > 1
 
 
-def test_proxy_dbfs_mounts(w, env_or_skip):
+def test_proxy_dbfs_mounts(w, env_or_skip):  # type: ignore[no-untyped-def]
     w.config.cluster_id = env_or_skip("TEST_DEFAULT_CLUSTER_ID")
 
     x = w.dbutils.fs.mounts()
@@ -25,7 +25,7 @@ def test_proxy_dbfs_mounts(w, env_or_skip):
 
 
 @pytest.fixture(params=["dbfs", "volumes"])
-def fs_and_base_path(request, ucws, volume):
+def fs_and_base_path(request, ucws, volume):  # type: ignore[no-untyped-def]
     if request.param == "dbfs":
         fs = ucws.dbutils.fs
         base_path = "/tmp"
@@ -35,7 +35,7 @@ def fs_and_base_path(request, ucws, volume):
     return fs, base_path
 
 
-def test_put(fs_and_base_path):
+def test_put(fs_and_base_path):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file"
     fs.put(path, "test", True)
@@ -43,7 +43,7 @@ def test_put(fs_and_base_path):
     assert output == "test"
 
 
-def test_large_put(fs_and_base_path):
+def test_large_put(fs_and_base_path):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_large_file"
     fs.put(path, "test" * 20000, True)
@@ -51,14 +51,14 @@ def test_large_put(fs_and_base_path):
     assert output == ("test" * 20000)[:65536]
 
 
-def test_put_local_path(w, random, tmp_path):
+def test_put_local_path(w, random, tmp_path):  # type: ignore[no-untyped-def]
     to_write = random(1024 * 1024 * 2)
     tmp_path = tmp_path / "tmp_file"
     w.dbutils.fs.put(f"file:{tmp_path}", to_write, True)
     assert w.dbutils.fs.head(f"file:{tmp_path}", 1024 * 1024 * 2) == to_write
 
 
-def test_cp_file(fs_and_base_path, random):
+def test_cp_file(fs_and_base_path, random):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     fs.put(path, "test", True)
@@ -68,7 +68,7 @@ def test_cp_file(fs_and_base_path, random):
     assert len(fs.ls(path)) == 1
 
 
-def test_cp_dir(fs_and_base_path, random):
+def test_cp_dir(fs_and_base_path, random):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_dir-" + random()
     fs.mkdirs(path)
@@ -81,7 +81,7 @@ def test_cp_dir(fs_and_base_path, random):
     assert output[1].path == path + "_copy/file2"
 
 
-def test_ls_file(fs_and_base_path, random):
+def test_ls_file(fs_and_base_path, random):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     fs.put(path, "test", True)
@@ -90,7 +90,7 @@ def test_ls_file(fs_and_base_path, random):
     assert output[0].path == path
 
 
-def test_ls_dir(fs_and_base_path, random):
+def test_ls_dir(fs_and_base_path, random):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_dir-" + random()
     fs.mkdirs(path)
@@ -102,7 +102,7 @@ def test_ls_dir(fs_and_base_path, random):
     assert output[1].path == path + "/file2"
 
 
-def test_mv_file(fs_and_base_path, random):
+def test_mv_file(fs_and_base_path, random):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     fs.put(path, "test", True)
@@ -113,7 +113,7 @@ def test_mv_file(fs_and_base_path, random):
         fs.ls(path)
 
 
-def test_mv_dir(fs_and_base_path, random):
+def test_mv_dir(fs_and_base_path, random):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_dir-" + random()
     fs.mkdirs(path)
@@ -130,7 +130,7 @@ def test_mv_dir(fs_and_base_path, random):
         fs.ls(path)
 
 
-def test_mv_local_to_remote(fs_and_base_path, random, tmp_path):
+def test_mv_local_to_remote(fs_and_base_path, random, tmp_path):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     with open(tmp_path / "test", "w") as f:
@@ -141,7 +141,7 @@ def test_mv_local_to_remote(fs_and_base_path, random, tmp_path):
     assert os.listdir(tmp_path) == []
 
 
-def test_mv_remote_to_local(fs_and_base_path, random, tmp_path):
+def test_mv_remote_to_local(fs_and_base_path, random, tmp_path):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     fs.put(path, "test", True)
@@ -153,7 +153,7 @@ def test_mv_remote_to_local(fs_and_base_path, random, tmp_path):
         fs.ls(path)
 
 
-def test_rm_file(fs_and_base_path, random):
+def test_rm_file(fs_and_base_path, random):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_file-" + random()
     fs.put(path, "test", True)
@@ -162,7 +162,7 @@ def test_rm_file(fs_and_base_path, random):
         fs.ls(path)
 
 
-def test_rm_dir(fs_and_base_path, random):
+def test_rm_dir(fs_and_base_path, random):  # type: ignore[no-untyped-def]
     fs, base_path = fs_and_base_path
     path = base_path + "/dbc_qa_dir-" + random()
     fs.mkdirs(path)
@@ -175,7 +175,7 @@ def test_rm_dir(fs_and_base_path, random):
         fs.ls(path)
 
 
-def test_secrets(w, random):
+def test_secrets(w, random):  # type: ignore[no-untyped-def]
     random_scope = f"scope-{random()}"
     key_for_string = f"string-{random()}"
     key_for_bytes = f"bytes-{random()}"
@@ -195,7 +195,7 @@ def test_secrets(w, random):
     from databricks.sdk.runtime import dbutils
 
     all_scopes = dbutils.secrets.listScopes()
-    assert random_scope in [scope.getName() for scope in all_scopes]
+    assert random_scope in [scope.getName() for scope in all_scopes]  # type: ignore[no-untyped-call]
 
     all_secrets = {}
     for secret_metadata in dbutils.secrets.list(random_scope):
