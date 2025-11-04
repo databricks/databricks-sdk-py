@@ -4,6 +4,9 @@
 
 ### New Features and Improvements
 
+### Security
+- Update `protobuf` dependency constraints to exclude known vulnerable versions (related to `SNYK-PYTHON-PROTOBUF-10364902`).
+
 ### Bug Fixes
 - Fix `FilesExt` can fail to upload and download data when Presigned URLs are not available in certain environments (e.g. Serverless GPU clusters).
 
