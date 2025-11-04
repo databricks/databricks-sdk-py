@@ -201,6 +201,31 @@ class ApproveTransitionRequestResponse:
         return cls(activity=_from_dict(d, "activity", Activity))
 
 
+@dataclass
+class BatchCreateMaterializedFeaturesResponse:
+    materialized_features: Optional[List[MaterializedFeature]] = None
+    """The created materialized features with assigned IDs."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BatchCreateMaterializedFeaturesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.materialized_features:
+            body["materialized_features"] = [v.as_dict() for v in self.materialized_features]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BatchCreateMaterializedFeaturesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.materialized_features:
+            body["materialized_features"] = self.materialized_features
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BatchCreateMaterializedFeaturesResponse:
+        """Deserializes the BatchCreateMaterializedFeaturesResponse from a dictionary."""
+        return cls(materialized_features=_repeated_dict(d, "materialized_features", MaterializedFeature))
+
+
 class CommentActivityAction(Enum):
     """An action that a user (with sufficient permissions) could take on an activity or comment.
 
@@ -421,6 +446,31 @@ class CreateLoggedModelResponse:
     def from_dict(cls, d: Dict[str, Any]) -> CreateLoggedModelResponse:
         """Deserializes the CreateLoggedModelResponse from a dictionary."""
         return cls(model=_from_dict(d, "model", LoggedModel))
+
+
+@dataclass
+class CreateMaterializedFeatureRequest:
+    materialized_feature: MaterializedFeature
+    """The materialized feature to create."""
+
+    def as_dict(self) -> dict:
+        """Serializes the CreateMaterializedFeatureRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.materialized_feature:
+            body["materialized_feature"] = self.materialized_feature.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the CreateMaterializedFeatureRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.materialized_feature:
+            body["materialized_feature"] = self.materialized_feature
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> CreateMaterializedFeatureRequest:
+        """Deserializes the CreateMaterializedFeatureRequest from a dictionary."""
+        return cls(materialized_feature=_from_dict(d, "materialized_feature", MaterializedFeature))
 
 
 @dataclass
@@ -1334,6 +1384,9 @@ class Feature:
     filter_condition: Optional[str] = None
     """The filter condition applied to the source data before aggregation."""
 
+    lineage_context: Optional[LineageContext] = None
+    """Lineage context information for this feature."""
+
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1347,6 +1400,8 @@ class Feature:
             body["function"] = self.function.as_dict()
         if self.inputs:
             body["inputs"] = [v for v in self.inputs]
+        if self.lineage_context:
+            body["lineage_context"] = self.lineage_context.as_dict()
         if self.source:
             body["source"] = self.source.as_dict()
         if self.time_window:
@@ -1366,6 +1421,8 @@ class Feature:
             body["function"] = self.function
         if self.inputs:
             body["inputs"] = self.inputs
+        if self.lineage_context:
+            body["lineage_context"] = self.lineage_context
         if self.source:
             body["source"] = self.source
         if self.time_window:
@@ -1381,6 +1438,7 @@ class Feature:
             full_name=d.get("full_name", None),
             function=_from_dict(d, "function", Function),
             inputs=d.get("inputs", None),
+            lineage_context=_from_dict(d, "lineage_context", LineageContext),
             source=_from_dict(d, "source", DataSource),
             time_window=_from_dict(d, "time_window", TimeWindow),
         )
@@ -2193,6 +2251,38 @@ class InputTag:
 
 
 @dataclass
+class JobContext:
+    job_id: Optional[int] = None
+    """The job ID where this API invoked."""
+
+    job_run_id: Optional[int] = None
+    """The job run ID where this API was invoked."""
+
+    def as_dict(self) -> dict:
+        """Serializes the JobContext into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.job_run_id is not None:
+            body["job_run_id"] = self.job_run_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the JobContext into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.job_id is not None:
+            body["job_id"] = self.job_id
+        if self.job_run_id is not None:
+            body["job_run_id"] = self.job_run_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> JobContext:
+        """Deserializes the JobContext from a dictionary."""
+        return cls(job_id=d.get("job_id", None), job_run_id=d.get("job_run_id", None))
+
+
+@dataclass
 class JobSpec:
     job_id: str
     """ID of the job that the webhook runs."""
@@ -2267,6 +2357,42 @@ class JobSpecWithoutSecret:
     def from_dict(cls, d: Dict[str, Any]) -> JobSpecWithoutSecret:
         """Deserializes the JobSpecWithoutSecret from a dictionary."""
         return cls(job_id=d.get("job_id", None), workspace_url=d.get("workspace_url", None))
+
+
+@dataclass
+class LineageContext:
+    """Lineage context information for tracking where an API was invoked. This will allow us to track
+    lineage, which currently uses caller entity information for use across the Lineage Client and
+    Observability in Lumberjack."""
+
+    job_context: Optional[JobContext] = None
+    """Job context information including job ID and run ID."""
+
+    notebook_id: Optional[int] = None
+    """The notebook ID where this API was invoked."""
+
+    def as_dict(self) -> dict:
+        """Serializes the LineageContext into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.job_context:
+            body["job_context"] = self.job_context.as_dict()
+        if self.notebook_id is not None:
+            body["notebook_id"] = self.notebook_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the LineageContext into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.job_context:
+            body["job_context"] = self.job_context
+        if self.notebook_id is not None:
+            body["notebook_id"] = self.notebook_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> LineageContext:
+        """Deserializes the LineageContext from a dictionary."""
+        return cls(job_context=_from_dict(d, "job_context", JobContext), notebook_id=d.get("notebook_id", None))
 
 
 @dataclass
@@ -6843,6 +6969,30 @@ class FeatureEngineeringAPI:
 
     def __init__(self, api_client):
         self._api = api_client
+
+    def batch_create_materialized_features(
+        self, requests: List[CreateMaterializedFeatureRequest]
+    ) -> BatchCreateMaterializedFeaturesResponse:
+        """Batch create materialized features.
+
+        :param requests: List[:class:`CreateMaterializedFeatureRequest`]
+          The requests to create materialized features.
+
+        :returns: :class:`BatchCreateMaterializedFeaturesResponse`
+        """
+
+        body = {}
+        if requests is not None:
+            body["requests"] = [v.as_dict() for v in requests]
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", "/api/2.0/feature-engineering/materialized-features:batchCreate", body=body, headers=headers
+        )
+        return BatchCreateMaterializedFeaturesResponse.from_dict(res)
 
     def create_feature(self, feature: Feature) -> Feature:
         """Create a Feature.

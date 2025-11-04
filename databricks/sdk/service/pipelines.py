@@ -556,8 +556,8 @@ class IngestionGatewayPipelineDefinition:
 
     gateway_storage_name: Optional[str] = None
     """Optional. The Unity Catalog-compatible name for the gateway storage location. This is the
-    destination to use for the data that is extracted by the gateway. Delta Live Tables system will
-    automatically create the storage location under the catalog and schema."""
+    destination to use for the data that is extracted by the gateway. Spark Declarative Pipelines
+    system will automatically create the storage location under the catalog and schema."""
 
     def as_dict(self) -> dict:
         """Serializes the IngestionGatewayPipelineDefinition into a dictionary suitable for use as a JSON request body."""
@@ -2979,8 +2979,8 @@ class TableSpecificConfig:
     """The SCD type to use to ingest the table."""
 
     sequence_by: Optional[List[str]] = None
-    """The column names specifying the logical order of events in the source data. Delta Live Tables
-    uses this sequencing to handle change events that arrive out of order."""
+    """The column names specifying the logical order of events in the source data. Spark Declarative
+    Pipelines uses this sequencing to handle change events that arrive out of order."""
 
     workday_report_parameters: Optional[IngestionPipelineDefinitionWorkdayReportParameters] = None
     """(Optional) Additional custom parameters for Workday Report"""
@@ -3254,16 +3254,17 @@ class UpdateStateInfoState(Enum):
 
 
 class PipelinesAPI:
-    """The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines.
+    """The Lakeflow Spark Declarative Pipelines API allows you to create, edit, delete, start, and view details
+    about pipelines.
 
-    Delta Live Tables is a framework for building reliable, maintainable, and testable data processing
-    pipelines. You define the transformations to perform on your data, and Delta Live Tables manages task
-    orchestration, cluster management, monitoring, data quality, and error handling.
+    Spark Declarative Pipelines is a framework for building reliable, maintainable, and testable data
+    processing pipelines. You define the transformations to perform on your data, and Spark Declarative
+    Pipelines manages task orchestration, cluster management, monitoring, data quality, and error handling.
 
-    Instead of defining your data pipelines using a series of separate Apache Spark tasks, Delta Live Tables
-    manages how your data is transformed based on a target schema you define for each processing step. You can
-    also enforce data quality with Delta Live Tables expectations. Expectations allow you to define expected
-    data quality and specify how to handle records that fail those expectations."""
+    Instead of defining your data pipelines using a series of separate Apache Spark tasks, Spark Declarative
+    Pipelines manages how your data is transformed based on a target schema you define for each processing
+    step. You can also enforce data quality with Spark Declarative Pipelines expectations. Expectations allow
+    you to define expected data quality and specify how to handle records that fail those expectations."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -3626,7 +3627,7 @@ class PipelinesAPI:
         order_by: Optional[List[str]] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[PipelineStateInfo]:
-        """Lists pipelines defined in the Delta Live Tables system.
+        """Lists pipelines defined in the Spark Declarative Pipelines system.
 
         :param filter: str (optional)
           Select a subset of results based on the specified criteria. The supported filters are:

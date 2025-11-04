@@ -711,7 +711,7 @@ class WorkspaceClient:
 
     @property
     def pipelines(self) -> pkg_pipelines.PipelinesAPI:
-        """The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines."""
+        """The Lakeflow Spark Declarative Pipelines API allows you to create, edit, delete, start, and view details about pipelines."""
         return self._pipelines
 
     @property

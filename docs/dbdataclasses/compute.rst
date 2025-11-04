@@ -421,6 +421,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: AUTOSCALE
       :value: "AUTOSCALE"
 
+   .. py:attribute:: AUTOSCALE_V2
+      :value: "AUTOSCALE_V2"
+
    .. py:attribute:: REPLACE_BAD_NODES
       :value: "REPLACE_BAD_NODES"
 
