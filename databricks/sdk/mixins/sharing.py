@@ -27,7 +27,7 @@ class SharesExt(sharing.SharesAPI):
         if max_results is not None:
             query["max_results"] = max_results
         if page_token is not None:
-            query["page_token"] = page_token
+            query["page_token"] = page_token  # type: ignore[assignment]
         headers = {
             "Accept": "application/json",
         }

@@ -1,7 +1,7 @@
 import threading
 import time
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import ModelServingUserCredentials

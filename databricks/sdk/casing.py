@@ -4,7 +4,7 @@ class _Name(object):
     def __init__(self, raw_name: str):
         #
         self._segments = []
-        segment = []
+        segment = []  # type: ignore[var-annotated]
         for ch in raw_name:
             if ch.isupper():
                 if segment:

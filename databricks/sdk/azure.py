@@ -4,7 +4,7 @@ from .oauth import TokenSource
 from .service.provisioning import Workspace
 
 
-def add_workspace_id_header(cfg: "Config", headers: Dict[str, str]):
+def add_workspace_id_header(cfg: "Config", headers: Dict[str, str]):  # type: ignore[name-defined]
     if cfg.azure_workspace_resource_id:
         headers["X-Databricks-Azure-Workspace-Resource-Id"] = cfg.azure_workspace_resource_id
 

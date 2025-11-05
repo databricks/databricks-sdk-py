@@ -13,14 +13,14 @@ class _MockRefreshable(Refreshable):
         disable_async,
         token=None,
         stale_duration=timedelta(seconds=60),
-        refresh_effect: Callable[[], Token] = None,
+        refresh_effect: Callable[[], Token] = None,  # type: ignore[assignment]
     ):
         super().__init__(token, disable_async, stale_duration)
         self._refresh_effect = refresh_effect
         self._refresh_count = 0
 
     def refresh(self) -> Token:
-        if self._refresh_effect:
+        if self._refresh_effect:  # type: ignore[truthy-function]
             self._token = self._refresh_effect()
         self._refresh_count += 1
         return self._token
@@ -41,7 +41,7 @@ def static_token(token: Token, wait: int = 0) -> Callable[[], Token]:
 
 def blocking_refresh(
     token: Token,
-) -> (Callable[[], Token], Callable[[], None]):
+) -> (Callable[[], Token], Callable[[], None]):  # type: ignore[syntax]
     """
     Create a refresh function that blocks until unblock is called.
 

@@ -1,7 +1,7 @@
 import json
 from datetime import datetime, timedelta
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import MetadataServiceTokenSource

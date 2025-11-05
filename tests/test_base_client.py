@@ -4,8 +4,8 @@ from http.server import BaseHTTPRequestHandler
 from typing import Callable, Iterator, List, Optional, Tuple, Type
 from unittest.mock import Mock
 
-import pytest
-from requests import PreparedRequest, Response, Timeout
+import pytest  # type: ignore[import-not-found]
+from requests import PreparedRequest, Response, Timeout  # type: ignore[import-untyped]
 
 from databricks.sdk import errors, useragent
 from databricks.sdk._base_client import (_BaseClient, _RawResponse,
@@ -437,7 +437,7 @@ class RetryTestCase:
     @classmethod
     def create_non_seekable_stream(cls, data: bytes):
         result = io.BytesIO(data)
-        result.seekable = lambda: False  # makes the stream appear non-seekable
+        result.seekable = lambda: False  # type: ignore[method-assign]  # makes the stream appear non-seekable
         return result
 
 
@@ -550,7 +550,7 @@ def test_rewind_seekable_stream(test_case: RetryTestCase, failure: Tuple[Callabl
 
     session = MockSession(failure_count, failure[0])
     client = _BaseClient()
-    client._session = session
+    client._session = session  # type: ignore[assignment]
 
     def do():
         client.do("POST", "test.com/foo", data=data)

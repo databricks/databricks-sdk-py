@@ -38,7 +38,7 @@ try:
     # We only use ipywidgets if we are in a notebook interactive shell otherwise we raise error,
     # to fallback to using default_widgets. Also, users WILL have IPython in their notebooks (jupyter),
     # because we DO NOT SUPPORT any other notebook backends, and hence fallback to default_widgets.
-    from IPython.core.getipython import get_ipython
+    from IPython.core.getipython import get_ipython  # type: ignore[import-not-found]
 
     # Detect if we are in an interactive notebook by iterating over the mro of the current ipython instance,
     # to find ZMQInteractiveShell (jupyter). When used from REPL or file, this check will fail, since the
@@ -79,5 +79,5 @@ try:
 except:
     from .default_widgets_utils import DefaultValueOnlyWidgetUtils
 
-    widget_impl = DefaultValueOnlyWidgetUtils
+    widget_impl = DefaultValueOnlyWidgetUtils  # type: ignore[assignment, misc]
     logging.debug("Using default_value_only implementation for dbutils.")

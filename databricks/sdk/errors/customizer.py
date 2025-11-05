@@ -1,7 +1,7 @@
 import abc
 import logging
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 
 class _ErrorCustomizer(abc.ABC):

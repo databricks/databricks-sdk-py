@@ -1,7 +1,7 @@
 import sys
 from io import BytesIO
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.core import Config
 from databricks.sdk.service.serving import ExternalFunctionRequestHttpMethod

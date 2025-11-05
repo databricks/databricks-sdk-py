@@ -1,9 +1,9 @@
 from dataclasses import dataclass
 from enum import Enum
 
-import pytest
-from google.protobuf.duration_pb2 import Duration
-from google.protobuf.timestamp_pb2 import Timestamp
+import pytest  # type: ignore[import-not-found]
+from google.protobuf.duration_pb2 import Duration  # type: ignore[import-untyped]
+from google.protobuf.timestamp_pb2 import Timestamp  # type: ignore[import-untyped]
 
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (

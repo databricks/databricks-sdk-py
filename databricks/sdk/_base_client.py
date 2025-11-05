@@ -7,8 +7,8 @@ from types import TracebackType
 from typing import (Any, BinaryIO, Callable, Dict, Iterable, Iterator, List,
                     Optional, Type, Union)
 
-import requests
-import requests.adapters
+import requests  # type: ignore[import-untyped]
+import requests.adapters  # type: ignore[import-untyped]
 
 from . import useragent
 from .casing import Casing
@@ -92,7 +92,7 @@ class _BaseClient:
         http_adapter = requests.adapters.HTTPAdapter(
             pool_connections=max_connections_per_pool or 20,
             pool_maxsize=max_connection_pools or 20,
-            pool_block=pool_block,
+            pool_block=pool_block,  # type: ignore[arg-type]
         )
         self._session.mount("https://", http_adapter)
 
@@ -100,8 +100,8 @@ class _BaseClient:
         self._http_timeout_seconds = http_timeout_seconds or 60
 
         self._error_parser = _Parser(
-            extra_error_customizers=extra_error_customizers,
-            debug_headers=debug_headers,
+            extra_error_customizers=extra_error_customizers,  # type: ignore[arg-type]
+            debug_headers=debug_headers,  # type: ignore[arg-type]
         )
 
     def _authenticate(self, r: requests.PreparedRequest) -> requests.PreparedRequest:
@@ -127,7 +127,7 @@ class _BaseClient:
         # {'filter_by.user_ids': [123, 456]}
         # See the following for more information:
         # https://cloud.google.com/endpoints/docs/grpc-service-config/reference/rpc/google.api#google.api.HttpRule
-        def flatten_dict(d: Dict[str, Any]) -> Dict[str, Any]:
+        def flatten_dict(d: Dict[str, Any]) -> Dict[str, Any]:  # type: ignore[misc]
             for k1, v1 in d.items():
                 if isinstance(v1, dict):
                     v1 = dict(flatten_dict(v1))
@@ -281,7 +281,7 @@ class _BaseClient:
         raw: bool = False,
         files=None,
         data=None,
-        auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,
+        auth: Callable[[requests.PreparedRequest], requests.PreparedRequest] = None,  # type: ignore[assignment]
     ):
         response = self._session.request(
             method,
@@ -305,7 +305,7 @@ class _BaseClient:
     def _record_request_log(self, response: requests.Response, raw: bool = False) -> None:
         if not logger.isEnabledFor(logging.DEBUG):
             return
-        logger.debug(RoundTrip(response, self._debug_headers, self._debug_truncate_bytes, raw).generate())
+        logger.debug(RoundTrip(response, self._debug_headers, self._debug_truncate_bytes, raw).generate())  # type: ignore[arg-type]
 
 
 class _RawResponse(ABC):
@@ -343,7 +343,7 @@ class _StreamingResponse(BinaryIO):
         if self._closed:
             raise ValueError("I/O operation on closed file")
         if not self._content:
-            self._content = self._response.iter_content(chunk_size=self._chunk_size, decode_unicode=False)
+            self._content = self._response.iter_content(chunk_size=self._chunk_size, decode_unicode=False)  # type: ignore[arg-type]
 
     def __enter__(self) -> BinaryIO:
         self._open()
@@ -372,7 +372,7 @@ class _StreamingResponse(BinaryIO):
         while remaining_bytes > 0 or read_everything:
             if len(self._buffer) == 0:
                 try:
-                    self._buffer = next(self._content)
+                    self._buffer = next(self._content)  # type: ignore[arg-type]
                 except StopIteration:
                     break
             bytes_available = len(self._buffer)
@@ -416,7 +416,7 @@ class _StreamingResponse(BinaryIO):
         return self.read(1)
 
     def __iter__(self) -> Iterator[bytes]:
-        return self._content
+        return self._content  # type: ignore[return-value]
 
     def __exit__(
         self,

@@ -2,8 +2,8 @@ import functools
 import os
 import platform
 
-import pytest as pytest
-from pyfakefs.fake_filesystem_unittest import Patcher
+import pytest as pytest  # type: ignore[import-not-found]
+from pyfakefs.fake_filesystem_unittest import Patcher  # type: ignore[import-not-found]
 
 from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import credentials_strategy
@@ -13,7 +13,7 @@ from .integration.conftest import restorable_env  # type: ignore
 
 
 @credentials_strategy("noop", [])
-def noop_credentials(_: any):
+def noop_credentials(_: any):  # type: ignore[valid-type]
     return lambda: {}
 
 

@@ -1,4 +1,4 @@
-import pytest as pytest
+import pytest as pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.dbutils import FileInfo as DBUtilsFileInfo
 from databricks.sdk.service.files import FileInfo, ReadResponse

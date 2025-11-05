@@ -36,7 +36,7 @@ def test_submitting_jobs(w, random, env_or_skip):
     logging.info(f"starting to poll: {waiter.run_id}")
 
     def print_status(run: jobs.Run):
-        statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in run.tasks]
+        statuses = [f"{t.task_key}: {t.state.life_cycle_state}" for t in run.tasks]  # type: ignore[union-attr]
         logging.info(f'workflow intermediate status: {", ".join(statuses)}')
 
     run = waiter.result(timeout=datetime.timedelta(minutes=15), callback=print_status)

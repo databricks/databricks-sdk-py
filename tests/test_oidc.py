@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Optional, Tuple
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk import oidc
 
@@ -11,8 +11,8 @@ class EnvTestCase:
     name: str
     env_name: str = ""
     env_value: str = ""
-    want: oidc.IdToken = None
-    wantException: Exception = None
+    want: oidc.IdToken = None  # type: ignore[assignment]
+    wantException: Exception = None  # type: ignore[assignment]
 
 
 _env_id_test_cases = [
@@ -26,13 +26,13 @@ _env_id_test_cases = [
         name="missing_env_var",
         env_name="OIDC_TEST_TOKEN_MISSING",
         env_value="",
-        wantException=ValueError,
+        wantException=ValueError,  # type: ignore[arg-type]
     ),
     EnvTestCase(
         name="empty_env_var",
         env_name="OIDC_TEST_TOKEN_EMPTY",
         env_value="",
-        wantException=ValueError,
+        wantException=ValueError,  # type: ignore[arg-type]
     ),
     EnvTestCase(
         name="different_variable_name",
@@ -60,8 +60,8 @@ class FileTestCase:
     name: str
     file: Optional[Tuple[str, str]] = None  # (name, content)
     filepath: str = ""
-    want: oidc.IdToken = None
-    wantException: Exception = None
+    want: oidc.IdToken = None  # type: ignore[assignment]
+    wantException: Exception = None  # type: ignore[assignment]
 
 
 _file_id_test_cases = [
@@ -69,18 +69,18 @@ _file_id_test_cases = [
         name="missing_filepath",
         file=("token", "content"),
         filepath="",
-        wantException=ValueError,
+        wantException=ValueError,  # type: ignore[arg-type]
     ),
     FileTestCase(
         name="empty_file",
         file=("token", ""),
         filepath="token",
-        wantException=ValueError,
+        wantException=ValueError,  # type: ignore[arg-type]
     ),
     FileTestCase(
         name="file_does_not_exist",
         filepath="nonexistent-file",
-        wantException=ValueError,
+        wantException=ValueError,  # type: ignore[arg-type]
     ),
     FileTestCase(
         name="file_exists",

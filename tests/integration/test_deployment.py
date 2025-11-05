@@ -1,6 +1,6 @@
 import logging
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 
 def test_workspaces(a):

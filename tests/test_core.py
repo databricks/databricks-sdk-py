@@ -6,7 +6,7 @@ import string
 from datetime import datetime
 from http.server import BaseHTTPRequestHandler
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk import WorkspaceClient, errors, useragent
 from databricks.sdk.core import ApiClient, Config, DatabricksError

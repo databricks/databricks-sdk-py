@@ -5,7 +5,7 @@ from urllib.parse import urlencode
 from ._base_client import _BaseClient
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
-from .credentials_provider import *
+from .credentials_provider import *  # type: ignore[no-redef]
 from .errors import DatabricksError, _ErrorCustomizer
 from .oauth import retrieve_token
 
@@ -80,7 +80,7 @@ class ApiClient:
         if url is None:
             # Remove extra `/` from path for Files API
             # Once we've fixed the OpenAPI spec, we can remove this
-            path = re.sub("^/api/2.0/fs/files//", "/api/2.0/fs/files/", path)
+            path = re.sub("^/api/2.0/fs/files//", "/api/2.0/fs/files/", path)  # type: ignore[arg-type]
             url = f"{self._cfg.host}{path}"
         return self._api_client.do(
             method=method,

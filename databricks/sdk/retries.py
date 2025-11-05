@@ -76,7 +76,7 @@ class RetryError(Exception):
 
     def __init__(self, err: Exception, halt: bool = False):
         self.err = err
-        self.halt = halt
+        self.halt = halt  # type: ignore[assignment, method-assign]
         super().__init__(str(err))
 
     @staticmethod
@@ -149,9 +149,9 @@ def poll(
             result, err = fn()
 
             if err is None:
-                return result
+                return result  # type: ignore[return-value]
 
-            if err.halt:
+            if err.halt:  # type: ignore[truthy-function]
                 raise err.err
 
             # Continue polling.

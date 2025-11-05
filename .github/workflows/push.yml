@@ -40,6 +40,16 @@ jobs:
       - name: Fail on differences
         run: git diff --exit-code
 
+  type-check:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Run mypy type checking
+        run: make dev mypy
+
   check-manifest:
     runs-on: ubuntu-latest
 

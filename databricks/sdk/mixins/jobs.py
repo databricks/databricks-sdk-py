@@ -51,11 +51,11 @@ class JobsExt(jobs.JobsAPI):
         # fully fetch all top level arrays for each job in the list
         for job in jobs_list:
             if job.has_more:
-                job_from_get_call = self.get(job.job_id)
-                job.settings.tasks = job_from_get_call.settings.tasks
-                job.settings.job_clusters = job_from_get_call.settings.job_clusters
-                job.settings.parameters = job_from_get_call.settings.parameters
-                job.settings.environments = job_from_get_call.settings.environments
+                job_from_get_call = self.get(job.job_id)  # type: ignore[arg-type]
+                job.settings.tasks = job_from_get_call.settings.tasks  # type: ignore[union-attr]
+                job.settings.job_clusters = job_from_get_call.settings.job_clusters  # type: ignore[union-attr]
+                job.settings.parameters = job_from_get_call.settings.parameters  # type: ignore[union-attr]
+                job.settings.environments = job_from_get_call.settings.environments  # type: ignore[union-attr]
             # Remove has_more fields for each job in the list.
             # This field in Jobs API 2.2 is useful for pagination. It indicates if there are more than 100 tasks or job_clusters in the job.
             # This function hides pagination details from the user. So the field does not play useful role here.
@@ -134,7 +134,7 @@ class JobsExt(jobs.JobsAPI):
         # fully fetch all top level arrays for each run in the list
         for run in runs_list:
             if run.has_more:
-                run_from_get_call = self.get_run(run.run_id)
+                run_from_get_call = self.get_run(run.run_id)  # type: ignore[arg-type]
                 run.tasks = run_from_get_call.tasks
                 run.job_clusters = run_from_get_call.job_clusters
                 run.job_parameters = run_from_get_call.job_parameters
@@ -190,13 +190,13 @@ class JobsExt(jobs.JobsAPI):
                 page_token=run.next_page_token,
             )
             if is_paginating_iterations:
-                run.iterations.extend(next_run.iterations)
+                run.iterations.extend(next_run.iterations)  # type: ignore[arg-type, union-attr]
             else:
-                run.tasks.extend(next_run.tasks)
+                run.tasks.extend(next_run.tasks)  # type: ignore[arg-type, union-attr]
             # Each new page of runs/get response includes the next page of the job_clusters, job_parameters, and repair history.
-            run.job_clusters.extend(next_run.job_clusters)
-            run.job_parameters.extend(next_run.job_parameters)
-            run.repair_history.extend(next_run.repair_history)
+            run.job_clusters.extend(next_run.job_clusters)  # type: ignore[arg-type, union-attr]
+            run.job_parameters.extend(next_run.job_parameters)  # type: ignore[arg-type, union-attr]
+            run.repair_history.extend(next_run.repair_history)  # type: ignore[arg-type, union-attr]
             run.next_page_token = next_run.next_page_token
 
         return run
@@ -221,10 +221,10 @@ class JobsExt(jobs.JobsAPI):
         while job.next_page_token is not None:
             next_job = super().get(job_id, page_token=job.next_page_token)
             # Each new page of jobs/get response includes the next page of the tasks, job_clusters, job_parameters, and environments.
-            job.settings.tasks.extend(next_job.settings.tasks)
-            job.settings.job_clusters.extend(next_job.settings.job_clusters)
-            job.settings.parameters.extend(next_job.settings.parameters)
-            job.settings.environments.extend(next_job.settings.environments)
+            job.settings.tasks.extend(next_job.settings.tasks)  # type: ignore[arg-type, union-attr]
+            job.settings.job_clusters.extend(next_job.settings.job_clusters)  # type: ignore[arg-type, union-attr]
+            job.settings.parameters.extend(next_job.settings.parameters)  # type: ignore[arg-type, union-attr]
+            job.settings.environments.extend(next_job.settings.environments)  # type: ignore[arg-type, union-attr]
             job.next_page_token = next_job.next_page_token
 
         return job

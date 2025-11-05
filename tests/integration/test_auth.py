@@ -10,7 +10,7 @@ import urllib.parse
 from functools import partial
 from pathlib import Path
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk import AccountClient, WorkspaceClient
 from databricks.sdk.service import iam, oauth2

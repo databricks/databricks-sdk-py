@@ -1,4 +1,4 @@
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.common.types.fieldmask import FieldMask
 

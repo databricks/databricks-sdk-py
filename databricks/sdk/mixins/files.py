@@ -26,9 +26,9 @@ from typing import (TYPE_CHECKING, AnyStr, BinaryIO, Callable, Generator,
                     Iterable, Optional, Type, Union)
 from urllib import parse
 
-import requests
-import requests.adapters
-from requests import RequestException
+import requests  # type: ignore[import-untyped]
+import requests.adapters  # type: ignore[import-untyped]
+from requests import RequestException  # type: ignore[import-untyped]
 
 from .._base_client import _BaseClient, _RawResponse, _StreamingResponse
 from .._property import _cached_property
@@ -51,8 +51,8 @@ _LOG = logging.getLogger(__name__)
 class _DbfsIO(BinaryIO):
     MAX_CHUNK_SIZE = 1024 * 1024
 
-    _status: files.FileInfo = None
-    _created: files.CreateResponse = None
+    _status: files.FileInfo = None  # type: ignore[assignment]
+    _created: files.CreateResponse = None  # type: ignore[assignment]
     _offset = 0
     _closed = False
 
@@ -76,8 +76,8 @@ class _DbfsIO(BinaryIO):
         else:
             raise IOError(f"need to open either for reading or writing")
 
-    def __enter__(self) -> Self:
-        return self
+    def __enter__(self) -> Self:  # type: ignore[type-var]
+        return self  # type: ignore[return-value]
 
     @property
     def name(self) -> str:
@@ -91,7 +91,7 @@ class _DbfsIO(BinaryIO):
         """
         return self._created is not None
 
-    def write(self, buffer: bytes) -> int:
+    def write(self, buffer: bytes) -> int:  # type: ignore[override]
         """Write bytes to file.
 
         :return: Return the number of bytes written.
@@ -107,14 +107,14 @@ class _DbfsIO(BinaryIO):
             if len(chunk) > self.MAX_CHUNK_SIZE:
                 chunk = chunk[: self.MAX_CHUNK_SIZE]
             encoded = base64.b64encode(chunk).decode()
-            self._api.add_block(self._created.handle, encoded)
+            self._api.add_block(self._created.handle, encoded)  # type: ignore[arg-type]
             total += len(chunk)
         return total
 
     def close(self) -> None:
         """Disable all I/O operations."""
         if self.writable():
-            self._api.close(self._created.handle)
+            self._api.close(self._created.handle)  # type: ignore[arg-type]
         self._closed = True
 
     @property
@@ -132,7 +132,7 @@ class _DbfsIO(BinaryIO):
     def readable(self) -> bool:
         return self._status is not None
 
-    def read(self, size: int = ...) -> bytes:
+    def read(self, size: int = ...) -> bytes:  # type: ignore[assignment]
         """Read at most size bytes, returned as a bytes object.
 
         :param size: If the size argument is negative, read until EOF is reached.
@@ -158,12 +158,12 @@ class _DbfsIO(BinaryIO):
             # and not the EOFError as in other SDKs
             return b""
 
-        raw = base64.b64decode(response.data)
-        self._offset += response.bytes_read
+        raw = base64.b64decode(response.data)  # type: ignore[arg-type]
+        self._offset += response.bytes_read  # type: ignore[operator]
         return raw
 
     def __iter__(self) -> Iterator[bytes]:
-        while self._offset < self._status.file_size:
+        while self._offset < self._status.file_size:  # type: ignore[operator]
             yield self.__next__()
 
     def __next__(self) -> bytes:
@@ -179,7 +179,7 @@ class _DbfsIO(BinaryIO):
     def isatty(self) -> bool:
         return False
 
-    def readline(self, __limit: int = ...) -> AnyStr:
+    def readline(self, __limit: int = ...) -> AnyStr:  # type: ignore[type-var]
         raise NotImplementedError
 
     def readlines(self, __hint: int = ...) -> list[AnyStr]:
@@ -197,7 +197,7 @@ class _DbfsIO(BinaryIO):
     def truncate(self, __size: int | None = ...) -> int:
         raise NotImplementedError
 
-    def writelines(self, __lines: Iterable[AnyStr]) -> None:
+    def writelines(self, __lines: Iterable[AnyStr]) -> None:  # type: ignore[override]
         raise NotImplementedError
 
     def __repr__(self) -> str:
@@ -215,7 +215,7 @@ class _VolumesIO(BinaryIO):
         write: bool,
         overwrite: bool,
     ):
-        self._buffer = []
+        self._buffer = []  # type: ignore[var-annotated]
         self._api = api
         self._path = path
         self._read = read
@@ -349,7 +349,7 @@ class _Path(ABC):
     @abstractmethod
     def open(self, *, read=False, write=False, overwrite=False): ...
 
-    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]: ...
+    def list(self, *, recursive=False) -> Generator[files.FileInfo, None, None]: ...  # type: ignore[empty-body]
 
     @abstractmethod
     def mkdir(self): ...
@@ -359,11 +359,11 @@ class _Path(ABC):
 
     @property
     def name(self) -> str:
-        return self._path.name
+        return self._path.name  # type: ignore[attr-defined]
 
     @property
     def as_string(self) -> str:
-        return str(self._path)
+        return str(self._path)  # type: ignore[attr-defined]
 
 
 class _LocalPath(_Path):
@@ -380,8 +380,8 @@ class _LocalPath(_Path):
     def _is_dbfs(self) -> bool:
         return False
 
-    def child(self, path: str) -> Self:
-        return _LocalPath(str(self._path / path))
+    def child(self, path: str) -> Self:  # type: ignore[type-var]
+        return _LocalPath(str(self._path / path))  # type: ignore[return-value]
 
     def _is_dir(self) -> bool:
         return self._path.is_dir()
@@ -451,8 +451,8 @@ class _VolumesPath(_Path):
     def _is_dbfs(self) -> bool:
         return False
 
-    def child(self, path: str) -> Self:
-        return _VolumesPath(self._api, str(self._path / path))
+    def child(self, path: str) -> Self:  # type: ignore[type-var]
+        return _VolumesPath(self._api, str(self._path / path))  # type: ignore[return-value]
 
     def _is_dir(self) -> bool:
         try:
@@ -487,7 +487,7 @@ class _VolumesPath(_Path):
                 path=self.as_string,
                 is_dir=False,
                 file_size=meta.content_length,
-                modification_time=meta.last_modified,
+                modification_time=meta.last_modified,  # type: ignore[arg-type]
             )
             return
         queue = deque([self])
@@ -495,7 +495,7 @@ class _VolumesPath(_Path):
             next_path = queue.popleft()
             for file in self._api.list_directory_contents(next_path.as_string):
                 if recursive and file.is_directory:
-                    queue.append(self.child(file.name))
+                    queue.append(self.child(file.name))  # type: ignore[arg-type]
                 if not recursive or not file.is_directory:
                     yield files.FileInfo(
                         path=file.path,
@@ -528,14 +528,14 @@ class _DbfsPath(_Path):
     def _is_dbfs(self) -> bool:
         return True
 
-    def child(self, path: str) -> Self:
+    def child(self, path: str) -> Self:  # type: ignore[type-var]
         child = self._path / path
-        return _DbfsPath(self._api, str(child))
+        return _DbfsPath(self._api, str(child))  # type: ignore[return-value]
 
     def _is_dir(self) -> bool:
         try:
             remote = self._api.get_status(self.as_string)
-            return remote.is_dir
+            return remote.is_dir  # type: ignore[return-value]
         except NotFound:
             return False
 
@@ -573,7 +573,7 @@ class _DbfsPath(_Path):
             next_path = queue.popleft()
             for file in self._api.list(next_path.as_string):
                 if recursive and file.is_dir:
-                    queue.append(self.child(file.path))
+                    queue.append(self.child(file.path))  # type: ignore[arg-type]
                 if not recursive or not file.is_dir:
                     yield file
 
@@ -677,17 +677,17 @@ class DbfsExt(files.DbfsAPI):
         """Copy files between DBFS and local filesystems"""
         src = self._path(src)
         dst = self._path(dst)
-        if src.is_local and dst.is_local:
+        if src.is_local and dst.is_local:  # type: ignore[attr-defined]
             raise IOError("both destinations are on local FS")
-        if dst.exists() and dst.is_dir:
+        if dst.exists() and dst.is_dir:  # type: ignore[attr-defined]
             # if target is a folder, make file with the same name there
-            dst = dst.child(src.name)
-        if src.is_dir:
-            queue = [self._path(x.path) for x in src.list(recursive=recursive) if not x.is_dir]
+            dst = dst.child(src.name)  # type: ignore[attr-defined]
+        if src.is_dir:  # type: ignore[attr-defined]
+            queue = [self._path(x.path) for x in src.list(recursive=recursive) if not x.is_dir]  # type: ignore[attr-defined]
         else:
             queue = [src]
         for child in queue:
-            child_dst = dst.child(os.path.relpath(child.as_string, src.as_string))
+            child_dst = dst.child(os.path.relpath(child.as_string, src.as_string))  # type: ignore[attr-defined]
             with child.open(read=True) as reader:
                 with child_dst.open(write=True, overwrite=overwrite) as writer:
                     shutil.copyfileobj(reader, writer, length=_DbfsIO.MAX_CHUNK_SIZE)
@@ -805,7 +805,7 @@ class FilesExt(files.FilesAPI):
         )
 
         wrapped_response = self._wrap_stream(file_path, initial_response)
-        initial_response.contents._response = wrapped_response
+        initial_response.contents._response = wrapped_response  # type: ignore[union-attr]
         return initial_response
 
     def download_to(
@@ -890,8 +890,8 @@ class FilesExt(files.FilesAPI):
                 if_unmodified_since_timestamp=last_modified,
             )
             wrapped_response = self._wrap_stream(remote_path, response, 0)
-            response.contents._response = wrapped_response
-            shutil.copyfileobj(response.contents, f)
+            response.contents._response = wrapped_response  # type: ignore[union-attr]
+            shutil.copyfileobj(response.contents, f)  # type: ignore[arg-type]
 
     def _do_parallel_download(
         self, remote_path: str, destination: str, parallelism: int, download_chunk: Callable
@@ -909,7 +909,7 @@ class FilesExt(files.FilesAPI):
 
         fd, temp_file = mkstemp()
         # We are preallocate the file size to the same as the remote file to avoid seeking beyond the file size.
-        os.truncate(temp_file, file_size)
+        os.truncate(temp_file, file_size)  # type: ignore[arg-type]
         os.close(fd)
         try:
             aborted = Event()
@@ -935,7 +935,7 @@ class FilesExt(files.FilesAPI):
                 # Start the threads to download parts of the file.
                 for i in range(part_count):
                     start = i * part_size
-                    end = min(start + part_size - 1, file_size - 1)
+                    end = min(start + part_size - 1, file_size - 1)  # type: ignore[operator]
                     futures.append(executor.submit(wrapped_download_chunk, start, end, last_modified, temp_file))
 
                 # Wait for all threads to complete and check for exceptions.
@@ -1017,7 +1017,7 @@ class FilesExt(files.FilesAPI):
 
     def _get_optimized_performance_parameters_for_upload(
         self, content_length: Optional[int], part_size_overwrite: Optional[int]
-    ) -> (int, int):
+    ) -> (int, int):  # type: ignore[syntax]
         """Get optimized part size and batch size for upload based on content length and provided part size.
 
         Returns tuple of (part_size, batch_size).
@@ -1234,7 +1234,7 @@ class FilesExt(files.FilesAPI):
         """Initiate a multipart upload and return the response."""
         query = {"action": "initiate-upload"}
         if ctx.overwrite is not None:
-            query["overwrite"] = ctx.overwrite
+            query["overwrite"] = ctx.overwrite  # type: ignore[assignment]
 
         # Method _api.do() takes care of retrying and will raise an exception in case of failure.
         initiate_upload_response = self._api.do(
@@ -1366,8 +1366,8 @@ class FilesExt(files.FilesAPI):
 
                 _LOG.info(f"Falling back to single-shot upload with Files API: {e}")
                 # Concatenate the buffered part and the rest of the stream.
-                with open(ctx.source_file_path, "rb") as f:
-                    return self._single_thread_single_shot_upload(ctx, f)
+                with open(ctx.source_file_path, "rb") as f:  # type: ignore[arg-type]
+                    return self._single_thread_single_shot_upload(ctx, f)  # type: ignore[arg-type]
 
             except Exception as e:
                 _LOG.info(f"Aborting multipart upload on error: {e}")
@@ -1381,8 +1381,8 @@ class FilesExt(files.FilesAPI):
 
         elif initiate_upload_response.get("resumable_upload"):
             _LOG.warning("GCP does not support parallel resumable uploads, falling back to single-threaded upload")
-            with open(ctx.source_file_path, "rb") as f:
-                return self._upload_single_thread_with_known_size(ctx, f)
+            with open(ctx.source_file_path, "rb") as f:  # type: ignore[arg-type]
+                return self._upload_single_thread_with_known_size(ctx, f)  # type: ignore[arg-type]
         else:
             raise ValueError(f"Unexpected server response: {initiate_upload_response}")
 
@@ -1400,19 +1400,19 @@ class FilesExt(files.FilesAPI):
         session_token: str,
     ) -> None:
         # Calculate the number of parts.
-        file_size = os.path.getsize(ctx.source_file_path)
+        file_size = os.path.getsize(ctx.source_file_path)  # type: ignore[arg-type]
         part_size = ctx.part_size
         num_parts = (file_size + part_size - 1) // part_size
         _LOG.debug(f"Uploading file of size {file_size} bytes in {num_parts} parts using {ctx.parallelism} threads")
 
         # Create queues and worker threads.
-        task_queue = Queue()
-        etags_result_queue = Queue()
-        exception_queue = Queue()
+        task_queue = Queue()  # type: ignore[var-annotated]
+        etags_result_queue = Queue()  # type: ignore[var-annotated]
+        exception_queue = Queue()  # type: ignore[var-annotated]
         aborted = Event()
         workers = [
             Thread(target=self._upload_file_consumer, args=(task_queue, etags_result_queue, exception_queue, aborted))
-            for _ in range(ctx.parallelism)
+            for _ in range(ctx.parallelism)  # type: ignore[arg-type]
         ]
         _LOG.debug(f"Starting {len(workers)} worker threads for parallel upload")
 
@@ -1452,9 +1452,9 @@ class FilesExt(files.FilesAPI):
         cloud_provider_session: requests.Session,
     ) -> None:
 
-        task_queue = Queue(maxsize=ctx.parallelism)  # Limit queue size to control memory usage
-        etags_result_queue = Queue()
-        exception_queue = Queue()
+        task_queue = Queue(maxsize=ctx.parallelism)  # type: ignore[arg-type, var-annotated]  # Limit queue size to control memory usage
+        etags_result_queue = Queue()  # type: ignore[var-annotated]
+        exception_queue = Queue()  # type: ignore[var-annotated]
         all_produced = Event()
         aborted = Event()
 
@@ -1502,7 +1502,7 @@ class FilesExt(files.FilesAPI):
                 target=self._upload_stream_consumer,
                 args=(task_queue, etags_result_queue, exception_queue, all_produced, aborted),
             )
-            for _ in range(ctx.parallelism)
+            for _ in range(ctx.parallelism)  # type: ignore[arg-type]
         ]
         _LOG.debug(f"Starting {len(consumers)} worker threads for parallel upload")
         # Start producer and consumer threads
@@ -1565,7 +1565,7 @@ class FilesExt(files.FilesAPI):
                 break
 
             try:
-                with open(part.ctx.source_file_path, "rb") as f:
+                with open(part.ctx.source_file_path, "rb") as f:  # type: ignore[arg-type]
                     f.seek(part.part_offset, os.SEEK_SET)
                     part_content = BytesIO(f.read(part.part_size))
                     etag = self._do_upload_one_part(
@@ -1669,7 +1669,7 @@ class FilesExt(files.FilesAPI):
             required_headers = upload_part_url.get("headers", [])
             assert part_index == upload_part_url["part_number"]
 
-            headers: dict = {"Content-Type": "application/octet-stream"}
+            headers: dict = {"Content-Type": "application/octet-stream"}  # type: ignore[no-redef]
             for h in required_headers:
                 headers[h["name"]] = h["value"]
 
@@ -1700,9 +1700,9 @@ class FilesExt(files.FilesAPI):
                 else:
                     raise ValueError(f"Unsuccessful chunk upload: upload URL expired after {retry_count} retries")
             elif upload_response.status_code == 403:
-                raise FallbackToUploadUsingFilesApi(None, f"Direct upload forbidden: {upload_response.content}")
+                raise FallbackToUploadUsingFilesApi(None, f"Direct upload forbidden: {upload_response.content}")  # type: ignore[str-bytes-safe]
             else:
-                message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"
+                message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"  # type: ignore[str-bytes-safe]
                 _LOG.warning(message)
                 mapped_error = _error_mapper(upload_response, {})
                 raise mapped_error or ValueError(message)
@@ -1793,7 +1793,7 @@ class FilesExt(files.FilesAPI):
                 required_headers = upload_part_url.get("headers", [])
                 assert current_part_number == upload_part_url["part_number"]
 
-                headers: dict = {"Content-Type": "application/octet-stream"}
+                headers: dict = {"Content-Type": "application/octet-stream"}  # type: ignore[no-redef]
                 for h in required_headers:
                     headers[h["name"]] = h["value"]
 
@@ -1846,10 +1846,10 @@ class FilesExt(files.FilesAPI):
                     # This might happen due to Azure firewall enabled for the customer bucket.
                     # Let's fallback to using Files API which might be allowlisted to upload, passing
                     # currently buffered (but not yet uploaded) part of the stream.
-                    raise FallbackToUploadUsingFilesApi(buffer, f"Direct upload forbidden: {upload_response.content}")
+                    raise FallbackToUploadUsingFilesApi(buffer, f"Direct upload forbidden: {upload_response.content}")  # type: ignore[str-bytes-safe]
 
                 else:
-                    message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"
+                    message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"  # type: ignore[str-bytes-safe]
                     _LOG.warning(message)
                     mapped_error = _error_mapper(upload_response, {})
                     raise mapped_error or ValueError(message)
@@ -1860,10 +1860,10 @@ class FilesExt(files.FilesAPI):
 
         query = {"action": "complete-upload", "upload_type": "multipart", "session_token": session_token}
         headers = {"Content-Type": "application/json"}
-        body: dict = {}
+        body: dict = {}  # type: ignore[no-redef]
 
         parts = []
-        for etag in sorted(etags.items()):
+        for etag in sorted(etags.items()):  # type: ignore[assignment]
             part = {"part_number": etag[0], "etag": etag[1]}
             parts.append(part)
 
@@ -1913,7 +1913,7 @@ class FilesExt(files.FilesAPI):
             if code.text == "AuthenticationFailed":
                 # Azure
                 details = xml_root.find("AuthenticationErrorDetail")
-                if details is not None and "Signature not valid in the specified time frame" in details.text:
+                if details is not None and "Signature not valid in the specified time frame" in details.text:  # type: ignore[operator]
                     return True
 
             if code.text == "AccessDenied":
@@ -2037,9 +2037,9 @@ class FilesExt(files.FilesAPI):
                 else:
                     # More chunks expected, let's upload current chunk (excluding read-ahead block).
                     actual_chunk_length = ctx.part_size
-                    file_size = "*"
+                    file_size = "*"  # type: ignore[assignment]
 
-                headers: dict = {"Content-Type": "application/octet-stream"}
+                headers: dict = {"Content-Type": "application/octet-stream"}  # type: ignore[no-redef]
                 for h in required_headers:
                     headers[h["name"]] = h["value"]
 
@@ -2094,7 +2094,7 @@ class FilesExt(files.FilesAPI):
                         and retry_count < self._config.files_ext_multipart_upload_max_retries
                     ):
                         retry_count += 1
-                        upload_response = retrieve_upload_status()
+                        upload_response = retrieve_upload_status()  # type: ignore[assignment]
                         if not upload_response:
                             # rethrow original exception
                             raise e from None
@@ -2144,7 +2144,7 @@ class FilesExt(files.FilesAPI):
                     raise AlreadyExists("The file being created already exists.")
 
                 else:
-                    message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"
+                    message = f"Unsuccessful chunk upload. Response status: {upload_response.status_code}, body: {upload_response.content}"  # type: ignore[str-bytes-safe]
                     _LOG.warning(message)
                     mapped_error = _error_mapper(upload_response, {})
                     raise mapped_error or ValueError(message)
@@ -2213,7 +2213,7 @@ class FilesExt(files.FilesAPI):
         abort_url = abort_upload_url_node["url"]
         required_headers = abort_upload_url_node.get("headers", [])
 
-        headers: dict = {"Content-Type": "application/octet-stream"}
+        headers: dict = {"Content-Type": "application/octet-stream"}  # type: ignore[no-redef]
         for h in required_headers:
             headers[h["name"]] = h["value"]
 
@@ -2417,27 +2417,27 @@ class FilesExt(files.FilesAPI):
                 stream=True,
             )
 
-        csp_response: _RawResponse = self._retry_cloud_idempotent_operation(perform)
+        csp_response: _RawResponse = self._retry_cloud_idempotent_operation(perform)  # type: ignore[assignment]
 
         # Mapping the error if the response is not successful.
-        if csp_response.status_code in (200, 201, 206):
+        if csp_response.status_code in (200, 201, 206):  # type: ignore[attr-defined]
             resp = DownloadResponse(
-                content_length=int(csp_response.headers.get("content-length")),
-                content_type=csp_response.headers.get("content-type"),
-                last_modified=csp_response.headers.get("last-modified"),
+                content_length=int(csp_response.headers.get("content-length")),  # type: ignore[attr-defined]
+                content_type=csp_response.headers.get("content-type"),  # type: ignore[attr-defined]
+                last_modified=csp_response.headers.get("last-modified"),  # type: ignore[attr-defined]
                 contents=_StreamingResponse(csp_response, self._config.files_ext_client_download_streaming_chunk_size),
             )
             return resp
-        elif csp_response.status_code == 403:
+        elif csp_response.status_code == 403:  # type: ignore[attr-defined]
             # We got 403 failure when downloading the file. This might happen due to Azure firewall enabled for the customer bucket.
             # Let's fallback to using Files API which might be allowlisted to download.
-            raise FallbackToDownloadUsingFilesApi(f"Direct download forbidden: {csp_response.content}")
+            raise FallbackToDownloadUsingFilesApi(f"Direct download forbidden: {csp_response.content}")  # type: ignore[attr-defined]
         else:
             message = (
-                f"Unsuccessful download. Response status: {csp_response.status_code}, body: {csp_response.content}"
+                f"Unsuccessful download. Response status: {csp_response.status_code}, body: {csp_response.content}"  # type: ignore[attr-defined]
             )
             _LOG.warning(message)
-            mapped_error = _error_mapper(csp_response, {})
+            mapped_error = _error_mapper(csp_response, {})  # type: ignore[arg-type]
             raise mapped_error or ValueError(message)
 
     def _init_download_response_mode_csp_with_fallback(
@@ -2469,7 +2469,7 @@ class FilesExt(files.FilesAPI):
         return _ResilientResponse(
             self,
             file_path,
-            download_response.last_modified,
+            download_response.last_modified,  # type: ignore[arg-type]
             offset=start_byte_offset,
             underlying_response=underlying_response,
         )
@@ -2513,7 +2513,7 @@ class _ResilientIterator(Iterator):
     def _extract_raw_response(
         download_response: DownloadResponse,
     ) -> _RawResponse:
-        streaming_response: _StreamingResponse = download_response.contents
+        streaming_response: _StreamingResponse = download_response.contents  # type: ignore[assignment]
         return streaming_response._response
 
     def __init__(
@@ -2560,7 +2560,7 @@ class _ResilientIterator(Iterator):
         self._recovers_without_progressing_count += 1
 
         try:
-            self._underlying_iterator.close()
+            self._underlying_iterator.close()  # type: ignore[attr-defined]
 
             _LOG.debug(f"Trying to recover from offset {self._offset}")
 
@@ -2596,5 +2596,5 @@ class _ResilientIterator(Iterator):
                     raise
 
     def close(self) -> None:
-        self._underlying_iterator.close()
+        self._underlying_iterator.close()  # type: ignore[attr-defined]
         self._closed = True

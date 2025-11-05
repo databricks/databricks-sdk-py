@@ -8,7 +8,7 @@ import sys
 import urllib.parse
 from typing import Dict, Iterable, List, Optional
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 from . import useragent
 from ._base_client import _fix_host_if_needed
@@ -28,10 +28,10 @@ class ConfigAttribute:
     """Configuration attribute metadata and descriptor protocols."""
 
     # name and transform are discovered from Config.__new__
-    name: str = None
+    name: str = None  # type: ignore[assignment]
     transform: type = str
 
-    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False):
+    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False):  # type: ignore[assignment]
         self.env = env
         self.auth = auth
         self.sensitive = sensitive
@@ -41,7 +41,7 @@ class ConfigAttribute:
             return None
         return cfg._inner.get(self.name, None)
 
-    def __set__(self, cfg: "Config", value: any):
+    def __set__(self, cfg: "Config", value: any):  # type: ignore[valid-type]
         cfg._inner[self.name] = self.transform(value)
 
     def __repr__(self) -> str:
@@ -59,58 +59,58 @@ def with_user_agent_extra(key: str, value: str):
 
 
 class Config:
-    host: str = ConfigAttribute(env="DATABRICKS_HOST")
-    account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
+    host: str = ConfigAttribute(env="DATABRICKS_HOST")  # type: ignore[assignment]
+    account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")  # type: ignore[assignment]
 
     # PAT token.
-    token: str = ConfigAttribute(env="DATABRICKS_TOKEN", auth="pat", sensitive=True)
+    token: str = ConfigAttribute(env="DATABRICKS_TOKEN", auth="pat", sensitive=True)  # type: ignore[assignment]
 
     # Audience for OIDC ID token source accepting an audience as a parameter.
     # For example, the GitHub action ID token source.
-    token_audience: str = ConfigAttribute(env="DATABRICKS_TOKEN_AUDIENCE", auth="github-oidc")
+    token_audience: str = ConfigAttribute(env="DATABRICKS_TOKEN_AUDIENCE", auth="github-oidc")  # type: ignore[assignment]
 
     # Environment variable for OIDC token.
-    oidc_token_env: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_ENV", auth="env-oidc")
-    oidc_token_filepath: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_FILE", auth="file-oidc")
+    oidc_token_env: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_ENV", auth="env-oidc")  # type: ignore[assignment]
+    oidc_token_filepath: str = ConfigAttribute(env="DATABRICKS_OIDC_TOKEN_FILE", auth="file-oidc")  # type: ignore[assignment]
 
-    username: str = ConfigAttribute(env="DATABRICKS_USERNAME", auth="basic")
-    password: str = ConfigAttribute(env="DATABRICKS_PASSWORD", auth="basic", sensitive=True)
+    username: str = ConfigAttribute(env="DATABRICKS_USERNAME", auth="basic")  # type: ignore[assignment]
+    password: str = ConfigAttribute(env="DATABRICKS_PASSWORD", auth="basic", sensitive=True)  # type: ignore[assignment]
 
-    client_id: str = ConfigAttribute(env="DATABRICKS_CLIENT_ID", auth="oauth")
-    client_secret: str = ConfigAttribute(env="DATABRICKS_CLIENT_SECRET", auth="oauth", sensitive=True)
-    profile: str = ConfigAttribute(env="DATABRICKS_CONFIG_PROFILE")
-    config_file: str = ConfigAttribute(env="DATABRICKS_CONFIG_FILE")
-    google_service_account: str = ConfigAttribute(env="DATABRICKS_GOOGLE_SERVICE_ACCOUNT", auth="google")
-    google_credentials: str = ConfigAttribute(env="GOOGLE_CREDENTIALS", auth="google", sensitive=True)
-    azure_workspace_resource_id: str = ConfigAttribute(env="DATABRICKS_AZURE_RESOURCE_ID", auth="azure")
-    azure_use_msi: bool = ConfigAttribute(env="ARM_USE_MSI", auth="azure")
-    azure_client_secret: str = ConfigAttribute(env="ARM_CLIENT_SECRET", auth="azure", sensitive=True)
-    azure_client_id: str = ConfigAttribute(env="ARM_CLIENT_ID", auth="azure")
-    azure_tenant_id: str = ConfigAttribute(env="ARM_TENANT_ID", auth="azure")
-    azure_environment: str = ConfigAttribute(env="ARM_ENVIRONMENT")
-    databricks_cli_path: str = ConfigAttribute(env="DATABRICKS_CLI_PATH")
-    auth_type: str = ConfigAttribute(env="DATABRICKS_AUTH_TYPE")
-    cluster_id: str = ConfigAttribute(env="DATABRICKS_CLUSTER_ID")
-    warehouse_id: str = ConfigAttribute(env="DATABRICKS_WAREHOUSE_ID")
-    serverless_compute_id: str = ConfigAttribute(env="DATABRICKS_SERVERLESS_COMPUTE_ID")
-    skip_verify: bool = ConfigAttribute()
-    http_timeout_seconds: float = ConfigAttribute()
-    debug_truncate_bytes: int = ConfigAttribute(env="DATABRICKS_DEBUG_TRUNCATE_BYTES")
-    debug_headers: bool = ConfigAttribute(env="DATABRICKS_DEBUG_HEADERS")
-    rate_limit: int = ConfigAttribute(env="DATABRICKS_RATE_LIMIT")
-    retry_timeout_seconds: int = ConfigAttribute()
+    client_id: str = ConfigAttribute(env="DATABRICKS_CLIENT_ID", auth="oauth")  # type: ignore[assignment]
+    client_secret: str = ConfigAttribute(env="DATABRICKS_CLIENT_SECRET", auth="oauth", sensitive=True)  # type: ignore[assignment]
+    profile: str = ConfigAttribute(env="DATABRICKS_CONFIG_PROFILE")  # type: ignore[assignment]
+    config_file: str = ConfigAttribute(env="DATABRICKS_CONFIG_FILE")  # type: ignore[assignment]
+    google_service_account: str = ConfigAttribute(env="DATABRICKS_GOOGLE_SERVICE_ACCOUNT", auth="google")  # type: ignore[assignment]
+    google_credentials: str = ConfigAttribute(env="GOOGLE_CREDENTIALS", auth="google", sensitive=True)  # type: ignore[assignment]
+    azure_workspace_resource_id: str = ConfigAttribute(env="DATABRICKS_AZURE_RESOURCE_ID", auth="azure")  # type: ignore[assignment]
+    azure_use_msi: bool = ConfigAttribute(env="ARM_USE_MSI", auth="azure")  # type: ignore[assignment]
+    azure_client_secret: str = ConfigAttribute(env="ARM_CLIENT_SECRET", auth="azure", sensitive=True)  # type: ignore[assignment]
+    azure_client_id: str = ConfigAttribute(env="ARM_CLIENT_ID", auth="azure")  # type: ignore[assignment]
+    azure_tenant_id: str = ConfigAttribute(env="ARM_TENANT_ID", auth="azure")  # type: ignore[assignment]
+    azure_environment: str = ConfigAttribute(env="ARM_ENVIRONMENT")  # type: ignore[assignment]
+    databricks_cli_path: str = ConfigAttribute(env="DATABRICKS_CLI_PATH")  # type: ignore[assignment]
+    auth_type: str = ConfigAttribute(env="DATABRICKS_AUTH_TYPE")  # type: ignore[assignment]
+    cluster_id: str = ConfigAttribute(env="DATABRICKS_CLUSTER_ID")  # type: ignore[assignment]
+    warehouse_id: str = ConfigAttribute(env="DATABRICKS_WAREHOUSE_ID")  # type: ignore[assignment]
+    serverless_compute_id: str = ConfigAttribute(env="DATABRICKS_SERVERLESS_COMPUTE_ID")  # type: ignore[assignment]
+    skip_verify: bool = ConfigAttribute()  # type: ignore[assignment]
+    http_timeout_seconds: float = ConfigAttribute()  # type: ignore[assignment]
+    debug_truncate_bytes: int = ConfigAttribute(env="DATABRICKS_DEBUG_TRUNCATE_BYTES")  # type: ignore[assignment]
+    debug_headers: bool = ConfigAttribute(env="DATABRICKS_DEBUG_HEADERS")  # type: ignore[assignment]
+    rate_limit: int = ConfigAttribute(env="DATABRICKS_RATE_LIMIT")  # type: ignore[assignment]
+    retry_timeout_seconds: int = ConfigAttribute()  # type: ignore[assignment]
     metadata_service_url = ConfigAttribute(
         env="DATABRICKS_METADATA_SERVICE_URL",
         auth="metadata-service",
         sensitive=True,
     )
-    max_connection_pools: int = ConfigAttribute()
-    max_connections_per_pool: int = ConfigAttribute()
+    max_connection_pools: int = ConfigAttribute()  # type: ignore[assignment]
+    max_connections_per_pool: int = ConfigAttribute()  # type: ignore[assignment]
     databricks_environment: Optional[DatabricksEnvironment] = None
 
-    disable_async_token_refresh: bool = ConfigAttribute(env="DATABRICKS_DISABLE_ASYNC_TOKEN_REFRESH")
+    disable_async_token_refresh: bool = ConfigAttribute(env="DATABRICKS_DISABLE_ASYNC_TOKEN_REFRESH")  # type: ignore[assignment]
 
-    disable_experimental_files_api_client: bool = ConfigAttribute(
+    disable_experimental_files_api_client: bool = ConfigAttribute(  # type: ignore[assignment]
         env="DATABRICKS_DISABLE_EXPERIMENTAL_FILES_API_CLIENT"
     )
 
@@ -217,8 +217,8 @@ class Config:
         **kwargs,
     ):
         self._header_factory = None
-        self._inner = {}
-        self._user_agent_other_info = []
+        self._inner = {}  # type: ignore[var-annotated]
+        self._user_agent_other_info = []  # type: ignore[var-annotated]
         if credentials_strategy and credentials_provider:
             raise ValueError("When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
         if credentials_provider:
@@ -284,11 +284,11 @@ class Config:
             if attr.name not in query:
                 continue
             kwargs[attr.name] = query[attr.name]
-        return Config(**kwargs)
+        return Config(**kwargs)  # type: ignore[arg-type]
 
     def authenticate(self) -> Dict[str, str]:
         """Returns a list of fresh authentication headers"""
-        return self._header_factory()
+        return self._header_factory()  # type: ignore[misc]
 
     def as_dict(self) -> dict:
         return self._inner
@@ -314,7 +314,7 @@ class Config:
             for environment in ALL_ENVS:
                 if environment.cloud != Cloud.AZURE:
                     continue
-                if environment.azure_environment.name != azure_env:
+                if environment.azure_environment.name != azure_env:  # type: ignore[union-attr]
                     continue
                 if environment.dns_zone.startswith(".dev") or environment.dns_zone.startswith(".staging"):
                     continue
@@ -343,7 +343,7 @@ class Config:
 
     @property
     def arm_environment(self) -> AzureEnvironment:
-        return self.environment.azure_environment
+        return self.environment.azure_environment  # type: ignore[return-value]
 
     @property
     def effective_azure_login_app_id(self):
@@ -414,11 +414,11 @@ class Config:
             buf.append(f"Env: {', '.join(envs_used)}")
         return ". ".join(buf)
 
-    def to_dict(self) -> Dict[str, any]:
+    def to_dict(self) -> Dict[str, any]:  # type: ignore[valid-type]
         return self._inner
 
     @property
-    def sql_http_path(self) -> Optional[str]:
+    def sql_http_path(self) -> Optional[str]:  # type: ignore[return]
         """(Experimental) Return HTTP path for SQL Drivers.
 
         If `cluster_id` or `warehouse_id` are configured, return a valid HTTP Path argument
@@ -465,8 +465,8 @@ class Config:
             v.name = name
             v.transform = anno.get(name, str)
             attrs.append(v)
-        cls._attributes = attrs
-        return cls._attributes
+        cls._attributes = attrs  # type: ignore[attr-defined]
+        return cls._attributes  # type: ignore[attr-defined]
 
     def _fix_host_if_needed(self):
         updated_host = _fix_host_if_needed(self.host)
@@ -499,7 +499,7 @@ class Config:
         self.azure_tenant_id = path_segments[1]
         logger.debug(f"Loaded tenant ID: {self.azure_tenant_id}")
 
-    def _set_inner_config(self, keyword_args: Dict[str, any]):
+    def _set_inner_config(self, keyword_args: Dict[str, any]):  # type: ignore[valid-type]
         for attr in self.attributes():
             if attr.name not in keyword_args:
                 continue

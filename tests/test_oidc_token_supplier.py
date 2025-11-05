@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from typing import Dict, Optional
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.oidc_token_supplier import AzureDevOpsOIDCTokenSupplier
 

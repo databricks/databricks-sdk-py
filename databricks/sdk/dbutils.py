@@ -59,7 +59,7 @@ class _FsUtil:
         return [
             FileInfo(
                 f.path,
-                os.path.basename(f.path),
+                os.path.basename(f.path),  # type: ignore[type-var]
                 f.file_size,
                 f.modification_time,
             )
@@ -91,9 +91,9 @@ class _FsUtil:
         self,
         source: str,
         mount_point: str,
-        encryption_type: str = None,
-        owner: str = None,
-        extra_configs: Dict[str, str] = None,
+        encryption_type: str = None,  # type: ignore[assignment]
+        owner: str = None,  # type: ignore[assignment]
+        extra_configs: Dict[str, str] = None,  # type: ignore[assignment]
     ) -> bool:
         """Mounts the given source directory into DBFS at the given mount point"""
         fs = self._proxy_factory("fs")
@@ -103,21 +103,21 @@ class _FsUtil:
         if owner:
             kwargs["owner"] = owner
         if extra_configs:
-            kwargs["extra_configs"] = extra_configs
-        return fs.mount(source, mount_point, **kwargs)
+            kwargs["extra_configs"] = extra_configs  # type: ignore[assignment]
+        return fs.mount(source, mount_point, **kwargs)  # type: ignore[call-arg]
 
     def unmount(self, mount_point: str) -> bool:
         """Deletes a DBFS mount point"""
         fs = self._proxy_factory("fs")
-        return fs.unmount(mount_point)
+        return fs.unmount(mount_point)  # type: ignore[call-arg]
 
     def updateMount(
         self,
         source: str,
         mount_point: str,
-        encryption_type: str = None,
-        owner: str = None,
-        extra_configs: Dict[str, str] = None,
+        encryption_type: str = None,  # type: ignore[assignment]
+        owner: str = None,  # type: ignore[assignment]
+        extra_configs: Dict[str, str] = None,  # type: ignore[assignment]
     ) -> bool:
         """Similar to mount(), but updates an existing mount point (if present) instead of creating a new one"""
         fs = self._proxy_factory("fs")
@@ -127,8 +127,8 @@ class _FsUtil:
         if owner:
             kwargs["owner"] = owner
         if extra_configs:
-            kwargs["extra_configs"] = extra_configs
-        return fs.updateMount(source, mount_point, **kwargs)
+            kwargs["extra_configs"] = extra_configs  # type: ignore[assignment]
+        return fs.updateMount(source, mount_point, **kwargs)  # type: ignore[call-arg]
 
     def mounts(self) -> List[MountInfo]:
         """Displays information about what is mounted within DBFS"""
@@ -186,8 +186,8 @@ class _JobsUtil:
             self,
             taskKey: str,
             key: str,
-            default: any = None,
-            debugValue: any = None,
+            default: any = None,  # type: ignore[valid-type]
+            debugValue: any = None,  # type: ignore[valid-type]
         ) -> None:
             """
             Returns `debugValue` if present, throws an error otherwise as this implementation is always run outside of a job run
@@ -198,7 +198,7 @@ class _JobsUtil:
                 )
             return debugValue
 
-        def set(self, key: str, value: any) -> None:
+        def set(self, key: str, value: any) -> None:  # type: ignore[valid-type]
             """
             Sets a task value on the current task run
             """
@@ -209,7 +209,7 @@ class _JobsUtil:
 
 class RemoteDbUtils:
 
-    def __init__(self, config: "Config" = None):
+    def __init__(self, config: "Config" = None):  # type: ignore[assignment]
         # Create a shallow copy of the config to allow the use of a custom
         # user-agent while avoiding modifying the original config.
         self._config = Config() if not config else config.copy()
@@ -254,8 +254,8 @@ class RemoteDbUtils:
             if self._ctx:
                 return self._ctx
             self._clusters.ensure_cluster_is_running(self._cluster_id)
-            self._ctx = self._commands.create(cluster_id=self._cluster_id, language=compute.Language.PYTHON).result()
-        return self._ctx
+            self._ctx = self._commands.create(cluster_id=self._cluster_id, language=compute.Language.PYTHON).result()  # type: ignore[assignment]
+        return self._ctx  # type: ignore[return-value]
 
     def __getattr__(self, util) -> "_ProxyUtil":
         return _ProxyUtil(
@@ -433,7 +433,7 @@ class _ProxyCall:
         if results.cause:
             _LOG.debug(f'{self._ascii_escape_re.sub("", results.cause)}')
 
-        summary = self._tag_re.sub("", results.summary)
+        summary = self._tag_re.sub("", results.summary)  # type: ignore[arg-type]
         summary = html.unescape(summary)
 
         exception_matches = self._exception_re.findall(summary)
@@ -442,11 +442,11 @@ class _ProxyCall:
             summary = summary.rstrip(" ")
             return summary
 
-        execution_error_matches = self._execution_error_re.findall(results.cause)
+        execution_error_matches = self._execution_error_re.findall(results.cause)  # type: ignore[arg-type]
         if len(execution_error_matches) == 1:
             return "\n".join(execution_error_matches[0])
 
-        error_message_matches = self._error_message_re.findall(results.cause)
+        error_message_matches = self._error_message_re.findall(results.cause)  # type: ignore[arg-type]
         if len(error_message_matches) == 1:
             return error_message_matches[0]
 

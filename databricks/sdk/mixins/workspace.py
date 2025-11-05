@@ -33,7 +33,7 @@ class WorkspaceExt(WorkspaceAPI):
             path, queue = queue[0], queue[1:]
             for object_info in parent_list(path, notebooks_modified_after=notebooks_modified_after):
                 if recursive and object_info.object_type == ObjectType.DIRECTORY:
-                    queue.append(object_info.path)
+                    queue.append(object_info.path)  # type: ignore[arg-type]
                     continue
                 yield object_info
 

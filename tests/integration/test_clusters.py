@@ -1,7 +1,7 @@
 import logging
 from datetime import timedelta
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.compute import EventType

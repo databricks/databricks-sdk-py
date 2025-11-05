@@ -1,7 +1,7 @@
 import logging
 from typing import List, Optional
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 from ..logger import RoundTrip
 from .base import DatabricksError
