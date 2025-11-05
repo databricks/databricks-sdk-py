@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.73.0 (2025-11-05)
+
+### Security
+- Update `protobuf` dependency constraints to exclude known vulnerable versions (related to `SNYK-PYTHON-PROTOBUF-10364902`).
+
+
 ## Release v0.72.0 (2025-11-04)
 
 ### Bug Fixes
