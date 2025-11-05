@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import logging
-import uuid
 from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
@@ -4096,8 +4095,6 @@ class ProviderPersonalizationRequestsAPI:
         :returns: :class:`UpdatePersonalizationRequestResponse`
         """
 
-        if request_id is None or request_id == "":
-            request_id = str(uuid.uuid4())
         body = {}
         if reason is not None:
             body["reason"] = reason

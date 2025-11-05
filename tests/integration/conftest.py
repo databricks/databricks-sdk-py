@@ -7,7 +7,8 @@ import sys
 
 import pytest  # type: ignore[import-not-found]
 
-from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient  # type: ignore[attr-defined]
+from databricks.sdk import (AccountClient,  # type: ignore[attr-defined]
+                            FilesAPI, FilesExt, WorkspaceClient)
 from databricks.sdk.service.catalog import VolumeType
 
 

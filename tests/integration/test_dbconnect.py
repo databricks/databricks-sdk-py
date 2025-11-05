@@ -51,7 +51,8 @@ def setup_dbconnect_test(request, env_or_skip, restorable_env):  # type: ignore[
 @pytest.mark.xdist_group(name="databricks-connect")
 def test_dbconnect_initialisation(w, setup_dbconnect_test):  # type: ignore[no-untyped-def]
     reload_modules("databricks.connect")
-    from databricks.connect import DatabricksSession  # type: ignore[import-not-found]
+    from databricks.connect import \
+        DatabricksSession  # type: ignore[import-not-found]
 
     spark = DatabricksSession.builder.getOrCreate()
     assert spark.sql("SELECT 1").collect()[0][0] == 1

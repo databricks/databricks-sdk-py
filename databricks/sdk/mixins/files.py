@@ -2433,9 +2433,7 @@ class FilesExt(files.FilesAPI):
             # Let's fallback to using Files API which might be allowlisted to download.
             raise FallbackToDownloadUsingFilesApi(f"Direct download forbidden: {csp_response.content}")  # type: ignore[attr-defined, no-untyped-call]
         else:
-            message = (
-                f"Unsuccessful download. Response status: {csp_response.status_code}, body: {csp_response.content}"  # type: ignore[attr-defined]
-            )
+            message = f"Unsuccessful download. Response status: {csp_response.status_code}, body: {csp_response.content}"  # type: ignore[attr-defined]
             _LOG.warning(message)
             mapped_error = _error_mapper(csp_response, {})  # type: ignore[arg-type]
             raise mapped_error or ValueError(message)

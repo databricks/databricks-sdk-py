@@ -102,7 +102,7 @@
         :param query_text: str (optional)
           Query text. Required for Delta Sync Index using model endpoint.
         :param query_type: str (optional)
-          The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`.
+          The query type to use. Choices are `ANN` and `HYBRID` and `FULL_TEXT`. Defaults to `ANN`.
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.

@@ -298,6 +298,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UNKNOWN_AI_MODEL
       :value: "UNKNOWN_AI_MODEL"
 
+   .. py:attribute:: UNSUPPORTED_CONVERSATION_TYPE_EXCEPTION
+      :value: "UNSUPPORTED_CONVERSATION_TYPE_EXCEPTION"
+
    .. py:attribute:: WAREHOUSE_ACCESS_MISSING_EXCEPTION
       :value: "WAREHOUSE_ACCESS_MISSING_EXCEPTION"
 

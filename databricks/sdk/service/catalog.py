@@ -11210,6 +11210,8 @@ class CatalogsAPI:
             "Accept": "application/json",
         }
 
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/catalogs", query=query, headers=headers)
             if "catalogs" in json:
@@ -11404,6 +11406,8 @@ class ConnectionsAPI:
             "Accept": "application/json",
         }
 
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/connections", query=query, headers=headers)
             if "connections" in json:
@@ -12316,6 +12320,8 @@ class ExternalLocationsAPI:
             "Accept": "application/json",
         }
 
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/external-locations", query=query, headers=headers)
             if "external_locations" in json:
@@ -12694,6 +12700,8 @@ class FunctionsAPI:
             "Accept": "application/json",
         }
 
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/functions", query=query, headers=headers)
             if "functions" in json:
@@ -13053,6 +13061,8 @@ class MetastoresAPI:
             "Accept": "application/json",
         }
 
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/metastores", query=query, headers=headers)
             if "metastores" in json:
@@ -14894,6 +14904,8 @@ class SchemasAPI:
             "Accept": "application/json",
         }
 
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/schemas", query=query, headers=headers)
             if "schemas" in json:
@@ -15122,6 +15134,8 @@ class StorageCredentialsAPI:
             "Accept": "application/json",
         }
 
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/storage-credentials", query=query, headers=headers)
             if "storage_credentials" in json:
@@ -15381,6 +15395,8 @@ class SystemSchemasAPI:
             "Accept": "application/json",
         }
 
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
             json = self._api.do(
                 "GET", f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas", query=query, headers=headers
@@ -15714,6 +15730,8 @@ class TablesAPI:
             "Accept": "application/json",
         }
 
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/tables", query=query, headers=headers)
             if "tables" in json:
@@ -16247,6 +16265,8 @@ class WorkspaceBindingsAPI:
             "Accept": "application/json",
         }
 
+        if "max_results" not in query:
+            query["max_results"] = 0
         while True:
             json = self._api.do(
                 "GET",

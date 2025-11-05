@@ -3,13 +3,13 @@ import os
 import platform
 
 import pytest as pytest  # type: ignore[import-not-found]
-from pyfakefs.fake_filesystem_unittest import Patcher  # type: ignore[import-not-found]
+from pyfakefs.fake_filesystem_unittest import \
+    Patcher  # type: ignore[import-not-found]
 
 from databricks.sdk.core import Config
 from databricks.sdk.credentials_provider import credentials_strategy
 
 from .clock import FakeClock
-from .integration.conftest import restorable_env
 
 
 @credentials_strategy("noop", [])  # type: ignore[misc]

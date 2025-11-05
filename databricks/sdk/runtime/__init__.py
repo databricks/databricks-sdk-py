@@ -26,7 +26,8 @@ dbruntime_objects = [
 try:
     # We don't want to expose additional entity to user namespace, so
     # a workaround here for exposing required information in notebook environment
-    from dbruntime.sdk_credential_provider import init_runtime_native_auth  # type: ignore[import-not-found]
+    from dbruntime.sdk_credential_provider import \
+        init_runtime_native_auth  # type: ignore[import-not-found]
 
     logger.debug("runtime SDK credential provider available")
     dbruntime_objects.append("init_runtime_native_auth")
@@ -38,7 +39,8 @@ globals()["init_runtime_native_auth"] = init_runtime_native_auth
 
 def init_runtime_repl_auth():  # type: ignore[no-untyped-def]
     try:
-        from dbruntime.databricks_repl_context import get_context  # type: ignore[import-not-found]
+        from dbruntime.databricks_repl_context import \
+            get_context  # type: ignore[import-not-found]
 
         ctx = get_context()
         if ctx is None:
@@ -88,7 +90,8 @@ def init_runtime_legacy_auth():  # type: ignore[no-untyped-def]
 try:
     # Internal implementation
     # Separated from above for backward compatibility
-    from dbruntime import UserNamespaceInitializer  # type: ignore[import-not-found]
+    from dbruntime import \
+        UserNamespaceInitializer  # type: ignore[import-not-found]
 
     userNamespaceGlobals = UserNamespaceInitializer.getOrCreate().get_namespace_globals()
     _globals = globals()
@@ -108,7 +111,8 @@ except ImportError:
     # mannaer. We separate them to try to get as many of them working as possible
     try:
         # We expect this to fail and only do this for providing types
-        from pyspark.sql.context import SQLContext  # type: ignore[import-not-found]
+        from pyspark.sql.context import \
+            SQLContext  # type: ignore[import-not-found]
 
         sqlContext: SQLContext = None
         table = sqlContext.table

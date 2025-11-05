@@ -80,6 +80,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: PROVISIONING
       :value: "PROVISIONING"
 
+   .. py:attribute:: RED_STATE
+      :value: "RED_STATE"
+
+   .. py:attribute:: YELLOW_STATE
+      :value: "YELLOW_STATE"
+
 .. py:class:: EndpointType
 
    Type of endpoint.
@@ -100,6 +106,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: MapStringValueEntry
+   :members:
+   :undoc-members:
+
+.. autoclass:: Metric
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricLabel
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricValue
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricValues
    :members:
    :undoc-members:
 
@@ -138,6 +160,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ResultManifest
+   :members:
+   :undoc-members:
+
+.. autoclass:: RetrieveUserVisibleMetricsResponse
    :members:
    :undoc-members:
 

@@ -598,6 +598,8 @@ class EndpointStatusState(Enum):
     OFFLINE = "OFFLINE"
     ONLINE = "ONLINE"
     PROVISIONING = "PROVISIONING"
+    RED_STATE = "RED_STATE"
+    YELLOW_STATE = "YELLOW_STATE"
 
 
 class EndpointType(Enum):
@@ -733,6 +735,153 @@ class MapStringValueEntry:
     def from_dict(cls, d: Dict[str, Any]) -> MapStringValueEntry:
         """Deserializes the MapStringValueEntry from a dictionary."""
         return cls(key=d.get("key", None), value=_from_dict(d, "value", Value))
+
+
+@dataclass
+class Metric:
+    """Metric specification"""
+
+    labels: Optional[List[MetricLabel]] = None
+    """Metric labels"""
+
+    name: Optional[str] = None
+    """Metric name"""
+
+    percentile: Optional[float] = None
+    """Percentile for the metric"""
+
+    def as_dict(self) -> dict:
+        """Serializes the Metric into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.labels:
+            body["labels"] = [v.as_dict() for v in self.labels]
+        if self.name is not None:
+            body["name"] = self.name
+        if self.percentile is not None:
+            body["percentile"] = self.percentile
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Metric into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.labels:
+            body["labels"] = self.labels
+        if self.name is not None:
+            body["name"] = self.name
+        if self.percentile is not None:
+            body["percentile"] = self.percentile
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Metric:
+        """Deserializes the Metric from a dictionary."""
+        return cls(
+            labels=_repeated_dict(d, "labels", MetricLabel),
+            name=d.get("name", None),
+            percentile=d.get("percentile", None),
+        )
+
+
+@dataclass
+class MetricLabel:
+    """Label for a metric"""
+
+    name: Optional[str] = None
+    """Label name"""
+
+    value: Optional[str] = None
+    """Label value"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetricLabel into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetricLabel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetricLabel:
+        """Deserializes the MetricLabel from a dictionary."""
+        return cls(name=d.get("name", None), value=d.get("value", None))
+
+
+@dataclass
+class MetricValue:
+    """Single metric value at a specific timestamp"""
+
+    timestamp: Optional[int] = None
+    """Timestamp of the metric value (milliseconds since epoch)"""
+
+    value: Optional[float] = None
+    """Metric value"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetricValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetricValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetricValue:
+        """Deserializes the MetricValue from a dictionary."""
+        return cls(timestamp=d.get("timestamp", None), value=d.get("value", None))
+
+
+@dataclass
+class MetricValues:
+    """Collection of metric values for a specific metric"""
+
+    metric: Optional[Metric] = None
+    """Metric specification"""
+
+    values: Optional[List[MetricValue]] = None
+    """Time series of metric values"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetricValues into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metric:
+            body["metric"] = self.metric.as_dict()
+        if self.values:
+            body["values"] = [v.as_dict() for v in self.values]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetricValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metric:
+            body["metric"] = self.metric
+        if self.values:
+            body["values"] = self.values
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetricValues:
+        """Deserializes the MetricValues from a dictionary."""
+        return cls(metric=_from_dict(d, "metric", Metric), values=_repeated_dict(d, "values", MetricValue))
 
 
 @dataclass
@@ -994,6 +1143,44 @@ class ResultManifest:
     def from_dict(cls, d: Dict[str, Any]) -> ResultManifest:
         """Deserializes the ResultManifest from a dictionary."""
         return cls(column_count=d.get("column_count", None), columns=_repeated_dict(d, "columns", ColumnInfo))
+
+
+@dataclass
+class RetrieveUserVisibleMetricsResponse:
+    """Response containing user-visible metrics"""
+
+    metric_values: Optional[List[MetricValues]] = None
+    """Collection of metric values"""
+
+    next_page_token: Optional[str] = None
+    """A token that can be used to get the next page of results. If not present, there are no more
+    results to show."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RetrieveUserVisibleMetricsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metric_values:
+            body["metric_values"] = [v.as_dict() for v in self.metric_values]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RetrieveUserVisibleMetricsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metric_values:
+            body["metric_values"] = self.metric_values
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RetrieveUserVisibleMetricsResponse:
+        """Deserializes the RetrieveUserVisibleMetricsResponse from a dictionary."""
+        return cls(
+            metric_values=_repeated_dict(d, "metric_values", MetricValues),
+            next_page_token=d.get("next_page_token", None),
+        )
 
 
 @dataclass
@@ -1517,6 +1704,53 @@ class VectorSearchEndpointsAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def retrieve_user_visible_metrics(
+        self,
+        name: str,
+        *,
+        end_time: Optional[str] = None,
+        granularity_in_seconds: Optional[int] = None,
+        metrics: Optional[List[Metric]] = None,
+        page_token: Optional[str] = None,
+        start_time: Optional[str] = None,
+    ) -> RetrieveUserVisibleMetricsResponse:
+        """Retrieve user-visible metrics for an endpoint
+
+        :param name: str
+          Vector search endpoint name
+        :param end_time: str (optional)
+          End time for metrics query
+        :param granularity_in_seconds: int (optional)
+          Granularity in seconds
+        :param metrics: List[:class:`Metric`] (optional)
+          List of metrics to retrieve
+        :param page_token: str (optional)
+          Token for pagination
+        :param start_time: str (optional)
+          Start time for metrics query
+
+        :returns: :class:`RetrieveUserVisibleMetricsResponse`
+        """
+
+        body = {}
+        if end_time is not None:
+            body["end_time"] = end_time
+        if granularity_in_seconds is not None:
+            body["granularity_in_seconds"] = granularity_in_seconds
+        if metrics is not None:
+            body["metrics"] = [v.as_dict() for v in metrics]
+        if page_token is not None:
+            body["page_token"] = page_token
+        if start_time is not None:
+            body["start_time"] = start_time
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/vector-search/endpoints/{name}/metrics", body=body, headers=headers)
+        return RetrieveUserVisibleMetricsResponse.from_dict(res)
+
     def update_endpoint_budget_policy(
         self, endpoint_name: str, budget_policy_id: str
     ) -> PatchEndpointBudgetPolicyResponse:
@@ -1756,7 +1990,7 @@ class VectorSearchIndexesAPI:
         :param query_text: str (optional)
           Query text. Required for Delta Sync Index using model endpoint.
         :param query_type: str (optional)
-          The query type to use. Choices are `ANN` and `HYBRID`. Defaults to `ANN`.
+          The query type to use. Choices are `ANN` and `HYBRID` and `FULL_TEXT`. Defaults to `ANN`.
         :param query_vector: List[float] (optional)
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.

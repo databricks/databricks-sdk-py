@@ -96,7 +96,8 @@ class ServingEndpointsExt(ServingEndpointsAPI):
 
     def get_langchain_chat_open_ai_client(self, model):  # type: ignore[no-untyped-def]
         try:
-            from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
+            from langchain_openai import \
+                ChatOpenAI  # type: ignore[import-not-found]
         except Exception:
             raise ImportError(
                 "Langchain Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]` and ensure you are using python>3.7"

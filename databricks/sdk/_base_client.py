@@ -13,7 +13,8 @@ import requests.adapters
 from . import useragent
 from .casing import Casing
 from .clock import Clock, RealClock
-from .errors import DatabricksError, _ErrorCustomizer, _Parser  # type: ignore[attr-defined]
+from .errors import (DatabricksError,  # type: ignore[attr-defined]
+                     _ErrorCustomizer, _Parser)
 from .logger import RoundTrip  # type: ignore[attr-defined]
 from .retries import retried
 

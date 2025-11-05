@@ -6,7 +6,8 @@ from ._base_client import _BaseClient
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
-from .errors import DatabricksError, _ErrorCustomizer  # type: ignore[attr-defined]
+from .errors import (DatabricksError,  # type: ignore[attr-defined]
+                     _ErrorCustomizer)
 from .oauth import retrieve_token
 
 __all__ = ["Config", "DatabricksError"]
