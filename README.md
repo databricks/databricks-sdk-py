@@ -239,6 +239,7 @@ For example, to turn on debug HTTP headers:
 
 ```python
 from databricks.sdk import WorkspaceClient
+from databricks.sdk.core import Config
 w = WorkspaceClient(config=Config(debug_headers=True))
 # Now call the Databricks workspace APIs as desired...
 ```
