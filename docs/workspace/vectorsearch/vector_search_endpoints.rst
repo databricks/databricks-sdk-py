@@ -55,6 +55,26 @@
         :returns: Iterator over :class:`EndpointInfo`
         
 
+    .. py:method:: retrieve_user_visible_metrics(name: str [, end_time: Optional[str], granularity_in_seconds: Optional[int], metrics: Optional[List[Metric]], page_token: Optional[str], start_time: Optional[str]]) -> RetrieveUserVisibleMetricsResponse
+
+        Retrieve user-visible metrics for an endpoint
+
+        :param name: str
+          Vector search endpoint name
+        :param end_time: str (optional)
+          End time for metrics query
+        :param granularity_in_seconds: int (optional)
+          Granularity in seconds
+        :param metrics: List[:class:`Metric`] (optional)
+          List of metrics to retrieve
+        :param page_token: str (optional)
+          Token for pagination
+        :param start_time: str (optional)
+          Start time for metrics query
+
+        :returns: :class:`RetrieveUserVisibleMetricsResponse`
+        
+
     .. py:method:: update_endpoint_budget_policy(endpoint_name: str, budget_policy_id: str) -> PatchEndpointBudgetPolicyResponse
 
         Update the budget policy of an endpoint

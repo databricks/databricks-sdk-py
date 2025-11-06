@@ -175,11 +175,16 @@
             notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
             w.workspace.import_(
-                content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
-                format=workspace.ImportFormat.SOURCE,
-                language=workspace.Language.SQL,
-                overwrite=true_,
                 path=notebook_path,
+                overwrite=true_,
+                format=workspace.ImportFormat.SOURCE,
+                language=workspace.Language.PYTHON,
+                content=base64.b64encode(
+                    (
+                        """print(1)
+            """
+                    ).encode()
+                ).decode(),
             )
 
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.

@@ -1500,7 +1500,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271
+   Latest kind: CONNECTION_POSTGRESQL_AWS_SERVICE_CRED = 271; Next id:272
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"

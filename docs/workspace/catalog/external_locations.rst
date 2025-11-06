@@ -140,10 +140,11 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            all = w.external_locations.list()
+            all = w.external_locations.list(catalog.ListExternalLocationsRequest())
 
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
