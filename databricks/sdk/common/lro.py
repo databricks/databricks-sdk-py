@@ -12,5 +12,6 @@ class LroOptions:
         """
         Args:
             timeout: The timeout for the Long Running Operations.
+                if not set, then operation will wait forever.
         """
         self.timeout = timeout
