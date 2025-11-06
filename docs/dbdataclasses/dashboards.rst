@@ -385,6 +385,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: TextAttachmentPurpose
+
+   Purpose/intent of a text attachment
+
+   .. py:attribute:: FOLLOW_UP_QUESTION
+      :value: "FOLLOW_UP_QUESTION"
+
 .. autoclass:: TrashDashboardResponse
    :members:
    :undoc-members:
