@@ -10,7 +10,7 @@
     scalable resources. Your job can consist of a single task or can be a large, multi-task workflow with
     complex dependencies. Databricks manages the task orchestration, cluster management, monitoring, and error
     reporting for all of your jobs. You can run your jobs immediately or periodically through an easy-to-use
-    scheduling system. You can implement job tasks using notebooks, JARS, Delta Live Tables pipelines, or
+    scheduling system. You can implement job tasks using notebooks, JARS, Spark Declarative Pipelines, or
     Python, Scala, Spark submit, and Java applications.
 
     You should never hard code secrets or store them in plain text. Use the [Secrets CLI] to manage secrets in
@@ -189,8 +189,9 @@
         :param environments: List[:class:`JobEnvironment`] (optional)
           A list of task execution environment specifications that can be referenced by serverless tasks of
           this job. An environment is required to be present for serverless tasks. For serverless notebook
-          tasks, the environment is accessible in the notebook environment panel. For other serverless tasks,
-          the task environment is required to be specified using environment_key in the task settings.
+          tasks, if the environment_key is not specified, the notebook environment will be used if present. If
+          a jobs environment is specified, it will override the notebook environment. For other serverless
+          tasks, the task environment is required to be specified using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -357,23 +358,21 @@
                 w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
             )
             
-            created_job = w.jobs.create(
-                name=f"sdk-{time.time_ns()}",
+            run = w.jobs.submit(
+                run_name=f"sdk-{time.time_ns()}",
                 tasks=[
-                    jobs.Task(
-                        description="test",
+                    jobs.SubmitTask(
                         existing_cluster_id=cluster_id,
                         notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                        task_key="test",
-                        timeout_seconds=0,
+                        task_key=f"sdk-{time.time_ns()}",
                     )
                 ],
-            )
+            ).result()
             
-            by_id = w.jobs.get(job_id=created_job.job_id)
+            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
             
             # cleanup
-            w.jobs.delete(job_id=created_job.job_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Get a single job.
 

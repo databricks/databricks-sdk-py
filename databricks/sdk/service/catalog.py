@@ -8745,7 +8745,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271"""
+    """Latest kind: CONNECTION_POSTGRESQL_AWS_SERVICE_CRED = 271; Next id:272"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

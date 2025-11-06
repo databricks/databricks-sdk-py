@@ -109,6 +109,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Metric
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricLabel
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricValue
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricValues
+   :members:
+   :undoc-members:
+
 .. autoclass:: MiniVectorIndex
    :members:
    :undoc-members:
@@ -144,6 +160,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ResultManifest
+   :members:
+   :undoc-members:
+
+.. autoclass:: RetrieveUserVisibleMetricsResponse
    :members:
    :undoc-members:
 
