@@ -760,6 +760,22 @@ class ClientCredentials(Refreshable):
 
 @dataclass
 class PATOAuthTokenExchange(Refreshable):
+    """Performs OAuth token exchange using a Personal Access Token (PAT) as the subject token.
+
+    This class implements the OAuth 2.0 Token Exchange flow (RFC 8693) to exchange a Databricks
+    Internal PAT Token for an access token with specific scopes and authorization details.
+
+    Args:
+        get_original_token: A callable that returns the PAT to be exchanged. This is a callable
+            rather than a string value to ensure that a fresh Internal PAT Token is retrieved
+            at the time of refresh.
+        host: The Databricks workspace URL (e.g., "https://my-workspace.cloud.databricks.com").
+        scopes: Space-delimited string of OAuth scopes to request (e.g., "all-apis offline_access").
+        authorization_details: Optional JSON string containing authorization details as defined in
+            AuthorizationDetail class above.
+        disable_async: Whether to disable asynchronous token refresh. Defaults to True.
+    """
+
     get_original_token: Callable[[], Optional[str]]
     host: str
     scopes: str

@@ -113,6 +113,7 @@ class Config:
     disable_experimental_files_api_client: bool = ConfigAttribute(
         env="DATABRICKS_DISABLE_EXPERIMENTAL_FILES_API_CLIENT"
     )
+    # TODO: Expose these via environment variables too.
     scopes: str = ConfigAttribute()
     authorization_details: str = ConfigAttribute()
 
