@@ -235,11 +235,12 @@ For all authentication methods, you can override the default behavior in client 
 | `debug_headers`         | _(Boolean)_ `true` to debug HTTP headers of requests made by the application. Default is `false`, as headers contain sensitive data, such as access tokens. | `DATABRICKS_DEBUG_HEADERS` |
 | `rate_limit`            | _(Integer)_ Maximum number of requests per second made to Databricks REST API. | `DATABRICKS_RATE_LIMIT` |
 
-For example, to turn on debug HTTP headers:
+For example, here's how you can update the overall retry timeout:
 
 ```python
 from databricks.sdk import WorkspaceClient
-w = WorkspaceClient(debug_headers=True)
+from databricks.sdk.core import Config
+w = WorkspaceClient(config=Config(retry_timeout_seconds=300))
 # Now call the Databricks workspace APIs as desired...
 ```
 
