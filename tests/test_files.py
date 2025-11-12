@@ -1066,14 +1066,14 @@ class PresignedUrlDownloadTestCase:
         PresignedUrlDownloadTestCase(
             name="Presigned URL download fails with 403",
             file_size=100 * 1024 * 1024,
-            expected_exception_type=PermissionDenied,
             custom_response_create_presigned_url=CustomResponse(code=403, only_invocation=1),
+            expected_download_api="files_api",
         ),
         PresignedUrlDownloadTestCase(
             name="Presigned URL download fails with 500 when creating presigned URL",
             file_size=100 * 1024 * 1024,
-            expected_exception_type=InternalError,
             custom_response_create_presigned_url=CustomResponse(code=500, only_invocation=1),
+            expected_download_api="files_api",
         ),
         PresignedUrlDownloadTestCase(
             name="Presigned URL download fails with 500 when downloading from URL",
@@ -1921,40 +1921,40 @@ class MultipartUploadTestCase(UploadTestCase):
         ),
         # -------------------------- failures on "create upload URL" --------------------------
         MultipartUploadTestCase(
-            "Create upload URL: 400 response is not retried",
+            "Create upload URL: 400 response should fallback",
             content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(
                 code=400,
                 # 1 failure is enough
                 only_invocation=1,
             ),
-            expected_exception_type=BadRequest,
             expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Create upload URL: 403 response is not retried",
+            "Create upload URL: 403 response should fallback",
             content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(
                 code=403,
                 # 1 failure is enough
                 only_invocation=1,
             ),
-            expected_exception_type=PermissionDenied,
             expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Create upload URL: internal error is not retried",
+            "Create upload URL: internal error should fallback",
             content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(code=500, only_invocation=1),
-            expected_exception_type=InternalError,
             expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Create upload URL: non-JSON response is not retried",
+            "Create upload URL: non-JSON response should fallback",
             content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(body="this is not a JSON", only_invocation=1),
-            expected_exception_type=requests.exceptions.JSONDecodeError,
             expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
             "Create upload URL: meaningless JSON response is not retried",
@@ -1980,11 +1980,11 @@ class MultipartUploadTestCase(UploadTestCase):
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(
-            "Create upload URL: permanent retryable exception",
+            "Create upload URL: permanent retryable exception should fallback",
             content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(exception=requests.ConnectionError),
-            expected_exception_type=TimeoutError,
             expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
             "Create upload URL: intermittent retryable exception",
@@ -2221,8 +2221,8 @@ class MultipartUploadTestCase(UploadTestCase):
             content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(code=403, only_invocation=1),
             custom_response_on_create_abort_url=CustomResponse(code=429, first_invocation=1, last_invocation=3),
-            expected_exception_type=PermissionDenied,  # original error
             expected_multipart_upload_aborted=True,  # abort successfully called after abort URL creation is retried
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
             "Abort: exception",
@@ -2233,12 +2233,12 @@ class MultipartUploadTestCase(UploadTestCase):
                 # this allows to change the server state to "aborted"
                 exception_happened_before_processing=False,
             ),
-            expected_exception_type=PermissionDenied,  # original error is reported
             expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
         ),
         # -------------------------- Parallel Upload for Streams --------------------------
         MultipartUploadTestCase(
-            "Multipart parallel upload for stream: Upload errors are not retried",
+            "Multipart parallel upload for stream: Upload errors are not retried but fallback",
             content_size=10 * 1024 * 1024,
             multipart_upload_part_size=1024 * 1024,
             source_type=[UploadSourceType.SEEKABLE_STREAM],
@@ -2557,22 +2557,22 @@ class ResumableUploadTestCase(UploadTestCase):
     [
         # ------------------ failures on creating resumable upload URL ------------------
         ResumableUploadTestCase(
-            "Create resumable URL: 400 response is not retried",
+            "Create resumable URL: 400 response is not retried and should fallback",
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(
                 code=400,
                 # 1 failure is enough
                 only_invocation=1,
             ),
-            expected_exception_type=BadRequest,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         ResumableUploadTestCase(
-            "Create resumable URL: 403 response is not retried",
+            "Create resumable URL: 403 response is not retried and should fallback",
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(code=403, only_invocation=1),
-            expected_exception_type=PermissionDenied,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         ResumableUploadTestCase(
             "Create resumable URL: fallback to single-shot upload when presigned URLs are disabled",
@@ -2595,18 +2595,18 @@ class ResumableUploadTestCase(UploadTestCase):
             expected_single_shot_upload=True,
         ),
         ResumableUploadTestCase(
-            "Create resumable URL: 500 response is not retried",
+            "Create resumable URL: 500 response is not retried and should fallback",
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(code=500, only_invocation=1),
-            expected_exception_type=InternalError,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         ResumableUploadTestCase(
             "Create resumable URL: non-JSON response is not retried",
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(body="Foo bar", only_invocation=1),
-            expected_exception_type=requests.exceptions.JSONDecodeError,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         ResumableUploadTestCase(
             "Create resumable URL: meaningless JSON response is not retried",
@@ -2621,8 +2621,8 @@ class ResumableUploadTestCase(UploadTestCase):
             "Create resumable URL: permanent retryable status code",
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(code=429),
-            expected_exception_type=TimeoutError,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         ResumableUploadTestCase(
             "Create resumable URL: intermittent retryable exception is retried",
