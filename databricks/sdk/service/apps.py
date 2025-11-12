@@ -1474,7 +1474,6 @@ class ApplicationStatus:
 class ComputeSize(Enum):
 
     LARGE = "LARGE"
-    LIQUID = "LIQUID"
     MEDIUM = "MEDIUM"
 
 

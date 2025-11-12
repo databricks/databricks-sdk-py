@@ -1161,7 +1161,6 @@ class MessageErrorType(Enum):
     INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION = "INTERNAL_CATALOG_PATH_OVERLAP_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION = "INVALID_CERTIFIED_ANSWER_FUNCTION_EXCEPTION"
     INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION = "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
-    INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
     INVALID_CHAT_COMPLETION_JSON_EXCEPTION = "INVALID_CHAT_COMPLETION_JSON_EXCEPTION"
     INVALID_COMPLETION_REQUEST_EXCEPTION = "INVALID_COMPLETION_REQUEST_EXCEPTION"
     INVALID_FUNCTION_CALL_EXCEPTION = "INVALID_FUNCTION_CALL_EXCEPTION"
@@ -1639,6 +1638,9 @@ class TextAttachment:
 
     id: Optional[str] = None
 
+    purpose: Optional[TextAttachmentPurpose] = None
+    """Purpose/intent of this text attachment"""
+
     def as_dict(self) -> dict:
         """Serializes the TextAttachment into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1646,6 +1648,8 @@ class TextAttachment:
             body["content"] = self.content
         if self.id is not None:
             body["id"] = self.id
+        if self.purpose is not None:
+            body["purpose"] = self.purpose.value
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1655,12 +1659,22 @@ class TextAttachment:
             body["content"] = self.content
         if self.id is not None:
             body["id"] = self.id
+        if self.purpose is not None:
+            body["purpose"] = self.purpose
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TextAttachment:
         """Deserializes the TextAttachment from a dictionary."""
-        return cls(content=d.get("content", None), id=d.get("id", None))
+        return cls(
+            content=d.get("content", None), id=d.get("id", None), purpose=_enum(d, "purpose", TextAttachmentPurpose)
+        )
+
+
+class TextAttachmentPurpose(Enum):
+    """Purpose/intent of a text attachment"""
+
+    FOLLOW_UP_QUESTION = "FOLLOW_UP_QUESTION"
 
 
 @dataclass
