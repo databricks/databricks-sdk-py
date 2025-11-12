@@ -16,8 +16,8 @@ from enum import Enum
 from http.server import BaseHTTPRequestHandler, HTTPServer
 from typing import Any, Dict, List, Optional
 
-import requests
-import requests.auth
+import requests  # type: ignore[import-untyped]
+import requests.auth  # type: ignore[import-untyped]
 
 from ._base_client import _BaseClient, _fix_host_if_needed
 
@@ -64,8 +64,8 @@ class OidcEndpoints:
     @staticmethod
     def from_dict(d: dict) -> "OidcEndpoints":
         return OidcEndpoints(
-            authorization_endpoint=d.get("authorization_endpoint"),
-            token_endpoint=d.get("token_endpoint"),
+            authorization_endpoint=d.get("authorization_endpoint"),  # type: ignore[arg-type]
+            token_endpoint=d.get("token_endpoint"),  # type: ignore[arg-type]
         )
 
     def as_dict(self) -> dict:
@@ -180,7 +180,7 @@ def retrieve_token(
     if use_header:
         auth = requests.auth.HTTPBasicAuth(client_id, client_secret)
     else:
-        auth = IgnoreNetrcAuth()
+        auth = IgnoreNetrcAuth()  # type: ignore[assignment]
     resp = requests.post(token_url, params, auth=auth, headers=headers)
     if not resp.ok:
         if resp.headers["Content-Type"].startswith("application/json"):
@@ -376,10 +376,10 @@ def get_account_endpoints(host: str, account_id: str, client: _BaseClient = _Bas
     :param account_id: The account ID.
     :return: The account's OIDC endpoints.
     """
-    host = _fix_host_if_needed(host)
+    host = _fix_host_if_needed(host)  # type: ignore[assignment]
     oidc = f"{host}/oidc/accounts/{account_id}/.well-known/oauth-authorization-server"
     resp = client.do("GET", oidc)
-    return OidcEndpoints.from_dict(resp)
+    return OidcEndpoints.from_dict(resp)  # type: ignore[arg-type]
 
 
 def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
@@ -388,10 +388,10 @@ def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> O
     :param host: The Databricks workspace host.
     :return: The workspace's OIDC endpoints.
     """
-    host = _fix_host_if_needed(host)
+    host = _fix_host_if_needed(host)  # type: ignore[assignment]
     oidc = f"{host}/oidc/.well-known/oauth-authorization-server"
     resp = client.do("GET", oidc)
-    return OidcEndpoints.from_dict(resp)
+    return OidcEndpoints.from_dict(resp)  # type: ignore[arg-type]
 
 
 def get_azure_entra_id_workspace_endpoints(
@@ -404,7 +404,7 @@ def get_azure_entra_id_workspace_endpoints(
     :return: The OIDC endpoints for the workspace's Azure Entra ID tenant.
     """
     # In Azure, this workspace endpoint redirects to the Entra ID authorization endpoint
-    host = _fix_host_if_needed(host)
+    host = _fix_host_if_needed(host)  # type: ignore[assignment]
     res = requests.get(f"{host}/oidc/oauth2/v2.0/authorize", allow_redirects=False)
     real_auth_url = res.headers.get("location")
     if not real_auth_url:
@@ -421,8 +421,8 @@ class SessionCredentials(Refreshable):
         token: Token,
         token_endpoint: str,
         client_id: str,
-        client_secret: str = None,
-        redirect_url: str = None,
+        client_secret: str = None,  # type: ignore[assignment]
+        redirect_url: str = None,  # type: ignore[assignment]
         disable_async: bool = True,
     ):
         self._token_endpoint = token_endpoint
@@ -442,8 +442,8 @@ class SessionCredentials(Refreshable):
         raw: dict,
         token_endpoint: str,
         client_id: str,
-        client_secret: str = None,
-        redirect_url: str = None,
+        client_secret: str = None,  # type: ignore[assignment]
+        redirect_url: str = None,  # type: ignore[assignment]
     ) -> "SessionCredentials":
         return SessionCredentials(
             token=Token.from_dict(raw["token"]),
@@ -498,7 +498,7 @@ class Consent:
         redirect_url: str,
         token_endpoint: str,
         client_id: str,
-        client_secret: str = None,
+        client_secret: str = None,  # type: ignore[assignment]
     ) -> None:
         self._verifier = verifier
         self._state = state
@@ -523,7 +523,7 @@ class Consent:
         return self._authorization_url
 
     @staticmethod
-    def from_dict(raw: dict, client_secret: str = None) -> "Consent":
+    def from_dict(raw: dict, client_secret: str = None) -> "Consent":  # type: ignore[assignment]
         return Consent(
             raw["state"],
             raw["verifier"],
@@ -538,12 +538,12 @@ class Consent:
         redirect_url = urllib.parse.urlparse(self._redirect_url)
         if redirect_url.hostname not in ("localhost", "127.0.0.1"):
             raise ValueError(f"cannot listen on {redirect_url.hostname}")
-        feedback = []
+        feedback = []  # type: ignore[var-annotated]
         logger.info(f"Opening {self._authorization_url} in a browser")
         webbrowser.open_new(self._authorization_url)
         port = redirect_url.port
         handler_factory = functools.partial(_OAuthCallback, feedback)
-        with HTTPServer(("localhost", port), handler_factory) as httpd:
+        with HTTPServer(("localhost", port), handler_factory) as httpd:  # type: ignore[arg-type]
             logger.info(f"Waiting for redirect to http://localhost:{port}")
             httpd.handle_request()
         if not feedback:
@@ -567,7 +567,7 @@ class Consent:
             "code_verifier": self._verifier,
             "code": code,
         }
-        headers = {}
+        headers = {}  # type: ignore[var-annotated]
         while True:
             try:
                 token = retrieve_token(
@@ -620,8 +620,8 @@ class OAuthClient:
         oidc_endpoints: OidcEndpoints,
         redirect_url: str,
         client_id: str,
-        scopes: List[str] = None,
-        client_secret: str = None,
+        scopes: List[str] = None,  # type: ignore[assignment]
+        client_secret: str = None,  # type: ignore[assignment]
     ):
         if not scopes:
             # all-apis ensures that the returned OAuth token can be used with all APIs, aside
@@ -642,14 +642,14 @@ class OAuthClient:
         client_id: str,
         redirect_url: str,
         *,
-        scopes: List[str] = None,
-        client_secret: str = None,
+        scopes: List[str] = None,  # type: ignore[assignment]
+        client_secret: str = None,  # type: ignore[assignment]
     ) -> "OAuthClient":
         from .core import Config
         from .credentials_provider import credentials_strategy
 
         @credentials_strategy("noop", [])
-        def noop_credentials(_: any):
+        def noop_credentials(_: any):  # type: ignore[valid-type]
             return lambda: {}
 
         config = Config(host=host, credentials_strategy=noop_credentials)
@@ -705,8 +705,8 @@ class ClientCredentials(Refreshable):
     client_id: str
     client_secret: str
     token_url: str
-    endpoint_params: dict = None
-    scopes: List[str] = None
+    endpoint_params: dict = None  # type: ignore[assignment]
+    scopes: List[str] = None  # type: ignore[assignment]
     use_params: bool = False
     use_header: bool = False
     disable_async: bool = True
@@ -776,8 +776,8 @@ class TokenCache:
                     raw,
                     token_endpoint=self._oidc_endpoints.token_endpoint,
                     client_id=self._client_id,
-                    client_secret=self._client_secret,
-                    redirect_url=self._redirect_url,
+                    client_secret=self._client_secret,  # type: ignore[arg-type]
+                    redirect_url=self._redirect_url,  # type: ignore[arg-type]
                 )
         except Exception:
             return None

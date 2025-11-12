@@ -4,7 +4,7 @@ from abc import ABC, abstractmethod
 from io import BytesIO, RawIOBase, UnsupportedOperation
 from typing import BinaryIO, Callable, List, Optional, Tuple
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.mixins.files_utils import (_ConcatenatedInputStream,
                                                _PresignedUrlDistributor)
@@ -35,10 +35,10 @@ class Utils:
             if end is not None and start > end:
                 raise ValueError(f"Start byte {start} is greater than end byte {end}")
 
-        return start, end
+        return start, end  # type: ignore[return-value]
 
 
-class NonSeekableBuffer(RawIOBase, BinaryIO):
+class NonSeekableBuffer(RawIOBase, BinaryIO):  # type: ignore[misc]
     """
     A non-seekable buffer that wraps a bytes object. Used for unit tests only.
     This class implements the BinaryIO interface but does not support seeking.
@@ -51,7 +51,7 @@ class NonSeekableBuffer(RawIOBase, BinaryIO):
     def read(self, size: int = -1) -> bytes:
         return self._stream.read(size)
 
-    def readline(self, size: int = -1) -> bytes:
+    def readline(self, size: int = -1) -> bytes:  # type: ignore[override]
         return self._stream.readline(size)
 
     def readlines(self, size: int = -1) -> List[bytes]:
@@ -77,7 +77,7 @@ class ConcatenatedInputStreamTestCase(ABC):
         pass
 
 
-class ConcatenatedInputStreamTestCase(ConcatenatedInputStreamTestCase):
+class ConcatenatedInputStreamTestCase(ConcatenatedInputStreamTestCase):  # type: ignore[no-redef]
     def __init__(self, head: bytes, tail: bytes, is_seekable: bool = True):
         self._head = head
         self._tail = tail
@@ -108,34 +108,34 @@ class ConcatenatedInputStreamTestCase(ConcatenatedInputStreamTestCase):
 
 
 test_cases = [
-    ConcatenatedInputStreamTestCase(b"", b"zzzz"),
-    ConcatenatedInputStreamTestCase(b"", b""),
-    ConcatenatedInputStreamTestCase(b"", b"", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"foo", b"bar"),
-    ConcatenatedInputStreamTestCase(b"foo", b"bar", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"", b"zzzz", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"non_empty", b""),
-    ConcatenatedInputStreamTestCase(b"non_empty", b"", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"\n\n\n", b"\n\n"),
-    ConcatenatedInputStreamTestCase(b"\n\n\n", b"\n\n", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"aa\nbb\nccc\n", b"dd\nee\nff"),
-    ConcatenatedInputStreamTestCase(b"aa\nbb\nccc\n", b"dd\nee\nff", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"First line\nsecond line", b"first line with line \nbreak"),
-    ConcatenatedInputStreamTestCase(b"First line\nsecond line", b"first line with line \nbreak", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"First line\n", b"\nsecond line"),
-    ConcatenatedInputStreamTestCase(b"First line\n", b"\nsecond line", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"First line\n", b"\n"),
-    ConcatenatedInputStreamTestCase(b"First line\n", b"\n", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"First line\n", b""),
-    ConcatenatedInputStreamTestCase(b"First line\n", b"", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"", b"\nA line"),
-    ConcatenatedInputStreamTestCase(b"", b"\nA line", is_seekable=False),
-    ConcatenatedInputStreamTestCase(b"\n", b"\nA line"),
-    ConcatenatedInputStreamTestCase(b"\n", b"\nA line", is_seekable=False),
+    ConcatenatedInputStreamTestCase(b"", b"zzzz"),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"", b""),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"", b"", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"foo", b"bar"),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"foo", b"bar", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"", b"zzzz", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"non_empty", b""),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"non_empty", b"", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"\n\n\n", b"\n\n"),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"\n\n\n", b"\n\n", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"aa\nbb\nccc\n", b"dd\nee\nff"),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"aa\nbb\nccc\n", b"dd\nee\nff", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"First line\nsecond line", b"first line with line \nbreak"),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"First line\nsecond line", b"first line with line \nbreak", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"First line\n", b"\nsecond line"),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"First line\n", b"\nsecond line", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"First line\n", b"\n"),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"First line\n", b"\n", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"First line\n", b""),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"First line\n", b"", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"", b"\nA line"),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"", b"\nA line", is_seekable=False),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"\n", b"\nA line"),  # type: ignore[abstract, call-arg]
+    ConcatenatedInputStreamTestCase(b"\n", b"\nA line", is_seekable=False),  # type: ignore[abstract, call-arg]
 ]
 
 
-def verify(test_case: ConcatenatedInputStreamTestCase, apply: Callable[[BinaryIO], Tuple[any, bool]]):
+def verify(test_case: ConcatenatedInputStreamTestCase, apply: Callable[[BinaryIO], Tuple[any, bool]]):  # type: ignore[valid-type]
     """
     This method applies given function iteratively to both implementation under test
     and reference implementation of the stream, and verifies the result on each step is identical.
@@ -167,7 +167,7 @@ def verify_eof(buffer: BinaryIO):
     assert len(buffer.readlines(100)) == 0
 
 
-@pytest.mark.parametrize("test_case", test_cases, ids=ConcatenatedInputStreamTestCase.to_string)
+@pytest.mark.parametrize("test_case", test_cases, ids=ConcatenatedInputStreamTestCase.to_string)  # type: ignore[attr-defined]
 @pytest.mark.parametrize("limit", [-1, 0, 1, 3, 4, 5, 6, 10, 100, 1000])
 def test_read(config, test_case: ConcatenatedInputStreamTestCase, limit: int):
     def apply(buffer: BinaryIO):
@@ -182,7 +182,7 @@ def test_read(config, test_case: ConcatenatedInputStreamTestCase, limit: int):
     verify(test_case, apply)
 
 
-@pytest.mark.parametrize("test_case", test_cases, ids=ConcatenatedInputStreamTestCase.to_string)
+@pytest.mark.parametrize("test_case", test_cases, ids=ConcatenatedInputStreamTestCase.to_string)  # type: ignore[attr-defined]
 @pytest.mark.parametrize("limit", [-1, 0, 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 100, 1000])
 def test_read_line(config, test_case: ConcatenatedInputStreamTestCase, limit: int):
     def apply(buffer: BinaryIO):
@@ -193,7 +193,7 @@ def test_read_line(config, test_case: ConcatenatedInputStreamTestCase, limit: in
     verify(test_case, apply)
 
 
-@pytest.mark.parametrize("test_case", test_cases, ids=ConcatenatedInputStreamTestCase.to_string)
+@pytest.mark.parametrize("test_case", test_cases, ids=ConcatenatedInputStreamTestCase.to_string)  # type: ignore[attr-defined]
 @pytest.mark.parametrize("limit", [-1, 0, 1, 2, 3, 4, 5, 6, 9, 10, 11, 12, 100, 1000])
 def test_read_lines(config, test_case: ConcatenatedInputStreamTestCase, limit: int):
     def apply(buffer: BinaryIO):
@@ -204,7 +204,7 @@ def test_read_lines(config, test_case: ConcatenatedInputStreamTestCase, limit: i
     verify(test_case, apply)
 
 
-@pytest.mark.parametrize("test_case", test_cases, ids=ConcatenatedInputStreamTestCase.to_string)
+@pytest.mark.parametrize("test_case", test_cases, ids=ConcatenatedInputStreamTestCase.to_string)  # type: ignore[attr-defined]
 def test_iterator(config, test_case: ConcatenatedInputStreamTestCase):
     def apply(buffer: BinaryIO):
         try:
@@ -216,11 +216,11 @@ def test_iterator(config, test_case: ConcatenatedInputStreamTestCase):
     verify(test_case, apply)
 
 
-def seeks_to_string(seeks: [Tuple[int, int]]):
+def seeks_to_string(seeks: [Tuple[int, int]]):  # type: ignore[valid-type]
     ", ".join(list(map(lambda seek: f"Seek: offset={seek[0]}, whence={seek[1]}", seeks)))
 
 
-@pytest.mark.parametrize("test_case", test_cases, ids=ConcatenatedInputStreamTestCase.to_string)
+@pytest.mark.parametrize("test_case", test_cases, ids=ConcatenatedInputStreamTestCase.to_string)  # type: ignore[attr-defined]
 @pytest.mark.parametrize(
     "seeks",
     [
@@ -245,7 +245,7 @@ def test_seek(config, test_case: ConcatenatedInputStreamTestCase, seeks: List[Tu
         buf.seek(pos)
         return result
 
-    def safe_call(buf: BinaryIO, call: Callable[[BinaryIO], any]) -> (any, bool):
+    def safe_call(buf: BinaryIO, call: Callable[[BinaryIO], any]) -> (any, bool):  # type: ignore[syntax, valid-type]
         """
         Calls the provided function on the buffer and returns the result.
         It is a wrapper to handle exceptions gracefully.

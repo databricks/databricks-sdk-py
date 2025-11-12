@@ -1,4 +1,4 @@
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.errors import NotFound
 from databricks.sdk.mixins.files import (DbfsExt, _DbfsPath, _LocalPath,
@@ -14,7 +14,7 @@ def test_moving_dbfs_file_to_local_dir(config, tmp_path, mocker):
         return_value=FileInfo(path="a", is_dir=False, file_size=4),
     )
 
-    def fake_read(path: str, *, length: int = None, offset: int = None):
+    def fake_read(path: str, *, length: int = None, offset: int = None):  # type: ignore[assignment]
         assert path == "a"
         assert length == 1048576
         if not offset:

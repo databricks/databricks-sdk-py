@@ -1,4 +1,4 @@
-import requests
+import requests  # type: ignore[import-untyped]
 
 from databricks.sdk.errors import platform
 from databricks.sdk.errors.base import DatabricksError

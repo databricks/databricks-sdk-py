@@ -5,7 +5,7 @@ import pathlib
 import string
 import sys
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient
 from databricks.sdk.service.catalog import VolumeType

@@ -1,6 +1,6 @@
 from unittest.mock import create_autospec
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk import WorkspaceClient
 

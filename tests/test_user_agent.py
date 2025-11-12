@@ -1,6 +1,6 @@
 import os
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.version import __version__
 

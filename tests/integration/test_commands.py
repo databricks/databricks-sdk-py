@@ -1,4 +1,4 @@
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.core import DatabricksError
 

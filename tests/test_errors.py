@@ -3,8 +3,8 @@ import json
 from dataclasses import dataclass, field
 from typing import Any, List, Optional
 
-import pytest
-import requests
+import pytest  # type: ignore[import-not-found]
+import requests  # type: ignore[import-untyped]
 
 from databricks.sdk import errors
 from databricks.sdk.errors import details
@@ -47,7 +47,7 @@ def fake_valid_response(
     if error_code:
         body["error_code"] = error_code
     if len(details) > 0:
-        body["details"] = details
+        body["details"] = details  # type: ignore[assignment]
 
     return fake_response(method, status_code, json.dumps(body), path)
 
@@ -366,7 +366,7 @@ def test_get_api_error(test_case: TestCase):
     parser = errors._Parser()
 
     with pytest.raises(errors.DatabricksError) as e:
-        raise parser.get_api_error(test_case.response)
+        raise parser.get_api_error(test_case.response)  # type: ignore[misc]
 
     assert isinstance(e.value, test_case.want_err_type)
     assert str(e.value) == test_case.want_message

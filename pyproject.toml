@@ -45,6 +45,7 @@ dev = [
     "pycodestyle",
     "autoflake",
     "isort",
+    "mypy",
     "wheel",
     "ipython",
     "ipywidgets",
@@ -86,3 +87,21 @@ exclude = ["**/node_modules", "**/__pycache__"]
 reportMissingImports = true
 reportMissingTypeStubs = false
 pythonVersion = "3.7"
+
+[tool.mypy]
+strict = true
+python_version = "3.9"
+files = ["databricks", "tests"]
+
+# Don't type-check generated files
+[[tool.mypy.overrides]]
+module = [
+    "databricks.sdk.__init__",
+    "databricks.sdk.errors.overrides",
+    "databricks.sdk.errors.platform",
+    "databricks.sdk.service.*",
+    "tests.databricks.sdk.service.*",
+    "tests.generated.*",
+]
+ignore_errors = true
+follow_imports = "skip"

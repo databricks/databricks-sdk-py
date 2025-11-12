@@ -5,7 +5,7 @@ import random
 import string
 from datetime import datetime
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk import oauth, useragent
 from databricks.sdk.config import Config, with_product, with_user_agent_extra

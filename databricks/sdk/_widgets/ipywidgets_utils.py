@@ -1,7 +1,7 @@
 import typing
 
-from IPython.core.display_functions import display
-from ipywidgets.widgets import (ValueWidget, Widget, widget_box,
+from IPython.core.display_functions import display  # type: ignore[import-not-found]
+from ipywidgets.widgets import (ValueWidget, Widget, widget_box,  # type: ignore[import-not-found,import-untyped]
                                 widget_selection, widget_string)
 
 from .default_widgets_utils import WidgetUtils

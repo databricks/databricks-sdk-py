@@ -1,7 +1,7 @@
 from dataclasses import dataclass
 from urllib import parse
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 from ..environments import Cloud, get_environment_for_hostname
 from .platform import PermissionDenied

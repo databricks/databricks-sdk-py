@@ -2,7 +2,7 @@ import logging
 import os
 from typing import Optional
 
-import requests
+import requests  # type: ignore[import-untyped]
 
 logger = logging.getLogger("databricks.sdk")
 

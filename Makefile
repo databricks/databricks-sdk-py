@@ -24,6 +24,9 @@ lint:
 	pycodestyle databricks
 	autoflake --check-diff --quiet --recursive databricks
 
+mypy:
+	python -m mypy databricks tests
+
 test:
 	pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
 

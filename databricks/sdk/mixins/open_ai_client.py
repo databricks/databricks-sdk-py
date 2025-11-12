@@ -1,7 +1,7 @@
 import json as js
 from typing import Dict, Optional
 
-from requests import Response
+from requests import Response  # type: ignore[import-untyped]
 
 from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
                                             HttpRequestResponse,
@@ -13,7 +13,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
     # Using the HTTP Client to pass in the databricks authorization
     # This method will be called on every invocation, so when using with model serving will always get the refreshed token
     def _get_authorized_http_client(self):
-        import httpx
+        import httpx  # type: ignore[import-not-found]
 
         class BearerAuth(httpx.Auth):
 
@@ -67,7 +67,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             ... )
         """
         try:
-            from openai import OpenAI
+            from openai import OpenAI  # type: ignore[import-not-found]
         except Exception:
             raise ImportError(
                 "Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]`"
@@ -96,7 +96,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
 
     def get_langchain_chat_open_ai_client(self, model):
         try:
-            from langchain_openai import ChatOpenAI
+            from langchain_openai import ChatOpenAI  # type: ignore[import-not-found]
         except Exception:
             raise ImportError(
                 "Langchain Open AI is not installed. Please install the Databricks SDK with the following command `pip install databricks-sdk[openai]` and ensure you are using python>3.7"
@@ -109,15 +109,15 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             http_client=self._get_authorized_http_client(),
         )
 
-    def http_request(
+    def http_request(  # type: ignore[override]
         self,
         conn: str,
         method: ExternalFunctionRequestHttpMethod,
         path: str,
         *,
-        headers: Optional[Dict[str, str]] = None,
-        json: Optional[Dict[str, str]] = None,
-        params: Optional[Dict[str, str]] = None,
+        headers: Optional[Dict[str, str]] = None,  # type: ignore[override]
+        json: Optional[Dict[str, str]] = None,  # type: ignore[override]
+        params: Optional[Dict[str, str]] = None,  # type: ignore[override]
     ) -> Response:
         """Make external services call using the credentials stored in UC Connection.
         **NOTE:** Experimental: This API may change or be removed in a future release without warning.
@@ -164,7 +164,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
 
         # Read the content from the HttpRequestResponse object
         if hasattr(server_response, "contents") and hasattr(server_response.contents, "read"):
-            raw_content = server_response.contents.read()  # Read the bytes
+            raw_content = server_response.contents.read()  # type: ignore[union-attr]  # Read the bytes
         else:
             raise ValueError("Invalid response from the server.")
 

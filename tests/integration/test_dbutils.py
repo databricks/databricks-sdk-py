@@ -2,7 +2,7 @@ import base64
 import logging
 import os
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.errors import NotFound

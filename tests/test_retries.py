@@ -1,7 +1,7 @@
 from datetime import timedelta
 from typing import Any, Literal, Optional, Tuple, Type
 
-import pytest
+import pytest  # type: ignore[import-not-found]
 
 from databricks.sdk.errors import NotFound, ResourceDoesNotExist
 from databricks.sdk.retries import RetryError, poll, retried
@@ -257,7 +257,7 @@ def test_poll_behavior(
         call_count += 1
 
         if scenario == "success":
-            if call_count < attempts:
+            if call_count < attempts:  # type: ignore[operator]
                 return None, RetryError.continues(f"attempt {call_count}")
             return result_value, None
 
@@ -265,12 +265,12 @@ def test_poll_behavior(
             return None, RetryError.continues("retrying")
 
         elif scenario == "halt":
-            if call_count < attempts:
+            if call_count < attempts:  # type: ignore[operator]
                 return None, RetryError.continues("retrying")
             return None, RetryError.halt(ValueError(exception_msg))
 
         elif scenario == "unexpected":
-            if call_count < attempts:
+            if call_count < attempts:  # type: ignore[operator]
                 return None, RetryError.continues("retrying")
             raise RuntimeError(exception_msg)
 
@@ -286,10 +286,10 @@ def test_poll_behavior(
         with pytest.raises(exception_type) as exc_info:
             poll(fn, timeout=timedelta(seconds=timeout), clock=clock)
 
-        assert exception_msg in str(exc_info.value)
+        assert exception_msg in str(exc_info.value)  # type: ignore[operator]
         assert call_count >= 1
 
         if scenario == "timeout":
-            assert clock.time() >= min_time
+            assert clock.time() >= min_time  # type: ignore[operator]
         elif scenario in ("halt", "unexpected"):
             assert call_count == attempts

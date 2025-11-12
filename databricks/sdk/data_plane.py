@@ -22,7 +22,7 @@ class DataPlaneTokenSource:
     def __init__(self, token_exchange_host: str, cpts: Callable[[], Token], disable_async: Optional[bool] = True):
         self._cpts = cpts
         self._token_exchange_host = token_exchange_host
-        self._token_sources = {}
+        self._token_sources = {}  # type: ignore[var-annotated]
         self._disable_async = disable_async
         self._lock = threading.Lock()
 
