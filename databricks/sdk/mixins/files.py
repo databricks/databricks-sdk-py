@@ -964,6 +964,8 @@ class FilesExt(files.FilesAPI):
 
         cloud_session = self._create_cloud_provider_session()
         url_distributor = _PresignedUrlDistributor(lambda: self._create_download_url(remote_path))
+        # An event to indicate if any download chunk has succeeded. If any chunk succeeds, we do not fall back to Files API.
+        any_success = Event()
 
         def download_chunk(additional_headers: dict[str, str]) -> BinaryIO:
             retry_count = 0
@@ -982,10 +984,14 @@ class FilesExt(files.FilesAPI):
                     url_distributor.invalidate_url(version)
                     retry_count += 1
                     continue
-                elif raw_resp.status_code == 403:
+                elif raw_resp.status_code == 403 and not any_success.is_set():
                     raise FallbackToDownloadUsingFilesApi("Received 403 Forbidden from presigned URL")
+                elif not any_success.is_set():
+                    # For other errors, we raise a retryable exception to trigger retry logic.
+                    raise FallbackToDownloadUsingFilesApi(f"Received {raw_resp.status_code} from presigned URL")
 
                 raw_resp.raise_for_status()
+                any_success.set()
                 return BytesIO(raw_resp.content)
             raise ValueError("Exceeded maximum retries for downloading with presigned URL: URL expired too many times")
 
@@ -2404,16 +2410,8 @@ class FilesExt(files.FilesAPI):
             )
 
             return CreateDownloadUrlResponse.from_dict(raw_response)
-        except PermissionDenied as e:
-            if self._is_presigned_urls_disabled_error(e):
-                raise FallbackToDownloadUsingFilesApi(f"Presigned URLs are disabled")
-            else:
-                raise e from None
-        except InternalError as e:
-            if self._is_presigned_urls_network_zone_error(e):
-                raise FallbackToDownloadUsingFilesApi("Presigned URLs are not supported in the current network zone")
-            else:
-                raise e from None
+        except Exception as e:
+            raise FallbackToDownloadUsingFilesApi(f"Failed to create download URL: {e}") from e
 
     def _init_download_response_presigned_api(self, file_path: str, added_headers: dict[str, str]) -> DownloadResponse:
         """
@@ -2456,17 +2454,11 @@ class FilesExt(files.FilesAPI):
                 contents=_StreamingResponse(csp_response, self._config.files_ext_client_download_streaming_chunk_size),
             )
             return resp
-        elif csp_response.status_code == 403:
-            # We got 403 failure when downloading the file. This might happen due to Azure firewall enabled for the customer bucket.
-            # Let's fallback to using Files API which might be allowlisted to download.
-            raise FallbackToDownloadUsingFilesApi(f"Direct download forbidden: {csp_response.content}")
         else:
             message = (
                 f"Unsuccessful download. Response status: {csp_response.status_code}, body: {csp_response.content}"
             )
-            _LOG.warning(message)
-            mapped_error = _error_mapper(csp_response, {})
-            raise mapped_error or ValueError(message)
+            raise FallbackToDownloadUsingFilesApi(message)
 
     def _init_download_response_mode_csp_with_fallback(
         self, file_path: str, headers: dict[str, str], response_headers: list[str]

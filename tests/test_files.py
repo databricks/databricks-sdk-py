@@ -1066,14 +1066,14 @@ class PresignedUrlDownloadTestCase:
         PresignedUrlDownloadTestCase(
             name="Presigned URL download fails with 403",
             file_size=100 * 1024 * 1024,
-            expected_exception_type=PermissionDenied,
             custom_response_create_presigned_url=CustomResponse(code=403, only_invocation=1),
+            expected_download_api="files_api",
         ),
         PresignedUrlDownloadTestCase(
             name="Presigned URL download fails with 500 when creating presigned URL",
             file_size=100 * 1024 * 1024,
-            expected_exception_type=InternalError,
             custom_response_create_presigned_url=CustomResponse(code=500, only_invocation=1),
+            expected_download_api="files_api",
         ),
         PresignedUrlDownloadTestCase(
             name="Presigned URL download fails with 500 when downloading from URL",
