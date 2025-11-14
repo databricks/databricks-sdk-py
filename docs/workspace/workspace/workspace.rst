@@ -79,7 +79,7 @@
             
             notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            export_response = w.workspace.export(format=workspace.ExportFormat.SOURCE, path=notebook)
+            export_response = w.workspace.export_(format=workspace.ExportFormat.SOURCE, path=notebook)
 
         Exports an object or the contents of an entire directory.
 
@@ -111,7 +111,9 @@
         Gets the permission levels that a user can have on an object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
 
@@ -124,7 +126,9 @@
         parent objects or root object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
 
@@ -172,14 +176,14 @@
             
             w = WorkspaceClient()
             
-            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
             w.workspace.import_(
-                content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
+                path=notebook,
                 format=workspace.ImportFormat.SOURCE,
-                language=workspace.Language.SQL,
-                overwrite=true_,
-                path=notebook_path,
+                language=workspace.Language.PYTHON,
+                content=base64.b64encode(("# Databricks notebook source\nprint('hello from job')").encode()).decode(),
+                overwrite=True,
             )
 
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
@@ -223,14 +227,16 @@
 
         .. code-block::
 
+            import os
+            import time
+            
             from databricks.sdk import WorkspaceClient
             
             w = WorkspaceClient()
             
-            names = []
-            for i in w.workspace.list(f"/Users/{w.current_user.me().user_name}", recursive=True):
-                names.append(i.path)
-            assert len(names) > 0
+            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            
+            objects = w.workspace.list(path=os.path.dirname(notebook))
 
         List workspace objects
 
@@ -263,7 +269,9 @@
         object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
@@ -277,7 +285,9 @@
         parent objects or root object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)

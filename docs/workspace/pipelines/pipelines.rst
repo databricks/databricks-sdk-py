@@ -129,8 +129,8 @@
 
     .. py:method:: delete(pipeline_id: str)
 
-        Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
-        its tables. You cannot undo this action.
+        Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all
+        pipeline tables. Please reach out to Databricks support for assistance to undo this action.
 
         :param pipeline_id: str
 
@@ -344,7 +344,7 @@
         :returns: :class:`PipelinePermissions`
         
 
-    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], refresh_selection: Optional[List[str]], validate_only: Optional[bool]]) -> StartUpdateResponse
+    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], refresh_selection: Optional[List[str]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
 
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
@@ -361,6 +361,8 @@
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param rewind_spec: :class:`RewindSpec` (optional)
+          The information about the requested rewind operation. If specified this is a rewind mode update.
         :param validate_only: bool (optional)
           If true, this update only validates the correctness of pipeline source code but does not materialize
           or publish any datasets.

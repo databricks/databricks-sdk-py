@@ -1180,6 +1180,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
 
 class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState(Enum):
 
+    CREATE_FAILED = "CREATE_FAILED"
+    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
@@ -3825,6 +3827,8 @@ class NccAzurePrivateEndpointRule:
 
 class NccAzurePrivateEndpointRuleConnectionState(Enum):
 
+    CREATE_FAILED = "CREATE_FAILED"
+    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
@@ -4165,8 +4169,6 @@ class NccPrivateEndpointRule:
 
 class NccPrivateEndpointRulePrivateLinkConnectionState(Enum):
 
-    CREATE_FAILED = "CREATE_FAILED"
-    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"

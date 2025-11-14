@@ -171,7 +171,7 @@ class AwsAttributes:
     be of a form like "us-west-2a". The provided availability zone must be in the same region as the
     Databricks deployment. For example, "us-west-2a" is not a valid zone id if the Databricks
     deployment resides in the "us-east-1" region. This is an optional field at cluster creation, and
-    if not specified, a default zone will be used. If the zone specified is "auto", will try to
+    if not specified, the zone "auto" will be used. If the zone specified is "auto", will try to
     place cluster in a zone with high availability, and will retry placement in a different AZ if
     there is not enough capacity.
     
@@ -7112,7 +7112,6 @@ class TerminationReasonCode(Enum):
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
     DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
-    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
@@ -7191,8 +7190,6 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
-    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
-    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
@@ -7205,7 +7202,6 @@ class TerminationReasonCode(Enum):
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
-    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
     SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"

@@ -329,9 +329,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: LARGE
       :value: "LARGE"
 
-   .. py:attribute:: LIQUID
-      :value: "LIQUID"
-
    .. py:attribute:: MEDIUM
       :value: "MEDIUM"
 
