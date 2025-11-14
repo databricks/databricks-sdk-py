@@ -113,6 +113,9 @@ class Config:
     disable_experimental_files_api_client: bool = ConfigAttribute(
         env="DATABRICKS_DISABLE_EXPERIMENTAL_FILES_API_CLIENT"
     )
+    # TODO: Expose these via environment variables too.
+    scopes: str = ConfigAttribute()
+    authorization_details: str = ConfigAttribute()
 
     files_ext_client_download_streaming_chunk_size: int = 2 * 1024 * 1024  # 2 MiB
 

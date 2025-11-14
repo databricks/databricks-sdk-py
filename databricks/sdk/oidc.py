@@ -202,7 +202,7 @@ class DatabricksOidcTokenSource(oauth.TokenSource):
                 "subject_token": id_token.jwt,
                 "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
             },
-            scopes=["all-apis"],
+            scopes="all-apis",
             use_params=True,
             disable_async=self._disable_async,
         )
