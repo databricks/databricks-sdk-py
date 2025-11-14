@@ -190,7 +190,7 @@ def _fieldmask(d: str) -> FieldMask:
                 required_string="non_default_string",
                 required_struct={},
                 required_timestamp=_timestamp("2023-12-31T23:59:59Z"),
-                required_value=json.loads("{}"),
+                required_value=json.loads('{"key": "value"}'),
                 test_required_enum=TestEnum.TEST_ENUM_TWO,
             ),
             """{
@@ -198,6 +198,7 @@ def _fieldmask(d: str) -> FieldMask:
 				"required_int32": 42,
 				"required_int64": 1234567890123456789,
 				"required_bool": true,
+				"required_value": {"key": "value"},
 				"required_message": {},
 				"test_required_enum": "TEST_ENUM_TWO",
 				"required_duration": "7200s",

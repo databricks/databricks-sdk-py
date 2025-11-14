@@ -12,6 +12,7 @@
         of setting available via public APIs.
 
         :param name: str
+          Name of the setting
 
         :returns: :class:`Setting`
         
@@ -39,9 +40,12 @@
     .. py:method:: patch_public_workspace_setting(name: str, setting: Setting) -> Setting
 
         Patch a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for
-        list of setting available via public APIs at workspace level.
+        list of setting available via public APIs at workspace level. To determine the correct field to
+        include in a patch request, refer to the type field of the setting returned in the
+        :method:settingsv2/listworkspacesettingsmetadata response.
 
         :param name: str
+          Name of the setting
         :param setting: :class:`Setting`
 
         :returns: :class:`Setting`

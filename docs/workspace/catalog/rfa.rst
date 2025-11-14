@@ -4,12 +4,10 @@
 
 .. py:class:: RfaAPI
 
-    Request for Access enables customers to request access to and manage access request destinations for Unity
-    Catalog securables.
+    Request for Access enables users to request access for Unity Catalog securables.
 
-    These APIs provide a standardized way to update, get, and request to access request destinations.
-    Fine-grained authorization ensures that only users with appropriate permissions can manage access request
-    destinations.
+    These APIs provide a standardized way for securable owners (or users with MANAGE privileges) to manage
+    access request destinations.
 
     .. py:method:: batch_create_access_requests( [, requests: Optional[List[CreateAccessRequest]]]) -> BatchCreateAccessRequestsResponse
 

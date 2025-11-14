@@ -214,9 +214,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION
       :value: "INVALID_CERTIFIED_ANSWER_IDENTIFIER_EXCEPTION"
 
-   .. py:attribute:: INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION
-      :value: "INVALID_CHAT_COMPLETION_ARGUMENTS_JSON_EXCEPTION"
-
    .. py:attribute:: INVALID_CHAT_COMPLETION_JSON_EXCEPTION
       :value: "INVALID_CHAT_COMPLETION_JSON_EXCEPTION"
 
@@ -384,6 +381,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: TextAttachment
    :members:
    :undoc-members:
+
+.. py:class:: TextAttachmentPurpose
+
+   Purpose/intent of a text attachment
+
+   .. py:attribute:: FOLLOW_UP_QUESTION
+      :value: "FOLLOW_UP_QUESTION"
 
 .. autoclass:: TrashDashboardResponse
    :members:

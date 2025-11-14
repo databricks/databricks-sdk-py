@@ -2658,7 +2658,9 @@ class WorkspaceAPI:
         """Gets the permission levels that a user can have on an object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
 
@@ -2681,7 +2683,9 @@ class WorkspaceAPI:
         parent objects or root object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
 
@@ -2840,7 +2844,9 @@ class WorkspaceAPI:
         object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
@@ -2872,7 +2878,9 @@ class WorkspaceAPI:
         parent objects or root object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)

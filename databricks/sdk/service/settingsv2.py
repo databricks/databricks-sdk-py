@@ -486,39 +486,72 @@ class RestrictWorkspaceAdminsMessageStatus(Enum):
 @dataclass
 class Setting:
     aibi_dashboard_embedding_access_policy: Optional[AibiDashboardEmbeddingAccessPolicy] = None
+    """Setting value for aibi_dashboard_embedding_access_policy setting. This is the setting value set
+    by consumers, check effective_aibi_dashboard_embedding_access_policy for final setting value."""
 
     aibi_dashboard_embedding_approved_domains: Optional[AibiDashboardEmbeddingApprovedDomains] = None
+    """Setting value for aibi_dashboard_embedding_approved_domains setting. This is the setting value
+    set by consumers, check effective_aibi_dashboard_embedding_approved_domains for final setting
+    value."""
 
     automatic_cluster_update_workspace: Optional[ClusterAutoRestartMessage] = None
+    """Setting value for automatic_cluster_update_workspace setting. This is the setting value set by
+    consumers, check effective_automatic_cluster_update_workspace for final setting value."""
 
     boolean_val: Optional[BooleanMessage] = None
+    """Setting value for boolean type setting. This is the setting value set by consumers, check
+    effective_boolean_val for final setting value."""
 
     effective_aibi_dashboard_embedding_access_policy: Optional[AibiDashboardEmbeddingAccessPolicy] = None
+    """Effective setting value for aibi_dashboard_embedding_access_policy setting. This is the final
+    effective value of setting. To set a value use aibi_dashboard_embedding_access_policy."""
 
     effective_aibi_dashboard_embedding_approved_domains: Optional[AibiDashboardEmbeddingApprovedDomains] = None
+    """Effective setting value for aibi_dashboard_embedding_approved_domains setting. This is the final
+    effective value of setting. To set a value use aibi_dashboard_embedding_approved_domains."""
 
     effective_automatic_cluster_update_workspace: Optional[ClusterAutoRestartMessage] = None
+    """Effective setting value for automatic_cluster_update_workspace setting. This is the final
+    effective value of setting. To set a value use automatic_cluster_update_workspace."""
 
     effective_boolean_val: Optional[BooleanMessage] = None
+    """Effective setting value for boolean type setting. This is the final effective value of setting.
+    To set a value use boolean_val."""
 
     effective_integer_val: Optional[IntegerMessage] = None
+    """Effective setting value for integer type setting. This is the final effective value of setting.
+    To set a value use integer_val."""
 
     effective_personal_compute: Optional[PersonalComputeMessage] = None
+    """Effective setting value for personal_compute setting. This is the final effective value of
+    setting. To set a value use personal_compute."""
 
     effective_restrict_workspace_admins: Optional[RestrictWorkspaceAdminsMessage] = None
+    """Effective setting value for restrict_workspace_admins setting. This is the final effective value
+    of setting. To set a value use restrict_workspace_admins."""
 
     effective_string_val: Optional[StringMessage] = None
+    """Effective setting value for string type setting. This is the final effective value of setting.
+    To set a value use string_val."""
 
     integer_val: Optional[IntegerMessage] = None
+    """Setting value for integer type setting. This is the setting value set by consumers, check
+    effective_integer_val for final setting value."""
 
     name: Optional[str] = None
     """Name of the setting."""
 
     personal_compute: Optional[PersonalComputeMessage] = None
+    """Setting value for personal_compute setting. This is the setting value set by consumers, check
+    effective_personal_compute for final setting value."""
 
     restrict_workspace_admins: Optional[RestrictWorkspaceAdminsMessage] = None
+    """Setting value for restrict_workspace_admins setting. This is the setting value set by consumers,
+    check effective_restrict_workspace_admins for final setting value."""
 
     string_val: Optional[StringMessage] = None
+    """Setting value for string type setting. This is the setting value set by consumers, check
+    effective_string_val for final setting value."""
 
     def as_dict(self) -> dict:
         """Serializes the Setting into a dictionary suitable for use as a JSON request body."""
@@ -658,7 +691,8 @@ class SettingsMetadata:
     """Name of the setting."""
 
     type: Optional[str] = None
-    """Type of the setting. To set this setting, the value sent must match this type."""
+    """Sample message depicting the type of the setting. To set this setting, the value sent must match
+    this type."""
 
     def as_dict(self) -> dict:
         """Serializes the SettingsMetadata into a dictionary suitable for use as a JSON request body."""
@@ -786,7 +820,9 @@ class AccountSettingsV2API:
 
     def patch_public_account_setting(self, name: str, setting: Setting) -> Setting:
         """Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of
-        setting available via public APIs at account level.
+        setting available via public APIs at account level. To determine the correct field to include in a
+        patch request, refer to the type field of the setting returned in the
+        :method:settingsv2/listaccountsettingsmetadata response.
 
         :param name: str
         :param setting: :class:`Setting`
@@ -817,6 +853,7 @@ class WorkspaceSettingsV2API:
         of setting available via public APIs.
 
         :param name: str
+          Name of the setting
 
         :returns: :class:`Setting`
         """
@@ -869,9 +906,12 @@ class WorkspaceSettingsV2API:
 
     def patch_public_workspace_setting(self, name: str, setting: Setting) -> Setting:
         """Patch a setting value at workspace level. See :method:settingsv2/listworkspacesettingsmetadata for
-        list of setting available via public APIs at workspace level.
+        list of setting available via public APIs at workspace level. To determine the correct field to
+        include in a patch request, refer to the type field of the setting returned in the
+        :method:settingsv2/listworkspacesettingsmetadata response.
 
         :param name: str
+          Name of the setting
         :param setting: :class:`Setting`
 
         :returns: :class:`Setting`

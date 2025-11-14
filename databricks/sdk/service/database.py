@@ -824,6 +824,9 @@ class NewPipelineSpec:
     """Custom fields that user can set for pipeline while creating SyncedDatabaseTable. Note that other
     fields of pipeline are still inferred by table def internally"""
 
+    budget_policy_id: Optional[str] = None
+    """Budget policy to set on the newly created pipeline."""
+
     storage_catalog: Optional[str] = None
     """This field needs to be specified if the destination catalog is a managed postgres catalog.
     
@@ -839,6 +842,8 @@ class NewPipelineSpec:
     def as_dict(self) -> dict:
         """Serializes the NewPipelineSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -848,6 +853,8 @@ class NewPipelineSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the NewPipelineSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -857,7 +864,11 @@ class NewPipelineSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> NewPipelineSpec:
         """Deserializes the NewPipelineSpec from a dictionary."""
-        return cls(storage_catalog=d.get("storage_catalog", None), storage_schema=d.get("storage_schema", None))
+        return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            storage_catalog=d.get("storage_catalog", None),
+            storage_schema=d.get("storage_schema", None),
+        )
 
 
 class ProvisioningInfoState(Enum):

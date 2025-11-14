@@ -279,7 +279,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 47
+   Next Id: 48
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -304,9 +304,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ORACLE
       :value: "ORACLE"
-
-   .. py:attribute:: PALANTIR
-      :value: "PALANTIR"
 
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
@@ -1500,7 +1497,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271
+   Latest kind: CONNECTION_SLACK_OAUTH_U2M_MAPPING = 272; Next id:273
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -1603,9 +1600,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_FOREIGN_ORACLE
       :value: "TABLE_FOREIGN_ORACLE"
-
-   .. py:attribute:: TABLE_FOREIGN_PALANTIR
-      :value: "TABLE_FOREIGN_PALANTIR"
 
    .. py:attribute:: TABLE_FOREIGN_POSTGRESQL
       :value: "TABLE_FOREIGN_POSTGRESQL"

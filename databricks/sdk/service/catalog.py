@@ -23,15 +23,15 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class AccessRequestDestinations:
-    destinations: List[NotificationDestination]
-    """The access request destinations for the securable."""
-
     securable: Securable
     """The securable for which the access request destinations are being retrieved."""
 
     are_any_destinations_hidden: Optional[bool] = None
     """Indicates whether any destinations are hidden from the caller due to a lack of permissions. This
     value is true if the caller does not have permission to see all destinations."""
+
+    destinations: Optional[List[NotificationDestination]] = None
+    """The access request destinations for the securable."""
 
     def as_dict(self) -> dict:
         """Serializes the AccessRequestDestinations into a dictionary suitable for use as a JSON request body."""
@@ -1740,7 +1740,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 47"""
+    """Next Id: 48"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -1750,7 +1750,6 @@ class ConnectionType(Enum):
     HTTP = "HTTP"
     MYSQL = "MYSQL"
     ORACLE = "ORACLE"
-    PALANTIR = "PALANTIR"
     POSTGRESQL = "POSTGRESQL"
     POWER_BI = "POWER_BI"
     REDSHIFT = "REDSHIFT"
@@ -8745,7 +8744,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271"""
+    """Latest kind: CONNECTION_SLACK_OAUTH_U2M_MAPPING = 272; Next id:273"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -8787,7 +8786,6 @@ class SecurableKind(Enum):
     TABLE_FOREIGN_MYSQL = "TABLE_FOREIGN_MYSQL"
     TABLE_FOREIGN_NETSUITE = "TABLE_FOREIGN_NETSUITE"
     TABLE_FOREIGN_ORACLE = "TABLE_FOREIGN_ORACLE"
-    TABLE_FOREIGN_PALANTIR = "TABLE_FOREIGN_PALANTIR"
     TABLE_FOREIGN_POSTGRESQL = "TABLE_FOREIGN_POSTGRESQL"
     TABLE_FOREIGN_REDSHIFT = "TABLE_FOREIGN_REDSHIFT"
     TABLE_FOREIGN_SALESFORCE = "TABLE_FOREIGN_SALESFORCE"
@@ -14650,12 +14648,10 @@ class ResourceQuotasAPI:
 
 
 class RfaAPI:
-    """Request for Access enables customers to request access to and manage access request destinations for Unity
-    Catalog securables.
+    """Request for Access enables users to request access for Unity Catalog securables.
 
-    These APIs provide a standardized way to update, get, and request to access request destinations.
-    Fine-grained authorization ensures that only users with appropriate permissions can manage access request
-    destinations."""
+    These APIs provide a standardized way for securable owners (or users with MANAGE privileges) to manage
+    access request destinations."""
 
     def __init__(self, api_client):
         self._api = api_client
