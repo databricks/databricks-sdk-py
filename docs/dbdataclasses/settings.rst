@@ -208,6 +208,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState
 
+   .. py:attribute:: CREATE_FAILED
+      :value: "CREATE_FAILED"
+
+   .. py:attribute:: CREATING
+      :value: "CREATING"
+
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"
 
@@ -601,6 +607,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: NccAzurePrivateEndpointRuleConnectionState
 
+   .. py:attribute:: CREATE_FAILED
+      :value: "CREATE_FAILED"
+
+   .. py:attribute:: CREATING
+      :value: "CREATING"
+
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"
 
@@ -640,12 +652,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: NccPrivateEndpointRulePrivateLinkConnectionState
-
-   .. py:attribute:: CREATE_FAILED
-      :value: "CREATE_FAILED"
-
-   .. py:attribute:: CREATING
-      :value: "CREATING"
 
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"

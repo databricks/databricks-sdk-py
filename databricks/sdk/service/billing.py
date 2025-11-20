@@ -1428,6 +1428,12 @@ class UpdateBudgetConfigurationResponse:
         return cls(budget=_from_dict(d, "budget", BudgetConfiguration))
 
 
+class UsageDashboardMajorVersion(Enum):
+
+    USAGE_DASHBOARD_MAJOR_VERSION_1 = "USAGE_DASHBOARD_MAJOR_VERSION_1"
+    USAGE_DASHBOARD_MAJOR_VERSION_2 = "USAGE_DASHBOARD_MAJOR_VERSION_2"
+
+
 class UsageDashboardType(Enum):
 
     USAGE_DASHBOARD_TYPE_GLOBAL = "USAGE_DASHBOARD_TYPE_GLOBAL"
@@ -2023,13 +2029,19 @@ class UsageDashboardsAPI:
         self._api = api_client
 
     def create(
-        self, *, dashboard_type: Optional[UsageDashboardType] = None, workspace_id: Optional[int] = None
+        self,
+        *,
+        dashboard_type: Optional[UsageDashboardType] = None,
+        major_version: Optional[UsageDashboardMajorVersion] = None,
+        workspace_id: Optional[int] = None,
     ) -> CreateBillingUsageDashboardResponse:
         """Create a usage dashboard specified by workspaceId, accountId, and dashboard type.
 
         :param dashboard_type: :class:`UsageDashboardType` (optional)
           Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage
           dashboard shows usage data for all workspaces in the account.
+        :param major_version: :class:`UsageDashboardMajorVersion` (optional)
+          The major version of the usage dashboard template to use. Defaults to VERSION_1.
         :param workspace_id: int (optional)
           The workspace ID of the workspace in which the usage dashboard is created.
 
@@ -2039,6 +2051,8 @@ class UsageDashboardsAPI:
         body = {}
         if dashboard_type is not None:
             body["dashboard_type"] = dashboard_type.value
+        if major_version is not None:
+            body["major_version"] = major_version.value
         if workspace_id is not None:
             body["workspace_id"] = workspace_id
         headers = {

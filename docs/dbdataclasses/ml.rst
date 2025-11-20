@@ -66,7 +66,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AuthConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: BatchCreateMaterializedFeaturesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ColumnIdentifier
    :members:
    :undoc-members:
 
@@ -425,6 +433,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: KafkaConfig
+   :members:
+   :undoc-members:
+
+.. autoclass:: KafkaSource
+   :members:
+   :undoc-members:
+
 .. autoclass:: LineageContext
    :members:
    :undoc-members:
@@ -446,6 +462,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListFeaturesResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListKafkaConfigsResponse
    :members:
    :undoc-members:
 
@@ -601,6 +621,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: OnlineStore
+   :members:
+   :undoc-members:
+
+.. autoclass:: OnlineStoreConfig
    :members:
    :undoc-members:
 
@@ -840,6 +864,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SchemaConfig
+   :members:
+   :undoc-members:
+
 .. autoclass:: SearchExperimentsResponse
    :members:
    :undoc-members:
@@ -906,6 +934,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: READY
       :value: "READY"
+
+.. autoclass:: SubscriptionMode
+   :members:
+   :undoc-members:
 
 .. autoclass:: TestRegistryWebhookResponse
    :members:

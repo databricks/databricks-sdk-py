@@ -134,16 +134,24 @@ class Value:
 
 
 class TagPoliciesAPI:
-    """The Tag Policy API allows you to manage policies for governed tags in Databricks. Permissions for tag
-    policies can be managed using the [Account Access Control Proxy API].
+    """The Tag Policy API allows you to manage policies for governed tags in Databricks. For Terraform usage, see
+    the [Tag Policy Terraform documentation]. Permissions for tag policies can be managed using the [Account
+    Access Control Proxy API].
 
-    [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy"""
+    [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+    [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
+    """
 
     def __init__(self, api_client):
         self._api = api_client
 
     def create_tag_policy(self, tag_policy: TagPolicy) -> TagPolicy:
-        """Creates a new tag policy, making the associated tag key governed.
+        """Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the [Tag
+        Policy Terraform documentation]. To manage permissions for tag policies, use the [Account Access
+        Control Proxy API].
+
+        [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+        [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
 
         :param tag_policy: :class:`TagPolicy`
 
@@ -160,7 +168,10 @@ class TagPoliciesAPI:
         return TagPolicy.from_dict(res)
 
     def delete_tag_policy(self, tag_key: str):
-        """Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned.
+        """Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned. For
+        Terraform usage, see the [Tag Policy Terraform documentation].
+
+        [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
 
         :param tag_key: str
 
@@ -174,7 +185,12 @@ class TagPoliciesAPI:
         self._api.do("DELETE", f"/api/2.1/tag-policies/{tag_key}", headers=headers)
 
     def get_tag_policy(self, tag_key: str) -> TagPolicy:
-        """Gets a single tag policy by its associated governed tag's key.
+        """Gets a single tag policy by its associated governed tag's key. For Terraform usage, see the [Tag
+        Policy Terraform documentation]. To list granted permissions for tag policies, use the [Account Access
+        Control Proxy API].
+
+        [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+        [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policy
 
         :param tag_key: str
 
@@ -191,7 +207,12 @@ class TagPoliciesAPI:
     def list_tag_policies(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[TagPolicy]:
-        """Lists the tag policies for all governed tags in the account.
+        """Lists the tag policies for all governed tags in the account. For Terraform usage, see the [Tag Policy
+        Terraform documentation]. To list granted permissions for tag policies, use the [Account Access
+        Control Proxy API].
+
+        [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+        [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policies
 
         :param page_size: int (optional)
           The maximum number of results to return in this request. Fewer results may be returned than
@@ -222,7 +243,12 @@ class TagPoliciesAPI:
             query["page_token"] = json["next_page_token"]
 
     def update_tag_policy(self, tag_key: str, tag_policy: TagPolicy, update_mask: str) -> TagPolicy:
-        """Updates an existing tag policy for a single governed tag.
+        """Updates an existing tag policy for a single governed tag. For Terraform usage, see the [Tag Policy
+        Terraform documentation]. To manage permissions for tag policies, use the [Account Access Control
+        Proxy API].
+
+        [Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy
+        [Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy
 
         :param tag_key: str
         :param tag_policy: :class:`TagPolicy`

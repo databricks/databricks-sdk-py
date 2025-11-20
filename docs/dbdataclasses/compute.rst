@@ -1216,9 +1216,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DOCKER_INVALID_OS_EXCEPTION
       :value: "DOCKER_INVALID_OS_EXCEPTION"
 
-   .. py:attribute:: DRIVER_DNS_RESOLUTION_FAILURE
-      :value: "DRIVER_DNS_RESOLUTION_FAILURE"
-
    .. py:attribute:: DRIVER_EVICTION
       :value: "DRIVER_EVICTION"
 
@@ -1441,12 +1438,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: NFS_MOUNT_FAILURE
       :value: "NFS_MOUNT_FAILURE"
 
-   .. py:attribute:: NO_ACTIVATED_K8S
-      :value: "NO_ACTIVATED_K8S"
-
-   .. py:attribute:: NO_ACTIVATED_K8S_TESTING_TAG
-      :value: "NO_ACTIVATED_K8S_TESTING_TAG"
-
    .. py:attribute:: NO_MATCHED_K8S
       :value: "NO_MATCHED_K8S"
 
@@ -1482,9 +1473,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SECRET_RESOLUTION_ERROR
       :value: "SECRET_RESOLUTION_ERROR"
-
-   .. py:attribute:: SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION
-      :value: "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
 
    .. py:attribute:: SECURITY_DAEMON_REGISTRATION_EXCEPTION
       :value: "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
