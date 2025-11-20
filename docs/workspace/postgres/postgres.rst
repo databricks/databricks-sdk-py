@@ -23,6 +23,15 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: create_database_catalog(catalog: DatabaseCatalog) -> DatabaseCatalog
+
+        Create a Database Catalog.
+
+        :param catalog: :class:`DatabaseCatalog`
+
+        :returns: :class:`DatabaseCatalog`
+        
+
     .. py:method:: create_database_endpoint(parent: str, database_endpoint: DatabaseEndpoint [, database_endpoint_id: Optional[str]]) -> CreateDatabaseEndpointOperation
 
         Create a Database Endpoint.

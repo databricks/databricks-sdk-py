@@ -849,7 +849,7 @@ class NewPipelineSpec:
     fields of pipeline are still inferred by table def internally"""
 
     budget_policy_id: Optional[str] = None
-    """Budget policy of this pipeline."""
+    """Budget policy to set on the newly created pipeline."""
 
     storage_catalog: Optional[str] = None
     """This field needs to be specified if the destination catalog is a managed postgres catalog.

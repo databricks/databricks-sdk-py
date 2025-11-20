@@ -993,6 +993,12 @@ class GenieSpace:
     description: Optional[str] = None
     """Description of the Genie Space"""
 
+    serialized_space: Optional[str] = None
+    """The contents of the Genie Space in serialized string form. This field is excluded in List Genie
+    spaces responses. Use the [Get Genie Space](:method:genie/getspace) API to retrieve an example
+    response, which includes the `serialized_space` field. This field provides the structure of the
+    JSON string that represents the space's layout and components."""
+
     warehouse_id: Optional[str] = None
     """Warehouse associated with the Genie Space"""
 
@@ -1001,6 +1007,8 @@ class GenieSpace:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.serialized_space is not None:
+            body["serialized_space"] = self.serialized_space
         if self.space_id is not None:
             body["space_id"] = self.space_id
         if self.title is not None:
@@ -1014,6 +1022,8 @@ class GenieSpace:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.serialized_space is not None:
+            body["serialized_space"] = self.serialized_space
         if self.space_id is not None:
             body["space_id"] = self.space_id
         if self.title is not None:
@@ -1027,6 +1037,7 @@ class GenieSpace:
         """Deserializes the GenieSpace from a dictionary."""
         return cls(
             description=d.get("description", None),
+            serialized_space=d.get("serialized_space", None),
             space_id=d.get("space_id", None),
             title=d.get("title", None),
             warehouse_id=d.get("warehouse_id", None),
@@ -2227,7 +2238,10 @@ class GenieAPI:
         :param warehouse_id: str
           Warehouse to associate with the new space
         :param serialized_space: str
-          Serialized export model for the space contents
+          The contents of the Genie Space in serialized string form. Use the [Get Genie
+          Space](:method:genie/getspace) API to retrieve an example response, which includes the
+          `serialized_space` field. This field provides the structure of the JSON string that represents the
+          space's layout and components.
         :param description: str (optional)
           Optional description
         :param parent_path: str (optional)
@@ -2531,20 +2545,26 @@ class GenieAPI:
         )
         return GenieGetMessageQueryResultResponse.from_dict(res)
 
-    def get_space(self, space_id: str) -> GenieSpace:
+    def get_space(self, space_id: str, *, include_serialized_space: Optional[bool] = None) -> GenieSpace:
         """Get details of a Genie Space.
 
         :param space_id: str
           The ID associated with the Genie space
+        :param include_serialized_space: bool (optional)
+          Whether to include the serialized space export in the response. Requires at least CAN EDIT
+          permission on the space.
 
         :returns: :class:`GenieSpace`
         """
 
+        query = {}
+        if include_serialized_space is not None:
+            query["include_serialized_space"] = include_serialized_space
         headers = {
             "Accept": "application/json",
         }
 
-        res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", headers=headers)
+        res = self._api.do("GET", f"/api/2.0/genie/spaces/{space_id}", query=query, headers=headers)
         return GenieSpace.from_dict(res)
 
     def list_conversation_messages(
@@ -2751,7 +2771,10 @@ class GenieAPI:
         :param description: str (optional)
           Optional description
         :param serialized_space: str (optional)
-          Serialized export model for the space contents (full replacement)
+          The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie
+          Space](:method:genie/getspace) API to retrieve an example response, which includes the
+          `serialized_space` field. This field provides the structure of the JSON string that represents the
+          space's layout and components.
         :param title: str (optional)
           Optional title override
         :param warehouse_id: str (optional)

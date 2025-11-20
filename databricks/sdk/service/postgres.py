@@ -169,6 +169,71 @@ class DatabaseBranchOperationMetadata:
 
 
 @dataclass
+class DatabaseCatalog:
+    name: str
+    """The name of the catalog in UC."""
+
+    database_name: str
+    """The name of the database (in a instance) associated with the catalog."""
+
+    create_database_if_not_exists: Optional[bool] = None
+
+    database_branch_id: Optional[str] = None
+    """The branch_id of the database branch associated with the catalog."""
+
+    database_project_id: Optional[str] = None
+    """The project_id of the database project associated with the catalog."""
+
+    uid: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseCatalog into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_database_if_not_exists is not None:
+            body["create_database_if_not_exists"] = self.create_database_if_not_exists
+        if self.database_branch_id is not None:
+            body["database_branch_id"] = self.database_branch_id
+        if self.database_name is not None:
+            body["database_name"] = self.database_name
+        if self.database_project_id is not None:
+            body["database_project_id"] = self.database_project_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.uid is not None:
+            body["uid"] = self.uid
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseCatalog into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_database_if_not_exists is not None:
+            body["create_database_if_not_exists"] = self.create_database_if_not_exists
+        if self.database_branch_id is not None:
+            body["database_branch_id"] = self.database_branch_id
+        if self.database_name is not None:
+            body["database_name"] = self.database_name
+        if self.database_project_id is not None:
+            body["database_project_id"] = self.database_project_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.uid is not None:
+            body["uid"] = self.uid
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseCatalog:
+        """Deserializes the DatabaseCatalog from a dictionary."""
+        return cls(
+            create_database_if_not_exists=d.get("create_database_if_not_exists", None),
+            database_branch_id=d.get("database_branch_id", None),
+            database_name=d.get("database_name", None),
+            database_project_id=d.get("database_project_id", None),
+            name=d.get("name", None),
+            uid=d.get("uid", None),
+        )
+
+
+@dataclass
 class DatabaseEndpoint:
     autoscaling_limit_max_cu: Optional[float] = None
     """The maximum number of Compute Units."""
@@ -1051,6 +1116,23 @@ class PostgresAPI:
         res = self._api.do("POST", f"/api/2.0/postgres/{parent}/branches", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return CreateDatabaseBranchOperation(self, operation)
+
+    def create_database_catalog(self, catalog: DatabaseCatalog) -> DatabaseCatalog:
+        """Create a Database Catalog.
+
+        :param catalog: :class:`DatabaseCatalog`
+
+        :returns: :class:`DatabaseCatalog`
+        """
+
+        body = catalog.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/postgres/catalogs", body=body, headers=headers)
+        return DatabaseCatalog.from_dict(res)
 
     def create_database_endpoint(
         self, parent: str, database_endpoint: DatabaseEndpoint, *, database_endpoint_id: Optional[str] = None

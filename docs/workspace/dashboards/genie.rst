@@ -36,7 +36,10 @@
         :param warehouse_id: str
           Warehouse to associate with the new space
         :param serialized_space: str
-          Serialized export model for the space contents
+          The contents of the Genie Space in serialized string form. Use the [Get Genie
+          Space](:method:genie/getspace) API to retrieve an example response, which includes the
+          `serialized_space` field. This field provides the structure of the JSON string that represents the
+          space's layout and components.
         :param description: str (optional)
           Optional description
         :param parent_path: str (optional)
@@ -213,12 +216,15 @@
         :returns: :class:`GenieGetMessageQueryResultResponse`
         
 
-    .. py:method:: get_space(space_id: str) -> GenieSpace
+    .. py:method:: get_space(space_id: str [, include_serialized_space: Optional[bool]]) -> GenieSpace
 
         Get details of a Genie Space.
 
         :param space_id: str
           The ID associated with the Genie space
+        :param include_serialized_space: bool (optional)
+          Whether to include the serialized space export in the response. Requires at least CAN EDIT
+          permission on the space.
 
         :returns: :class:`GenieSpace`
         
@@ -322,7 +328,10 @@
         :param description: str (optional)
           Optional description
         :param serialized_space: str (optional)
-          Serialized export model for the space contents (full replacement)
+          The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie
+          Space](:method:genie/getspace) API to retrieve an example response, which includes the
+          `serialized_space` field. This field provides the structure of the JSON string that represents the
+          space's layout and components.
         :param title: str (optional)
           Optional title override
         :param warehouse_id: str (optional)

@@ -30,6 +30,8 @@ class AccessRequestDestinations:
     """Indicates whether any destinations are hidden from the caller due to a lack of permissions. This
     value is true if the caller does not have permission to see all destinations."""
 
+    destination_source_securable: Optional[Securable] = None
+
     destinations: Optional[List[NotificationDestination]] = None
     """The access request destinations for the securable."""
 
@@ -38,6 +40,8 @@ class AccessRequestDestinations:
         body = {}
         if self.are_any_destinations_hidden is not None:
             body["are_any_destinations_hidden"] = self.are_any_destinations_hidden
+        if self.destination_source_securable:
+            body["destination_source_securable"] = self.destination_source_securable.as_dict()
         if self.destinations:
             body["destinations"] = [v.as_dict() for v in self.destinations]
         if self.securable:
@@ -49,6 +53,8 @@ class AccessRequestDestinations:
         body = {}
         if self.are_any_destinations_hidden is not None:
             body["are_any_destinations_hidden"] = self.are_any_destinations_hidden
+        if self.destination_source_securable:
+            body["destination_source_securable"] = self.destination_source_securable
         if self.destinations:
             body["destinations"] = self.destinations
         if self.securable:
@@ -60,6 +66,7 @@ class AccessRequestDestinations:
         """Deserializes the AccessRequestDestinations from a dictionary."""
         return cls(
             are_any_destinations_hidden=d.get("are_any_destinations_hidden", None),
+            destination_source_securable=_from_dict(d, "destination_source_securable", Securable),
             destinations=_repeated_dict(d, "destinations", NotificationDestination),
             securable=_from_dict(d, "securable", Securable),
         )
@@ -8906,7 +8913,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_SLACK_OAUTH_U2M_MAPPING = 272; Next id:273"""
+    """Latest kind: SECRET_EXTERNAL_AWS_SECRETS_MANAGER = 273; Next id:274"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
