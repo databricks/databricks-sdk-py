@@ -35,20 +35,54 @@ class AggregationGranularity(Enum):
 class AnomalyDetectionConfig:
     """Anomaly Detection Configurations."""
 
+    anomaly_detection_workflow_id: Optional[int] = None
+    """The id of the workflow that detects the anomaly. This field will only be returned in the
+    Get/Update response, if the request comes from the workspace where this anomaly detection job is
+    created."""
+
+    job_type: Optional[AnomalyDetectionJobType] = None
+    """The type of the last run of the workflow."""
+
+    publish_health_indicator: Optional[bool] = None
+    """If the health indicator should be shown."""
+
     def as_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.anomaly_detection_workflow_id is not None:
+            body["anomaly_detection_workflow_id"] = self.anomaly_detection_workflow_id
+        if self.job_type is not None:
+            body["job_type"] = self.job_type.value
+        if self.publish_health_indicator is not None:
+            body["publish_health_indicator"] = self.publish_health_indicator
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.anomaly_detection_workflow_id is not None:
+            body["anomaly_detection_workflow_id"] = self.anomaly_detection_workflow_id
+        if self.job_type is not None:
+            body["job_type"] = self.job_type
+        if self.publish_health_indicator is not None:
+            body["publish_health_indicator"] = self.publish_health_indicator
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AnomalyDetectionConfig:
         """Deserializes the AnomalyDetectionConfig from a dictionary."""
-        return cls()
+        return cls(
+            anomaly_detection_workflow_id=d.get("anomaly_detection_workflow_id", None),
+            job_type=_enum(d, "job_type", AnomalyDetectionJobType),
+            publish_health_indicator=d.get("publish_health_indicator", None),
+        )
+
+
+class AnomalyDetectionJobType(Enum):
+    """Anomaly Detection job type."""
+
+    ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN = "ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN"
+    ANOMALY_DETECTION_JOB_TYPE_NORMAL = "ANOMALY_DETECTION_JOB_TYPE_NORMAL"
 
 
 @dataclass
@@ -430,6 +464,9 @@ class InferenceLogConfig:
     label_column: Optional[str] = None
     """Column for the label."""
 
+    prediction_probability_column: Optional[str] = None
+    """Column for prediction probabilities"""
+
     def as_dict(self) -> dict:
         """Serializes the InferenceLogConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -441,6 +478,8 @@ class InferenceLogConfig:
             body["model_id_column"] = self.model_id_column
         if self.prediction_column is not None:
             body["prediction_column"] = self.prediction_column
+        if self.prediction_probability_column is not None:
+            body["prediction_probability_column"] = self.prediction_probability_column
         if self.problem_type is not None:
             body["problem_type"] = self.problem_type.value
         if self.timestamp_column is not None:
@@ -458,6 +497,8 @@ class InferenceLogConfig:
             body["model_id_column"] = self.model_id_column
         if self.prediction_column is not None:
             body["prediction_column"] = self.prediction_column
+        if self.prediction_probability_column is not None:
+            body["prediction_probability_column"] = self.prediction_probability_column
         if self.problem_type is not None:
             body["problem_type"] = self.problem_type
         if self.timestamp_column is not None:
@@ -472,6 +513,7 @@ class InferenceLogConfig:
             label_column=d.get("label_column", None),
             model_id_column=d.get("model_id_column", None),
             prediction_column=d.get("prediction_column", None),
+            prediction_probability_column=d.get("prediction_probability_column", None),
             problem_type=_enum(d, "problem_type", InferenceProblemType),
             timestamp_column=d.get("timestamp_column", None),
         )

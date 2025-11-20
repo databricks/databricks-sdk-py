@@ -23,6 +23,51 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
+class ApplyEnvironmentRequestResponse:
+    def as_dict(self) -> dict:
+        """Serializes the ApplyEnvironmentRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ApplyEnvironmentRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ApplyEnvironmentRequestResponse:
+        """Deserializes the ApplyEnvironmentRequestResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class ConnectionParameters:
+    source_catalog: Optional[str] = None
+    """Source catalog for initial connection. This is necessary for schema exploration in some database
+    systems like Oracle, and optional but nice-to-have in some other database systems like Postgres.
+    For Oracle databases, this maps to a service name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConnectionParameters into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.source_catalog is not None:
+            body["source_catalog"] = self.source_catalog
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConnectionParameters into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.source_catalog is not None:
+            body["source_catalog"] = self.source_catalog
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConnectionParameters:
+        """Deserializes the ConnectionParameters from a dictionary."""
+        return cls(source_catalog=d.get("source_catalog", None))
+
+
+@dataclass
 class CreatePipelineResponse:
     effective_settings: Optional[PipelineSpec] = None
     """Only returned when dry_run is true."""
@@ -352,6 +397,9 @@ class GetPipelineResponse:
     effective_budget_policy_id: Optional[str] = None
     """Serverless budget policy ID of this pipeline."""
 
+    effective_usage_policy_id: Optional[str] = None
+    """Serverless usage policy ID of the pipeline."""
+
     health: Optional[GetPipelineResponseHealth] = None
     """The health of a pipeline."""
 
@@ -392,6 +440,8 @@ class GetPipelineResponse:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.health is not None:
             body["health"] = self.health.value
         if self.last_modified is not None:
@@ -423,6 +473,8 @@ class GetPipelineResponse:
             body["creator_user_name"] = self.creator_user_name
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.health is not None:
             body["health"] = self.health
         if self.last_modified is not None:
@@ -451,6 +503,7 @@ class GetPipelineResponse:
             cluster_id=d.get("cluster_id", None),
             creator_user_name=d.get("creator_user_name", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             health=_enum(d, "health", GetPipelineResponseHealth),
             last_modified=d.get("last_modified", None),
             latest_updates=_repeated_dict(d, "latest_updates", UpdateStateInfo),
@@ -554,6 +607,9 @@ class IngestionGatewayPipelineDefinition:
     """[Deprecated, use connection_name instead] Immutable. The Unity Catalog connection that this
     gateway pipeline uses to communicate with the source."""
 
+    connection_parameters: Optional[ConnectionParameters] = None
+    """Optional, Internal. Parameters required to establish an initial connection with the source."""
+
     gateway_storage_name: Optional[str] = None
     """Optional. The Unity Catalog-compatible name for the gateway storage location. This is the
     destination to use for the data that is extracted by the gateway. Spark Declarative Pipelines
@@ -566,6 +622,8 @@ class IngestionGatewayPipelineDefinition:
             body["connection_id"] = self.connection_id
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.connection_parameters:
+            body["connection_parameters"] = self.connection_parameters.as_dict()
         if self.gateway_storage_catalog is not None:
             body["gateway_storage_catalog"] = self.gateway_storage_catalog
         if self.gateway_storage_name is not None:
@@ -581,6 +639,8 @@ class IngestionGatewayPipelineDefinition:
             body["connection_id"] = self.connection_id
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.connection_parameters:
+            body["connection_parameters"] = self.connection_parameters
         if self.gateway_storage_catalog is not None:
             body["gateway_storage_catalog"] = self.gateway_storage_catalog
         if self.gateway_storage_name is not None:
@@ -595,6 +655,7 @@ class IngestionGatewayPipelineDefinition:
         return cls(
             connection_id=d.get("connection_id", None),
             connection_name=d.get("connection_name", None),
+            connection_parameters=_from_dict(d, "connection_parameters", ConnectionParameters),
             gateway_storage_catalog=d.get("gateway_storage_catalog", None),
             gateway_storage_name=d.get("gateway_storage_name", None),
             gateway_storage_schema=d.get("gateway_storage_schema", None),
@@ -606,6 +667,11 @@ class IngestionPipelineDefinition:
     connection_name: Optional[str] = None
     """Immutable. The Unity Catalog connection that this ingestion pipeline uses to communicate with
     the source. This is used with connectors for applications like Salesforce, Workday, and so on."""
+
+    ingest_from_uc_foreign_catalog: Optional[bool] = None
+    """Immutable. If set to true, the pipeline will ingest tables from the UC foreign catalogs directly
+    without the need to specify a UC connection or ingestion gateway. The `source_catalog` fields in
+    objects of IngestionConfig are interpreted as the UC foreign catalogs to ingest from."""
 
     ingestion_gateway_id: Optional[str] = None
     """Immutable. Identifier for the gateway that is used by this ingestion pipeline to communicate
@@ -634,6 +700,8 @@ class IngestionPipelineDefinition:
         body = {}
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.ingest_from_uc_foreign_catalog is not None:
+            body["ingest_from_uc_foreign_catalog"] = self.ingest_from_uc_foreign_catalog
         if self.ingestion_gateway_id is not None:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.netsuite_jar_path is not None:
@@ -653,6 +721,8 @@ class IngestionPipelineDefinition:
         body = {}
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.ingest_from_uc_foreign_catalog is not None:
+            body["ingest_from_uc_foreign_catalog"] = self.ingest_from_uc_foreign_catalog
         if self.ingestion_gateway_id is not None:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.netsuite_jar_path is not None:
@@ -672,6 +742,7 @@ class IngestionPipelineDefinition:
         """Deserializes the IngestionPipelineDefinition from a dictionary."""
         return cls(
             connection_name=d.get("connection_name", None),
+            ingest_from_uc_foreign_catalog=d.get("ingest_from_uc_foreign_catalog", None),
             ingestion_gateway_id=d.get("ingestion_gateway_id", None),
             netsuite_jar_path=d.get("netsuite_jar_path", None),
             objects=_repeated_dict(d, "objects", IngestionConfig),
@@ -1084,6 +1155,9 @@ class Origin:
     flow_name: Optional[str] = None
     """The name of the flow. Not unique."""
 
+    graph_id: Optional[str] = None
+    """The UUID of the graph associated with this event, corresponding to a GRAPH_UPDATED event."""
+
     host: Optional[str] = None
     """The optional host name where the event was triggered"""
 
@@ -1132,6 +1206,8 @@ class Origin:
             body["flow_id"] = self.flow_id
         if self.flow_name is not None:
             body["flow_name"] = self.flow_name
+        if self.graph_id is not None:
+            body["graph_id"] = self.graph_id
         if self.host is not None:
             body["host"] = self.host
         if self.maintenance_id is not None:
@@ -1171,6 +1247,8 @@ class Origin:
             body["flow_id"] = self.flow_id
         if self.flow_name is not None:
             body["flow_name"] = self.flow_name
+        if self.graph_id is not None:
+            body["graph_id"] = self.graph_id
         if self.host is not None:
             body["host"] = self.host
         if self.maintenance_id is not None:
@@ -1205,6 +1283,7 @@ class Origin:
             dataset_name=d.get("dataset_name", None),
             flow_id=d.get("flow_id", None),
             flow_name=d.get("flow_name", None),
+            graph_id=d.get("graph_id", None),
             host=d.get("host", None),
             maintenance_id=d.get("maintenance_id", None),
             materialization_name=d.get("materialization_name", None),
@@ -2527,6 +2606,115 @@ class RestartWindow:
 
 
 @dataclass
+class RestorePipelineRequestResponse:
+    def as_dict(self) -> dict:
+        """Serializes the RestorePipelineRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RestorePipelineRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RestorePipelineRequestResponse:
+        """Deserializes the RestorePipelineRequestResponse from a dictionary."""
+        return cls()
+
+
+@dataclass
+class RewindDatasetSpec:
+    """Configuration for rewinding a specific dataset."""
+
+    cascade: Optional[bool] = None
+    """Whether to cascade the rewind to dependent datasets. Must be specified."""
+
+    identifier: Optional[str] = None
+    """The identifier of the dataset (e.g., "main.foo.tbl1")."""
+
+    reset_checkpoints: Optional[bool] = None
+    """Whether to reset checkpoints for this dataset."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RewindDatasetSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cascade is not None:
+            body["cascade"] = self.cascade
+        if self.identifier is not None:
+            body["identifier"] = self.identifier
+        if self.reset_checkpoints is not None:
+            body["reset_checkpoints"] = self.reset_checkpoints
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RewindDatasetSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cascade is not None:
+            body["cascade"] = self.cascade
+        if self.identifier is not None:
+            body["identifier"] = self.identifier
+        if self.reset_checkpoints is not None:
+            body["reset_checkpoints"] = self.reset_checkpoints
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RewindDatasetSpec:
+        """Deserializes the RewindDatasetSpec from a dictionary."""
+        return cls(
+            cascade=d.get("cascade", None),
+            identifier=d.get("identifier", None),
+            reset_checkpoints=d.get("reset_checkpoints", None),
+        )
+
+
+@dataclass
+class RewindSpec:
+    """Information about a rewind being requested for this pipeline or some of the datasets in it."""
+
+    datasets: Optional[List[RewindDatasetSpec]] = None
+    """List of datasets to rewind with specific configuration for each. When not specified, all
+    datasets will be rewound with cascade = true and reset_checkpoints = true."""
+
+    dry_run: Optional[bool] = None
+    """If true, this is a dry run and we should emit the RewindSummary but not perform the rewind."""
+
+    rewind_timestamp: Optional[str] = None
+    """The base timestamp to rewind to. Must be specified."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RewindSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.datasets:
+            body["datasets"] = [v.as_dict() for v in self.datasets]
+        if self.dry_run is not None:
+            body["dry_run"] = self.dry_run
+        if self.rewind_timestamp is not None:
+            body["rewind_timestamp"] = self.rewind_timestamp
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RewindSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.datasets:
+            body["datasets"] = self.datasets
+        if self.dry_run is not None:
+            body["dry_run"] = self.dry_run
+        if self.rewind_timestamp is not None:
+            body["rewind_timestamp"] = self.rewind_timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RewindSpec:
+        """Deserializes the RewindSpec from a dictionary."""
+        return cls(
+            datasets=_repeated_dict(d, "datasets", RewindDatasetSpec),
+            dry_run=d.get("dry_run", None),
+            rewind_timestamp=d.get("rewind_timestamp", None),
+        )
+
+
+@dataclass
 class RunAs:
     """Write-only setting, available only in Create/Update calls. Specifies the user or service
     principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
@@ -2971,6 +3159,10 @@ class TableSpecificConfig:
         None
     )
 
+    row_filter: Optional[str] = None
+    """(Optional, Immutable) The row filter condition to be applied to the table. It must not contain
+    the WHERE keyword, only the actual filter condition. It must be in DBSQL format."""
+
     salesforce_include_formula_fields: Optional[bool] = None
     """If true, formula fields defined in the table are included in the ingestion. This setting is only
     valid for the Salesforce connector"""
@@ -2996,6 +3188,8 @@ class TableSpecificConfig:
             body["primary_keys"] = [v for v in self.primary_keys]
         if self.query_based_connector_config:
             body["query_based_connector_config"] = self.query_based_connector_config.as_dict()
+        if self.row_filter is not None:
+            body["row_filter"] = self.row_filter
         if self.salesforce_include_formula_fields is not None:
             body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
@@ -3017,6 +3211,8 @@ class TableSpecificConfig:
             body["primary_keys"] = self.primary_keys
         if self.query_based_connector_config:
             body["query_based_connector_config"] = self.query_based_connector_config
+        if self.row_filter is not None:
+            body["row_filter"] = self.row_filter
         if self.salesforce_include_formula_fields is not None:
             body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
@@ -3039,6 +3235,7 @@ class TableSpecificConfig:
                 "query_based_connector_config",
                 IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig,
             ),
+            row_filter=d.get("row_filter", None),
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),
@@ -3079,6 +3276,10 @@ class UpdateInfo:
     full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
     that the states of the table will be reset before the refresh."""
 
+    mode: Optional[UpdateMode] = None
+    """Indicates whether the update is either part of a continuous job run, or running in legacy
+    continuous pipeline mode."""
+
     pipeline_id: Optional[str] = None
     """The ID of the pipeline."""
 
@@ -3112,6 +3313,8 @@ class UpdateInfo:
             body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
             body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
+        if self.mode is not None:
+            body["mode"] = self.mode.value
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
@@ -3139,6 +3342,8 @@ class UpdateInfo:
             body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
             body["full_refresh_selection"] = self.full_refresh_selection
+        if self.mode is not None:
+            body["mode"] = self.mode
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
@@ -3161,6 +3366,7 @@ class UpdateInfo:
             creation_time=d.get("creation_time", None),
             full_refresh=d.get("full_refresh", None),
             full_refresh_selection=d.get("full_refresh_selection", None),
+            mode=_enum(d, "mode", UpdateMode),
             pipeline_id=d.get("pipeline_id", None),
             refresh_selection=d.get("refresh_selection", None),
             state=_enum(d, "state", UpdateInfoState),
@@ -3195,6 +3401,12 @@ class UpdateInfoState(Enum):
     SETTING_UP_TABLES = "SETTING_UP_TABLES"
     STOPPING = "STOPPING"
     WAITING_FOR_RESOURCES = "WAITING_FOR_RESOURCES"
+
+
+class UpdateMode(Enum):
+
+    CONTINUOUS = "CONTINUOUS"
+    DEFAULT = "DEFAULT"
 
 
 @dataclass
@@ -3300,6 +3512,22 @@ class PipelinesAPI:
             time.sleep(sleep + random.random())
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
+
+    def apply_environment(self, pipeline_id: str) -> ApplyEnvironmentRequestResponse:
+        """* Applies the current pipeline environment onto the pipeline compute. The environment applied can be
+        used by subsequent dev-mode updates.
+
+        :param pipeline_id: str
+
+        :returns: :class:`ApplyEnvironmentRequestResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/environment/apply", headers=headers)
+        return ApplyEnvironmentRequestResponse.from_dict(res)
 
     def create(
         self,
@@ -3483,8 +3711,8 @@ class PipelinesAPI:
         return CreatePipelineResponse.from_dict(res)
 
     def delete(self, pipeline_id: str):
-        """Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
-        its tables. You cannot undo this action.
+        """Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all
+        pipeline tables. Please reach out to Databricks support for assistance to undo this action.
 
         :param pipeline_id: str
 
@@ -3709,6 +3937,23 @@ class PipelinesAPI:
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, headers=headers)
         return ListUpdatesResponse.from_dict(res)
 
+    def restore_pipeline(self, pipeline_id: str) -> RestorePipelineRequestResponse:
+        """* Restores a pipeline that was previously deleted, if within the restoration window. All tables
+        deleted at pipeline deletion will be undropped as well.
+
+        :param pipeline_id: str
+          The ID of the pipeline to restore
+
+        :returns: :class:`RestorePipelineRequestResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/restore", headers=headers)
+        return RestorePipelineRequestResponse.from_dict(res)
+
     def set_permissions(
         self, pipeline_id: str, *, access_control_list: Optional[List[PipelineAccessControlRequest]] = None
     ) -> PipelinePermissions:
@@ -3741,6 +3986,7 @@ class PipelinesAPI:
         full_refresh: Optional[bool] = None,
         full_refresh_selection: Optional[List[str]] = None,
         refresh_selection: Optional[List[str]] = None,
+        rewind_spec: Optional[RewindSpec] = None,
         validate_only: Optional[bool] = None,
     ) -> StartUpdateResponse:
         """Starts a new update for the pipeline. If there is already an active update for the pipeline, the
@@ -3758,6 +4004,8 @@ class PipelinesAPI:
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param rewind_spec: :class:`RewindSpec` (optional)
+          The information about the requested rewind operation. If specified this is a rewind mode update.
         :param validate_only: bool (optional)
           If true, this update only validates the correctness of pipeline source code but does not materialize
           or publish any datasets.
@@ -3774,6 +4022,8 @@ class PipelinesAPI:
             body["full_refresh_selection"] = [v for v in full_refresh_selection]
         if refresh_selection is not None:
             body["refresh_selection"] = [v for v in refresh_selection]
+        if rewind_spec is not None:
+            body["rewind_spec"] = rewind_spec.as_dict()
         if validate_only is not None:
             body["validate_only"] = validate_only
         headers = {

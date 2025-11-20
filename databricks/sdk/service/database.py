@@ -65,6 +65,12 @@ class DatabaseCatalog:
 
     create_database_if_not_exists: Optional[bool] = None
 
+    database_branch_id: Optional[str] = None
+    """The branch_id of the database branch associated with the catalog."""
+
+    database_project_id: Optional[str] = None
+    """The project_id of the database project associated with the catalog."""
+
     uid: Optional[str] = None
 
     def as_dict(self) -> dict:
@@ -72,10 +78,14 @@ class DatabaseCatalog:
         body = {}
         if self.create_database_if_not_exists is not None:
             body["create_database_if_not_exists"] = self.create_database_if_not_exists
+        if self.database_branch_id is not None:
+            body["database_branch_id"] = self.database_branch_id
         if self.database_instance_name is not None:
             body["database_instance_name"] = self.database_instance_name
         if self.database_name is not None:
             body["database_name"] = self.database_name
+        if self.database_project_id is not None:
+            body["database_project_id"] = self.database_project_id
         if self.name is not None:
             body["name"] = self.name
         if self.uid is not None:
@@ -87,10 +97,14 @@ class DatabaseCatalog:
         body = {}
         if self.create_database_if_not_exists is not None:
             body["create_database_if_not_exists"] = self.create_database_if_not_exists
+        if self.database_branch_id is not None:
+            body["database_branch_id"] = self.database_branch_id
         if self.database_instance_name is not None:
             body["database_instance_name"] = self.database_instance_name
         if self.database_name is not None:
             body["database_name"] = self.database_name
+        if self.database_project_id is not None:
+            body["database_project_id"] = self.database_project_id
         if self.name is not None:
             body["name"] = self.name
         if self.uid is not None:
@@ -102,8 +116,10 @@ class DatabaseCatalog:
         """Deserializes the DatabaseCatalog from a dictionary."""
         return cls(
             create_database_if_not_exists=d.get("create_database_if_not_exists", None),
+            database_branch_id=d.get("database_branch_id", None),
             database_instance_name=d.get("database_instance_name", None),
             database_name=d.get("database_name", None),
+            database_project_id=d.get("database_project_id", None),
             name=d.get("name", None),
             uid=d.get("uid", None),
         )
@@ -613,6 +629,9 @@ class DatabaseTable:
     When creating a table in a standard catalog, this field is required. In this scenario,
     specifying this field will allow targeting an arbitrary postgres database."""
 
+    table_serving_url: Optional[str] = None
+    """Data serving REST API URL for this table"""
+
     def as_dict(self) -> dict:
         """Serializes the DatabaseTable into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -622,6 +641,8 @@ class DatabaseTable:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
             body["name"] = self.name
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -633,6 +654,8 @@ class DatabaseTable:
             body["logical_database_name"] = self.logical_database_name
         if self.name is not None:
             body["name"] = self.name
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         return body
 
     @classmethod
@@ -642,6 +665,7 @@ class DatabaseTable:
             database_instance_name=d.get("database_instance_name", None),
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
+            table_serving_url=d.get("table_serving_url", None),
         )
 
 
@@ -824,6 +848,9 @@ class NewPipelineSpec:
     """Custom fields that user can set for pipeline while creating SyncedDatabaseTable. Note that other
     fields of pipeline are still inferred by table def internally"""
 
+    budget_policy_id: Optional[str] = None
+    """Budget policy of this pipeline."""
+
     storage_catalog: Optional[str] = None
     """This field needs to be specified if the destination catalog is a managed postgres catalog.
     
@@ -839,6 +866,8 @@ class NewPipelineSpec:
     def as_dict(self) -> dict:
         """Serializes the NewPipelineSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -848,6 +877,8 @@ class NewPipelineSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the NewPipelineSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
         if self.storage_catalog is not None:
             body["storage_catalog"] = self.storage_catalog
         if self.storage_schema is not None:
@@ -857,7 +888,11 @@ class NewPipelineSpec:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> NewPipelineSpec:
         """Deserializes the NewPipelineSpec from a dictionary."""
-        return cls(storage_catalog=d.get("storage_catalog", None), storage_schema=d.get("storage_schema", None))
+        return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            storage_catalog=d.get("storage_catalog", None),
+            storage_schema=d.get("storage_schema", None),
+        )
 
 
 class ProvisioningInfoState(Enum):
@@ -958,6 +993,9 @@ class SyncedDatabaseTable:
     data_synchronization_status: Optional[SyncedTableStatus] = None
     """Synced Table data synchronization status"""
 
+    database_branch_id: Optional[str] = None
+    """The branch_id of the database branch associated with the table."""
+
     database_instance_name: Optional[str] = None
     """Name of the target database instance. This is required when creating synced database tables in
     standard catalogs. This is optional when creating synced database tables in registered catalogs.
@@ -965,10 +1003,19 @@ class SyncedDatabaseTable:
     database instance name MUST match that of the registered catalog (or the request will be
     rejected)."""
 
+    database_project_id: Optional[str] = None
+    """The project_id of the database project associated with the table."""
+
+    effective_database_branch_id: Optional[str] = None
+    """The branch_id of the database branch associated with the table."""
+
     effective_database_instance_name: Optional[str] = None
     """The name of the database instance that this table is registered to. This field is always
     returned, and for tables inside database catalogs is inferred database instance associated with
     the catalog."""
+
+    effective_database_project_id: Optional[str] = None
+    """The project_id of the database project associated with the table."""
 
     effective_logical_database_name: Optional[str] = None
     """The name of the logical database that this table is registered to."""
@@ -987,6 +1034,9 @@ class SyncedDatabaseTable:
 
     spec: Optional[SyncedTableSpec] = None
 
+    table_serving_url: Optional[str] = None
+    """Data serving REST API URL for this table"""
+
     unity_catalog_provisioning_state: Optional[ProvisioningInfoState] = None
     """The provisioning state of the synced table entity in Unity Catalog. This is distinct from the
     state of the data synchronization pipeline (i.e. the table may be in "ACTIVE" but the pipeline
@@ -997,10 +1047,18 @@ class SyncedDatabaseTable:
         body = {}
         if self.data_synchronization_status:
             body["data_synchronization_status"] = self.data_synchronization_status.as_dict()
+        if self.database_branch_id is not None:
+            body["database_branch_id"] = self.database_branch_id
         if self.database_instance_name is not None:
             body["database_instance_name"] = self.database_instance_name
+        if self.database_project_id is not None:
+            body["database_project_id"] = self.database_project_id
+        if self.effective_database_branch_id is not None:
+            body["effective_database_branch_id"] = self.effective_database_branch_id
         if self.effective_database_instance_name is not None:
             body["effective_database_instance_name"] = self.effective_database_instance_name
+        if self.effective_database_project_id is not None:
+            body["effective_database_project_id"] = self.effective_database_project_id
         if self.effective_logical_database_name is not None:
             body["effective_logical_database_name"] = self.effective_logical_database_name
         if self.logical_database_name is not None:
@@ -1009,6 +1067,8 @@ class SyncedDatabaseTable:
             body["name"] = self.name
         if self.spec:
             body["spec"] = self.spec.as_dict()
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state.value
         return body
@@ -1018,10 +1078,18 @@ class SyncedDatabaseTable:
         body = {}
         if self.data_synchronization_status:
             body["data_synchronization_status"] = self.data_synchronization_status
+        if self.database_branch_id is not None:
+            body["database_branch_id"] = self.database_branch_id
         if self.database_instance_name is not None:
             body["database_instance_name"] = self.database_instance_name
+        if self.database_project_id is not None:
+            body["database_project_id"] = self.database_project_id
+        if self.effective_database_branch_id is not None:
+            body["effective_database_branch_id"] = self.effective_database_branch_id
         if self.effective_database_instance_name is not None:
             body["effective_database_instance_name"] = self.effective_database_instance_name
+        if self.effective_database_project_id is not None:
+            body["effective_database_project_id"] = self.effective_database_project_id
         if self.effective_logical_database_name is not None:
             body["effective_logical_database_name"] = self.effective_logical_database_name
         if self.logical_database_name is not None:
@@ -1030,6 +1098,8 @@ class SyncedDatabaseTable:
             body["name"] = self.name
         if self.spec:
             body["spec"] = self.spec
+        if self.table_serving_url is not None:
+            body["table_serving_url"] = self.table_serving_url
         if self.unity_catalog_provisioning_state is not None:
             body["unity_catalog_provisioning_state"] = self.unity_catalog_provisioning_state
         return body
@@ -1039,12 +1109,17 @@ class SyncedDatabaseTable:
         """Deserializes the SyncedDatabaseTable from a dictionary."""
         return cls(
             data_synchronization_status=_from_dict(d, "data_synchronization_status", SyncedTableStatus),
+            database_branch_id=d.get("database_branch_id", None),
             database_instance_name=d.get("database_instance_name", None),
+            database_project_id=d.get("database_project_id", None),
+            effective_database_branch_id=d.get("effective_database_branch_id", None),
             effective_database_instance_name=d.get("effective_database_instance_name", None),
+            effective_database_project_id=d.get("effective_database_project_id", None),
             effective_logical_database_name=d.get("effective_logical_database_name", None),
             logical_database_name=d.get("logical_database_name", None),
             name=d.get("name", None),
             spec=_from_dict(d, "spec", SyncedTableSpec),
+            table_serving_url=d.get("table_serving_url", None),
             unity_catalog_provisioning_state=_enum(d, "unity_catalog_provisioning_state", ProvisioningInfoState),
         )
 
@@ -1761,19 +1836,47 @@ class DatabaseAPI:
 
         self._api.do("DELETE", f"/api/2.0/database/tables/{name}", headers=headers)
 
-    def delete_synced_database_table(self, name: str):
+    def delete_synced_database_table(self, name: str, *, purge_data: Optional[bool] = None):
         """Delete a Synced Database Table.
 
         :param name: str
+        :param purge_data: bool (optional)
+          Optional. When set to true, the actual PostgreSQL table will be dropped from the database.
 
 
         """
 
+        query = {}
+        if purge_data is not None:
+            query["purge_data"] = purge_data
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/database/synced_tables/{name}", headers=headers)
+        self._api.do("DELETE", f"/api/2.0/database/synced_tables/{name}", query=query, headers=headers)
+
+    def failover_database_instance(
+        self, name: str, *, failover_target_database_instance_name: Optional[str] = None
+    ) -> DatabaseInstance:
+        """Failover the primary node of a Database Instance to a secondary.
+
+        :param name: str
+          Name of the instance to failover.
+        :param failover_target_database_instance_name: str (optional)
+
+        :returns: :class:`DatabaseInstance`
+        """
+
+        body = {}
+        if failover_target_database_instance_name is not None:
+            body["failover_target_database_instance_name"] = failover_target_database_instance_name
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/database/instances/{name}/failover", body=body, headers=headers)
+        return DatabaseInstance.from_dict(res)
 
     def find_database_instance_by_uid(self, *, uid: Optional[str] = None) -> DatabaseInstance:
         """Find a Database Instance by uid.
@@ -2097,6 +2200,43 @@ class DatabaseAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/database/instances/{name}", query=query, body=body, headers=headers)
         return DatabaseInstance.from_dict(res)
+
+    def update_database_instance_role(
+        self,
+        instance_name: str,
+        name: str,
+        database_instance_role: DatabaseInstanceRole,
+        *,
+        database_instance_name: Optional[str] = None,
+    ) -> DatabaseInstanceRole:
+        """Update a role for a Database Instance.
+
+        :param instance_name: str
+        :param name: str
+          The name of the role. This is the unique identifier for the role in an instance.
+        :param database_instance_role: :class:`DatabaseInstanceRole`
+        :param database_instance_name: str (optional)
+
+        :returns: :class:`DatabaseInstanceRole`
+        """
+
+        body = database_instance_role.as_dict()
+        query = {}
+        if database_instance_name is not None:
+            query["database_instance_name"] = database_instance_name
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/database/instances/{instance_name}/roles/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return DatabaseInstanceRole.from_dict(res)
 
     def update_synced_database_table(
         self, name: str, synced_table: SyncedDatabaseTable, update_mask: str

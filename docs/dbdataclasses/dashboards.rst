@@ -12,6 +12,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: CancelQueryExecutionResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: CancelQueryExecutionResponseStatus
+   :members:
+   :undoc-members:
+
 .. autoclass:: CronSchedule
    :members:
    :undoc-members:
@@ -24,6 +32,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: DASHBOARD_VIEW_BASIC
       :value: "DASHBOARD_VIEW_BASIC"
+
+.. autoclass:: Empty
+   :members:
+   :undoc-members:
+
+.. autoclass:: ExecuteQueryResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: GenieAttachment
    :members:
@@ -53,6 +69,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: POSITIVE
       :value: "POSITIVE"
+
+.. autoclass:: GenieGenerateDownloadFullQueryResultResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieGetDownloadFullQueryResultResponse
+   :members:
+   :undoc-members:
 
 .. autoclass:: GenieGetMessageQueryResultResponse
    :members:
@@ -91,6 +115,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: GenieSuggestedQuestionsAttachment
+   :members:
+   :undoc-members:
+
+.. autoclass:: GetPublishedDashboardEmbeddedResponse
    :members:
    :undoc-members:
 
@@ -341,6 +369,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SUBMITTED
       :value: "SUBMITTED"
 
+.. autoclass:: PendingStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: PollQueryStatusResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: PollQueryStatusResponseData
+   :members:
+   :undoc-members:
+
 .. autoclass:: PublishedDashboard
    :members:
    :undoc-members:
@@ -348,6 +388,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: QueryAttachmentParameter
    :members:
    :undoc-members:
+
+.. autoclass:: QueryResponseStatus
+   :members:
+   :undoc-members:
+
+.. py:class:: ResponsePhase
+
+   .. py:attribute:: RESPONSE_PHASE_THINKING
+      :value: "RESPONSE_PHASE_THINKING"
+
+   .. py:attribute:: RESPONSE_PHASE_VERIFYING
+      :value: "RESPONSE_PHASE_VERIFYING"
 
 .. autoclass:: Result
    :members:
@@ -381,9 +433,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SuccessStatus
+   :members:
+   :undoc-members:
+
 .. autoclass:: TextAttachment
    :members:
    :undoc-members:
+
+.. py:class:: TextAttachmentPurpose
+
+   Purpose/intent of a text attachment
+
+   .. py:attribute:: FOLLOW_UP_QUESTION
+      :value: "FOLLOW_UP_QUESTION"
 
 .. autoclass:: TrashDashboardResponse
    :members:
@@ -392,3 +455,23 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: UnpublishDashboardResponse
    :members:
    :undoc-members:
+
+.. autoclass:: VerificationMetadata
+   :members:
+   :undoc-members:
+
+.. py:class:: VerificationSection
+
+   Verification workflow section - indicates which stage of verification this attachment belongs to These sections are used for grouping and ordering attachments in the frontend UI
+
+   .. py:attribute:: VERIFICATION_SECTION_FINAL_DECISION
+      :value: "VERIFICATION_SECTION_FINAL_DECISION"
+
+   .. py:attribute:: VERIFICATION_SECTION_PROPOSED_IMPROVEMENT
+      :value: "VERIFICATION_SECTION_PROPOSED_IMPROVEMENT"
+
+   .. py:attribute:: VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION
+      :value: "VERIFICATION_SECTION_SQL_EXAMPLES_VALIDATION"
+
+   .. py:attribute:: VERIFICATION_SECTION_VERIFICATION_QUERIES
+      :value: "VERIFICATION_SECTION_VERIFICATION_QUERIES"

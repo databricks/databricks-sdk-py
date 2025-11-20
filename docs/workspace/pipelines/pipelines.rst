@@ -16,6 +16,16 @@
     step. You can also enforce data quality with Spark Declarative Pipelines expectations. Expectations allow
     you to define expected data quality and specify how to handle records that fail those expectations.
 
+    .. py:method:: apply_environment(pipeline_id: str) -> ApplyEnvironmentRequestResponse
+
+        * Applies the current pipeline environment onto the pipeline compute. The environment applied can be
+        used by subsequent dev-mode updates.
+
+        :param pipeline_id: str
+
+        :returns: :class:`ApplyEnvironmentRequestResponse`
+        
+
     .. py:method:: create( [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], dry_run: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], run_as: Optional[RunAs], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> CreatePipelineResponse
 
 
@@ -129,8 +139,8 @@
 
     .. py:method:: delete(pipeline_id: str)
 
-        Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
-        its tables. You cannot undo this action.
+        Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all
+        pipeline tables. Please reach out to Databricks support for assistance to undo this action.
 
         :param pipeline_id: str
 
@@ -332,6 +342,17 @@
         :returns: :class:`ListUpdatesResponse`
         
 
+    .. py:method:: restore_pipeline(pipeline_id: str) -> RestorePipelineRequestResponse
+
+        * Restores a pipeline that was previously deleted, if within the restoration window. All tables
+        deleted at pipeline deletion will be undropped as well.
+
+        :param pipeline_id: str
+          The ID of the pipeline to restore
+
+        :returns: :class:`RestorePipelineRequestResponse`
+        
+
     .. py:method:: set_permissions(pipeline_id: str [, access_control_list: Optional[List[PipelineAccessControlRequest]]]) -> PipelinePermissions
 
         Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
@@ -344,7 +365,7 @@
         :returns: :class:`PipelinePermissions`
         
 
-    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], refresh_selection: Optional[List[str]], validate_only: Optional[bool]]) -> StartUpdateResponse
+    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], refresh_selection: Optional[List[str]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
 
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
@@ -361,6 +382,8 @@
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param rewind_spec: :class:`RewindSpec` (optional)
+          The information about the requested rewind operation. If specified this is a rewind mode update.
         :param validate_only: bool (optional)
           If true, this update only validates the correctness of pipeline source code but does not materialize
           or publish any datasets.

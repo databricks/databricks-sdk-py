@@ -11,7 +11,7 @@
     the workspaces in a Databricks account. Users in different workspaces can share access to the same data,
     depending on privileges granted centrally in Unity Catalog.
 
-    .. py:method:: create(name: str [, comment: Optional[str], connection_name: Optional[str], options: Optional[Dict[str, str]], properties: Optional[Dict[str, str]], provider_name: Optional[str], share_name: Optional[str], storage_root: Optional[str]]) -> CatalogInfo
+    .. py:method:: create(name: str [, comment: Optional[str], connection_name: Optional[str], conversion_info: Optional[ConversionInfo], dr_replication_info: Optional[DrReplicationInfo], options: Optional[Dict[str, str]], properties: Optional[Dict[str, str]], provider_name: Optional[str], share_name: Optional[str], storage_root: Optional[str]]) -> CatalogInfo
 
 
         Usage:
@@ -38,6 +38,10 @@
           User-provided free-form text description.
         :param connection_name: str (optional)
           The name of the connection to an external data source.
+        :param conversion_info: :class:`ConversionInfo` (optional)
+          Status of conversion of FOREIGN catalog to UC Native catalog.
+        :param dr_replication_info: :class:`DrReplicationInfo` (optional)
+          Disaster Recovery replication state snapshot.
         :param options: Dict[str,str] (optional)
           A map of key-value properties attached to the securable.
         :param properties: Dict[str,str] (optional)
@@ -145,7 +149,7 @@
         :returns: Iterator over :class:`CatalogInfo`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], enable_predictive_optimization: Optional[EnablePredictiveOptimization], isolation_mode: Optional[CatalogIsolationMode], new_name: Optional[str], options: Optional[Dict[str, str]], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> CatalogInfo
+    .. py:method:: update(name: str [, comment: Optional[str], conversion_info: Optional[ConversionInfo], dr_replication_info: Optional[DrReplicationInfo], enable_predictive_optimization: Optional[EnablePredictiveOptimization], isolation_mode: Optional[CatalogIsolationMode], new_name: Optional[str], options: Optional[Dict[str, str]], owner: Optional[str], properties: Optional[Dict[str, str]]]) -> CatalogInfo
 
 
         Usage:
@@ -155,12 +159,13 @@
             import time
             
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
             created = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
-            _ = w.catalogs.update(name=created.name, comment="updated")
+            _ = w.catalogs.update(name=created.name, isolation_mode=catalog.CatalogIsolationMode.ISOLATED)
             
             # cleanup
             w.catalogs.delete(name=created.name, force=True)
@@ -172,6 +177,10 @@
           The name of the catalog.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param conversion_info: :class:`ConversionInfo` (optional)
+          Status of conversion of FOREIGN catalog to UC Native catalog.
+        :param dr_replication_info: :class:`DrReplicationInfo` (optional)
+          Disaster Recovery replication state snapshot.
         :param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)
           Whether predictive optimization should be enabled for this object and objects under it.
         :param isolation_mode: :class:`CatalogIsolationMode` (optional)

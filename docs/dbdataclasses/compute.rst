@@ -51,6 +51,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SPOT_WITH_FALLBACK_AZURE
       :value: "SPOT_WITH_FALLBACK_AZURE"
 
+.. py:class:: BaseEnvironmentType
+
+   If changed, also update estore/namespaces/defaultbaseenvironments/latest.proto
+
+   .. py:attribute:: CPU
+      :value: "CPU"
+
+   .. py:attribute:: GPU
+      :value: "GPU"
+
 .. autoclass:: CancelResponse
    :members:
    :undoc-members:
@@ -316,6 +326,34 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: DbfsStorageInfo
    :members:
    :undoc-members:
+
+.. autoclass:: DefaultBaseEnvironment
+   :members:
+   :undoc-members:
+
+.. autoclass:: DefaultBaseEnvironmentCache
+   :members:
+   :undoc-members:
+
+.. py:class:: DefaultBaseEnvironmentCacheStatus
+
+   .. py:attribute:: CREATED
+      :value: "CREATED"
+
+   .. py:attribute:: EXPIRED
+      :value: "EXPIRED"
+
+   .. py:attribute:: FAILED
+      :value: "FAILED"
+
+   .. py:attribute:: INVALID
+      :value: "INVALID"
+
+   .. py:attribute:: PENDING
+      :value: "PENDING"
+
+   .. py:attribute:: REFRESHING
+      :value: "REFRESHING"
 
 .. autoclass:: DeleteClusterResponse
    :members:
@@ -831,6 +869,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DEFAULT
       :value: "DEFAULT"
 
+.. autoclass:: ListDefaultBaseEnvironmentsResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListGlobalInitScriptsResponse
    :members:
    :undoc-members:
@@ -883,6 +925,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: MaterializedEnvironment
+   :members:
+   :undoc-members:
+
 .. autoclass:: MavenLibrary
    :members:
    :undoc-members:
@@ -892,6 +938,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: NodeType
+   :members:
+   :undoc-members:
+
+.. autoclass:: NodeTypeFlexibility
    :members:
    :undoc-members:
 
@@ -920,6 +970,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: RCranLibrary
+   :members:
+   :undoc-members:
+
+.. autoclass:: RefreshDefaultBaseEnvironmentsResponse
    :members:
    :undoc-members:
 

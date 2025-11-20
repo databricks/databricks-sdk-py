@@ -664,6 +664,9 @@ class AlertV2:
     custom_summary: Optional[str] = None
     """Custom summary for the alert. support mustache template."""
 
+    effective_parent_path: Optional[str] = None
+    """The actual workspace path of the folder containing the alert. This is an output-only field."""
+
     effective_run_as: Optional[AlertV2RunAs] = None
     """The actual identity that will be used to execute the alert. This is an output-only field that
     shows the resolved run-as identity after applying permissions and defaults."""
@@ -708,6 +711,8 @@ class AlertV2:
             body["custom_summary"] = self.custom_summary
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.effective_parent_path is not None:
+            body["effective_parent_path"] = self.effective_parent_path
         if self.effective_run_as:
             body["effective_run_as"] = self.effective_run_as.as_dict()
         if self.evaluation:
@@ -745,6 +750,8 @@ class AlertV2:
             body["custom_summary"] = self.custom_summary
         if self.display_name is not None:
             body["display_name"] = self.display_name
+        if self.effective_parent_path is not None:
+            body["effective_parent_path"] = self.effective_parent_path
         if self.effective_run_as:
             body["effective_run_as"] = self.effective_run_as
         if self.evaluation:
@@ -779,6 +786,7 @@ class AlertV2:
             custom_description=d.get("custom_description", None),
             custom_summary=d.get("custom_summary", None),
             display_name=d.get("display_name", None),
+            effective_parent_path=d.get("effective_parent_path", None),
             effective_run_as=_from_dict(d, "effective_run_as", AlertV2RunAs),
             evaluation=_from_dict(d, "evaluation", AlertV2Evaluation),
             id=d.get("id", None),
@@ -950,6 +958,7 @@ class AlertV2OperandColumn:
     name: str
 
     aggregation: Optional[Aggregation] = None
+    """If not set, the behavior is equivalent to using `First row` in the UI."""
 
     display: Optional[str] = None
 
@@ -1717,12 +1726,17 @@ class CronSchedule:
     https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
     for details."""
 
+    effective_pause_status: Optional[SchedulePauseStatus] = None
+    """The actual pause status of the schedule. This is an output-only field."""
+
     pause_status: Optional[SchedulePauseStatus] = None
     """Indicate whether this schedule is paused or not."""
 
     def as_dict(self) -> dict:
         """Serializes the CronSchedule into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.effective_pause_status is not None:
+            body["effective_pause_status"] = self.effective_pause_status.value
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
         if self.quartz_cron_schedule is not None:
@@ -1734,6 +1748,8 @@ class CronSchedule:
     def as_shallow_dict(self) -> dict:
         """Serializes the CronSchedule into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.effective_pause_status is not None:
+            body["effective_pause_status"] = self.effective_pause_status
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
         if self.quartz_cron_schedule is not None:
@@ -1746,6 +1762,7 @@ class CronSchedule:
     def from_dict(cls, d: Dict[str, Any]) -> CronSchedule:
         """Deserializes the CronSchedule from a dictionary."""
         return cls(
+            effective_pause_status=_enum(d, "effective_pause_status", SchedulePauseStatus),
             pause_status=_enum(d, "pause_status", SchedulePauseStatus),
             quartz_cron_schedule=d.get("quartz_cron_schedule", None),
             timezone_id=d.get("timezone_id", None),

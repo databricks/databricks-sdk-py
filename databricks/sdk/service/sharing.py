@@ -1124,6 +1124,15 @@ class PermissionsChange:
     """The principal whose privileges we are changing. Only one of principal or principal_id should be
     specified, never both at the same time."""
 
+    principal_id: Optional[int] = None
+    """An opaque internal ID that identifies the principal whose privileges should be removed.
+    
+    This field is intended for removing privileges associated with a deleted user. When set, only
+    the entries specified in the remove field are processed; any entries in the add field will be
+    rejected.
+    
+    Only one of principal or principal_id should be specified, never both at the same time."""
+
     remove: Optional[List[str]] = None
     """The set of privileges to remove."""
 
@@ -1134,6 +1143,8 @@ class PermissionsChange:
             body["add"] = [v for v in self.add]
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = [v for v in self.remove]
         return body
@@ -1145,6 +1156,8 @@ class PermissionsChange:
             body["add"] = self.add
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.remove:
             body["remove"] = self.remove
         return body
@@ -1152,7 +1165,12 @@ class PermissionsChange:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PermissionsChange:
         """Deserializes the PermissionsChange from a dictionary."""
-        return cls(add=d.get("add", None), principal=d.get("principal", None), remove=d.get("remove", None))
+        return cls(
+            add=d.get("add", None),
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            remove=d.get("remove", None),
+        )
 
 
 class Privilege(Enum):
@@ -1210,6 +1228,10 @@ class PrivilegeAssignment:
     """The principal (user email address or group name). For deleted principals, `principal` is empty
     while `principal_id` is populated."""
 
+    principal_id: Optional[int] = None
+    """Unique identifier of the principal. For active principals, both `principal` and `principal_id`
+    are present."""
+
     privileges: Optional[List[Privilege]] = None
     """The privileges assigned to the principal."""
 
@@ -1218,6 +1240,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = [v.value for v in self.privileges]
         return body
@@ -1227,6 +1251,8 @@ class PrivilegeAssignment:
         body = {}
         if self.principal is not None:
             body["principal"] = self.principal
+        if self.principal_id is not None:
+            body["principal_id"] = self.principal_id
         if self.privileges:
             body["privileges"] = self.privileges
         return body
@@ -1234,7 +1260,11 @@ class PrivilegeAssignment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> PrivilegeAssignment:
         """Deserializes the PrivilegeAssignment from a dictionary."""
-        return cls(principal=d.get("principal", None), privileges=_repeated_enum(d, "privileges", Privilege))
+        return cls(
+            principal=d.get("principal", None),
+            principal_id=d.get("principal_id", None),
+            privileges=_repeated_enum(d, "privileges", Privilege),
+        )
 
 
 @dataclass
@@ -1857,6 +1887,13 @@ class ShareInfo:
     owner: Optional[str] = None
     """Username of current owner of share."""
 
+    replication_enabled: Optional[bool] = None
+    """Whether replication is enabled for this share."""
+
+    serverless_budget_policy_id: Optional[str] = None
+    """Serverless budget policy id (can only be created/updated when calling data-sharing service)
+    [Create,Update:IGN]"""
+
     storage_location: Optional[str] = None
     """Storage Location URL (full path) for the share."""
 
@@ -1884,6 +1921,10 @@ class ShareInfo:
             body["objects"] = [v.as_dict() for v in self.objects]
         if self.owner is not None:
             body["owner"] = self.owner
+        if self.replication_enabled is not None:
+            body["replication_enabled"] = self.replication_enabled
+        if self.serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = self.serverless_budget_policy_id
         if self.storage_location is not None:
             body["storage_location"] = self.storage_location
         if self.storage_root is not None:
@@ -1909,6 +1950,10 @@ class ShareInfo:
             body["objects"] = self.objects
         if self.owner is not None:
             body["owner"] = self.owner
+        if self.replication_enabled is not None:
+            body["replication_enabled"] = self.replication_enabled
+        if self.serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = self.serverless_budget_policy_id
         if self.storage_location is not None:
             body["storage_location"] = self.storage_location
         if self.storage_root is not None:
@@ -1929,6 +1974,8 @@ class ShareInfo:
             name=d.get("name", None),
             objects=_repeated_dict(d, "objects", SharedDataObject),
             owner=d.get("owner", None),
+            replication_enabled=d.get("replication_enabled", None),
+            serverless_budget_policy_id=d.get("serverless_budget_policy_id", None),
             storage_location=d.get("storage_location", None),
             storage_root=d.get("storage_root", None),
             updated_at=d.get("updated_at", None),
@@ -2972,6 +3019,45 @@ class RecipientFederationPoliciesAPI:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def update(
+        self, recipient_name: str, name: str, policy: FederationPolicy, *, update_mask: Optional[str] = None
+    ) -> FederationPolicy:
+        """Updates an existing federation policy for an OIDC_RECIPIENT. The caller must be the owner of the
+        recipient.
+
+        :param recipient_name: str
+          Name of the recipient. This is the name of the recipient for which the policy is being updated.
+        :param name: str
+          Name of the policy. This is the name of the current name of the policy.
+        :param policy: :class:`FederationPolicy`
+        :param update_mask: str (optional)
+          The field mask specifies which fields of the policy to update. To specify multiple fields in the
+          field mask, use comma as the separator (no space). The special value '*' indicates that all fields
+          should be updated (full replacement). If unspecified, all fields that are set in the policy provided
+          in the update request will overwrite the corresponding fields in the existing policy. Example value:
+          'comment,oidc_policy.audiences'.
+
+        :returns: :class:`FederationPolicy`
+        """
+
+        body = policy.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return FederationPolicy.from_dict(res)
+
 
 class RecipientsAPI:
     """A recipient is an object you create using :method:recipients/create to represent an organization which you
@@ -3269,7 +3355,15 @@ class SharesAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, name: str, *, comment: Optional[str] = None, storage_root: Optional[str] = None) -> ShareInfo:
+    def create(
+        self,
+        name: str,
+        *,
+        comment: Optional[str] = None,
+        replication_enabled: Optional[bool] = None,
+        serverless_budget_policy_id: Optional[str] = None,
+        storage_root: Optional[str] = None,
+    ) -> ShareInfo:
         """Creates a new share for data objects. Data objects can be added after creation with **update**. The
         caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.
 
@@ -3277,6 +3371,11 @@ class SharesAPI:
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param replication_enabled: bool (optional)
+          Whether replication is enabled for this share.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
 
@@ -3288,6 +3387,10 @@ class SharesAPI:
             body["comment"] = comment
         if name is not None:
             body["name"] = name
+        if replication_enabled is not None:
+            body["replication_enabled"] = replication_enabled
+        if serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = serverless_budget_policy_id
         if storage_root is not None:
             body["storage_root"] = storage_root
         headers = {
@@ -3415,6 +3518,7 @@ class SharesAPI:
         comment: Optional[str] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
+        serverless_budget_policy_id: Optional[str] = None,
         storage_root: Optional[str] = None,
         updates: Optional[List[SharedDataObjectUpdate]] = None,
     ) -> ShareInfo:
@@ -3442,6 +3546,9 @@ class SharesAPI:
           New name for the share.
         :param owner: str (optional)
           Username of current owner of share.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)
@@ -3457,6 +3564,8 @@ class SharesAPI:
             body["new_name"] = new_name
         if owner is not None:
             body["owner"] = owner
+        if serverless_budget_policy_id is not None:
+            body["serverless_budget_policy_id"] = serverless_budget_policy_id
         if storage_root is not None:
             body["storage_root"] = storage_root
         if updates is not None:

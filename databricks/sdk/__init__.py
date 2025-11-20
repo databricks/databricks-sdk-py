@@ -32,6 +32,7 @@ from databricks.sdk.service import marketplace as pkg_marketplace
 from databricks.sdk.service import ml as pkg_ml
 from databricks.sdk.service import oauth2 as pkg_oauth2
 from databricks.sdk.service import pipelines as pkg_pipelines
+from databricks.sdk.service import postgres as pkg_postgres
 from databricks.sdk.service import provisioning as pkg_provisioning
 from databricks.sdk.service import qualitymonitorv2 as pkg_qualitymonitorv2
 from databricks.sdk.service import serving as pkg_serving
@@ -46,7 +47,7 @@ from databricks.sdk.service.agentbricks import AgentBricksAPI
 from databricks.sdk.service.apps import AppsAPI, AppsSettingsAPI
 from databricks.sdk.service.billing import (BillableUsageAPI, BudgetPolicyAPI,
                                             BudgetsAPI, LogDeliveryAPI,
-                                            UsageDashboardsAPI)
+                                            UsageDashboardsAPI, UsagePolicyAPI)
 from databricks.sdk.service.catalog import (AccountMetastoreAssignmentsAPI,
                                             AccountMetastoresAPI,
                                             AccountStorageCredentialsAPI,
@@ -80,7 +81,8 @@ from databricks.sdk.service.compute import (ClusterPoliciesAPI, ClustersAPI,
                                             PolicyComplianceForClustersAPI,
                                             PolicyFamiliesAPI)
 from databricks.sdk.service.dashboards import (GenieAPI, LakeviewAPI,
-                                               LakeviewEmbeddedAPI)
+                                               LakeviewEmbeddedAPI,
+                                               QueryExecutionAPI)
 from databricks.sdk.service.database import DatabaseAPI
 from databricks.sdk.service.dataquality import DataQualityAPI
 from databricks.sdk.service.files import DbfsAPI, FilesAPI
@@ -116,6 +118,7 @@ from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
                                            ServicePrincipalSecretsAPI,
                                            ServicePrincipalSecretsProxyAPI)
 from databricks.sdk.service.pipelines import PipelinesAPI
+from databricks.sdk.service.postgres import PostgresAPI
 from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  EncryptionKeysAPI,
                                                  NetworksAPI, PrivateAccessAPI,
@@ -156,7 +159,7 @@ from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
                                         QueryVisualizationsLegacyAPI,
                                         RedashConfigAPI, StatementExecutionAPI,
                                         WarehousesAPI)
-from databricks.sdk.service.tags import TagPoliciesAPI
+from databricks.sdk.service.tags import TagAssignmentsAPI, TagPoliciesAPI
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
                                                  VectorSearchIndexesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
@@ -330,6 +333,7 @@ class WorkspaceClient:
         self._policy_compliance_for_clusters = pkg_compute.PolicyComplianceForClustersAPI(self._api_client)
         self._policy_compliance_for_jobs = pkg_jobs.PolicyComplianceForJobsAPI(self._api_client)
         self._policy_families = pkg_compute.PolicyFamiliesAPI(self._api_client)
+        self._postgres = pkg_postgres.PostgresAPI(self._api_client)
         self._provider_exchange_filters = pkg_marketplace.ProviderExchangeFiltersAPI(self._api_client)
         self._provider_exchanges = pkg_marketplace.ProviderExchangesAPI(self._api_client)
         self._provider_files = pkg_marketplace.ProviderFilesAPI(self._api_client)
@@ -344,6 +348,7 @@ class WorkspaceClient:
         self._quality_monitors = pkg_catalog.QualityMonitorsAPI(self._api_client)
         self._queries = pkg_sql.QueriesAPI(self._api_client)
         self._queries_legacy = pkg_sql.QueriesLegacyAPI(self._api_client)
+        self._query_execution = pkg_dashboards.QueryExecutionAPI(self._api_client)
         self._query_history = pkg_sql.QueryHistoryAPI(self._api_client)
         self._query_visualizations = pkg_sql.QueryVisualizationsAPI(self._api_client)
         self._query_visualizations_legacy = pkg_sql.QueryVisualizationsLegacyAPI(self._api_client)
@@ -373,6 +378,7 @@ class WorkspaceClient:
         self._system_schemas = pkg_catalog.SystemSchemasAPI(self._api_client)
         self._table_constraints = pkg_catalog.TableConstraintsAPI(self._api_client)
         self._tables = pkg_catalog.TablesAPI(self._api_client)
+        self._tag_assignments = pkg_tags.TagAssignmentsAPI(self._api_client)
         self._tag_policies = pkg_tags.TagPoliciesAPI(self._api_client)
         self._temporary_path_credentials = pkg_catalog.TemporaryPathCredentialsAPI(self._api_client)
         self._temporary_table_credentials = pkg_catalog.TemporaryTableCredentialsAPI(self._api_client)
@@ -745,6 +751,11 @@ class WorkspaceClient:
         return self._policy_families
 
     @property
+    def postgres(self) -> pkg_postgres.PostgresAPI:
+        """The Postgres API provides access to a Postgres database via REST API or direct SQL."""
+        return self._postgres
+
+    @property
     def provider_exchange_filters(self) -> pkg_marketplace.ProviderExchangeFiltersAPI:
         """Marketplace exchanges filters curate which groups can access an exchange."""
         return self._provider_exchange_filters
@@ -805,6 +816,11 @@ class WorkspaceClient:
         return self._queries_legacy
 
     @property
+    def query_execution(self) -> pkg_dashboards.QueryExecutionAPI:
+        """Query execution APIs for AI / BI Dashboards."""
+        return self._query_execution
+
+    @property
     def query_history(self) -> pkg_sql.QueryHistoryAPI:
         """A service responsible for storing and retrieving the list of queries run against SQL endpoints and serverless compute."""
         return self._query_history
@@ -856,7 +872,7 @@ class WorkspaceClient:
 
     @property
     def rfa(self) -> pkg_catalog.RfaAPI:
-        """Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables."""
+        """Request for Access enables users to request access for Unity Catalog securables."""
         return self._rfa
 
     @property
@@ -923,6 +939,11 @@ class WorkspaceClient:
     def tables(self) -> pkg_catalog.TablesAPI:
         """A table resides in the third layer of Unity Catalog’s three-level namespace."""
         return self._tables
+
+    @property
+    def tag_assignments(self) -> pkg_tags.TagAssignmentsAPI:
+        """Manage tag assignments on workspace-scoped objects."""
+        return self._tag_assignments
 
     @property
     def tag_policies(self) -> pkg_tags.TagPoliciesAPI:
@@ -1121,6 +1142,7 @@ class AccountClient:
         self._storage = pkg_provisioning.StorageAPI(self._api_client)
         self._storage_credentials = pkg_catalog.AccountStorageCredentialsAPI(self._api_client)
         self._usage_dashboards = pkg_billing.UsageDashboardsAPI(self._api_client)
+        self._usage_policy = pkg_billing.UsagePolicyAPI(self._api_client)
         self._users_v2 = pkg_iam.AccountUsersV2API(self._api_client)
         self._vpc_endpoints = pkg_provisioning.VpcEndpointsAPI(self._api_client)
         self._workspace_assignment = pkg_iam.WorkspaceAssignmentAPI(self._api_client)
@@ -1277,6 +1299,11 @@ class AccountClient:
     def usage_dashboards(self) -> pkg_billing.UsageDashboardsAPI:
         """These APIs manage usage dashboards for this account."""
         return self._usage_dashboards
+
+    @property
+    def usage_policy(self) -> pkg_billing.UsagePolicyAPI:
+        """A service serves REST API about Usage policies."""
+        return self._usage_policy
 
     @property
     def users_v2(self) -> pkg_iam.AccountUsersV2API:

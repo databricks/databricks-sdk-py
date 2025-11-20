@@ -6,6 +6,120 @@
 
     These APIs are used to manage identities and the workspace access of these identities in <Databricks>.
 
+    .. py:method:: create_group(group: Group) -> Group
+
+        TODO: Write description later when this method is implemented
+
+        :param group: :class:`Group`
+          Required. Group to be created in <Databricks>
+
+        :returns: :class:`Group`
+        
+
+    .. py:method:: create_service_principal(service_principal: ServicePrincipal) -> ServicePrincipal
+
+        TODO: Write description later when this method is implemented
+
+        :param service_principal: :class:`ServicePrincipal`
+          Required. Service principal to be created in <Databricks>
+
+        :returns: :class:`ServicePrincipal`
+        
+
+    .. py:method:: create_user(user: User) -> User
+
+        TODO: Write description later when this method is implemented
+
+        :param user: :class:`User`
+          Required. User to be created in <Databricks>
+
+        :returns: :class:`User`
+        
+
+    .. py:method:: create_workspace_access_detail(parent: str, workspace_access_detail: WorkspaceAccessDetail) -> WorkspaceAccessDetail
+
+        TODO: Write description later when this method is implemented
+
+        :param parent: str
+          Required. The parent path for workspace access detail.
+        :param workspace_access_detail: :class:`WorkspaceAccessDetail`
+          Required. Workspace access detail to be created in <Databricks>.
+
+        :returns: :class:`WorkspaceAccessDetail`
+        
+
+    .. py:method:: delete_group(internal_id: int)
+
+        TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the group in Databricks.
+
+
+        
+
+    .. py:method:: delete_service_principal(internal_id: int)
+
+        TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the service principal in Databricks.
+
+
+        
+
+    .. py:method:: delete_user(internal_id: int)
+
+        TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the user in Databricks.
+
+
+        
+
+    .. py:method:: delete_workspace_access_detail(workspace_id: int, principal_id: int)
+
+        TODO: Write description later when this method is implemented
+
+        :param workspace_id: int
+          The workspace ID where the principal has access.
+        :param principal_id: int
+          Required. ID of the principal in Databricks to delete workspace access for.
+
+
+        
+
+    .. py:method:: get_group(internal_id: int) -> Group
+
+        TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the group in Databricks.
+
+        :returns: :class:`Group`
+        
+
+    .. py:method:: get_service_principal(internal_id: int) -> ServicePrincipal
+
+        TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the service principal in Databricks.
+
+        :returns: :class:`ServicePrincipal`
+        
+
+    .. py:method:: get_user(internal_id: int) -> User
+
+        TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the user in Databricks.
+
+        :returns: :class:`User`
+        
+
     .. py:method:: get_workspace_access_detail(workspace_id: int, principal_id: int [, view: Optional[WorkspaceAccessDetailView]]) -> WorkspaceAccessDetail
 
         Returns the access details for a principal in a workspace. Allows for checking access details for any
@@ -23,6 +137,60 @@
           Controls what fields are returned.
 
         :returns: :class:`WorkspaceAccessDetail`
+        
+
+    .. py:method:: list_groups( [, page_size: Optional[int], page_token: Optional[str]]) -> ListGroupsResponse
+
+        TODO: Write description later when this method is implemented
+
+        :param page_size: int (optional)
+          The maximum number of groups to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListGroups call. Provide this to retrieve the subsequent
+          page.
+
+        :returns: :class:`ListGroupsResponse`
+        
+
+    .. py:method:: list_service_principals( [, page_size: Optional[int], page_token: Optional[str]]) -> ListServicePrincipalsResponse
+
+        TODO: Write description later when this method is implemented
+
+        :param page_size: int (optional)
+          The maximum number of service principals to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListServicePrincipals call. Provide this to retrieve the
+          subsequent page.
+
+        :returns: :class:`ListServicePrincipalsResponse`
+        
+
+    .. py:method:: list_users( [, page_size: Optional[int], page_token: Optional[str]]) -> ListUsersResponse
+
+        TODO: Write description later when this method is implemented
+
+        :param page_size: int (optional)
+          The maximum number of users to return. The service may return fewer than this value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListUsers call. Provide this to retrieve the subsequent page.
+
+        :returns: :class:`ListUsersResponse`
+        
+
+    .. py:method:: list_workspace_access_details(workspace_id: int [, page_size: Optional[int], page_token: Optional[str]]) -> ListWorkspaceAccessDetailsResponse
+
+        TODO: Write description later when this method is implemented
+
+        :param workspace_id: int
+          The workspace ID for which the workspace access details are being fetched.
+        :param page_size: int (optional)
+          The maximum number of workspace access details to return. The service may return fewer than this
+          value.
+        :param page_token: str (optional)
+          A page token, received from a previous ListWorkspaceAccessDetails call. Provide this to retrieve the
+          subsequent page.
+
+        :returns: :class:`ListWorkspaceAccessDetailsResponse`
         
 
     .. py:method:: resolve_group(external_id: str) -> ResolveGroupResponse
@@ -59,4 +227,62 @@
           Required. The external ID of the user in the customer's IdP.
 
         :returns: :class:`ResolveUserResponse`
+        
+
+    .. py:method:: update_group(internal_id: int, group: Group, update_mask: str) -> Group
+
+        TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the group in Databricks.
+        :param group: :class:`Group`
+          Required. Group to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`Group`
+        
+
+    .. py:method:: update_service_principal(internal_id: int, service_principal: ServicePrincipal, update_mask: str) -> ServicePrincipal
+
+        TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the service principal in Databricks.
+        :param service_principal: :class:`ServicePrincipal`
+          Required. Service Principal to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`ServicePrincipal`
+        
+
+    .. py:method:: update_user(internal_id: int, user: User, update_mask: str) -> User
+
+        TODO: Write description later when this method is implemented
+
+        :param internal_id: int
+          Required. Internal ID of the user in Databricks.
+        :param user: :class:`User`
+          Required. User to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`User`
+        
+
+    .. py:method:: update_workspace_access_detail(workspace_id: int, principal_id: int, workspace_access_detail: WorkspaceAccessDetail, update_mask: str) -> WorkspaceAccessDetail
+
+        TODO: Write description later when this method is implemented
+
+        :param workspace_id: int
+          Required. The workspace ID for which the workspace access detail is being updated.
+        :param principal_id: int
+          Required. ID of the principal in Databricks.
+        :param workspace_access_detail: :class:`WorkspaceAccessDetail`
+          Required. Workspace access detail to be updated in <Databricks>
+        :param update_mask: str
+          Optional. The list of fields to update.
+
+        :returns: :class:`WorkspaceAccessDetail`
         

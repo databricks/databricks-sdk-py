@@ -279,7 +279,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 47
+   Next Id: 48
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -347,6 +347,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ContinuousUpdateStatus
    :members:
    :undoc-members:
+
+.. autoclass:: ConversionInfo
+   :members:
+   :undoc-members:
+
+.. py:class:: ConversionInfoState
+
+   .. py:attribute:: COMPLETED
+      :value: "COMPLETED"
+
+   .. py:attribute:: IN_PROGRESS
+      :value: "IN_PROGRESS"
 
 .. autoclass:: CreateAccessRequest
    :members:
@@ -642,6 +654,18 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: DrReplicationInfo
+   :members:
+   :undoc-members:
+
+.. py:class:: DrReplicationStatus
+
+   .. py:attribute:: DR_REPLICATION_STATUS_PRIMARY
+      :value: "DR_REPLICATION_STATUS_PRIMARY"
+
+   .. py:attribute:: DR_REPLICATION_STATUS_SECONDARY
+      :value: "DR_REPLICATION_STATUS_SECONDARY"
+
 .. autoclass:: EffectivePermissionsList
    :members:
    :undoc-members:
@@ -686,6 +710,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: EntityTagAssignment
+   :members:
+   :undoc-members:
+
+.. autoclass:: EnvironmentSettings
    :members:
    :undoc-members:
 
@@ -1500,7 +1528,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271
+   Latest kind: CONNECTION_SLACK_OAUTH_U2M_MAPPING = 272; Next id:273
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -1932,6 +1960,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: TriggeredUpdateStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: UcEncryptedToken
    :members:
    :undoc-members:
 

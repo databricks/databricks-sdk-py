@@ -8,6 +8,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListGroupsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListServicePrincipalsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListUsersResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListWorkspaceAccessDetailsResponse
+   :members:
+   :undoc-members:
+
 .. py:class:: PrincipalType
 
    The type of the principal (user/sp/group).

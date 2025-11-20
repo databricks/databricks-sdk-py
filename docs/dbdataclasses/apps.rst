@@ -366,7 +366,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnvVar
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetAppPermissionLevelsResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GitSource
    :members:
    :undoc-members:
 

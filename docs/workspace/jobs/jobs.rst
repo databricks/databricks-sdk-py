@@ -10,7 +10,7 @@
     scalable resources. Your job can consist of a single task or can be a large, multi-task workflow with
     complex dependencies. Databricks manages the task orchestration, cluster management, monitoring, and error
     reporting for all of your jobs. You can run your jobs immediately or periodically through an easy-to-use
-    scheduling system. You can implement job tasks using notebooks, JARS, Delta Live Tables pipelines, or
+    scheduling system. You can implement job tasks using notebooks, JARS, Spark Declarative Pipelines, or
     Python, Scala, Spark submit, and Java applications.
 
     You should never hard code secrets or store them in plain text. Use the [Secrets CLI] to manage secrets in
@@ -126,7 +126,7 @@
     .. py:method:: cancel_run_and_wait(run_id: int, timeout: datetime.timedelta = 0:20:00) -> Run
 
 
-    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
+    .. py:method:: create( [, access_control_list: Optional[List[JobAccessControlRequest]], budget_policy_id: Optional[str], continuous: Optional[Continuous], deployment: Optional[JobDeployment], description: Optional[str], edit_mode: Optional[JobEditMode], email_notifications: Optional[JobEmailNotifications], environments: Optional[List[JobEnvironment]], format: Optional[Format], git_source: Optional[GitSource], health: Optional[JobsHealthRules], job_clusters: Optional[List[JobCluster]], max_concurrent_runs: Optional[int], name: Optional[str], notification_settings: Optional[JobNotificationSettings], parameters: Optional[List[JobParameterDefinition]], parent_path: Optional[str], performance_target: Optional[PerformanceTarget], queue: Optional[QueueSettings], run_as: Optional[JobRunAs], schedule: Optional[CronSchedule], tags: Optional[Dict[str, str]], tasks: Optional[List[Task]], timeout_seconds: Optional[int], trigger: Optional[TriggerSettings], usage_policy_id: Optional[str], webhook_notifications: Optional[WebhookNotifications]]) -> CreateResponse
 
 
         Usage:
@@ -188,9 +188,10 @@
           as when this job is deleted.
         :param environments: List[:class:`JobEnvironment`] (optional)
           A list of task execution environment specifications that can be referenced by serverless tasks of
-          this job. An environment is required to be present for serverless tasks. For serverless notebook
-          tasks, the environment is accessible in the notebook environment panel. For other serverless tasks,
-          the task environment is required to be specified using environment_key in the task settings.
+          this job. For serverless notebook tasks, if the environment_key is not specified, the notebook
+          environment will be used if present. If a jobs environment is specified, it will override the
+          notebook environment. For other serverless tasks, the task environment is required to be specified
+          using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -223,6 +224,9 @@
           `email_notifications` and `webhook_notifications` for this job.
         :param parameters: List[:class:`JobParameterDefinition`] (optional)
           Job-level parameter definitions
+        :param parent_path: str (optional)
+          Path of the job parent folder in workspace file tree. If absent, the job doesn't have a workspace
+          object.
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. This field determines the level of compute performance or
           cost-efficiency for the run.
@@ -522,37 +526,11 @@
 
         .. code-block::
 
-            import os
-            import time
-            
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import jobs
             
             w = WorkspaceClient()
             
-            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
-            
-            cluster_id = (
-                w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
-            )
-            
-            created_job = w.jobs.create(
-                name=f"sdk-{time.time_ns()}",
-                tasks=[
-                    jobs.Task(
-                        description="test",
-                        existing_cluster_id=cluster_id,
-                        notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                        task_key="test",
-                        timeout_seconds=0,
-                    )
-                ],
-            )
-            
-            run_list = w.jobs.list_runs(job_id=created_job.job_id)
-            
-            # cleanup
-            w.jobs.delete(job_id=created_job.job_id)
+            job_list = w.jobs.list(expand_tasks=False)
 
         List jobs.
 

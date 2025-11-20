@@ -7,7 +7,7 @@
     The Token API allows you to create, list, and revoke tokens that can be used to authenticate and access
     Databricks REST APIs.
 
-    .. py:method:: create( [, comment: Optional[str], lifetime_seconds: Optional[int]]) -> CreateTokenResponse
+    .. py:method:: create( [, comment: Optional[str], lifetime_seconds: Optional[int], scopes: Optional[List[str]]]) -> CreateTokenResponse
 
 
         Usage:
@@ -35,6 +35,8 @@
           The lifetime of the token, in seconds.
 
           If the lifetime is not specified, this token remains valid indefinitely.
+        :param scopes: List[str] (optional)
+          Optional scopes of the token.
 
         :returns: :class:`CreateTokenResponse`
         

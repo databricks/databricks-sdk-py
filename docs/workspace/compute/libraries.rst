@@ -41,6 +41,41 @@
         :returns: Iterator over :class:`LibraryFullStatus`
         
 
+    .. py:method:: create_default_base_environment(default_base_environment: DefaultBaseEnvironment [, request_id: Optional[str]]) -> DefaultBaseEnvironment
+
+        Create a default base environment within workspaces to define the environment version and a list of
+        dependencies to be used in serverless notebooks and jobs. This process will asynchronously generate a
+        cache to optimize dependency resolution.
+
+        :param default_base_environment: :class:`DefaultBaseEnvironment`
+        :param request_id: str (optional)
+          A unique identifier for this request. A random UUID is recommended. This request is only idempotent
+          if a `request_id` is provided.
+
+        :returns: :class:`DefaultBaseEnvironment`
+        
+
+    .. py:method:: delete_default_base_environment(id: str)
+
+        Delete the default base environment given an ID. The default base environment may be used by
+        downstream workloads. Please ensure that the deletion is intentional.
+
+        :param id: str
+
+
+        
+
+    .. py:method:: get_default_base_environment(id: str [, trace_id: Optional[str]]) -> DefaultBaseEnvironment
+
+        Return the default base environment details for a given ID.
+
+        :param id: str
+        :param trace_id: str (optional)
+          Deprecated: use ctx.requestId instead
+
+        :returns: :class:`DefaultBaseEnvironment`
+        
+
     .. py:method:: install(cluster_id: str, libraries: List[Library])
 
         Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
@@ -50,6 +85,26 @@
           Unique identifier for the cluster on which to install these libraries.
         :param libraries: List[:class:`Library`]
           The libraries to install.
+
+
+        
+
+    .. py:method:: list_default_base_environments( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DefaultBaseEnvironment]
+
+        List default base environments defined in the workspaces for the requested user.
+
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`DefaultBaseEnvironment`
+        
+
+    .. py:method:: refresh_default_base_environments(ids: List[str])
+
+        Refresh the cached default base environments for the given IDs. This process will asynchronously
+        regenerate the caches. The existing caches remains available until it expires.
+
+        :param ids: List[str]
 
 
         
@@ -65,4 +120,26 @@
           The libraries to uninstall.
 
 
+        
+
+    .. py:method:: update_default_base_environment(id: str, default_base_environment: DefaultBaseEnvironment) -> DefaultBaseEnvironment
+
+        Update the default base environment for the given ID. This process will asynchronously regenerate the
+        cache. The existing cache remains available until it expires.
+
+        :param id: str
+        :param default_base_environment: :class:`DefaultBaseEnvironment`
+
+        :returns: :class:`DefaultBaseEnvironment`
+        
+
+    .. py:method:: update_default_default_base_environment( [, base_environment_type: Optional[BaseEnvironmentType], id: Optional[str]]) -> DefaultBaseEnvironment
+
+        Set the default base environment for the workspace. This marks the specified DBE as the workspace
+        default.
+
+        :param base_environment_type: :class:`BaseEnvironmentType` (optional)
+        :param id: str (optional)
+
+        :returns: :class:`DefaultBaseEnvironment`
         

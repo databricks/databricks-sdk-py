@@ -32,6 +32,11 @@ class CleanRoom:
     created_at: Optional[int] = None
     """When the clean room was created, in epoch milliseconds."""
 
+    enable_shared_output: Optional[bool] = None
+    """Whether allow task to write to shared output schema. When enabled, clean room task runs
+    triggered by the current collaborator can write to the run-scoped shared output schema which is
+    accessible by all collaborators."""
+
     local_collaborator_alias: Optional[str] = None
     """The alias of the collaborator tied to the local clean room."""
 
@@ -67,6 +72,8 @@ class CleanRoom:
             body["comment"] = self.comment
         if self.created_at is not None:
             body["created_at"] = self.created_at
+        if self.enable_shared_output is not None:
+            body["enable_shared_output"] = self.enable_shared_output
         if self.local_collaborator_alias is not None:
             body["local_collaborator_alias"] = self.local_collaborator_alias
         if self.name is not None:
@@ -92,6 +99,8 @@ class CleanRoom:
             body["comment"] = self.comment
         if self.created_at is not None:
             body["created_at"] = self.created_at
+        if self.enable_shared_output is not None:
+            body["enable_shared_output"] = self.enable_shared_output
         if self.local_collaborator_alias is not None:
             body["local_collaborator_alias"] = self.local_collaborator_alias
         if self.name is not None:
@@ -115,6 +124,7 @@ class CleanRoom:
             access_restricted=_enum(d, "access_restricted", CleanRoomAccessRestricted),
             comment=d.get("comment", None),
             created_at=d.get("created_at", None),
+            enable_shared_output=d.get("enable_shared_output", None),
             local_collaborator_alias=d.get("local_collaborator_alias", None),
             name=d.get("name", None),
             output_catalog=_from_dict(d, "output_catalog", CleanRoomOutputCatalog),
@@ -809,6 +819,13 @@ class CleanRoomNotebookTaskRun:
     run_duration: Optional[int] = None
     """Duration of the task run, in milliseconds."""
 
+    shared_output_schema_expiration_time: Optional[int] = None
+    """Expiration time of the shared output schema of the task run (if any), in epoch milliseconds."""
+
+    shared_output_schema_name: Optional[str] = None
+    """Name of the shared output schema associated with the clean rooms notebook task run. This schema
+    is accessible by all collaborators when enable_shared_output is true."""
+
     start_time: Optional[int] = None
     """When the task run started, in epoch milliseconds."""
 
@@ -831,6 +848,10 @@ class CleanRoomNotebookTaskRun:
             body["output_schema_name"] = self.output_schema_name
         if self.run_duration is not None:
             body["run_duration"] = self.run_duration
+        if self.shared_output_schema_expiration_time is not None:
+            body["shared_output_schema_expiration_time"] = self.shared_output_schema_expiration_time
+        if self.shared_output_schema_name is not None:
+            body["shared_output_schema_name"] = self.shared_output_schema_name
         if self.start_time is not None:
             body["start_time"] = self.start_time
         return body
@@ -854,6 +875,10 @@ class CleanRoomNotebookTaskRun:
             body["output_schema_name"] = self.output_schema_name
         if self.run_duration is not None:
             body["run_duration"] = self.run_duration
+        if self.shared_output_schema_expiration_time is not None:
+            body["shared_output_schema_expiration_time"] = self.shared_output_schema_expiration_time
+        if self.shared_output_schema_name is not None:
+            body["shared_output_schema_name"] = self.shared_output_schema_name
         if self.start_time is not None:
             body["start_time"] = self.start_time
         return body
@@ -870,6 +895,8 @@ class CleanRoomNotebookTaskRun:
             output_schema_expiration_time=d.get("output_schema_expiration_time", None),
             output_schema_name=d.get("output_schema_name", None),
             run_duration=d.get("run_duration", None),
+            shared_output_schema_expiration_time=d.get("shared_output_schema_expiration_time", None),
+            shared_output_schema_name=d.get("shared_output_schema_name", None),
             start_time=d.get("start_time", None),
         )
 

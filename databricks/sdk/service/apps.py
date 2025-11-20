@@ -45,6 +45,8 @@ class App:
     creator: Optional[str] = None
     """The email of the user that created the app."""
 
+    default_git_source: Optional[GitSource] = None
+
     default_source_code_path: Optional[str] = None
     """The default workspace file system path of the source code from which app deployment are created.
     This field tracks the workspace source code path of the last active deployment."""
@@ -53,6 +55,8 @@ class App:
     """The description of the app."""
 
     effective_budget_policy_id: Optional[str] = None
+
+    effective_usage_policy_id: Optional[str] = None
 
     effective_user_api_scopes: Optional[List[str]] = None
     """The effective api scopes granted to the user access token."""
@@ -86,6 +90,8 @@ class App:
     url: Optional[str] = None
     """The URL of the app once it is deployed."""
 
+    usage_policy_id: Optional[str] = None
+
     user_api_scopes: Optional[List[str]] = None
 
     def as_dict(self) -> dict:
@@ -105,12 +111,16 @@ class App:
             body["create_time"] = self.create_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.default_git_source:
+            body["default_git_source"] = self.default_git_source.as_dict()
         if self.default_source_code_path is not None:
             body["default_source_code_path"] = self.default_source_code_path
         if self.description is not None:
             body["description"] = self.description
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = [v for v in self.effective_user_api_scopes]
         if self.id is not None:
@@ -137,6 +147,8 @@ class App:
             body["updater"] = self.updater
         if self.url is not None:
             body["url"] = self.url
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         if self.user_api_scopes:
             body["user_api_scopes"] = [v for v in self.user_api_scopes]
         return body
@@ -158,12 +170,16 @@ class App:
             body["create_time"] = self.create_time
         if self.creator is not None:
             body["creator"] = self.creator
+        if self.default_git_source:
+            body["default_git_source"] = self.default_git_source
         if self.default_source_code_path is not None:
             body["default_source_code_path"] = self.default_source_code_path
         if self.description is not None:
             body["description"] = self.description
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = self.effective_user_api_scopes
         if self.id is not None:
@@ -190,6 +206,8 @@ class App:
             body["updater"] = self.updater
         if self.url is not None:
             body["url"] = self.url
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         if self.user_api_scopes:
             body["user_api_scopes"] = self.user_api_scopes
         return body
@@ -205,9 +223,11 @@ class App:
             compute_status=_from_dict(d, "compute_status", ComputeStatus),
             create_time=d.get("create_time", None),
             creator=d.get("creator", None),
+            default_git_source=_from_dict(d, "default_git_source", GitSource),
             default_source_code_path=d.get("default_source_code_path", None),
             description=d.get("description", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             effective_user_api_scopes=d.get("effective_user_api_scopes", None),
             id=d.get("id", None),
             name=d.get("name", None),
@@ -221,6 +241,7 @@ class App:
             update_time=d.get("update_time", None),
             updater=d.get("updater", None),
             url=d.get("url", None),
+            usage_policy_id=d.get("usage_policy_id", None),
             user_api_scopes=d.get("user_api_scopes", None),
         )
 
@@ -336,6 +357,8 @@ class AppAccessControlResponse:
 
 @dataclass
 class AppDeployment:
+    command: Optional[List[str]] = None
+
     create_time: Optional[str] = None
     """The creation time of the deployment. Formatted timestamp in ISO 6801."""
 
@@ -347,6 +370,11 @@ class AppDeployment:
 
     deployment_id: Optional[str] = None
     """The unique id of the deployment."""
+
+    env_vars: Optional[List[EnvVar]] = None
+
+    git_source: Optional[GitSource] = None
+    """Git repository to use as the source for the app deployment."""
 
     mode: Optional[AppDeploymentMode] = None
     """The mode of which the deployment will manage the source code."""
@@ -367,6 +395,8 @@ class AppDeployment:
     def as_dict(self) -> dict:
         """Serializes the AppDeployment into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.command:
+            body["command"] = [v for v in self.command]
         if self.create_time is not None:
             body["create_time"] = self.create_time
         if self.creator is not None:
@@ -375,6 +405,10 @@ class AppDeployment:
             body["deployment_artifacts"] = self.deployment_artifacts.as_dict()
         if self.deployment_id is not None:
             body["deployment_id"] = self.deployment_id
+        if self.env_vars:
+            body["env_vars"] = [v.as_dict() for v in self.env_vars]
+        if self.git_source:
+            body["git_source"] = self.git_source.as_dict()
         if self.mode is not None:
             body["mode"] = self.mode.value
         if self.source_code_path is not None:
@@ -388,6 +422,8 @@ class AppDeployment:
     def as_shallow_dict(self) -> dict:
         """Serializes the AppDeployment into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.command:
+            body["command"] = self.command
         if self.create_time is not None:
             body["create_time"] = self.create_time
         if self.creator is not None:
@@ -396,6 +432,10 @@ class AppDeployment:
             body["deployment_artifacts"] = self.deployment_artifacts
         if self.deployment_id is not None:
             body["deployment_id"] = self.deployment_id
+        if self.env_vars:
+            body["env_vars"] = self.env_vars
+        if self.git_source:
+            body["git_source"] = self.git_source
         if self.mode is not None:
             body["mode"] = self.mode
         if self.source_code_path is not None:
@@ -410,10 +450,13 @@ class AppDeployment:
     def from_dict(cls, d: Dict[str, Any]) -> AppDeployment:
         """Deserializes the AppDeployment from a dictionary."""
         return cls(
+            command=d.get("command", None),
             create_time=d.get("create_time", None),
             creator=d.get("creator", None),
             deployment_artifacts=_from_dict(d, "deployment_artifacts", AppDeploymentArtifacts),
             deployment_id=d.get("deployment_id", None),
+            env_vars=_repeated_dict(d, "env_vars", EnvVar),
+            git_source=_from_dict(d, "git_source", GitSource),
             mode=_enum(d, "mode", AppDeploymentMode),
             source_code_path=d.get("source_code_path", None),
             status=_from_dict(d, "status", AppDeploymentStatus),
@@ -1597,6 +1640,42 @@ class CustomTemplate:
 
 
 @dataclass
+class EnvVar:
+    name: Optional[str] = None
+
+    value: Optional[str] = None
+
+    value_from: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the EnvVar into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        if self.value_from is not None:
+            body["value_from"] = self.value_from
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnvVar into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        if self.value_from is not None:
+            body["value_from"] = self.value_from
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnvVar:
+        """Deserializes the EnvVar from a dictionary."""
+        return cls(name=d.get("name", None), value=d.get("value", None), value_from=d.get("value_from", None))
+
+
+@dataclass
 class GetAppPermissionLevelsResponse:
     permission_levels: Optional[List[AppPermissionsDescription]] = None
     """Specific permission levels"""
@@ -1619,6 +1698,86 @@ class GetAppPermissionLevelsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetAppPermissionLevelsResponse:
         """Deserializes the GetAppPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", AppPermissionsDescription))
+
+
+@dataclass
+class GitSource:
+    url: str
+    """URL of the Git repository."""
+
+    provider: str
+    """Git provider. Case insensitive. Supported values: gitHub, gitHubEnterprise, bitbucketCloud,
+    bitbucketServer, azureDevOpsServices, gitLab, gitLabEnterpriseEdition, awsCodeCommit."""
+
+    branch: Optional[str] = None
+    """Git branch to checkout."""
+
+    commit: Optional[str] = None
+    """Git commit SHA to checkout."""
+
+    resolved_commit: Optional[str] = None
+    """The resolved commit SHA that was actually used for the deployment. This is populated by the
+    system after resolving the reference (branch, tag, or commit). If commit is specified directly,
+    this will match commit. If a branch or tag is specified, this contains the commit SHA that the
+    branch or tag pointed to at deployment time."""
+
+    source_code_path: Optional[str] = None
+    """Relative path to the app source code within the Git repository. If not specified, the root of
+    the repository is used."""
+
+    tag: Optional[str] = None
+    """Git tag to checkout."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GitSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.commit is not None:
+            body["commit"] = self.commit
+        if self.provider is not None:
+            body["provider"] = self.provider
+        if self.resolved_commit is not None:
+            body["resolved_commit"] = self.resolved_commit
+        if self.source_code_path is not None:
+            body["source_code_path"] = self.source_code_path
+        if self.tag is not None:
+            body["tag"] = self.tag
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GitSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.commit is not None:
+            body["commit"] = self.commit
+        if self.provider is not None:
+            body["provider"] = self.provider
+        if self.resolved_commit is not None:
+            body["resolved_commit"] = self.resolved_commit
+        if self.source_code_path is not None:
+            body["source_code_path"] = self.source_code_path
+        if self.tag is not None:
+            body["tag"] = self.tag
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GitSource:
+        """Deserializes the GitSource from a dictionary."""
+        return cls(
+            branch=d.get("branch", None),
+            commit=d.get("commit", None),
+            provider=d.get("provider", None),
+            resolved_commit=d.get("resolved_commit", None),
+            source_code_path=d.get("source_code_path", None),
+            tag=d.get("tag", None),
+            url=d.get("url", None),
+        )
 
 
 @dataclass

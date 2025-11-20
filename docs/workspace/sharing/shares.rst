@@ -9,7 +9,7 @@
     register data assets under their original name, qualified by their original schema, or provide alternate
     exposed names.
 
-    .. py:method:: create(name: str [, comment: Optional[str], storage_root: Optional[str]]) -> ShareInfo
+    .. py:method:: create(name: str [, comment: Optional[str], replication_enabled: Optional[bool], serverless_budget_policy_id: Optional[str], storage_root: Optional[str]]) -> ShareInfo
 
 
         Usage:
@@ -34,6 +34,11 @@
           Name of the share.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param replication_enabled: bool (optional)
+          Whether replication is enabled for this share.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
 
@@ -134,7 +139,7 @@
         :returns: :class:`GetSharePermissionsResponse`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str], storage_root: Optional[str], updates: Optional[List[SharedDataObjectUpdate]]]) -> ShareInfo
+    .. py:method:: update(name: str [, comment: Optional[str], new_name: Optional[str], owner: Optional[str], serverless_budget_policy_id: Optional[str], storage_root: Optional[str], updates: Optional[List[SharedDataObjectUpdate]]]) -> ShareInfo
 
 
         Usage:
@@ -210,6 +215,9 @@
           New name for the share.
         :param owner: str (optional)
           Username of current owner of share.
+        :param serverless_budget_policy_id: str (optional)
+          Serverless budget policy id (can only be created/updated when calling data-sharing service)
+          [Create,Update:IGN]
         :param storage_root: str (optional)
           Storage root URL for the share.
         :param updates: List[:class:`SharedDataObjectUpdate`] (optional)

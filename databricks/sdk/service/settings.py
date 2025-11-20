@@ -846,6 +846,10 @@ class CreatePrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
+    gcp_endpoint_spec: Optional[GcpEndpointSpec] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -869,6 +873,10 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec.as_dict()
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -884,6 +892,10 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -898,6 +910,8 @@ class CreatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
+            gcp_endpoint_spec=_from_dict(d, "gcp_endpoint_spec", GcpEndpointSpec),
             group_id=d.get("group_id", None),
             resource_id=d.get("resource_id", None),
             resource_names=d.get("resource_names", None),
@@ -1180,6 +1194,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
 
 class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState(Enum):
 
+    CREATE_FAILED = "CREATE_FAILED"
+    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
@@ -2881,6 +2897,41 @@ class FetchIpAccessListResponse:
 
 
 @dataclass
+class GcpEndpointSpec:
+    psc_endpoint_uri: Optional[str] = None
+    """Output only. The URI of the created PSC endpoint."""
+
+    service_attachment: Optional[str] = None
+    """The full url of the target service attachment. Example:
+    projects/my-gcp-project/regions/us-east4/serviceAttachments/my-service-attachment"""
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpEndpointSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.psc_endpoint_uri is not None:
+            body["psc_endpoint_uri"] = self.psc_endpoint_uri
+        if self.service_attachment is not None:
+            body["service_attachment"] = self.service_attachment
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpEndpointSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.psc_endpoint_uri is not None:
+            body["psc_endpoint_uri"] = self.psc_endpoint_uri
+        if self.service_attachment is not None:
+            body["service_attachment"] = self.service_attachment
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GcpEndpointSpec:
+        """Deserializes the GcpEndpointSpec from a dictionary."""
+        return cls(
+            psc_endpoint_uri=d.get("psc_endpoint_uri", None), service_attachment=d.get("service_attachment", None)
+        )
+
+
+@dataclass
 class GenericWebhookConfig:
     password: Optional[str] = None
     """[Input-Only][Optional] Password for webhook."""
@@ -3825,6 +3876,8 @@ class NccAzurePrivateEndpointRule:
 
 class NccAzurePrivateEndpointRuleConnectionState(Enum):
 
+    CREATE_FAILED = "CREATE_FAILED"
+    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
@@ -3926,6 +3979,8 @@ class NccEgressDefaultRules:
 
     azure_service_endpoint_rule: Optional[NccAzureServiceEndpointRule] = None
 
+    gcp_project_id_rule: Optional[NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule] = None
+
     def as_dict(self) -> dict:
         """Serializes the NccEgressDefaultRules into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3933,6 +3988,8 @@ class NccEgressDefaultRules:
             body["aws_stable_ip_rule"] = self.aws_stable_ip_rule.as_dict()
         if self.azure_service_endpoint_rule:
             body["azure_service_endpoint_rule"] = self.azure_service_endpoint_rule.as_dict()
+        if self.gcp_project_id_rule:
+            body["gcp_project_id_rule"] = self.gcp_project_id_rule.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3942,6 +3999,8 @@ class NccEgressDefaultRules:
             body["aws_stable_ip_rule"] = self.aws_stable_ip_rule
         if self.azure_service_endpoint_rule:
             body["azure_service_endpoint_rule"] = self.azure_service_endpoint_rule
+        if self.gcp_project_id_rule:
+            body["gcp_project_id_rule"] = self.gcp_project_id_rule
         return body
 
     @classmethod
@@ -3950,6 +4009,9 @@ class NccEgressDefaultRules:
         return cls(
             aws_stable_ip_rule=_from_dict(d, "aws_stable_ip_rule", NccAwsStableIpRule),
             azure_service_endpoint_rule=_from_dict(d, "azure_service_endpoint_rule", NccAzureServiceEndpointRule),
+            gcp_project_id_rule=_from_dict(
+                d, "gcp_project_id_rule", NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule
+            ),
         )
 
 
@@ -4037,6 +4099,10 @@ class NccPrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
+    gcp_endpoint_spec: Optional[GcpEndpointSpec] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -4087,6 +4153,10 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec.as_dict()
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4124,6 +4194,10 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4153,6 +4227,8 @@ class NccPrivateEndpointRule:
             enabled=d.get("enabled", None),
             endpoint_name=d.get("endpoint_name", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
+            gcp_endpoint_spec=_from_dict(d, "gcp_endpoint_spec", GcpEndpointSpec),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
@@ -4172,6 +4248,32 @@ class NccPrivateEndpointRulePrivateLinkConnectionState(Enum):
     EXPIRED = "EXPIRED"
     PENDING = "PENDING"
     REJECTED = "REJECTED"
+
+
+@dataclass
+class NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule:
+    project_ids: Optional[List[str]] = None
+    """A list of Databricks internal project IDs from where network access originates for serverless
+    DBSQL, This list is stable and will not change once the NCC object is created."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.project_ids:
+            body["project_ids"] = [v for v in self.project_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.project_ids:
+            body["project_ids"] = self.project_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule:
+        """Deserializes the NetworkConnectivityConfigEgressConfigDefaultRuleGcpProjectIdRule from a dictionary."""
+        return cls(project_ids=d.get("project_ids", None))
 
 
 @dataclass
@@ -4495,6 +4597,12 @@ class PublicTokenInfo:
     expiry_time: Optional[int] = None
     """Server time (in epoch milliseconds) when the token will expire, or -1 if not applicable."""
 
+    last_accessed_time: Optional[int] = None
+    """Server time (in epoch milliseconds) when the token was accessed most recently."""
+
+    scopes: Optional[List[str]] = None
+    """Scope of the token was created with, if applicable."""
+
     token_id: Optional[str] = None
     """The ID of this token."""
 
@@ -4507,6 +4615,10 @@ class PublicTokenInfo:
             body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
             body["expiry_time"] = self.expiry_time
+        if self.last_accessed_time is not None:
+            body["last_accessed_time"] = self.last_accessed_time
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
         if self.token_id is not None:
             body["token_id"] = self.token_id
         return body
@@ -4520,6 +4632,10 @@ class PublicTokenInfo:
             body["creation_time"] = self.creation_time
         if self.expiry_time is not None:
             body["expiry_time"] = self.expiry_time
+        if self.last_accessed_time is not None:
+            body["last_accessed_time"] = self.last_accessed_time
+        if self.scopes:
+            body["scopes"] = self.scopes
         if self.token_id is not None:
             body["token_id"] = self.token_id
         return body
@@ -4531,6 +4647,8 @@ class PublicTokenInfo:
             comment=d.get("comment", None),
             creation_time=d.get("creation_time", None),
             expiry_time=d.get("expiry_time", None),
+            last_accessed_time=d.get("last_accessed_time", None),
+            scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
         )
 
@@ -4907,6 +5025,9 @@ class TokenInfo:
     owner_id: Optional[int] = None
     """User ID of the user that owns the token."""
 
+    scopes: Optional[List[str]] = None
+    """Scope of the token was created with, if applicable."""
+
     token_id: Optional[str] = None
     """ID of the token."""
 
@@ -4930,6 +5051,8 @@ class TokenInfo:
             body["last_used_day"] = self.last_used_day
         if self.owner_id is not None:
             body["owner_id"] = self.owner_id
+        if self.scopes:
+            body["scopes"] = [v for v in self.scopes]
         if self.token_id is not None:
             body["token_id"] = self.token_id
         if self.workspace_id is not None:
@@ -4953,6 +5076,8 @@ class TokenInfo:
             body["last_used_day"] = self.last_used_day
         if self.owner_id is not None:
             body["owner_id"] = self.owner_id
+        if self.scopes:
+            body["scopes"] = self.scopes
         if self.token_id is not None:
             body["token_id"] = self.token_id
         if self.workspace_id is not None:
@@ -4970,6 +5095,7 @@ class TokenInfo:
             expiry_time=d.get("expiry_time", None),
             last_used_day=d.get("last_used_day", None),
             owner_id=d.get("owner_id", None),
+            scopes=d.get("scopes", None),
             token_id=d.get("token_id", None),
             workspace_id=d.get("workspace_id", None),
         )
@@ -5122,6 +5248,10 @@ class UpdatePrivateEndpointRule:
     Update this field to activate/deactivate this private endpoint to allow egress access from
     serverless compute resources."""
 
+    error_message: Optional[str] = None
+
+    gcp_endpoint_spec: Optional[GcpEndpointSpec] = None
+
     resource_names: Optional[List[str]] = None
     """Only used by private endpoints towards AWS S3 service.
     
@@ -5136,6 +5266,10 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec.as_dict()
         if self.resource_names:
             body["resource_names"] = [v for v in self.resource_names]
         return body
@@ -5147,6 +5281,10 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
+        if self.gcp_endpoint_spec:
+            body["gcp_endpoint_spec"] = self.gcp_endpoint_spec
         if self.resource_names:
             body["resource_names"] = self.resource_names
         return body
@@ -5157,6 +5295,8 @@ class UpdatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
+            error_message=d.get("error_message", None),
+            gcp_endpoint_spec=_from_dict(d, "gcp_endpoint_spec", GcpEndpointSpec),
             resource_names=d.get("resource_names", None),
         )
 
@@ -8582,7 +8722,13 @@ class TokensAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, *, comment: Optional[str] = None, lifetime_seconds: Optional[int] = None) -> CreateTokenResponse:
+    def create(
+        self,
+        *,
+        comment: Optional[str] = None,
+        lifetime_seconds: Optional[int] = None,
+        scopes: Optional[List[str]] = None,
+    ) -> CreateTokenResponse:
         """Creates and returns a token for a user. If this call is made through token authentication, it creates
         a token with the same client ID as the authenticated token. If the user's token quota is exceeded,
         this call returns an error **QUOTA_EXCEEDED**.
@@ -8593,6 +8739,8 @@ class TokensAPI:
           The lifetime of the token, in seconds.
 
           If the lifetime is not specified, this token remains valid indefinitely.
+        :param scopes: List[str] (optional)
+          Optional scopes of the token.
 
         :returns: :class:`CreateTokenResponse`
         """
@@ -8602,6 +8750,8 @@ class TokensAPI:
             body["comment"] = comment
         if lifetime_seconds is not None:
             body["lifetime_seconds"] = lifetime_seconds
+        if scopes is not None:
+            body["scopes"] = [v for v in scopes]
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",

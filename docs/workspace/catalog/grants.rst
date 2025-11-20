@@ -14,7 +14,7 @@
     within the catalog. Similarly, privileges granted on a schema are inherited by all current and future
     objects within that schema.
 
-    .. py:method:: get(securable_type: str, full_name: str [, max_results: Optional[int], page_token: Optional[str], principal: Optional[str]]) -> GetPermissionsResponse
+    .. py:method:: get(securable_type: str, full_name: str [, include_deleted_principals: Optional[bool], max_results: Optional[int], page_token: Optional[str], principal: Optional[str]]) -> GetPermissionsResponse
 
 
         Usage:
@@ -73,6 +73,8 @@
           Type of securable.
         :param full_name: str
           Full name of securable.
+        :param include_deleted_principals: bool (optional)
+          Optional. If true, also return privilege assignments whose principals have been deleted.
         :param max_results: int (optional)
           Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment
           present in a single page response is guaranteed to contain all the privileges granted on the

@@ -484,6 +484,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ModelTriggerConfiguration
+   :members:
+   :undoc-members:
+
+.. py:class:: ModelTriggerConfigurationCondition
+
+   .. py:attribute:: MODEL_ALIAS_SET
+      :value: "MODEL_ALIAS_SET"
+
+   .. py:attribute:: MODEL_CREATED
+      :value: "MODEL_CREATED"
+
+   .. py:attribute:: MODEL_VERSION_READY
+      :value: "MODEL_VERSION_READY"
+
 .. autoclass:: NotebookOutput
    :members:
    :undoc-members:

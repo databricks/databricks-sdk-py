@@ -274,6 +274,16 @@
         :returns: :class:`GetLoggedModelResponse`
         
 
+    .. py:method:: get_logged_models( [, model_ids: Optional[List[str]]]) -> GetLoggedModelsRequestResponse
+
+        Batch endpoint for getting logged models from a list of model IDs
+
+        :param model_ids: List[str] (optional)
+          The IDs of the logged models to retrieve. Max threshold is 100.
+
+        :returns: :class:`GetLoggedModelsRequestResponse`
+        
+
     .. py:method:: get_permission_levels(experiment_id: str) -> GetExperimentPermissionLevelsResponse
 
         Gets the permission levels that a user can have on an object.

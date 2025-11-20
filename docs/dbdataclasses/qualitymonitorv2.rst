@@ -8,6 +8,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: AnomalyDetectionJobType
+
+   .. py:attribute:: ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN
+      :value: "ANOMALY_DETECTION_JOB_TYPE_INTERNAL_HIDDEN"
+
+   .. py:attribute:: ANOMALY_DETECTION_JOB_TYPE_NORMAL
+      :value: "ANOMALY_DETECTION_JOB_TYPE_NORMAL"
+
 .. py:class:: AnomalyDetectionRunStatus
 
    Status of Anomaly Detection Job Run

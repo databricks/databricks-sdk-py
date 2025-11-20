@@ -29,6 +29,24 @@
     .. py:method:: create_message_and_wait(space_id: str, conversation_id: str, content: str, timeout: datetime.timedelta = 0:20:00) -> GenieMessage
 
 
+    .. py:method:: create_space(warehouse_id: str, serialized_space: str [, description: Optional[str], parent_path: Optional[str], title: Optional[str]]) -> GenieSpace
+
+        Creates a Genie space from a serialized payload.
+
+        :param warehouse_id: str
+          Warehouse to associate with the new space
+        :param serialized_space: str
+          Serialized export model for the space contents
+        :param description: str (optional)
+          Optional description
+        :param parent_path: str (optional)
+          Parent folder path where the space will be registered
+        :param title: str (optional)
+          Optional title override
+
+        :returns: :class:`GenieSpace`
+        
+
     .. py:method:: delete_conversation(space_id: str, conversation_id: str)
 
         Delete a conversation.
@@ -85,6 +103,51 @@
           Message ID
 
         :returns: :class:`GenieGetMessageQueryResultResponse`
+        
+
+    .. py:method:: generate_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGenerateDownloadFullQueryResultResponse
+
+        Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
+        the download. The query result is stored in an external link and can be retrieved using the [Get
+        Download Full Query Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
+        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        See [Execute Statement](:method:statementexecution/executestatement) for more details.
+
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+
+        :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
+        
+
+    .. py:method:: get_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str) -> GenieGetDownloadFullQueryResultResponse
+
+        After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
+        successfully receiving a `download_id`, use this API to poll the download progress. When the download
+        is complete, the API returns one or more external links to the query result files. Warning: Databricks
+        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        You must not set an Authorization header in download requests. When using the `EXTERNAL_LINKS`
+        disposition, Databricks returns presigned URLs that grant temporary access to data. See [Execute
+        Statement](:method:statementexecution/executestatement) for more details.
+
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+        :param download_id: str
+          Download ID. This ID is provided by the [Generate Download
+          endpoint](:method:genie/generateDownloadFullQueryResult)
+
+        :returns: :class:`GenieGetDownloadFullQueryResultResponse`
         
 
     .. py:method:: get_message(space_id: str, conversation_id: str, message_id: str) -> GenieMessage
@@ -205,7 +268,7 @@
         :returns: :class:`GenieListSpacesResponse`
         
 
-    .. py:method:: send_message_feedback(space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating)
+    .. py:method:: send_message_feedback(space_id: str, conversation_id: str, message_id: str, rating: GenieFeedbackRating [, comment: Optional[str]])
 
         Send feedback for a message.
 
@@ -217,6 +280,8 @@
           The ID associated with the message to provide feedback for.
         :param rating: :class:`GenieFeedbackRating`
           The rating (POSITIVE, NEGATIVE, or NONE).
+        :param comment: str (optional)
+          Optional text feedback that will be stored as a comment.
 
 
         
@@ -246,6 +311,24 @@
           The ID associated with the Genie space to be sent to the trash.
 
 
+        
+
+    .. py:method:: update_space(space_id: str [, description: Optional[str], serialized_space: Optional[str], title: Optional[str], warehouse_id: Optional[str]]) -> GenieSpace
+
+        Updates a Genie space with a serialized payload.
+
+        :param space_id: str
+          Genie space ID
+        :param description: str (optional)
+          Optional description
+        :param serialized_space: str (optional)
+          Serialized export model for the space contents (full replacement)
+        :param title: str (optional)
+          Optional title override
+        :param warehouse_id: str (optional)
+          Optional warehouse override
+
+        :returns: :class:`GenieSpace`
         
 
     .. py:method:: wait_get_message_genie_completed(conversation_id: str, message_id: str, space_id: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[GenieMessage], None]]) -> GenieMessage

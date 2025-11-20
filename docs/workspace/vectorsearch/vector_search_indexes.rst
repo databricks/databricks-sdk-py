@@ -153,6 +153,16 @@
 
         
 
+    .. py:method:: update_index_budget_policy(index_name: str) -> UpdateVectorIndexUsagePolicyResponse
+
+        Update the budget policy of an index
+
+        :param index_name: str
+          Name of the vector search index
+
+        :returns: :class:`UpdateVectorIndexUsagePolicyResponse`
+        
+
     .. py:method:: upsert_data_vector_index(index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse
 
         Handles the upserting of data into a specified vector index.

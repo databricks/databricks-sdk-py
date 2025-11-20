@@ -1385,7 +1385,11 @@ class Feature:
     """The filter condition applied to the source data before aggregation."""
 
     lineage_context: Optional[LineageContext] = None
-    """Lineage context information for this feature."""
+    """WARNING: This field is primarily intended for internal use by Databricks systems and is
+    automatically populated when features are created through Databricks notebooks or jobs. Users
+    should not manually set this field as incorrect values may lead to inaccurate lineage tracking
+    or unexpected behavior. This field will be set by feature-engineering client and should be left
+    unset by SDK and terraform users."""
 
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
@@ -1962,6 +1966,31 @@ class GetLoggedModelResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelResponse:
         """Deserializes the GetLoggedModelResponse from a dictionary."""
         return cls(model=_from_dict(d, "model", LoggedModel))
+
+
+@dataclass
+class GetLoggedModelsRequestResponse:
+    models: Optional[List[LoggedModel]] = None
+    """The retrieved logged models."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GetLoggedModelsRequestResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.models:
+            body["models"] = [v.as_dict() for v in self.models]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GetLoggedModelsRequestResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.models:
+            body["models"] = self.models
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GetLoggedModelsRequestResponse:
+        """Deserializes the GetLoggedModelsRequestResponse from a dictionary."""
+        return cls(models=_repeated_dict(d, "models", LoggedModel))
 
 
 @dataclass
@@ -3154,7 +3183,7 @@ class MaterializedFeature:
 
     offline_store_config: Optional[OfflineStoreConfig] = None
 
-    online_store_config: Optional[OnlineStore] = None
+    online_store_config: Optional[OnlineStoreConfig] = None
 
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
     """The schedule state of the materialization pipeline."""
@@ -3209,7 +3238,7 @@ class MaterializedFeature:
             last_materialization_time=d.get("last_materialization_time", None),
             materialized_feature_id=d.get("materialized_feature_id", None),
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
-            online_store_config=_from_dict(d, "online_store_config", OnlineStore),
+            online_store_config=_from_dict(d, "online_store_config", OnlineStoreConfig),
             pipeline_schedule_state=_enum(d, "pipeline_schedule_state", MaterializedFeaturePipelineScheduleState),
             table_name=d.get("table_name", None),
         )
@@ -4010,6 +4039,60 @@ class OnlineStore:
             name=d.get("name", None),
             read_replica_count=d.get("read_replica_count", None),
             state=_enum(d, "state", OnlineStoreState),
+        )
+
+
+@dataclass
+class OnlineStoreConfig:
+    """Configuration for online store destination."""
+
+    catalog_name: str
+    """The Unity Catalog catalog name. This name is also used as the Lakebase logical database name."""
+
+    schema_name: str
+    """The Unity Catalog schema name."""
+
+    table_name_prefix: str
+    """Prefix for Unity Catalog table name. The materialized feature will be stored in a Lakebase table
+    with this prefix and a generated postfix."""
+
+    online_store_name: str
+    """The name of the target online store."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineStoreConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.online_store_name is not None:
+            body["online_store_name"] = self.online_store_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OnlineStoreConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.online_store_name is not None:
+            body["online_store_name"] = self.online_store_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineStoreConfig:
+        """Deserializes the OnlineStoreConfig from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            online_store_name=d.get("online_store_name", None),
+            schema_name=d.get("schema_name", None),
+            table_name_prefix=d.get("table_name_prefix", None),
         )
 
 
@@ -6075,6 +6158,25 @@ class ExperimentsAPI:
 
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
+
+    def get_logged_models(self, *, model_ids: Optional[List[str]] = None) -> GetLoggedModelsRequestResponse:
+        """Batch endpoint for getting logged models from a list of model IDs
+
+        :param model_ids: List[str] (optional)
+          The IDs of the logged models to retrieve. Max threshold is 100.
+
+        :returns: :class:`GetLoggedModelsRequestResponse`
+        """
+
+        query = {}
+        if model_ids is not None:
+            query["model_ids"] = [v for v in model_ids]
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", "/api/2.0/mlflow/logged-models:batchGet", query=query, headers=headers)
+        return GetLoggedModelsRequestResponse.from_dict(res)
 
     def get_permission_levels(self, experiment_id: str) -> GetExperimentPermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.

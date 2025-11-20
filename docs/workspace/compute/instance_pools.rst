@@ -19,7 +19,7 @@
     Databricks does not charge DBUs while instances are idle in the pool. Instance provider billing does
     apply. See pricing.
 
-    .. py:method:: create(instance_pool_name: str, node_type_id: str [, aws_attributes: Optional[InstancePoolAwsAttributes], azure_attributes: Optional[InstancePoolAzureAttributes], custom_tags: Optional[Dict[str, str]], disk_spec: Optional[DiskSpec], enable_elastic_disk: Optional[bool], gcp_attributes: Optional[InstancePoolGcpAttributes], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], preloaded_docker_images: Optional[List[DockerImage]], preloaded_spark_versions: Optional[List[str]], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]]) -> CreateInstancePoolResponse
+    .. py:method:: create(instance_pool_name: str, node_type_id: str [, aws_attributes: Optional[InstancePoolAwsAttributes], azure_attributes: Optional[InstancePoolAzureAttributes], custom_tags: Optional[Dict[str, str]], disk_spec: Optional[DiskSpec], enable_auto_alternate_node_types: Optional[bool], enable_elastic_disk: Optional[bool], gcp_attributes: Optional[InstancePoolGcpAttributes], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], node_type_flexibility: Optional[NodeTypeFlexibility], preloaded_docker_images: Optional[List[DockerImage]], preloaded_spark_versions: Optional[List[str]], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]]) -> CreateInstancePoolResponse
 
 
         Usage:
@@ -62,6 +62,9 @@
           - Currently, Databricks allows at most 45 custom tags
         :param disk_spec: :class:`DiskSpec` (optional)
           Defines the specification of the disks that will be attached to all spark containers.
+        :param enable_auto_alternate_node_types: bool (optional)
+          For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
+          enabled. This field should not be true if node_type_flexibility is set.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this instances in this pool will dynamically acquire
           additional disk space when its Spark workers are running low on disk space. In AWS, this feature
@@ -81,6 +84,10 @@
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          For pools with node type flexibility (Fleet-V2), this object contains the information about the
+          alternate node type ids to use when attempting to launch a cluster if the node type id is not
+          available. This field should not be set if enable_auto_alternate_node_types is true.
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
           Custom Docker Image BYOC
         :param preloaded_spark_versions: List[str] (optional)
@@ -107,7 +114,7 @@
 
         
 
-    .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]])
+    .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], enable_auto_alternate_node_types: Optional[bool], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], node_type_flexibility: Optional[NodeTypeFlexibility], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]])
 
 
         Usage:
@@ -150,6 +157,9 @@
           EBS volumes) with these tags in addition to `default_tags`. Notes:
 
           - Currently, Databricks allows at most 45 custom tags
+        :param enable_auto_alternate_node_types: bool (optional)
+          For pools with node type flexibility (Fleet-V2), whether auto generated alternate node type ids are
+          enabled. This field should not be true if node_type_flexibility is set.
         :param idle_instance_autotermination_minutes: int (optional)
           Automatically terminates the extra instances in the pool cache after they are inactive for this time
           in minutes if min_idle_instances requirement is already met. If not set, the extra pool instances
@@ -162,6 +172,10 @@
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          For pools with node type flexibility (Fleet-V2), this object contains the information about the
+          alternate node type ids to use when attempting to launch a cluster if the node type id is not
+          available. This field should not be set if enable_auto_alternate_node_types is true.
         :param remote_disk_throughput: int (optional)
           If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
           for GCP HYPERDISK_BALANCED types.

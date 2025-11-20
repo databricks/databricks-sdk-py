@@ -22,15 +22,65 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
+class AdjustedThroughputRequest:
+    """Adjusted throughput request parameters"""
+
+    concurrency: Optional[float] = None
+    """Adjusted concurrency (total CPU) for the endpoint"""
+
+    maximum_concurrency_allowed: Optional[float] = None
+    """Adjusted maximum concurrency allowed for the endpoint"""
+
+    minimal_concurrency_allowed: Optional[float] = None
+    """Adjusted minimum concurrency allowed for the endpoint"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AdjustedThroughputRequest into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.concurrency is not None:
+            body["concurrency"] = self.concurrency
+        if self.maximum_concurrency_allowed is not None:
+            body["maximum_concurrency_allowed"] = self.maximum_concurrency_allowed
+        if self.minimal_concurrency_allowed is not None:
+            body["minimal_concurrency_allowed"] = self.minimal_concurrency_allowed
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AdjustedThroughputRequest into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.concurrency is not None:
+            body["concurrency"] = self.concurrency
+        if self.maximum_concurrency_allowed is not None:
+            body["maximum_concurrency_allowed"] = self.maximum_concurrency_allowed
+        if self.minimal_concurrency_allowed is not None:
+            body["minimal_concurrency_allowed"] = self.minimal_concurrency_allowed
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AdjustedThroughputRequest:
+        """Deserializes the AdjustedThroughputRequest from a dictionary."""
+        return cls(
+            concurrency=d.get("concurrency", None),
+            maximum_concurrency_allowed=d.get("maximum_concurrency_allowed", None),
+            minimal_concurrency_allowed=d.get("minimal_concurrency_allowed", None),
+        )
+
+
+@dataclass
 class ColumnInfo:
     name: Optional[str] = None
     """Name of the column."""
+
+    type_text: Optional[str] = None
+    """Data type of the column (e.g., "string", "int", "array<float>")"""
 
     def as_dict(self) -> dict:
         """Serializes the ColumnInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.name is not None:
             body["name"] = self.name
+        if self.type_text is not None:
+            body["type_text"] = self.type_text
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -38,12 +88,14 @@ class ColumnInfo:
         body = {}
         if self.name is not None:
             body["name"] = self.name
+        if self.type_text is not None:
+            body["type_text"] = self.type_text
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ColumnInfo:
         """Deserializes the ColumnInfo from a dictionary."""
-        return cls(name=d.get("name", None))
+        return cls(name=d.get("name", None), type_text=d.get("type_text", None))
 
 
 @dataclass
@@ -194,6 +246,11 @@ class DeltaSyncVectorIndexSpecRequest:
     columns from the source table are synced with the index. The primary key column and embedding
     source column or embedding vector column are always synced."""
 
+    effective_budget_policy_id: Optional[str] = None
+    """The budget policy id applied to the vector search index"""
+
+    effective_usage_policy_id: Optional[str] = None
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -218,6 +275,10 @@ class DeltaSyncVectorIndexSpecRequest:
         body = {}
         if self.columns_to_sync:
             body["columns_to_sync"] = [v for v in self.columns_to_sync]
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -235,6 +296,10 @@ class DeltaSyncVectorIndexSpecRequest:
         body = {}
         if self.columns_to_sync:
             body["columns_to_sync"] = self.columns_to_sync
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -252,6 +317,8 @@ class DeltaSyncVectorIndexSpecRequest:
         """Deserializes the DeltaSyncVectorIndexSpecRequest from a dictionary."""
         return cls(
             columns_to_sync=d.get("columns_to_sync", None),
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -262,6 +329,11 @@ class DeltaSyncVectorIndexSpecRequest:
 
 @dataclass
 class DeltaSyncVectorIndexSpecResponse:
+    effective_budget_policy_id: Optional[str] = None
+    """The budget policy id applied to the vector search index"""
+
+    effective_usage_policy_id: Optional[str] = None
+
     embedding_source_columns: Optional[List[EmbeddingSourceColumn]] = None
     """The columns that contain the embedding source."""
 
@@ -287,6 +359,10 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = [v.as_dict() for v in self.embedding_source_columns]
         if self.embedding_vector_columns:
@@ -304,6 +380,10 @@ class DeltaSyncVectorIndexSpecResponse:
     def as_shallow_dict(self) -> dict:
         """Serializes the DeltaSyncVectorIndexSpecResponse into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.effective_budget_policy_id is not None:
+            body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.embedding_source_columns:
             body["embedding_source_columns"] = self.embedding_source_columns
         if self.embedding_vector_columns:
@@ -322,6 +402,8 @@ class DeltaSyncVectorIndexSpecResponse:
     def from_dict(cls, d: Dict[str, Any]) -> DeltaSyncVectorIndexSpecResponse:
         """Deserializes the DeltaSyncVectorIndexSpecResponse from a dictionary."""
         return cls(
+            effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             embedding_source_columns=_repeated_dict(d, "embedding_source_columns", EmbeddingSourceColumn),
             embedding_vector_columns=_repeated_dict(d, "embedding_vector_columns", EmbeddingVectorColumn),
             embedding_writeback_table=d.get("embedding_writeback_table", None),
@@ -486,6 +568,9 @@ class EndpointInfo:
     num_indexes: Optional[int] = None
     """Number of indexes on the endpoint"""
 
+    throughput_info: Optional[EndpointThroughputInfo] = None
+    """Throughput information for the endpoint"""
+
     def as_dict(self) -> dict:
         """Serializes the EndpointInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -511,6 +596,8 @@ class EndpointInfo:
             body["name"] = self.name
         if self.num_indexes is not None:
             body["num_indexes"] = self.num_indexes
+        if self.throughput_info:
+            body["throughput_info"] = self.throughput_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -538,6 +625,8 @@ class EndpointInfo:
             body["name"] = self.name
         if self.num_indexes is not None:
             body["num_indexes"] = self.num_indexes
+        if self.throughput_info:
+            body["throughput_info"] = self.throughput_info
         return body
 
     @classmethod
@@ -555,6 +644,7 @@ class EndpointInfo:
             last_updated_user=d.get("last_updated_user", None),
             name=d.get("name", None),
             num_indexes=d.get("num_indexes", None),
+            throughput_info=_from_dict(d, "throughput_info", EndpointThroughputInfo),
         )
 
 
@@ -600,6 +690,99 @@ class EndpointStatusState(Enum):
     PROVISIONING = "PROVISIONING"
     RED_STATE = "RED_STATE"
     YELLOW_STATE = "YELLOW_STATE"
+
+
+@dataclass
+class EndpointThroughputInfo:
+    """Throughput information for an endpoint"""
+
+    change_request_message: Optional[str] = None
+    """Additional information about the throughput change request"""
+
+    change_request_state: Optional[ThroughputChangeRequestState] = None
+    """The state of the most recent throughput change request"""
+
+    current_concurrency: Optional[float] = None
+    """The current concurrency (total CPU) allocated to the endpoint"""
+
+    current_concurrency_utilization_percentage: Optional[float] = None
+    """The current utilization of concurrency as a percentage (0-100)"""
+
+    current_num_replicas: Optional[int] = None
+    """The current number of replicas allocated to the endpoint"""
+
+    maximum_concurrency_allowed: Optional[float] = None
+    """The maximum concurrency allowed for this endpoint"""
+
+    minimal_concurrency_allowed: Optional[float] = None
+    """The minimum concurrency allowed for this endpoint"""
+
+    requested_concurrency: Optional[float] = None
+    """The requested concurrency (total CPU) for the endpoint"""
+
+    requested_num_replicas: Optional[int] = None
+    """The requested number of replicas for the endpoint"""
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointThroughputInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.change_request_message is not None:
+            body["change_request_message"] = self.change_request_message
+        if self.change_request_state is not None:
+            body["change_request_state"] = self.change_request_state.value
+        if self.current_concurrency is not None:
+            body["current_concurrency"] = self.current_concurrency
+        if self.current_concurrency_utilization_percentage is not None:
+            body["current_concurrency_utilization_percentage"] = self.current_concurrency_utilization_percentage
+        if self.current_num_replicas is not None:
+            body["current_num_replicas"] = self.current_num_replicas
+        if self.maximum_concurrency_allowed is not None:
+            body["maximum_concurrency_allowed"] = self.maximum_concurrency_allowed
+        if self.minimal_concurrency_allowed is not None:
+            body["minimal_concurrency_allowed"] = self.minimal_concurrency_allowed
+        if self.requested_concurrency is not None:
+            body["requested_concurrency"] = self.requested_concurrency
+        if self.requested_num_replicas is not None:
+            body["requested_num_replicas"] = self.requested_num_replicas
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointThroughputInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.change_request_message is not None:
+            body["change_request_message"] = self.change_request_message
+        if self.change_request_state is not None:
+            body["change_request_state"] = self.change_request_state
+        if self.current_concurrency is not None:
+            body["current_concurrency"] = self.current_concurrency
+        if self.current_concurrency_utilization_percentage is not None:
+            body["current_concurrency_utilization_percentage"] = self.current_concurrency_utilization_percentage
+        if self.current_num_replicas is not None:
+            body["current_num_replicas"] = self.current_num_replicas
+        if self.maximum_concurrency_allowed is not None:
+            body["maximum_concurrency_allowed"] = self.maximum_concurrency_allowed
+        if self.minimal_concurrency_allowed is not None:
+            body["minimal_concurrency_allowed"] = self.minimal_concurrency_allowed
+        if self.requested_concurrency is not None:
+            body["requested_concurrency"] = self.requested_concurrency
+        if self.requested_num_replicas is not None:
+            body["requested_num_replicas"] = self.requested_num_replicas
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointThroughputInfo:
+        """Deserializes the EndpointThroughputInfo from a dictionary."""
+        return cls(
+            change_request_message=d.get("change_request_message", None),
+            change_request_state=_enum(d, "change_request_state", ThroughputChangeRequestState),
+            current_concurrency=d.get("current_concurrency", None),
+            current_concurrency_utilization_percentage=d.get("current_concurrency_utilization_percentage", None),
+            current_num_replicas=d.get("current_num_replicas", None),
+            maximum_concurrency_allowed=d.get("maximum_concurrency_allowed", None),
+            minimal_concurrency_allowed=d.get("minimal_concurrency_allowed", None),
+            requested_concurrency=d.get("requested_concurrency", None),
+            requested_num_replicas=d.get("requested_num_replicas", None),
+        )
 
 
 class EndpointType(Enum):
@@ -738,6 +921,153 @@ class MapStringValueEntry:
 
 
 @dataclass
+class Metric:
+    """Metric specification"""
+
+    labels: Optional[List[MetricLabel]] = None
+    """Metric labels"""
+
+    name: Optional[str] = None
+    """Metric name"""
+
+    percentile: Optional[float] = None
+    """Percentile for the metric"""
+
+    def as_dict(self) -> dict:
+        """Serializes the Metric into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.labels:
+            body["labels"] = [v.as_dict() for v in self.labels]
+        if self.name is not None:
+            body["name"] = self.name
+        if self.percentile is not None:
+            body["percentile"] = self.percentile
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Metric into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.labels:
+            body["labels"] = self.labels
+        if self.name is not None:
+            body["name"] = self.name
+        if self.percentile is not None:
+            body["percentile"] = self.percentile
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Metric:
+        """Deserializes the Metric from a dictionary."""
+        return cls(
+            labels=_repeated_dict(d, "labels", MetricLabel),
+            name=d.get("name", None),
+            percentile=d.get("percentile", None),
+        )
+
+
+@dataclass
+class MetricLabel:
+    """Label for a metric"""
+
+    name: Optional[str] = None
+    """Label name"""
+
+    value: Optional[str] = None
+    """Label value"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetricLabel into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetricLabel into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetricLabel:
+        """Deserializes the MetricLabel from a dictionary."""
+        return cls(name=d.get("name", None), value=d.get("value", None))
+
+
+@dataclass
+class MetricValue:
+    """Single metric value at a specific timestamp"""
+
+    timestamp: Optional[int] = None
+    """Timestamp of the metric value (milliseconds since epoch)"""
+
+    value: Optional[float] = None
+    """Metric value"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetricValue into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetricValue into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.timestamp is not None:
+            body["timestamp"] = self.timestamp
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetricValue:
+        """Deserializes the MetricValue from a dictionary."""
+        return cls(timestamp=d.get("timestamp", None), value=d.get("value", None))
+
+
+@dataclass
+class MetricValues:
+    """Collection of metric values for a specific metric"""
+
+    metric: Optional[Metric] = None
+    """Metric specification"""
+
+    values: Optional[List[MetricValue]] = None
+    """Time series of metric values"""
+
+    def as_dict(self) -> dict:
+        """Serializes the MetricValues into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metric:
+            body["metric"] = self.metric.as_dict()
+        if self.values:
+            body["values"] = [v.as_dict() for v in self.values]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the MetricValues into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metric:
+            body["metric"] = self.metric
+        if self.values:
+            body["values"] = self.values
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> MetricValues:
+        """Deserializes the MetricValues from a dictionary."""
+        return cls(metric=_from_dict(d, "metric", Metric), values=_repeated_dict(d, "values", MetricValue))
+
+
+@dataclass
 class MiniVectorIndex:
     creator: Optional[str] = None
     """The user who created the index."""
@@ -818,6 +1148,50 @@ class PatchEndpointBudgetPolicyResponse:
     def from_dict(cls, d: Dict[str, Any]) -> PatchEndpointBudgetPolicyResponse:
         """Deserializes the PatchEndpointBudgetPolicyResponse from a dictionary."""
         return cls(effective_budget_policy_id=d.get("effective_budget_policy_id", None))
+
+
+@dataclass
+class PatchEndpointThroughputResponse:
+    adjusted_request: Optional[AdjustedThroughputRequest] = None
+    """The adjusted request if the original request could not be fully fulfilled. This is only
+    populated when the request was adjusted."""
+
+    message: Optional[str] = None
+    """Message explaining the status or any adjustments made"""
+
+    status: Optional[ThroughputPatchStatus] = None
+    """The status of the throughput change request"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PatchEndpointThroughputResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.adjusted_request:
+            body["adjusted_request"] = self.adjusted_request.as_dict()
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status is not None:
+            body["status"] = self.status.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PatchEndpointThroughputResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.adjusted_request:
+            body["adjusted_request"] = self.adjusted_request
+        if self.message is not None:
+            body["message"] = self.message
+        if self.status is not None:
+            body["status"] = self.status
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PatchEndpointThroughputResponse:
+        """Deserializes the PatchEndpointThroughputResponse from a dictionary."""
+        return cls(
+            adjusted_request=_from_dict(d, "adjusted_request", AdjustedThroughputRequest),
+            message=d.get("message", None),
+            status=_enum(d, "status", ThroughputPatchStatus),
+        )
 
 
 class PipelineType(Enum):
@@ -999,6 +1373,44 @@ class ResultManifest:
 
 
 @dataclass
+class RetrieveUserVisibleMetricsResponse:
+    """Response containing user-visible metrics"""
+
+    metric_values: Optional[List[MetricValues]] = None
+    """Collection of metric values"""
+
+    next_page_token: Optional[str] = None
+    """A token that can be used to get the next page of results. If not present, there are no more
+    results to show."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RetrieveUserVisibleMetricsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.metric_values:
+            body["metric_values"] = [v.as_dict() for v in self.metric_values]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RetrieveUserVisibleMetricsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.metric_values:
+            body["metric_values"] = self.metric_values
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RetrieveUserVisibleMetricsResponse:
+        """Deserializes the RetrieveUserVisibleMetricsResponse from a dictionary."""
+        return cls(
+            metric_values=_repeated_dict(d, "metric_values", MetricValues),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
+@dataclass
 class ScanVectorIndexResponse:
     """Response to a scan vector index request."""
 
@@ -1075,6 +1487,25 @@ class SyncIndexResponse:
         return cls()
 
 
+class ThroughputChangeRequestState(Enum):
+    """Throughput change request state"""
+
+    CHANGE_ADJUSTED = "CHANGE_ADJUSTED"
+    CHANGE_FAILED = "CHANGE_FAILED"
+    CHANGE_IN_PROGRESS = "CHANGE_IN_PROGRESS"
+    CHANGE_REACHED_MAXIMUM = "CHANGE_REACHED_MAXIMUM"
+    CHANGE_REACHED_MINIMUM = "CHANGE_REACHED_MINIMUM"
+    CHANGE_SUCCESS = "CHANGE_SUCCESS"
+
+
+class ThroughputPatchStatus(Enum):
+    """Response status for throughput change requests"""
+
+    PATCH_ACCEPTED = "PATCH_ACCEPTED"
+    PATCH_FAILED = "PATCH_FAILED"
+    PATCH_REJECTED = "PATCH_REJECTED"
+
+
 @dataclass
 class UpdateEndpointCustomTagsResponse:
     custom_tags: Optional[List[CustomTag]] = None
@@ -1105,6 +1536,24 @@ class UpdateEndpointCustomTagsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> UpdateEndpointCustomTagsResponse:
         """Deserializes the UpdateEndpointCustomTagsResponse from a dictionary."""
         return cls(custom_tags=_repeated_dict(d, "custom_tags", CustomTag), name=d.get("name", None))
+
+
+@dataclass
+class UpdateVectorIndexUsagePolicyResponse:
+    def as_dict(self) -> dict:
+        """Serializes the UpdateVectorIndexUsagePolicyResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UpdateVectorIndexUsagePolicyResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UpdateVectorIndexUsagePolicyResponse:
+        """Deserializes the UpdateVectorIndexUsagePolicyResponse from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1416,7 +1865,13 @@ class VectorSearchEndpointsAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def create_endpoint(
-        self, name: str, endpoint_type: EndpointType, *, budget_policy_id: Optional[str] = None
+        self,
+        name: str,
+        endpoint_type: EndpointType,
+        *,
+        budget_policy_id: Optional[str] = None,
+        num_replicas: Optional[int] = None,
+        usage_policy_id: Optional[str] = None,
     ) -> Wait[EndpointInfo]:
         """Create a new endpoint.
 
@@ -1426,6 +1881,10 @@ class VectorSearchEndpointsAPI:
           Type of endpoint
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
+        :param num_replicas: int (optional)
+          Initial number of replicas for the endpoint. If not specified, defaults to 1.
+        :param usage_policy_id: str (optional)
+          The usage policy id to be applied once we've migrated to usage policies
 
         :returns:
           Long-running operation waiter for :class:`EndpointInfo`.
@@ -1439,6 +1898,10 @@ class VectorSearchEndpointsAPI:
             body["endpoint_type"] = endpoint_type.value
         if name is not None:
             body["name"] = name
+        if num_replicas is not None:
+            body["num_replicas"] = num_replicas
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1457,11 +1920,17 @@ class VectorSearchEndpointsAPI:
         endpoint_type: EndpointType,
         *,
         budget_policy_id: Optional[str] = None,
+        num_replicas: Optional[int] = None,
+        usage_policy_id: Optional[str] = None,
         timeout=timedelta(minutes=20),
     ) -> EndpointInfo:
-        return self.create_endpoint(budget_policy_id=budget_policy_id, endpoint_type=endpoint_type, name=name).result(
-            timeout=timeout
-        )
+        return self.create_endpoint(
+            budget_policy_id=budget_policy_id,
+            endpoint_type=endpoint_type,
+            name=name,
+            num_replicas=num_replicas,
+            usage_policy_id=usage_policy_id,
+        ).result(timeout=timeout)
 
     def delete_endpoint(self, endpoint_name: str):
         """Delete a vector search endpoint.
@@ -1518,6 +1987,106 @@ class VectorSearchEndpointsAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def patch_endpoint_throughput(
+        self,
+        endpoint_name: str,
+        *,
+        all_or_nothing: Optional[bool] = None,
+        concurrency: Optional[float] = None,
+        maximum_concurrency_allowed: Optional[float] = None,
+        minimal_concurrency_allowed: Optional[float] = None,
+        num_replicas: Optional[int] = None,
+    ) -> PatchEndpointThroughputResponse:
+        """Update the throughput (concurrency) of an endpoint
+
+        :param endpoint_name: str
+          Name of the vector search endpoint
+        :param all_or_nothing: bool (optional)
+          If true, the request will fail if the requested concurrency or limits cannot be exactly met. If
+          false, the request will be adjusted to the closest possible value.
+        :param concurrency: float (optional)
+          Requested concurrency (total CPU) for the endpoint. If not specified, the current concurrency is
+          maintained.
+        :param maximum_concurrency_allowed: float (optional)
+          Maximum concurrency allowed for the endpoint. If not specified, the current maximum is maintained.
+        :param minimal_concurrency_allowed: float (optional)
+          Minimum concurrency allowed for the endpoint. If not specified, the current minimum is maintained.
+        :param num_replicas: int (optional)
+          Requested number of data copies for the endpoint (including primary). For example: num_replicas=2
+          means 2 total copies of the data (1 primary + 1 replica). If not specified, the current replication
+          factor is maintained. Valid range: 1-6 (where 1 = no replication, 6 = 1 primary + 5 replicas).
+
+        :returns: :class:`PatchEndpointThroughputResponse`
+        """
+
+        body = {}
+        if all_or_nothing is not None:
+            body["all_or_nothing"] = all_or_nothing
+        if concurrency is not None:
+            body["concurrency"] = concurrency
+        if maximum_concurrency_allowed is not None:
+            body["maximum_concurrency_allowed"] = maximum_concurrency_allowed
+        if minimal_concurrency_allowed is not None:
+            body["minimal_concurrency_allowed"] = minimal_concurrency_allowed
+        if num_replicas is not None:
+            body["num_replicas"] = num_replicas
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH", f"/api/2.0/vector-search/endpoints/{endpoint_name}/throughput", body=body, headers=headers
+        )
+        return PatchEndpointThroughputResponse.from_dict(res)
+
+    def retrieve_user_visible_metrics(
+        self,
+        name: str,
+        *,
+        end_time: Optional[str] = None,
+        granularity_in_seconds: Optional[int] = None,
+        metrics: Optional[List[Metric]] = None,
+        page_token: Optional[str] = None,
+        start_time: Optional[str] = None,
+    ) -> RetrieveUserVisibleMetricsResponse:
+        """Retrieve user-visible metrics for an endpoint
+
+        :param name: str
+          Vector search endpoint name
+        :param end_time: str (optional)
+          End time for metrics query
+        :param granularity_in_seconds: int (optional)
+          Granularity in seconds
+        :param metrics: List[:class:`Metric`] (optional)
+          List of metrics to retrieve
+        :param page_token: str (optional)
+          Token for pagination
+        :param start_time: str (optional)
+          Start time for metrics query
+
+        :returns: :class:`RetrieveUserVisibleMetricsResponse`
+        """
+
+        body = {}
+        if end_time is not None:
+            body["end_time"] = end_time
+        if granularity_in_seconds is not None:
+            body["granularity_in_seconds"] = granularity_in_seconds
+        if metrics is not None:
+            body["metrics"] = [v.as_dict() for v in metrics]
+        if page_token is not None:
+            body["page_token"] = page_token
+        if start_time is not None:
+            body["start_time"] = start_time
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/vector-search/endpoints/{name}/metrics", body=body, headers=headers)
+        return RetrieveUserVisibleMetricsResponse.from_dict(res)
 
     def update_endpoint_budget_policy(
         self, endpoint_name: str, budget_policy_id: str
@@ -1870,6 +2439,22 @@ class VectorSearchIndexesAPI:
         }
 
         self._api.do("POST", f"/api/2.0/vector-search/indexes/{index_name}/sync", headers=headers)
+
+    def update_index_budget_policy(self, index_name: str) -> UpdateVectorIndexUsagePolicyResponse:
+        """Update the budget policy of an index
+
+        :param index_name: str
+          Name of the vector search index
+
+        :returns: :class:`UpdateVectorIndexUsagePolicyResponse`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/2.0/vector-search/indexes/{index_name}/usage-policy", headers=headers)
+        return UpdateVectorIndexUsagePolicyResponse.from_dict(res)
 
     def upsert_data_vector_index(self, index_name: str, inputs_json: str) -> UpsertDataVectorIndexResponse:
         """Handles the upserting of data into a specified vector index.
