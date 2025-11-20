@@ -856,7 +856,7 @@ class WorkspaceClient:
 
     @property
     def rfa(self) -> pkg_catalog.RfaAPI:
-        """Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables."""
+        """Request for Access enables users to request access for Unity Catalog securables."""
         return self._rfa
 
     @property

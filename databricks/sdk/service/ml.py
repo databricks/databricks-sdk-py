@@ -10,6 +10,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
 
@@ -202,6 +203,32 @@ class ApproveTransitionRequestResponse:
 
 
 @dataclass
+class AuthConfig:
+    uc_service_credential_name: Optional[str] = None
+    """Name of the Unity Catalog service credential. This value will be set under the option
+    databricks.serviceCredential"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AuthConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.uc_service_credential_name is not None:
+            body["uc_service_credential_name"] = self.uc_service_credential_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AuthConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.uc_service_credential_name is not None:
+            body["uc_service_credential_name"] = self.uc_service_credential_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AuthConfig:
+        """Deserializes the AuthConfig from a dictionary."""
+        return cls(uc_service_credential_name=d.get("uc_service_credential_name", None))
+
+
+@dataclass
 class BatchCreateMaterializedFeaturesResponse:
     materialized_features: Optional[List[MaterializedFeature]] = None
     """The created materialized features with assigned IDs."""
@@ -224,6 +251,33 @@ class BatchCreateMaterializedFeaturesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> BatchCreateMaterializedFeaturesResponse:
         """Deserializes the BatchCreateMaterializedFeaturesResponse from a dictionary."""
         return cls(materialized_features=_repeated_dict(d, "materialized_features", MaterializedFeature))
+
+
+@dataclass
+class ColumnIdentifier:
+    variant_expr_path: str
+    """String representation of the column name or variant expression path. For nested fields, the leaf
+    value is what will be present in materialized tables and expected to match at query time. For
+    example, the leaf node of value:trip_details.location_details.pickup_zip is pickup_zip."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnIdentifier into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.variant_expr_path is not None:
+            body["variant_expr_path"] = self.variant_expr_path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnIdentifier into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.variant_expr_path is not None:
+            body["variant_expr_path"] = self.variant_expr_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnIdentifier:
+        """Deserializes the ColumnIdentifier from a dictionary."""
+        return cls(variant_expr_path=d.get("variant_expr_path", None))
 
 
 class CommentActivityAction(Enum):
@@ -600,11 +654,15 @@ class CreateWebhookResponse:
 class DataSource:
     delta_table_source: Optional[DeltaTableSource] = None
 
+    kafka_source: Optional[KafkaSource] = None
+
     def as_dict(self) -> dict:
         """Serializes the DataSource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source.as_dict()
+        if self.kafka_source:
+            body["kafka_source"] = self.kafka_source.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -612,12 +670,17 @@ class DataSource:
         body = {}
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source
+        if self.kafka_source:
+            body["kafka_source"] = self.kafka_source
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DataSource:
         """Deserializes the DataSource from a dictionary."""
-        return cls(delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource))
+        return cls(
+            delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
+            kafka_source=_from_dict(d, "kafka_source", KafkaSource),
+        )
 
 
 @dataclass
@@ -1385,7 +1448,11 @@ class Feature:
     """The filter condition applied to the source data before aggregation."""
 
     lineage_context: Optional[LineageContext] = None
-    """Lineage context information for this feature."""
+    """WARNING: This field is primarily intended for internal use by Databricks systems and is
+    automatically populated when features are created through Databricks notebooks or jobs. Users
+    should not manually set this field as incorrect values may lead to inaccurate lineage tracking
+    or unexpected behavior. This field will be set by feature-engineering client and should be left
+    unset by SDK and terraform users."""
 
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
@@ -2360,6 +2427,130 @@ class JobSpecWithoutSecret:
 
 
 @dataclass
+class KafkaConfig:
+    name: str
+    """Name that uniquely identifies this Kafka config within the metastore. This will be the
+    identifier used from the Feature object to reference these configs for a feature. Can be
+    distinct from topic name."""
+
+    bootstrap_servers: str
+    """A comma-separated list of host/port pairs pointing to Kafka cluster."""
+
+    subscription_mode: SubscriptionMode
+    """Options to configure which Kafka topics to pull data from."""
+
+    auth_config: AuthConfig
+    """Authentication configuration for connection to topics."""
+
+    extra_options: Optional[Dict[str, str]] = None
+    """Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options
+    (kafka.*)"""
+
+    key_schema: Optional[SchemaConfig] = None
+    """Schema configuration for extracting message keys from topics. At least one of key_schema and
+    value_schema must be provided."""
+
+    value_schema: Optional[SchemaConfig] = None
+    """Schema configuration for extracting message values from topics. At least one of key_schema and
+    value_schema must be provided."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.auth_config:
+            body["auth_config"] = self.auth_config.as_dict()
+        if self.bootstrap_servers is not None:
+            body["bootstrap_servers"] = self.bootstrap_servers
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.key_schema:
+            body["key_schema"] = self.key_schema.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.subscription_mode:
+            body["subscription_mode"] = self.subscription_mode.as_dict()
+        if self.value_schema:
+            body["value_schema"] = self.value_schema.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.auth_config:
+            body["auth_config"] = self.auth_config
+        if self.bootstrap_servers is not None:
+            body["bootstrap_servers"] = self.bootstrap_servers
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.key_schema:
+            body["key_schema"] = self.key_schema
+        if self.name is not None:
+            body["name"] = self.name
+        if self.subscription_mode:
+            body["subscription_mode"] = self.subscription_mode
+        if self.value_schema:
+            body["value_schema"] = self.value_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaConfig:
+        """Deserializes the KafkaConfig from a dictionary."""
+        return cls(
+            auth_config=_from_dict(d, "auth_config", AuthConfig),
+            bootstrap_servers=d.get("bootstrap_servers", None),
+            extra_options=d.get("extra_options", None),
+            key_schema=_from_dict(d, "key_schema", SchemaConfig),
+            name=d.get("name", None),
+            subscription_mode=_from_dict(d, "subscription_mode", SubscriptionMode),
+            value_schema=_from_dict(d, "value_schema", SchemaConfig),
+        )
+
+
+@dataclass
+class KafkaSource:
+    name: str
+    """Name of the Kafka source, used to identify it. This is used to look up the corresponding
+    KafkaConfig object. Can be distinct from topic name."""
+
+    entity_column_identifiers: List[ColumnIdentifier]
+    """The entity column identifiers of the Kafka source."""
+
+    timeseries_column_identifier: ColumnIdentifier
+    """The timeseries column identifier of the Kafka source."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_column_identifiers:
+            body["entity_column_identifiers"] = [v.as_dict() for v in self.entity_column_identifiers]
+        if self.name is not None:
+            body["name"] = self.name
+        if self.timeseries_column_identifier:
+            body["timeseries_column_identifier"] = self.timeseries_column_identifier.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_column_identifiers:
+            body["entity_column_identifiers"] = self.entity_column_identifiers
+        if self.name is not None:
+            body["name"] = self.name
+        if self.timeseries_column_identifier:
+            body["timeseries_column_identifier"] = self.timeseries_column_identifier
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaSource:
+        """Deserializes the KafkaSource from a dictionary."""
+        return cls(
+            entity_column_identifiers=_repeated_dict(d, "entity_column_identifiers", ColumnIdentifier),
+            name=d.get("name", None),
+            timeseries_column_identifier=_from_dict(d, "timeseries_column_identifier", ColumnIdentifier),
+        )
+
+
+@dataclass
 class LineageContext:
     """Lineage context information for tracking where an API was invoked. This will allow us to track
     lineage, which currently uses caller entity information for use across the Lineage Client and
@@ -2583,6 +2774,41 @@ class ListFeaturesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListFeaturesResponse:
         """Deserializes the ListFeaturesResponse from a dictionary."""
         return cls(features=_repeated_dict(d, "features", Feature), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
+class ListKafkaConfigsResponse:
+    kafka_configs: List[KafkaConfig]
+    """List of Kafka configs. Schemas are not included in the response."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of results for this query."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListKafkaConfigsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.kafka_configs:
+            body["kafka_configs"] = [v.as_dict() for v in self.kafka_configs]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListKafkaConfigsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.kafka_configs:
+            body["kafka_configs"] = self.kafka_configs
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListKafkaConfigsResponse:
+        """Deserializes the ListKafkaConfigsResponse from a dictionary."""
+        return cls(
+            kafka_configs=_repeated_dict(d, "kafka_configs", KafkaConfig),
+            next_page_token=d.get("next_page_token", None),
+        )
 
 
 @dataclass
@@ -3154,7 +3380,7 @@ class MaterializedFeature:
 
     offline_store_config: Optional[OfflineStoreConfig] = None
 
-    online_store_config: Optional[OnlineStore] = None
+    online_store_config: Optional[OnlineStoreConfig] = None
 
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
     """The schedule state of the materialization pipeline."""
@@ -3209,7 +3435,7 @@ class MaterializedFeature:
             last_materialization_time=d.get("last_materialization_time", None),
             materialized_feature_id=d.get("materialized_feature_id", None),
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
-            online_store_config=_from_dict(d, "online_store_config", OnlineStore),
+            online_store_config=_from_dict(d, "online_store_config", OnlineStoreConfig),
             pipeline_schedule_state=_enum(d, "pipeline_schedule_state", MaterializedFeaturePipelineScheduleState),
             table_name=d.get("table_name", None),
         )
@@ -4010,6 +4236,60 @@ class OnlineStore:
             name=d.get("name", None),
             read_replica_count=d.get("read_replica_count", None),
             state=_enum(d, "state", OnlineStoreState),
+        )
+
+
+@dataclass
+class OnlineStoreConfig:
+    """Configuration for online store destination."""
+
+    catalog_name: str
+    """The Unity Catalog catalog name. This name is also used as the Lakebase logical database name."""
+
+    schema_name: str
+    """The Unity Catalog schema name."""
+
+    table_name_prefix: str
+    """Prefix for Unity Catalog table name. The materialized feature will be stored in a Lakebase table
+    with this prefix and a generated postfix."""
+
+    online_store_name: str
+    """The name of the target online store."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineStoreConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.online_store_name is not None:
+            body["online_store_name"] = self.online_store_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OnlineStoreConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.online_store_name is not None:
+            body["online_store_name"] = self.online_store_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineStoreConfig:
+        """Deserializes the OnlineStoreConfig from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            online_store_name=d.get("online_store_name", None),
+            schema_name=d.get("schema_name", None),
+            table_name_prefix=d.get("table_name_prefix", None),
         )
 
 
@@ -4927,6 +5207,31 @@ class RunTag:
 
 
 @dataclass
+class SchemaConfig:
+    json_schema: Optional[str] = None
+    """Schema of the JSON object in standard IETF JSON schema format (https://json-schema.org/)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the SchemaConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.json_schema is not None:
+            body["json_schema"] = self.json_schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SchemaConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.json_schema is not None:
+            body["json_schema"] = self.json_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SchemaConfig:
+        """Deserializes the SchemaConfig from a dictionary."""
+        return cls(json_schema=d.get("json_schema", None))
+
+
+@dataclass
 class SearchExperimentsResponse:
     experiments: Optional[List[Experiment]] = None
     """Experiments that match the search criteria"""
@@ -5315,6 +5620,51 @@ class Status(Enum):
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
     READY = "READY"
+
+
+@dataclass
+class SubscriptionMode:
+    assign: Optional[str] = None
+    """A JSON string that contains the specific topic-partitions to consume from. For example, for
+    '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th and 1st partitions will be consumed from."""
+
+    subscribe: Optional[str] = None
+    """A comma-separated list of Kafka topics to read from. For example, 'topicA,topicB,topicC'."""
+
+    subscribe_pattern: Optional[str] = None
+    """A regular expression matching topics to subscribe to. For example, 'topic.*' will subscribe to
+    all topics starting with 'topic'."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionMode into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assign is not None:
+            body["assign"] = self.assign
+        if self.subscribe is not None:
+            body["subscribe"] = self.subscribe
+        if self.subscribe_pattern is not None:
+            body["subscribe_pattern"] = self.subscribe_pattern
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionMode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.assign is not None:
+            body["assign"] = self.assign
+        if self.subscribe is not None:
+            body["subscribe"] = self.subscribe
+        if self.subscribe_pattern is not None:
+            body["subscribe_pattern"] = self.subscribe_pattern
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionMode:
+        """Deserializes the SubscriptionMode from a dictionary."""
+        return cls(
+            assign=d.get("assign", None),
+            subscribe=d.get("subscribe", None),
+            subscribe_pattern=d.get("subscribe_pattern", None),
+        )
 
 
 @dataclass
@@ -7012,6 +7362,23 @@ class FeatureEngineeringAPI:
         res = self._api.do("POST", "/api/2.0/feature-engineering/features", body=body, headers=headers)
         return Feature.from_dict(res)
 
+    def create_kafka_config(self, kafka_config: KafkaConfig) -> KafkaConfig:
+        """Create a Kafka config.
+
+        :param kafka_config: :class:`KafkaConfig`
+
+        :returns: :class:`KafkaConfig`
+        """
+
+        body = kafka_config.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/feature-engineering/features/kafka-configs", body=body, headers=headers)
+        return KafkaConfig.from_dict(res)
+
     def create_materialized_feature(self, materialized_feature: MaterializedFeature) -> MaterializedFeature:
         """Create a materialized feature.
 
@@ -7045,6 +7412,21 @@ class FeatureEngineeringAPI:
 
         self._api.do("DELETE", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
 
+    def delete_kafka_config(self, name: str):
+        """Delete a Kafka config.
+
+        :param name: str
+          Name of the Kafka config to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/feature-engineering/features/kafka-configs/kafka/{name}", headers=headers)
+
     def delete_materialized_feature(self, materialized_feature_id: str):
         """Delete a materialized feature.
 
@@ -7077,6 +7459,22 @@ class FeatureEngineeringAPI:
 
         res = self._api.do("GET", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
         return Feature.from_dict(res)
+
+    def get_kafka_config(self, name: str) -> KafkaConfig:
+        """Get a Kafka config.
+
+        :param name: str
+          Name of the Kafka config to get.
+
+        :returns: :class:`KafkaConfig`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/2.0/feature-engineering/features/kafka-configs/{name}", headers=headers)
+        return KafkaConfig.from_dict(res)
 
     def get_materialized_feature(self, materialized_feature_id: str) -> MaterializedFeature:
         """Get a materialized feature.
@@ -7121,6 +7519,39 @@ class FeatureEngineeringAPI:
             if "features" in json:
                 for v in json["features"]:
                     yield Feature.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_kafka_configs(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[KafkaConfig]:
+        """List Kafka configs.
+
+        :param page_size: int (optional)
+          The maximum number of results to return.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+
+        :returns: Iterator over :class:`KafkaConfig`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET", "/api/2.0/feature-engineering/features/kafka-configs", query=query, headers=headers
+            )
+            if "kafka_configs" in json:
+                for v in json["kafka_configs"]:
+                    yield KafkaConfig.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -7190,6 +7621,39 @@ class FeatureEngineeringAPI:
             "PATCH", f"/api/2.0/feature-engineering/features/{full_name}", query=query, body=body, headers=headers
         )
         return Feature.from_dict(res)
+
+    def update_kafka_config(self, name: str, kafka_config: KafkaConfig, update_mask: FieldMask) -> KafkaConfig:
+        """Update a Kafka config.
+
+        :param name: str
+          Name that uniquely identifies this Kafka config within the metastore. This will be the identifier
+          used from the Feature object to reference these configs for a feature. Can be distinct from topic
+          name.
+        :param kafka_config: :class:`KafkaConfig`
+          The Kafka config to update.
+        :param update_mask: FieldMask
+          The list of fields to update.
+
+        :returns: :class:`KafkaConfig`
+        """
+
+        body = kafka_config.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/feature-engineering/features/kafka-configs/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return KafkaConfig.from_dict(res)
 
     def update_materialized_feature(
         self, materialized_feature_id: str, materialized_feature: MaterializedFeature, update_mask: str
@@ -7269,6 +7733,21 @@ class FeatureStoreAPI:
         }
 
         self._api.do("DELETE", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
+
+    def delete_online_table(self, online_table_name: str):
+        """Delete online table.
+
+        :param online_table_name: str
+          The full three-part (catalog, schema, table) name of the online table.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/2.0/feature-store/online-tables/{online_table_name}", headers=headers)
 
     def get_online_store(self, name: str) -> OnlineStore:
         """Get an Online Feature Store.

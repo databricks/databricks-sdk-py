@@ -29,6 +29,27 @@
     .. py:method:: create_message_and_wait(space_id: str, conversation_id: str, content: str, timeout: datetime.timedelta = 0:20:00) -> GenieMessage
 
 
+    .. py:method:: create_space(warehouse_id: str, serialized_space: str [, description: Optional[str], parent_path: Optional[str], title: Optional[str]]) -> GenieSpace
+
+        Creates a Genie space from a serialized payload.
+
+        :param warehouse_id: str
+          Warehouse to associate with the new space
+        :param serialized_space: str
+          The contents of the Genie Space in serialized string form. Use the [Get Genie
+          Space](:method:genie/getspace) API to retrieve an example response, which includes the
+          `serialized_space` field. This field provides the structure of the JSON string that represents the
+          space's layout and components.
+        :param description: str (optional)
+          Optional description
+        :param parent_path: str (optional)
+          Parent folder path where the space will be registered
+        :param title: str (optional)
+          Optional title override
+
+        :returns: :class:`GenieSpace`
+        
+
     .. py:method:: delete_conversation(space_id: str, conversation_id: str)
 
         Delete a conversation.
@@ -150,12 +171,15 @@
         :returns: :class:`GenieGetMessageQueryResultResponse`
         
 
-    .. py:method:: get_space(space_id: str) -> GenieSpace
+    .. py:method:: get_space(space_id: str [, include_serialized_space: Optional[bool]]) -> GenieSpace
 
         Get details of a Genie Space.
 
         :param space_id: str
           The ID associated with the Genie space
+        :param include_serialized_space: bool (optional)
+          Whether to include the serialized space export in the response. Requires at least CAN EDIT
+          permission on the space.
 
         :returns: :class:`GenieSpace`
         
@@ -246,6 +270,27 @@
           The ID associated with the Genie space to be sent to the trash.
 
 
+        
+
+    .. py:method:: update_space(space_id: str [, description: Optional[str], serialized_space: Optional[str], title: Optional[str], warehouse_id: Optional[str]]) -> GenieSpace
+
+        Updates a Genie space with a serialized payload.
+
+        :param space_id: str
+          Genie space ID
+        :param description: str (optional)
+          Optional description
+        :param serialized_space: str (optional)
+          The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie
+          Space](:method:genie/getspace) API to retrieve an example response, which includes the
+          `serialized_space` field. This field provides the structure of the JSON string that represents the
+          space's layout and components.
+        :param title: str (optional)
+          Optional title override
+        :param warehouse_id: str (optional)
+          Optional warehouse override
+
+        :returns: :class:`GenieSpace`
         
 
     .. py:method:: wait_get_message_genie_completed(conversation_id: str, message_id: str, space_id: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[GenieMessage], None]]) -> GenieMessage

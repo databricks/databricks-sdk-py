@@ -79,7 +79,7 @@
             
             notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            export_response = w.workspace.export(format=workspace.ExportFormat.SOURCE, path=notebook)
+            export_response = w.workspace.export_(format=workspace.ExportFormat.SOURCE, path=notebook)
 
         Exports an object or the contents of an entire directory.
 
@@ -111,7 +111,9 @@
         Gets the permission levels that a user can have on an object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
 
@@ -124,7 +126,9 @@
         parent objects or root object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
 
@@ -263,7 +267,9 @@
         object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)
@@ -277,7 +283,9 @@
         parent objects or root object.
 
         :param workspace_object_type: str
-          The workspace object type for which to get or manage permissions.
+          The workspace object type for which to get or manage permissions. Could be one of the following:
+          alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,
+          queries
         :param workspace_object_id: str
           The workspace object for which to get or manage permissions.
         :param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)

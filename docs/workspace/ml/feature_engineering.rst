@@ -26,6 +26,15 @@
         :returns: :class:`Feature`
         
 
+    .. py:method:: create_kafka_config(kafka_config: KafkaConfig) -> KafkaConfig
+
+        Create a Kafka config.
+
+        :param kafka_config: :class:`KafkaConfig`
+
+        :returns: :class:`KafkaConfig`
+        
+
     .. py:method:: create_materialized_feature(materialized_feature: MaterializedFeature) -> MaterializedFeature
 
         Create a materialized feature.
@@ -42,6 +51,16 @@
 
         :param full_name: str
           Name of the feature to delete.
+
+
+        
+
+    .. py:method:: delete_kafka_config(name: str)
+
+        Delete a Kafka config.
+
+        :param name: str
+          Name of the Kafka config to delete.
 
 
         
@@ -66,6 +85,16 @@
         :returns: :class:`Feature`
         
 
+    .. py:method:: get_kafka_config(name: str) -> KafkaConfig
+
+        Get a Kafka config.
+
+        :param name: str
+          Name of the Kafka config to get.
+
+        :returns: :class:`KafkaConfig`
+        
+
     .. py:method:: get_materialized_feature(materialized_feature_id: str) -> MaterializedFeature
 
         Get a materialized feature.
@@ -86,6 +115,18 @@
           Pagination token to go to the next page based on a previous query.
 
         :returns: Iterator over :class:`Feature`
+        
+
+    .. py:method:: list_kafka_configs( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[KafkaConfig]
+
+        List Kafka configs.
+
+        :param page_size: int (optional)
+          The maximum number of results to return.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+
+        :returns: Iterator over :class:`KafkaConfig`
         
 
     .. py:method:: list_materialized_features( [, feature_name: Optional[str], page_size: Optional[int], page_token: Optional[str]]) -> Iterator[MaterializedFeature]
@@ -116,6 +157,22 @@
           The list of fields to update.
 
         :returns: :class:`Feature`
+        
+
+    .. py:method:: update_kafka_config(name: str, kafka_config: KafkaConfig, update_mask: FieldMask) -> KafkaConfig
+
+        Update a Kafka config.
+
+        :param name: str
+          Name that uniquely identifies this Kafka config within the metastore. This will be the identifier
+          used from the Feature object to reference these configs for a feature. Can be distinct from topic
+          name.
+        :param kafka_config: :class:`KafkaConfig`
+          The Kafka config to update.
+        :param update_mask: FieldMask
+          The list of fields to update.
+
+        :returns: :class:`KafkaConfig`
         
 
     .. py:method:: update_materialized_feature(materialized_feature_id: str, materialized_feature: MaterializedFeature, update_mask: str) -> MaterializedFeature

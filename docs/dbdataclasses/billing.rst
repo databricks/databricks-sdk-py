@@ -200,6 +200,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: UsageDashboardMajorVersion
+
+   .. py:attribute:: USAGE_DASHBOARD_MAJOR_VERSION_1
+      :value: "USAGE_DASHBOARD_MAJOR_VERSION_1"
+
+   .. py:attribute:: USAGE_DASHBOARD_MAJOR_VERSION_2
+      :value: "USAGE_DASHBOARD_MAJOR_VERSION_2"
+
 .. py:class:: UsageDashboardType
 
    .. py:attribute:: USAGE_DASHBOARD_TYPE_GLOBAL
