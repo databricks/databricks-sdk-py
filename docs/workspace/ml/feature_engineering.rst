@@ -6,16 +6,6 @@
 
     [description]
 
-    .. py:method:: batch_create_materialized_features(requests: List[CreateMaterializedFeatureRequest]) -> BatchCreateMaterializedFeaturesResponse
-
-        Batch create materialized features.
-
-        :param requests: List[:class:`CreateMaterializedFeatureRequest`]
-          The requests to create materialized features.
-
-        :returns: :class:`BatchCreateMaterializedFeaturesResponse`
-        
-
     .. py:method:: create_feature(feature: Feature) -> Feature
 
         Create a Feature.

@@ -139,32 +139,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
 
-   .. py:attribute:: CONFLUENCE
-      :value: "CONFLUENCE"
-
    .. py:attribute:: DYNAMICS365
       :value: "DYNAMICS365"
-
-   .. py:attribute:: FOREIGN_CATALOG
-      :value: "FOREIGN_CATALOG"
 
    .. py:attribute:: GA4_RAW_DATA
       :value: "GA4_RAW_DATA"
 
-   .. py:attribute:: GOOGLE_ADS
-      :value: "GOOGLE_ADS"
-
-   .. py:attribute:: GUIDEWIRE
-      :value: "GUIDEWIRE"
-
-   .. py:attribute:: HUBSPOT
-      :value: "HUBSPOT"
-
    .. py:attribute:: MANAGED_POSTGRESQL
       :value: "MANAGED_POSTGRESQL"
-
-   .. py:attribute:: META_MARKETING
-      :value: "META_MARKETING"
 
    .. py:attribute:: MYSQL
       :value: "MYSQL"
@@ -178,14 +160,8 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
 
-   .. py:attribute:: REDSHIFT
-      :value: "REDSHIFT"
-
    .. py:attribute:: SALESFORCE
       :value: "SALESFORCE"
-
-   .. py:attribute:: SALESFORCE_MARKETING_CLOUD
-      :value: "SALESFORCE_MARKETING_CLOUD"
 
    .. py:attribute:: SERVICENOW
       :value: "SERVICENOW"
@@ -193,26 +169,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SHAREPOINT
       :value: "SHAREPOINT"
 
-   .. py:attribute:: SQLDW
-      :value: "SQLDW"
-
    .. py:attribute:: SQLSERVER
       :value: "SQLSERVER"
 
    .. py:attribute:: TERADATA
       :value: "TERADATA"
 
-   .. py:attribute:: TIKTOK_ADS
-      :value: "TIKTOK_ADS"
-
-   .. py:attribute:: WORKDAY_HCM
-      :value: "WORKDAY_HCM"
-
    .. py:attribute:: WORKDAY_RAAS
       :value: "WORKDAY_RAAS"
-
-   .. py:attribute:: ZENDESK
-      :value: "ZENDESK"
 
 .. autoclass:: ListPipelineEventsResponse
    :members:

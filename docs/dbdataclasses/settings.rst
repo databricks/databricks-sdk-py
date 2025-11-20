@@ -641,12 +641,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: NccPrivateEndpointRulePrivateLinkConnectionState
 
-   .. py:attribute:: CREATE_FAILED
-      :value: "CREATE_FAILED"
-
-   .. py:attribute:: CREATING
-      :value: "CREATING"
-
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"
 

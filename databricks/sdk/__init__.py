@@ -1,8 +1,7 @@
 # Code generated from OpenAPI specs by Databricks SDK Generator. DO NOT EDIT.
 
-import json
 import logging
-from typing import List, Optional
+from typing import Optional
 
 import databricks.sdk.core as client
 import databricks.sdk.dbutils as dbutils
@@ -14,7 +13,6 @@ from databricks.sdk.mixins.files import DbfsExt, FilesExt
 from databricks.sdk.mixins.jobs import JobsExt
 from databricks.sdk.mixins.open_ai_client import ServingEndpointsExt
 from databricks.sdk.mixins.workspace import WorkspaceExt
-from databricks.sdk.oauth import AuthorizationDetail
 from databricks.sdk.service import agentbricks as pkg_agentbricks
 from databricks.sdk.service import apps as pkg_apps
 from databricks.sdk.service import billing as pkg_billing
@@ -220,8 +218,6 @@ class WorkspaceClient:
         credentials_provider: Optional[CredentialsStrategy] = None,
         token_audience: Optional[str] = None,
         config: Optional[client.Config] = None,
-        scopes: Optional[List[str]] = None,
-        authorization_details: Optional[List[AuthorizationDetail]] = None,
     ):
         if not config:
             config = client.Config(
@@ -250,12 +246,6 @@ class WorkspaceClient:
                 product=product,
                 product_version=product_version,
                 token_audience=token_audience,
-                scopes=" ".join(scopes) if scopes else None,
-                authorization_details=(
-                    json.dumps([detail.as_dict() for detail in authorization_details])
-                    if authorization_details
-                    else None
-                ),
             )
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
@@ -721,7 +711,7 @@ class WorkspaceClient:
 
     @property
     def pipelines(self) -> pkg_pipelines.PipelinesAPI:
-        """The Lakeflow Spark Declarative Pipelines API allows you to create, edit, delete, start, and view details about pipelines."""
+        """The Delta Live Tables API allows you to create, edit, delete, start, and view details about pipelines."""
         return self._pipelines
 
     @property

@@ -16,3 +16,10 @@
 ### Internal Changes
 
 ### API Changes
+* Change `table_names` field for `databricks.sdk.service.jobs.TableUpdateTriggerConfiguration` to no longer be required.
+* [Breaking] Change `table_names` field for `databricks.sdk.service.jobs.TableUpdateTriggerConfiguration` to no longer be required.
+* [Breaking] Remove `batch_create_materialized_features()` method for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service.
+* [Breaking] Remove `lineage_context` field for `databricks.sdk.service.ml.Feature`.
+* [Breaking] Remove `autoscale_v2` enum value for `databricks.sdk.service.compute.EventDetailsCause`.
+* [Breaking] Remove `unsupported_conversation_type_exception` enum value for `databricks.sdk.service.dashboards.MessageErrorType`.
+* [Breaking] Remove `red_state` and `yellow_state` enum values for `databricks.sdk.service.vectorsearch.EndpointStatusState`.

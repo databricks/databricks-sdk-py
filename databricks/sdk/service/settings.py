@@ -4165,8 +4165,6 @@ class NccPrivateEndpointRule:
 
 class NccPrivateEndpointRulePrivateLinkConnectionState(Enum):
 
-    CREATE_FAILED = "CREATE_FAILED"
-    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
