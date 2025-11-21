@@ -8744,7 +8744,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: SECRET_EXTERNAL_AWS_SECRETS_MANAGER = 273; Next id:274"""
+    """Latest kind: CREDENTIAL_STORAGE_UC_CONNECTION = 275; Next id:276"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
