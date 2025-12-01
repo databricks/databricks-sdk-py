@@ -37,3 +37,4 @@
 * [Breaking] Change `destinations` field for `databricks.sdk.service.catalog.AccessRequestDestinations` to no longer be required.
 * Change `destinations` field for `databricks.sdk.service.catalog.AccessRequestDestinations` to no longer be required.
 * [Breaking] Change `online_store_config` field for `databricks.sdk.service.ml.MaterializedFeature` to type `databricks.sdk.service.ml.OnlineStoreConfig` dataclass.
+* Add [w.workspace_entity_tag_assignments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tags/workspace_entity_tag_assignments.html) workspace-level service.

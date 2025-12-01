@@ -1497,7 +1497,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: SECRET_EXTERNAL_AWS_SECRETS_MANAGER = 273; Next id:274
+   Latest kind: CREDENTIAL_STORAGE_UC_CONNECTION = 275; Next id:276
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
