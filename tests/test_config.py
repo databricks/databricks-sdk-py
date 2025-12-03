@@ -8,7 +8,7 @@ from datetime import datetime
 import pytest
 
 from databricks.sdk import oauth, useragent
-from databricks.sdk.config import Config, with_product, with_user_agent_extra
+from databricks.sdk.config import Config, with_product, with_user_agent_extra, HostType, ConfigType
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials, set_az_path
@@ -260,3 +260,167 @@ def test_oauth_token_reuses_existing_provider(mocker):
     # Both calls should work and use the same provider instance
     assert token1 == token2 == mock_token
     assert mock_oauth_provider.oauth_token.call_count == 2
+
+
+def test_host_type_workspace():
+    """Test that a regular workspace host is identified correctly."""
+    config = Config(host="https://test.databricks.com", token="test-token")
+    assert config.host_type == HostType.WORKSPACE
+
+
+def test_host_type_accounts():
+    """Test that an accounts host is identified correctly."""
+    config = Config(host="https://accounts.cloud.databricks.com", account_id="test-account", token="test-token")
+    assert config.host_type == HostType.ACCOUNTS
+
+
+def test_host_type_accounts_dod():
+    """Test that an accounts-dod host is identified correctly."""
+    config = Config(host="https://accounts-dod.cloud.databricks.us", account_id="test-account", token="test-token")
+    assert config.host_type == HostType.ACCOUNTS
+
+
+def test_host_type_unified():
+    """Test that a unified host is identified when experimental flag is set."""
+    config = Config(
+        host="https://unified.databricks.com",
+        workspace_id="test-workspace",
+        experimental_is_unified_host=True,
+        token="test-token"
+    )
+    assert config.host_type == HostType.UNIFIED
+
+
+def test_config_type_workspace():
+    """Test that config type is workspace when workspace_id is set."""
+    config = Config(
+        host="https://unified.databricks.com",
+        workspace_id="test-workspace",
+        experimental_is_unified_host=True,
+        token="test-token"
+    )
+    assert config.config_type == ConfigType.WORKSPACE
+
+
+def test_config_type_account():
+    """Test that config type is account when account_id is set without workspace_id."""
+    config = Config(
+        host="https://unified.databricks.com",
+        account_id="test-account",
+        experimental_is_unified_host=True,
+        token="test-token"
+    )
+    assert config.config_type == ConfigType.ACCOUNT
+
+
+def test_config_type_workspace_default():
+    """Test that config type defaults to workspace."""
+    config = Config(host="https://test.databricks.com", token="test-token")
+    assert config.config_type == ConfigType.WORKSPACE
+
+
+def test_is_account_client_backward_compatibility():
+    """Test that is_account_client property still works for backward compatibility."""
+    config_workspace = Config(host="https://test.databricks.com", token="test-token")
+    assert not config_workspace.is_account_client
+    
+    config_account = Config(host="https://accounts.cloud.databricks.com", account_id="test-account", token="test-token")
+    assert config_account.is_account_client
+
+
+def test_oidc_endpoints_unified_workspace(mocker, requests_mock):
+    """Test that oidc_endpoints returns unified endpoints for workspace on unified host."""
+    requests_mock.get(
+        "https://unified.databricks.com/oidc/unified/test-workspace/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://unified.databricks.com/oidc/unified/test-workspace/v1/authorize",
+            "token_endpoint": "https://unified.databricks.com/oidc/unified/test-workspace/v1/token"
+        }
+    )
+    
+    config = Config(
+        host="https://unified.databricks.com",
+        workspace_id="test-workspace",
+        experimental_is_unified_host=True,
+        token="test-token"
+    )
+    
+    endpoints = config.oidc_endpoints
+    assert endpoints is not None
+    assert "unified/test-workspace" in endpoints.authorization_endpoint
+    assert "unified/test-workspace" in endpoints.token_endpoint
+
+
+def test_oidc_endpoints_unified_account(mocker, requests_mock):
+    """Test that oidc_endpoints returns account endpoints for account on unified host."""
+    requests_mock.get(
+        "https://unified.databricks.com/oidc/accounts/test-account/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://unified.databricks.com/oidc/accounts/test-account/v1/authorize",
+            "token_endpoint": "https://unified.databricks.com/oidc/accounts/test-account/v1/token"
+        }
+    )
+    
+    config = Config(
+        host="https://unified.databricks.com",
+        account_id="test-account",
+        experimental_is_unified_host=True,
+        token="test-token"
+    )
+    
+    endpoints = config.oidc_endpoints
+    assert endpoints is not None
+    assert "accounts/test-account" in endpoints.authorization_endpoint
+    assert "accounts/test-account" in endpoints.token_endpoint
+
+
+def test_oidc_endpoints_unified_missing_ids():
+    """Test that oidc_endpoints raises error when unified host lacks required IDs."""
+    config = Config(
+        host="https://unified.databricks.com",
+        experimental_is_unified_host=True,
+        token="test-token"
+    )
+    
+    with pytest.raises(ValueError) as exc_info:
+        _ = config.oidc_endpoints
+    
+    assert "Unified host requires either workspace_id" in str(exc_info.value)
+
+
+def test_workspace_org_id_header_on_unified_host(requests_mock):
+    """Test that X-Databricks-Org-Id header is added for workspace clients on unified hosts."""
+    from databricks.sdk.core import ApiClient
+    
+    requests_mock.get("https://unified.databricks.com/api/2.0/test", json={"result": "success"})
+    
+    config = Config(
+        host="https://unified.databricks.com",
+        workspace_id="test-workspace-123",
+        experimental_is_unified_host=True,
+        token="test-token"
+    )
+    
+    api_client = ApiClient(config)
+    api_client.do("GET", "/api/2.0/test")
+    
+    # Verify the request was made with the X-Databricks-Org-Id header
+    assert requests_mock.last_request.headers.get("X-Databricks-Org-Id") == "test-workspace-123"
+
+
+def test_no_org_id_header_on_regular_workspace(requests_mock):
+    """Test that X-Databricks-Org-Id header is NOT added for regular workspace hosts."""
+    from databricks.sdk.core import ApiClient
+    
+    requests_mock.get("https://test.databricks.com/api/2.0/test", json={"result": "success"})
+    
+    config = Config(
+        host="https://test.databricks.com",
+        token="test-token"
+    )
+    
+    api_client = ApiClient(config)
+    api_client.do("GET", "/api/2.0/test")
+    
+    # Verify the X-Databricks-Org-Id header was NOT added
+    assert "X-Databricks-Org-Id" not in requests_mock.last_request.headers
