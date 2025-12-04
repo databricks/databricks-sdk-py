@@ -1740,7 +1740,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 48"""
+    """Next Id: 49"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -8744,7 +8744,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: SECRET_EXTERNAL_AWS_SECRETS_MANAGER = 273; Next id:274"""
+    """Latest kind: CONNECTION_SLACK_AUDIT_LOGS_OAUTH_U2M = 276; Next id:277"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
