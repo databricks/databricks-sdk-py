@@ -156,7 +156,8 @@ from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
                                         QueryVisualizationsLegacyAPI,
                                         RedashConfigAPI, StatementExecutionAPI,
                                         WarehousesAPI)
-from databricks.sdk.service.tags import TagPoliciesAPI
+from databricks.sdk.service.tags import (TagPoliciesAPI,
+                                         WorkspaceEntityTagAssignmentsAPI)
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
                                                  VectorSearchIndexesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
@@ -386,6 +387,7 @@ class WorkspaceClient:
         self._workspace = WorkspaceExt(self._api_client)
         self._workspace_bindings = pkg_catalog.WorkspaceBindingsAPI(self._api_client)
         self._workspace_conf = pkg_settings.WorkspaceConfAPI(self._api_client)
+        self._workspace_entity_tag_assignments = pkg_tags.WorkspaceEntityTagAssignmentsAPI(self._api_client)
         self._workspace_iam_v2 = pkg_iamv2.WorkspaceIamV2API(self._api_client)
         self._workspace_settings_v2 = pkg_settingsv2.WorkspaceSettingsV2API(self._api_client)
         self._groups = pkg_iam.GroupsAPI(self._api_client)
@@ -988,6 +990,11 @@ class WorkspaceClient:
     def workspace_conf(self) -> pkg_settings.WorkspaceConfAPI:
         """This API allows updating known workspace settings for advanced users."""
         return self._workspace_conf
+
+    @property
+    def workspace_entity_tag_assignments(self) -> pkg_tags.WorkspaceEntityTagAssignmentsAPI:
+        """Manage tag assignments on workspace-scoped objects."""
+        return self._workspace_entity_tag_assignments
 
     @property
     def workspace_iam_v2(self) -> pkg_iamv2.WorkspaceIamV2API:
