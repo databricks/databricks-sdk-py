@@ -17,14 +17,3 @@ def test_creating_ws_client_from_ac_client_does_not_override_config(ucacct, env_
     w = ucacct.get_workspace_client(ws)
     me = w.current_user.me()
     assert me.user_name is not None
-
-
-def test_spog_aws_workspace():
-    """Test workspace client on SPOG (unified host) using profile configuration."""
-    from databricks.sdk import WorkspaceClient
-
-    w = WorkspaceClient(profile="spog-test")
-    clusters = w.clusters.list()
-
-    for cluster in clusters:
-        print(cluster.cluster_name)
