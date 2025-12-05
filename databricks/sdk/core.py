@@ -8,7 +8,6 @@ from .config import *
 from .credentials_provider import *
 from .errors import DatabricksError, _ErrorCustomizer
 from .oauth import retrieve_token
-from .config import HostType
 
 __all__ = ["Config", "DatabricksError"]
 
@@ -23,7 +22,7 @@ class ApiClient:
 
     def __init__(self, cfg: Config):
         self._cfg = cfg
-        
+
         # Create header factory that includes both auth and org ID headers
         def combined_header_factory():
             headers = cfg.authenticate()
@@ -31,7 +30,7 @@ class ApiClient:
             if cfg.workspace_id and cfg.host_type.value == "unified":
                 headers["X-Databricks-Org-Id"] = cfg.workspace_id
             return headers
-        
+
         self._api_client = _BaseClient(
             debug_truncate_bytes=cfg.debug_truncate_bytes,
             retry_timeout_seconds=cfg.retry_timeout_seconds,
