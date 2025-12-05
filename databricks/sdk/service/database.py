@@ -1772,19 +1772,24 @@ class DatabaseAPI:
 
         self._api.do("DELETE", f"/api/2.0/database/tables/{name}", headers=headers)
 
-    def delete_synced_database_table(self, name: str):
+    def delete_synced_database_table(self, name: str, *, purge_data: Optional[bool] = None):
         """Delete a Synced Database Table.
 
         :param name: str
+        :param purge_data: bool (optional)
+          Optional. When set to true, the actual PostgreSQL table will be dropped from the database.
 
 
         """
 
+        query = {}
+        if purge_data is not None:
+            query["purge_data"] = purge_data
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/database/synced_tables/{name}", headers=headers)
+        self._api.do("DELETE", f"/api/2.0/database/synced_tables/{name}", query=query, headers=headers)
 
     def find_database_instance_by_uid(self, *, uid: Optional[str] = None) -> DatabaseInstance:
         """Find a Database Instance by uid.
