@@ -182,7 +182,7 @@
                 content=base64.b64encode(("CREATE LIVE TABLE dlt_sample AS SELECT 1").encode()).decode(),
                 format=workspace.ImportFormat.SOURCE,
                 language=workspace.Language.SQL,
-                overwrite=true_,
+                overwrite=True,
                 path=notebook_path,
             )
 

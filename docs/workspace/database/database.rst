@@ -107,11 +107,13 @@
 
         
 
-    .. py:method:: delete_synced_database_table(name: str)
+    .. py:method:: delete_synced_database_table(name: str [, purge_data: Optional[bool]])
 
         Delete a Synced Database Table.
 
         :param name: str
+        :param purge_data: bool (optional)
+          Optional. When set to true, the actual PostgreSQL table will be dropped from the database.
 
 
         
