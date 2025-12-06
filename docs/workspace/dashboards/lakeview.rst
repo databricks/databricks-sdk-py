@@ -7,11 +7,19 @@
     These APIs provide specific management operations for Lakeview dashboards. Generic resource management can
     be done with Workspace API (import, export, get-status, list, delete).
 
-    .. py:method:: create(dashboard: Dashboard) -> Dashboard
+    .. py:method:: create(dashboard: Dashboard [, dataset_catalog: Optional[str], dataset_schema: Optional[str]]) -> Dashboard
 
         Create a draft dashboard.
 
         :param dashboard: :class:`Dashboard`
+        :param dataset_catalog: str (optional)
+          Sets the default catalog for all datasets in this dashboard. Does not impact table references that
+          use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s
+          existing configuration.
+        :param dataset_schema: str (optional)
+          Sets the default schema for all datasets in this dashboard. Does not impact table references that
+          use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing
+          configuration.
 
         :returns: :class:`Dashboard`
         
@@ -222,13 +230,21 @@
 
         
 
-    .. py:method:: update(dashboard_id: str, dashboard: Dashboard) -> Dashboard
+    .. py:method:: update(dashboard_id: str, dashboard: Dashboard [, dataset_catalog: Optional[str], dataset_schema: Optional[str]]) -> Dashboard
 
         Update a draft dashboard.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
         :param dashboard: :class:`Dashboard`
+        :param dataset_catalog: str (optional)
+          Sets the default catalog for all datasets in this dashboard. Does not impact table references that
+          use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s
+          existing configuration.
+        :param dataset_schema: str (optional)
+          Sets the default schema for all datasets in this dashboard. Does not impact table references that
+          use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing
+          configuration.
 
         :returns: :class:`Dashboard`
         

@@ -37,3 +37,13 @@
 * [Breaking] Change `destinations` field for `databricks.sdk.service.catalog.AccessRequestDestinations` to no longer be required.
 * Change `destinations` field for `databricks.sdk.service.catalog.AccessRequestDestinations` to no longer be required.
 * [Breaking] Change `online_store_config` field for `databricks.sdk.service.ml.MaterializedFeature` to type `databricks.sdk.service.ml.OnlineStoreConfig` dataclass.
+* Add [w.workspace_entity_tag_assignments](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/tags/workspace_entity_tag_assignments.html) workspace-level service.
+* Add `clone()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines/pipelines.html) workspace-level service.
+* Add `dataset_catalog` and `dataset_schema` fields for `databricks.sdk.service.dashboards.CreateDashboardRequest`.
+* Add `dataset_catalog` and `dataset_schema` fields for `databricks.sdk.service.dashboards.UpdateDashboardRequest`.
+* Add `purge_data` field for `databricks.sdk.service.database.DeleteSyncedDatabaseTableRequest`.
+* Add `cron_schedule` field for `databricks.sdk.service.ml.MaterializedFeature`.
+* Add `truncation` field for `databricks.sdk.service.pipelines.PipelineEvent`.
+* Add `gcp_service_account` field for `databricks.sdk.service.provisioning.CreateGcpKeyInfo`.
+* Add `gcp_service_account` field for `databricks.sdk.service.provisioning.GcpKeyInfo`.
+* Add `foreign_table` and `volume` enum values for `databricks.sdk.service.sharing.SharedDataObjectDataObjectType`.

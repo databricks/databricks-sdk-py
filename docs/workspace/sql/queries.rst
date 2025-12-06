@@ -29,7 +29,7 @@
                     display_name=f"sdk-{time.time_ns()}",
                     warehouse_id=srcs[0].warehouse_id,
                     description="test query from Go SDK",
-                    query_text="SHOW TABLES",
+                    query_text="SELECT 1",
                 )
             )
             

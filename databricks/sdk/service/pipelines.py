@@ -23,6 +23,31 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
+class ClonePipelineResponse:
+    pipeline_id: Optional[str] = None
+    """The pipeline id of the cloned pipeline"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ClonePipelineResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClonePipelineResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ClonePipelineResponse:
+        """Deserializes the ClonePipelineResponse from a dictionary."""
+        return cls(pipeline_id=d.get("pipeline_id", None))
+
+
+@dataclass
 class ConnectionParameters:
     source_catalog: Optional[str] = None
     """Source catalog for initial connection. This is necessary for schema exploration in some database
@@ -1720,6 +1745,11 @@ class PipelineEvent:
     timestamp: Optional[str] = None
     """The time of the event."""
 
+    truncation: Optional[Truncation] = None
+    """Information about which fields were truncated from this event due to size constraints. If empty
+    or absent, no truncation occurred. See https://docs.databricks.com/en/ldp/monitor-event-logs for
+    information on retrieving complete event data."""
+
     def as_dict(self) -> dict:
         """Serializes the PipelineEvent into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1741,6 +1771,8 @@ class PipelineEvent:
             body["sequence"] = self.sequence.as_dict()
         if self.timestamp is not None:
             body["timestamp"] = self.timestamp
+        if self.truncation:
+            body["truncation"] = self.truncation.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1764,6 +1796,8 @@ class PipelineEvent:
             body["sequence"] = self.sequence
         if self.timestamp is not None:
             body["timestamp"] = self.timestamp
+        if self.truncation:
+            body["truncation"] = self.truncation
         return body
 
     @classmethod
@@ -1779,6 +1813,7 @@ class PipelineEvent:
             origin=_from_dict(d, "origin", Origin),
             sequence=_from_dict(d, "sequence", Sequencing),
             timestamp=d.get("timestamp", None),
+            truncation=_from_dict(d, "truncation", Truncation),
         )
 
 
@@ -3182,6 +3217,60 @@ class TableSpecificConfigScdType(Enum):
 
 
 @dataclass
+class Truncation:
+    """Information about truncations applied to this event."""
+
+    truncated_fields: Optional[List[TruncationTruncationDetail]] = None
+    """List of fields that were truncated from this event. If empty or absent, no truncation occurred."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Truncation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.truncated_fields:
+            body["truncated_fields"] = [v.as_dict() for v in self.truncated_fields]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Truncation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.truncated_fields:
+            body["truncated_fields"] = self.truncated_fields
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Truncation:
+        """Deserializes the Truncation from a dictionary."""
+        return cls(truncated_fields=_repeated_dict(d, "truncated_fields", TruncationTruncationDetail))
+
+
+@dataclass
+class TruncationTruncationDetail:
+    """Details about a specific field that was truncated."""
+
+    field_name: Optional[str] = None
+    """The name of the truncated field (e.g., "error"). Corresponds to field names in PipelineEvent."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TruncationTruncationDetail into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.field_name is not None:
+            body["field_name"] = self.field_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TruncationTruncationDetail into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.field_name is not None:
+            body["field_name"] = self.field_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TruncationTruncationDetail:
+        """Deserializes the TruncationTruncationDetail from a dictionary."""
+        return cls(field_name=d.get("field_name", None))
+
+
+@dataclass
 class UpdateInfo:
     cause: Optional[UpdateInfoCause] = None
     """What triggered this update."""
@@ -3425,6 +3514,189 @@ class PipelinesAPI:
             time.sleep(sleep + random.random())
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
+
+    def clone(
+        self,
+        pipeline_id: str,
+        *,
+        allow_duplicate_names: Optional[bool] = None,
+        budget_policy_id: Optional[str] = None,
+        catalog: Optional[str] = None,
+        channel: Optional[str] = None,
+        clusters: Optional[List[PipelineCluster]] = None,
+        configuration: Optional[Dict[str, str]] = None,
+        continuous: Optional[bool] = None,
+        deployment: Optional[PipelineDeployment] = None,
+        development: Optional[bool] = None,
+        edition: Optional[str] = None,
+        environment: Optional[PipelinesEnvironment] = None,
+        event_log: Optional[EventLogSpec] = None,
+        expected_last_modified: Optional[int] = None,
+        filters: Optional[Filters] = None,
+        gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
+        id: Optional[str] = None,
+        ingestion_definition: Optional[IngestionPipelineDefinition] = None,
+        libraries: Optional[List[PipelineLibrary]] = None,
+        name: Optional[str] = None,
+        notifications: Optional[List[Notifications]] = None,
+        photon: Optional[bool] = None,
+        restart_window: Optional[RestartWindow] = None,
+        root_path: Optional[str] = None,
+        schema: Optional[str] = None,
+        serverless: Optional[bool] = None,
+        storage: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
+        target: Optional[str] = None,
+        trigger: Optional[PipelineTrigger] = None,
+        usage_policy_id: Optional[str] = None,
+    ) -> ClonePipelineResponse:
+        """Creates a new pipeline using Unity Catalog from a pipeline using Hive Metastore. This method returns
+        the ID of the newly created clone. Additionally, this method starts an update for the newly created
+        pipeline.
+
+        :param pipeline_id: str
+          Source pipeline to clone from
+        :param allow_duplicate_names: bool (optional)
+          If false, deployment will fail if name conflicts with that of another pipeline.
+        :param budget_policy_id: str (optional)
+          Budget policy of this pipeline.
+        :param catalog: str (optional)
+          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
+          in this pipeline are published to a `target` schema inside `catalog` (for example,
+          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+        :param channel: str (optional)
+          DLT Release Channel that specifies which version to use.
+        :param clusters: List[:class:`PipelineCluster`] (optional)
+          Cluster settings for this pipeline deployment.
+        :param configuration: Dict[str,str] (optional)
+          String-String configuration for this pipeline execution.
+        :param continuous: bool (optional)
+          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param deployment: :class:`PipelineDeployment` (optional)
+          Deployment type of this pipeline.
+        :param development: bool (optional)
+          Whether the pipeline is in Development mode. Defaults to false.
+        :param edition: str (optional)
+          Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
+        :param expected_last_modified: int (optional)
+          If present, the last-modified time of the pipeline settings before the clone. If the settings were
+          modified after that time, then the request will fail with a conflict.
+        :param filters: :class:`Filters` (optional)
+          Filters on which Pipeline packages to include in the deployed graph.
+        :param gateway_definition: :class:`IngestionGatewayPipelineDefinition` (optional)
+          The definition of a gateway pipeline to support change data capture.
+        :param id: str (optional)
+          Unique identifier for this pipeline.
+        :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
+          The configuration for a managed ingestion pipeline. These settings cannot be used with the
+          'libraries', 'schema', 'target', or 'catalog' settings.
+        :param libraries: List[:class:`PipelineLibrary`] (optional)
+          Libraries or code needed by this deployment.
+        :param name: str (optional)
+          Friendly identifier for this pipeline.
+        :param notifications: List[:class:`Notifications`] (optional)
+          List of notification settings for this pipeline.
+        :param photon: bool (optional)
+          Whether Photon is enabled for this pipeline.
+        :param restart_window: :class:`RestartWindow` (optional)
+          Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
+        :param schema: str (optional)
+          The default schema (database) where tables are read from or published to.
+        :param serverless: bool (optional)
+          Whether serverless compute is enabled for this pipeline.
+        :param storage: str (optional)
+          DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
+        :param target: str (optional)
+          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
+          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
+          for pipeline creation in favor of the `schema` field.
+        :param trigger: :class:`PipelineTrigger` (optional)
+          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+        :param usage_policy_id: str (optional)
+          Usage policy of this pipeline.
+
+        :returns: :class:`ClonePipelineResponse`
+        """
+
+        body = {}
+        if allow_duplicate_names is not None:
+            body["allow_duplicate_names"] = allow_duplicate_names
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
+        if catalog is not None:
+            body["catalog"] = catalog
+        if channel is not None:
+            body["channel"] = channel
+        if clusters is not None:
+            body["clusters"] = [v.as_dict() for v in clusters]
+        if configuration is not None:
+            body["configuration"] = configuration
+        if continuous is not None:
+            body["continuous"] = continuous
+        if deployment is not None:
+            body["deployment"] = deployment.as_dict()
+        if development is not None:
+            body["development"] = development
+        if edition is not None:
+            body["edition"] = edition
+        if environment is not None:
+            body["environment"] = environment.as_dict()
+        if event_log is not None:
+            body["event_log"] = event_log.as_dict()
+        if expected_last_modified is not None:
+            body["expected_last_modified"] = expected_last_modified
+        if filters is not None:
+            body["filters"] = filters.as_dict()
+        if gateway_definition is not None:
+            body["gateway_definition"] = gateway_definition.as_dict()
+        if id is not None:
+            body["id"] = id
+        if ingestion_definition is not None:
+            body["ingestion_definition"] = ingestion_definition.as_dict()
+        if libraries is not None:
+            body["libraries"] = [v.as_dict() for v in libraries]
+        if name is not None:
+            body["name"] = name
+        if notifications is not None:
+            body["notifications"] = [v.as_dict() for v in notifications]
+        if photon is not None:
+            body["photon"] = photon
+        if restart_window is not None:
+            body["restart_window"] = restart_window.as_dict()
+        if root_path is not None:
+            body["root_path"] = root_path
+        if schema is not None:
+            body["schema"] = schema
+        if serverless is not None:
+            body["serverless"] = serverless
+        if storage is not None:
+            body["storage"] = storage
+        if tags is not None:
+            body["tags"] = tags
+        if target is not None:
+            body["target"] = target
+        if trigger is not None:
+            body["trigger"] = trigger.as_dict()
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/clone", body=body, headers=headers)
+        return ClonePipelineResponse.from_dict(res)
 
     def create(
         self,

@@ -331,9 +331,15 @@ class CreateGcpKeyInfo:
     """Globally unique kms key resource id of the form
     projects/testProjectId/locations/us-east4/keyRings/gcpCmkKeyRing/cryptoKeys/cmk-eastus4"""
 
+    gcp_service_account: Optional[GcpServiceAccount] = None
+    """Globally unique service account email that has access to the KMS key. The service account exists
+    within the Databricks CP project."""
+
     def as_dict(self) -> dict:
         """Serializes the CreateGcpKeyInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.gcp_service_account:
+            body["gcp_service_account"] = self.gcp_service_account.as_dict()
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
         return body
@@ -341,6 +347,8 @@ class CreateGcpKeyInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateGcpKeyInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.gcp_service_account:
+            body["gcp_service_account"] = self.gcp_service_account
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
         return body
@@ -348,7 +356,10 @@ class CreateGcpKeyInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateGcpKeyInfo:
         """Deserializes the CreateGcpKeyInfo from a dictionary."""
-        return cls(kms_key_id=d.get("kms_key_id", None))
+        return cls(
+            gcp_service_account=_from_dict(d, "gcp_service_account", GcpServiceAccount),
+            kms_key_id=d.get("kms_key_id", None),
+        )
 
 
 @dataclass
@@ -582,9 +593,15 @@ class GcpKeyInfo:
     """Globally unique kms key resource id of the form
     projects/testProjectId/locations/us-east4/keyRings/gcpCmkKeyRing/cryptoKeys/cmk-eastus4"""
 
+    gcp_service_account: Optional[GcpServiceAccount] = None
+    """Globally unique service account email that has access to the KMS key. The service account exists
+    within the Databricks CP project."""
+
     def as_dict(self) -> dict:
         """Serializes the GcpKeyInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.gcp_service_account:
+            body["gcp_service_account"] = self.gcp_service_account.as_dict()
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
         return body
@@ -592,6 +609,8 @@ class GcpKeyInfo:
     def as_shallow_dict(self) -> dict:
         """Serializes the GcpKeyInfo into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.gcp_service_account:
+            body["gcp_service_account"] = self.gcp_service_account
         if self.kms_key_id is not None:
             body["kms_key_id"] = self.kms_key_id
         return body
@@ -599,7 +618,10 @@ class GcpKeyInfo:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> GcpKeyInfo:
         """Deserializes the GcpKeyInfo from a dictionary."""
-        return cls(kms_key_id=d.get("kms_key_id", None))
+        return cls(
+            gcp_service_account=_from_dict(d, "gcp_service_account", GcpServiceAccount),
+            kms_key_id=d.get("kms_key_id", None),
+        )
 
 
 @dataclass
@@ -714,6 +736,30 @@ class GcpNetworkInfo:
             subnet_region=d.get("subnet_region", None),
             vpc_id=d.get("vpc_id", None),
         )
+
+
+@dataclass
+class GcpServiceAccount:
+    service_account_email: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the GcpServiceAccount into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.service_account_email is not None:
+            body["service_account_email"] = self.service_account_email
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GcpServiceAccount into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.service_account_email is not None:
+            body["service_account_email"] = self.service_account_email
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GcpServiceAccount:
+        """Deserializes the GcpServiceAccount from a dictionary."""
+        return cls(service_account_email=d.get("service_account_email", None))
 
 
 @dataclass

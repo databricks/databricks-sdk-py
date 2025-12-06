@@ -167,8 +167,7 @@
           node_type_id take precedence.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
-          when its Spark workers are running low on disk space. This feature requires specific AWS permissions
-          to function correctly - refer to the User Guide for more details.
+          when its Spark workers are running low on disk space.
         :param enable_local_disk_encryption: bool (optional)
           Whether to enable LUKS on cluster VMs' local disks
         :param gcp_attributes: :class:`GcpAttributes` (optional)
@@ -402,8 +401,7 @@
           node_type_id take precedence.
         :param enable_elastic_disk: bool (optional)
           Autoscaling Local Storage: when enabled, this cluster will dynamically acquire additional disk space
-          when its Spark workers are running low on disk space. This feature requires specific AWS permissions
-          to function correctly - refer to the User Guide for more details.
+          when its Spark workers are running low on disk space.
         :param enable_local_disk_encryption: bool (optional)
           Whether to enable LUKS on cluster VMs' local disks
         :param gcp_attributes: :class:`GcpAttributes` (optional)
