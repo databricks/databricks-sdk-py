@@ -2113,6 +2113,7 @@ class SharedDataObject:
 class SharedDataObjectDataObjectType(Enum):
 
     FEATURE_SPEC = "FEATURE_SPEC"
+    FOREIGN_TABLE = "FOREIGN_TABLE"
     FUNCTION = "FUNCTION"
     MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
     MODEL = "MODEL"
@@ -2121,6 +2122,7 @@ class SharedDataObjectDataObjectType(Enum):
     STREAMING_TABLE = "STREAMING_TABLE"
     TABLE = "TABLE"
     VIEW = "VIEW"
+    VOLUME = "VOLUME"
 
 
 class SharedDataObjectHistoryDataSharingStatus(Enum):
