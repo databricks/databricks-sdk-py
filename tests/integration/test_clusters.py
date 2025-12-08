@@ -5,6 +5,7 @@ import pytest
 
 from databricks.sdk.core import DatabricksError
 from databricks.sdk.service.compute import EventType
+from databricks.sdk import WorkspaceClient
 
 
 def test_smallest_node_type(w):

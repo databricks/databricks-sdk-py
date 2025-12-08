@@ -21,6 +21,7 @@ from google.auth.transport.requests import Request  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
 from . import azure, oauth, oidc, oidc_token_supplier
+from .config import HostType
 
 CredentialsProvider = Callable[[], Dict[str, str]]
 
@@ -422,9 +423,9 @@ def _oidc_credentials_provider(
 
     # Determine the audience for token exchange
     audience = cfg.token_audience
-    if audience is None and cfg.is_account_client:
+    if audience is None and cfg.host_type == HostType.ACCOUNTS:
         audience = cfg.account_id
-    if audience is None and not cfg.is_account_client:
+    if audience is None and cfg.host_type != HostType.ACCOUNTS:
         audience = cfg.oidc_endpoints.token_endpoint
 
     # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
@@ -581,7 +582,7 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         credentials.refresh(request)
         headers = {"Authorization": f"Bearer {credentials.token}"}
-        if cfg.is_account_client:
+        if cfg.host_type == HostType.ACCOUNTS:
             gcp_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
         return headers
@@ -622,7 +623,7 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         id_creds.refresh(request)
         headers = {"Authorization": f"Bearer {id_creds.token}"}
-        if cfg.is_account_client:
+        if cfg.host_type == HostType.ACCOUNTS:
             gcp_impersonated_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
         return headers
@@ -844,7 +845,7 @@ class DatabricksCliTokenSource(CliTokenSource):
 
     def __init__(self, cfg: "Config"):
         args = ["auth", "token", "--host", cfg.host]
-        if cfg.is_account_client:
+        if cfg.host_type == HostType.ACCOUNTS:
             args += ["--account-id", cfg.account_id]
 
         cli_path = cfg.databricks_cli_path

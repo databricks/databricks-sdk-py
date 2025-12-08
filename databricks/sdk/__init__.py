@@ -222,6 +222,7 @@ class WorkspaceClient:
         config: Optional[client.Config] = None,
         scopes: Optional[List[str]] = None,
         authorization_details: Optional[List[AuthorizationDetail]] = None,
+        is_unified_host: Optional[bool] = False,
     ):
         if not config:
             config = client.Config(

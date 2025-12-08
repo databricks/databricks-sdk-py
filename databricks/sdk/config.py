@@ -6,6 +6,7 @@ import os
 import pathlib
 import sys
 import urllib.parse
+from enum import Enum
 from typing import Dict, Iterable, List, Optional
 
 import requests
@@ -19,9 +20,17 @@ from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import (OidcEndpoints, Token, get_account_endpoints,
                     get_azure_entra_id_workspace_endpoints,
-                    get_workspace_endpoints)
+                    get_unified_endpoints, get_workspace_endpoints)
 
 logger = logging.getLogger("databricks.sdk")
+
+
+class HostType(Enum):
+    """Enum representing the type of Databricks host."""
+
+    ACCOUNTS = "accounts"
+    WORKSPACE = "workspace"
+    UNIFIED = "unified"
 
 
 class ConfigAttribute:
@@ -61,6 +70,10 @@ def with_user_agent_extra(key: str, value: str):
 class Config:
     host: str = ConfigAttribute(env="DATABRICKS_HOST")
     account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
+    workspace_id: str = ConfigAttribute(env="DATABRICKS_WORKSPACE_ID")
+
+    # Experimental flag to indicate if the host is a unified host (supports both workspace and account APIs)
+    experimental_is_unified_host: bool = ConfigAttribute(env="DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST")
 
     # PAT token.
     token: str = ConfigAttribute(env="DATABRICKS_TOKEN", auth="pat", sensitive=True)
@@ -339,10 +352,27 @@ class Config:
         return self.environment.cloud == Cloud.AWS
 
     @property
-    def is_account_client(self) -> bool:
+    def host_type(self) -> HostType:
+        """Determine the type of host based on the configuration.
+
+        Returns the HostType which can be ACCOUNTS, WORKSPACE, or UNIFIED.
+        """
         if not self.host:
-            return False
-        return self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")
+            logger.debug(f"Host type: {HostType.WORKSPACE.value} (no host configured)")
+            return HostType.WORKSPACE
+
+        # Check if explicitly marked as unified host
+        if self.experimental_is_unified_host is True:
+            logger.debug(f"Host type: {HostType.UNIFIED.value} (experimental flag set)")
+            return HostType.UNIFIED
+
+        # Check for accounts host pattern
+        if self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod."):
+            logger.debug(f"Host type: {HostType.ACCOUNTS.value} (accounts URL pattern)")
+            return HostType.ACCOUNTS
+
+        logger.debug(f"Host type: {HostType.WORKSPACE.value} (default)")
+        return HostType.WORKSPACE
 
     @property
     def arm_environment(self) -> AzureEnvironment:
@@ -394,8 +424,23 @@ class Config:
             return None
         if self.is_azure and self.azure_client_id:
             return get_azure_entra_id_workspace_endpoints(self.host)
-        if self.is_account_client and self.account_id:
+
+        # Handle unified hosts
+        if self.host_type == HostType.UNIFIED:
+            if self.workspace_id:
+                return get_unified_endpoints(self.host, self.workspace_id)
+            elif self.account_id:
+                return get_account_endpoints(self.host, self.account_id)
+            else:
+                raise ValueError(
+                    "Unified host requires either workspace_id (for workspace client) or account_id (for account client)"
+                )
+
+        # Handle traditional account hosts
+        if self.host_type == HostType.ACCOUNTS and self.account_id:
             return get_account_endpoints(self.host, self.account_id)
+
+        # Default to workspace endpoints
         return get_workspace_endpoints(self.host)
 
     def debug_string(self) -> str:

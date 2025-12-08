@@ -22,11 +22,20 @@ class ApiClient:
 
     def __init__(self, cfg: Config):
         self._cfg = cfg
+
+        # Create header factory that includes both auth and org ID headers
+        def combined_header_factory():
+            headers = cfg.authenticate()
+            # Add X-Databricks-Org-Id header for workspace clients on unified hosts
+            if cfg.workspace_id and cfg.host_type.value == "unified":
+                headers["X-Databricks-Org-Id"] = cfg.workspace_id
+            return headers
+
         self._api_client = _BaseClient(
             debug_truncate_bytes=cfg.debug_truncate_bytes,
             retry_timeout_seconds=cfg.retry_timeout_seconds,
             user_agent_base=cfg.user_agent,
-            header_factory=cfg.authenticate,
+            header_factory=combined_header_factory,
             max_connection_pools=cfg.max_connection_pools,
             max_connections_per_pool=cfg.max_connections_per_pool,
             pool_block=True,
@@ -38,10 +47,6 @@ class ApiClient:
     @property
     def account_id(self) -> str:
         return self._cfg.account_id
-
-    @property
-    def is_account_client(self) -> bool:
-        return self._cfg.is_account_client
 
     def get_oauth_token(self, auth_details: str) -> Token:
         if not self._cfg.auth_type:
