@@ -9,6 +9,7 @@ from http.server import BaseHTTPRequestHandler
 import pytest
 
 from databricks.sdk import WorkspaceClient, errors, useragent
+from databricks.sdk.config import HostType
 from databricks.sdk.core import ApiClient, Config, DatabricksError
 from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  CredentialsProvider,
@@ -251,17 +252,17 @@ def test_config_copy_shallow_copies_credential_provider():
 
 def test_config_accounts_aws_is_accounts_host(config):
     config.host = "https://accounts.cloud.databricks.com"
-    assert config.is_account_client
+    assert config.host_type == HostType.ACCOUNTS
 
 
 def test_config_accounts_dod_is_accounts_host(config):
     config.host = "https://accounts-dod.cloud.databricks.us"
-    assert config.is_account_client
+    assert config.host_type == HostType.ACCOUNTS
 
 
 def test_config_workspace_is_not_accounts_host(config):
     config.host = "https://westeurope.azuredatabricks.net"
-    assert not config.is_account_client
+    assert config.host_type == HostType.WORKSPACE
 
 
 # This test uses the fake file system to avoid interference from local default profile.

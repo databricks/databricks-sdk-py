@@ -48,10 +48,6 @@ class ApiClient:
     def account_id(self) -> str:
         return self._cfg.account_id
 
-    @property
-    def is_account_client(self) -> bool:
-        return self._cfg.is_account_client
-
     def get_oauth_token(self, auth_details: str) -> Token:
         if not self._cfg.auth_type:
             self._cfg.authenticate()

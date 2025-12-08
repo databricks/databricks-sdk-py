@@ -8,8 +8,7 @@ from datetime import datetime
 import pytest
 
 from databricks.sdk import oauth, useragent
-from databricks.sdk.config import (Config, ConfigType, HostType, with_product,
-                                   with_user_agent_extra)
+from databricks.sdk.config import Config, HostType, with_product, with_user_agent_extra
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials, set_az_path
@@ -290,43 +289,6 @@ def test_host_type_unified():
         token="test-token",
     )
     assert config.host_type == HostType.UNIFIED
-
-
-def test_config_type_workspace():
-    """Test that config type is workspace when workspace_id is set."""
-    config = Config(
-        host="https://unified.databricks.com",
-        workspace_id="test-workspace",
-        experimental_is_unified_host=True,
-        token="test-token",
-    )
-    assert config.config_type == ConfigType.WORKSPACE
-
-
-def test_config_type_account():
-    """Test that config type is account when account_id is set without workspace_id."""
-    config = Config(
-        host="https://unified.databricks.com",
-        account_id="test-account",
-        experimental_is_unified_host=True,
-        token="test-token",
-    )
-    assert config.config_type == ConfigType.ACCOUNT
-
-
-def test_config_type_workspace_default():
-    """Test that config type defaults to workspace."""
-    config = Config(host="https://test.databricks.com", token="test-token")
-    assert config.config_type == ConfigType.WORKSPACE
-
-
-def test_is_account_client_backward_compatibility():
-    """Test that is_account_client property still works for backward compatibility."""
-    config_workspace = Config(host="https://test.databricks.com", token="test-token")
-    assert not config_workspace.is_account_client
-
-    config_account = Config(host="https://accounts.cloud.databricks.com", account_id="test-account", token="test-token")
-    assert config_account.is_account_client
 
 
 def test_oidc_endpoints_unified_workspace(mocker, requests_mock):

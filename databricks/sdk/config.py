@@ -33,13 +33,6 @@ class HostType(Enum):
     UNIFIED = "unified"
 
 
-class ConfigType(Enum):
-    """Enum representing the type of client configuration."""
-
-    ACCOUNT = "account"
-    WORKSPACE = "workspace"
-
-
 class ConfigAttribute:
     """Configuration attribute metadata and descriptor protocols."""
 
@@ -365,43 +358,21 @@ class Config:
         Returns the HostType which can be ACCOUNTS, WORKSPACE, or UNIFIED.
         """
         if not self.host:
+            logger.debug(f"Host type: {HostType.WORKSPACE.value} (no host configured)")
             return HostType.WORKSPACE
 
         # Check if explicitly marked as unified host
-        if self.experimental_is_unified_host:
+        if self.experimental_is_unified_host is True:
+            logger.debug(f"Host type: {HostType.UNIFIED.value} (experimental flag set)")
             return HostType.UNIFIED
 
         # Check for accounts host pattern
         if self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod."):
+            logger.debug(f"Host type: {HostType.ACCOUNTS.value} (accounts URL pattern)")
             return HostType.ACCOUNTS
 
+        logger.debug(f"Host type: {HostType.WORKSPACE.value} (default)")
         return HostType.WORKSPACE
-
-    @property
-    def config_type(self) -> ConfigType:
-        """Determine the type of client configuration.
-
-        This is separate from host_type. For example, a unified host can support both
-        workspace and account client types.
-        """
-        # If workspace_id is set, this is a workspace client
-        if self.workspace_id:
-            return ConfigType.WORKSPACE
-
-        # If account_id is set and no workspace_id, this is an account client
-        if self.account_id:
-            return ConfigType.ACCOUNT
-
-        # Default to workspace for backward compatibility
-        return ConfigType.WORKSPACE
-
-    @property
-    def is_account_client(self) -> bool:
-        """[Deprecated] Use host_type or config_type instead.
-
-        Determines if this is an account client based on the host URL.
-        """
-        return self.host_type == HostType.ACCOUNTS
 
     @property
     def arm_environment(self) -> AzureEnvironment:
@@ -456,9 +427,9 @@ class Config:
 
         # Handle unified hosts
         if self.host_type == HostType.UNIFIED:
-            if self.config_type == ConfigType.WORKSPACE and self.workspace_id:
+            if self.workspace_id:
                 return get_unified_endpoints(self.host, self.workspace_id)
-            elif self.config_type == ConfigType.ACCOUNT and self.account_id:
+            elif self.account_id:
                 return get_account_endpoints(self.host, self.account_id)
             else:
                 raise ValueError(
