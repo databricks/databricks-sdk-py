@@ -1,5 +1,5 @@
-``w.query_visualizations_legacy``: Query Visualizations (legacy)
-================================================================
+``w.query_visualizations_legacy``: Query Visualizations (deprecated)
+====================================================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: QueryVisualizationsLegacyAPI
@@ -7,8 +7,7 @@
     This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
     within the Databricks Workspace. Data structures may change over time.
 
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
-    more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -16,8 +15,8 @@
 
         Creates visualization in the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/create instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/create instead. [Learn
+        more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -40,8 +39,8 @@
 
         Removes a visualization from the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/delete instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/delete instead. [Learn
+        more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -55,8 +54,8 @@
 
         Updates visualization in the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/update instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/update instead. [Learn
+        more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 

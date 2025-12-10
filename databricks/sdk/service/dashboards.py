@@ -2315,21 +2315,36 @@ class LakeviewAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create(self, dashboard: Dashboard) -> Dashboard:
+    def create(
+        self, dashboard: Dashboard, *, dataset_catalog: Optional[str] = None, dataset_schema: Optional[str] = None
+    ) -> Dashboard:
         """Create a draft dashboard.
 
         :param dashboard: :class:`Dashboard`
+        :param dataset_catalog: str (optional)
+          Sets the default catalog for all datasets in this dashboard. Does not impact table references that
+          use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s
+          existing configuration.
+        :param dataset_schema: str (optional)
+          Sets the default schema for all datasets in this dashboard. Does not impact table references that
+          use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing
+          configuration.
 
         :returns: :class:`Dashboard`
         """
 
         body = dashboard.as_dict()
+        query = {}
+        if dataset_catalog is not None:
+            query["dataset_catalog"] = dataset_catalog
+        if dataset_schema is not None:
+            query["dataset_schema"] = dataset_schema
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("POST", "/api/2.0/lakeview/dashboards", body=body, headers=headers)
+        res = self._api.do("POST", "/api/2.0/lakeview/dashboards", query=query, body=body, headers=headers)
         return Dashboard.from_dict(res)
 
     def create_schedule(self, dashboard_id: str, schedule: Schedule) -> Schedule:
@@ -2737,23 +2752,45 @@ class LakeviewAPI:
 
         self._api.do("DELETE", f"/api/2.0/lakeview/dashboards/{dashboard_id}/published", headers=headers)
 
-    def update(self, dashboard_id: str, dashboard: Dashboard) -> Dashboard:
+    def update(
+        self,
+        dashboard_id: str,
+        dashboard: Dashboard,
+        *,
+        dataset_catalog: Optional[str] = None,
+        dataset_schema: Optional[str] = None,
+    ) -> Dashboard:
         """Update a draft dashboard.
 
         :param dashboard_id: str
           UUID identifying the dashboard.
         :param dashboard: :class:`Dashboard`
+        :param dataset_catalog: str (optional)
+          Sets the default catalog for all datasets in this dashboard. Does not impact table references that
+          use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s
+          existing configuration.
+        :param dataset_schema: str (optional)
+          Sets the default schema for all datasets in this dashboard. Does not impact table references that
+          use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing
+          configuration.
 
         :returns: :class:`Dashboard`
         """
 
         body = dashboard.as_dict()
+        query = {}
+        if dataset_catalog is not None:
+            query["dataset_catalog"] = dataset_catalog
+        if dataset_schema is not None:
+            query["dataset_schema"] = dataset_schema
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("PATCH", f"/api/2.0/lakeview/dashboards/{dashboard_id}", body=body, headers=headers)
+        res = self._api.do(
+            "PATCH", f"/api/2.0/lakeview/dashboards/{dashboard_id}", query=query, body=body, headers=headers
+        )
         return Dashboard.from_dict(res)
 
     def update_schedule(self, dashboard_id: str, schedule_id: str, schedule: Schedule) -> Schedule:

@@ -1438,9 +1438,6 @@ class Feature:
     function: Function
     """The function by which the feature is computed."""
 
-    time_window: TimeWindow
-    """The time window in which the feature is computed."""
-
     description: Optional[str] = None
     """The description of the feature."""
 
@@ -1453,6 +1450,9 @@ class Feature:
     should not manually set this field as incorrect values may lead to inaccurate lineage tracking
     or unexpected behavior. This field will be set by feature-engineering client and should be left
     unset by SDK and terraform users."""
+
+    time_window: Optional[TimeWindow] = None
+    """The time window in which the feature is computed."""
 
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
@@ -3371,6 +3371,10 @@ class MaterializedFeature:
     feature_name: str
     """The full name of the feature in Unity Catalog."""
 
+    cron_schedule: Optional[str] = None
+    """The quartz cron expression that defines the schedule of the materialization pipeline. The
+    schedule is evaluated in the UTC timezone."""
+
     last_materialization_time: Optional[str] = None
     """The timestamp when the pipeline last ran and updated the materialized feature values. If the
     pipeline has not run yet, this field will be null."""
@@ -3392,6 +3396,8 @@ class MaterializedFeature:
     def as_dict(self) -> dict:
         """Serializes the MaterializedFeature into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.cron_schedule is not None:
+            body["cron_schedule"] = self.cron_schedule
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
         if self.last_materialization_time is not None:
@@ -3411,6 +3417,8 @@ class MaterializedFeature:
     def as_shallow_dict(self) -> dict:
         """Serializes the MaterializedFeature into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.cron_schedule is not None:
+            body["cron_schedule"] = self.cron_schedule
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
         if self.last_materialization_time is not None:
@@ -3431,6 +3439,7 @@ class MaterializedFeature:
     def from_dict(cls, d: Dict[str, Any]) -> MaterializedFeature:
         """Deserializes the MaterializedFeature from a dictionary."""
         return cls(
+            cron_schedule=d.get("cron_schedule", None),
             feature_name=d.get("feature_name", None),
             last_materialization_time=d.get("last_materialization_time", None),
             materialized_feature_id=d.get("materialized_feature_id", None),
