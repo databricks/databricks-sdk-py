@@ -226,7 +226,8 @@
           Job-level parameter definitions
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. This field determines the level of compute performance or
-          cost-efficiency for the run.
+          cost-efficiency for the run. The performance target does not apply to tasks that run on Serverless
+          GPU compute.
 
           * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
           Prioritizes fast startup and execution times through rapid scaling and optimized cluster
@@ -358,23 +359,21 @@
                 w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
             )
             
-            created_job = w.jobs.create(
-                name=f"sdk-{time.time_ns()}",
+            run = w.jobs.submit(
+                run_name=f"sdk-{time.time_ns()}",
                 tasks=[
-                    jobs.Task(
-                        description="test",
+                    jobs.SubmitTask(
                         existing_cluster_id=cluster_id,
                         notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                        task_key="test",
-                        timeout_seconds=0,
+                        task_key=f"sdk-{time.time_ns()}",
                     )
                 ],
-            )
+            ).result()
             
-            by_id = w.jobs.get(job_id=created_job.job_id)
+            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
             
             # cleanup
-            w.jobs.delete(job_id=created_job.job_id)
+            w.jobs.delete_run(run_id=run.run_id)
 
         Get a single job.
 
