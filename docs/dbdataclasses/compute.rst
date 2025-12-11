@@ -1180,6 +1180,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONTAINER_LAUNCH_FAILURE
       :value: "CONTAINER_LAUNCH_FAILURE"
 
+   .. py:attribute:: CONTROL_PLANE_CONNECTION_FAILURE
+      :value: "CONTROL_PLANE_CONNECTION_FAILURE"
+
+   .. py:attribute:: CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG
+      :value: "CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG"
+
    .. py:attribute:: CONTROL_PLANE_REQUEST_FAILURE
       :value: "CONTROL_PLANE_REQUEST_FAILURE"
 

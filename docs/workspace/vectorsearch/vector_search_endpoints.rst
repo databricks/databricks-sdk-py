@@ -82,8 +82,7 @@
         :param endpoint_name: str
           Name of the vector search endpoint
         :param budget_policy_id: str
-          The budget policy id to be applied (hima-sheth) TODO: remove this once we've migrated to usage
-          policies
+          The budget policy id to be applied
 
         :returns: :class:`PatchEndpointBudgetPolicyResponse`
         
