@@ -1740,7 +1740,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 51"""
+    """Next Id: 52"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -1904,6 +1904,9 @@ class CreateAccountsMetastore:
     name: str
     """The user-specified name of the metastore."""
 
+    external_access_enabled: Optional[bool] = None
+    """Whether to allow non-DBR clients to directly access entities under the metastore."""
+
     region: Optional[str] = None
     """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
 
@@ -1913,6 +1916,8 @@ class CreateAccountsMetastore:
     def as_dict(self) -> dict:
         """Serializes the CreateAccountsMetastore into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.external_access_enabled is not None:
+            body["external_access_enabled"] = self.external_access_enabled
         if self.name is not None:
             body["name"] = self.name
         if self.region is not None:
@@ -1924,6 +1929,8 @@ class CreateAccountsMetastore:
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateAccountsMetastore into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.external_access_enabled is not None:
+            body["external_access_enabled"] = self.external_access_enabled
         if self.name is not None:
             body["name"] = self.name
         if self.region is not None:
@@ -1935,7 +1942,12 @@ class CreateAccountsMetastore:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateAccountsMetastore:
         """Deserializes the CreateAccountsMetastore from a dictionary."""
-        return cls(name=d.get("name", None), region=d.get("region", None), storage_root=d.get("storage_root", None))
+        return cls(
+            external_access_enabled=d.get("external_access_enabled", None),
+            name=d.get("name", None),
+            region=d.get("region", None),
+            storage_root=d.get("storage_root", None),
+        )
 
 
 @dataclass
@@ -8744,7 +8756,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_CROWDSTRIKE_EVENT_STREAM_M2M = 281; Next id: 282"""
+    """Latest kind: CONNECTION_WORKDAY_ACTIVITY_LOGGING_OAUTH_REFRESH_TOKEN = 282; Next id:283"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -9850,6 +9862,9 @@ class UpdateAccountsMetastore:
     delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None
     """The scope of Delta Sharing enabled for the metastore."""
 
+    external_access_enabled: Optional[bool] = None
+    """Whether to allow non-DBR clients to directly access entities under the metastore."""
+
     owner: Optional[str] = None
     """The owner of the metastore."""
 
@@ -9870,6 +9885,8 @@ class UpdateAccountsMetastore:
             )
         if self.delta_sharing_scope is not None:
             body["delta_sharing_scope"] = self.delta_sharing_scope.value
+        if self.external_access_enabled is not None:
+            body["external_access_enabled"] = self.external_access_enabled
         if self.owner is not None:
             body["owner"] = self.owner
         if self.privilege_model_version is not None:
@@ -9889,6 +9906,8 @@ class UpdateAccountsMetastore:
             )
         if self.delta_sharing_scope is not None:
             body["delta_sharing_scope"] = self.delta_sharing_scope
+        if self.external_access_enabled is not None:
+            body["external_access_enabled"] = self.external_access_enabled
         if self.owner is not None:
             body["owner"] = self.owner
         if self.privilege_model_version is not None:
@@ -9906,6 +9925,7 @@ class UpdateAccountsMetastore:
                 "delta_sharing_recipient_token_lifetime_in_seconds", None
             ),
             delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
+            external_access_enabled=d.get("external_access_enabled", None),
             owner=d.get("owner", None),
             privilege_model_version=d.get("privilege_model_version", None),
             storage_root_credential_id=d.get("storage_root_credential_id", None),
@@ -12943,7 +12963,14 @@ class MetastoresAPI:
 
         self._api.do("PUT", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", body=body, headers=headers)
 
-    def create(self, name: str, *, region: Optional[str] = None, storage_root: Optional[str] = None) -> MetastoreInfo:
+    def create(
+        self,
+        name: str,
+        *,
+        external_access_enabled: Optional[bool] = None,
+        region: Optional[str] = None,
+        storage_root: Optional[str] = None,
+    ) -> MetastoreInfo:
         """Creates a new metastore based on a provided name and optional storage root path. By default (if the
         __owner__ field is not set), the owner of the new metastore is the user calling the
         __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
@@ -12951,6 +12978,8 @@ class MetastoresAPI:
 
         :param name: str
           The user-specified name of the metastore.
+        :param external_access_enabled: bool (optional)
+          Whether to allow non-DBR clients to directly access entities under the metastore.
         :param region: str (optional)
           Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
         :param storage_root: str (optional)
@@ -12960,6 +12989,8 @@ class MetastoresAPI:
         """
 
         body = {}
+        if external_access_enabled is not None:
+            body["external_access_enabled"] = external_access_enabled
         if name is not None:
             body["name"] = name
         if region is not None:
@@ -13114,6 +13145,7 @@ class MetastoresAPI:
         delta_sharing_organization_name: Optional[str] = None,
         delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None,
         delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None,
+        external_access_enabled: Optional[bool] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         privilege_model_version: Optional[str] = None,
@@ -13131,6 +13163,8 @@ class MetastoresAPI:
           The lifetime of delta sharing recipient token in seconds.
         :param delta_sharing_scope: :class:`DeltaSharingScopeEnum` (optional)
           The scope of Delta Sharing enabled for the metastore.
+        :param external_access_enabled: bool (optional)
+          Whether to allow non-DBR clients to directly access entities under the metastore.
         :param new_name: str (optional)
           New name for the metastore.
         :param owner: str (optional)
@@ -13152,6 +13186,8 @@ class MetastoresAPI:
             )
         if delta_sharing_scope is not None:
             body["delta_sharing_scope"] = delta_sharing_scope.value
+        if external_access_enabled is not None:
+            body["external_access_enabled"] = external_access_enabled
         if new_name is not None:
             body["new_name"] = new_name
         if owner is not None:
