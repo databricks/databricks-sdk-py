@@ -33,7 +33,7 @@ class HostType(Enum):
     UNIFIED = "unified"
 
 
-class ConfigType(Enum):
+class ClientType(Enum):
     """Enum representing the type of client configuration."""
 
     ACCOUNT = "account"
@@ -378,7 +378,7 @@ class Config:
         return HostType.WORKSPACE
 
     @property
-    def config_type(self) -> ConfigType:
+    def config_type(self) -> ClientType:
         """Determine the type of client configuration.
 
         This is separate from host_type. For example, a unified host can support both
@@ -386,14 +386,14 @@ class Config:
         """
         # If workspace_id is set, this is a workspace client
         if self.workspace_id:
-            return ConfigType.WORKSPACE
+            return ClientType.WORKSPACE
 
         # If account_id is set and no workspace_id, this is an account client
         if self.account_id:
-            return ConfigType.ACCOUNT
+            return ClientType.ACCOUNT
 
         # Default to workspace for backward compatibility
-        return ConfigType.WORKSPACE
+        return ClientType.WORKSPACE
 
     @property
     def is_account_client(self) -> bool:
@@ -456,9 +456,9 @@ class Config:
 
         # Handle unified hosts
         if self.host_type == HostType.UNIFIED:
-            if self.config_type == ConfigType.WORKSPACE and self.workspace_id:
+            if self.config_type == ClientType.WORKSPACE and self.workspace_id:
                 return get_unified_endpoints(self.host, self.workspace_id)
-            elif self.config_type == ConfigType.ACCOUNT and self.account_id:
+            elif self.config_type == ClientType.ACCOUNT and self.account_id:
                 return get_account_endpoints(self.host, self.account_id)
             else:
                 raise ValueError(

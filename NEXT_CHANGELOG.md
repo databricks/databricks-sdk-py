@@ -4,7 +4,7 @@
 
 ### New Features and Improvements
 * Add new auth type (`runtime-oauth`) for notebooks: Introduce a new authentication mechanism that allows notebooks to authenticate using OAuth tokens
-* Add support for SPOG hosts with experimental flag
+* Add support for unified hosts with experimental flag
 
 ### Security
 

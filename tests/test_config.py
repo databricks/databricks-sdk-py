@@ -8,7 +8,7 @@ from datetime import datetime
 import pytest
 
 from databricks.sdk import oauth, useragent
-from databricks.sdk.config import (Config, ConfigType, HostType, with_product,
+from databricks.sdk.config import (Config, ClientType, HostType, with_product,
                                    with_user_agent_extra)
 from databricks.sdk.version import __version__
 
@@ -300,7 +300,7 @@ def test_config_type_workspace():
         experimental_is_unified_host=True,
         token="test-token",
     )
-    assert config.config_type == ConfigType.WORKSPACE
+    assert config.config_type == ClientType.WORKSPACE
 
 
 def test_config_type_account():
@@ -311,13 +311,13 @@ def test_config_type_account():
         experimental_is_unified_host=True,
         token="test-token",
     )
-    assert config.config_type == ConfigType.ACCOUNT
+    assert config.config_type == ClientType.ACCOUNT
 
 
 def test_config_type_workspace_default():
     """Test that config type defaults to workspace."""
     config = Config(host="https://test.databricks.com", token="test-token")
-    assert config.config_type == ConfigType.WORKSPACE
+    assert config.config_type == ClientType.WORKSPACE
 
 
 def test_is_account_client_backward_compatibility():

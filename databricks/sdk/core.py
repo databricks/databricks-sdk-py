@@ -27,7 +27,7 @@ class ApiClient:
         def combined_header_factory():
             headers = cfg.authenticate()
             # Add X-Databricks-Org-Id header for workspace clients on unified hosts
-            if cfg.workspace_id and cfg.host_type.value == "unified":
+            if cfg.workspace_id and cfg.host_type == HostType.UNIFIED:
                 headers["X-Databricks-Org-Id"] = cfg.workspace_id
             return headers
 
