@@ -418,15 +418,15 @@ def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> O
     return OidcEndpoints.from_dict(resp)
 
 
-def get_unified_endpoints(host: str, workspace_id: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
+def get_unified_endpoints(host: str, account_id: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
     """
-    Get the OIDC endpoints for a unified host with a specific workspace.
+    Get the OIDC endpoints for a unified host.
     :param host: The Databricks unified host.
-    :param workspace_id: The workspace ID.
-    :return: The OIDC endpoints for the workspace on the unified host.
+    :param account_id: The account ID.
+    :return: The OIDC endpoints for the unified host.
     """
     host = _fix_host_if_needed(host)
-    oidc = f"{host}/oidc/unified/{workspace_id}/.well-known/oauth-authorization-server"
+    oidc = f"{host}/oidc/accounts/{account_id}/.well-known/oauth-authorization-server"
     resp = client.do("GET", oidc)
     return OidcEndpoints.from_dict(resp)
 

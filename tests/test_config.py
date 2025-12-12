@@ -344,24 +344,25 @@ def test_is_account_client_raises_on_unified_host():
 def test_oidc_endpoints_unified_workspace(mocker, requests_mock):
     """Test that oidc_endpoints returns unified endpoints for workspace on unified host."""
     requests_mock.get(
-        "https://unified.databricks.com/oidc/unified/test-workspace/.well-known/oauth-authorization-server",
+        "https://unified.databricks.com/oidc/accounts/test-account/.well-known/oauth-authorization-server",
         json={
-            "authorization_endpoint": "https://unified.databricks.com/oidc/unified/test-workspace/v1/authorize",
-            "token_endpoint": "https://unified.databricks.com/oidc/unified/test-workspace/v1/token",
+            "authorization_endpoint": "https://unified.databricks.com/oidc/accounts/test-account/v1/authorize",
+            "token_endpoint": "https://unified.databricks.com/oidc/accounts/test-account/v1/token",
         },
     )
 
     config = Config(
         host="https://unified.databricks.com",
         workspace_id="test-workspace",
+        account_id="test-account",
         experimental_is_unified_host=True,
         token="test-token",
     )
 
     endpoints = config.oidc_endpoints
     assert endpoints is not None
-    assert "unified/test-workspace" in endpoints.authorization_endpoint
-    assert "unified/test-workspace" in endpoints.token_endpoint
+    assert "accounts/test-account" in endpoints.authorization_endpoint
+    assert "accounts/test-account" in endpoints.token_endpoint
 
 
 def test_oidc_endpoints_unified_account(mocker, requests_mock):
@@ -388,13 +389,13 @@ def test_oidc_endpoints_unified_account(mocker, requests_mock):
 
 
 def test_oidc_endpoints_unified_missing_ids():
-    """Test that oidc_endpoints raises error when unified host lacks required IDs."""
+    """Test that oidc_endpoints raises error when unified host lacks required account_id."""
     config = Config(host="https://unified.databricks.com", experimental_is_unified_host=True, token="test-token")
 
     with pytest.raises(ValueError) as exc_info:
         _ = config.oidc_endpoints
 
-    assert "Unified host requires either workspace_id" in str(exc_info.value)
+    assert "Unified host requires account_id" in str(exc_info.value)
 
 
 def test_workspace_org_id_header_on_unified_host(requests_mock):

@@ -462,14 +462,11 @@ class Config:
 
         # Handle unified hosts
         if self.host_type == HostType.UNIFIED:
-            if self.client_type == ClientType.WORKSPACE and self.workspace_id:
-                return get_unified_endpoints(self.host, self.workspace_id)
-            elif self.client_type == ClientType.ACCOUNT and self.account_id:
-                return get_account_endpoints(self.host, self.account_id)
-            else:
+            if not self.account_id:
                 raise ValueError(
-                    "Unified host requires either workspace_id (for workspace client) or account_id (for account client)"
+                    "Unified host requires account_id to be set for OAuth endpoints"
                 )
+            return get_unified_endpoints(self.host, self.account_id)
 
         # Handle traditional account hosts
         if self.host_type == HostType.ACCOUNTS and self.account_id:
