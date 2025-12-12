@@ -40,13 +40,28 @@ These parameters can be used with any authentication type:
 
 ## Usage Examples
 
+When you explicitly set `auth_type`, the SDK will **only** attempt that specific authentication method, skipping the automatic detection of other methods. This is useful when you want to ensure a specific authentication method is used, or when you have multiple credentials configured but want to use a specific one.
+
 ### Personal Access Token (PAT)
 ```python
 from databricks.sdk import WorkspaceClient
 
 w = WorkspaceClient(
     host="https://your-workspace.cloud.databricks.com",
-    token="dapi1234567890abcdef"
+    token="dapi1234567890abcdef",
+    auth_type="pat"
+)
+```
+
+### Basic Authentication (Username/Password)
+```python
+from databricks.sdk import WorkspaceClient
+
+w = WorkspaceClient(
+    host="https://your-workspace.cloud.databricks.com",
+    username="your-username",
+    password="your-password",
+    auth_type="basic"
 )
 ```
 
@@ -57,7 +72,8 @@ from databricks.sdk import WorkspaceClient
 w = WorkspaceClient(
     host="https://your-workspace.cloud.databricks.com",
     client_id="your-client-id",
-    client_secret="your-client-secret"
+    client_secret="your-client-secret",
+    auth_type="oauth-m2m"
 )
 ```
 
@@ -71,6 +87,17 @@ w = WorkspaceClient(
 )
 ```
 
+### Databricks CLI
+```python
+from databricks.sdk import WorkspaceClient
+
+# Assumes you've run: databricks auth login --host https://your-workspace.cloud.databricks.com
+w = WorkspaceClient(
+    host="https://your-workspace.cloud.databricks.com",
+    auth_type="databricks-cli"
+)
+```
+
 ### Azure Service Principal
 ```python
 from databricks.sdk import WorkspaceClient
@@ -79,17 +106,19 @@ w = WorkspaceClient(
     host="https://adb-1234567890.azuredatabricks.net",
     azure_client_id="your-azure-client-id",
     azure_client_secret="your-azure-client-secret",
-    azure_tenant_id="your-azure-tenant-id"
+    azure_tenant_id="your-azure-tenant-id",
+    auth_type="azure-client-secret"
 )
 ```
 
-### Databricks CLI
+### Azure CLI
 ```python
 from databricks.sdk import WorkspaceClient
 
-# Assumes you've run: databricks auth login --host https://your-workspace.cloud.databricks.com
+# Assumes you've run: az login
 w = WorkspaceClient(
-    host="https://your-workspace.cloud.databricks.com"
+    host="https://adb-1234567890.azuredatabricks.net",
+    auth_type="azure-cli"
 )
 ```
 
@@ -100,7 +129,33 @@ from databricks.sdk import WorkspaceClient
 # In GitHub Actions with OIDC configured
 w = WorkspaceClient(
     host="https://your-workspace.cloud.databricks.com",
-    client_id="your-databricks-oauth-client-id"
+    client_id="your-databricks-oauth-client-id",
+    auth_type="github-oidc"
+)
+```
+
+### GitHub Actions OIDC for Azure
+```python
+from databricks.sdk import WorkspaceClient
+
+# In GitHub Actions with Azure OIDC configured
+w = WorkspaceClient(
+    host="https://adb-1234567890.azuredatabricks.net",
+    azure_client_id="your-azure-client-id",
+    auth_type="github-oidc-azure"
+)
+```
+
+### Azure DevOps OIDC
+```python
+from databricks.sdk import WorkspaceClient
+
+# In Azure DevOps with OIDC configured
+# Note: SYSTEM_ACCESSTOKEN must be exposed as an environment variable
+w = WorkspaceClient(
+    host="https://your-workspace.cloud.databricks.com",
+    client_id="your-databricks-oauth-client-id",
+    auth_type="azure-devops-oidc"
 )
 ```
 
@@ -110,7 +165,30 @@ from databricks.sdk import WorkspaceClient
 
 w = WorkspaceClient(
     host="https://your-workspace.gcp.databricks.com",
-    google_credentials="/path/to/service-account-key.json"
+    google_credentials="/path/to/service-account-key.json",
+    auth_type="google-credentials"
+)
+```
+
+### Google Cloud ID (Service Account Impersonation)
+```python
+from databricks.sdk import WorkspaceClient
+
+w = WorkspaceClient(
+    host="https://your-workspace.gcp.databricks.com",
+    google_service_account="your-service-account@project.iam.gserviceaccount.com",
+    auth_type="google-id"
+)
+```
+
+### Metadata Service
+```python
+from databricks.sdk import WorkspaceClient
+
+w = WorkspaceClient(
+    host="https://your-workspace.cloud.databricks.com",
+    metadata_service_url="http://localhost:8080/metadata",
+    auth_type="metadata-service"
 )
 ```
 
@@ -119,7 +197,50 @@ w = WorkspaceClient(
 from databricks.sdk import WorkspaceClient
 
 # No credentials needed when running in Databricks Runtime
-w = WorkspaceClient()
+# The runtime auth type is auto-detected
+w = WorkspaceClient(auth_type="runtime")
+```
+
+### Runtime OAuth (in Databricks Notebooks with scoped access)
+```python
+from databricks.sdk import WorkspaceClient
+
+# For fine-grained access control in notebooks
+w = WorkspaceClient(
+    scopes="clusters sql",
+    auth_type="runtime-oauth"
+)
+```
+
+### Environment Variable OIDC
+```python
+from databricks.sdk import WorkspaceClient
+
+# OIDC token from DATABRICKS_OIDC_TOKEN environment variable
+w = WorkspaceClient(
+    host="https://your-workspace.cloud.databricks.com",
+    auth_type="env-oidc"
+)
+```
+
+### File-based OIDC
+```python
+from databricks.sdk import WorkspaceClient
+
+# OIDC token from a file
+w = WorkspaceClient(
+    host="https://your-workspace.cloud.databricks.com",
+    oidc_token_filepath="/path/to/oidc-token",
+    auth_type="file-oidc"
+)
+```
+
+### Model Serving Environment
+```python
+from databricks.sdk import WorkspaceClient
+
+# Auto-detected when running in Databricks Model Serving
+w = WorkspaceClient(auth_type="model-serving")
 ```
 
 ## Authentication Priority Order
@@ -156,7 +277,6 @@ You can override this order by explicitly setting the `auth_type` parameter.
 
 ## See Also
 
-- [Main README Authentication Section](../README.md#authentication)
-- [OAuth Documentation](./oauth.md)
-- [Azure AD Authentication](./azure-ad.md)
-- [Databricks Authentication Documentation](https://docs.databricks.com/dev-tools/auth.html)
+- [Authentication Overview](./authentication.md) - Default authentication flow and configuration
+- [OAuth Documentation](./oauth.md) - OAuth-based authentication details
+- [Databricks Authentication Documentation](https://docs.databricks.com/dev-tools/auth.html) - Official Databricks authentication docs
