@@ -329,6 +329,18 @@ def test_is_account_client_backward_compatibility():
     assert config_account.is_account_client
 
 
+def test_is_account_client_raises_on_unified_host():
+    """Test that is_account_client raises ValueError when used with unified hosts."""
+    config = Config(
+        host="https://unified.databricks.com",
+        experimental_is_unified_host=True,
+        workspace_id="test-workspace",
+        token="test-token",
+    )
+    with pytest.raises(ValueError, match="is_account_client cannot be used with unified hosts"):
+        _ = config.is_account_client
+
+
 def test_oidc_endpoints_unified_workspace(mocker, requests_mock):
     """Test that oidc_endpoints returns unified endpoints for workspace on unified host."""
     requests_mock.get(

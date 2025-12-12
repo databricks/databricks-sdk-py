@@ -364,12 +364,12 @@ class Config:
 
         Returns the HostType which can be ACCOUNTS, WORKSPACE, or UNIFIED.
         """
-        if not self.host:
-            return HostType.WORKSPACE
-
         # Check if explicitly marked as unified host
         if self.experimental_is_unified_host:
             return HostType.UNIFIED
+
+        if not self.host:
+            return HostType.WORKSPACE
 
         # Check for accounts host pattern
         if self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod."):
@@ -401,7 +401,13 @@ class Config:
 
         Determines if this is an account client based on the host URL.
         """
-        return self.host_type == HostType.ACCOUNTS
+        if self.experimental_is_unified_host:
+            raise ValueError(
+                "is_account_client cannot be used with unified hosts; use host_type or client_type instead"
+            )
+        if not self.host:
+            return False
+        return self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")
 
     @property
     def arm_environment(self) -> AzureEnvironment:
