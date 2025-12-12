@@ -383,13 +383,25 @@ class Config:
 
         This is separate from host_type. For example, a unified host can support both
         workspace and account client types.
+
+        Returns ClientType.ACCOUNT or ClientType.WORKSPACE based on the configuration.
+
+        For unified hosts, account_id must be set. If workspace_id is also set,
+        returns WORKSPACE, otherwise returns ACCOUNT.
         """
-        # If workspace_id is set, this is a workspace client
-        if self.workspace_id:
+        host_type = self.host_type
+
+        if host_type == HostType.ACCOUNTS:
+            return ClientType.ACCOUNT
+
+        if host_type == HostType.WORKSPACE:
             return ClientType.WORKSPACE
 
-        # If account_id is set and no workspace_id, this is an account client
-        if self.account_id:
+        if host_type == HostType.UNIFIED:
+            if not self.account_id:
+                raise ValueError("Unified host requires account_id to be set")
+            if self.workspace_id:
+                return ClientType.WORKSPACE
             return ClientType.ACCOUNT
 
         # Default to workspace for backward compatibility
@@ -463,9 +475,7 @@ class Config:
         # Handle unified hosts
         if self.host_type == HostType.UNIFIED:
             if not self.account_id:
-                raise ValueError(
-                    "Unified host requires account_id to be set for OAuth endpoints"
-                )
+                raise ValueError("Unified host requires account_id to be set for OAuth endpoints")
             return get_unified_endpoints(self.host, self.account_id)
 
         # Handle traditional account hosts
