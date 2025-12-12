@@ -8,7 +8,7 @@ from datetime import datetime
 import pytest
 
 from databricks.sdk import oauth, useragent
-from databricks.sdk.config import (Config, ClientType, HostType, with_product,
+from databricks.sdk.config import (ClientType, Config, HostType, with_product,
                                    with_user_agent_extra)
 from databricks.sdk.version import __version__
 
