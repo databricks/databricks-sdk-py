@@ -97,11 +97,3 @@ def test_create_job(w):
     )
 
     w.jobs.create(job_clusters=[cluster], tasks=[task1])
-
-
-from databricks.sdk import WorkspaceClient
-
-def test_smallest_node_type_spog():
-    w = WorkspaceClient(profile="spog-test")
-    node_type_id = w.clusters.select_node_type(local_disk=True)
-    assert node_type_id is not None
