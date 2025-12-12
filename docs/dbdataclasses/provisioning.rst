@@ -113,6 +113,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: GcpServiceAccount
+   :members:
+   :undoc-members:
+
 .. autoclass:: GcpVpcEndpointInfo
    :members:
    :undoc-members:

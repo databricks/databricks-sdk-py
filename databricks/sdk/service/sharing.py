@@ -2113,6 +2113,7 @@ class SharedDataObject:
 class SharedDataObjectDataObjectType(Enum):
 
     FEATURE_SPEC = "FEATURE_SPEC"
+    FOREIGN_TABLE = "FOREIGN_TABLE"
     FUNCTION = "FUNCTION"
     MATERIALIZED_VIEW = "MATERIALIZED_VIEW"
     MODEL = "MODEL"
@@ -2121,6 +2122,7 @@ class SharedDataObjectDataObjectType(Enum):
     STREAMING_TABLE = "STREAMING_TABLE"
     TABLE = "TABLE"
     VIEW = "VIEW"
+    VOLUME = "VOLUME"
 
 
 class SharedDataObjectHistoryDataSharingStatus(Enum):
@@ -2296,6 +2298,9 @@ class TableInternalAttributes:
     """Storage locations of all table dependencies for shared views. Used on the recipient side for SEG
     (Secure Egress Gateway) whitelisting."""
 
+    has_delta_uniform_iceberg: Optional[bool] = None
+    """Whether the table has uniform enabled."""
+
     parent_storage_location: Optional[str] = None
     """Will be populated in the reconciliation response for VIEW and FOREIGN_TABLE, with the value of
     the parent UC entity's storage_location, following the same logic as getManagedEntityPath in
@@ -2320,6 +2325,8 @@ class TableInternalAttributes:
             body["auxiliary_managed_location"] = self.auxiliary_managed_location
         if self.dependency_storage_locations:
             body["dependency_storage_locations"] = [v for v in self.dependency_storage_locations]
+        if self.has_delta_uniform_iceberg is not None:
+            body["has_delta_uniform_iceberg"] = self.has_delta_uniform_iceberg
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2337,6 +2344,8 @@ class TableInternalAttributes:
             body["auxiliary_managed_location"] = self.auxiliary_managed_location
         if self.dependency_storage_locations:
             body["dependency_storage_locations"] = self.dependency_storage_locations
+        if self.has_delta_uniform_iceberg is not None:
+            body["has_delta_uniform_iceberg"] = self.has_delta_uniform_iceberg
         if self.parent_storage_location is not None:
             body["parent_storage_location"] = self.parent_storage_location
         if self.storage_location is not None:
@@ -2353,6 +2362,7 @@ class TableInternalAttributes:
         return cls(
             auxiliary_managed_location=d.get("auxiliary_managed_location", None),
             dependency_storage_locations=d.get("dependency_storage_locations", None),
+            has_delta_uniform_iceberg=d.get("has_delta_uniform_iceberg", None),
             parent_storage_location=d.get("parent_storage_location", None),
             storage_location=d.get("storage_location", None),
             type=_enum(d, "type", TableInternalAttributesSharedTableType),

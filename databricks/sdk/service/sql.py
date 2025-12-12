@@ -876,8 +876,11 @@ class AlertV2Notification:
     """Whether to notify alert subscribers when alert returns back to normal."""
 
     retrigger_seconds: Optional[int] = None
-    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
-    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
+    """Number of seconds an alert waits after being triggered before it is allowed to send another
+    notification. If set to 0 or omitted, the alert will not send any further notifications after
+    the first trigger Setting this value to 1 allows the alert to send a notification on every
+    evaluation where the condition is met, effectively making it always retrigger for notification
+    purposes."""
 
     subscriptions: Optional[List[AlertV2Subscription]] = None
 
@@ -7519,8 +7522,7 @@ class AlertsLegacyAPI:
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
     the Jobs API, e.g. :method:jobs/create.
 
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
-    more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
@@ -7539,8 +7541,7 @@ class AlertsLegacyAPI:
         """Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
         condition of its result, and notifies users or notification destinations if the condition was met.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/create
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/create instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -7582,8 +7583,7 @@ class AlertsLegacyAPI:
         """Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
         queries and dashboards, alerts cannot be moved to the trash.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/delete
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/delete instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -7601,8 +7601,7 @@ class AlertsLegacyAPI:
     def get(self, alert_id: str) -> LegacyAlert:
         """Gets an alert.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/get
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/get instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -7621,8 +7620,7 @@ class AlertsLegacyAPI:
     def list(self) -> Iterator[LegacyAlert]:
         """Gets a list of alerts.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/list
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/list instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -7640,8 +7638,7 @@ class AlertsLegacyAPI:
     def update(self, alert_id: str, name: str, options: AlertOptions, query_id: str, *, rearm: Optional[int] = None):
         """Updates an alert.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/update
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/update instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8055,7 +8052,7 @@ class DataSourcesAPI:
     advise you to use any text editor, REST client, or `grep` to search the response from this API for the
     name of your SQL warehouse as it appears in Databricks SQL.
 
-    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
@@ -8067,8 +8064,7 @@ class DataSourcesAPI:
         API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new
         queries against it.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:warehouses/list
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:warehouses/list instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8097,7 +8093,7 @@ class DbsqlPermissionsAPI:
 
     - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)
 
-    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
@@ -8107,8 +8103,7 @@ class DbsqlPermissionsAPI:
     def get(self, object_type: ObjectTypePlural, object_id: str) -> GetResponse:
         """Gets a JSON representation of the access control list (ACL) for a specified object.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:workspace/getpermissions instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:workspace/getpermissions instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8137,8 +8132,7 @@ class DbsqlPermissionsAPI:
         """Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:workspace/setpermissions instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:workspace/setpermissions instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8169,8 +8163,8 @@ class DbsqlPermissionsAPI:
     ) -> Success:
         """Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
 
-        **Note**: A new version of the Databricks SQL API is now available. For queries and alerts, please use
-        :method:queries/update and :method:alerts/update respectively instead. [Learn more]
+        **Warning**: This API is deprecated. For queries and alerts, please use :method:queries/update and
+        :method:alerts/update respectively instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8376,8 +8370,7 @@ class QueriesLegacyAPI:
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
     scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
-    more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
@@ -8405,8 +8398,7 @@ class QueriesLegacyAPI:
 
         **Note**: You cannot add a visualization until you create the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/create
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/create instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8464,8 +8456,7 @@ class QueriesLegacyAPI:
         """Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         they cannot be used for alerts. The trash is deleted after 30 days.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/delete
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/delete instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8484,8 +8475,7 @@ class QueriesLegacyAPI:
         """Retrieve a query object definition along with contextual permissions information about the currently
         authenticated user.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/get
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/get instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8514,8 +8504,7 @@ class QueriesLegacyAPI:
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/list
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/list instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8570,8 +8559,7 @@ class QueriesLegacyAPI:
         """Restore a query that has been moved to the trash. A restored query appears in list views and searches.
         You can use restored queries for alerts.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please see the latest version.
-        [Learn more]
+        **Warning**: This API is deprecated. Please see the latest version. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8602,8 +8590,7 @@ class QueriesLegacyAPI:
 
         **Note**: You cannot undo this operation.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/update
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/update instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8789,8 +8776,7 @@ class QueryVisualizationsLegacyAPI:
     """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
     within the Databricks Workspace. Data structures may change over time.
 
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
-    more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
@@ -8802,8 +8788,8 @@ class QueryVisualizationsLegacyAPI:
     ) -> LegacyVisualization:
         """Creates visualization in the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/create instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/create instead. [Learn
+        more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8844,8 +8830,8 @@ class QueryVisualizationsLegacyAPI:
     def delete(self, id: str):
         """Removes a visualization from the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/delete instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/delete instead. [Learn
+        more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8875,8 +8861,8 @@ class QueryVisualizationsLegacyAPI:
     ) -> LegacyVisualization:
         """Updates visualization in the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/update instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/update instead. [Learn
+        more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
