@@ -378,7 +378,7 @@ class Config:
         return HostType.WORKSPACE
 
     @property
-    def config_type(self) -> ClientType:
+    def client_type(self) -> ClientType:
         """Determine the type of client configuration.
 
         This is separate from host_type. For example, a unified host can support both
@@ -397,7 +397,7 @@ class Config:
 
     @property
     def is_account_client(self) -> bool:
-        """[Deprecated] Use host_type or config_type instead.
+        """[Deprecated] Use host_type or client_type instead.
 
         Determines if this is an account client based on the host URL.
         """
@@ -456,9 +456,9 @@ class Config:
 
         # Handle unified hosts
         if self.host_type == HostType.UNIFIED:
-            if self.config_type == ClientType.WORKSPACE and self.workspace_id:
+            if self.client_type == ClientType.WORKSPACE and self.workspace_id:
                 return get_unified_endpoints(self.host, self.workspace_id)
-            elif self.config_type == ClientType.ACCOUNT and self.account_id:
+            elif self.client_type == ClientType.ACCOUNT and self.account_id:
                 return get_account_endpoints(self.host, self.account_id)
             else:
                 raise ValueError(

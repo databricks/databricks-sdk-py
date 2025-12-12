@@ -292,32 +292,32 @@ def test_host_type_unified():
     assert config.host_type == HostType.UNIFIED
 
 
-def test_config_type_workspace():
-    """Test that config type is workspace when workspace_id is set."""
+def test_client_type_workspace():
+    """Test that client type is workspace when workspace_id is set."""
     config = Config(
         host="https://unified.databricks.com",
         workspace_id="test-workspace",
         experimental_is_unified_host=True,
         token="test-token",
     )
-    assert config.config_type == ClientType.WORKSPACE
+    assert config.client_type == ClientType.WORKSPACE
 
 
-def test_config_type_account():
-    """Test that config type is account when account_id is set without workspace_id."""
+def test_client_type_account():
+    """Test that client type is account when account_id is set without workspace_id."""
     config = Config(
         host="https://unified.databricks.com",
         account_id="test-account",
         experimental_is_unified_host=True,
         token="test-token",
     )
-    assert config.config_type == ClientType.ACCOUNT
+    assert config.client_type == ClientType.ACCOUNT
 
 
-def test_config_type_workspace_default():
-    """Test that config type defaults to workspace."""
+def test_client_type_workspace_default():
+    """Test that client type defaults to workspace."""
     config = Config(host="https://test.databricks.com", token="test-token")
-    assert config.config_type == ClientType.WORKSPACE
+    assert config.client_type == ClientType.WORKSPACE
 
 
 def test_is_account_client_backward_compatibility():
