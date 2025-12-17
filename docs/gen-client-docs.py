@@ -276,6 +276,11 @@ class Generator:
             "Data Quality",
             "Manage data quality monitoring on Unity Catalog objects."
         ),
+        Package(
+            "postgres",
+            "Postgres",
+            "provides access to a Postgres database via REST API or direct SQL."
+        ),
     ]
 
     def __init__(self):
