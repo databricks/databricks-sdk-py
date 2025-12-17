@@ -1072,6 +1072,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
     network_connectivity_config_id: Optional[str] = None
     """The ID of a network connectivity configuration, which is the parent resource of this private
     endpoint rule object."""
@@ -1111,6 +1113,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
             body["enabled"] = self.enabled
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.network_connectivity_config_id is not None:
             body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_names:
@@ -1142,6 +1146,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
             body["enabled"] = self.enabled
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.network_connectivity_config_id is not None:
             body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_names:
@@ -1170,6 +1176,7 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_names=d.get("resource_names", None),
             rule_id=d.get("rule_id", None),
@@ -3734,6 +3741,8 @@ class NccAzurePrivateEndpointRule:
     endpoint_name: Optional[str] = None
     """The name of the Azure private endpoint resource."""
 
+    error_message: Optional[str] = None
+
     group_id: Optional[str] = None
     """Only used by private endpoints to Azure first-party services.
     
@@ -3768,6 +3777,8 @@ class NccAzurePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -3795,6 +3806,8 @@ class NccAzurePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -3817,6 +3830,7 @@ class NccAzurePrivateEndpointRule:
             deactivated_at=d.get("deactivated_at", None),
             domain_names=d.get("domain_names", None),
             endpoint_name=d.get("endpoint_name", None),
+            error_message=d.get("error_message", None),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),

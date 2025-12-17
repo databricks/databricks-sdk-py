@@ -22,6 +22,7 @@ databricks/sdk/service/marketplace.py linguist-generated=true
 databricks/sdk/service/ml.py linguist-generated=true
 databricks/sdk/service/oauth2.py linguist-generated=true
 databricks/sdk/service/pipelines.py linguist-generated=true
+databricks/sdk/service/postgres.py linguist-generated=true
 databricks/sdk/service/provisioning.py linguist-generated=true
 databricks/sdk/service/qualitymonitorv2.py linguist-generated=true
 databricks/sdk/service/serving.py linguist-generated=true
