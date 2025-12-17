@@ -23,6 +23,7 @@ These APIs are available from WorkspaceClient
    ml/index
    oauth2/index
    pipelines/index
+   postgres/index
    qualitymonitorv2/index
    serving/index
    settings/index

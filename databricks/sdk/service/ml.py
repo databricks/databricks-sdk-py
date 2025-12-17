@@ -4201,6 +4201,9 @@ class OnlineStore:
     state: Optional[OnlineStoreState] = None
     """The current state of the online store."""
 
+    usage_policy_id: Optional[str] = None
+    """The usage policy applied to the online store to track billing."""
+
     def as_dict(self) -> dict:
         """Serializes the OnlineStore into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -4216,6 +4219,8 @@ class OnlineStore:
             body["read_replica_count"] = self.read_replica_count
         if self.state is not None:
             body["state"] = self.state.value
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -4233,6 +4238,8 @@ class OnlineStore:
             body["read_replica_count"] = self.read_replica_count
         if self.state is not None:
             body["state"] = self.state
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     @classmethod
@@ -4245,6 +4252,7 @@ class OnlineStore:
             name=d.get("name", None),
             read_replica_count=d.get("read_replica_count", None),
             state=_enum(d, "state", OnlineStoreState),
+            usage_policy_id=d.get("usage_policy_id", None),
         )
 
 

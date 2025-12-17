@@ -54,6 +54,8 @@ class App:
 
     effective_budget_policy_id: Optional[str] = None
 
+    effective_usage_policy_id: Optional[str] = None
+
     effective_user_api_scopes: Optional[List[str]] = None
     """The effective api scopes granted to the user access token."""
 
@@ -86,6 +88,8 @@ class App:
     url: Optional[str] = None
     """The URL of the app once it is deployed."""
 
+    usage_policy_id: Optional[str] = None
+
     user_api_scopes: Optional[List[str]] = None
 
     def as_dict(self) -> dict:
@@ -111,6 +115,8 @@ class App:
             body["description"] = self.description
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = [v for v in self.effective_user_api_scopes]
         if self.id is not None:
@@ -137,6 +143,8 @@ class App:
             body["updater"] = self.updater
         if self.url is not None:
             body["url"] = self.url
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         if self.user_api_scopes:
             body["user_api_scopes"] = [v for v in self.user_api_scopes]
         return body
@@ -164,6 +172,8 @@ class App:
             body["description"] = self.description
         if self.effective_budget_policy_id is not None:
             body["effective_budget_policy_id"] = self.effective_budget_policy_id
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = self.effective_user_api_scopes
         if self.id is not None:
@@ -190,6 +200,8 @@ class App:
             body["updater"] = self.updater
         if self.url is not None:
             body["url"] = self.url
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         if self.user_api_scopes:
             body["user_api_scopes"] = self.user_api_scopes
         return body
@@ -208,6 +220,7 @@ class App:
             default_source_code_path=d.get("default_source_code_path", None),
             description=d.get("description", None),
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             effective_user_api_scopes=d.get("effective_user_api_scopes", None),
             id=d.get("id", None),
             name=d.get("name", None),
@@ -221,6 +234,7 @@ class App:
             update_time=d.get("update_time", None),
             updater=d.get("updater", None),
             url=d.get("url", None),
+            usage_policy_id=d.get("usage_policy_id", None),
             user_api_scopes=d.get("user_api_scopes", None),
         )
 

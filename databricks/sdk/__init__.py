@@ -32,6 +32,7 @@ from databricks.sdk.service import marketplace as pkg_marketplace
 from databricks.sdk.service import ml as pkg_ml
 from databricks.sdk.service import oauth2 as pkg_oauth2
 from databricks.sdk.service import pipelines as pkg_pipelines
+from databricks.sdk.service import postgres as pkg_postgres
 from databricks.sdk.service import provisioning as pkg_provisioning
 from databricks.sdk.service import qualitymonitorv2 as pkg_qualitymonitorv2
 from databricks.sdk.service import serving as pkg_serving
@@ -116,6 +117,7 @@ from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
                                            ServicePrincipalSecretsAPI,
                                            ServicePrincipalSecretsProxyAPI)
 from databricks.sdk.service.pipelines import PipelinesAPI
+from databricks.sdk.service.postgres import PostgresAPI
 from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  EncryptionKeysAPI,
                                                  NetworksAPI, PrivateAccessAPI,
@@ -331,6 +333,7 @@ class WorkspaceClient:
         self._policy_compliance_for_clusters = pkg_compute.PolicyComplianceForClustersAPI(self._api_client)
         self._policy_compliance_for_jobs = pkg_jobs.PolicyComplianceForJobsAPI(self._api_client)
         self._policy_families = pkg_compute.PolicyFamiliesAPI(self._api_client)
+        self._postgres = pkg_postgres.PostgresAPI(self._api_client)
         self._provider_exchange_filters = pkg_marketplace.ProviderExchangeFiltersAPI(self._api_client)
         self._provider_exchanges = pkg_marketplace.ProviderExchangesAPI(self._api_client)
         self._provider_files = pkg_marketplace.ProviderFilesAPI(self._api_client)
@@ -745,6 +748,11 @@ class WorkspaceClient:
     def policy_families(self) -> pkg_compute.PolicyFamiliesAPI:
         """View available policy families."""
         return self._policy_families
+
+    @property
+    def postgres(self) -> pkg_postgres.PostgresAPI:
+        """The Postgres API provides access to a Postgres database via REST API or direct SQL."""
+        return self._postgres
 
     @property
     def provider_exchange_filters(self) -> pkg_marketplace.ProviderExchangeFiltersAPI:

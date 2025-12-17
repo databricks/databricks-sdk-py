@@ -22,6 +22,7 @@ Dataclasses
    ml
    oauth2
    pipelines
+   postgres
    provisioning
    qualitymonitorv2
    serving
