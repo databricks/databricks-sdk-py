@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.76.0 (2025-12-17)
+
+### New Features and Improvements
+* Add support for unified hosts with experimental flag
+
+
 ## Release v0.75.0 (2025-12-17)
 
 ### API Changes
