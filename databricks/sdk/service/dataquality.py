@@ -35,20 +35,27 @@ class AggregationGranularity(Enum):
 class AnomalyDetectionConfig:
     """Anomaly Detection Configurations."""
 
+    excluded_table_full_names: Optional[List[str]] = None
+    """List of fully qualified table names to exclude from anomaly detection."""
+
     def as_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.excluded_table_full_names:
+            body["excluded_table_full_names"] = [v for v in self.excluded_table_full_names]
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.excluded_table_full_names:
+            body["excluded_table_full_names"] = self.excluded_table_full_names
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> AnomalyDetectionConfig:
         """Deserializes the AnomalyDetectionConfig from a dictionary."""
-        return cls()
+        return cls(excluded_table_full_names=d.get("excluded_table_full_names", None))
 
 
 @dataclass

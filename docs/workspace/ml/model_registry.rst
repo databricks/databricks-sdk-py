@@ -91,6 +91,8 @@
             w = WorkspaceClient()
             
             model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
+            
+            mv = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
 
         Creates a new registered model with the name specified in the request body. Throws
         `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
@@ -120,7 +122,7 @@
             
             model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
             
-            created = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
+            mv = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
 
         Creates a model version.
 
