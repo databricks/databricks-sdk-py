@@ -17,6 +17,9 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class AnomalyDetectionConfig:
+    excluded_table_full_names: Optional[List[str]] = None
+    """List of fully qualified table names to exclude from anomaly detection."""
+
     last_run_id: Optional[str] = None
     """Run id of the last run of the workflow"""
 
@@ -26,6 +29,8 @@ class AnomalyDetectionConfig:
     def as_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.excluded_table_full_names:
+            body["excluded_table_full_names"] = [v for v in self.excluded_table_full_names]
         if self.last_run_id is not None:
             body["last_run_id"] = self.last_run_id
         if self.latest_run_status is not None:
@@ -35,6 +40,8 @@ class AnomalyDetectionConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the AnomalyDetectionConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.excluded_table_full_names:
+            body["excluded_table_full_names"] = self.excluded_table_full_names
         if self.last_run_id is not None:
             body["last_run_id"] = self.last_run_id
         if self.latest_run_status is not None:
@@ -45,6 +52,7 @@ class AnomalyDetectionConfig:
     def from_dict(cls, d: Dict[str, Any]) -> AnomalyDetectionConfig:
         """Deserializes the AnomalyDetectionConfig from a dictionary."""
         return cls(
+            excluded_table_full_names=d.get("excluded_table_full_names", None),
             last_run_id=d.get("last_run_id", None),
             latest_run_status=_enum(d, "latest_run_status", AnomalyDetectionRunStatus),
         )
