@@ -79,7 +79,7 @@
             
             notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            export_response = w.workspace.export_(format=workspace.ExportFormat.SOURCE, path=notebook)
+            export_response = w.workspace.export(format=workspace.ExportFormat.SOURCE, path=notebook)
 
         Exports an object or the contents of an entire directory.
 
@@ -183,7 +183,7 @@
                 format=workspace.ImportFormat.SOURCE,
                 language=workspace.Language.PYTHON,
                 content=base64.b64encode(("# Databricks notebook source\nprint('hello from job')").encode()).decode(),
-                overwrite=True,
+                overwrite=true_,
             )
 
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.

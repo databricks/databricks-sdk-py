@@ -4,10 +4,6 @@ Delta Live Tables
 These dataclasses are used in the SDK to represent API requests and responses for services in the ``databricks.sdk.service.pipelines`` module.
 
 .. py:currentmodule:: databricks.sdk.service.pipelines
-.. autoclass:: ApplyEnvironmentRequestResponse
-   :members:
-   :undoc-members:
-
 .. autoclass:: ClonePipelineResponse
    :members:
    :undoc-members:

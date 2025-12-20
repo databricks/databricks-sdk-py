@@ -276,49 +276,8 @@ class DatabricksServiceExceptionWithDetailsProto:
 
 @dataclass
 class Endpoint:
-    endpoint_type: EndpointType
-    """The endpoint type. There could be only one READ_WRITE endpoint per branch."""
-
-    autoscaling_limit_max_cu: Optional[float] = None
-    """The maximum number of Compute Units."""
-
-    autoscaling_limit_min_cu: Optional[float] = None
-    """The minimum number of Compute Units."""
-
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the compute endpoint was created."""
-
-    current_state: Optional[EndpointState] = None
-
-    disabled: Optional[bool] = None
-    """Whether to restrict connections to the compute endpoint. Enabling this option schedules a
-    suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
-    console action."""
-
-    effective_autoscaling_limit_max_cu: Optional[float] = None
-    """The maximum number of Compute Units."""
-
-    effective_autoscaling_limit_min_cu: Optional[float] = None
-    """The minimum number of Compute Units."""
-
-    effective_disabled: Optional[bool] = None
-    """Whether to restrict connections to the compute endpoint. Enabling this option schedules a
-    suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
-    console action."""
-
-    effective_pooler_mode: Optional[EndpointPoolerMode] = None
-
-    effective_settings: Optional[EndpointSettings] = None
-
-    effective_suspend_timeout_duration: Optional[Duration] = None
-    """Duration of inactivity after which the compute endpoint is automatically suspended."""
-
-    host: Optional[str] = None
-    """The hostname of the compute endpoint. This is the hostname specified when connecting to a
-    database."""
-
-    last_active_time: Optional[Timestamp] = None
-    """A timestamp indicating when the compute endpoint was last active."""
 
     name: Optional[str] = None
     """The resource name of the endpoint. Format:
@@ -327,20 +286,10 @@ class Endpoint:
     parent: Optional[str] = None
     """The branch containing this endpoint. Format: projects/{project_id}/branches/{branch_id}"""
 
-    pending_state: Optional[EndpointState] = None
+    spec: Optional[EndpointSpec] = None
+    """The desired state of an Endpoint."""
 
-    pooler_mode: Optional[EndpointPoolerMode] = None
-
-    settings: Optional[EndpointSettings] = None
-
-    start_time: Optional[Timestamp] = None
-    """A timestamp indicating when the compute endpoint was last started."""
-
-    suspend_time: Optional[Timestamp] = None
-    """A timestamp indicating when the compute endpoint was last suspended."""
-
-    suspend_timeout_duration: Optional[Duration] = None
-    """Duration of inactivity after which the compute endpoint is automatically suspended."""
+    status: Optional[EndpointStatus] = None
 
     uid: Optional[str] = None
     """System generated unique ID for the endpoint."""
@@ -351,50 +300,16 @@ class Endpoint:
     def as_dict(self) -> dict:
         """Serializes the Endpoint into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.autoscaling_limit_max_cu is not None:
-            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
-        if self.autoscaling_limit_min_cu is not None:
-            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
-        if self.current_state is not None:
-            body["current_state"] = self.current_state.value
-        if self.disabled is not None:
-            body["disabled"] = self.disabled
-        if self.effective_autoscaling_limit_max_cu is not None:
-            body["effective_autoscaling_limit_max_cu"] = self.effective_autoscaling_limit_max_cu
-        if self.effective_autoscaling_limit_min_cu is not None:
-            body["effective_autoscaling_limit_min_cu"] = self.effective_autoscaling_limit_min_cu
-        if self.effective_disabled is not None:
-            body["effective_disabled"] = self.effective_disabled
-        if self.effective_pooler_mode is not None:
-            body["effective_pooler_mode"] = self.effective_pooler_mode.value
-        if self.effective_settings:
-            body["effective_settings"] = self.effective_settings.as_dict()
-        if self.effective_suspend_timeout_duration is not None:
-            body["effective_suspend_timeout_duration"] = self.effective_suspend_timeout_duration.ToJsonString()
-        if self.endpoint_type is not None:
-            body["endpoint_type"] = self.endpoint_type.value
-        if self.host is not None:
-            body["host"] = self.host
-        if self.last_active_time is not None:
-            body["last_active_time"] = self.last_active_time.ToJsonString()
         if self.name is not None:
             body["name"] = self.name
         if self.parent is not None:
             body["parent"] = self.parent
-        if self.pending_state is not None:
-            body["pending_state"] = self.pending_state.value
-        if self.pooler_mode is not None:
-            body["pooler_mode"] = self.pooler_mode.value
-        if self.settings:
-            body["settings"] = self.settings.as_dict()
-        if self.start_time is not None:
-            body["start_time"] = self.start_time.ToJsonString()
-        if self.suspend_time is not None:
-            body["suspend_time"] = self.suspend_time.ToJsonString()
-        if self.suspend_timeout_duration is not None:
-            body["suspend_timeout_duration"] = self.suspend_timeout_duration.ToJsonString()
+        if self.spec:
+            body["spec"] = self.spec.as_dict()
+        if self.status:
+            body["status"] = self.status.as_dict()
         if self.uid is not None:
             body["uid"] = self.uid
         if self.update_time is not None:
@@ -404,50 +319,16 @@ class Endpoint:
     def as_shallow_dict(self) -> dict:
         """Serializes the Endpoint into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.autoscaling_limit_max_cu is not None:
-            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
-        if self.autoscaling_limit_min_cu is not None:
-            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
         if self.create_time is not None:
             body["create_time"] = self.create_time
-        if self.current_state is not None:
-            body["current_state"] = self.current_state
-        if self.disabled is not None:
-            body["disabled"] = self.disabled
-        if self.effective_autoscaling_limit_max_cu is not None:
-            body["effective_autoscaling_limit_max_cu"] = self.effective_autoscaling_limit_max_cu
-        if self.effective_autoscaling_limit_min_cu is not None:
-            body["effective_autoscaling_limit_min_cu"] = self.effective_autoscaling_limit_min_cu
-        if self.effective_disabled is not None:
-            body["effective_disabled"] = self.effective_disabled
-        if self.effective_pooler_mode is not None:
-            body["effective_pooler_mode"] = self.effective_pooler_mode
-        if self.effective_settings:
-            body["effective_settings"] = self.effective_settings
-        if self.effective_suspend_timeout_duration is not None:
-            body["effective_suspend_timeout_duration"] = self.effective_suspend_timeout_duration
-        if self.endpoint_type is not None:
-            body["endpoint_type"] = self.endpoint_type
-        if self.host is not None:
-            body["host"] = self.host
-        if self.last_active_time is not None:
-            body["last_active_time"] = self.last_active_time
         if self.name is not None:
             body["name"] = self.name
         if self.parent is not None:
             body["parent"] = self.parent
-        if self.pending_state is not None:
-            body["pending_state"] = self.pending_state
-        if self.pooler_mode is not None:
-            body["pooler_mode"] = self.pooler_mode
-        if self.settings:
-            body["settings"] = self.settings
-        if self.start_time is not None:
-            body["start_time"] = self.start_time
-        if self.suspend_time is not None:
-            body["suspend_time"] = self.suspend_time
-        if self.suspend_timeout_duration is not None:
-            body["suspend_timeout_duration"] = self.suspend_timeout_duration
+        if self.spec:
+            body["spec"] = self.spec
+        if self.status:
+            body["status"] = self.status
         if self.uid is not None:
             body["uid"] = self.uid
         if self.update_time is not None:
@@ -458,28 +339,11 @@ class Endpoint:
     def from_dict(cls, d: Dict[str, Any]) -> Endpoint:
         """Deserializes the Endpoint from a dictionary."""
         return cls(
-            autoscaling_limit_max_cu=d.get("autoscaling_limit_max_cu", None),
-            autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
             create_time=_timestamp(d, "create_time"),
-            current_state=_enum(d, "current_state", EndpointState),
-            disabled=d.get("disabled", None),
-            effective_autoscaling_limit_max_cu=d.get("effective_autoscaling_limit_max_cu", None),
-            effective_autoscaling_limit_min_cu=d.get("effective_autoscaling_limit_min_cu", None),
-            effective_disabled=d.get("effective_disabled", None),
-            effective_pooler_mode=_enum(d, "effective_pooler_mode", EndpointPoolerMode),
-            effective_settings=_from_dict(d, "effective_settings", EndpointSettings),
-            effective_suspend_timeout_duration=_duration(d, "effective_suspend_timeout_duration"),
-            endpoint_type=_enum(d, "endpoint_type", EndpointType),
-            host=d.get("host", None),
-            last_active_time=_timestamp(d, "last_active_time"),
             name=d.get("name", None),
             parent=d.get("parent", None),
-            pending_state=_enum(d, "pending_state", EndpointState),
-            pooler_mode=_enum(d, "pooler_mode", EndpointPoolerMode),
-            settings=_from_dict(d, "settings", EndpointSettings),
-            start_time=_timestamp(d, "start_time"),
-            suspend_time=_timestamp(d, "suspend_time"),
-            suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
+            spec=_from_dict(d, "spec", EndpointSpec),
+            status=_from_dict(d, "status", EndpointStatus),
             uid=d.get("uid", None),
             update_time=_timestamp(d, "update_time"),
         )
@@ -543,7 +407,206 @@ class EndpointSettings:
         return cls(pg_settings=d.get("pg_settings", None), pgbouncer_settings=d.get("pgbouncer_settings", None))
 
 
-class EndpointState(Enum):
+@dataclass
+class EndpointSpec:
+    endpoint_type: EndpointType
+    """The endpoint type. A branch can only have one READ_WRITE endpoint."""
+
+    autoscaling_limit_max_cu: Optional[float] = None
+    """The maximum number of Compute Units."""
+
+    autoscaling_limit_min_cu: Optional[float] = None
+    """The minimum number of Compute Units."""
+
+    disabled: Optional[bool] = None
+    """Whether to restrict connections to the compute endpoint. Enabling this option schedules a
+    suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
+    console action."""
+
+    pooler_mode: Optional[EndpointPoolerMode] = None
+
+    settings: Optional[EndpointSettings] = None
+
+    suspend_timeout_duration: Optional[Duration] = None
+    """Duration of inactivity after which the compute endpoint is automatically suspended."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.autoscaling_limit_max_cu is not None:
+            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
+        if self.autoscaling_limit_min_cu is not None:
+            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        if self.endpoint_type is not None:
+            body["endpoint_type"] = self.endpoint_type.value
+        if self.pooler_mode is not None:
+            body["pooler_mode"] = self.pooler_mode.value
+        if self.settings:
+            body["settings"] = self.settings.as_dict()
+        if self.suspend_timeout_duration is not None:
+            body["suspend_timeout_duration"] = self.suspend_timeout_duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autoscaling_limit_max_cu is not None:
+            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
+        if self.autoscaling_limit_min_cu is not None:
+            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        if self.endpoint_type is not None:
+            body["endpoint_type"] = self.endpoint_type
+        if self.pooler_mode is not None:
+            body["pooler_mode"] = self.pooler_mode
+        if self.settings:
+            body["settings"] = self.settings
+        if self.suspend_timeout_duration is not None:
+            body["suspend_timeout_duration"] = self.suspend_timeout_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointSpec:
+        """Deserializes the EndpointSpec from a dictionary."""
+        return cls(
+            autoscaling_limit_max_cu=d.get("autoscaling_limit_max_cu", None),
+            autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
+            disabled=d.get("disabled", None),
+            endpoint_type=_enum(d, "endpoint_type", EndpointType),
+            pooler_mode=_enum(d, "pooler_mode", EndpointPoolerMode),
+            settings=_from_dict(d, "settings", EndpointSettings),
+            suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
+        )
+
+
+@dataclass
+class EndpointStatus:
+    """The current status of an Endpoint."""
+
+    autoscaling_limit_max_cu: Optional[float] = None
+    """The maximum number of Compute Units."""
+
+    autoscaling_limit_min_cu: Optional[float] = None
+    """The minimum number of Compute Units."""
+
+    current_state: Optional[EndpointStatusState] = None
+
+    disabled: Optional[bool] = None
+    """Whether to restrict connections to the compute endpoint. Enabling this option schedules a
+    suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
+    console action."""
+
+    endpoint_type: Optional[EndpointType] = None
+    """The endpoint type. A branch can only have one READ_WRITE endpoint."""
+
+    host: Optional[str] = None
+    """The hostname of the compute endpoint. This is the hostname specified when connecting to a
+    database."""
+
+    last_active_time: Optional[Timestamp] = None
+    """A timestamp indicating when the compute endpoint was last active."""
+
+    pending_state: Optional[EndpointStatusState] = None
+
+    pooler_mode: Optional[EndpointPoolerMode] = None
+
+    settings: Optional[EndpointSettings] = None
+
+    start_time: Optional[Timestamp] = None
+    """A timestamp indicating when the compute endpoint was last started."""
+
+    suspend_time: Optional[Timestamp] = None
+    """A timestamp indicating when the compute endpoint was last suspended."""
+
+    suspend_timeout_duration: Optional[Duration] = None
+    """Duration of inactivity after which the compute endpoint is automatically suspended."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.autoscaling_limit_max_cu is not None:
+            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
+        if self.autoscaling_limit_min_cu is not None:
+            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.current_state is not None:
+            body["current_state"] = self.current_state.value
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        if self.endpoint_type is not None:
+            body["endpoint_type"] = self.endpoint_type.value
+        if self.host is not None:
+            body["host"] = self.host
+        if self.last_active_time is not None:
+            body["last_active_time"] = self.last_active_time.ToJsonString()
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state.value
+        if self.pooler_mode is not None:
+            body["pooler_mode"] = self.pooler_mode.value
+        if self.settings:
+            body["settings"] = self.settings.as_dict()
+        if self.start_time is not None:
+            body["start_time"] = self.start_time.ToJsonString()
+        if self.suspend_time is not None:
+            body["suspend_time"] = self.suspend_time.ToJsonString()
+        if self.suspend_timeout_duration is not None:
+            body["suspend_timeout_duration"] = self.suspend_timeout_duration.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.autoscaling_limit_max_cu is not None:
+            body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
+        if self.autoscaling_limit_min_cu is not None:
+            body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.current_state is not None:
+            body["current_state"] = self.current_state
+        if self.disabled is not None:
+            body["disabled"] = self.disabled
+        if self.endpoint_type is not None:
+            body["endpoint_type"] = self.endpoint_type
+        if self.host is not None:
+            body["host"] = self.host
+        if self.last_active_time is not None:
+            body["last_active_time"] = self.last_active_time
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state
+        if self.pooler_mode is not None:
+            body["pooler_mode"] = self.pooler_mode
+        if self.settings:
+            body["settings"] = self.settings
+        if self.start_time is not None:
+            body["start_time"] = self.start_time
+        if self.suspend_time is not None:
+            body["suspend_time"] = self.suspend_time
+        if self.suspend_timeout_duration is not None:
+            body["suspend_timeout_duration"] = self.suspend_timeout_duration
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointStatus:
+        """Deserializes the EndpointStatus from a dictionary."""
+        return cls(
+            autoscaling_limit_max_cu=d.get("autoscaling_limit_max_cu", None),
+            autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
+            current_state=_enum(d, "current_state", EndpointStatusState),
+            disabled=d.get("disabled", None),
+            endpoint_type=_enum(d, "endpoint_type", EndpointType),
+            host=d.get("host", None),
+            last_active_time=_timestamp(d, "last_active_time"),
+            pending_state=_enum(d, "pending_state", EndpointStatusState),
+            pooler_mode=_enum(d, "pooler_mode", EndpointPoolerMode),
+            settings=_from_dict(d, "settings", EndpointSettings),
+            start_time=_timestamp(d, "start_time"),
+            suspend_time=_timestamp(d, "suspend_time"),
+            suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
+        )
+
+
+class EndpointStatusState(Enum):
     """The state of the compute endpoint."""
 
     ACTIVE = "ACTIVE"

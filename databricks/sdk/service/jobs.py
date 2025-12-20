@@ -2854,6 +2854,10 @@ class JobRunAs:
 
     Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
+    group_name: Optional[str] = None
+    """Group name of an account group assigned to the workspace. Setting this field requires being a
+    member of the group."""
+
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
     `servicePrincipal/user` role."""
@@ -2865,6 +2869,8 @@ class JobRunAs:
     def as_dict(self) -> dict:
         """Serializes the JobRunAs into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
@@ -2874,6 +2880,8 @@ class JobRunAs:
     def as_shallow_dict(self) -> dict:
         """Serializes the JobRunAs into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
@@ -2883,7 +2891,11 @@ class JobRunAs:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> JobRunAs:
         """Deserializes the JobRunAs from a dictionary."""
-        return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
+        return cls(
+            group_name=d.get("group_name", None),
+            service_principal_name=d.get("service_principal_name", None),
+            user_name=d.get("user_name", None),
+        )
 
 
 @dataclass

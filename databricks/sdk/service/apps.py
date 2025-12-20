@@ -59,6 +59,10 @@ class App:
     effective_user_api_scopes: Optional[List[str]] = None
     """The effective api scopes granted to the user access token."""
 
+    git_repository: Optional[GitRepository] = None
+    """Git repository configuration for app deployments. When specified, deployments can reference code
+    from this repository by providing only the git reference (branch, tag, or commit)."""
+
     id: Optional[str] = None
     """The unique identifier of the app."""
 
@@ -119,6 +123,8 @@ class App:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = [v for v in self.effective_user_api_scopes]
+        if self.git_repository:
+            body["git_repository"] = self.git_repository.as_dict()
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
@@ -176,6 +182,8 @@ class App:
             body["effective_usage_policy_id"] = self.effective_usage_policy_id
         if self.effective_user_api_scopes:
             body["effective_user_api_scopes"] = self.effective_user_api_scopes
+        if self.git_repository:
+            body["git_repository"] = self.git_repository
         if self.id is not None:
             body["id"] = self.id
         if self.name is not None:
@@ -222,6 +230,7 @@ class App:
             effective_budget_policy_id=d.get("effective_budget_policy_id", None),
             effective_usage_policy_id=d.get("effective_usage_policy_id", None),
             effective_user_api_scopes=d.get("effective_user_api_scopes", None),
+            git_repository=_from_dict(d, "git_repository", GitRepository),
             id=d.get("id", None),
             name=d.get("name", None),
             oauth2_app_client_id=d.get("oauth2_app_client_id", None),
@@ -362,6 +371,9 @@ class AppDeployment:
     deployment_id: Optional[str] = None
     """The unique id of the deployment."""
 
+    git_source: Optional[GitSource] = None
+    """Git repository to use as the source for the app deployment."""
+
     mode: Optional[AppDeploymentMode] = None
     """The mode of which the deployment will manage the source code."""
 
@@ -389,6 +401,8 @@ class AppDeployment:
             body["deployment_artifacts"] = self.deployment_artifacts.as_dict()
         if self.deployment_id is not None:
             body["deployment_id"] = self.deployment_id
+        if self.git_source:
+            body["git_source"] = self.git_source.as_dict()
         if self.mode is not None:
             body["mode"] = self.mode.value
         if self.source_code_path is not None:
@@ -410,6 +424,8 @@ class AppDeployment:
             body["deployment_artifacts"] = self.deployment_artifacts
         if self.deployment_id is not None:
             body["deployment_id"] = self.deployment_id
+        if self.git_source:
+            body["git_source"] = self.git_source
         if self.mode is not None:
             body["mode"] = self.mode
         if self.source_code_path is not None:
@@ -428,6 +444,7 @@ class AppDeployment:
             creator=d.get("creator", None),
             deployment_artifacts=_from_dict(d, "deployment_artifacts", AppDeploymentArtifacts),
             deployment_id=d.get("deployment_id", None),
+            git_source=_from_dict(d, "git_source", GitSource),
             mode=_enum(d, "mode", AppDeploymentMode),
             source_code_path=d.get("source_code_path", None),
             status=_from_dict(d, "status", AppDeploymentStatus),
@@ -559,6 +576,37 @@ class AppManifest:
 
 
 @dataclass
+class AppManifestAppResourceExperimentSpec:
+    permission: AppManifestAppResourceExperimentSpecExperimentPermission
+
+    def as_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceExperimentSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppManifestAppResourceExperimentSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppManifestAppResourceExperimentSpec:
+        """Deserializes the AppManifestAppResourceExperimentSpec from a dictionary."""
+        return cls(permission=_enum(d, "permission", AppManifestAppResourceExperimentSpecExperimentPermission))
+
+
+class AppManifestAppResourceExperimentSpecExperimentPermission(Enum):
+
+    CAN_EDIT = "CAN_EDIT"
+    CAN_MANAGE = "CAN_MANAGE"
+    CAN_READ = "CAN_READ"
+
+
+@dataclass
 class AppManifestAppResourceJobSpec:
     permission: AppManifestAppResourceJobSpecJobPermission
     """Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE", "IS_OWNER",
@@ -672,6 +720,8 @@ class AppManifestAppResourceSpec:
     description: Optional[str] = None
     """Description of the App Resource."""
 
+    experiment_spec: Optional[AppManifestAppResourceExperimentSpec] = None
+
     job_spec: Optional[AppManifestAppResourceJobSpec] = None
 
     secret_spec: Optional[AppManifestAppResourceSecretSpec] = None
@@ -687,6 +737,8 @@ class AppManifestAppResourceSpec:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.experiment_spec:
+            body["experiment_spec"] = self.experiment_spec.as_dict()
         if self.job_spec:
             body["job_spec"] = self.job_spec.as_dict()
         if self.name is not None:
@@ -706,6 +758,8 @@ class AppManifestAppResourceSpec:
         body = {}
         if self.description is not None:
             body["description"] = self.description
+        if self.experiment_spec:
+            body["experiment_spec"] = self.experiment_spec
         if self.job_spec:
             body["job_spec"] = self.job_spec
         if self.name is not None:
@@ -725,6 +779,7 @@ class AppManifestAppResourceSpec:
         """Deserializes the AppManifestAppResourceSpec from a dictionary."""
         return cls(
             description=d.get("description", None),
+            experiment_spec=_from_dict(d, "experiment_spec", AppManifestAppResourceExperimentSpec),
             job_spec=_from_dict(d, "job_spec", AppManifestAppResourceJobSpec),
             name=d.get("name", None),
             secret_spec=_from_dict(d, "secret_spec", AppManifestAppResourceSecretSpec),
@@ -802,14 +857,18 @@ class AppManifestAppResourceUcSecurableSpec:
 
 class AppManifestAppResourceUcSecurableSpecUcSecurablePermission(Enum):
 
+    EXECUTE = "EXECUTE"
     MANAGE = "MANAGE"
     READ_VOLUME = "READ_VOLUME"
     SELECT = "SELECT"
+    USE_CONNECTION = "USE_CONNECTION"
     WRITE_VOLUME = "WRITE_VOLUME"
 
 
 class AppManifestAppResourceUcSecurableSpecUcSecurableType(Enum):
 
+    CONNECTION = "CONNECTION"
+    FUNCTION = "FUNCTION"
     TABLE = "TABLE"
     VOLUME = "VOLUME"
 
@@ -943,6 +1002,8 @@ class AppResource:
     description: Optional[str] = None
     """Description of the App Resource."""
 
+    experiment: Optional[AppResourceExperiment] = None
+
     genie_space: Optional[AppResourceGenieSpace] = None
 
     job: Optional[AppResourceJob] = None
@@ -962,6 +1023,8 @@ class AppResource:
             body["database"] = self.database.as_dict()
         if self.description is not None:
             body["description"] = self.description
+        if self.experiment:
+            body["experiment"] = self.experiment.as_dict()
         if self.genie_space:
             body["genie_space"] = self.genie_space.as_dict()
         if self.job:
@@ -985,6 +1048,8 @@ class AppResource:
             body["database"] = self.database
         if self.description is not None:
             body["description"] = self.description
+        if self.experiment:
+            body["experiment"] = self.experiment
         if self.genie_space:
             body["genie_space"] = self.genie_space
         if self.job:
@@ -1007,6 +1072,7 @@ class AppResource:
         return cls(
             database=_from_dict(d, "database", AppResourceDatabase),
             description=d.get("description", None),
+            experiment=_from_dict(d, "experiment", AppResourceExperiment),
             genie_space=_from_dict(d, "genie_space", AppResourceGenieSpace),
             job=_from_dict(d, "job", AppResourceJob),
             name=d.get("name", None),
@@ -1060,6 +1126,46 @@ class AppResourceDatabase:
 class AppResourceDatabaseDatabasePermission(Enum):
 
     CAN_CONNECT_AND_CREATE = "CAN_CONNECT_AND_CREATE"
+
+
+@dataclass
+class AppResourceExperiment:
+    experiment_id: str
+
+    permission: AppResourceExperimentExperimentPermission
+
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceExperiment into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.permission is not None:
+            body["permission"] = self.permission.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceExperiment into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.experiment_id is not None:
+            body["experiment_id"] = self.experiment_id
+        if self.permission is not None:
+            body["permission"] = self.permission
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceExperiment:
+        """Deserializes the AppResourceExperiment from a dictionary."""
+        return cls(
+            experiment_id=d.get("experiment_id", None),
+            permission=_enum(d, "permission", AppResourceExperimentExperimentPermission),
+        )
+
+
+class AppResourceExperimentExperimentPermission(Enum):
+
+    CAN_EDIT = "CAN_EDIT"
+    CAN_MANAGE = "CAN_MANAGE"
+    CAN_READ = "CAN_READ"
 
 
 @dataclass
@@ -1330,12 +1436,18 @@ class AppResourceUcSecurable:
 
 class AppResourceUcSecurableUcSecurablePermission(Enum):
 
+    EXECUTE = "EXECUTE"
     READ_VOLUME = "READ_VOLUME"
+    SELECT = "SELECT"
+    USE_CONNECTION = "USE_CONNECTION"
     WRITE_VOLUME = "WRITE_VOLUME"
 
 
 class AppResourceUcSecurableUcSecurableType(Enum):
 
+    CONNECTION = "CONNECTION"
+    FUNCTION = "FUNCTION"
+    TABLE = "TABLE"
     VOLUME = "VOLUME"
 
 
@@ -1346,6 +1458,8 @@ class AppUpdate:
     compute_size: Optional[ComputeSize] = None
 
     description: Optional[str] = None
+
+    git_repository: Optional[GitRepository] = None
 
     resources: Optional[List[AppResource]] = None
 
@@ -1364,6 +1478,8 @@ class AppUpdate:
             body["compute_size"] = self.compute_size.value
         if self.description is not None:
             body["description"] = self.description
+        if self.git_repository:
+            body["git_repository"] = self.git_repository.as_dict()
         if self.resources:
             body["resources"] = [v.as_dict() for v in self.resources]
         if self.status:
@@ -1383,6 +1499,8 @@ class AppUpdate:
             body["compute_size"] = self.compute_size
         if self.description is not None:
             body["description"] = self.description
+        if self.git_repository:
+            body["git_repository"] = self.git_repository
         if self.resources:
             body["resources"] = self.resources
         if self.status:
@@ -1400,6 +1518,7 @@ class AppUpdate:
             budget_policy_id=d.get("budget_policy_id", None),
             compute_size=_enum(d, "compute_size", ComputeSize),
             description=d.get("description", None),
+            git_repository=_from_dict(d, "git_repository", GitRepository),
             resources=_repeated_dict(d, "resources", AppResource),
             status=_from_dict(d, "status", AppUpdateUpdateStatus),
             usage_policy_id=d.get("usage_policy_id", None),
@@ -1632,6 +1751,114 @@ class GetAppPermissionLevelsResponse:
     def from_dict(cls, d: Dict[str, Any]) -> GetAppPermissionLevelsResponse:
         """Deserializes the GetAppPermissionLevelsResponse from a dictionary."""
         return cls(permission_levels=_repeated_dict(d, "permission_levels", AppPermissionsDescription))
+
+
+@dataclass
+class GitRepository:
+    """Git repository configuration specifying the location of the repository."""
+
+    url: str
+    """URL of the Git repository."""
+
+    provider: str
+    """Git provider. Case insensitive. Supported values: gitHub, gitHubEnterprise, bitbucketCloud,
+    bitbucketServer, azureDevOpsServices, gitLab, gitLabEnterpriseEdition, awsCodeCommit."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GitRepository into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.provider is not None:
+            body["provider"] = self.provider
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GitRepository into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.provider is not None:
+            body["provider"] = self.provider
+        if self.url is not None:
+            body["url"] = self.url
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GitRepository:
+        """Deserializes the GitRepository from a dictionary."""
+        return cls(provider=d.get("provider", None), url=d.get("url", None))
+
+
+@dataclass
+class GitSource:
+    """Complete git source specification including repository location and reference."""
+
+    branch: Optional[str] = None
+    """Git branch to checkout."""
+
+    commit: Optional[str] = None
+    """Git commit SHA to checkout."""
+
+    git_repository: Optional[GitRepository] = None
+    """Git repository configuration. Populated from the app's git_repository configuration."""
+
+    resolved_commit: Optional[str] = None
+    """The resolved commit SHA that was actually used for the deployment. This is populated by the
+    system after resolving the reference (branch, tag, or commit). If commit is specified directly,
+    this will match commit. If a branch or tag is specified, this contains the commit SHA that the
+    branch or tag pointed to at deployment time."""
+
+    source_code_path: Optional[str] = None
+    """Relative path to the app source code within the Git repository. If not specified, the root of
+    the repository is used."""
+
+    tag: Optional[str] = None
+    """Git tag to checkout."""
+
+    def as_dict(self) -> dict:
+        """Serializes the GitSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.commit is not None:
+            body["commit"] = self.commit
+        if self.git_repository:
+            body["git_repository"] = self.git_repository.as_dict()
+        if self.resolved_commit is not None:
+            body["resolved_commit"] = self.resolved_commit
+        if self.source_code_path is not None:
+            body["source_code_path"] = self.source_code_path
+        if self.tag is not None:
+            body["tag"] = self.tag
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the GitSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch is not None:
+            body["branch"] = self.branch
+        if self.commit is not None:
+            body["commit"] = self.commit
+        if self.git_repository:
+            body["git_repository"] = self.git_repository
+        if self.resolved_commit is not None:
+            body["resolved_commit"] = self.resolved_commit
+        if self.source_code_path is not None:
+            body["source_code_path"] = self.source_code_path
+        if self.tag is not None:
+            body["tag"] = self.tag
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> GitSource:
+        """Deserializes the GitSource from a dictionary."""
+        return cls(
+            branch=d.get("branch", None),
+            commit=d.get("commit", None),
+            git_repository=_from_dict(d, "git_repository", GitRepository),
+            resolved_commit=d.get("resolved_commit", None),
+            source_code_path=d.get("source_code_path", None),
+            tag=d.get("tag", None),
+        )
 
 
 @dataclass

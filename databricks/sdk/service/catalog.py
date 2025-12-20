@@ -8543,7 +8543,7 @@ class RowFilterOptions:
 
 @dataclass
 class SchemaInfo:
-    """Next ID: 43"""
+    """Next ID: 44"""
 
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
@@ -9421,7 +9421,8 @@ class TableInfo:
     """View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**, **STREAMING_TABLE**) -
     when DependencyList is None, the dependency is not provided; - when DependencyList is an empty
     list, the dependency is provided but is empty; - when DependencyList is not an empty list,
-    dependencies are provided and recorded."""
+    dependencies are provided and recorded. Note: this field is not set in the output of the
+    __listTables__ API."""
 
     def as_dict(self) -> dict:
         """Serializes the TableInfo into a dictionary suitable for use as a JSON request body."""
@@ -15704,6 +15705,8 @@ class TablesAPI:
         latter case, the caller must also be the owner or have the **USE_CATALOG** privilege on the parent
         catalog and the **USE_SCHEMA** privilege on the parent schema. There is no guarantee of a specific
         ordering of the elements in the array.
+
+        NOTE: **view_dependencies** and **table_constraints** are not returned by ListTables queries.
 
         NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
         will be deprecated soon.
