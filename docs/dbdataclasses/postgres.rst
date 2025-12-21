@@ -54,7 +54,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: EndpointState
+.. autoclass:: EndpointSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: EndpointStatus
+   :members:
+   :undoc-members:
+
+.. py:class:: EndpointStatusState
 
    The state of the compute endpoint.
 

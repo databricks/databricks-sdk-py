@@ -13,3 +13,19 @@
 ### Internal Changes
 
 ### API Changes
+* Add `git_repository` field for `databricks.sdk.service.apps.App`.
+* Add `git_source` field for `databricks.sdk.service.apps.AppDeployment`.
+* Add `experiment_spec` field for `databricks.sdk.service.apps.AppManifestAppResourceSpec`.
+* Add `experiment` field for `databricks.sdk.service.apps.AppResource`.
+* Add `git_repository` field for `databricks.sdk.service.apps.AppUpdate`.
+* Add `excluded_table_full_names` field for `databricks.sdk.service.dataquality.AnomalyDetectionConfig`.
+* Add `group_name` field for `databricks.sdk.service.jobs.JobRunAs`.
+* Add `row_filter` field for `databricks.sdk.service.pipelines.TableSpecificConfig`.
+* Add `spec` and `status` fields for `databricks.sdk.service.postgres.Endpoint`.
+* Add `excluded_table_full_names` field for `databricks.sdk.service.qualitymonitorv2.AnomalyDetectionConfig`.
+* Add `execute` and `use_connection` enum values for `databricks.sdk.service.apps.AppManifestAppResourceUcSecurableSpecUcSecurablePermission`.
+* Add `function` and `connection` enum values for `databricks.sdk.service.apps.AppManifestAppResourceUcSecurableSpecUcSecurableType`.
+* Add `select`, `execute` and `use_connection` enum values for `databricks.sdk.service.apps.AppResourceUcSecurableUcSecurablePermission`.
+* Add `table`, `function` and `connection` enum values for `databricks.sdk.service.apps.AppResourceUcSecurableUcSecurableType`.
+* [Breaking] Remove `apply_environment()` method for [w.pipelines](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/pipelines/pipelines.html) workspace-level service.
+* [Breaking] Remove `autoscaling_limit_max_cu`, `autoscaling_limit_min_cu`, `current_state`, `disabled`, `effective_autoscaling_limit_max_cu`, `effective_autoscaling_limit_min_cu`, `effective_disabled`, `effective_pooler_mode`, `effective_settings`, `effective_suspend_timeout_duration`, `endpoint_type`, `host`, `last_active_time`, `pending_state`, `pooler_mode`, `settings`, `start_time`, `suspend_time` and `suspend_timeout_duration` fields for `databricks.sdk.service.postgres.Endpoint`.

@@ -23,24 +23,6 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 @dataclass
-class ApplyEnvironmentRequestResponse:
-    def as_dict(self) -> dict:
-        """Serializes the ApplyEnvironmentRequestResponse into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ApplyEnvironmentRequestResponse into a shallow dictionary of its immediate attributes."""
-        body = {}
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ApplyEnvironmentRequestResponse:
-        """Deserializes the ApplyEnvironmentRequestResponse from a dictionary."""
-        return cls()
-
-
-@dataclass
 class ClonePipelineResponse:
     pipeline_id: Optional[str] = None
     """The pipeline id of the cloned pipeline"""
@@ -3149,6 +3131,10 @@ class TableSpecificConfig:
         None
     )
 
+    row_filter: Optional[str] = None
+    """(Optional, Immutable) The row filter condition to be applied to the table. It must not contain
+    the WHERE keyword, only the actual filter condition. It must be in DBSQL format."""
+
     salesforce_include_formula_fields: Optional[bool] = None
     """If true, formula fields defined in the table are included in the ingestion. This setting is only
     valid for the Salesforce connector"""
@@ -3174,6 +3160,8 @@ class TableSpecificConfig:
             body["primary_keys"] = [v for v in self.primary_keys]
         if self.query_based_connector_config:
             body["query_based_connector_config"] = self.query_based_connector_config.as_dict()
+        if self.row_filter is not None:
+            body["row_filter"] = self.row_filter
         if self.salesforce_include_formula_fields is not None:
             body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
@@ -3195,6 +3183,8 @@ class TableSpecificConfig:
             body["primary_keys"] = self.primary_keys
         if self.query_based_connector_config:
             body["query_based_connector_config"] = self.query_based_connector_config
+        if self.row_filter is not None:
+            body["row_filter"] = self.row_filter
         if self.salesforce_include_formula_fields is not None:
             body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
@@ -3217,6 +3207,7 @@ class TableSpecificConfig:
                 "query_based_connector_config",
                 IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig,
             ),
+            row_filter=d.get("row_filter", None),
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),
@@ -3532,22 +3523,6 @@ class PipelinesAPI:
             time.sleep(sleep + random.random())
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
-
-    def apply_environment(self, pipeline_id: str) -> ApplyEnvironmentRequestResponse:
-        """* Applies the current pipeline environment onto the pipeline compute. The environment applied can be
-        used by subsequent dev-mode updates.
-
-        :param pipeline_id: str
-
-        :returns: :class:`ApplyEnvironmentRequestResponse`
-        """
-
-        headers = {
-            "Accept": "application/json",
-        }
-
-        res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/environment/apply", headers=headers)
-        return ApplyEnvironmentRequestResponse.from_dict(res)
 
     def clone(
         self,
