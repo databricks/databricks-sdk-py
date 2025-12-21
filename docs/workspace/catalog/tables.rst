@@ -168,6 +168,8 @@
         catalog and the **USE_SCHEMA** privilege on the parent schema. There is no guarantee of a specific
         ordering of the elements in the array.
 
+        NOTE: **view_dependencies** and **table_constraints** are not returned by ListTables queries.
+
         NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
         will be deprecated soon.
 
