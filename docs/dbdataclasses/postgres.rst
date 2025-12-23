@@ -12,7 +12,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: BranchState
+.. autoclass:: BranchSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: BranchStatus
+   :members:
+   :undoc-members:
+
+.. py:class:: BranchStatusState
 
    The state of the database branch.
 
@@ -361,5 +369,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ProjectSettings
+   :members:
+   :undoc-members:
+
+.. autoclass:: ProjectSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: ProjectStatus
    :members:
    :undoc-members:

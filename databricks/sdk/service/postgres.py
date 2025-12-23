@@ -27,56 +27,17 @@ class Branch:
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the branch was created."""
 
-    current_state: Optional[BranchState] = None
-    """The branch's state, indicating if it is initializing, ready for use, or archived."""
-
-    default: Optional[bool] = None
-    """Whether the branch is the project's default branch. This field is only returned on create/update
-    responses. See effective_default for the value that is actually applied to the branch."""
-
-    effective_default: Optional[bool] = None
-    """Whether the branch is the project's default branch."""
-
-    effective_is_protected: Optional[bool] = None
-    """Whether the branch is protected."""
-
-    effective_source_branch: Optional[str] = None
-    """The name of the source branch from which this branch was created. Format:
-    projects/{project_id}/branches/{branch_id}"""
-
-    effective_source_branch_lsn: Optional[str] = None
-    """The Log Sequence Number (LSN) on the source branch from which this branch was created."""
-
-    effective_source_branch_time: Optional[Timestamp] = None
-    """The point in time on the source branch from which this branch was created."""
-
-    is_protected: Optional[bool] = None
-    """Whether the branch is protected."""
-
-    logical_size_bytes: Optional[int] = None
-    """The logical size of the branch."""
-
     name: Optional[str] = None
     """The resource name of the branch. Format: projects/{project_id}/branches/{branch_id}"""
 
     parent: Optional[str] = None
     """The project containing this branch. Format: projects/{project_id}"""
 
-    pending_state: Optional[BranchState] = None
-    """The pending state of the branch, if a state transition is in progress."""
+    spec: Optional[BranchSpec] = None
+    """The desired state of a Branch."""
 
-    source_branch: Optional[str] = None
-    """The name of the source branch from which this branch was created. Format:
-    projects/{project_id}/branches/{branch_id}"""
-
-    source_branch_lsn: Optional[str] = None
-    """The Log Sequence Number (LSN) on the source branch from which this branch was created."""
-
-    source_branch_time: Optional[Timestamp] = None
-    """The point in time on the source branch from which this branch was created."""
-
-    state_change_time: Optional[Timestamp] = None
-    """A timestamp indicating when the `current_state` began."""
+    status: Optional[BranchStatus] = None
+    """The current status of a Branch."""
 
     uid: Optional[str] = None
     """System generated unique ID for the branch."""
@@ -89,38 +50,14 @@ class Branch:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
-        if self.current_state is not None:
-            body["current_state"] = self.current_state.value
-        if self.default is not None:
-            body["default"] = self.default
-        if self.effective_default is not None:
-            body["effective_default"] = self.effective_default
-        if self.effective_is_protected is not None:
-            body["effective_is_protected"] = self.effective_is_protected
-        if self.effective_source_branch is not None:
-            body["effective_source_branch"] = self.effective_source_branch
-        if self.effective_source_branch_lsn is not None:
-            body["effective_source_branch_lsn"] = self.effective_source_branch_lsn
-        if self.effective_source_branch_time is not None:
-            body["effective_source_branch_time"] = self.effective_source_branch_time.ToJsonString()
-        if self.is_protected is not None:
-            body["is_protected"] = self.is_protected
-        if self.logical_size_bytes is not None:
-            body["logical_size_bytes"] = self.logical_size_bytes
         if self.name is not None:
             body["name"] = self.name
         if self.parent is not None:
             body["parent"] = self.parent
-        if self.pending_state is not None:
-            body["pending_state"] = self.pending_state.value
-        if self.source_branch is not None:
-            body["source_branch"] = self.source_branch
-        if self.source_branch_lsn is not None:
-            body["source_branch_lsn"] = self.source_branch_lsn
-        if self.source_branch_time is not None:
-            body["source_branch_time"] = self.source_branch_time.ToJsonString()
-        if self.state_change_time is not None:
-            body["state_change_time"] = self.state_change_time.ToJsonString()
+        if self.spec:
+            body["spec"] = self.spec.as_dict()
+        if self.status:
+            body["status"] = self.status.as_dict()
         if self.uid is not None:
             body["uid"] = self.uid
         if self.update_time is not None:
@@ -132,38 +69,14 @@ class Branch:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time
-        if self.current_state is not None:
-            body["current_state"] = self.current_state
-        if self.default is not None:
-            body["default"] = self.default
-        if self.effective_default is not None:
-            body["effective_default"] = self.effective_default
-        if self.effective_is_protected is not None:
-            body["effective_is_protected"] = self.effective_is_protected
-        if self.effective_source_branch is not None:
-            body["effective_source_branch"] = self.effective_source_branch
-        if self.effective_source_branch_lsn is not None:
-            body["effective_source_branch_lsn"] = self.effective_source_branch_lsn
-        if self.effective_source_branch_time is not None:
-            body["effective_source_branch_time"] = self.effective_source_branch_time
-        if self.is_protected is not None:
-            body["is_protected"] = self.is_protected
-        if self.logical_size_bytes is not None:
-            body["logical_size_bytes"] = self.logical_size_bytes
         if self.name is not None:
             body["name"] = self.name
         if self.parent is not None:
             body["parent"] = self.parent
-        if self.pending_state is not None:
-            body["pending_state"] = self.pending_state
-        if self.source_branch is not None:
-            body["source_branch"] = self.source_branch
-        if self.source_branch_lsn is not None:
-            body["source_branch_lsn"] = self.source_branch_lsn
-        if self.source_branch_time is not None:
-            body["source_branch_time"] = self.source_branch_time
-        if self.state_change_time is not None:
-            body["state_change_time"] = self.state_change_time
+        if self.spec:
+            body["spec"] = self.spec
+        if self.status:
+            body["status"] = self.status
         if self.uid is not None:
             body["uid"] = self.uid
         if self.update_time is not None:
@@ -175,22 +88,10 @@ class Branch:
         """Deserializes the Branch from a dictionary."""
         return cls(
             create_time=_timestamp(d, "create_time"),
-            current_state=_enum(d, "current_state", BranchState),
-            default=d.get("default", None),
-            effective_default=d.get("effective_default", None),
-            effective_is_protected=d.get("effective_is_protected", None),
-            effective_source_branch=d.get("effective_source_branch", None),
-            effective_source_branch_lsn=d.get("effective_source_branch_lsn", None),
-            effective_source_branch_time=_timestamp(d, "effective_source_branch_time"),
-            is_protected=d.get("is_protected", None),
-            logical_size_bytes=d.get("logical_size_bytes", None),
             name=d.get("name", None),
             parent=d.get("parent", None),
-            pending_state=_enum(d, "pending_state", BranchState),
-            source_branch=d.get("source_branch", None),
-            source_branch_lsn=d.get("source_branch_lsn", None),
-            source_branch_time=_timestamp(d, "source_branch_time"),
-            state_change_time=_timestamp(d, "state_change_time"),
+            spec=_from_dict(d, "spec", BranchSpec),
+            status=_from_dict(d, "status", BranchStatus),
             uid=d.get("uid", None),
             update_time=_timestamp(d, "update_time"),
         )
@@ -214,7 +115,159 @@ class BranchOperationMetadata:
         return cls()
 
 
-class BranchState(Enum):
+@dataclass
+class BranchSpec:
+    default: Optional[bool] = None
+    """Whether the branch is the project's default branch."""
+
+    is_protected: Optional[bool] = None
+    """Whether the branch is protected."""
+
+    source_branch: Optional[str] = None
+    """The name of the source branch from which this branch was created. Format:
+    projects/{project_id}/branches/{branch_id}"""
+
+    source_branch_lsn: Optional[str] = None
+    """The Log Sequence Number (LSN) on the source branch from which this branch was created."""
+
+    source_branch_time: Optional[Timestamp] = None
+    """The point in time on the source branch from which this branch was created."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BranchSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default is not None:
+            body["default"] = self.default
+        if self.is_protected is not None:
+            body["is_protected"] = self.is_protected
+        if self.source_branch is not None:
+            body["source_branch"] = self.source_branch
+        if self.source_branch_lsn is not None:
+            body["source_branch_lsn"] = self.source_branch_lsn
+        if self.source_branch_time is not None:
+            body["source_branch_time"] = self.source_branch_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BranchSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default is not None:
+            body["default"] = self.default
+        if self.is_protected is not None:
+            body["is_protected"] = self.is_protected
+        if self.source_branch is not None:
+            body["source_branch"] = self.source_branch
+        if self.source_branch_lsn is not None:
+            body["source_branch_lsn"] = self.source_branch_lsn
+        if self.source_branch_time is not None:
+            body["source_branch_time"] = self.source_branch_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BranchSpec:
+        """Deserializes the BranchSpec from a dictionary."""
+        return cls(
+            default=d.get("default", None),
+            is_protected=d.get("is_protected", None),
+            source_branch=d.get("source_branch", None),
+            source_branch_lsn=d.get("source_branch_lsn", None),
+            source_branch_time=_timestamp(d, "source_branch_time"),
+        )
+
+
+@dataclass
+class BranchStatus:
+    current_state: Optional[BranchStatusState] = None
+    """The branch's state, indicating if it is initializing, ready for use, or archived."""
+
+    default: Optional[bool] = None
+    """Whether the branch is the project's default branch."""
+
+    is_protected: Optional[bool] = None
+    """Whether the branch is protected."""
+
+    logical_size_bytes: Optional[int] = None
+    """The logical size of the branch."""
+
+    pending_state: Optional[BranchStatusState] = None
+    """The pending state of the branch, if a state transition is in progress."""
+
+    source_branch: Optional[str] = None
+    """The name of the source branch from which this branch was created. Format:
+    projects/{project_id}/branches/{branch_id}"""
+
+    source_branch_lsn: Optional[str] = None
+    """The Log Sequence Number (LSN) on the source branch from which this branch was created."""
+
+    source_branch_time: Optional[Timestamp] = None
+    """The point in time on the source branch from which this branch was created."""
+
+    state_change_time: Optional[Timestamp] = None
+    """A timestamp indicating when the `current_state` began."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BranchStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.current_state is not None:
+            body["current_state"] = self.current_state.value
+        if self.default is not None:
+            body["default"] = self.default
+        if self.is_protected is not None:
+            body["is_protected"] = self.is_protected
+        if self.logical_size_bytes is not None:
+            body["logical_size_bytes"] = self.logical_size_bytes
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state.value
+        if self.source_branch is not None:
+            body["source_branch"] = self.source_branch
+        if self.source_branch_lsn is not None:
+            body["source_branch_lsn"] = self.source_branch_lsn
+        if self.source_branch_time is not None:
+            body["source_branch_time"] = self.source_branch_time.ToJsonString()
+        if self.state_change_time is not None:
+            body["state_change_time"] = self.state_change_time.ToJsonString()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BranchStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.current_state is not None:
+            body["current_state"] = self.current_state
+        if self.default is not None:
+            body["default"] = self.default
+        if self.is_protected is not None:
+            body["is_protected"] = self.is_protected
+        if self.logical_size_bytes is not None:
+            body["logical_size_bytes"] = self.logical_size_bytes
+        if self.pending_state is not None:
+            body["pending_state"] = self.pending_state
+        if self.source_branch is not None:
+            body["source_branch"] = self.source_branch
+        if self.source_branch_lsn is not None:
+            body["source_branch_lsn"] = self.source_branch_lsn
+        if self.source_branch_time is not None:
+            body["source_branch_time"] = self.source_branch_time
+        if self.state_change_time is not None:
+            body["state_change_time"] = self.state_change_time
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BranchStatus:
+        """Deserializes the BranchStatus from a dictionary."""
+        return cls(
+            current_state=_enum(d, "current_state", BranchStatusState),
+            default=d.get("default", None),
+            is_protected=d.get("is_protected", None),
+            logical_size_bytes=d.get("logical_size_bytes", None),
+            pending_state=_enum(d, "pending_state", BranchStatusState),
+            source_branch=d.get("source_branch", None),
+            source_branch_lsn=d.get("source_branch_lsn", None),
+            source_branch_time=_timestamp(d, "source_branch_time"),
+            state_change_time=_timestamp(d, "state_change_time"),
+        )
+
+
+class BranchStatusState(Enum):
     """The state of the database branch."""
 
     ARCHIVED = "ARCHIVED"
@@ -290,6 +343,7 @@ class Endpoint:
     """The desired state of an Endpoint."""
 
     status: Optional[EndpointStatus] = None
+    """The current status of an Endpoint."""
 
     uid: Optional[str] = None
     """System generated unique ID for the endpoint."""
@@ -484,8 +538,6 @@ class EndpointSpec:
 
 @dataclass
 class EndpointStatus:
-    """The current status of an Endpoint."""
-
     autoscaling_limit_max_cu: Optional[float] = None
     """The maximum number of Compute Units."""
 
@@ -873,45 +925,17 @@ class Operation:
 
 @dataclass
 class Project:
-    branch_logical_size_limit_bytes: Optional[int] = None
-    """The logical size limit for a branch."""
-
-    compute_last_active_time: Optional[Timestamp] = None
-    """The most recent time when any endpoint of this project was active."""
-
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the project was created."""
-
-    default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
-
-    display_name: Optional[str] = None
-    """Human-readable project name."""
-
-    effective_default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
-
-    effective_display_name: Optional[str] = None
-
-    effective_history_retention_duration: Optional[Duration] = None
-
-    effective_pg_version: Optional[int] = None
-
-    effective_settings: Optional[ProjectSettings] = None
-
-    history_retention_duration: Optional[Duration] = None
-    """The number of seconds to retain the shared history for point in time recovery for all branches
-    in this project."""
 
     name: Optional[str] = None
     """The resource name of the project. Format: projects/{project_id}"""
 
-    pg_version: Optional[int] = None
-    """The major Postgres version number."""
+    spec: Optional[ProjectSpec] = None
+    """The desired state of a Project."""
 
-    settings: Optional[ProjectSettings] = None
-
-    synthetic_storage_size_bytes: Optional[int] = None
-    """The current space occupied by the project in storage. Synthetic storage size combines the
-    logical data size and Write-Ahead Log (WAL) size for all branches in a project."""
+    status: Optional[ProjectStatus] = None
+    """The current status of a Project."""
 
     uid: Optional[str] = None
     """System generated unique ID for the project."""
@@ -922,36 +946,14 @@ class Project:
     def as_dict(self) -> dict:
         """Serializes the Project into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.branch_logical_size_limit_bytes is not None:
-            body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
-        if self.compute_last_active_time is not None:
-            body["compute_last_active_time"] = self.compute_last_active_time.ToJsonString()
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
-        if self.default_endpoint_settings:
-            body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.effective_default_endpoint_settings:
-            body["effective_default_endpoint_settings"] = self.effective_default_endpoint_settings.as_dict()
-        if self.effective_display_name is not None:
-            body["effective_display_name"] = self.effective_display_name
-        if self.effective_history_retention_duration is not None:
-            body["effective_history_retention_duration"] = self.effective_history_retention_duration.ToJsonString()
-        if self.effective_pg_version is not None:
-            body["effective_pg_version"] = self.effective_pg_version
-        if self.effective_settings:
-            body["effective_settings"] = self.effective_settings.as_dict()
-        if self.history_retention_duration is not None:
-            body["history_retention_duration"] = self.history_retention_duration.ToJsonString()
         if self.name is not None:
             body["name"] = self.name
-        if self.pg_version is not None:
-            body["pg_version"] = self.pg_version
-        if self.settings:
-            body["settings"] = self.settings.as_dict()
-        if self.synthetic_storage_size_bytes is not None:
-            body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
+        if self.spec:
+            body["spec"] = self.spec.as_dict()
+        if self.status:
+            body["status"] = self.status.as_dict()
         if self.uid is not None:
             body["uid"] = self.uid
         if self.update_time is not None:
@@ -961,36 +963,14 @@ class Project:
     def as_shallow_dict(self) -> dict:
         """Serializes the Project into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.branch_logical_size_limit_bytes is not None:
-            body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
-        if self.compute_last_active_time is not None:
-            body["compute_last_active_time"] = self.compute_last_active_time
         if self.create_time is not None:
             body["create_time"] = self.create_time
-        if self.default_endpoint_settings:
-            body["default_endpoint_settings"] = self.default_endpoint_settings
-        if self.display_name is not None:
-            body["display_name"] = self.display_name
-        if self.effective_default_endpoint_settings:
-            body["effective_default_endpoint_settings"] = self.effective_default_endpoint_settings
-        if self.effective_display_name is not None:
-            body["effective_display_name"] = self.effective_display_name
-        if self.effective_history_retention_duration is not None:
-            body["effective_history_retention_duration"] = self.effective_history_retention_duration
-        if self.effective_pg_version is not None:
-            body["effective_pg_version"] = self.effective_pg_version
-        if self.effective_settings:
-            body["effective_settings"] = self.effective_settings
-        if self.history_retention_duration is not None:
-            body["history_retention_duration"] = self.history_retention_duration
         if self.name is not None:
             body["name"] = self.name
-        if self.pg_version is not None:
-            body["pg_version"] = self.pg_version
-        if self.settings:
-            body["settings"] = self.settings
-        if self.synthetic_storage_size_bytes is not None:
-            body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
+        if self.spec:
+            body["spec"] = self.spec
+        if self.status:
+            body["status"] = self.status
         if self.uid is not None:
             body["uid"] = self.uid
         if self.update_time is not None:
@@ -1001,23 +981,10 @@ class Project:
     def from_dict(cls, d: Dict[str, Any]) -> Project:
         """Deserializes the Project from a dictionary."""
         return cls(
-            branch_logical_size_limit_bytes=d.get("branch_logical_size_limit_bytes", None),
-            compute_last_active_time=_timestamp(d, "compute_last_active_time"),
             create_time=_timestamp(d, "create_time"),
-            default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
-            display_name=d.get("display_name", None),
-            effective_default_endpoint_settings=_from_dict(
-                d, "effective_default_endpoint_settings", ProjectDefaultEndpointSettings
-            ),
-            effective_display_name=d.get("effective_display_name", None),
-            effective_history_retention_duration=_duration(d, "effective_history_retention_duration"),
-            effective_pg_version=d.get("effective_pg_version", None),
-            effective_settings=_from_dict(d, "effective_settings", ProjectSettings),
-            history_retention_duration=_duration(d, "history_retention_duration"),
             name=d.get("name", None),
-            pg_version=d.get("pg_version", None),
-            settings=_from_dict(d, "settings", ProjectSettings),
-            synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
+            spec=_from_dict(d, "spec", ProjectSpec),
+            status=_from_dict(d, "status", ProjectStatus),
             uid=d.get("uid", None),
             update_time=_timestamp(d, "update_time"),
         )
@@ -1126,6 +1093,147 @@ class ProjectSettings:
     def from_dict(cls, d: Dict[str, Any]) -> ProjectSettings:
         """Deserializes the ProjectSettings from a dictionary."""
         return cls(enable_logical_replication=d.get("enable_logical_replication", None))
+
+
+@dataclass
+class ProjectSpec:
+    default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
+
+    display_name: Optional[str] = None
+    """Human-readable project name."""
+
+    history_retention_duration: Optional[Duration] = None
+    """The number of seconds to retain the shared history for point in time recovery for all branches
+    in this project."""
+
+    pg_version: Optional[int] = None
+    """The major Postgres version number."""
+
+    settings: Optional[ProjectSettings] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ProjectSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_endpoint_settings:
+            body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.history_retention_duration is not None:
+            body["history_retention_duration"] = self.history_retention_duration.ToJsonString()
+        if self.pg_version is not None:
+            body["pg_version"] = self.pg_version
+        if self.settings:
+            body["settings"] = self.settings.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ProjectSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_endpoint_settings:
+            body["default_endpoint_settings"] = self.default_endpoint_settings
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.history_retention_duration is not None:
+            body["history_retention_duration"] = self.history_retention_duration
+        if self.pg_version is not None:
+            body["pg_version"] = self.pg_version
+        if self.settings:
+            body["settings"] = self.settings
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ProjectSpec:
+        """Deserializes the ProjectSpec from a dictionary."""
+        return cls(
+            default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
+            display_name=d.get("display_name", None),
+            history_retention_duration=_duration(d, "history_retention_duration"),
+            pg_version=d.get("pg_version", None),
+            settings=_from_dict(d, "settings", ProjectSettings),
+        )
+
+
+@dataclass
+class ProjectStatus:
+    branch_logical_size_limit_bytes: Optional[int] = None
+    """The logical size limit for a branch."""
+
+    compute_last_active_time: Optional[Timestamp] = None
+    """The most recent time when any endpoint of this project was active."""
+
+    default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
+    """The effective default endpoint settings."""
+
+    display_name: Optional[str] = None
+    """The effective human-readable project name."""
+
+    history_retention_duration: Optional[Duration] = None
+    """The effective number of seconds to retain the shared history for point in time recovery."""
+
+    pg_version: Optional[int] = None
+    """The effective major Postgres version number."""
+
+    settings: Optional[ProjectSettings] = None
+    """The effective project settings."""
+
+    synthetic_storage_size_bytes: Optional[int] = None
+    """The current space occupied by the project in storage."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ProjectStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.branch_logical_size_limit_bytes is not None:
+            body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
+        if self.compute_last_active_time is not None:
+            body["compute_last_active_time"] = self.compute_last_active_time.ToJsonString()
+        if self.default_endpoint_settings:
+            body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.history_retention_duration is not None:
+            body["history_retention_duration"] = self.history_retention_duration.ToJsonString()
+        if self.pg_version is not None:
+            body["pg_version"] = self.pg_version
+        if self.settings:
+            body["settings"] = self.settings.as_dict()
+        if self.synthetic_storage_size_bytes is not None:
+            body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ProjectStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.branch_logical_size_limit_bytes is not None:
+            body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
+        if self.compute_last_active_time is not None:
+            body["compute_last_active_time"] = self.compute_last_active_time
+        if self.default_endpoint_settings:
+            body["default_endpoint_settings"] = self.default_endpoint_settings
+        if self.display_name is not None:
+            body["display_name"] = self.display_name
+        if self.history_retention_duration is not None:
+            body["history_retention_duration"] = self.history_retention_duration
+        if self.pg_version is not None:
+            body["pg_version"] = self.pg_version
+        if self.settings:
+            body["settings"] = self.settings
+        if self.synthetic_storage_size_bytes is not None:
+            body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ProjectStatus:
+        """Deserializes the ProjectStatus from a dictionary."""
+        return cls(
+            branch_logical_size_limit_bytes=d.get("branch_logical_size_limit_bytes", None),
+            compute_last_active_time=_timestamp(d, "compute_last_active_time"),
+            default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
+            display_name=d.get("display_name", None),
+            history_retention_duration=_duration(d, "history_retention_duration"),
+            pg_version=d.get("pg_version", None),
+            settings=_from_dict(d, "settings", ProjectSettings),
+            synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
+        )
 
 
 class PostgresAPI:
