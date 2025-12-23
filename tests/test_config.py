@@ -453,3 +453,41 @@ def test_no_org_id_header_on_regular_workspace(requests_mock):
 
     # Verify the X-Databricks-Org-Id header was NOT added
     assert "X-Databricks-Org-Id" not in requests_mock.last_request.headers
+
+def test_disable_oauth_refresh_token_from_env(monkeypatch, mocker):
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    monkeypatch.setenv("DATABRICKS_DISABLE_OAUTH_REFRESH_TOKEN", "true")
+    config = Config(host="https://test.databricks.com")
+    assert config.disable_oauth_refresh_token is True
+
+
+def test_disable_oauth_refresh_token_defaults_to_false(mocker):
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    config = Config(host="https://test.databricks.com")
+    assert config.disable_oauth_refresh_token is None  # ConfigAttribute returns None when not set
+
+
+def test_config_file_scopes_empty_defaults_to_all_apis(monkeypatch, mocker):
+    """Test that empty scopes in config file defaults to all-apis."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    monkeypatch.setenv("HOME", str(pathlib.Path(__tests__) / "testdata"))
+    config = Config(profile="scope-empty")
+    assert config.get_scopes() == ["all-apis"]
+
+
+def test_config_file_scopes_single(monkeypatch, mocker):
+    """Test single scope from config file."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    monkeypatch.setenv("HOME", str(pathlib.Path(__tests__) / "testdata"))
+    config = Config(profile="scope-single")
+    assert config.get_scopes() == ["clusters:read"]
+
+
+def test_config_file_scopes_multiple_sorted(monkeypatch, mocker):
+    """Test multiple scopes from config file are sorted."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    monkeypatch.setenv("HOME", str(pathlib.Path(__tests__) / "testdata"))
+    config = Config(profile="scope-multiple")
+    # Should be sorted alphabetically
+    expected = ["clusters", "files:read", "iam:read", "jobs", "mlflow", "model-serving:read", "pipelines"]
+    assert config.get_scopes() == expected
