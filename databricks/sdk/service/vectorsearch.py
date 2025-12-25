@@ -2001,6 +2001,11 @@ class VectorSearchIndexesAPI:
           Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
           vectors.
         :param reranker: :class:`RerankerConfig` (optional)
+          If set, the top 50 results are reranked with the Databricks Reranker model before returning the
+          `num_results` results to the user. The setting `columns_to_rerank` selects which columns are used
+          for reranking. For each datapoint, the columns selected are concatenated before being sent to the
+          reranking model. See https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank for
+          more information.
         :param score_threshold: float (optional)
           Threshold for the approximate nearest neighbor search. Defaults to 0.0.
 
