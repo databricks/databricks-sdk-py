@@ -24,11 +24,16 @@ _LOG = logging.getLogger("databricks.sdk")
 @dataclass
 class AccessRequestDestinations:
     securable: Securable
-    """The securable for which the access request destinations are being retrieved."""
+    """The securable for which the access request destinations are being modified or read."""
 
     are_any_destinations_hidden: Optional[bool] = None
     """Indicates whether any destinations are hidden from the caller due to a lack of permissions. This
     value is true if the caller does not have permission to see all destinations."""
+
+    destination_source_securable: Optional[Securable] = None
+    """The source securable from which the destinations are inherited. Either the same value as
+    securable (if destination is set directly on the securable) or the nearest parent securable with
+    destinations set."""
 
     destinations: Optional[List[NotificationDestination]] = None
     """The access request destinations for the securable."""
@@ -38,6 +43,8 @@ class AccessRequestDestinations:
         body = {}
         if self.are_any_destinations_hidden is not None:
             body["are_any_destinations_hidden"] = self.are_any_destinations_hidden
+        if self.destination_source_securable:
+            body["destination_source_securable"] = self.destination_source_securable.as_dict()
         if self.destinations:
             body["destinations"] = [v.as_dict() for v in self.destinations]
         if self.securable:
@@ -49,6 +56,8 @@ class AccessRequestDestinations:
         body = {}
         if self.are_any_destinations_hidden is not None:
             body["are_any_destinations_hidden"] = self.are_any_destinations_hidden
+        if self.destination_source_securable:
+            body["destination_source_securable"] = self.destination_source_securable
         if self.destinations:
             body["destinations"] = self.destinations
         if self.securable:
@@ -60,6 +69,7 @@ class AccessRequestDestinations:
         """Deserializes the AccessRequestDestinations from a dictionary."""
         return cls(
             are_any_destinations_hidden=d.get("are_any_destinations_hidden", None),
+            destination_source_securable=_from_dict(d, "destination_source_securable", Securable),
             destinations=_repeated_dict(d, "destinations", NotificationDestination),
             securable=_from_dict(d, "securable", Securable),
         )
@@ -8756,7 +8766,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_GOOGLE_ADS_OAUTH_U2M_WITH_DT = 284; Next id:285"""
+    """Latest kind: CONNECTION_TIKTOK_ADS_U2M = 285; Next id: 286"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

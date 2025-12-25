@@ -2227,6 +2227,10 @@ class SharedSecurableKind(Enum):
 
 @dataclass
 class Table:
+    access_modes: Optional[List[str]] = None
+    """The access modes supported for this table (e.g., "url", "dir"). Used for open sharing to
+    indicate how the table can be accessed."""
+
     comment: Optional[str] = None
     """The comment of the table."""
 
@@ -2254,12 +2258,17 @@ class Table:
     share_id: Optional[str] = None
     """The id of the share that the table belongs to."""
 
+    storage_location: Optional[str] = None
+    """The cloud storage location of the table for open sharing."""
+
     tags: Optional[List[catalog.TagKeyValue]] = None
     """The Tags of the table."""
 
     def as_dict(self) -> dict:
         """Serializes the Table into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.access_modes:
+            body["access_modes"] = [v for v in self.access_modes]
         if self.comment is not None:
             body["comment"] = self.comment
         if self.id is not None:
@@ -2278,6 +2287,8 @@ class Table:
             body["share"] = self.share
         if self.share_id is not None:
             body["share_id"] = self.share_id
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
         if self.tags:
             body["tags"] = [v.as_dict() for v in self.tags]
         return body
@@ -2285,6 +2296,8 @@ class Table:
     def as_shallow_dict(self) -> dict:
         """Serializes the Table into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.access_modes:
+            body["access_modes"] = self.access_modes
         if self.comment is not None:
             body["comment"] = self.comment
         if self.id is not None:
@@ -2303,6 +2316,8 @@ class Table:
             body["share"] = self.share
         if self.share_id is not None:
             body["share_id"] = self.share_id
+        if self.storage_location is not None:
+            body["storage_location"] = self.storage_location
         if self.tags:
             body["tags"] = self.tags
         return body
@@ -2311,6 +2326,7 @@ class Table:
     def from_dict(cls, d: Dict[str, Any]) -> Table:
         """Deserializes the Table from a dictionary."""
         return cls(
+            access_modes=d.get("access_modes", None),
             comment=d.get("comment", None),
             id=d.get("id", None),
             internal_attributes=_from_dict(d, "internal_attributes", TableInternalAttributes),
@@ -2320,6 +2336,7 @@ class Table:
             schema=d.get("schema", None),
             share=d.get("share", None),
             share_id=d.get("share_id", None),
+            storage_location=d.get("storage_location", None),
             tags=_repeated_dict(d, "tags", catalog.TagKeyValue),
         )
 

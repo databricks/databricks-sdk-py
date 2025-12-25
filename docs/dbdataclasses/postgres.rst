@@ -12,7 +12,15 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: BranchState
+.. autoclass:: BranchSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: BranchStatus
+   :members:
+   :undoc-members:
+
+.. py:class:: BranchStatusState
 
    The state of the database branch.
 
@@ -344,6 +352,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListRolesResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: Operation
    :members:
    :undoc-members:
@@ -361,5 +373,55 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ProjectSettings
+   :members:
+   :undoc-members:
+
+.. autoclass:: ProjectSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: ProjectStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: Role
+   :members:
+   :undoc-members:
+
+.. py:class:: RoleAuthMethod
+
+   How the role is authenticated when connecting to Postgres.
+
+   .. py:attribute:: LAKEBASE_OAUTH_V1
+      :value: "LAKEBASE_OAUTH_V1"
+
+   .. py:attribute:: NO_LOGIN
+      :value: "NO_LOGIN"
+
+   .. py:attribute:: PG_PASSWORD_SCRAM_SHA_256
+      :value: "PG_PASSWORD_SCRAM_SHA_256"
+
+.. py:class:: RoleIdentityType
+
+   The type of the Databricks managed identity that this Role represents. Leave empty if you wish to create a regular Postgres role not associated with a Databricks identity.
+
+   .. py:attribute:: GROUP
+      :value: "GROUP"
+
+   .. py:attribute:: SERVICE_PRINCIPAL
+      :value: "SERVICE_PRINCIPAL"
+
+   .. py:attribute:: USER
+      :value: "USER"
+
+.. autoclass:: RoleOperationMetadata
+   :members:
+   :undoc-members:
+
+.. autoclass:: RoleRoleSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: RoleRoleStatus
    :members:
    :undoc-members:

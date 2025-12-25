@@ -53,6 +53,24 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: create_role(parent: str, role: Role, role_id: str) -> CreateRoleOperation
+
+        Create a role for a branch.
+
+        :param parent: str
+          The Branch where this Role is created. Format: projects/{project_id}/branches/{branch_id}
+        :param role: :class:`Role`
+          The desired specification of a Role.
+        :param role_id: str
+          The ID to use for the Role, which will become the final component of the branch's resource name.
+          This ID becomes the role in postgres.
+
+          This value should be 4-63 characters, and only use characters available in DNS names, as defined by
+          RFC-1123
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: delete_branch(name: str)
 
         Delete a Branch.
@@ -82,6 +100,25 @@
           The name of the Project to delete. Format: projects/{project_id}
 
 
+        
+
+    .. py:method:: delete_role(name: str [, reassign_owned_to: Optional[str]]) -> DeleteRoleOperation
+
+        Delete a role in a branch.
+
+        :param name: str
+          The resource name of the postgres role. Format:
+          projects/{project_id}/branch/{branch_id}/roles/{role_id}
+        :param reassign_owned_to: str (optional)
+          Reassign objects. If this is set, all objects owned by the role are reassigned to the role specified
+          in this parameter.
+
+          NOTE: setting this requires spinning up a compute to succeed, since it involves running SQL queries.
+
+          TODO: #LKB-7187 implement reassign_owned_to on LBM side. This might end-up being a synchronous query
+          when this parameter is used.
+
+        :returns: :class:`Operation`
         
 
     .. py:method:: get_branch(name: str) -> Branch
@@ -125,6 +162,16 @@
         :returns: :class:`Project`
         
 
+    .. py:method:: get_role(name: str) -> Role
+
+        Get a Role.
+
+        :param name: str
+          The name of the Role to retrieve. Format: projects/{project_id}/branches/{branch_id}/roles/{role_id}
+
+        :returns: :class:`Role`
+        
+
     .. py:method:: list_branches(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Branch]
 
         List Branches.
@@ -164,6 +211,20 @@
           Pagination token to go to the next page of Projects. Requests first page if absent.
 
         :returns: Iterator over :class:`Project`
+        
+
+    .. py:method:: list_roles(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Role]
+
+        List Roles.
+
+        :param parent: str
+          The Branch that owns this collection of roles. Format: projects/{project_id}/branches/{branch_id}
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of Roles. Requests first page if absent.
+
+        :returns: Iterator over :class:`Role`
         
 
     .. py:method:: update_branch(name: str, branch: Branch, update_mask: FieldMask) -> UpdateBranchOperation

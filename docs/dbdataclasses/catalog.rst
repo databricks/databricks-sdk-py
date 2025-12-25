@@ -1497,7 +1497,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_GOOGLE_ADS_OAUTH_U2M_WITH_DT = 284; Next id:285
+   Latest kind: CONNECTION_TIKTOK_ADS_U2M = 285; Next id: 286
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
