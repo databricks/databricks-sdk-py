@@ -12,7 +12,7 @@ from databricks.sdk.config import (ClientType, Config, HostType, with_product,
                                    with_user_agent_extra)
 from databricks.sdk.version import __version__
 
-from .conftest import noop_credentials, set_az_path
+from .conftest import noop_credentials, set_az_path, set_home
 
 __tests__ = os.path.dirname(__file__)
 
@@ -471,7 +471,7 @@ def test_disable_oauth_refresh_token_defaults_to_false(mocker):
 def test_config_file_scopes_empty_defaults_to_all_apis(monkeypatch, mocker):
     """Test that empty scopes in config file defaults to all-apis."""
     mocker.patch("databricks.sdk.config.Config.init_auth")
-    monkeypatch.setenv("HOME", str(pathlib.Path(__tests__) / "testdata"))
+    set_home(monkeypatch, "/testdata")
     config = Config(profile="scope-empty")
     assert config.get_scopes() == ["all-apis"]
 
@@ -479,7 +479,7 @@ def test_config_file_scopes_empty_defaults_to_all_apis(monkeypatch, mocker):
 def test_config_file_scopes_single(monkeypatch, mocker):
     """Test single scope from config file."""
     mocker.patch("databricks.sdk.config.Config.init_auth")
-    monkeypatch.setenv("HOME", str(pathlib.Path(__tests__) / "testdata"))
+    set_home(monkeypatch, "/testdata")
     config = Config(profile="scope-single")
     assert config.get_scopes() == ["clusters"]
 
@@ -487,7 +487,7 @@ def test_config_file_scopes_single(monkeypatch, mocker):
 def test_config_file_scopes_multiple_sorted(monkeypatch, mocker):
     """Test multiple scopes from config file are sorted."""
     mocker.patch("databricks.sdk.config.Config.init_auth")
-    monkeypatch.setenv("HOME", str(pathlib.Path(__tests__) / "testdata"))
+    set_home(monkeypatch, "/testdata")
     config = Config(profile="scope-multiple")
     # Should be sorted alphabetically
     expected = ["clusters", "files:read", "iam:read", "jobs", "mlflow", "model-serving:read", "pipelines"]
