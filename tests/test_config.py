@@ -454,6 +454,7 @@ def test_no_org_id_header_on_regular_workspace(requests_mock):
     # Verify the X-Databricks-Org-Id header was NOT added
     assert "X-Databricks-Org-Id" not in requests_mock.last_request.headers
 
+
 def test_disable_oauth_refresh_token_from_env(monkeypatch, mocker):
     mocker.patch("databricks.sdk.config.Config.init_auth")
     monkeypatch.setenv("DATABRICKS_DISABLE_OAUTH_REFRESH_TOKEN", "true")
@@ -480,7 +481,7 @@ def test_config_file_scopes_single(monkeypatch, mocker):
     mocker.patch("databricks.sdk.config.Config.init_auth")
     monkeypatch.setenv("HOME", str(pathlib.Path(__tests__) / "testdata"))
     config = Config(profile="scope-single")
-    assert config.get_scopes() == ["clusters:read"]
+    assert config.get_scopes() == ["clusters"]
 
 
 def test_config_file_scopes_multiple_sorted(monkeypatch, mocker):
