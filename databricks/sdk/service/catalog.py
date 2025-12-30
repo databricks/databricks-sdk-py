@@ -1750,7 +1750,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 52"""
+    """Next Id: 53"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -8766,7 +8766,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_TIKTOK_ADS_U2M = 285; Next id: 286"""
+    """Latest kind: CONNECTION_ONELAKE = 289; Next id:290"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

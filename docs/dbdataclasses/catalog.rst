@@ -279,7 +279,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 52
+   Next Id: 53
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -1497,7 +1497,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_TIKTOK_ADS_U2M = 285; Next id: 286
+   Latest kind: CONNECTION_ONELAKE = 289; Next id:290
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
