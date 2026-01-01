@@ -148,9 +148,9 @@
             
             w = WorkspaceClient()
             
-            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            get_status_response = w.workspace.get_status(path=notebook)
+            obj = w.workspace.get_status(path=notebook_path)
 
         Gets the status of an object or a directory. If `path` does not exist, this call returns an error
         `RESOURCE_DOES_NOT_EXIST`.
@@ -176,14 +176,19 @@
             
             w = WorkspaceClient()
             
-            notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
             w.workspace.import_(
-                path=notebook,
+                path=notebook_path,
+                overwrite=true_,
                 format=workspace.ImportFormat.SOURCE,
                 language=workspace.Language.PYTHON,
-                content=base64.b64encode(("# Databricks notebook source\nprint('hello from job')").encode()).decode(),
-                overwrite=True,
+                content=base64.b64encode(
+                    (
+                        """print(1)
+            """
+                    ).encode()
+                ).decode(),
             )
 
         Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
