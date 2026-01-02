@@ -174,7 +174,7 @@ def test_config_authenticate_integration(
 
 @pytest.mark.parametrize(
     "scopes_input,expected_scopes",
-    [(["sql", "offline_access"], "sql offline_access")],
+    [(["sql", "offline_access"], "offline_access sql")],
 )
 def test_workspace_client_integration(
     mock_runtime_env, mock_runtime_native_auth, mock_pat_exchange, scopes_input, expected_scopes
