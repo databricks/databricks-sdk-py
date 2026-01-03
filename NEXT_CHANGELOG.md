@@ -36,3 +36,6 @@
 * Add `access_modes` and `storage_location` fields for `databricks.sdk.service.sharing.Table`.
 * [Breaking] Remove `current_state`, `default`, `effective_default`, `effective_is_protected`, `effective_source_branch`, `effective_source_branch_lsn`, `effective_source_branch_time`, `is_protected`, `logical_size_bytes`, `pending_state`, `source_branch`, `source_branch_lsn`, `source_branch_time` and `state_change_time` fields for `databricks.sdk.service.postgres.Branch`.
 * [Breaking] Remove `branch_logical_size_limit_bytes`, `compute_last_active_time`, `default_endpoint_settings`, `display_name`, `effective_default_endpoint_settings`, `effective_display_name`, `effective_history_retention_duration`, `effective_pg_version`, `effective_settings`, `history_retention_duration`, `pg_version`, `settings` and `synthetic_storage_size_bytes` fields for `databricks.sdk.service.postgres.Project`.
+* Add `command` and `env_vars` fields for `databricks.sdk.service.apps.AppDeployment`.
+* Add `full_name` and `securable_type` fields for `databricks.sdk.service.catalog.AccessRequestDestinations`.
+* [Breaking] Change `delete_kafka_config()` method for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service . Method path has changed.

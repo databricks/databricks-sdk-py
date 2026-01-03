@@ -38,6 +38,14 @@ class AccessRequestDestinations:
     destinations: Optional[List[NotificationDestination]] = None
     """The access request destinations for the securable."""
 
+    full_name: Optional[str] = None
+    """The full name of the securable. Redundant with the name in the securable object, but necessary
+    for Terraform integration"""
+
+    securable_type: Optional[str] = None
+    """The type of the securable. Redundant with the type in the securable object, but necessary for
+    Terraform integration"""
+
     def as_dict(self) -> dict:
         """Serializes the AccessRequestDestinations into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -47,8 +55,12 @@ class AccessRequestDestinations:
             body["destination_source_securable"] = self.destination_source_securable.as_dict()
         if self.destinations:
             body["destinations"] = [v.as_dict() for v in self.destinations]
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
         if self.securable:
             body["securable"] = self.securable.as_dict()
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -60,8 +72,12 @@ class AccessRequestDestinations:
             body["destination_source_securable"] = self.destination_source_securable
         if self.destinations:
             body["destinations"] = self.destinations
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
         if self.securable:
             body["securable"] = self.securable
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
         return body
 
     @classmethod
@@ -71,7 +87,9 @@ class AccessRequestDestinations:
             are_any_destinations_hidden=d.get("are_any_destinations_hidden", None),
             destination_source_securable=_from_dict(d, "destination_source_securable", Securable),
             destinations=_repeated_dict(d, "destinations", NotificationDestination),
+            full_name=d.get("full_name", None),
             securable=_from_dict(d, "securable", Securable),
+            securable_type=d.get("securable_type", None),
         )
 
 

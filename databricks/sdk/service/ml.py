@@ -7380,7 +7380,8 @@ class FeatureEngineeringAPI:
         return Feature.from_dict(res)
 
     def create_kafka_config(self, kafka_config: KafkaConfig) -> KafkaConfig:
-        """Create a Kafka config.
+        """Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
 
         :param kafka_config: :class:`KafkaConfig`
 
@@ -7430,7 +7431,8 @@ class FeatureEngineeringAPI:
         self._api.do("DELETE", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
 
     def delete_kafka_config(self, name: str):
-        """Delete a Kafka config.
+        """Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
 
         :param name: str
           Name of the Kafka config to delete.
@@ -7442,7 +7444,7 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/feature-engineering/features/kafka-configs/kafka/{name}", headers=headers)
+        self._api.do("DELETE", f"/api/2.0/feature-engineering/features/kafka-configs/{name}", headers=headers)
 
     def delete_materialized_feature(self, materialized_feature_id: str):
         """Delete a materialized feature.
@@ -7478,7 +7480,8 @@ class FeatureEngineeringAPI:
         return Feature.from_dict(res)
 
     def get_kafka_config(self, name: str) -> KafkaConfig:
-        """Get a Kafka config.
+        """Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the
+        entire metastore. Only the creator of the Kafka config can delete it.
 
         :param name: str
           Name of the Kafka config to get.
@@ -7543,7 +7546,8 @@ class FeatureEngineeringAPI:
     def list_kafka_configs(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[KafkaConfig]:
-        """List Kafka configs.
+        """List Kafka configs. During PrPr, Kafka configs can be read and used when creating features under the
+        entire metastore. Only the creator of the Kafka config can delete it.
 
         :param page_size: int (optional)
           The maximum number of results to return.
@@ -7640,7 +7644,8 @@ class FeatureEngineeringAPI:
         return Feature.from_dict(res)
 
     def update_kafka_config(self, name: str, kafka_config: KafkaConfig, update_mask: FieldMask) -> KafkaConfig:
-        """Update a Kafka config.
+        """Update a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
 
         :param name: str
           Name that uniquely identifies this Kafka config within the metastore. This will be the identifier
