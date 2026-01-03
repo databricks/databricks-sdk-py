@@ -90,6 +90,8 @@ def test_langchain_open_ai_client(monkeypatch):
 
     assert client.openai_api_base == "https://test_host/serving-endpoints"
     assert client.model_name == "databricks-meta-llama-3-1-70b-instruct"
+    assert client.http_client.auth is not None
+    assert client.http_async_client.auth is not None
 
 
 def test_http_request(w, requests_mock):
@@ -115,3 +117,50 @@ def test_http_request(w, requests_mock):
     assert requests_mock.called
     assert response.status_code == 200  # Verify the response status
     assert response.text == "The request was successful"  # Ensure the response body matches the mocked data
+
+
+def test_async_open_ai_client(monkeypatch):
+    from openai import AsyncOpenAI
+
+    from databricks.sdk import WorkspaceClient
+
+    monkeypatch.setenv("DATABRICKS_HOST", "test_host")
+    monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
+    w = WorkspaceClient(config=Config())
+    client = w.serving_endpoints.get_async_open_ai_client()
+
+    assert isinstance(client, AsyncOpenAI)
+    assert client.base_url == "https://test_host/serving-endpoints/"
+    assert client.api_key == "no-token"
+
+
+def test_async_open_ai_client_with_custom_params(monkeypatch):
+    from databricks.sdk import WorkspaceClient
+
+    monkeypatch.setenv("DATABRICKS_HOST", "test_host")
+    monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
+    w = WorkspaceClient(config=Config())
+
+    client = w.serving_endpoints.get_async_open_ai_client(timeout=30.0, max_retries=3)
+
+    assert client.base_url == "https://test_host/serving-endpoints/"
+    assert client.api_key == "no-token"
+    assert client.timeout == 30.0
+    assert client.max_retries == 3
+
+
+def test_async_open_ai_client_prevents_reserved_param_override(monkeypatch):
+    from databricks.sdk import WorkspaceClient
+
+    monkeypatch.setenv("DATABRICKS_HOST", "test_host")
+    monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
+    w = WorkspaceClient(config=Config())
+
+    with pytest.raises(ValueError, match="Cannot override reserved Databricks parameters: base_url"):
+        w.serving_endpoints.get_async_open_ai_client(base_url="https://custom-host")
+
+    with pytest.raises(ValueError, match="Cannot override reserved Databricks parameters: api_key"):
+        w.serving_endpoints.get_async_open_ai_client(api_key="custom-key")
+
+    with pytest.raises(ValueError, match="Cannot override reserved Databricks parameters: http_client"):
+        w.serving_endpoints.get_async_open_ai_client(http_client=None)
