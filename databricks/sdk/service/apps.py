@@ -359,6 +359,10 @@ class AppAccessControlResponse:
 
 @dataclass
 class AppDeployment:
+    command: Optional[List[str]] = None
+    """The command with which to run the app. This will override the command specified in the app.yaml
+    file."""
+
     create_time: Optional[str] = None
     """The creation time of the deployment. Formatted timestamp in ISO 6801."""
 
@@ -370,6 +374,10 @@ class AppDeployment:
 
     deployment_id: Optional[str] = None
     """The unique id of the deployment."""
+
+    env_vars: Optional[List[EnvVar]] = None
+    """The environment variables to set in the app runtime environment. This will override the
+    environment variables specified in the app.yaml file."""
 
     git_source: Optional[GitSource] = None
     """Git repository to use as the source for the app deployment."""
@@ -393,6 +401,8 @@ class AppDeployment:
     def as_dict(self) -> dict:
         """Serializes the AppDeployment into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.command:
+            body["command"] = [v for v in self.command]
         if self.create_time is not None:
             body["create_time"] = self.create_time
         if self.creator is not None:
@@ -401,6 +411,8 @@ class AppDeployment:
             body["deployment_artifacts"] = self.deployment_artifacts.as_dict()
         if self.deployment_id is not None:
             body["deployment_id"] = self.deployment_id
+        if self.env_vars:
+            body["env_vars"] = [v.as_dict() for v in self.env_vars]
         if self.git_source:
             body["git_source"] = self.git_source.as_dict()
         if self.mode is not None:
@@ -416,6 +428,8 @@ class AppDeployment:
     def as_shallow_dict(self) -> dict:
         """Serializes the AppDeployment into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.command:
+            body["command"] = self.command
         if self.create_time is not None:
             body["create_time"] = self.create_time
         if self.creator is not None:
@@ -424,6 +438,8 @@ class AppDeployment:
             body["deployment_artifacts"] = self.deployment_artifacts
         if self.deployment_id is not None:
             body["deployment_id"] = self.deployment_id
+        if self.env_vars:
+            body["env_vars"] = self.env_vars
         if self.git_source:
             body["git_source"] = self.git_source
         if self.mode is not None:
@@ -440,10 +456,12 @@ class AppDeployment:
     def from_dict(cls, d: Dict[str, Any]) -> AppDeployment:
         """Deserializes the AppDeployment from a dictionary."""
         return cls(
+            command=d.get("command", None),
             create_time=d.get("create_time", None),
             creator=d.get("creator", None),
             deployment_artifacts=_from_dict(d, "deployment_artifacts", AppDeploymentArtifacts),
             deployment_id=d.get("deployment_id", None),
+            env_vars=_repeated_dict(d, "env_vars", EnvVar),
             git_source=_from_dict(d, "git_source", GitSource),
             mode=_enum(d, "mode", AppDeploymentMode),
             source_code_path=d.get("source_code_path", None),
@@ -1726,6 +1744,46 @@ class CustomTemplate:
             name=d.get("name", None),
             path=d.get("path", None),
         )
+
+
+@dataclass
+class EnvVar:
+    name: Optional[str] = None
+    """The name of the environment variable."""
+
+    value: Optional[str] = None
+    """The value for the environment variable."""
+
+    value_from: Optional[str] = None
+    """The name of an external Databricks resource that contains the value, such as a secret or a
+    database table."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EnvVar into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        if self.value_from is not None:
+            body["value_from"] = self.value_from
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EnvVar into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.value is not None:
+            body["value"] = self.value
+        if self.value_from is not None:
+            body["value_from"] = self.value_from
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EnvVar:
+        """Deserializes the EnvVar from a dictionary."""
+        return cls(name=d.get("name", None), value=d.get("value", None), value_from=d.get("value_from", None))
 
 
 @dataclass
