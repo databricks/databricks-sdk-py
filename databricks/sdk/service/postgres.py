@@ -2253,7 +2253,7 @@ class DeleteRoleOperation:
         self._impl = impl
         self._operation = operation
 
-    def wait(self, opts: Optional[lro.LroOptions] = None) -> Role:
+    def wait(self, opts: Optional[lro.LroOptions] = None):
         """Wait blocks until the long-running operation is completed. If no timeout is
         specified, this will poll indefinitely. If a timeout is provided and the operation
         didn't finish within the timeout, this function will raise an error of type
@@ -2262,7 +2262,7 @@ class DeleteRoleOperation:
         :param opts: :class:`LroOptions`
           Timeout options (default: polls indefinitely)
 
-        :returns: :class:`Role`
+        :returns: :class:`Any /* MISSING TYPE */`
         """
 
         def poll_operation():
@@ -2284,11 +2284,9 @@ class DeleteRoleOperation:
             if operation.response is None:
                 return None, RetryError.halt(Exception("operation completed but no response available"))
 
-            role = Role.from_dict(operation.response)
+            return {}, None
 
-            return role, None
-
-        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
 
     def name(self) -> str:
         """Name returns the name of the long-running operation. The name is assigned

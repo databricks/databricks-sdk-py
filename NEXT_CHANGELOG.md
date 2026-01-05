@@ -39,3 +39,4 @@
 * Add `command` and `env_vars` fields for `databricks.sdk.service.apps.AppDeployment`.
 * Add `full_name` and `securable_type` fields for `databricks.sdk.service.catalog.AccessRequestDestinations`.
 * [Breaking] Change `delete_kafka_config()` method for [w.feature_engineering](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/ml/feature_engineering.html) workspace-level service . Method path has changed.
+* [Breaking] Change long-running operation configuration for [PostgresAPI.delete_role](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html#databricks.sdk.service.postgres.PostgresAPI.delete_role) method . Long running operation response type changed to `None` dataclass.
