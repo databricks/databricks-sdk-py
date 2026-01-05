@@ -24,10 +24,10 @@
             
             w = WorkspaceClient()
             
-            created = w.catalogs.create(name=f"sdk-{time.time_ns()}")
+            new_catalog = w.catalogs.create(name=f"sdk-{time.time_ns()}")
             
             # cleanup
-            w.catalogs.delete(name=created.name, force=True)
+            w.catalogs.delete(name=new_catalog.name, force=True)
 
         Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
         **CREATE_CATALOG** privilege.
