@@ -78,10 +78,10 @@ class MockCredentialsStrategy(CredentialsStrategy):
 @pytest.mark.parametrize(
     "scopes,auth_details",
     [
-        ("sql offline_access", None),
-        ("sql offline_access", '{"type": "databricks_resource"}'),
+        ("sql, offline_access", None),
+        ("sql, offline_access", '{"type": "databricks_resource"}'),
         ("sql", None),
-        ("sql offline_access all-apis", None),
+        ("sql, offline_access, all-apis", None),
     ],
 )
 def test_runtime_oauth_success_scenarios(
@@ -117,7 +117,7 @@ def test_runtime_oauth_missing_scopes(mock_runtime_env, mock_runtime_native_auth
 
 def test_runtime_oauth_priority_over_native_auth(mock_runtime_env, mock_runtime_native_auth, mock_pat_exchange):
     """Test that runtime-oauth is prioritized over runtime-native-auth."""
-    cfg = Config(host="https://test.cloud.databricks.com", scopes="sql offline_access")
+    cfg = Config(host="https://test.cloud.databricks.com", scopes="sql, offline_access")
 
     default_creds = DefaultCredentials()
     creds_provider = default_creds(cfg)
@@ -141,7 +141,7 @@ def test_fallback_to_native_auth_without_scopes(mock_runtime_env, mock_runtime_n
 
 def test_explicit_runtime_oauth_auth_type(mock_runtime_env, mock_runtime_native_auth, mock_pat_exchange):
     """Test that runtime-oauth is used when explicitly specified as auth_type."""
-    cfg = Config(host="https://test.cloud.databricks.com", scopes="sql offline_access", auth_type="runtime-oauth")
+    cfg = Config(host="https://test.cloud.databricks.com", scopes="sql, offline_access", auth_type="runtime-oauth")
 
     default_creds = DefaultCredentials()
     creds_provider = default_creds(cfg)
@@ -164,7 +164,7 @@ def test_config_authenticate_integration(
     """Test Config.authenticate() integration with runtime-oauth and fallback."""
     cfg_kwargs = {"host": "https://test.cloud.databricks.com"}
     if has_scopes:
-        cfg_kwargs["scopes"] = "sql offline_access"
+        cfg_kwargs["scopes"] = "sql, offline_access"
 
     cfg = Config(**cfg_kwargs)
     headers = cfg.authenticate()
@@ -174,7 +174,7 @@ def test_config_authenticate_integration(
 
 @pytest.mark.parametrize(
     "scopes_input,expected_scopes",
-    [(["sql", "offline_access"], "offline_access sql")],
+    [(["sql", "offline_access"], ["offline_access", "sql"])],
 )
 def test_workspace_client_integration(
     mock_runtime_env, mock_runtime_native_auth, mock_pat_exchange, scopes_input, expected_scopes

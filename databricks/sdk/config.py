@@ -4,7 +4,6 @@ import datetime
 import logging
 import os
 import pathlib
-import re
 import sys
 import urllib.parse
 from enum import Enum
@@ -47,11 +46,13 @@ class ConfigAttribute:
     # name and transform are discovered from Config.__new__
     name: str = None
     transform: type = str
+    _custom_transform = None
 
-    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False):
+    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False, transform=None):
         self.env = env
         self.auth = auth
         self.sensitive = sensitive
+        self._custom_transform = transform
 
     def __get__(self, cfg: "Config", owner):
         if not cfg:
@@ -63,6 +64,19 @@ class ConfigAttribute:
 
     def __repr__(self) -> str:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
+
+
+def _parse_scopes(value):
+    """Parse scopes into a deduplicated, sorted list."""
+    if value is None:
+        return None
+    if isinstance(value, list):
+        result = sorted(set(s for s in value if s))
+        return result if result else None
+    if isinstance(value, str):
+        parsed = sorted(set(s.strip() for s in value.split(",") if s.strip()))
+        return parsed if parsed else None
+    return None
 
 
 def with_product(product: str, product_version: str):
@@ -134,12 +148,12 @@ class Config:
     disable_experimental_files_api_client: bool = ConfigAttribute(
         env="DATABRICKS_DISABLE_EXPERIMENTAL_FILES_API_CLIENT"
     )
-    # TODO: Expose these via environment variables too.
-    scopes: str = ConfigAttribute()
+
+    scopes: List[str] = ConfigAttribute(transform=_parse_scopes)
     authorization_details: str = ConfigAttribute()
 
-    # Controls whether the offline_access scope is requested during U2M OAuth authentication.
-    # offline_access is requested by default, causing a refresh token to be included in the OAuth token.
+    # disable_oauth_refresh_token controls whether a refresh token should be requested
+    # during the U2M authentication flow (default to false).
     disable_oauth_refresh_token: bool = ConfigAttribute(env="DATABRICKS_DISABLE_OAUTH_REFRESH_TOKEN")
 
     files_ext_client_download_streaming_chunk_size: int = 2 * 1024 * 1024  # 2 MiB
@@ -270,7 +284,6 @@ class Config:
             self._known_file_config_loader()
             self._fix_host_if_needed()
             self._validate()
-            self._sort_scopes()
             self.init_auth()
             self._init_product(product, product_version)
         except ValueError as e:
@@ -559,7 +572,7 @@ class Config:
             if type(v) != ConfigAttribute:
                 continue
             v.name = name
-            v.transform = anno.get(name, str)
+            v.transform = v._custom_transform if v._custom_transform else anno.get(name, str)
             attrs.append(v)
         cls._attributes = attrs
         return cls._attributes
@@ -672,16 +685,6 @@ class Config:
         names = " and ".join(sorted(auths_used))
         raise ValueError(f"validate: more than one authorization method configured: {names}")
 
-    def _sort_scopes(self):
-        """Sort scopes in-place for better de-duplication in the refresh token cache.
-        Delimiter is set to a single whitespace after sorting."""
-        if self.scopes and isinstance(self.scopes, str):
-            # Split on whitespaces and commas, sort, and rejoin
-            parsed = [s for s in re.split(r"[\s,]+", self.scopes) if s]
-            if parsed:
-                parsed.sort()
-                self.scopes = " ".join(parsed)
-
     def init_auth(self):
         try:
             self._header_factory = self._credentials_strategy(self)
@@ -706,26 +709,14 @@ class Config:
 
         Returns ["all-apis"] if no scopes configured.
         This is the single source of truth for scope defaulting across all OAuth methods.
-
-        Parses string scopes by splitting on whitespaces and commas.
-
-        Returns:
-            List of scope strings.
         """
-        if self.scopes and isinstance(self.scopes, str):
-            parsed = [s for s in re.split(r"[\s,]+", self.scopes) if s]
-            if not parsed:  # Empty string case
-                return ["all-apis"]
-            return parsed
-        return ["all-apis"]
+        return self.scopes if self.scopes else ["all-apis"]
 
     def get_scopes_as_string(self) -> str:
         """Get OAuth scopes as a space-separated string.
 
         Returns "all-apis" if no scopes configured.
         """
-        if self.scopes and isinstance(self.scopes, str):
-            return self.scopes
         return " ".join(self.get_scopes())
 
     def __repr__(self):

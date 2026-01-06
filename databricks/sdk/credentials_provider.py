@@ -198,7 +198,7 @@ def runtime_oauth(cfg: "Config") -> Optional[CredentialsProvider]:
     token_source = oauth.PATOAuthTokenExchange(
         get_original_token=get_notebook_pat_token,
         host=cfg.host,
-        scopes=cfg.scopes,
+        scopes=cfg.get_scopes_as_string(),
         authorization_details=cfg.authorization_details,
     )
 
@@ -329,7 +329,7 @@ def azure_service_principal(cfg: "Config") -> CredentialsProvider:
             endpoint_params={"resource": resource},
             use_params=True,
             disable_async=cfg.disable_async_token_refresh,
-            scopes=cfg.scopes,
+            scopes=cfg.get_scopes_as_string(),
             authorization_details=cfg.authorization_details,
         )
 
@@ -533,7 +533,7 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
         },
         use_params=True,
         disable_async=cfg.disable_async_token_refresh,
-        scopes=cfg.scopes,
+        scopes=cfg.get_scopes_as_string(),
         authorization_details=cfg.authorization_details,
     )
 
