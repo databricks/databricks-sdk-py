@@ -13,3 +13,5 @@
 ### Internal Changes
 
 ### API Changes
+* Add `table_deltasharing_open_dir_based` enum value for `databricks.sdk.service.catalog.SecurableKind`.
+* [Breaking] Remove `access_modes` and `storage_location` fields for `databricks.sdk.service.sharing.Table`.
