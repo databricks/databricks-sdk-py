@@ -1497,7 +1497,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_ONELAKE = 289; Next id:290
+   Latest kind: TABLE_DELTASHARING_OPEN_DIR_BASED = 290; Next id:291
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -1510,6 +1510,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_DELTASHARING_MUTABLE
       :value: "TABLE_DELTASHARING_MUTABLE"
+
+   .. py:attribute:: TABLE_DELTASHARING_OPEN_DIR_BASED
+      :value: "TABLE_DELTASHARING_OPEN_DIR_BASED"
 
    .. py:attribute:: TABLE_DELTA_EXTERNAL
       :value: "TABLE_DELTA_EXTERNAL"
