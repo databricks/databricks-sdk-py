@@ -1381,7 +1381,9 @@ class RoleRoleSpec:
     instead for the GROUP identity type."""
 
     identity_type: Optional[RoleIdentityType] = None
-    """The type of the role."""
+    """The type of the role. When specifying a managed-identity, the chosen role_id must be a valid:
+    
+    * application ID for SERVICE_PRINCIPAL * user email for USER * group name for GROUP"""
 
     def as_dict(self) -> dict:
         """Serializes the RoleRoleSpec into a dictionary suitable for use as a JSON request body."""
