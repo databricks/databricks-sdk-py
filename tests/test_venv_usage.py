@@ -18,12 +18,9 @@ def test_running_in_venv():
 
     # sys.prefix points to the Python installation being used
     # If we're in the venv, it should contain '.venv'
-    assert '.venv' in sys.prefix, (
+    assert ".venv" in sys.prefix, (
         f"Tests are NOT running from the project venv!\n"
         f"sys.prefix = {sys.prefix}\n"
         f"sys.executable = {sys.executable}\n"
         f"This likely means the Makefile is not correctly using the venv it creates."
     )
-
-    assert False, "Test passed, failing to trigger CI failure"
-
