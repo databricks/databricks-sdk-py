@@ -149,7 +149,7 @@ class Config:
         env="DATABRICKS_DISABLE_EXPERIMENTAL_FILES_API_CLIENT"
     )
 
-    scopes: List[str] = ConfigAttribute(transform=_parse_scopes)
+    scopes: list = ConfigAttribute(transform=_parse_scopes)
     authorization_details: str = ConfigAttribute()
 
     # disable_oauth_refresh_token controls whether a refresh token should be requested
@@ -704,7 +704,7 @@ class Config:
         else:
             self._product_info = None
 
-    def get_scopes(self) -> List[str]:
+    def get_scopes(self) -> list:
         """Get OAuth scopes with proper defaulting.
 
         Returns ["all-apis"] if no scopes configured.
