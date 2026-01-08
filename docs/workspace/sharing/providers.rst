@@ -101,29 +101,17 @@
 
         .. code-block::
 
-            import time
-            
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import sharing
             
             w = WorkspaceClient()
             
-            public_share_recipient = """{
-                    "shareCredentialsVersion":1,
-                    "bearerToken":"dapiabcdefghijklmonpqrstuvwxyz",
-                    "endpoint":"https://sharing.delta.io/delta-sharing/"
-                }
-            """
-            
-            created = w.providers.create(name=f"sdk-{time.time_ns()}", recipient_profile_str=public_share_recipient)
-            
-            shares = w.providers.list_shares(name=created.name)
-            
-            # cleanup
-            w.providers.delete(name=created.name)
+            all = w.providers.list(sharing.ListProvidersRequest())
 
-        Gets an array of available authentication providers. The caller must either be a metastore admin or
-        the owner of the providers. Providers not owned by the caller are not included in the response. There
-        is no guarantee of a specific ordering of the elements in the array.
+        Gets an array of available authentication providers. The caller must either be a metastore admin, have
+        the **USE_PROVIDER** privilege on the providers, or be the owner of the providers. Providers not owned
+        by the caller and for which the caller does not have the **USE_PROVIDER** privilege are not included
+        in the response. There is no guarantee of a specific ordering of the elements in the array.
 
         :param data_provider_global_metastore_id: str (optional)
           If not provided, all providers will be returned. If no providers exist with this ID, no results will

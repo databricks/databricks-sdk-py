@@ -8784,7 +8784,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: TABLE_DELTASHARING_OPEN_DIR_BASED = 290; Next id:291"""
+    """Latest kind: CONNECTION_WORKDAY_HCM_USERNAME_PASSWORD = 292; Next id: 293"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"

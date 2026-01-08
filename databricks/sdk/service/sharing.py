@@ -2648,9 +2648,10 @@ class ProvidersAPI:
         max_results: Optional[int] = None,
         page_token: Optional[str] = None,
     ) -> Iterator[ProviderInfo]:
-        """Gets an array of available authentication providers. The caller must either be a metastore admin or
-        the owner of the providers. Providers not owned by the caller are not included in the response. There
-        is no guarantee of a specific ordering of the elements in the array.
+        """Gets an array of available authentication providers. The caller must either be a metastore admin, have
+        the **USE_PROVIDER** privilege on the providers, or be the owner of the providers. Providers not owned
+        by the caller and for which the caller does not have the **USE_PROVIDER** privilege are not included
+        in the response. There is no guarantee of a specific ordering of the elements in the array.
 
         :param data_provider_global_metastore_id: str (optional)
           If not provided, all providers will be returned. If no providers exist with this ID, no results will
