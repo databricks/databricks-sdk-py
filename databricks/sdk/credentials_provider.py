@@ -225,7 +225,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
         client_id=cfg.client_id,
         client_secret=cfg.client_secret,
         token_url=oidc.token_endpoint,
-        scopes=cfg.scopes or "all-apis",
+        scopes=cfg.get_scopes_as_string(),
         use_header=True,
         disable_async=cfg.disable_async_token_refresh,
         authorization_details=cfg.authorization_details,
@@ -387,6 +387,7 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
         account_id=cfg.account_id,
         id_token_source=id_token_source,
         disable_async=cfg.disable_async_token_refresh,
+        scopes=cfg.get_scopes_as_string(),
     )
 
     def refreshed_headers() -> Dict[str, str]:
@@ -450,7 +451,7 @@ def _oidc_credentials_provider(
                 "subject_token": id_token,
                 "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
             },
-            scopes=cfg.scopes or "all-apis",
+            scopes=cfg.get_scopes_as_string(),
             use_params=True,
             disable_async=cfg.disable_async_token_refresh,
             authorization_details=cfg.authorization_details,
