@@ -90,9 +90,7 @@
             
             w = WorkspaceClient()
             
-            model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
-            
-            mv = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
+            created = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
 
         Creates a new registered model with the name specified in the request body. Throws
         `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
@@ -736,13 +734,14 @@
             
             w = WorkspaceClient()
             
-            created = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
+            model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
             
-            model = w.model_registry.get_model(name=created.registered_model.name)
+            created = w.model_registry.create_model_version(name=model.registered_model.name, source="dbfs:/tmp")
             
-            w.model_registry.update_model(
-                name=model.registered_model_databricks.name,
+            w.model_registry.update_model_version(
                 description=f"sdk-{time.time_ns()}",
+                name=created.model_version.name,
+                version=created.model_version.version,
             )
 
         Updates a registered model.

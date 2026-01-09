@@ -846,6 +846,8 @@ class CreatePrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -869,6 +871,8 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -884,6 +888,8 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -898,6 +904,7 @@ class CreatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
             group_id=d.get("group_id", None),
             resource_id=d.get("resource_id", None),
             resource_names=d.get("resource_names", None),
@@ -4058,6 +4065,8 @@ class NccPrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -4108,6 +4117,8 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4145,6 +4156,8 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4174,6 +4187,7 @@ class NccPrivateEndpointRule:
             enabled=d.get("enabled", None),
             endpoint_name=d.get("endpoint_name", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
@@ -5143,6 +5157,8 @@ class UpdatePrivateEndpointRule:
     Update this field to activate/deactivate this private endpoint to allow egress access from
     serverless compute resources."""
 
+    error_message: Optional[str] = None
+
     resource_names: Optional[List[str]] = None
     """Only used by private endpoints towards AWS S3 service.
     
@@ -5157,6 +5173,8 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.resource_names:
             body["resource_names"] = [v for v in self.resource_names]
         return body
@@ -5168,6 +5186,8 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.resource_names:
             body["resource_names"] = self.resource_names
         return body
@@ -5178,6 +5198,7 @@ class UpdatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
+            error_message=d.get("error_message", None),
             resource_names=d.get("resource_names", None),
         )
 
