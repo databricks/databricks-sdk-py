@@ -71,17 +71,17 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: delete_branch(name: str)
+    .. py:method:: delete_branch(name: str) -> DeleteBranchOperation
 
         Delete a Branch.
 
         :param name: str
           The name of the Branch to delete. Format: projects/{project_id}/branches/{branch_id}
 
-
+        :returns: :class:`Operation`
         
 
-    .. py:method:: delete_endpoint(name: str)
+    .. py:method:: delete_endpoint(name: str) -> DeleteEndpointOperation
 
         Delete an Endpoint.
 
@@ -89,17 +89,17 @@
           The name of the Endpoint to delete. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 
-
+        :returns: :class:`Operation`
         
 
-    .. py:method:: delete_project(name: str)
+    .. py:method:: delete_project(name: str) -> DeleteProjectOperation
 
         Delete a Project.
 
         :param name: str
           The name of the Project to delete. Format: projects/{project_id}
 
-
+        :returns: :class:`Operation`
         
 
     .. py:method:: delete_role(name: str [, reassign_owned_to: Optional[str]]) -> DeleteRoleOperation

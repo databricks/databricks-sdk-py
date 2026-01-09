@@ -79,7 +79,7 @@
             
             notebook = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
             
-            export_response = w.workspace.export(format=workspace.ExportFormat.SOURCE, path=notebook)
+            export_response = w.workspace.export_(format=workspace.ExportFormat.SOURCE, path=notebook)
 
         Exports an object or the contents of an entire directory.
 

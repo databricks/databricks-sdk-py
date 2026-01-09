@@ -164,30 +164,46 @@ class DatabaseInstance:
     responses."""
 
     effective_capacity: Optional[str] = None
-    """Deprecated. The sku of the instance; this field will always match the value of capacity."""
+    """Deprecated. The sku of the instance; this field will always match the value of capacity. This is
+    an output only field that contains the value computed from the input field combined with server
+    side defaults. Use the field without the effective_ prefix to set the value."""
 
     effective_custom_tags: Optional[List[CustomTag]] = None
-    """The recorded custom tags associated with the instance."""
+    """The recorded custom tags associated with the instance. This is an output only field that
+    contains the value computed from the input field combined with server side defaults. Use the
+    field without the effective_ prefix to set the value."""
 
     effective_enable_pg_native_login: Optional[bool] = None
-    """Whether the instance has PG native password login enabled."""
+    """Whether the instance has PG native password login enabled. This is an output only field that
+    contains the value computed from the input field combined with server side defaults. Use the
+    field without the effective_ prefix to set the value."""
 
     effective_enable_readable_secondaries: Optional[bool] = None
-    """Whether secondaries serving read-only traffic are enabled. Defaults to false."""
+    """Whether secondaries serving read-only traffic are enabled. Defaults to false. This is an output
+    only field that contains the value computed from the input field combined with server side
+    defaults. Use the field without the effective_ prefix to set the value."""
 
     effective_node_count: Optional[int] = None
     """The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults
-    to 1 primary and 0 secondaries."""
+    to 1 primary and 0 secondaries. This is an output only field that contains the value computed
+    from the input field combined with server side defaults. Use the field without the effective_
+    prefix to set the value."""
 
     effective_retention_window_in_days: Optional[int] = None
     """The retention window for the instance. This is the time window in days for which the historical
-    data is retained."""
+    data is retained. This is an output only field that contains the value computed from the input
+    field combined with server side defaults. Use the field without the effective_ prefix to set the
+    value."""
 
     effective_stopped: Optional[bool] = None
-    """Whether the instance is stopped."""
+    """Whether the instance is stopped. This is an output only field that contains the value computed
+    from the input field combined with server side defaults. Use the field without the effective_
+    prefix to set the value."""
 
     effective_usage_policy_id: Optional[str] = None
-    """The policy that is applied to the instance."""
+    """The policy that is applied to the instance. This is an output only field that contains the value
+    computed from the input field combined with server side defaults. Use the field without the
+    effective_ prefix to set the value."""
 
     enable_pg_native_login: Optional[bool] = None
     """Whether to enable PG native password login on the instance. Defaults to false."""
@@ -397,7 +413,9 @@ class DatabaseInstanceRef:
     effective_lsn: Optional[str] = None
     """For a parent ref instance, this is the LSN on the parent instance from which the instance was
     created. For a child ref instance, this is the LSN on the instance from which the child instance
-    was created."""
+    was created. This is an output only field that contains the value computed from the input field
+    combined with server side defaults. Use the field without the effective_ prefix to set the
+    value."""
 
     lsn: Optional[str] = None
     """User-specified WAL LSN of the ref database instance.
@@ -464,7 +482,9 @@ class DatabaseInstanceRole:
     """The desired API-exposed Postgres role attribute to associate with the role. Optional."""
 
     effective_attributes: Optional[DatabaseInstanceRoleAttributes] = None
-    """The attributes that are applied to the role."""
+    """The attributes that are applied to the role. This is an output only field that contains the
+    value computed from the input field combined with server side defaults. Use the field without
+    the effective_ prefix to set the value."""
 
     identity_type: Optional[DatabaseInstanceRoleIdentityType] = None
     """The type of the role."""
@@ -979,10 +999,14 @@ class SyncedDatabaseTable:
     effective_database_instance_name: Optional[str] = None
     """The name of the database instance that this table is registered to. This field is always
     returned, and for tables inside database catalogs is inferred database instance associated with
-    the catalog."""
+    the catalog. This is an output only field that contains the value computed from the input field
+    combined with server side defaults. Use the field without the effective_ prefix to set the
+    value."""
 
     effective_logical_database_name: Optional[str] = None
-    """The name of the logical database that this table is registered to."""
+    """The name of the logical database that this table is registered to. This is an output only field
+    that contains the value computed from the input field combined with server side defaults. Use
+    the field without the effective_ prefix to set the value."""
 
     logical_database_name: Optional[str] = None
     """Target Postgres database object (logical database) name for this table.

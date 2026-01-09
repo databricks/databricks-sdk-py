@@ -282,7 +282,6 @@ class DatabricksServiceExceptionWithDetailsProto:
     """Databricks Error that is returned by all Databricks APIs."""
 
     details: Optional[List[dict]] = None
-    """@pbjson-skip"""
 
     error_code: Optional[ErrorCode] = None
 
@@ -421,12 +420,6 @@ class EndpointOperationMetadata:
         return cls()
 
 
-class EndpointPoolerMode(Enum):
-    """The connection pooler mode. Lakebase supports PgBouncer in `transaction` mode only."""
-
-    TRANSACTION = "TRANSACTION"
-
-
 @dataclass
 class EndpointSettings:
     """A collection of settings for a compute endpoint."""
@@ -434,16 +427,11 @@ class EndpointSettings:
     pg_settings: Optional[Dict[str, str]] = None
     """A raw representation of Postgres settings."""
 
-    pgbouncer_settings: Optional[Dict[str, str]] = None
-    """A raw representation of PgBouncer settings."""
-
     def as_dict(self) -> dict:
         """Serializes the EndpointSettings into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.pg_settings:
             body["pg_settings"] = self.pg_settings
-        if self.pgbouncer_settings:
-            body["pgbouncer_settings"] = self.pgbouncer_settings
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -451,14 +439,12 @@ class EndpointSettings:
         body = {}
         if self.pg_settings:
             body["pg_settings"] = self.pg_settings
-        if self.pgbouncer_settings:
-            body["pgbouncer_settings"] = self.pgbouncer_settings
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointSettings:
         """Deserializes the EndpointSettings from a dictionary."""
-        return cls(pg_settings=d.get("pg_settings", None), pgbouncer_settings=d.get("pgbouncer_settings", None))
+        return cls(pg_settings=d.get("pg_settings", None))
 
 
 @dataclass
@@ -477,8 +463,6 @@ class EndpointSpec:
     suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
     console action."""
 
-    pooler_mode: Optional[EndpointPoolerMode] = None
-
     settings: Optional[EndpointSettings] = None
 
     suspend_timeout_duration: Optional[Duration] = None
@@ -495,8 +479,6 @@ class EndpointSpec:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type.value
-        if self.pooler_mode is not None:
-            body["pooler_mode"] = self.pooler_mode.value
         if self.settings:
             body["settings"] = self.settings.as_dict()
         if self.suspend_timeout_duration is not None:
@@ -514,8 +496,6 @@ class EndpointSpec:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type
-        if self.pooler_mode is not None:
-            body["pooler_mode"] = self.pooler_mode
         if self.settings:
             body["settings"] = self.settings
         if self.suspend_timeout_duration is not None:
@@ -530,7 +510,6 @@ class EndpointSpec:
             autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
             disabled=d.get("disabled", None),
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
-            pooler_mode=_enum(d, "pooler_mode", EndpointPoolerMode),
             settings=_from_dict(d, "settings", EndpointSettings),
             suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
         )
@@ -563,8 +542,6 @@ class EndpointStatus:
 
     pending_state: Optional[EndpointStatusState] = None
 
-    pooler_mode: Optional[EndpointPoolerMode] = None
-
     settings: Optional[EndpointSettings] = None
 
     start_time: Optional[Timestamp] = None
@@ -595,8 +572,6 @@ class EndpointStatus:
             body["last_active_time"] = self.last_active_time.ToJsonString()
         if self.pending_state is not None:
             body["pending_state"] = self.pending_state.value
-        if self.pooler_mode is not None:
-            body["pooler_mode"] = self.pooler_mode.value
         if self.settings:
             body["settings"] = self.settings.as_dict()
         if self.start_time is not None:
@@ -626,8 +601,6 @@ class EndpointStatus:
             body["last_active_time"] = self.last_active_time
         if self.pending_state is not None:
             body["pending_state"] = self.pending_state
-        if self.pooler_mode is not None:
-            body["pooler_mode"] = self.pooler_mode
         if self.settings:
             body["settings"] = self.settings
         if self.start_time is not None:
@@ -650,7 +623,6 @@ class EndpointStatus:
             host=d.get("host", None),
             last_active_time=_timestamp(d, "last_active_time"),
             pending_state=_enum(d, "pending_state", EndpointStatusState),
-            pooler_mode=_enum(d, "pooler_mode", EndpointPoolerMode),
             settings=_from_dict(d, "settings", EndpointSettings),
             start_time=_timestamp(d, "start_time"),
             suspend_time=_timestamp(d, "suspend_time"),
@@ -1035,9 +1007,6 @@ class ProjectDefaultEndpointSettings:
     pg_settings: Optional[Dict[str, str]] = None
     """A raw representation of Postgres settings."""
 
-    pgbouncer_settings: Optional[Dict[str, str]] = None
-    """A raw representation of PgBouncer settings."""
-
     suspend_timeout_duration: Optional[Duration] = None
     """Duration of inactivity after which the compute endpoint is automatically suspended."""
 
@@ -1050,8 +1019,6 @@ class ProjectDefaultEndpointSettings:
             body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
         if self.pg_settings:
             body["pg_settings"] = self.pg_settings
-        if self.pgbouncer_settings:
-            body["pgbouncer_settings"] = self.pgbouncer_settings
         if self.suspend_timeout_duration is not None:
             body["suspend_timeout_duration"] = self.suspend_timeout_duration.ToJsonString()
         return body
@@ -1065,8 +1032,6 @@ class ProjectDefaultEndpointSettings:
             body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
         if self.pg_settings:
             body["pg_settings"] = self.pg_settings
-        if self.pgbouncer_settings:
-            body["pgbouncer_settings"] = self.pgbouncer_settings
         if self.suspend_timeout_duration is not None:
             body["suspend_timeout_duration"] = self.suspend_timeout_duration
         return body
@@ -1078,7 +1043,6 @@ class ProjectDefaultEndpointSettings:
             autoscaling_limit_max_cu=d.get("autoscaling_limit_max_cu", None),
             autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
             pg_settings=d.get("pg_settings", None),
-            pgbouncer_settings=d.get("pgbouncer_settings", None),
             suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
         )
 
@@ -1567,51 +1531,57 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateRoleOperation(self, operation)
 
-    def delete_branch(self, name: str):
+    def delete_branch(self, name: str) -> DeleteBranchOperation:
         """Delete a Branch.
 
         :param name: str
           The name of the Branch to delete. Format: projects/{project_id}/branches/{branch_id}
 
-
+        :returns: :class:`Operation`
         """
 
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteBranchOperation(self, operation)
 
-    def delete_endpoint(self, name: str):
+    def delete_endpoint(self, name: str) -> DeleteEndpointOperation:
         """Delete an Endpoint.
 
         :param name: str
           The name of the Endpoint to delete. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 
-
+        :returns: :class:`Operation`
         """
 
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteEndpointOperation(self, operation)
 
-    def delete_project(self, name: str):
+    def delete_project(self, name: str) -> DeleteProjectOperation:
         """Delete a Project.
 
         :param name: str
           The name of the Project to delete. Format: projects/{project_id}
 
-
+        :returns: :class:`Operation`
         """
 
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        res = self._api.do("DELETE", f"/api/2.0/postgres/{name}", headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteProjectOperation(self, operation)
 
     def delete_role(self, name: str, *, reassign_owned_to: Optional[str] = None) -> DeleteRoleOperation:
         """Delete a role in a branch.
@@ -2233,6 +2203,231 @@ class CreateRoleOperation:
             return None
 
         return RoleOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class DeleteBranchOperation:
+    """Long-running operation for delete_branch"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> BranchOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`BranchOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return BranchOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class DeleteEndpointOperation:
+    """Long-running operation for delete_endpoint"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> EndpointOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`EndpointOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return EndpointOperationMetadata.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class DeleteProjectOperation:
+    """Long-running operation for delete_project"""
+
+    def __init__(self, impl: PostgresAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> ProjectOperationMetadata:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`ProjectOperationMetadata` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return ProjectOperationMetadata.from_dict(self._operation.metadata)
 
     def done(self) -> bool:
         """Done reports whether the long-running operation has completed.

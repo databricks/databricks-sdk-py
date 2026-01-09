@@ -51,13 +51,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. py:class:: EndpointPoolerMode
-
-   The connection pooler mode. Lakebase supports PgBouncer in `transaction` mode only.
-
-   .. py:attribute:: TRANSACTION
-      :value: "TRANSACTION"
-
 .. autoclass:: EndpointSettings
    :members:
    :undoc-members:

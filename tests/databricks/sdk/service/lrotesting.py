@@ -22,7 +22,6 @@ class DatabricksServiceExceptionWithDetailsProto:
     """Databricks Error that is returned by all Databricks APIs."""
 
     details: Optional[List[dict]] = None
-    """@pbjson-skip"""
 
     error_code: Optional[ErrorCode] = None
 
