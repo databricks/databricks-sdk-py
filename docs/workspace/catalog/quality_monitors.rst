@@ -4,6 +4,9 @@
 
 .. py:class:: QualityMonitorsAPI
 
+    [DEPRECATED] This API is deprecated. Please use the Data Quality Monitors API instead (REST:
+    /api/data-quality/v1/monitors), which manages both Data Profiling and Anomaly Detection.
+
     A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
     tables and a dashboard that you can use to monitor table health and set alerts. Most write operations
     require the user to be the owner of the table (or its parent schema or parent catalog). Viewing the
@@ -12,7 +15,8 @@
 
     .. py:method:: cancel_refresh(table_name: str, refresh_id: int)
 
-        Cancels an already-initiated refresh job.
+        [DEPRECATED] Cancels an already-initiated refresh job. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         :param table_name: str
           UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
@@ -24,7 +28,8 @@
 
     .. py:method:: create(table_name: str, output_schema_name: str, assets_dir: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorMetric]], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLog], latest_monitor_failure_msg: Optional[str], notifications: Optional[MonitorNotifications], schedule: Optional[MonitorCronSchedule], skip_builtin_dashboard: Optional[bool], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshot], time_series: Optional[MonitorTimeSeries], warehouse_id: Optional[str]]) -> MonitorInfo
 
-        Creates a new monitor for the specified table.
+        [DEPRECATED] Creates a new monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
         table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
@@ -79,7 +84,8 @@
 
     .. py:method:: delete(table_name: str) -> DeleteMonitorResponse
 
-        Deletes a monitor for the specified table.
+        [DEPRECATED] Deletes a monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -100,7 +106,8 @@
 
     .. py:method:: get(table_name: str) -> MonitorInfo
 
-        Gets a monitor for the specified table.
+        [DEPRECATED] Gets a monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema. 3. have the following
@@ -120,7 +127,8 @@
 
     .. py:method:: get_refresh(table_name: str, refresh_id: int) -> MonitorRefreshInfo
 
-        Gets info about a specific monitor refresh using the given refresh ID.
+        [DEPRECATED] Gets info about a specific monitor refresh using the given refresh ID. Use Data Quality
+        Monitors API instead (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -139,7 +147,8 @@
 
     .. py:method:: list_refreshes(table_name: str) -> MonitorRefreshListResponse
 
-        Gets an array containing the history of the most recent refreshes (up to 25) for this table.
+        [DEPRECATED] Gets an array containing the history of the most recent refreshes (up to 25) for this
+        table. Use Data Quality Monitors API instead (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -157,7 +166,8 @@
 
     .. py:method:: regenerate_dashboard(table_name: str [, warehouse_id: Optional[str]]) -> RegenerateDashboardResponse
 
-        Regenerates the monitoring dashboard for the specified table.
+        [DEPRECATED] Regenerates the monitoring dashboard for the specified table. Use Data Quality Monitors
+        API instead (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -179,8 +189,8 @@
 
     .. py:method:: run_refresh(table_name: str) -> MonitorRefreshInfo
 
-        Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
-        background.
+        [DEPRECATED] Queues a metric refresh on the monitor for the specified table. Use Data Quality Monitors
+        API instead (/api/data-quality/v1/monitors). The refresh will execute in the background.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -198,7 +208,8 @@
 
     .. py:method:: update(table_name: str, output_schema_name: str [, baseline_table_name: Optional[str], custom_metrics: Optional[List[MonitorMetric]], dashboard_id: Optional[str], data_classification_config: Optional[MonitorDataClassificationConfig], inference_log: Optional[MonitorInferenceLog], latest_monitor_failure_msg: Optional[str], notifications: Optional[MonitorNotifications], schedule: Optional[MonitorCronSchedule], slicing_exprs: Optional[List[str]], snapshot: Optional[MonitorSnapshot], time_series: Optional[MonitorTimeSeries]]) -> MonitorInfo
 
-        Updates a monitor for the specified table.
+        [DEPRECATED] Updates a monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
