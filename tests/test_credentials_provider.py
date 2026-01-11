@@ -178,7 +178,7 @@ def test_external_browser_consent_fails(mocker):
 
 
 def _setup_external_browser_mocks(mocker, cfg):
-    """Set up mocks for external_browser scope tests. Returns the mocked TokenCache class."""
+    """Set up mocks for external_browser scope tests. Returns (TokenCache mock, OAuthClient mock)."""
     mock_oidc_endpoints = Mock()
     mock_oidc_endpoints.token_endpoint = "https://test.databricks.com/oidc/v1/token"
     mocker.patch.object(type(cfg), "oidc_endpoints", new_callable=lambda: property(lambda self: mock_oidc_endpoints))
@@ -195,7 +195,7 @@ def _setup_external_browser_mocks(mocker, cfg):
     mock_oauth_client.initiate_consent.return_value = mock_consent
     mock_oauth_client_class.return_value = mock_oauth_client
 
-    return mock_token_cache_class
+    return mock_token_cache_class, mock_oauth_client_class
 
 
 @pytest.mark.parametrize(
@@ -208,7 +208,7 @@ def _setup_external_browser_mocks(mocker, cfg):
     ids=["default_scopes", "multiple_scopes_sorted", "disable_offline_access"],
 )
 def test_external_browser_scopes(mocker, scopes, disable_refresh, expected_scopes):
-    """Tests that external_browser passes correct scopes to TokenCache."""
+    """Tests that external_browser passes correct scopes to TokenCache and OAuthClient."""
     mocker.patch("databricks.sdk.config.Config.init_auth")
     cfg = Config(
         host="https://test.databricks.com",
@@ -216,11 +216,12 @@ def test_external_browser_scopes(mocker, scopes, disable_refresh, expected_scope
         scopes=scopes,
         disable_oauth_refresh_token=disable_refresh if disable_refresh else None,
     )
-    mock_token_cache_class = _setup_external_browser_mocks(mocker, cfg)
+    mock_token_cache_class, mock_oauth_client_class = _setup_external_browser_mocks(mocker, cfg)
 
     credentials_provider.external_browser(cfg)
 
     assert mock_token_cache_class.call_args.kwargs["scopes"] == expected_scopes
+    assert mock_oauth_client_class.call_args.kwargs["scopes"] == expected_scopes
 
 
 def test_oidc_credentials_provider_invalid_id_token_source():
