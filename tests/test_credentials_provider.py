@@ -202,7 +202,7 @@ def _setup_external_browser_mocks(mocker, cfg):
     "scopes,disable_refresh,expected_scopes",
     [
         (None, False, ["all-apis", "offline_access"]),
-        ("sql clusters jobs", False, ["clusters", "jobs", "sql", "offline_access"]),
+        ("sql, clusters, jobs", False, ["clusters", "jobs", "sql", "offline_access"]),
         (None, True, ["all-apis"]),
     ],
     ids=["default_scopes", "multiple_scopes_sorted", "disable_offline_access"],
