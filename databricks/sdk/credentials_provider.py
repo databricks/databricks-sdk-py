@@ -256,6 +256,11 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
     if not client_id:
         client_id = "databricks-cli"
 
+    scopes = cfg.get_scopes()
+    if not cfg.disable_oauth_refresh_token:
+        if "offline_access" not in scopes:
+            scopes = scopes + ["offline_access"]
+
     # Load cached credentials from disk if they exist. Note that these are
     # local to the Python SDK and not reused by other SDKs.
     oidc_endpoints = cfg.oidc_endpoints
@@ -266,6 +271,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         client_id=client_id,
         client_secret=client_secret,
         redirect_url=redirect_url,
+        scopes=scopes,
     )
     credentials = token_cache.load()
     if credentials:
@@ -284,6 +290,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         client_id=client_id,
         redirect_url=redirect_url,
         client_secret=client_secret,
+        scopes=scopes,
     )
     consent = oauth_client.initiate_consent()
     if not consent:
