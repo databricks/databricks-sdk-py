@@ -90,7 +90,7 @@
             
             w = WorkspaceClient()
             
-            created = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
+            model = w.model_registry.create_model(name=f"sdk-{time.time_ns()}")
 
         Creates a new registered model with the name specified in the request body. Throws
         `RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.
