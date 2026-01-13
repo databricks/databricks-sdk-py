@@ -75,7 +75,7 @@ def _parse_scopes(value):
         result = sorted(set(s for s in value if s))
         return result if result else None
     if isinstance(value, str):
-        parsed: list = sorted(set(s for s in re.split(r'[, ]+', value) if s))
+        parsed: list = sorted(set(s for s in re.split(r"[, ]+", value) if s))
         return parsed if parsed else None
     return None
 
