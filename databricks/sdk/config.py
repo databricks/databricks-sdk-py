@@ -4,6 +4,7 @@ import datetime
 import logging
 import os
 import pathlib
+import re
 import sys
 import urllib.parse
 from enum import Enum
@@ -74,7 +75,7 @@ def _parse_scopes(value):
         result = sorted(set(s for s in value if s))
         return result if result else None
     if isinstance(value, str):
-        parsed = sorted(set(s.strip() for s in value.split(",") if s.strip()))
+        parsed: list = sorted(set(s for s in re.split(r'[, ]+', value) if s))
         return parsed if parsed else None
     return None
 
