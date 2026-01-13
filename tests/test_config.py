@@ -465,30 +465,68 @@ def test_disable_oauth_refresh_token_from_env(monkeypatch, mocker):
 def test_disable_oauth_refresh_token_defaults_to_false(mocker):
     mocker.patch("databricks.sdk.config.Config.init_auth")
     config = Config(host="https://test.databricks.com")
-    assert config.disable_oauth_refresh_token is None  # ConfigAttribute returns None when not set
+    assert not config.disable_oauth_refresh_token
 
 
-def test_config_file_scopes_empty_defaults_to_all_apis(monkeypatch, mocker):
-    """Test that empty scopes in config file defaults to all-apis."""
+@pytest.mark.parametrize(
+    "profile,expected_scopes",
+    [
+        ("scope-empty", ["all-apis"]),
+        ("scope-single", ["clusters"]),
+        ("scope-multiple", ["clusters", "files:read", "iam:read", "jobs", "mlflow", "model-serving:read", "pipelines"]),
+    ],
+    ids=["empty_defaults_to_all_apis", "single_scope", "multiple_sorted"],
+)
+def test_config_file_scopes(monkeypatch, mocker, profile, expected_scopes):
+    """Test scopes from config file profiles."""
     mocker.patch("databricks.sdk.config.Config.init_auth")
     set_home(monkeypatch, "/testdata")
-    config = Config(profile="scope-empty")
-    assert config.get_scopes() == ["all-apis"]
+    config = Config(profile=profile)
+    assert config.get_scopes() == expected_scopes
 
 
-def test_config_file_scopes_single(monkeypatch, mocker):
-    """Test single scope from config file."""
+@pytest.mark.parametrize(
+    "scopes_input,expected_scopes",
+    [
+        # List input
+        (["jobs", "clusters", "mlflow"], ["clusters", "jobs", "mlflow"]),
+        # Deduplication (list)
+        (["clusters", "jobs", "clusters", "jobs", "mlflow"], ["clusters", "jobs", "mlflow"]),
+        # Deduplication (string)
+        ("clusters,jobs,clusters,jobs,mlflow", ["clusters", "jobs", "mlflow"]),
+        # Space-separated (backwards compatibility)
+        ("clusters jobs mlflow", ["clusters", "jobs", "mlflow"]),
+        # Mixed separators
+        ("clusters, jobs  mlflow,pipelines", ["clusters", "jobs", "mlflow", "pipelines"]),
+        # Empty string defaults to all-apis
+        ("", ["all-apis"]),
+        # Whitespace-only defaults to all-apis
+        ("   ", ["all-apis"]),
+        # None defaults to all-apis
+        (None, ["all-apis"]),
+        # Empty list defaults to all-apis
+        ([], ["all-apis"]),
+        # Empty strings in list are filtered
+        (["clusters", "", "jobs", ""], ["clusters", "jobs"]),
+        # List with only empty strings defaults to all-apis
+        (["", "", ""], ["all-apis"]),
+    ],
+    ids=[
+        "list_input",
+        "deduplication_list",
+        "deduplication_string",
+        "space_separated",
+        "mixed_separators",
+        "empty_string",
+        "whitespace_only",
+        "none",
+        "empty_list",
+        "list_with_empty_strings",
+        "list_only_empty_strings",
+    ],
+)
+def test_scopes_parsing(mocker, scopes_input, expected_scopes):
+    """Test scopes parsing with various input formats."""
     mocker.patch("databricks.sdk.config.Config.init_auth")
-    set_home(monkeypatch, "/testdata")
-    config = Config(profile="scope-single")
-    assert config.get_scopes() == ["clusters"]
-
-
-def test_config_file_scopes_multiple_sorted(monkeypatch, mocker):
-    """Test multiple scopes from config file are sorted."""
-    mocker.patch("databricks.sdk.config.Config.init_auth")
-    set_home(monkeypatch, "/testdata")
-    config = Config(profile="scope-multiple")
-    # Should be sorted alphabetically
-    expected = ["clusters", "files:read", "iam:read", "jobs", "mlflow", "model-serving:read", "pipelines"]
-    assert config.get_scopes() == expected
+    config = Config(host="https://test.databricks.com", scopes=scopes_input)
+    assert config.get_scopes() == expected_scopes
