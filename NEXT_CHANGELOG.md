@@ -31,3 +31,11 @@
 * [Breaking] Remove `pooler_mode` field for `databricks.sdk.service.postgres.EndpointSpec`.
 * [Breaking] Remove `pooler_mode` field for `databricks.sdk.service.postgres.EndpointStatus`.
 * [Breaking] Remove `pgbouncer_settings` field for `databricks.sdk.service.postgres.ProjectDefaultEndpointSettings`.
+* Add `owner` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `validity_check_configurations` field for `databricks.sdk.service.qualitymonitorv2.QualityMonitor`.
+* Add `burst_scaling_enabled` field for `databricks.sdk.service.serving.PtServedModel`.
+* Add `system_managed` enum value for `databricks.sdk.service.jobs.JobDeploymentKind`.
+* [Breaking] Change `create_branch()`, `create_endpoint()` and `create_project()` methods for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service with new required argument order.
+* [Breaking] Change `branch_id` field for `databricks.sdk.service.postgres.CreateBranchRequest` to be required.
+* [Breaking] Change `endpoint_id` field for `databricks.sdk.service.postgres.CreateEndpointRequest` to be required.
+* [Breaking] Change `project_id` field for `databricks.sdk.service.postgres.CreateProjectRequest` to be required.

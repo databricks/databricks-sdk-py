@@ -6,7 +6,7 @@
 
     The Postgres API provides access to a Postgres database via REST API or direct SQL.
 
-    .. py:method:: create_branch(parent: str, branch: Branch [, branch_id: Optional[str]]) -> CreateBranchOperation
+    .. py:method:: create_branch(parent: str, branch: Branch, branch_id: str) -> CreateBranchOperation
 
         Create a Branch.
 
@@ -14,7 +14,7 @@
           The Project where this Branch will be created. Format: projects/{project_id}
         :param branch: :class:`Branch`
           The Branch to create.
-        :param branch_id: str (optional)
+        :param branch_id: str
           The ID to use for the Branch, which will become the final component of the branch's resource name.
 
           This value should be 4-63 characters, and valid characters are /[a-z][0-9]-/.
@@ -22,7 +22,7 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_endpoint(parent: str, endpoint: Endpoint [, endpoint_id: Optional[str]]) -> CreateEndpointOperation
+    .. py:method:: create_endpoint(parent: str, endpoint: Endpoint, endpoint_id: str) -> CreateEndpointOperation
 
         Create an Endpoint.
 
@@ -30,7 +30,7 @@
           The Branch where this Endpoint will be created. Format: projects/{project_id}/branches/{branch_id}
         :param endpoint: :class:`Endpoint`
           The Endpoint to create.
-        :param endpoint_id: str (optional)
+        :param endpoint_id: str
           The ID to use for the Endpoint, which will become the final component of the endpoint's resource
           name.
 
@@ -39,13 +39,13 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_project(project: Project [, project_id: Optional[str]]) -> CreateProjectOperation
+    .. py:method:: create_project(project: Project, project_id: str) -> CreateProjectOperation
 
         Create a Project.
 
         :param project: :class:`Project`
           The Project to create.
-        :param project_id: str (optional)
+        :param project_id: str
           The ID to use for the Project, which will become the final component of the project's resource name.
 
           This value should be 4-63 characters, and valid characters are /[a-z][0-9]-/.

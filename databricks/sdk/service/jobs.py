@@ -2460,7 +2460,8 @@ class JobDeployment:
     kind: JobDeploymentKind
     """The kind of deployment that manages the job.
     
-    * `BUNDLE`: The job is managed by Databricks Asset Bundle."""
+    * `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is
+    managed by Databricks and is read-only."""
 
     metadata_file_path: Optional[str] = None
     """Path of the file that contains deployment metadata."""
@@ -2490,9 +2491,11 @@ class JobDeployment:
 
 
 class JobDeploymentKind(Enum):
-    """* `BUNDLE`: The job is managed by Databricks Asset Bundle."""
+    """* `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is
+    managed by Databricks and is read-only."""
 
     BUNDLE = "BUNDLE"
+    SYSTEM_MANAGED = "SYSTEM_MANAGED"
 
 
 class JobEditMode(Enum):

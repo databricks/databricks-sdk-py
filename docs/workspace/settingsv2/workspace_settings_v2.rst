@@ -44,6 +44,8 @@
         include in a patch request, refer to the type field of the setting returned in the
         :method:settingsv2/listworkspacesettingsmetadata response.
 
+        Note: Page refresh is required for changes to take effect in UI.
+
         :param name: str
           Name of the setting
         :param setting: :class:`Setting`

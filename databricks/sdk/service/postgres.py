@@ -1166,6 +1166,9 @@ class ProjectStatus:
     history_retention_duration: Optional[Duration] = None
     """The effective number of seconds to retain the shared history for point in time recovery."""
 
+    owner: Optional[str] = None
+    """The email of the project owner."""
+
     pg_version: Optional[int] = None
     """The effective major Postgres version number."""
 
@@ -1188,6 +1191,8 @@ class ProjectStatus:
             body["display_name"] = self.display_name
         if self.history_retention_duration is not None:
             body["history_retention_duration"] = self.history_retention_duration.ToJsonString()
+        if self.owner is not None:
+            body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
         if self.settings:
@@ -1209,6 +1214,8 @@ class ProjectStatus:
             body["display_name"] = self.display_name
         if self.history_retention_duration is not None:
             body["history_retention_duration"] = self.history_retention_duration
+        if self.owner is not None:
+            body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
         if self.settings:
@@ -1226,6 +1233,7 @@ class ProjectStatus:
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
             display_name=d.get("display_name", None),
             history_retention_duration=_duration(d, "history_retention_duration"),
+            owner=d.get("owner", None),
             pg_version=d.get("pg_version", None),
             settings=_from_dict(d, "settings", ProjectSettings),
             synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
@@ -1416,14 +1424,14 @@ class PostgresAPI:
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_branch(self, parent: str, branch: Branch, *, branch_id: Optional[str] = None) -> CreateBranchOperation:
+    def create_branch(self, parent: str, branch: Branch, branch_id: str) -> CreateBranchOperation:
         """Create a Branch.
 
         :param parent: str
           The Project where this Branch will be created. Format: projects/{project_id}
         :param branch: :class:`Branch`
           The Branch to create.
-        :param branch_id: str (optional)
+        :param branch_id: str
           The ID to use for the Branch, which will become the final component of the branch's resource name.
 
           This value should be 4-63 characters, and valid characters are /[a-z][0-9]-/.
@@ -1444,16 +1452,14 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateBranchOperation(self, operation)
 
-    def create_endpoint(
-        self, parent: str, endpoint: Endpoint, *, endpoint_id: Optional[str] = None
-    ) -> CreateEndpointOperation:
+    def create_endpoint(self, parent: str, endpoint: Endpoint, endpoint_id: str) -> CreateEndpointOperation:
         """Create an Endpoint.
 
         :param parent: str
           The Branch where this Endpoint will be created. Format: projects/{project_id}/branches/{branch_id}
         :param endpoint: :class:`Endpoint`
           The Endpoint to create.
-        :param endpoint_id: str (optional)
+        :param endpoint_id: str
           The ID to use for the Endpoint, which will become the final component of the endpoint's resource
           name.
 
@@ -1475,12 +1481,12 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateEndpointOperation(self, operation)
 
-    def create_project(self, project: Project, *, project_id: Optional[str] = None) -> CreateProjectOperation:
+    def create_project(self, project: Project, project_id: str) -> CreateProjectOperation:
         """Create a Project.
 
         :param project: :class:`Project`
           The Project to create.
-        :param project_id: str (optional)
+        :param project_id: str
           The ID to use for the Project, which will become the final component of the project's resource name.
 
           This value should be 4-63 characters, and valid characters are /[a-z][0-9]-/.

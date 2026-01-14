@@ -350,10 +350,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: JobDeploymentKind
 
-   * `BUNDLE`: The job is managed by Databricks Asset Bundle.
+   * `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is managed by Databricks and is read-only.
 
    .. py:attribute:: BUNDLE
       :value: "BUNDLE"
+
+   .. py:attribute:: SYSTEM_MANAGED
+      :value: "SYSTEM_MANAGED"
 
 .. py:class:: JobEditMode
 
