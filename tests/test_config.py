@@ -530,9 +530,8 @@ def test_config_file_scopes(monkeypatch, mocker, profile, expected_scopes):
 def test_scopes_parsing(mocker, scopes_input, expected_scopes):
     """Test scopes parsing with various input formats."""
     mocker.patch("databricks.sdk.config.Config.init_auth")
-    set_home(monkeypatch, "/testdata")
-    config = Config(profile="scope-single")
-    assert config.get_scopes() == ["clusters"]
+    config = Config(host="https://test.databricks.com", scopes=scopes_input)
+    assert config.get_scopes() == expected_scopes
 
 
 def test_config_file_scopes_multiple_sorted(monkeypatch, mocker):
