@@ -204,8 +204,9 @@ def _setup_external_browser_mocks(mocker, cfg):
         (None, False, ["all-apis", "offline_access"]),
         ("sql, clusters, jobs", False, ["clusters", "jobs", "sql", "offline_access"]),
         (None, True, ["all-apis"]),
+        ("sql, clusters, jobs, offline_access", False, ["clusters", "jobs", "offline_access", "sql"]),
     ],
-    ids=["default_scopes", "multiple_scopes_sorted", "disable_offline_access"],
+    ids=["default_scopes", "multiple_scopes_sorted", "disable_offline_access", "offline_access_not_duplicated"],
 )
 def test_external_browser_scopes(mocker, scopes, disable_refresh, expected_scopes):
     """Tests that external_browser passes correct scopes to TokenCache and OAuthClient."""
