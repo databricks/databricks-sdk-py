@@ -14,8 +14,6 @@
 
 ### Internal Changes
 
-* Increase the number of re-runs for failing tests from 2 to 4 to improve the reliability of the test suite.
-
 ### API Changes
 * Add `table_deltasharing_open_dir_based` enum value for `databricks.sdk.service.catalog.SecurableKind`.
 * Add `creating` and `create_failed` enum values for `databricks.sdk.service.settings.NccPrivateEndpointRulePrivateLinkConnectionState`.
