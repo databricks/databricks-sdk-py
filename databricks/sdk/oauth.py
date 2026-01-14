@@ -247,7 +247,9 @@ class Refreshable(TokenSource):
 
     _EXECUTOR = None
     _EXECUTOR_LOCK = threading.Lock()
-    _DEFAULT_STALE_DURATION = timedelta(minutes=3)
+    # Default duration for the stale period. This value is chosen to cover the
+    # maximum monthly downtime allowed by a 99.99% uptime SLA (~4.38 minutes).
+    _DEFAULT_STALE_DURATION = timedelta(minutes=5)
 
     @classmethod
     def _get_executor(cls):

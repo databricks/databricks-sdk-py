@@ -4,11 +4,12 @@
 
 .. py:class:: QualityMonitorV2API
 
-    Manage data quality of UC objects (currently support `schema`)
+    [DEPRECATED] This API is deprecated. Please use the Data Quality Monitoring API instead (REST:
+    /api/data-quality/v1/monitors). Manage data quality of UC objects (currently support `schema`).
 
     .. py:method:: create_quality_monitor(quality_monitor: QualityMonitor) -> QualityMonitor
 
-        Create a quality monitor on UC object
+        [DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.
 
         :param quality_monitor: :class:`QualityMonitor`
 
@@ -17,7 +18,7 @@
 
     .. py:method:: delete_quality_monitor(object_type: str, object_id: str)
 
-        Delete a quality monitor on UC object
+        [DEPRECATED] Delete a quality monitor on UC object. Use Data Quality Monitoring API instead.
 
         :param object_type: str
           The type of the monitored object. Can be one of the following: schema.
@@ -29,7 +30,7 @@
 
     .. py:method:: get_quality_monitor(object_type: str, object_id: str) -> QualityMonitor
 
-        Read a quality monitor on UC object
+        [DEPRECATED] Read a quality monitor on UC object. Use Data Quality Monitoring API instead.
 
         :param object_type: str
           The type of the monitored object. Can be one of the following: schema.
@@ -41,7 +42,7 @@
 
     .. py:method:: list_quality_monitor( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[QualityMonitor]
 
-        (Unimplemented) List quality monitors
+        [DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality Monitoring API instead.
 
         :param page_size: int (optional)
         :param page_token: str (optional)
@@ -51,7 +52,8 @@
 
     .. py:method:: update_quality_monitor(object_type: str, object_id: str, quality_monitor: QualityMonitor) -> QualityMonitor
 
-        (Unimplemented) Update a quality monitor on UC object
+        [DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API
+        instead.
 
         :param object_type: str
           The type of the monitored object. Can be one of the following: schema.

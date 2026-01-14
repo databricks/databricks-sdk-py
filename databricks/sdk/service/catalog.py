@@ -38,6 +38,14 @@ class AccessRequestDestinations:
     destinations: Optional[List[NotificationDestination]] = None
     """The access request destinations for the securable."""
 
+    full_name: Optional[str] = None
+    """The full name of the securable. Redundant with the name in the securable object, but necessary
+    for Terraform integration"""
+
+    securable_type: Optional[str] = None
+    """The type of the securable. Redundant with the type in the securable object, but necessary for
+    Terraform integration"""
+
     def as_dict(self) -> dict:
         """Serializes the AccessRequestDestinations into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -47,8 +55,12 @@ class AccessRequestDestinations:
             body["destination_source_securable"] = self.destination_source_securable.as_dict()
         if self.destinations:
             body["destinations"] = [v.as_dict() for v in self.destinations]
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
         if self.securable:
             body["securable"] = self.securable.as_dict()
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -60,8 +72,12 @@ class AccessRequestDestinations:
             body["destination_source_securable"] = self.destination_source_securable
         if self.destinations:
             body["destinations"] = self.destinations
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
         if self.securable:
             body["securable"] = self.securable
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
         return body
 
     @classmethod
@@ -71,7 +87,9 @@ class AccessRequestDestinations:
             are_any_destinations_hidden=d.get("are_any_destinations_hidden", None),
             destination_source_securable=_from_dict(d, "destination_source_securable", Securable),
             destinations=_repeated_dict(d, "destinations", NotificationDestination),
+            full_name=d.get("full_name", None),
             securable=_from_dict(d, "securable", Securable),
+            securable_type=d.get("securable_type", None),
         )
 
 
@@ -1750,7 +1768,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 52"""
+    """Next Id: 53"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -8766,12 +8784,13 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_TIKTOK_ADS_U2M = 285; Next id: 286"""
+    """Latest kind: CONNECTION_WORKDAY_HCM_USERNAME_PASSWORD = 292; Next id: 293"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
     TABLE_DELTASHARING = "TABLE_DELTASHARING"
     TABLE_DELTASHARING_MUTABLE = "TABLE_DELTASHARING_MUTABLE"
+    TABLE_DELTASHARING_OPEN_DIR_BASED = "TABLE_DELTASHARING_OPEN_DIR_BASED"
     TABLE_DELTA_EXTERNAL = "TABLE_DELTA_EXTERNAL"
     TABLE_DELTA_ICEBERG_DELTASHARING = "TABLE_DELTA_ICEBERG_DELTASHARING"
     TABLE_DELTA_ICEBERG_MANAGED = "TABLE_DELTA_ICEBERG_MANAGED"
@@ -13812,7 +13831,10 @@ class PoliciesAPI:
 
 
 class QualityMonitorsAPI:
-    """A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
+    """[DEPRECATED] This API is deprecated. Please use the Data Quality Monitors API instead (REST:
+    /api/data-quality/v1/monitors), which manages both Data Profiling and Anomaly Detection.
+
+    A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
     tables and a dashboard that you can use to monitor table health and set alerts. Most write operations
     require the user to be the owner of the table (or its parent schema or parent catalog). Viewing the
     dashboard, computed metrics, or monitor configuration only requires the user to have **SELECT** privileges
@@ -13822,7 +13844,8 @@ class QualityMonitorsAPI:
         self._api = api_client
 
     def cancel_refresh(self, table_name: str, refresh_id: int):
-        """Cancels an already-initiated refresh job.
+        """[DEPRECATED] Cancels an already-initiated refresh job. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         :param table_name: str
           UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
@@ -13859,7 +13882,8 @@ class QualityMonitorsAPI:
         time_series: Optional[MonitorTimeSeries] = None,
         warehouse_id: Optional[str] = None,
     ) -> MonitorInfo:
-        """Creates a new monitor for the specified table.
+        """[DEPRECATED] Creates a new monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
         table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
@@ -13950,7 +13974,8 @@ class QualityMonitorsAPI:
         return MonitorInfo.from_dict(res)
 
     def delete(self, table_name: str) -> DeleteMonitorResponse:
-        """Deletes a monitor for the specified table.
+        """[DEPRECATED] Deletes a monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -13977,7 +14002,8 @@ class QualityMonitorsAPI:
         return DeleteMonitorResponse.from_dict(res)
 
     def get(self, table_name: str) -> MonitorInfo:
-        """Gets a monitor for the specified table.
+        """[DEPRECATED] Gets a monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema. 3. have the following
@@ -14003,7 +14029,8 @@ class QualityMonitorsAPI:
         return MonitorInfo.from_dict(res)
 
     def get_refresh(self, table_name: str, refresh_id: int) -> MonitorRefreshInfo:
-        """Gets info about a specific monitor refresh using the given refresh ID.
+        """[DEPRECATED] Gets info about a specific monitor refresh using the given refresh ID. Use Data Quality
+        Monitors API instead (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14030,7 +14057,8 @@ class QualityMonitorsAPI:
         return MonitorRefreshInfo.from_dict(res)
 
     def list_refreshes(self, table_name: str) -> MonitorRefreshListResponse:
-        """Gets an array containing the history of the most recent refreshes (up to 25) for this table.
+        """[DEPRECATED] Gets an array containing the history of the most recent refreshes (up to 25) for this
+        table. Use Data Quality Monitors API instead (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14056,7 +14084,8 @@ class QualityMonitorsAPI:
     def regenerate_dashboard(
         self, table_name: str, *, warehouse_id: Optional[str] = None
     ) -> RegenerateDashboardResponse:
-        """Regenerates the monitoring dashboard for the specified table.
+        """[DEPRECATED] Regenerates the monitoring dashboard for the specified table. Use Data Quality Monitors
+        API instead (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14090,8 +14119,8 @@ class QualityMonitorsAPI:
         return RegenerateDashboardResponse.from_dict(res)
 
     def run_refresh(self, table_name: str) -> MonitorRefreshInfo:
-        """Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
-        background.
+        """[DEPRECATED] Queues a metric refresh on the monitor for the specified table. Use Data Quality Monitors
+        API instead (/api/data-quality/v1/monitors). The refresh will execute in the background.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14131,7 +14160,8 @@ class QualityMonitorsAPI:
         snapshot: Optional[MonitorSnapshot] = None,
         time_series: Optional[MonitorTimeSeries] = None,
     ) -> MonitorInfo:
-        """Updates a monitor for the specified table.
+        """[DEPRECATED] Updates a monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:

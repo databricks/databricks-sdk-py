@@ -524,11 +524,37 @@
 
         .. code-block::
 
+            import os
+            import time
+            
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import jobs
             
             w = WorkspaceClient()
             
-            job_list = w.jobs.list(expand_tasks=False)
+            notebook_path = f"/Users/{w.current_user.me().user_name}/sdk-{time.time_ns()}"
+            
+            cluster_id = (
+                w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
+            )
+            
+            created_job = w.jobs.create(
+                name=f"sdk-{time.time_ns()}",
+                tasks=[
+                    jobs.Task(
+                        description="test",
+                        existing_cluster_id=cluster_id,
+                        notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
+                        task_key="test",
+                        timeout_seconds=0,
+                    )
+                ],
+            )
+            
+            run_list = w.jobs.list_runs(job_id=created_job.job_id)
+            
+            # cleanup
+            w.jobs.delete(job_id=created_job.job_id)
 
         List jobs.
 
@@ -1048,6 +1074,12 @@
         Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
         run state after the job is submitted.
+
+        **Important:** Jobs submitted using this endpoint are not saved as a job. They do not show up in the
+        Jobs UI, and do not retry when they fail. Because they are not saved, Databricks cannot auto-optimize
+        serverless compute in case of failure. If your job fails, you may want to use classic compute to
+        specify the compute needs for the job. Alternatively, use the `POST /jobs/create` and `POST
+        /jobs/run-now` endpoints to create and run a saved job.
 
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.

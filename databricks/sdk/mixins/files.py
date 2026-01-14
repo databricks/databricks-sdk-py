@@ -784,12 +784,11 @@ class FilesExt(files.FilesAPI):
     ) -> DownloadResponse:
         """Download a file.
 
-        Downloads a file of any size. The file contents are the response body.
-        This is a standard HTTP file download, not a JSON RPC.
+        Downloads a file as a stream into memory.
 
-        It is strongly recommended, for fault tolerance reasons,
-        to iteratively consume from the stream with a maximum read(size)
-        defined instead of using indefinite-size reads.
+        Use this when you want to process the downloaded file in memory or pipe it into another system. Supports files of any size in SDK v0.72.0+. Earlier versions have a 5 GB file size limit.
+
+        If the download is successful, the function returns the downloaded file result. If the download is unsuccessful, the function raises an exception.
 
         :param file_path: str
           The remote path of the file, e.g. /Volumes/path/to/your/file
@@ -817,14 +816,18 @@ class FilesExt(files.FilesAPI):
         use_parallel: bool = False,
         parallelism: Optional[int] = None,
     ) -> DownloadFileResult:
-        """Download a file to a local path. There would be no responses returned if the download is successful.
+        """Downloads a file directly to a local file path.
+
+        Use this when you want to write the file straight to disk instead of holding it in memory. Supports files of any size in SDK v0.72.0+. Earlier versions have a 5 GB file size limit.
+
+        Supports parallel download (use_parallel=True), which may improve performance for large files. This is available on all operating systems except Windows.
 
         :param file_path: str
           The remote path of the file, e.g. /Volumes/path/to/your/file
         :param destination: str
           The local path where the file will be saved.
         :param overwrite: bool
-          If true, an existing file will be overwritten. When not specified, assumed True.
+          If true, an existing file will be overwritten. When not specified, defaults to True.
         :param use_parallel: bool
           If true, the download will be performed using multiple threads.
         :param parallelism: int
@@ -1078,18 +1081,22 @@ class FilesExt(files.FilesAPI):
         parallelism: Optional[int] = None,
     ) -> UploadStreamResult:
         """
-        Upload a file with stream interface.
+        Uploads a file from memory or a stream interface.
+
+        Use this when you want to upload data already in memory or piped from another system. Supports files of any size in SDK v0.72.0+. Earlier versions have a 5 GB file size limit.
+
+        Limitations: If the storage account is on Azure and has firewall enabled, the maximum file size is 5GB.
 
         :param file_path: str
             The absolute remote path of the target file, e.g. /Volumes/path/to/your/file
         :param contents: BinaryIO
             The contents of the file to upload. This must be a BinaryIO stream.
         :param overwrite: bool (optional)
-            If true, an existing file will be overwritten. When not specified, assumed True.
+            If true, an existing file will be overwritten. When not specified, defaults to True.
         :param part_size: int (optional)
-            If set, multipart upload will use the value as its size per uploading part.
+            If set, multipart upload will use the value as its size per uploading part. If not set, an appropriate value will be automatically used.
         :param use_parallel: bool (optional)
-            If true, the upload will be performed using multiple threads. Be aware that this will consume more memory
+            If true, the upload will be performed using multiple threads. Note that this will consume more memory
             because multiple parts will be buffered in memory before being uploaded. The amount of memory used is proportional
             to `parallelism * part_size`.
             If false, the upload will be performed in a single thread.
@@ -1166,16 +1173,19 @@ class FilesExt(files.FilesAPI):
         use_parallel: bool = True,
         parallelism: Optional[int] = None,
     ) -> UploadFileResult:
-        """Upload a file directly from a local path.
+        """
+        Uploads a file from a local file path.
+
+        Use this when your data already exists on disk and you want to upload it directly without manually opening it yourself. Supports files of any size in SDK v0.72.0+. Earlier versions have a 5 GB file size limit.
 
         :param file_path: str
           The absolute remote path of the target file.
         :param source_path: str
           The local path of the file to upload. This must be a path to a local file.
-        :param part_size: int
-          The size of each part in bytes for multipart upload. This is a required parameter for multipart uploads.
+        :param part_size: int (optional)
+          If set, multipart upload will use the value as its size per uploading part. If not set, an appropriate default  value will be automatically used.
         :param overwrite: bool (optional)
-          If true, an existing file will be overwritten. When not specified, assumed True.
+          If true, an existing file will be overwritten. When not specified, defaults True.
         :param use_parallel: bool (optional)
           If true, the upload will be performed using multiple threads. Default is True.
         :param parallelism: int (optional)

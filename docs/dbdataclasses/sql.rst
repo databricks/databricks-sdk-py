@@ -1542,6 +1542,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POD_SCHEDULING_FAILURE
       :value: "POD_SCHEDULING_FAILURE"
 
+   .. py:attribute:: RATE_LIMITED
+      :value: "RATE_LIMITED"
+
    .. py:attribute:: REQUEST_REJECTED
       :value: "REQUEST_REJECTED"
 

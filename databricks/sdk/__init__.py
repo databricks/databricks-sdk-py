@@ -441,7 +441,7 @@ class WorkspaceClient:
 
     @property
     def apps(self) -> pkg_apps.AppsAPI:
-        """Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on."""
+        """Apps run directly on a customer's Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on."""
         return self._apps
 
     @property
@@ -796,12 +796,12 @@ class WorkspaceClient:
 
     @property
     def quality_monitor_v2(self) -> pkg_qualitymonitorv2.QualityMonitorV2API:
-        """Manage data quality of UC objects (currently support `schema`)."""
+        """[DEPRECATED] This API is deprecated."""
         return self._quality_monitor_v2
 
     @property
     def quality_monitors(self) -> pkg_catalog.QualityMonitorsAPI:
-        """A monitor computes and monitors data or model quality metrics for a table over time."""
+        """[DEPRECATED] This API is deprecated."""
         return self._quality_monitors
 
     @property
