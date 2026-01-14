@@ -4,6 +4,7 @@ import datetime
 import logging
 import os
 import pathlib
+import re
 import sys
 import urllib.parse
 from enum import Enum
@@ -46,11 +47,13 @@ class ConfigAttribute:
     # name and transform are discovered from Config.__new__
     name: str = None
     transform: type = str
+    _custom_transform = None
 
-    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False):
+    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False, transform=None):
         self.env = env
         self.auth = auth
         self.sensitive = sensitive
+        self._custom_transform = transform
 
     def __get__(self, cfg: "Config", owner):
         if not cfg:
@@ -62,6 +65,19 @@ class ConfigAttribute:
 
     def __repr__(self) -> str:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
+
+
+def _parse_scopes(value):
+    """Parse scopes into a deduplicated, sorted list."""
+    if value is None:
+        return None
+    if isinstance(value, list):
+        result = sorted(set(s for s in value if s))
+        return result if result else None
+    if isinstance(value, str):
+        parsed: list = sorted(set(s for s in re.split(r"[, ]+", value) if s))
+        return parsed if parsed else None
+    return None
 
 
 def with_product(product: str, product_version: str):
@@ -133,9 +149,13 @@ class Config:
     disable_experimental_files_api_client: bool = ConfigAttribute(
         env="DATABRICKS_DISABLE_EXPERIMENTAL_FILES_API_CLIENT"
     )
-    # TODO: Expose these via environment variables too.
-    scopes: str = ConfigAttribute()
+
+    scopes: list = ConfigAttribute(transform=_parse_scopes)
     authorization_details: str = ConfigAttribute()
+
+    # disable_oauth_refresh_token controls whether a refresh token should be requested
+    # during the U2M authentication flow (default to false).
+    disable_oauth_refresh_token: bool = ConfigAttribute(env="DATABRICKS_DISABLE_OAUTH_REFRESH_TOKEN")
 
     files_ext_client_download_streaming_chunk_size: int = 2 * 1024 * 1024  # 2 MiB
 
@@ -553,7 +573,7 @@ class Config:
             if type(v) != ConfigAttribute:
                 continue
             v.name = name
-            v.transform = anno.get(name, str)
+            v.transform = v._custom_transform if v._custom_transform else anno.get(name, str)
             attrs.append(v)
         cls._attributes = attrs
         return cls._attributes
@@ -684,6 +704,21 @@ class Config:
             )
         else:
             self._product_info = None
+
+    def get_scopes(self) -> list:
+        """Get OAuth scopes with proper defaulting.
+
+        Returns ["all-apis"] if no scopes configured.
+        This is the single source of truth for scope defaulting across all OAuth methods.
+        """
+        return self.scopes if self.scopes else ["all-apis"]
+
+    def get_scopes_as_string(self) -> str:
+        """Get OAuth scopes as a space-separated string.
+
+        Returns "all-apis" if no scopes configured.
+        """
+        return " ".join(self.get_scopes())
 
     def __repr__(self):
         return f"<{self.debug_string()}>"
