@@ -42,6 +42,8 @@
         patch request, refer to the type field of the setting returned in the
         :method:settingsv2/listaccountsettingsmetadata response.
 
+        Note: Page refresh is required for changes to take effect in UI.
+
         :param name: str
         :param setting: :class:`Setting`
 

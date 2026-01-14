@@ -1166,6 +1166,9 @@ class ProjectStatus:
     history_retention_duration: Optional[Duration] = None
     """The effective number of seconds to retain the shared history for point in time recovery."""
 
+    owner: Optional[str] = None
+    """The email of the project owner."""
+
     pg_version: Optional[int] = None
     """The effective major Postgres version number."""
 
@@ -1188,6 +1191,8 @@ class ProjectStatus:
             body["display_name"] = self.display_name
         if self.history_retention_duration is not None:
             body["history_retention_duration"] = self.history_retention_duration.ToJsonString()
+        if self.owner is not None:
+            body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
         if self.settings:
@@ -1209,6 +1214,8 @@ class ProjectStatus:
             body["display_name"] = self.display_name
         if self.history_retention_duration is not None:
             body["history_retention_duration"] = self.history_retention_duration
+        if self.owner is not None:
+            body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
         if self.settings:
@@ -1226,6 +1233,7 @@ class ProjectStatus:
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
             display_name=d.get("display_name", None),
             history_retention_duration=_duration(d, "history_retention_duration"),
+            owner=d.get("owner", None),
             pg_version=d.get("pg_version", None),
             settings=_from_dict(d, "settings", ProjectSettings),
             synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),

@@ -253,7 +253,7 @@ class WorkspaceClient:
                 product=product,
                 product_version=product_version,
                 token_audience=token_audience,
-                scopes=scopes,
+                scopes=" ".join(scopes) if scopes else None,
                 authorization_details=(
                     json.dumps([detail.as_dict() for detail in authorization_details])
                     if authorization_details
