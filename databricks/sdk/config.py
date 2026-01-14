@@ -112,7 +112,10 @@ class Config:
     auth_type: str = ConfigAttribute(env="DATABRICKS_AUTH_TYPE")
     cluster_id: str = ConfigAttribute(env="DATABRICKS_CLUSTER_ID")
     warehouse_id: str = ConfigAttribute(env="DATABRICKS_WAREHOUSE_ID")
+
+    # Serverless Compute ID and Serverless Usage Policy Name are used to set the serverless compute mode when using DB connect.
     serverless_compute_id: str = ConfigAttribute(env="DATABRICKS_SERVERLESS_COMPUTE_ID")
+    serverless_usage_policy_name: str = ConfigAttribute(env="DATABRICKS_SERVERLESS_USAGE_POLICY_NAME")
     skip_verify: bool = ConfigAttribute()
     http_timeout_seconds: float = ConfigAttribute()
     debug_truncate_bytes: int = ConfigAttribute(env="DATABRICKS_DEBUG_TRUNCATE_BYTES")
