@@ -299,3 +299,32 @@ def test_config_auth_type_from_env(monkeypatch):
 
     assert cfg.auth_type == "basic"
     assert cfg.host == "https://x"
+
+
+def test_config_serverless_usage_policy_name_from_env(monkeypatch):
+    monkeypatch.setenv("DATABRICKS_HOST", "https://test.cloud.databricks.com")
+    monkeypatch.setenv("DATABRICKS_TOKEN", "test-token")
+    monkeypatch.setenv("DATABRICKS_SERVERLESS_USAGE_POLICY_NAME", "env-serverless-policy")
+    cfg = Config()
+
+    assert cfg.serverless_usage_policy_name == "env-serverless-policy"
+
+
+def test_config_serverless_usage_policy_name_from_config_file(monkeypatch):
+    monkeypatch.setenv("DATABRICKS_CONFIG_PROFILE", "serverless-policy")
+    set_home(monkeypatch, "/testdata/serverless")
+    cfg = Config()
+
+    assert cfg.auth_type == "pat"
+    assert cfg.host == "https://test.cloud.databricks.com"
+    assert cfg.serverless_usage_policy_name == "my-serverless-policy"
+
+
+def test_config_serverless_usage_policy_name_empty_from_config_file(monkeypatch):
+    monkeypatch.setenv("DATABRICKS_CONFIG_PROFILE", "serverless-policy-empty")
+    set_home(monkeypatch, "/testdata/serverless")
+    cfg = Config()
+
+    assert cfg.auth_type == "pat"
+    assert cfg.host == "https://test.cloud.databricks.com"
+    assert cfg.serverless_usage_policy_name is None
