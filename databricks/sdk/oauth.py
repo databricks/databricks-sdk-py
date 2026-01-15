@@ -663,10 +663,10 @@ class OAuthClient:
         client_secret: str = None,
     ):
         if not scopes:
-            # all-apis ensures that the returned OAuth token can be used with all APIs, aside
-            # from direct-to-dataplane APIs.
-            # offline_access ensures that the response from the Authorization server includes
-            # a refresh token.
+            # Default for direct OAuthClient users (e.g., via from_host()).
+            # When used via credentials_provider.external_browser(), scopes are always
+            # passed explicitly from Config.get_scopes(), with offline_access handling
+            # controlled by the disable_oauth_refresh_token flag.
             scopes = ["all-apis", "offline_access"]
 
         self.redirect_url = redirect_url

@@ -4,6 +4,8 @@ import platform
 import random
 import string
 from datetime import datetime
+from typing import Optional
+from urllib.parse import parse_qs
 
 import pytest
 
@@ -530,3 +532,92 @@ def test_scopes_parsing(mocker, scopes_input, expected_scopes):
     mocker.patch("databricks.sdk.config.Config.init_auth")
     config = Config(host="https://test.databricks.com", scopes=scopes_input)
     assert config.get_scopes() == expected_scopes
+
+
+def test_config_file_scopes_multiple_sorted(monkeypatch, mocker):
+    """Test multiple scopes from config file are sorted."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    set_home(monkeypatch, "/testdata")
+    config = Config(profile="scope-multiple")
+    # Should be sorted alphabetically
+    expected = ["clusters", "files:read", "iam:read", "jobs", "mlflow", "model-serving:read", "pipelines"]
+    assert config.get_scopes() == expected
+
+
+def _get_scope_from_request(request_text: str) -> Optional[str]:
+    """Extract the scope value from a URL-encoded request body."""
+    params = parse_qs(request_text)
+    scope_list = params.get("scope")
+    return scope_list[0] if scope_list else None
+
+
+@pytest.mark.parametrize(
+    "scopes_input,expected_scope",
+    [
+        (None, "all-apis"),
+        (["unity-catalog:read"], "unity-catalog:read"),
+        (["jobs:read", "clusters", "mlflow:read"], "clusters jobs:read mlflow:read"),
+    ],
+    ids=["default_scope", "single_custom_scope", "multiple_scopes_sorted"],
+)
+def test_m2m_scopes_sent_to_token_endpoint(requests_mock, scopes_input, expected_scope):
+    """Test M2M authentication sends correct scopes to token endpoint."""
+    requests_mock.get(
+        "https://test.databricks.com/oidc/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://test.databricks.com/oidc/v1/authorize",
+            "token_endpoint": "https://test.databricks.com/oidc/v1/token",
+        },
+    )
+    token_mock = requests_mock.post(
+        "https://test.databricks.com/oidc/v1/token",
+        json={"access_token": "test-token", "token_type": "Bearer", "expires_in": 3600},
+    )
+
+    config = Config(
+        host="https://test.databricks.com",
+        client_id="test-client-id",
+        client_secret="test-client-secret",
+        auth_type="oauth-m2m",
+        scopes=scopes_input,
+    )
+    config.authenticate()
+
+    assert _get_scope_from_request(token_mock.last_request.text) == expected_scope
+
+
+@pytest.mark.parametrize(
+    "scopes_input,expected_scope",
+    [
+        (None, "all-apis"),
+        (["unity-catalog:read", "clusters"], "clusters unity-catalog:read"),
+        (["jobs:read"], "jobs:read"),
+    ],
+    ids=["default_scope", "multiple_scopes", "single_scope"],
+)
+def test_oidc_scopes_sent_to_token_endpoint(requests_mock, tmp_path, scopes_input, expected_scope):
+    """Test OIDC token exchange sends correct scopes to token endpoint."""
+    oidc_token_file = tmp_path / "oidc_token"
+    oidc_token_file.write_text("mock-id-token")
+
+    requests_mock.get(
+        "https://test.databricks.com/oidc/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://test.databricks.com/oidc/v1/authorize",
+            "token_endpoint": "https://test.databricks.com/oidc/v1/token",
+        },
+    )
+    token_mock = requests_mock.post(
+        "https://test.databricks.com/oidc/v1/token",
+        json={"access_token": "test-token", "token_type": "Bearer", "expires_in": 3600},
+    )
+
+    config = Config(
+        host="https://test.databricks.com",
+        oidc_token_filepath=str(oidc_token_file),
+        auth_type="file-oidc",
+        scopes=scopes_input,
+    )
+    config.authenticate()
+
+    assert _get_scope_from_request(token_mock.last_request.text) == expected_scope

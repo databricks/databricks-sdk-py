@@ -156,6 +156,7 @@ class DatabricksOidcTokenSource(oauth.TokenSource):
         account_id: Optional[str] = None,
         audience: Optional[str] = None,
         disable_async: bool = False,
+        scopes: Optional[str] = None,
     ):
         self._host = host
         self._id_token_source = id_token_source
@@ -164,6 +165,7 @@ class DatabricksOidcTokenSource(oauth.TokenSource):
         self._account_id = account_id
         self._audience = audience
         self._disable_async = disable_async
+        self._scopes = scopes
 
     def token(self) -> oauth.Token:
         """Get a token by exchanging the ID token.
@@ -202,7 +204,7 @@ class DatabricksOidcTokenSource(oauth.TokenSource):
                 "subject_token": id_token.jwt,
                 "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
             },
-            scopes="all-apis",
+            scopes=self._scopes,
             use_params=True,
             disable_async=self._disable_async,
         )

@@ -1,7 +1,10 @@
 from datetime import datetime, timedelta
 from unittest.mock import Mock
 
+import pytest
+
 from databricks.sdk import credentials_provider, oauth, oidc
+from databricks.sdk.config import Config
 
 
 # Tests for external_browser function
@@ -172,6 +175,54 @@ def test_external_browser_consent_fails(mocker):
     mock_token_cache.load.assert_called_once()
     mock_oauth_client.initiate_consent.assert_called_once()
     assert got_credentials_provider is None
+
+
+def _setup_external_browser_mocks(mocker, cfg):
+    """Set up mocks for external_browser scope tests. Returns (TokenCache mock, OAuthClient mock)."""
+    mock_oidc_endpoints = Mock()
+    mock_oidc_endpoints.token_endpoint = "https://test.databricks.com/oidc/v1/token"
+    mocker.patch.object(type(cfg), "oidc_endpoints", new_callable=lambda: property(lambda self: mock_oidc_endpoints))
+
+    mock_token_cache_class = mocker.patch("databricks.sdk.credentials_provider.oauth.TokenCache")
+    mock_token_cache = Mock()
+    mock_token_cache.load.return_value = None
+    mock_token_cache_class.return_value = mock_token_cache
+
+    mock_oauth_client_class = mocker.patch("databricks.sdk.credentials_provider.oauth.OAuthClient")
+    mock_oauth_client = Mock()
+    mock_consent = Mock()
+    mock_consent.launch_external_browser.return_value = Mock()
+    mock_oauth_client.initiate_consent.return_value = mock_consent
+    mock_oauth_client_class.return_value = mock_oauth_client
+
+    return mock_token_cache_class, mock_oauth_client_class
+
+
+@pytest.mark.parametrize(
+    "scopes,disable_refresh,expected_scopes",
+    [
+        (None, False, ["all-apis", "offline_access"]),
+        ("sql, clusters, jobs", False, ["clusters", "jobs", "sql", "offline_access"]),
+        (None, True, ["all-apis"]),
+        ("sql, clusters, jobs, offline_access", False, ["clusters", "jobs", "offline_access", "sql"]),
+    ],
+    ids=["default_scopes", "multiple_scopes_sorted", "disable_offline_access", "offline_access_not_duplicated"],
+)
+def test_external_browser_scopes(mocker, scopes, disable_refresh, expected_scopes):
+    """Tests that external_browser passes correct scopes to TokenCache and OAuthClient."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    cfg = Config(
+        host="https://test.databricks.com",
+        auth_type="external-browser",
+        scopes=scopes,
+        disable_oauth_refresh_token=disable_refresh if disable_refresh else None,
+    )
+    mock_token_cache_class, mock_oauth_client_class = _setup_external_browser_mocks(mocker, cfg)
+
+    credentials_provider.external_browser(cfg)
+
+    assert mock_token_cache_class.call_args.kwargs["scopes"] == expected_scopes
+    assert mock_oauth_client_class.call_args.kwargs["scopes"] == expected_scopes
 
 
 def test_oidc_credentials_provider_invalid_id_token_source():

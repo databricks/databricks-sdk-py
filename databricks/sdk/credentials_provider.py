@@ -225,7 +225,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
         client_id=cfg.client_id,
         client_secret=cfg.client_secret,
         token_url=oidc.token_endpoint,
-        scopes=cfg.scopes or "all-apis",
+        scopes=cfg.get_scopes_as_string(),
         use_header=True,
         disable_async=cfg.disable_async_token_refresh,
         authorization_details=cfg.authorization_details,
@@ -256,6 +256,11 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
     if not client_id:
         client_id = "databricks-cli"
 
+    scopes = cfg.get_scopes()
+    if not cfg.disable_oauth_refresh_token:
+        if "offline_access" not in scopes:
+            scopes = scopes + ["offline_access"]
+
     # Load cached credentials from disk if they exist. Note that these are
     # local to the Python SDK and not reused by other SDKs.
     oidc_endpoints = cfg.oidc_endpoints
@@ -266,6 +271,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         client_id=client_id,
         client_secret=client_secret,
         redirect_url=redirect_url,
+        scopes=scopes,
     )
     credentials = token_cache.load()
     if credentials:
@@ -284,6 +290,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         client_id=client_id,
         redirect_url=redirect_url,
         client_secret=client_secret,
+        scopes=scopes,
     )
     consent = oauth_client.initiate_consent()
     if not consent:
@@ -387,6 +394,7 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
         account_id=cfg.account_id,
         id_token_source=id_token_source,
         disable_async=cfg.disable_async_token_refresh,
+        scopes=cfg.get_scopes_as_string(),
     )
 
     def refreshed_headers() -> Dict[str, str]:
@@ -450,7 +458,7 @@ def _oidc_credentials_provider(
                 "subject_token": id_token,
                 "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
             },
-            scopes=cfg.scopes or "all-apis",
+            scopes=cfg.get_scopes_as_string(),
             use_params=True,
             disable_async=cfg.disable_async_token_refresh,
             authorization_details=cfg.authorization_details,
