@@ -71,6 +71,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    Current state of the endpoint
 
+   .. py:attribute:: DELETED
+      :value: "DELETED"
+
    .. py:attribute:: OFFLINE
       :value: "OFFLINE"
 

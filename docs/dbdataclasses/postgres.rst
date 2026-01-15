@@ -47,6 +47,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EndpointHosts
+   :members:
+   :undoc-members:
+
 .. autoclass:: EndpointOperationMetadata
    :members:
    :undoc-members:
@@ -80,11 +84,11 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    The compute endpoint type. Either `read_write` or `read_only`.
 
-   .. py:attribute:: READ_ONLY
-      :value: "READ_ONLY"
+   .. py:attribute:: ENDPOINT_TYPE_READ_ONLY
+      :value: "ENDPOINT_TYPE_READ_ONLY"
 
-   .. py:attribute:: READ_WRITE
-      :value: "READ_WRITE"
+   .. py:attribute:: ENDPOINT_TYPE_READ_WRITE
+      :value: "ENDPOINT_TYPE_READ_WRITE"
 
 .. py:class:: ErrorCode
 

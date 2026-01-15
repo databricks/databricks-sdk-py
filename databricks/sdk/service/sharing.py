@@ -3122,9 +3122,8 @@ class RecipientsAPI:
         self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
 
     def get(self, name: str) -> RecipientInfo:
-        """Gets a share recipient from the metastore if:
-
-        * the caller is the owner of the share recipient, or: * is a metastore admin
+        """Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**
+        privilege on the metastore * The owner of the share recipient * A metastore admin
 
         :param name: str
           Name of the recipient.
@@ -3218,7 +3217,7 @@ class RecipientsAPI:
     def share_permissions(
         self, name: str, *, max_results: Optional[int] = None, page_token: Optional[str] = None
     ) -> GetRecipientSharePermissionsResponse:
-        """Gets the share permissions for the specified Recipient. The caller must have the USE_RECIPIENT
+        """Gets the share permissions for the specified Recipient. The caller must have the **USE_RECIPIENT**
         privilege on the metastore or be the owner of the Recipient.
 
         :param name: str

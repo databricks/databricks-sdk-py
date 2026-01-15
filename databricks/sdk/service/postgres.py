@@ -403,6 +403,35 @@ class Endpoint:
 
 
 @dataclass
+class EndpointHosts:
+    """Encapsulates various hostnames (r/w or r/o, pooled or not) for an endpoint."""
+
+    host: Optional[str] = None
+    """The hostname to connect to this endpoint. For read-write endpoints, this is a read-write
+    hostname which connects to the primary compute. For read-only endpoints, this is a read-only
+    hostname which allows read-only operations."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointHosts into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.host is not None:
+            body["host"] = self.host
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointHosts into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.host is not None:
+            body["host"] = self.host
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointHosts:
+        """Deserializes the EndpointHosts from a dictionary."""
+        return cls(host=d.get("host", None))
+
+
+@dataclass
 class EndpointOperationMetadata:
     def as_dict(self) -> dict:
         """Serializes the EndpointOperationMetadata into a dictionary suitable for use as a JSON request body."""
@@ -533,22 +562,12 @@ class EndpointStatus:
     endpoint_type: Optional[EndpointType] = None
     """The endpoint type. A branch can only have one READ_WRITE endpoint."""
 
-    host: Optional[str] = None
-    """The hostname of the compute endpoint. This is the hostname specified when connecting to a
-    database."""
-
-    last_active_time: Optional[Timestamp] = None
-    """A timestamp indicating when the compute endpoint was last active."""
+    hosts: Optional[EndpointHosts] = None
+    """Contains host information for connecting to the endpoint."""
 
     pending_state: Optional[EndpointStatusState] = None
 
     settings: Optional[EndpointSettings] = None
-
-    start_time: Optional[Timestamp] = None
-    """A timestamp indicating when the compute endpoint was last started."""
-
-    suspend_time: Optional[Timestamp] = None
-    """A timestamp indicating when the compute endpoint was last suspended."""
 
     suspend_timeout_duration: Optional[Duration] = None
     """Duration of inactivity after which the compute endpoint is automatically suspended."""
@@ -566,18 +585,12 @@ class EndpointStatus:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type.value
-        if self.host is not None:
-            body["host"] = self.host
-        if self.last_active_time is not None:
-            body["last_active_time"] = self.last_active_time.ToJsonString()
+        if self.hosts:
+            body["hosts"] = self.hosts.as_dict()
         if self.pending_state is not None:
             body["pending_state"] = self.pending_state.value
         if self.settings:
             body["settings"] = self.settings.as_dict()
-        if self.start_time is not None:
-            body["start_time"] = self.start_time.ToJsonString()
-        if self.suspend_time is not None:
-            body["suspend_time"] = self.suspend_time.ToJsonString()
         if self.suspend_timeout_duration is not None:
             body["suspend_timeout_duration"] = self.suspend_timeout_duration.ToJsonString()
         return body
@@ -595,18 +608,12 @@ class EndpointStatus:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type
-        if self.host is not None:
-            body["host"] = self.host
-        if self.last_active_time is not None:
-            body["last_active_time"] = self.last_active_time
+        if self.hosts:
+            body["hosts"] = self.hosts
         if self.pending_state is not None:
             body["pending_state"] = self.pending_state
         if self.settings:
             body["settings"] = self.settings
-        if self.start_time is not None:
-            body["start_time"] = self.start_time
-        if self.suspend_time is not None:
-            body["suspend_time"] = self.suspend_time
         if self.suspend_timeout_duration is not None:
             body["suspend_timeout_duration"] = self.suspend_timeout_duration
         return body
@@ -620,12 +627,9 @@ class EndpointStatus:
             current_state=_enum(d, "current_state", EndpointStatusState),
             disabled=d.get("disabled", None),
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
-            host=d.get("host", None),
-            last_active_time=_timestamp(d, "last_active_time"),
+            hosts=_from_dict(d, "hosts", EndpointHosts),
             pending_state=_enum(d, "pending_state", EndpointStatusState),
             settings=_from_dict(d, "settings", EndpointSettings),
-            start_time=_timestamp(d, "start_time"),
-            suspend_time=_timestamp(d, "suspend_time"),
             suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
         )
 
@@ -641,8 +645,8 @@ class EndpointStatusState(Enum):
 class EndpointType(Enum):
     """The compute endpoint type. Either `read_write` or `read_only`."""
 
-    READ_ONLY = "READ_ONLY"
-    READ_WRITE = "READ_WRITE"
+    ENDPOINT_TYPE_READ_ONLY = "ENDPOINT_TYPE_READ_ONLY"
+    ENDPOINT_TYPE_READ_WRITE = "ENDPOINT_TYPE_READ_WRITE"
 
 
 class ErrorCode(Enum):
@@ -1154,9 +1158,6 @@ class ProjectStatus:
     branch_logical_size_limit_bytes: Optional[int] = None
     """The logical size limit for a branch."""
 
-    compute_last_active_time: Optional[Timestamp] = None
-    """The most recent time when any endpoint of this project was active."""
-
     default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
     """The effective default endpoint settings."""
 
@@ -1165,6 +1166,9 @@ class ProjectStatus:
 
     history_retention_duration: Optional[Duration] = None
     """The effective number of seconds to retain the shared history for point in time recovery."""
+
+    owner: Optional[str] = None
+    """The email of the project owner."""
 
     pg_version: Optional[int] = None
     """The effective major Postgres version number."""
@@ -1180,14 +1184,14 @@ class ProjectStatus:
         body = {}
         if self.branch_logical_size_limit_bytes is not None:
             body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
-        if self.compute_last_active_time is not None:
-            body["compute_last_active_time"] = self.compute_last_active_time.ToJsonString()
         if self.default_endpoint_settings:
             body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
         if self.display_name is not None:
             body["display_name"] = self.display_name
         if self.history_retention_duration is not None:
             body["history_retention_duration"] = self.history_retention_duration.ToJsonString()
+        if self.owner is not None:
+            body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
         if self.settings:
@@ -1201,14 +1205,14 @@ class ProjectStatus:
         body = {}
         if self.branch_logical_size_limit_bytes is not None:
             body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
-        if self.compute_last_active_time is not None:
-            body["compute_last_active_time"] = self.compute_last_active_time
         if self.default_endpoint_settings:
             body["default_endpoint_settings"] = self.default_endpoint_settings
         if self.display_name is not None:
             body["display_name"] = self.display_name
         if self.history_retention_duration is not None:
             body["history_retention_duration"] = self.history_retention_duration
+        if self.owner is not None:
+            body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
         if self.settings:
@@ -1222,10 +1226,10 @@ class ProjectStatus:
         """Deserializes the ProjectStatus from a dictionary."""
         return cls(
             branch_logical_size_limit_bytes=d.get("branch_logical_size_limit_bytes", None),
-            compute_last_active_time=_timestamp(d, "compute_last_active_time"),
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
             display_name=d.get("display_name", None),
             history_retention_duration=_duration(d, "history_retention_duration"),
+            owner=d.get("owner", None),
             pg_version=d.get("pg_version", None),
             settings=_from_dict(d, "settings", ProjectSettings),
             synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),

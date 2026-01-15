@@ -602,6 +602,7 @@ class EndpointStatus:
 class EndpointStatusState(Enum):
     """Current state of the endpoint"""
 
+    DELETED = "DELETED"
     OFFLINE = "OFFLINE"
     ONLINE = "ONLINE"
     PROVISIONING = "PROVISIONING"
