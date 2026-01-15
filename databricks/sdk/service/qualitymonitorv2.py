@@ -105,6 +105,38 @@ class ListQualityMonitorResponse:
 
 
 @dataclass
+class PercentNullValidityCheck:
+    column_names: Optional[List[str]] = None
+    """List of column names to check for null percentage"""
+
+    upper_bound: Optional[float] = None
+    """Optional upper bound; we should use auto determined bounds for now"""
+
+    def as_dict(self) -> dict:
+        """Serializes the PercentNullValidityCheck into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_names:
+            body["column_names"] = [v for v in self.column_names]
+        if self.upper_bound is not None:
+            body["upper_bound"] = self.upper_bound
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PercentNullValidityCheck into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_names:
+            body["column_names"] = self.column_names
+        if self.upper_bound is not None:
+            body["upper_bound"] = self.upper_bound
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PercentNullValidityCheck:
+        """Deserializes the PercentNullValidityCheck from a dictionary."""
+        return cls(column_names=d.get("column_names", None), upper_bound=d.get("upper_bound", None))
+
+
+@dataclass
 class QualityMonitor:
     object_type: str
     """The type of the monitored object. Can be one of the following: schema."""
@@ -113,6 +145,9 @@ class QualityMonitor:
     """The uuid of the request object. For example, schema id."""
 
     anomaly_detection_config: Optional[AnomalyDetectionConfig] = None
+
+    validity_check_configurations: Optional[List[ValidityCheckConfiguration]] = None
+    """Validity check configurations for anomaly detection."""
 
     def as_dict(self) -> dict:
         """Serializes the QualityMonitor into a dictionary suitable for use as a JSON request body."""
@@ -123,6 +158,8 @@ class QualityMonitor:
             body["object_id"] = self.object_id
         if self.object_type is not None:
             body["object_type"] = self.object_type
+        if self.validity_check_configurations:
+            body["validity_check_configurations"] = [v.as_dict() for v in self.validity_check_configurations]
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -134,6 +171,8 @@ class QualityMonitor:
             body["object_id"] = self.object_id
         if self.object_type is not None:
             body["object_type"] = self.object_type
+        if self.validity_check_configurations:
+            body["validity_check_configurations"] = self.validity_check_configurations
         return body
 
     @classmethod
@@ -143,6 +182,125 @@ class QualityMonitor:
             anomaly_detection_config=_from_dict(d, "anomaly_detection_config", AnomalyDetectionConfig),
             object_id=d.get("object_id", None),
             object_type=d.get("object_type", None),
+            validity_check_configurations=_repeated_dict(
+                d, "validity_check_configurations", ValidityCheckConfiguration
+            ),
+        )
+
+
+@dataclass
+class RangeValidityCheck:
+    column_names: Optional[List[str]] = None
+    """List of column names to check for range validity"""
+
+    lower_bound: Optional[float] = None
+    """Lower bound for the range"""
+
+    upper_bound: Optional[float] = None
+    """Upper bound for the range"""
+
+    def as_dict(self) -> dict:
+        """Serializes the RangeValidityCheck into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_names:
+            body["column_names"] = [v for v in self.column_names]
+        if self.lower_bound is not None:
+            body["lower_bound"] = self.lower_bound
+        if self.upper_bound is not None:
+            body["upper_bound"] = self.upper_bound
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RangeValidityCheck into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_names:
+            body["column_names"] = self.column_names
+        if self.lower_bound is not None:
+            body["lower_bound"] = self.lower_bound
+        if self.upper_bound is not None:
+            body["upper_bound"] = self.upper_bound
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RangeValidityCheck:
+        """Deserializes the RangeValidityCheck from a dictionary."""
+        return cls(
+            column_names=d.get("column_names", None),
+            lower_bound=d.get("lower_bound", None),
+            upper_bound=d.get("upper_bound", None),
+        )
+
+
+@dataclass
+class UniquenessValidityCheck:
+    column_names: Optional[List[str]] = None
+    """List of column names to check for uniqueness"""
+
+    def as_dict(self) -> dict:
+        """Serializes the UniquenessValidityCheck into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column_names:
+            body["column_names"] = [v for v in self.column_names]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UniquenessValidityCheck into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column_names:
+            body["column_names"] = self.column_names
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UniquenessValidityCheck:
+        """Deserializes the UniquenessValidityCheck from a dictionary."""
+        return cls(column_names=d.get("column_names", None))
+
+
+@dataclass
+class ValidityCheckConfiguration:
+    name: Optional[str] = None
+    """Can be set by system. Does not need to be user facing."""
+
+    percent_null_validity_check: Optional[PercentNullValidityCheck] = None
+
+    range_validity_check: Optional[RangeValidityCheck] = None
+
+    uniqueness_validity_check: Optional[UniquenessValidityCheck] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ValidityCheckConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.percent_null_validity_check:
+            body["percent_null_validity_check"] = self.percent_null_validity_check.as_dict()
+        if self.range_validity_check:
+            body["range_validity_check"] = self.range_validity_check.as_dict()
+        if self.uniqueness_validity_check:
+            body["uniqueness_validity_check"] = self.uniqueness_validity_check.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ValidityCheckConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.name is not None:
+            body["name"] = self.name
+        if self.percent_null_validity_check:
+            body["percent_null_validity_check"] = self.percent_null_validity_check
+        if self.range_validity_check:
+            body["range_validity_check"] = self.range_validity_check
+        if self.uniqueness_validity_check:
+            body["uniqueness_validity_check"] = self.uniqueness_validity_check
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ValidityCheckConfiguration:
+        """Deserializes the ValidityCheckConfiguration from a dictionary."""
+        return cls(
+            name=d.get("name", None),
+            percent_null_validity_check=_from_dict(d, "percent_null_validity_check", PercentNullValidityCheck),
+            range_validity_check=_from_dict(d, "range_validity_check", RangeValidityCheck),
+            uniqueness_validity_check=_from_dict(d, "uniqueness_validity_check", UniquenessValidityCheck),
         )
 
 

@@ -95,9 +95,8 @@
             # cleanup
             w.recipients.delete(name=created.name)
 
-        Gets a share recipient from the metastore if:
-
-        * the caller is the owner of the share recipient, or: * is a metastore admin
+        Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**
+        privilege on the metastore * The owner of the share recipient * A metastore admin
 
         :param name: str
           Name of the recipient.
@@ -194,7 +193,7 @@
             # cleanup
             w.recipients.delete(name=created.name)
 
-        Gets the share permissions for the specified Recipient. The caller must have the USE_RECIPIENT
+        Gets the share permissions for the specified Recipient. The caller must have the **USE_RECIPIENT**
         privilege on the metastore or be the owner of the Recipient.
 
         :param name: str

@@ -2189,6 +2189,11 @@ class PtServedModel:
     provisioned_model_units: int
     """The number of model units to be provisioned."""
 
+    burst_scaling_enabled: Optional[bool] = None
+    """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
+    up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains
+    fixed capacity at provisioned_model_units."""
+
     entity_version: Optional[str] = None
 
     name: Optional[str] = None
@@ -2200,6 +2205,8 @@ class PtServedModel:
     def as_dict(self) -> dict:
         """Serializes the PtServedModel into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.entity_name is not None:
             body["entity_name"] = self.entity_name
         if self.entity_version is not None:
@@ -2213,6 +2220,8 @@ class PtServedModel:
     def as_shallow_dict(self) -> dict:
         """Serializes the PtServedModel into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.entity_name is not None:
             body["entity_name"] = self.entity_name
         if self.entity_version is not None:
@@ -2227,6 +2236,7 @@ class PtServedModel:
     def from_dict(cls, d: Dict[str, Any]) -> PtServedModel:
         """Deserializes the PtServedModel from a dictionary."""
         return cls(
+            burst_scaling_enabled=d.get("burst_scaling_enabled", None),
             entity_name=d.get("entity_name", None),
             entity_version=d.get("entity_version", None),
             name=d.get("name", None),
