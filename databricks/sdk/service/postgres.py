@@ -28,19 +28,23 @@ class Branch:
     """A timestamp indicating when the branch was created."""
 
     name: Optional[str] = None
-    """The resource name of the branch. Format: projects/{project_id}/branches/{branch_id}"""
+    """The resource name of the branch. This field is output-only and constructed by the system.
+    Format: `projects/{project_id}/branches/{branch_id}`"""
 
     parent: Optional[str] = None
-    """The project containing this branch. Format: projects/{project_id}"""
+    """The project containing this branch (API resource hierarchy). Format: projects/{project_id}
+    
+    Note: This field indicates where the branch exists in the resource hierarchy. For point-in-time
+    branching from another branch, see `spec.source_branch`."""
 
     spec: Optional[BranchSpec] = None
-    """The desired state of a Branch."""
+    """The spec contains the branch configuration."""
 
     status: Optional[BranchStatus] = None
     """The current status of a Branch."""
 
     uid: Optional[str] = None
-    """System generated unique ID for the branch."""
+    """System-generated unique ID for the branch."""
 
     update_time: Optional[Timestamp] = None
     """A timestamp indicating when the branch was last updated."""
@@ -117,14 +121,16 @@ class BranchOperationMetadata:
 
 @dataclass
 class BranchSpec:
-    default: Optional[bool] = None
-    """Whether the branch is the project's default branch."""
+    expire_time: Optional[Timestamp] = None
+    """Absolute expiration timestamp. When set, the branch will expire at this time."""
 
     is_protected: Optional[bool] = None
-    """Whether the branch is protected."""
+    """When set to true, protects the branch from deletion and reset. Associated compute endpoints and
+    the project cannot be deleted while the branch is protected."""
 
     source_branch: Optional[str] = None
-    """The name of the source branch from which this branch was created. Format:
+    """The name of the source branch from which this branch was created (data lineage for point-in-time
+    recovery). If not specified, defaults to the project's default branch. Format:
     projects/{project_id}/branches/{branch_id}"""
 
     source_branch_lsn: Optional[str] = None
@@ -133,11 +139,15 @@ class BranchSpec:
     source_branch_time: Optional[Timestamp] = None
     """The point in time on the source branch from which this branch was created."""
 
+    ttl: Optional[Duration] = None
+    """Relative time-to-live duration. When set, the branch will expire at creation_time + ttl. Set to
+    -1 second to explicitly disable expiration."""
+
     def as_dict(self) -> dict:
         """Serializes the BranchSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
-        if self.default is not None:
-            body["default"] = self.default
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time.ToJsonString()
         if self.is_protected is not None:
             body["is_protected"] = self.is_protected
         if self.source_branch is not None:
@@ -146,13 +156,15 @@ class BranchSpec:
             body["source_branch_lsn"] = self.source_branch_lsn
         if self.source_branch_time is not None:
             body["source_branch_time"] = self.source_branch_time.ToJsonString()
+        if self.ttl is not None:
+            body["ttl"] = self.ttl.ToJsonString()
         return body
 
     def as_shallow_dict(self) -> dict:
         """Serializes the BranchSpec into a shallow dictionary of its immediate attributes."""
         body = {}
-        if self.default is not None:
-            body["default"] = self.default
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
         if self.is_protected is not None:
             body["is_protected"] = self.is_protected
         if self.source_branch is not None:
@@ -161,17 +173,20 @@ class BranchSpec:
             body["source_branch_lsn"] = self.source_branch_lsn
         if self.source_branch_time is not None:
             body["source_branch_time"] = self.source_branch_time
+        if self.ttl is not None:
+            body["ttl"] = self.ttl
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> BranchSpec:
         """Deserializes the BranchSpec from a dictionary."""
         return cls(
-            default=d.get("default", None),
+            expire_time=_timestamp(d, "expire_time"),
             is_protected=d.get("is_protected", None),
             source_branch=d.get("source_branch", None),
             source_branch_lsn=d.get("source_branch_lsn", None),
             source_branch_time=_timestamp(d, "source_branch_time"),
+            ttl=_duration(d, "ttl"),
         )
 
 
@@ -182,6 +197,9 @@ class BranchStatus:
 
     default: Optional[bool] = None
     """Whether the branch is the project's default branch."""
+
+    expire_time: Optional[Timestamp] = None
+    """Absolute expiration time for the branch. Empty if expiration is disabled."""
 
     is_protected: Optional[bool] = None
     """Whether the branch is protected."""
@@ -212,6 +230,8 @@ class BranchStatus:
             body["current_state"] = self.current_state.value
         if self.default is not None:
             body["default"] = self.default
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time.ToJsonString()
         if self.is_protected is not None:
             body["is_protected"] = self.is_protected
         if self.logical_size_bytes is not None:
@@ -235,6 +255,8 @@ class BranchStatus:
             body["current_state"] = self.current_state
         if self.default is not None:
             body["default"] = self.default
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
         if self.is_protected is not None:
             body["is_protected"] = self.is_protected
         if self.logical_size_bytes is not None:
@@ -257,6 +279,7 @@ class BranchStatus:
         return cls(
             current_state=_enum(d, "current_state", BranchStatusState),
             default=d.get("default", None),
+            expire_time=_timestamp(d, "expire_time"),
             is_protected=d.get("is_protected", None),
             logical_size_bytes=d.get("logical_size_bytes", None),
             pending_state=_enum(d, "pending_state", BranchStatusState),
@@ -332,20 +355,22 @@ class Endpoint:
     """A timestamp indicating when the compute endpoint was created."""
 
     name: Optional[str] = None
-    """The resource name of the endpoint. Format:
-    projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}"""
+    """The resource name of the endpoint. This field is output-only and constructed by the system.
+    Format: `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`"""
 
     parent: Optional[str] = None
-    """The branch containing this endpoint. Format: projects/{project_id}/branches/{branch_id}"""
+    """The branch containing this endpoint (API resource hierarchy). Format:
+    projects/{project_id}/branches/{branch_id}"""
 
     spec: Optional[EndpointSpec] = None
-    """The desired state of an Endpoint."""
+    """The spec contains the compute endpoint configuration, including autoscaling limits, suspend
+    timeout, and disabled state."""
 
     status: Optional[EndpointStatus] = None
-    """The current status of an Endpoint."""
+    """Current operational status of the compute endpoint."""
 
     uid: Optional[str] = None
-    """System generated unique ID for the endpoint."""
+    """System-generated unique ID for the endpoint."""
 
     update_time: Optional[Timestamp] = None
     """A timestamp indicating when the compute endpoint was last updated."""
@@ -740,10 +765,10 @@ class ErrorCode(Enum):
 @dataclass
 class ListBranchesResponse:
     branches: Optional[List[Branch]] = None
-    """List of branches."""
+    """List of database branches in the project."""
 
     next_page_token: Optional[str] = None
-    """Pagination token to request the next page of branches."""
+    """Token to request the next page of database branches."""
 
     def as_dict(self) -> dict:
         """Serializes the ListBranchesResponse into a dictionary suitable for use as a JSON request body."""
@@ -772,10 +797,10 @@ class ListBranchesResponse:
 @dataclass
 class ListEndpointsResponse:
     endpoints: Optional[List[Endpoint]] = None
-    """List of endpoints."""
+    """List of compute endpoints in the branch."""
 
     next_page_token: Optional[str] = None
-    """Pagination token to request the next page of endpoints."""
+    """Token to request the next page of compute endpoints."""
 
     def as_dict(self) -> dict:
         """Serializes the ListEndpointsResponse into a dictionary suitable for use as a JSON request body."""
@@ -804,10 +829,10 @@ class ListEndpointsResponse:
 @dataclass
 class ListProjectsResponse:
     next_page_token: Optional[str] = None
-    """Pagination token to request the next page of projects."""
+    """Token to request the next page of database projects."""
 
     projects: Optional[List[Project]] = None
-    """List of projects."""
+    """List of all database projects in the workspace that the user has permission to access."""
 
     def as_dict(self) -> dict:
         """Serializes the ListProjectsResponse into a dictionary suitable for use as a JSON request body."""
@@ -836,10 +861,10 @@ class ListProjectsResponse:
 @dataclass
 class ListRolesResponse:
     next_page_token: Optional[str] = None
-    """Pagination token to request the next page of roles."""
+    """Token to request the next page of Postgres roles."""
 
     roles: Optional[List[Role]] = None
-    """List of roles."""
+    """List of Postgres roles in the branch."""
 
     def as_dict(self) -> dict:
         """Serializes the ListRolesResponse into a dictionary suitable for use as a JSON request body."""
@@ -937,16 +962,18 @@ class Project:
     """A timestamp indicating when the project was created."""
 
     name: Optional[str] = None
-    """The resource name of the project. Format: projects/{project_id}"""
+    """The resource name of the project. This field is output-only and constructed by the system.
+    Format: `projects/{project_id}`"""
 
     spec: Optional[ProjectSpec] = None
-    """The desired state of a Project."""
+    """The spec contains the project configuration, including display_name, pg_version (Postgres
+    version), history_retention_duration, and default_endpoint_settings."""
 
     status: Optional[ProjectStatus] = None
     """The current status of a Project."""
 
     uid: Optional[str] = None
-    """System generated unique ID for the project."""
+    """System-generated unique ID for the project."""
 
     update_time: Optional[Timestamp] = None
     """A timestamp indicating when the project was last updated."""
@@ -1070,32 +1097,6 @@ class ProjectOperationMetadata:
 
 
 @dataclass
-class ProjectSettings:
-    enable_logical_replication: Optional[bool] = None
-    """Sets wal_level=logical for all compute endpoints in this project. All active endpoints will be
-    suspended. Once enabled, logical replication cannot be disabled."""
-
-    def as_dict(self) -> dict:
-        """Serializes the ProjectSettings into a dictionary suitable for use as a JSON request body."""
-        body = {}
-        if self.enable_logical_replication is not None:
-            body["enable_logical_replication"] = self.enable_logical_replication
-        return body
-
-    def as_shallow_dict(self) -> dict:
-        """Serializes the ProjectSettings into a shallow dictionary of its immediate attributes."""
-        body = {}
-        if self.enable_logical_replication is not None:
-            body["enable_logical_replication"] = self.enable_logical_replication
-        return body
-
-    @classmethod
-    def from_dict(cls, d: Dict[str, Any]) -> ProjectSettings:
-        """Deserializes the ProjectSettings from a dictionary."""
-        return cls(enable_logical_replication=d.get("enable_logical_replication", None))
-
-
-@dataclass
 class ProjectSpec:
     default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
 
@@ -1109,8 +1110,6 @@ class ProjectSpec:
     pg_version: Optional[int] = None
     """The major Postgres version number."""
 
-    settings: Optional[ProjectSettings] = None
-
     def as_dict(self) -> dict:
         """Serializes the ProjectSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1122,8 +1121,6 @@ class ProjectSpec:
             body["history_retention_duration"] = self.history_retention_duration.ToJsonString()
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
-        if self.settings:
-            body["settings"] = self.settings.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1137,8 +1134,6 @@ class ProjectSpec:
             body["history_retention_duration"] = self.history_retention_duration
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
-        if self.settings:
-            body["settings"] = self.settings
         return body
 
     @classmethod
@@ -1149,7 +1144,6 @@ class ProjectSpec:
             display_name=d.get("display_name", None),
             history_retention_duration=_duration(d, "history_retention_duration"),
             pg_version=d.get("pg_version", None),
-            settings=_from_dict(d, "settings", ProjectSettings),
         )
 
 
@@ -1173,9 +1167,6 @@ class ProjectStatus:
     pg_version: Optional[int] = None
     """The effective major Postgres version number."""
 
-    settings: Optional[ProjectSettings] = None
-    """The effective project settings."""
-
     synthetic_storage_size_bytes: Optional[int] = None
     """The current space occupied by the project in storage."""
 
@@ -1194,8 +1185,6 @@ class ProjectStatus:
             body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
-        if self.settings:
-            body["settings"] = self.settings.as_dict()
         if self.synthetic_storage_size_bytes is not None:
             body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
         return body
@@ -1215,8 +1204,6 @@ class ProjectStatus:
             body["owner"] = self.owner
         if self.pg_version is not None:
             body["pg_version"] = self.pg_version
-        if self.settings:
-            body["settings"] = self.settings
         if self.synthetic_storage_size_bytes is not None:
             body["synthetic_storage_size_bytes"] = self.synthetic_storage_size_bytes
         return body
@@ -1231,7 +1218,6 @@ class ProjectStatus:
             history_retention_duration=_duration(d, "history_retention_duration"),
             owner=d.get("owner", None),
             pg_version=d.get("pg_version", None),
-            settings=_from_dict(d, "settings", ProjectSettings),
             synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
         )
 
@@ -1243,16 +1229,19 @@ class Role:
     create_time: Optional[Timestamp] = None
 
     name: Optional[str] = None
-    """The resource name of the role. Format: projects/{project_id}/branch/{branch_id}/roles/{role_id}"""
+    """The resource name of the role. Format:
+    projects/{project_id}/branches/{branch_id}/roles/{role_id}"""
 
     parent: Optional[str] = None
     """The Branch where this Role exists. Format: projects/{project_id}/branches/{branch_id}"""
 
     spec: Optional[RoleRoleSpec] = None
-    """The desired state of the Role."""
+    """The spec contains the role configuration, including identity type, authentication method, and
+    role attributes."""
 
     status: Optional[RoleRoleStatus] = None
-    """The observed state of the Role."""
+    """Current status of the role, including its identity type, authentication method, and role
+    attributes."""
 
     update_time: Optional[Timestamp] = None
 
@@ -1349,7 +1338,7 @@ class RoleRoleSpec:
     instead for the GROUP identity type."""
 
     identity_type: Optional[RoleIdentityType] = None
-    """The type of the role. When specifying a managed-identity, the chosen role_id must be a valid:
+    """The type of role. When specifying a managed-identity, the chosen role_id must be a valid:
     
     * application ID for SERVICE_PRINCIPAL * user email for USER * group name for GROUP"""
 
@@ -1415,22 +1404,44 @@ class RoleRoleStatus:
 
 
 class PostgresAPI:
-    """The Postgres API provides access to a Postgres database via REST API or direct SQL."""
+    """Use the Postgres API to create and manage Lakebase Autoscaling Postgres infrastructure, including
+    projects, branches, compute endpoints, and roles.
+
+    This API manages database infrastructure only. To query or modify data, use the Data API or direct SQL
+    connections.
+
+    **About resource IDs and names**
+
+    Lakebase APIs use hierarchical resource names in API paths to identify resources, such as
+    `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`.
+
+    When creating a resource, you may optionally provide the final ID component (for example, `project_id`,
+    `branch_id`, or `endpoint_id`). If you do not, the system generates an identifier and uses it as the ID
+    component.
+
+    The `name` field is output-only and represents the full resource path. Note: The term *resource name* in
+    this API refers to this full, hierarchical identifier (for example, `projects/{project_id}`), not the
+    `display_name` field. The `display_name` is a separate, user-visible label shown in the UI.
+
+    The `uid` field is a system-generated, immutable identifier intended for internal reference and should not
+    be used to address or locate resources."""
 
     def __init__(self, api_client):
         self._api = api_client
 
-    def create_branch(self, parent: str, branch: Branch, *, branch_id: Optional[str] = None) -> CreateBranchOperation:
-        """Create a Branch.
+    def create_branch(self, parent: str, branch: Branch, branch_id: str) -> CreateBranchOperation:
+        """Creates a new database branch in the project.
 
         :param parent: str
           The Project where this Branch will be created. Format: projects/{project_id}
         :param branch: :class:`Branch`
           The Branch to create.
-        :param branch_id: str (optional)
-          The ID to use for the Branch, which will become the final component of the branch's resource name.
-
-          This value should be 4-63 characters, and valid characters are /[a-z][0-9]-/.
+        :param branch_id: str
+          The ID to use for the Branch. This becomes the final component of the branch's resource name. This
+          value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens, as
+          defined by RFC 1123. Examples: - With custom ID: `staging` → name becomes
+          `projects/{project_id}/branches/staging` - Without custom ID: system generates slug → name becomes
+          `projects/{project_id}/branches/br-example-name-x1y2z3a4`
 
         :returns: :class:`Operation`
         """
@@ -1448,20 +1459,20 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateBranchOperation(self, operation)
 
-    def create_endpoint(
-        self, parent: str, endpoint: Endpoint, *, endpoint_id: Optional[str] = None
-    ) -> CreateEndpointOperation:
-        """Create an Endpoint.
+    def create_endpoint(self, parent: str, endpoint: Endpoint, endpoint_id: str) -> CreateEndpointOperation:
+        """Creates a new compute endpoint in the branch.
 
         :param parent: str
           The Branch where this Endpoint will be created. Format: projects/{project_id}/branches/{branch_id}
         :param endpoint: :class:`Endpoint`
           The Endpoint to create.
-        :param endpoint_id: str (optional)
-          The ID to use for the Endpoint, which will become the final component of the endpoint's resource
-          name.
-
-          This value should be 4-63 characters, and valid characters are /[a-z][0-9]-/.
+        :param endpoint_id: str
+          The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
+          This value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens,
+          as defined by RFC 1123. Examples: - With custom ID: `primary` → name becomes
+          `projects/{project_id}/branches/{branch_id}/endpoints/primary` - Without custom ID: system generates
+          slug → name becomes
+          `projects/{project_id}/branches/{branch_id}/endpoints/ep-example-name-x1y2z3a4`
 
         :returns: :class:`Operation`
         """
@@ -1479,15 +1490,18 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateEndpointOperation(self, operation)
 
-    def create_project(self, project: Project, *, project_id: Optional[str] = None) -> CreateProjectOperation:
-        """Create a Project.
+    def create_project(self, project: Project, project_id: str) -> CreateProjectOperation:
+        """Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute
+        endpoints.
 
         :param project: :class:`Project`
           The Project to create.
-        :param project_id: str (optional)
-          The ID to use for the Project, which will become the final component of the project's resource name.
-
-          This value should be 4-63 characters, and valid characters are /[a-z][0-9]-/.
+        :param project_id: str
+          The ID to use for the Project. This becomes the final component of the project's resource name. This
+          value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens, as
+          defined by RFC 1123. Examples: - With custom ID: `production` → name becomes `projects/production`
+          - Without custom ID: system generates UUID → name becomes
+          `projects/a7f89b2c-3d4e-5f6g-7h8i-9j0k1l2m3n4o`
 
         :returns: :class:`Operation`
         """
@@ -1506,18 +1520,18 @@ class PostgresAPI:
         return CreateProjectOperation(self, operation)
 
     def create_role(self, parent: str, role: Role, role_id: str) -> CreateRoleOperation:
-        """Create a role for a branch.
+        """Creates a new Postgres role in the branch.
 
         :param parent: str
           The Branch where this Role is created. Format: projects/{project_id}/branches/{branch_id}
         :param role: :class:`Role`
           The desired specification of a Role.
         :param role_id: str
-          The ID to use for the Role, which will become the final component of the branch's resource name.
-          This ID becomes the role in postgres.
+          The ID to use for the Role, which will become the final component of the role's resource name. This
+          ID becomes the role in Postgres.
 
-          This value should be 4-63 characters, and only use characters available in DNS names, as defined by
-          RFC-1123
+          This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and
+          hyphens, as defined by RFC 1123.
 
         :returns: :class:`Operation`
         """
@@ -1536,7 +1550,7 @@ class PostgresAPI:
         return CreateRoleOperation(self, operation)
 
     def delete_branch(self, name: str) -> DeleteBranchOperation:
-        """Delete a Branch.
+        """Deletes the specified database branch.
 
         :param name: str
           The name of the Branch to delete. Format: projects/{project_id}/branches/{branch_id}
@@ -1553,7 +1567,7 @@ class PostgresAPI:
         return DeleteBranchOperation(self, operation)
 
     def delete_endpoint(self, name: str) -> DeleteEndpointOperation:
-        """Delete an Endpoint.
+        """Deletes the specified compute endpoint.
 
         :param name: str
           The name of the Endpoint to delete. Format:
@@ -1571,7 +1585,7 @@ class PostgresAPI:
         return DeleteEndpointOperation(self, operation)
 
     def delete_project(self, name: str) -> DeleteProjectOperation:
-        """Delete a Project.
+        """Deletes the specified database project.
 
         :param name: str
           The name of the Project to delete. Format: projects/{project_id}
@@ -1588,11 +1602,11 @@ class PostgresAPI:
         return DeleteProjectOperation(self, operation)
 
     def delete_role(self, name: str, *, reassign_owned_to: Optional[str] = None) -> DeleteRoleOperation:
-        """Delete a role in a branch.
+        """Deletes the specified Postgres role.
 
         :param name: str
           The resource name of the postgres role. Format:
-          projects/{project_id}/branch/{branch_id}/roles/{role_id}
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param reassign_owned_to: str (optional)
           Reassign objects. If this is set, all objects owned by the role are reassigned to the role specified
           in this parameter.
@@ -1617,10 +1631,10 @@ class PostgresAPI:
         return DeleteRoleOperation(self, operation)
 
     def get_branch(self, name: str) -> Branch:
-        """Get a Branch.
+        """Retrieves information about the specified database branch.
 
         :param name: str
-          The name of the Branch to retrieve. Format: projects/{project_id}/branches/{branch_id}
+          The resource name of the branch to retrieve. Format: `projects/{project_id}/branches/{branch_id}`
 
         :returns: :class:`Branch`
         """
@@ -1633,11 +1647,12 @@ class PostgresAPI:
         return Branch.from_dict(res)
 
     def get_endpoint(self, name: str) -> Endpoint:
-        """Get an Endpoint.
+        """Retrieves information about the specified compute endpoint, including its connection details and
+        operational state.
 
         :param name: str
-          The name of the Endpoint to retrieve. Format:
-          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+          The resource name of the endpoint to retrieve. Format:
+          `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
 
         :returns: :class:`Endpoint`
         """
@@ -1650,7 +1665,7 @@ class PostgresAPI:
         return Endpoint.from_dict(res)
 
     def get_operation(self, name: str) -> Operation:
-        """Get an Operation.
+        """Retrieves the status of a long-running operation.
 
         :param name: str
           The name of the operation resource.
@@ -1666,10 +1681,10 @@ class PostgresAPI:
         return Operation.from_dict(res)
 
     def get_project(self, name: str) -> Project:
-        """Get a Project.
+        """Retrieves information about the specified database project.
 
         :param name: str
-          The name of the Project to retrieve. Format: projects/{project_id}
+          The resource name of the project to retrieve. Format: `projects/{project_id}`
 
         :returns: :class:`Project`
         """
@@ -1682,7 +1697,8 @@ class PostgresAPI:
         return Project.from_dict(res)
 
     def get_role(self, name: str) -> Role:
-        """Get a Role.
+        """Retrieves information about the specified Postgres role, including its authentication method and
+        permissions.
 
         :param name: str
           The name of the Role to retrieve. Format: projects/{project_id}/branches/{branch_id}/roles/{role_id}
@@ -1700,14 +1716,14 @@ class PostgresAPI:
     def list_branches(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Branch]:
-        """List Branches.
+        """Returns a paginated list of database branches in the project.
 
         :param parent: str
           The Project that owns this collection of branches. Format: projects/{project_id}
         :param page_size: int (optional)
           Upper bound for items returned.
         :param page_token: str (optional)
-          Pagination token to go to the next page of Branches. Requests first page if absent.
+          Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Branch`
         """
@@ -1733,7 +1749,7 @@ class PostgresAPI:
     def list_endpoints(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Endpoint]:
-        """List Endpoints.
+        """Returns a paginated list of compute endpoints in the branch.
 
         :param parent: str
           The Branch that owns this collection of endpoints. Format:
@@ -1741,7 +1757,7 @@ class PostgresAPI:
         :param page_size: int (optional)
           Upper bound for items returned.
         :param page_token: str (optional)
-          Pagination token to go to the next page of Endpoints. Requests first page if absent.
+          Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Endpoint`
         """
@@ -1765,12 +1781,12 @@ class PostgresAPI:
             query["page_token"] = json["next_page_token"]
 
     def list_projects(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Project]:
-        """List Projects.
+        """Returns a paginated list of database projects in the workspace that the user has permission to access.
 
         :param page_size: int (optional)
           Upper bound for items returned.
         :param page_token: str (optional)
-          Pagination token to go to the next page of Projects. Requests first page if absent.
+          Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Project`
         """
@@ -1796,14 +1812,14 @@ class PostgresAPI:
     def list_roles(
         self, parent: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
     ) -> Iterator[Role]:
-        """List Roles.
+        """Returns a paginated list of Postgres roles in the branch.
 
         :param parent: str
           The Branch that owns this collection of roles. Format: projects/{project_id}/branches/{branch_id}
         :param page_size: int (optional)
           Upper bound for items returned.
         :param page_token: str (optional)
-          Pagination token to go to the next page of Roles. Requests first page if absent.
+          Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Role`
         """
@@ -1827,10 +1843,12 @@ class PostgresAPI:
             query["page_token"] = json["next_page_token"]
 
     def update_branch(self, name: str, branch: Branch, update_mask: FieldMask) -> UpdateBranchOperation:
-        """Update a Branch.
+        """Updates the specified database branch. You can set this branch as the project's default branch, or
+        protect/unprotect it.
 
         :param name: str
-          The resource name of the branch. Format: projects/{project_id}/branches/{branch_id}
+          The resource name of the branch. This field is output-only and constructed by the system. Format:
+          `projects/{project_id}/branches/{branch_id}`
         :param branch: :class:`Branch`
           The Branch to update.
 
@@ -1856,11 +1874,12 @@ class PostgresAPI:
         return UpdateBranchOperation(self, operation)
 
     def update_endpoint(self, name: str, endpoint: Endpoint, update_mask: FieldMask) -> UpdateEndpointOperation:
-        """Update an Endpoint.
+        """Updates the specified compute endpoint. You can update autoscaling limits, suspend timeout, or
+        enable/disable the compute endpoint.
 
         :param name: str
-          The resource name of the endpoint. Format:
-          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+          The resource name of the endpoint. This field is output-only and constructed by the system. Format:
+          `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
         :param endpoint: :class:`Endpoint`
           The Endpoint to update.
 
@@ -1886,10 +1905,11 @@ class PostgresAPI:
         return UpdateEndpointOperation(self, operation)
 
     def update_project(self, name: str, project: Project, update_mask: FieldMask) -> UpdateProjectOperation:
-        """Update a Project.
+        """Updates the specified database project.
 
         :param name: str
-          The resource name of the project. Format: projects/{project_id}
+          The resource name of the project. This field is output-only and constructed by the system. Format:
+          `projects/{project_id}`
         :param project: :class:`Project`
           The Project to update.
 
