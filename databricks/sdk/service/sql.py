@@ -10,6 +10,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
 
@@ -2198,6 +2199,69 @@ class DateValueDynamicDate(Enum):
 
 
 @dataclass
+class DefaultWarehouseOverride:
+    """Represents a per-user default warehouse override configuration. This resource allows users or
+    administrators to customize how a user's default warehouse is selected for SQL operations. If no
+    override exists for a user, the workspace default warehouse will be used."""
+
+    type: DefaultWarehouseOverrideType
+    """The type of override behavior."""
+
+    default_warehouse_override_id: Optional[str] = None
+    """The ID component of the resource name (user ID)."""
+
+    name: Optional[str] = None
+    """The resource name of the default warehouse override. Format:
+    default-warehouse-overrides/{default_warehouse_override_id}"""
+
+    warehouse_id: Optional[str] = None
+    """The specific warehouse ID when type is CUSTOM. Not set for LAST_SELECTED type."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DefaultWarehouseOverride into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_warehouse_override_id is not None:
+            body["default_warehouse_override_id"] = self.default_warehouse_override_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.type is not None:
+            body["type"] = self.type.value
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DefaultWarehouseOverride into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_warehouse_override_id is not None:
+            body["default_warehouse_override_id"] = self.default_warehouse_override_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.type is not None:
+            body["type"] = self.type
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultWarehouseOverride:
+        """Deserializes the DefaultWarehouseOverride from a dictionary."""
+        return cls(
+            default_warehouse_override_id=d.get("default_warehouse_override_id", None),
+            name=d.get("name", None),
+            type=_enum(d, "type", DefaultWarehouseOverrideType),
+            warehouse_id=d.get("warehouse_id", None),
+        )
+
+
+class DefaultWarehouseOverrideType(Enum):
+    """Type of default warehouse override behavior."""
+
+    CUSTOM = "CUSTOM"
+    LAST_SELECTED = "LAST_SELECTED"
+
+
+@dataclass
 class DeleteResponse:
     def as_dict(self) -> dict:
         """Serializes the DeleteResponse into a dictionary suitable for use as a JSON request body."""
@@ -3943,6 +4007,44 @@ class ListAlertsV2Response:
     def from_dict(cls, d: Dict[str, Any]) -> ListAlertsV2Response:
         """Deserializes the ListAlertsV2Response from a dictionary."""
         return cls(alerts=_repeated_dict(d, "alerts", AlertV2), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
+class ListDefaultWarehouseOverridesResponse:
+    """Response message for ListDefaultWarehouseOverrides."""
+
+    default_warehouse_overrides: Optional[List[DefaultWarehouseOverride]] = None
+    """The default warehouse overrides in the workspace."""
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDefaultWarehouseOverridesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_warehouse_overrides:
+            body["default_warehouse_overrides"] = [v.as_dict() for v in self.default_warehouse_overrides]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDefaultWarehouseOverridesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_warehouse_overrides:
+            body["default_warehouse_overrides"] = self.default_warehouse_overrides
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDefaultWarehouseOverridesResponse:
+        """Deserializes the ListDefaultWarehouseOverridesResponse from a dictionary."""
+        return cls(
+            default_warehouse_overrides=_repeated_dict(d, "default_warehouse_overrides", DefaultWarehouseOverride),
+            next_page_token=d.get("next_page_token", None),
+        )
 
 
 class ListOrder(Enum):
@@ -9530,6 +9632,35 @@ class WarehousesAPI:
             warehouse_type=warehouse_type,
         ).result(timeout=timeout)
 
+    def create_default_warehouse_override(
+        self, default_warehouse_override: DefaultWarehouseOverride, default_warehouse_override_id: str
+    ) -> DefaultWarehouseOverride:
+        """Creates a new default warehouse override for a user. Users can create their own override. Admins can
+        create overrides for any user.
+
+        :param default_warehouse_override: :class:`DefaultWarehouseOverride`
+          Required. The default warehouse override to create.
+        :param default_warehouse_override_id: str
+          Required. The ID to use for the override, which will become the final component of the override's
+          resource name. Can be a numeric user ID or the literal string "me" for the current user.
+
+        :returns: :class:`DefaultWarehouseOverride`
+        """
+
+        body = default_warehouse_override.as_dict()
+        query = {}
+        if default_warehouse_override_id is not None:
+            query["default_warehouse_override_id"] = default_warehouse_override_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "POST", "/api/warehouses/v1/default-warehouse-overrides", query=query, body=body, headers=headers
+        )
+        return DefaultWarehouseOverride.from_dict(res)
+
     def delete(self, id: str):
         """Deletes a SQL warehouse.
 
@@ -9544,6 +9675,24 @@ class WarehousesAPI:
         }
 
         self._api.do("DELETE", f"/api/2.0/sql/warehouses/{id}", headers=headers)
+
+    def delete_default_warehouse_override(self, name: str):
+        """Deletes the default warehouse override for a user. Users can delete their own override. Admins can
+        delete overrides for any user. After deletion, the workspace default warehouse will be used.
+
+        :param name: str
+          Required. The resource name of the default warehouse override to delete. Format:
+          default-warehouse-overrides/{default_warehouse_override_id} The default_warehouse_override_id can be
+          a numeric user ID or the literal string "me" for the current user.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        self._api.do("DELETE", f"/api/warehouses/v1/{name}", headers=headers)
 
     def edit(
         self,
@@ -9714,6 +9863,26 @@ class WarehousesAPI:
         res = self._api.do("GET", f"/api/2.0/sql/warehouses/{id}", headers=headers)
         return GetWarehouseResponse.from_dict(res)
 
+    def get_default_warehouse_override(self, name: str) -> DefaultWarehouseOverride:
+        """Returns the default warehouse override for a user. Users can fetch their own override. Admins can
+        fetch overrides for any user. If no override exists, the UI will fallback to the workspace default
+        warehouse.
+
+        :param name: str
+          Required. The resource name of the default warehouse override to retrieve. Format:
+          default-warehouse-overrides/{default_warehouse_override_id} The default_warehouse_override_id can be
+          a numeric user ID or the literal string "me" for the current user.
+
+        :returns: :class:`DefaultWarehouseOverride`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do("GET", f"/api/warehouses/v1/{name}", headers=headers)
+        return DefaultWarehouseOverride.from_dict(res)
+
     def get_permission_levels(self, warehouse_id: str) -> GetWarehousePermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.
 
@@ -9797,6 +9966,44 @@ class WarehousesAPI:
             if "warehouses" in json:
                 for v in json["warehouses"]:
                     yield EndpointInfo.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_default_warehouse_overrides(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DefaultWarehouseOverride]:
+        """Lists all default warehouse overrides in the workspace. Only workspace administrators can list all
+        overrides.
+
+        :param page_size: int (optional)
+          The maximum number of overrides to return. The service may return fewer than this value. If
+          unspecified, at most 100 overrides will be returned. The maximum value is 1000; values above 1000
+          will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListDefaultWarehouseOverrides` call. Provide this to
+          retrieve the subsequent page.
+
+          When paginating, all other parameters provided to `ListDefaultWarehouseOverrides` must match the
+          call that provided the page token.
+
+        :returns: Iterator over :class:`DefaultWarehouseOverride`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do("GET", "/api/warehouses/v1/default-warehouse-overrides", query=query, headers=headers)
+            if "default_warehouse_overrides" in json:
+                for v in json["default_warehouse_overrides"]:
+                    yield DefaultWarehouseOverride.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -9939,6 +10146,49 @@ class WarehousesAPI:
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)
+
+    def update_default_warehouse_override(
+        self,
+        name: str,
+        default_warehouse_override: DefaultWarehouseOverride,
+        update_mask: FieldMask,
+        *,
+        allow_missing: Optional[bool] = None,
+    ) -> DefaultWarehouseOverride:
+        """Updates an existing default warehouse override for a user. Users can update their own override. Admins
+        can update overrides for any user.
+
+        :param name: str
+          The resource name of the default warehouse override. Format:
+          default-warehouse-overrides/{default_warehouse_override_id}
+        :param default_warehouse_override: :class:`DefaultWarehouseOverride`
+          Required. The default warehouse override to update. The name field must be set in the format:
+          default-warehouse-overrides/{default_warehouse_override_id} The default_warehouse_override_id can be
+          a numeric user ID or the literal string "me" for the current user.
+        :param update_mask: FieldMask
+          Required. Field mask specifying which fields to update. Only the fields specified in the mask will
+          be updated. Use "*" to update all fields. When allow_missing is true, this field is ignored and all
+          fields are applied.
+        :param allow_missing: bool (optional)
+          If set to true, and the override is not found, a new override will be created. In this situation,
+          `update_mask` is ignored and all fields are applied. Defaults to false.
+
+        :returns: :class:`DefaultWarehouseOverride`
+        """
+
+        body = default_warehouse_override.as_dict()
+        query = {}
+        if allow_missing is not None:
+            query["allow_missing"] = allow_missing
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("PATCH", f"/api/warehouses/v1/{name}", query=query, body=body, headers=headers)
+        return DefaultWarehouseOverride.from_dict(res)
 
     def update_permissions(
         self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None

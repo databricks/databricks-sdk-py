@@ -70,7 +70,7 @@
 
         
 
-    .. py:method:: create(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
+    .. py:method:: create(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_flexibility: Optional[NodeTypeFlexibility], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], worker_node_type_flexibility: Optional[NodeTypeFlexibility], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
 
 
         Usage:
@@ -158,6 +158,8 @@
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
+        :param driver_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the driver node.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as `node_type_id` defined above.
@@ -242,6 +244,8 @@
 
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+        :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
 
         :returns:
@@ -249,7 +253,7 @@
           See :method:wait_get_cluster_running for more details.
         
 
-    .. py:method:: create_and_wait(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
+    .. py:method:: create_and_wait(spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], clone_from: Optional[CloneCluster], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_flexibility: Optional[NodeTypeFlexibility], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], worker_node_type_flexibility: Optional[NodeTypeFlexibility], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
 
     .. py:method:: delete(cluster_id: str) -> Wait[ClusterDetails]
@@ -298,7 +302,7 @@
     .. py:method:: delete_and_wait(cluster_id: str, timeout: datetime.timedelta = 0:20:00) -> ClusterDetails
 
 
-    .. py:method:: edit(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
+    .. py:method:: edit(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_flexibility: Optional[NodeTypeFlexibility], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], worker_node_type_flexibility: Optional[NodeTypeFlexibility], workload_type: Optional[WorkloadType]]) -> Wait[ClusterDetails]
 
 
         Usage:
@@ -392,6 +396,8 @@
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
+        :param driver_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the driver node.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as `node_type_id` defined above.
@@ -476,6 +482,8 @@
 
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+        :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
 
         :returns:
@@ -483,7 +491,7 @@
           See :method:wait_get_cluster_running for more details.
         
 
-    .. py:method:: edit_and_wait(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
+    .. py:method:: edit_and_wait(cluster_id: str, spark_version: str [, apply_policy_default_values: Optional[bool], autoscale: Optional[AutoScale], autotermination_minutes: Optional[int], aws_attributes: Optional[AwsAttributes], azure_attributes: Optional[AzureAttributes], cluster_log_conf: Optional[ClusterLogConf], cluster_name: Optional[str], custom_tags: Optional[Dict[str, str]], data_security_mode: Optional[DataSecurityMode], docker_image: Optional[DockerImage], driver_instance_pool_id: Optional[str], driver_node_type_flexibility: Optional[NodeTypeFlexibility], driver_node_type_id: Optional[str], enable_elastic_disk: Optional[bool], enable_local_disk_encryption: Optional[bool], gcp_attributes: Optional[GcpAttributes], init_scripts: Optional[List[InitScriptInfo]], instance_pool_id: Optional[str], is_single_node: Optional[bool], kind: Optional[Kind], node_type_id: Optional[str], num_workers: Optional[int], policy_id: Optional[str], remote_disk_throughput: Optional[int], runtime_engine: Optional[RuntimeEngine], single_user_name: Optional[str], spark_conf: Optional[Dict[str, str]], spark_env_vars: Optional[Dict[str, str]], ssh_public_keys: Optional[List[str]], total_initial_remote_disk_size: Optional[int], use_ml_runtime: Optional[bool], worker_node_type_flexibility: Optional[NodeTypeFlexibility], workload_type: Optional[WorkloadType], timeout: datetime.timedelta = 0:20:00]) -> ClusterDetails
 
 
     .. py:method:: ensure_cluster_is_running(cluster_id: str)

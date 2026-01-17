@@ -99,12 +99,39 @@
     .. py:method:: create_and_wait( [, auto_stop_mins: Optional[int], channel: Optional[Channel], cluster_size: Optional[str], creator_name: Optional[str], enable_photon: Optional[bool], enable_serverless_compute: Optional[bool], instance_profile_arn: Optional[str], max_num_clusters: Optional[int], min_num_clusters: Optional[int], name: Optional[str], spot_instance_policy: Optional[SpotInstancePolicy], tags: Optional[EndpointTags], warehouse_type: Optional[CreateWarehouseRequestWarehouseType], timeout: datetime.timedelta = 0:20:00]) -> GetWarehouseResponse
 
 
+    .. py:method:: create_default_warehouse_override(default_warehouse_override: DefaultWarehouseOverride, default_warehouse_override_id: str) -> DefaultWarehouseOverride
+
+        Creates a new default warehouse override for a user. Users can create their own override. Admins can
+        create overrides for any user.
+
+        :param default_warehouse_override: :class:`DefaultWarehouseOverride`
+          Required. The default warehouse override to create.
+        :param default_warehouse_override_id: str
+          Required. The ID to use for the override, which will become the final component of the override's
+          resource name. Can be a numeric user ID or the literal string "me" for the current user.
+
+        :returns: :class:`DefaultWarehouseOverride`
+        
+
     .. py:method:: delete(id: str)
 
         Deletes a SQL warehouse.
 
         :param id: str
           Required. Id of the SQL warehouse.
+
+
+        
+
+    .. py:method:: delete_default_warehouse_override(name: str)
+
+        Deletes the default warehouse override for a user. Users can delete their own override. Admins can
+        delete overrides for any user. After deletion, the workspace default warehouse will be used.
+
+        :param name: str
+          Required. The resource name of the default warehouse override to delete. Format:
+          default-warehouse-overrides/{default_warehouse_override_id} The default_warehouse_override_id can be
+          a numeric user ID or the literal string "me" for the current user.
 
 
         
@@ -248,6 +275,20 @@
         :returns: :class:`GetWarehouseResponse`
         
 
+    .. py:method:: get_default_warehouse_override(name: str) -> DefaultWarehouseOverride
+
+        Returns the default warehouse override for a user. Users can fetch their own override. Admins can
+        fetch overrides for any user. If no override exists, the UI will fallback to the workspace default
+        warehouse.
+
+        :param name: str
+          Required. The resource name of the default warehouse override to retrieve. Format:
+          default-warehouse-overrides/{default_warehouse_override_id} The default_warehouse_override_id can be
+          a numeric user ID or the literal string "me" for the current user.
+
+        :returns: :class:`DefaultWarehouseOverride`
+        
+
     .. py:method:: get_permission_levels(warehouse_id: str) -> GetWarehousePermissionLevelsResponse
 
         Gets the permission levels that a user can have on an object.
@@ -306,6 +347,25 @@
           will use the user from the session header.
 
         :returns: Iterator over :class:`EndpointInfo`
+        
+
+    .. py:method:: list_default_warehouse_overrides( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[DefaultWarehouseOverride]
+
+        Lists all default warehouse overrides in the workspace. Only workspace administrators can list all
+        overrides.
+
+        :param page_size: int (optional)
+          The maximum number of overrides to return. The service may return fewer than this value. If
+          unspecified, at most 100 overrides will be returned. The maximum value is 1000; values above 1000
+          will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListDefaultWarehouseOverrides` call. Provide this to
+          retrieve the subsequent page.
+
+          When paginating, all other parameters provided to `ListDefaultWarehouseOverrides` must match the
+          call that provided the page token.
+
+        :returns: Iterator over :class:`DefaultWarehouseOverride`
         
 
     .. py:method:: set_permissions(warehouse_id: str [, access_control_list: Optional[List[WarehouseAccessControlRequest]]]) -> WarehousePermissions
@@ -382,6 +442,29 @@
 
     .. py:method:: stop_and_wait(id: str, timeout: datetime.timedelta = 0:20:00) -> GetWarehouseResponse
 
+
+    .. py:method:: update_default_warehouse_override(name: str, default_warehouse_override: DefaultWarehouseOverride, update_mask: FieldMask [, allow_missing: Optional[bool]]) -> DefaultWarehouseOverride
+
+        Updates an existing default warehouse override for a user. Users can update their own override. Admins
+        can update overrides for any user.
+
+        :param name: str
+          The resource name of the default warehouse override. Format:
+          default-warehouse-overrides/{default_warehouse_override_id}
+        :param default_warehouse_override: :class:`DefaultWarehouseOverride`
+          Required. The default warehouse override to update. The name field must be set in the format:
+          default-warehouse-overrides/{default_warehouse_override_id} The default_warehouse_override_id can be
+          a numeric user ID or the literal string "me" for the current user.
+        :param update_mask: FieldMask
+          Required. Field mask specifying which fields to update. Only the fields specified in the mask will
+          be updated. Use "*" to update all fields. When allow_missing is true, this field is ignored and all
+          fields are applied.
+        :param allow_missing: bool (optional)
+          If set to true, and the override is not found, a new override will be created. In this situation,
+          `update_mask` is ignored and all fields are applied. Defaults to false.
+
+        :returns: :class:`DefaultWarehouseOverride`
+        
 
     .. py:method:: update_permissions(warehouse_id: str [, access_control_list: Optional[List[WarehouseAccessControlRequest]]]) -> WarehousePermissions
 

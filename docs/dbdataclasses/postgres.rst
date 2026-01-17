@@ -369,10 +369,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
-.. autoclass:: ProjectSettings
-   :members:
-   :undoc-members:
-
 .. autoclass:: ProjectSpec
    :members:
    :undoc-members:

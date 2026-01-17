@@ -4,76 +4,103 @@
 
 .. py:class:: PostgresAPI
 
-    The Postgres API provides access to a Postgres database via REST API or direct SQL.
+    Use the Postgres API to create and manage Lakebase Autoscaling Postgres infrastructure, including
+    projects, branches, compute endpoints, and roles.
 
-    .. py:method:: create_branch(parent: str, branch: Branch [, branch_id: Optional[str]]) -> CreateBranchOperation
+    This API manages database infrastructure only. To query or modify data, use the Data API or direct SQL
+    connections.
 
-        Create a Branch.
+    **About resource IDs and names**
+
+    Lakebase APIs use hierarchical resource names in API paths to identify resources, such as
+    `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`.
+
+    When creating a resource, you may optionally provide the final ID component (for example, `project_id`,
+    `branch_id`, or `endpoint_id`). If you do not, the system generates an identifier and uses it as the ID
+    component.
+
+    The `name` field is output-only and represents the full resource path. Note: The term *resource name* in
+    this API refers to this full, hierarchical identifier (for example, `projects/{project_id}`), not the
+    `display_name` field. The `display_name` is a separate, user-visible label shown in the UI.
+
+    The `uid` field is a system-generated, immutable identifier intended for internal reference and should not
+    be used to address or locate resources.
+
+    .. py:method:: create_branch(parent: str, branch: Branch, branch_id: str) -> CreateBranchOperation
+
+        Creates a new database branch in the project.
 
         :param parent: str
           The Project where this Branch will be created. Format: projects/{project_id}
         :param branch: :class:`Branch`
           The Branch to create.
-        :param branch_id: str (optional)
-          The ID to use for the Branch, which will become the final component of the branch's resource name.
-
-          This value should be 4-63 characters, and valid characters are /[a-z][0-9]-/.
+        :param branch_id: str
+          The ID to use for the Branch. This becomes the final component of the branch's resource name. This
+          value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens, as
+          defined by RFC 1123. Examples: - With custom ID: `staging` → name becomes
+          `projects/{project_id}/branches/staging` - Without custom ID: system generates slug → name becomes
+          `projects/{project_id}/branches/br-example-name-x1y2z3a4`
 
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_endpoint(parent: str, endpoint: Endpoint [, endpoint_id: Optional[str]]) -> CreateEndpointOperation
+    .. py:method:: create_endpoint(parent: str, endpoint: Endpoint, endpoint_id: str) -> CreateEndpointOperation
 
-        Create an Endpoint.
+        Creates a new compute endpoint in the branch.
 
         :param parent: str
           The Branch where this Endpoint will be created. Format: projects/{project_id}/branches/{branch_id}
         :param endpoint: :class:`Endpoint`
           The Endpoint to create.
-        :param endpoint_id: str (optional)
-          The ID to use for the Endpoint, which will become the final component of the endpoint's resource
-          name.
-
-          This value should be 4-63 characters, and valid characters are /[a-z][0-9]-/.
+        :param endpoint_id: str
+          The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
+          This value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens,
+          as defined by RFC 1123. Examples: - With custom ID: `primary` → name becomes
+          `projects/{project_id}/branches/{branch_id}/endpoints/primary` - Without custom ID: system generates
+          slug → name becomes
+          `projects/{project_id}/branches/{branch_id}/endpoints/ep-example-name-x1y2z3a4`
 
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_project(project: Project [, project_id: Optional[str]]) -> CreateProjectOperation
+    .. py:method:: create_project(project: Project, project_id: str) -> CreateProjectOperation
 
-        Create a Project.
+        Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute
+        endpoints.
 
         :param project: :class:`Project`
           The Project to create.
-        :param project_id: str (optional)
-          The ID to use for the Project, which will become the final component of the project's resource name.
-
-          This value should be 4-63 characters, and valid characters are /[a-z][0-9]-/.
+        :param project_id: str
+          The ID to use for the Project. This becomes the final component of the project's resource name. This
+          value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens, as
+          defined by RFC 1123. Examples: - With custom ID: `production` → name becomes `projects/production`
+          - Without custom ID: system generates UUID → name becomes
+          `projects/a7f89b2c-3d4e-5f6g-7h8i-9j0k1l2m3n4o`
 
         :returns: :class:`Operation`
         
 
     .. py:method:: create_role(parent: str, role: Role, role_id: str) -> CreateRoleOperation
 
-        Create a role for a branch.
+        Creates a new Postgres role in the branch.
 
         :param parent: str
           The Branch where this Role is created. Format: projects/{project_id}/branches/{branch_id}
         :param role: :class:`Role`
           The desired specification of a Role.
         :param role_id: str
-          The ID to use for the Role, which will become the final component of the branch's resource name.
-          This ID becomes the role in postgres.
+          The ID to use for the Role, which will become the final component of the role's resource name. This
+          ID becomes the role in Postgres.
 
-          This value should be 4-63 characters, and only use characters available in DNS names, as defined by
-          RFC-1123
+          This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and
+          hyphens, as defined by RFC 1123.
 
         :returns: :class:`Operation`
         
 
     .. py:method:: delete_branch(name: str) -> DeleteBranchOperation
 
-        Delete a Branch.
+        Deletes the specified database branch.
 
         :param name: str
           The name of the Branch to delete. Format: projects/{project_id}/branches/{branch_id}
@@ -83,7 +110,7 @@
 
     .. py:method:: delete_endpoint(name: str) -> DeleteEndpointOperation
 
-        Delete an Endpoint.
+        Deletes the specified compute endpoint.
 
         :param name: str
           The name of the Endpoint to delete. Format:
@@ -94,7 +121,7 @@
 
     .. py:method:: delete_project(name: str) -> DeleteProjectOperation
 
-        Delete a Project.
+        Deletes the specified database project.
 
         :param name: str
           The name of the Project to delete. Format: projects/{project_id}
@@ -104,11 +131,11 @@
 
     .. py:method:: delete_role(name: str [, reassign_owned_to: Optional[str]]) -> DeleteRoleOperation
 
-        Delete a role in a branch.
+        Deletes the specified Postgres role.
 
         :param name: str
           The resource name of the postgres role. Format:
-          projects/{project_id}/branch/{branch_id}/roles/{role_id}
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param reassign_owned_to: str (optional)
           Reassign objects. If this is set, all objects owned by the role are reassigned to the role specified
           in this parameter.
@@ -123,28 +150,29 @@
 
     .. py:method:: get_branch(name: str) -> Branch
 
-        Get a Branch.
+        Retrieves information about the specified database branch.
 
         :param name: str
-          The name of the Branch to retrieve. Format: projects/{project_id}/branches/{branch_id}
+          The resource name of the branch to retrieve. Format: `projects/{project_id}/branches/{branch_id}`
 
         :returns: :class:`Branch`
         
 
     .. py:method:: get_endpoint(name: str) -> Endpoint
 
-        Get an Endpoint.
+        Retrieves information about the specified compute endpoint, including its connection details and
+        operational state.
 
         :param name: str
-          The name of the Endpoint to retrieve. Format:
-          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+          The resource name of the endpoint to retrieve. Format:
+          `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
 
         :returns: :class:`Endpoint`
         
 
     .. py:method:: get_operation(name: str) -> Operation
 
-        Get an Operation.
+        Retrieves the status of a long-running operation.
 
         :param name: str
           The name of the operation resource.
@@ -154,17 +182,18 @@
 
     .. py:method:: get_project(name: str) -> Project
 
-        Get a Project.
+        Retrieves information about the specified database project.
 
         :param name: str
-          The name of the Project to retrieve. Format: projects/{project_id}
+          The resource name of the project to retrieve. Format: `projects/{project_id}`
 
         :returns: :class:`Project`
         
 
     .. py:method:: get_role(name: str) -> Role
 
-        Get a Role.
+        Retrieves information about the specified Postgres role, including its authentication method and
+        permissions.
 
         :param name: str
           The name of the Role to retrieve. Format: projects/{project_id}/branches/{branch_id}/roles/{role_id}
@@ -174,21 +203,21 @@
 
     .. py:method:: list_branches(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Branch]
 
-        List Branches.
+        Returns a paginated list of database branches in the project.
 
         :param parent: str
           The Project that owns this collection of branches. Format: projects/{project_id}
         :param page_size: int (optional)
           Upper bound for items returned.
         :param page_token: str (optional)
-          Pagination token to go to the next page of Branches. Requests first page if absent.
+          Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Branch`
         
 
     .. py:method:: list_endpoints(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Endpoint]
 
-        List Endpoints.
+        Returns a paginated list of compute endpoints in the branch.
 
         :param parent: str
           The Branch that owns this collection of endpoints. Format:
@@ -196,43 +225,45 @@
         :param page_size: int (optional)
           Upper bound for items returned.
         :param page_token: str (optional)
-          Pagination token to go to the next page of Endpoints. Requests first page if absent.
+          Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Endpoint`
         
 
     .. py:method:: list_projects( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Project]
 
-        List Projects.
+        Returns a paginated list of database projects in the workspace that the user has permission to access.
 
         :param page_size: int (optional)
           Upper bound for items returned.
         :param page_token: str (optional)
-          Pagination token to go to the next page of Projects. Requests first page if absent.
+          Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Project`
         
 
     .. py:method:: list_roles(parent: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Role]
 
-        List Roles.
+        Returns a paginated list of Postgres roles in the branch.
 
         :param parent: str
           The Branch that owns this collection of roles. Format: projects/{project_id}/branches/{branch_id}
         :param page_size: int (optional)
           Upper bound for items returned.
         :param page_token: str (optional)
-          Pagination token to go to the next page of Roles. Requests first page if absent.
+          Page token from a previous response. If not provided, returns the first page.
 
         :returns: Iterator over :class:`Role`
         
 
     .. py:method:: update_branch(name: str, branch: Branch, update_mask: FieldMask) -> UpdateBranchOperation
 
-        Update a Branch.
+        Updates the specified database branch. You can set this branch as the project's default branch, or
+        protect/unprotect it.
 
         :param name: str
-          The resource name of the branch. Format: projects/{project_id}/branches/{branch_id}
+          The resource name of the branch. This field is output-only and constructed by the system. Format:
+          `projects/{project_id}/branches/{branch_id}`
         :param branch: :class:`Branch`
           The Branch to update.
 
@@ -246,11 +277,12 @@
 
     .. py:method:: update_endpoint(name: str, endpoint: Endpoint, update_mask: FieldMask) -> UpdateEndpointOperation
 
-        Update an Endpoint.
+        Updates the specified compute endpoint. You can update autoscaling limits, suspend timeout, or
+        enable/disable the compute endpoint.
 
         :param name: str
-          The resource name of the endpoint. Format:
-          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+          The resource name of the endpoint. This field is output-only and constructed by the system. Format:
+          `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
         :param endpoint: :class:`Endpoint`
           The Endpoint to update.
 
@@ -264,10 +296,11 @@
 
     .. py:method:: update_project(name: str, project: Project, update_mask: FieldMask) -> UpdateProjectOperation
 
-        Update a Project.
+        Updates the specified database project.
 
         :param name: str
-          The resource name of the project. Format: projects/{project_id}
+          The resource name of the project. This field is output-only and constructed by the system. Format:
+          `projects/{project_id}`
         :param project: :class:`Project`
           The Project to update.
 

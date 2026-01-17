@@ -19,7 +19,7 @@
     Databricks does not charge DBUs while instances are idle in the pool. Instance provider billing does
     apply. See pricing.
 
-    .. py:method:: create(instance_pool_name: str, node_type_id: str [, aws_attributes: Optional[InstancePoolAwsAttributes], azure_attributes: Optional[InstancePoolAzureAttributes], custom_tags: Optional[Dict[str, str]], disk_spec: Optional[DiskSpec], enable_elastic_disk: Optional[bool], gcp_attributes: Optional[InstancePoolGcpAttributes], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], preloaded_docker_images: Optional[List[DockerImage]], preloaded_spark_versions: Optional[List[str]], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]]) -> CreateInstancePoolResponse
+    .. py:method:: create(instance_pool_name: str, node_type_id: str [, aws_attributes: Optional[InstancePoolAwsAttributes], azure_attributes: Optional[InstancePoolAzureAttributes], custom_tags: Optional[Dict[str, str]], disk_spec: Optional[DiskSpec], enable_elastic_disk: Optional[bool], gcp_attributes: Optional[InstancePoolGcpAttributes], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], node_type_flexibility: Optional[NodeTypeFlexibility], preloaded_docker_images: Optional[List[DockerImage]], preloaded_spark_versions: Optional[List[str]], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]]) -> CreateInstancePoolResponse
 
 
         Usage:
@@ -81,6 +81,8 @@
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the pool.
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
           Custom Docker Image BYOC
         :param preloaded_spark_versions: List[str] (optional)
@@ -107,7 +109,7 @@
 
         
 
-    .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]])
+    .. py:method:: edit(instance_pool_id: str, instance_pool_name: str, node_type_id: str [, custom_tags: Optional[Dict[str, str]], idle_instance_autotermination_minutes: Optional[int], max_capacity: Optional[int], min_idle_instances: Optional[int], node_type_flexibility: Optional[NodeTypeFlexibility], remote_disk_throughput: Optional[int], total_initial_remote_disk_size: Optional[int]])
 
 
         Usage:
@@ -162,6 +164,8 @@
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the pool.
         :param remote_disk_throughput: int (optional)
           If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
           for GCP HYPERDISK_BALANCED types.

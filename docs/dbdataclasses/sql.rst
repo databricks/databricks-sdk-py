@@ -417,6 +417,20 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: YESTERDAY
       :value: "YESTERDAY"
 
+.. autoclass:: DefaultWarehouseOverride
+   :members:
+   :undoc-members:
+
+.. py:class:: DefaultWarehouseOverrideType
+
+   Type of default warehouse override behavior.
+
+   .. py:attribute:: CUSTOM
+      :value: "CUSTOM"
+
+   .. py:attribute:: LAST_SELECTED
+      :value: "LAST_SELECTED"
+
 .. autoclass:: DeleteResponse
    :members:
    :undoc-members:
@@ -600,6 +614,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ListAlertsV2Response
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListDefaultWarehouseOverridesResponse
    :members:
    :undoc-members:
 

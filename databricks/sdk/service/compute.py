@@ -613,6 +613,9 @@ class ClusterAttributes:
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
     uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
 
+    driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the driver node."""
+
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
     type will be set as the same value as `node_type_id` defined above.
@@ -706,6 +709,9 @@ class ClusterAttributes:
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
+    worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for worker nodes."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -729,6 +735,8 @@ class ClusterAttributes:
             body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility.as_dict()
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -767,6 +775,8 @@ class ClusterAttributes:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility.as_dict()
         if self.workload_type:
             body["workload_type"] = self.workload_type.as_dict()
         return body
@@ -792,6 +802,8 @@ class ClusterAttributes:
             body["docker_image"] = self.docker_image
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -830,6 +842,8 @@ class ClusterAttributes:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility
         if self.workload_type:
             body["workload_type"] = self.workload_type
         return body
@@ -847,6 +861,7 @@ class ClusterAttributes:
             data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
             driver_node_type_id=d.get("driver_node_type_id", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
@@ -866,6 +881,7 @@ class ClusterAttributes:
             ssh_public_keys=d.get("ssh_public_keys", None),
             total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
+            worker_node_type_flexibility=_from_dict(d, "worker_node_type_flexibility", NodeTypeFlexibility),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
 
@@ -1006,6 +1022,9 @@ class ClusterDetails:
     driver_instance_pool_id: Optional[str] = None
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
     uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
+
+    driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the driver node."""
 
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
@@ -1154,6 +1173,9 @@ class ClusterDetails:
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
+    worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for worker nodes."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -1195,6 +1217,8 @@ class ClusterDetails:
             body["driver"] = self.driver.as_dict()
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility.as_dict()
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -1257,6 +1281,8 @@ class ClusterDetails:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility.as_dict()
         if self.workload_type:
             body["workload_type"] = self.workload_type.as_dict()
         return body
@@ -1300,6 +1326,8 @@ class ClusterDetails:
             body["driver"] = self.driver
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -1362,6 +1390,8 @@ class ClusterDetails:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility
         if self.workload_type:
             body["workload_type"] = self.workload_type
         return body
@@ -1388,6 +1418,7 @@ class ClusterDetails:
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver=_from_dict(d, "driver", SparkNode),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
             driver_node_type_id=d.get("driver_node_type_id", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
@@ -1419,6 +1450,7 @@ class ClusterDetails:
             termination_reason=_from_dict(d, "termination_reason", TerminationReason),
             total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
+            worker_node_type_flexibility=_from_dict(d, "worker_node_type_flexibility", NodeTypeFlexibility),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
 
@@ -2071,6 +2103,9 @@ class ClusterSpec:
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
     uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
 
+    driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the driver node."""
+
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
     type will be set as the same value as `node_type_id` defined above.
@@ -2178,6 +2213,9 @@ class ClusterSpec:
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
+    worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for worker nodes."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -2205,6 +2243,8 @@ class ClusterSpec:
             body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility.as_dict()
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -2245,6 +2285,8 @@ class ClusterSpec:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility.as_dict()
         if self.workload_type:
             body["workload_type"] = self.workload_type.as_dict()
         return body
@@ -2274,6 +2316,8 @@ class ClusterSpec:
             body["docker_image"] = self.docker_image
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -2314,6 +2358,8 @@ class ClusterSpec:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility
         if self.workload_type:
             body["workload_type"] = self.workload_type
         return body
@@ -2333,6 +2379,7 @@ class ClusterSpec:
             data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
             driver_node_type_id=d.get("driver_node_type_id", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
@@ -2353,6 +2400,7 @@ class ClusterSpec:
             ssh_public_keys=d.get("ssh_public_keys", None),
             total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
+            worker_node_type_flexibility=_from_dict(d, "worker_node_type_flexibility", NodeTypeFlexibility),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
 
@@ -3854,6 +3902,9 @@ class GetInstancePool:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the pool."""
+
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -3912,6 +3963,8 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -3957,6 +4010,8 @@ class GetInstancePool:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -3991,6 +4046,7 @@ class GetInstancePool:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
@@ -4668,6 +4724,9 @@ class InstancePoolAndStats:
     min_idle_instances: Optional[int] = None
     """Minimum number of idle instances to keep in the instance pool"""
 
+    node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the pool."""
+
     node_type_id: Optional[str] = None
     """This field encodes, through a single value, the resources available to each of the Spark nodes
     in this cluster. For example, the Spark nodes can be provisioned and optimized for memory or
@@ -4726,6 +4785,8 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility.as_dict()
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -4771,6 +4832,8 @@ class InstancePoolAndStats:
             body["max_capacity"] = self.max_capacity
         if self.min_idle_instances is not None:
             body["min_idle_instances"] = self.min_idle_instances
+        if self.node_type_flexibility:
+            body["node_type_flexibility"] = self.node_type_flexibility
         if self.node_type_id is not None:
             body["node_type_id"] = self.node_type_id
         if self.preloaded_docker_images:
@@ -4805,6 +4868,7 @@ class InstancePoolAndStats:
             instance_pool_name=d.get("instance_pool_name", None),
             max_capacity=d.get("max_capacity", None),
             min_idle_instances=d.get("min_idle_instances", None),
+            node_type_flexibility=_from_dict(d, "node_type_flexibility", NodeTypeFlexibility),
             node_type_id=d.get("node_type_id", None),
             preloaded_docker_images=_repeated_dict(d, "preloaded_docker_images", DockerImage),
             preloaded_spark_versions=d.get("preloaded_spark_versions", None),
@@ -6248,6 +6312,34 @@ class NodeType:
 
 
 @dataclass
+class NodeTypeFlexibility:
+    """Configuration for flexible node types, allowing fallback to alternate node types during cluster
+    launch and upscale."""
+
+    alternate_node_type_ids: Optional[List[str]] = None
+    """A list of node type IDs to use as fallbacks when the primary node type is unavailable."""
+
+    def as_dict(self) -> dict:
+        """Serializes the NodeTypeFlexibility into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.alternate_node_type_ids:
+            body["alternate_node_type_ids"] = [v for v in self.alternate_node_type_ids]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the NodeTypeFlexibility into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.alternate_node_type_ids:
+            body["alternate_node_type_ids"] = self.alternate_node_type_ids
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> NodeTypeFlexibility:
+        """Deserializes the NodeTypeFlexibility from a dictionary."""
+        return cls(alternate_node_type_ids=d.get("alternate_node_type_ids", None))
+
+
+@dataclass
 class PendingInstanceError:
     """Error message of a failed pending instances"""
 
@@ -7331,6 +7423,9 @@ class UpdateClusterResource:
     """The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster
     uses the instance pool with id (instance_pool_id) if the driver pool is not assigned."""
 
+    driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for the driver node."""
+
     driver_node_type_id: Optional[str] = None
     """The node type of the Spark driver. Note that this field is optional; if unset, the driver node
     type will be set as the same value as `node_type_id` defined above.
@@ -7438,6 +7533,9 @@ class UpdateClusterResource:
     `effective_spark_version` is determined by `spark_version` (DBR release), this field
     `use_ml_runtime`, and whether `node_type_id` is gpu node or not."""
 
+    worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None
+    """Flexible node type configuration for worker nodes."""
+
     workload_type: Optional[WorkloadType] = None
 
     def as_dict(self) -> dict:
@@ -7463,6 +7561,8 @@ class UpdateClusterResource:
             body["docker_image"] = self.docker_image.as_dict()
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility.as_dict()
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -7503,6 +7603,8 @@ class UpdateClusterResource:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility.as_dict()
         if self.workload_type:
             body["workload_type"] = self.workload_type.as_dict()
         return body
@@ -7530,6 +7632,8 @@ class UpdateClusterResource:
             body["docker_image"] = self.docker_image
         if self.driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = self.driver_instance_pool_id
+        if self.driver_node_type_flexibility:
+            body["driver_node_type_flexibility"] = self.driver_node_type_flexibility
         if self.driver_node_type_id is not None:
             body["driver_node_type_id"] = self.driver_node_type_id
         if self.enable_elastic_disk is not None:
@@ -7570,6 +7674,8 @@ class UpdateClusterResource:
             body["total_initial_remote_disk_size"] = self.total_initial_remote_disk_size
         if self.use_ml_runtime is not None:
             body["use_ml_runtime"] = self.use_ml_runtime
+        if self.worker_node_type_flexibility:
+            body["worker_node_type_flexibility"] = self.worker_node_type_flexibility
         if self.workload_type:
             body["workload_type"] = self.workload_type
         return body
@@ -7588,6 +7694,7 @@ class UpdateClusterResource:
             data_security_mode=_enum(d, "data_security_mode", DataSecurityMode),
             docker_image=_from_dict(d, "docker_image", DockerImage),
             driver_instance_pool_id=d.get("driver_instance_pool_id", None),
+            driver_node_type_flexibility=_from_dict(d, "driver_node_type_flexibility", NodeTypeFlexibility),
             driver_node_type_id=d.get("driver_node_type_id", None),
             enable_elastic_disk=d.get("enable_elastic_disk", None),
             enable_local_disk_encryption=d.get("enable_local_disk_encryption", None),
@@ -7608,6 +7715,7 @@ class UpdateClusterResource:
             ssh_public_keys=d.get("ssh_public_keys", None),
             total_initial_remote_disk_size=d.get("total_initial_remote_disk_size", None),
             use_ml_runtime=d.get("use_ml_runtime", None),
+            worker_node_type_flexibility=_from_dict(d, "worker_node_type_flexibility", NodeTypeFlexibility),
             workload_type=_from_dict(d, "workload_type", WorkloadType),
         )
 
@@ -8181,6 +8289,7 @@ class ClustersAPI:
         data_security_mode: Optional[DataSecurityMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         driver_node_type_id: Optional[str] = None,
         enable_elastic_disk: Optional[bool] = None,
         enable_local_disk_encryption: Optional[bool] = None,
@@ -8200,6 +8309,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
+        worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         workload_type: Optional[WorkloadType] = None,
     ) -> Wait[ClusterDetails]:
         """Creates a new Spark cluster. This method will acquire new instances from the cloud provider if
@@ -8261,6 +8371,8 @@ class ClustersAPI:
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
+        :param driver_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the driver node.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as `node_type_id` defined above.
@@ -8345,6 +8457,8 @@ class ClustersAPI:
 
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+        :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
 
         :returns:
@@ -8377,6 +8491,8 @@ class ClustersAPI:
             body["docker_image"] = docker_image.as_dict()
         if driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = driver_instance_pool_id
+        if driver_node_type_flexibility is not None:
+            body["driver_node_type_flexibility"] = driver_node_type_flexibility.as_dict()
         if driver_node_type_id is not None:
             body["driver_node_type_id"] = driver_node_type_id
         if enable_elastic_disk is not None:
@@ -8417,6 +8533,8 @@ class ClustersAPI:
             body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         if use_ml_runtime is not None:
             body["use_ml_runtime"] = use_ml_runtime
+        if worker_node_type_flexibility is not None:
+            body["worker_node_type_flexibility"] = worker_node_type_flexibility.as_dict()
         if workload_type is not None:
             body["workload_type"] = workload_type.as_dict()
         headers = {
@@ -8447,6 +8565,7 @@ class ClustersAPI:
         data_security_mode: Optional[DataSecurityMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         driver_node_type_id: Optional[str] = None,
         enable_elastic_disk: Optional[bool] = None,
         enable_local_disk_encryption: Optional[bool] = None,
@@ -8466,6 +8585,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
+        worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20),
     ) -> ClusterDetails:
@@ -8482,6 +8602,7 @@ class ClustersAPI:
             data_security_mode=data_security_mode,
             docker_image=docker_image,
             driver_instance_pool_id=driver_instance_pool_id,
+            driver_node_type_flexibility=driver_node_type_flexibility,
             driver_node_type_id=driver_node_type_id,
             enable_elastic_disk=enable_elastic_disk,
             enable_local_disk_encryption=enable_local_disk_encryption,
@@ -8502,6 +8623,7 @@ class ClustersAPI:
             ssh_public_keys=ssh_public_keys,
             total_initial_remote_disk_size=total_initial_remote_disk_size,
             use_ml_runtime=use_ml_runtime,
+            worker_node_type_flexibility=worker_node_type_flexibility,
             workload_type=workload_type,
         ).result(timeout=timeout)
 
@@ -8548,6 +8670,7 @@ class ClustersAPI:
         data_security_mode: Optional[DataSecurityMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         driver_node_type_id: Optional[str] = None,
         enable_elastic_disk: Optional[bool] = None,
         enable_local_disk_encryption: Optional[bool] = None,
@@ -8567,6 +8690,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
+        worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         workload_type: Optional[WorkloadType] = None,
     ) -> Wait[ClusterDetails]:
         """Updates the configuration of a cluster to match the provided attributes and size. A cluster can be
@@ -8625,6 +8749,8 @@ class ClustersAPI:
         :param driver_instance_pool_id: str (optional)
           The optional ID of the instance pool for the driver of the cluster belongs. The pool cluster uses
           the instance pool with id (instance_pool_id) if the driver pool is not assigned.
+        :param driver_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the driver node.
         :param driver_node_type_id: str (optional)
           The node type of the Spark driver. Note that this field is optional; if unset, the driver node type
           will be set as the same value as `node_type_id` defined above.
@@ -8709,6 +8835,8 @@ class ClustersAPI:
 
           `effective_spark_version` is determined by `spark_version` (DBR release), this field
           `use_ml_runtime`, and whether `node_type_id` is gpu node or not.
+        :param worker_node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for worker nodes.
         :param workload_type: :class:`WorkloadType` (optional)
 
         :returns:
@@ -8741,6 +8869,8 @@ class ClustersAPI:
             body["docker_image"] = docker_image.as_dict()
         if driver_instance_pool_id is not None:
             body["driver_instance_pool_id"] = driver_instance_pool_id
+        if driver_node_type_flexibility is not None:
+            body["driver_node_type_flexibility"] = driver_node_type_flexibility.as_dict()
         if driver_node_type_id is not None:
             body["driver_node_type_id"] = driver_node_type_id
         if enable_elastic_disk is not None:
@@ -8781,6 +8911,8 @@ class ClustersAPI:
             body["total_initial_remote_disk_size"] = total_initial_remote_disk_size
         if use_ml_runtime is not None:
             body["use_ml_runtime"] = use_ml_runtime
+        if worker_node_type_flexibility is not None:
+            body["worker_node_type_flexibility"] = worker_node_type_flexibility.as_dict()
         if workload_type is not None:
             body["workload_type"] = workload_type.as_dict()
         headers = {
@@ -8807,6 +8939,7 @@ class ClustersAPI:
         data_security_mode: Optional[DataSecurityMode] = None,
         docker_image: Optional[DockerImage] = None,
         driver_instance_pool_id: Optional[str] = None,
+        driver_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         driver_node_type_id: Optional[str] = None,
         enable_elastic_disk: Optional[bool] = None,
         enable_local_disk_encryption: Optional[bool] = None,
@@ -8826,6 +8959,7 @@ class ClustersAPI:
         ssh_public_keys: Optional[List[str]] = None,
         total_initial_remote_disk_size: Optional[int] = None,
         use_ml_runtime: Optional[bool] = None,
+        worker_node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         workload_type: Optional[WorkloadType] = None,
         timeout=timedelta(minutes=20),
     ) -> ClusterDetails:
@@ -8842,6 +8976,7 @@ class ClustersAPI:
             data_security_mode=data_security_mode,
             docker_image=docker_image,
             driver_instance_pool_id=driver_instance_pool_id,
+            driver_node_type_flexibility=driver_node_type_flexibility,
             driver_node_type_id=driver_node_type_id,
             enable_elastic_disk=enable_elastic_disk,
             enable_local_disk_encryption=enable_local_disk_encryption,
@@ -8862,6 +8997,7 @@ class ClustersAPI:
             ssh_public_keys=ssh_public_keys,
             total_initial_remote_disk_size=total_initial_remote_disk_size,
             use_ml_runtime=use_ml_runtime,
+            worker_node_type_flexibility=worker_node_type_flexibility,
             workload_type=workload_type,
         ).result(timeout=timeout)
 
@@ -9880,6 +10016,7 @@ class InstancePoolsAPI:
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
+        node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         preloaded_docker_images: Optional[List[DockerImage]] = None,
         preloaded_spark_versions: Optional[List[str]] = None,
         remote_disk_throughput: Optional[int] = None,
@@ -9927,6 +10064,8 @@ class InstancePoolsAPI:
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the pool.
         :param preloaded_docker_images: List[:class:`DockerImage`] (optional)
           Custom Docker Image BYOC
         :param preloaded_spark_versions: List[str] (optional)
@@ -9964,6 +10103,8 @@ class InstancePoolsAPI:
             body["max_capacity"] = max_capacity
         if min_idle_instances is not None:
             body["min_idle_instances"] = min_idle_instances
+        if node_type_flexibility is not None:
+            body["node_type_flexibility"] = node_type_flexibility.as_dict()
         if node_type_id is not None:
             body["node_type_id"] = node_type_id
         if preloaded_docker_images is not None:
@@ -10011,6 +10152,7 @@ class InstancePoolsAPI:
         idle_instance_autotermination_minutes: Optional[int] = None,
         max_capacity: Optional[int] = None,
         min_idle_instances: Optional[int] = None,
+        node_type_flexibility: Optional[NodeTypeFlexibility] = None,
         remote_disk_throughput: Optional[int] = None,
         total_initial_remote_disk_size: Optional[int] = None,
     ):
@@ -10043,6 +10185,8 @@ class InstancePoolsAPI:
           upsize requests.
         :param min_idle_instances: int (optional)
           Minimum number of idle instances to keep in the instance pool
+        :param node_type_flexibility: :class:`NodeTypeFlexibility` (optional)
+          Flexible node type configuration for the pool.
         :param remote_disk_throughput: int (optional)
           If set, what the configurable throughput (in Mb/s) for the remote disk is. Currently only supported
           for GCP HYPERDISK_BALANCED types.
@@ -10066,6 +10210,8 @@ class InstancePoolsAPI:
             body["max_capacity"] = max_capacity
         if min_idle_instances is not None:
             body["min_idle_instances"] = min_idle_instances
+        if node_type_flexibility is not None:
+            body["node_type_flexibility"] = node_type_flexibility.as_dict()
         if node_type_id is not None:
             body["node_type_id"] = node_type_id
         if remote_disk_throughput is not None:

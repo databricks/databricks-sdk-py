@@ -751,7 +751,7 @@ class WorkspaceClient:
 
     @property
     def postgres(self) -> pkg_postgres.PostgresAPI:
-        """The Postgres API provides access to a Postgres database via REST API or direct SQL."""
+        """Use the Postgres API to create and manage Lakebase Autoscaling Postgres infrastructure, including projects, branches, compute endpoints, and roles."""
         return self._postgres
 
     @property
