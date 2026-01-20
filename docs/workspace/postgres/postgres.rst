@@ -35,9 +35,9 @@
         :param branch: :class:`Branch`
           The Branch to create.
         :param branch_id: str
-          The ID to use for the Branch. This becomes the final component of the branch's resource name. This
-          value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens, as
-          defined by RFC 1123. Examples: - With custom ID: `staging` → name becomes
+          The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID
+          must be 1-63 characters long, start with a lowercase letter, and contain only lowercase letters,
+          numbers, and hyphens (RFC 1123). Examples: - With custom ID: `staging` → name becomes
           `projects/{project_id}/branches/staging` - Without custom ID: system generates slug → name becomes
           `projects/{project_id}/branches/br-example-name-x1y2z3a4`
 
@@ -54,8 +54,8 @@
           The Endpoint to create.
         :param endpoint_id: str
           The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
-          This value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens,
-          as defined by RFC 1123. Examples: - With custom ID: `primary` → name becomes
+          The ID must be 1-63 characters long, start with a lowercase letter, and contain only lowercase
+          letters, numbers, and hyphens (RFC 1123). Examples: - With custom ID: `primary` → name becomes
           `projects/{project_id}/branches/{branch_id}/endpoints/primary` - Without custom ID: system generates
           slug → name becomes
           `projects/{project_id}/branches/{branch_id}/endpoints/ep-example-name-x1y2z3a4`
@@ -71,10 +71,10 @@
         :param project: :class:`Project`
           The Project to create.
         :param project_id: str
-          The ID to use for the Project. This becomes the final component of the project's resource name. This
-          value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens, as
-          defined by RFC 1123. Examples: - With custom ID: `production` → name becomes `projects/production`
-          - Without custom ID: system generates UUID → name becomes
+          The ID to use for the Project. This becomes the final component of the project's resource name. The
+          ID must be 1-63 characters long, start with a lowercase letter, and contain only lowercase letters,
+          numbers, and hyphens (RFC 1123). Examples: - With custom ID: `production` → name becomes
+          `projects/production` - Without custom ID: system generates UUID → name becomes
           `projects/a7f89b2c-3d4e-5f6g-7h8i-9j0k1l2m3n4o`
 
         :returns: :class:`Operation`
@@ -148,6 +148,19 @@
         :returns: :class:`Operation`
         
 
+    .. py:method:: generate_database_credential(endpoint: str [, claims: Optional[List[RequestedClaims]]]) -> DatabaseCredential
+
+        Generate OAuth credentials for a Postgres database.
+
+        :param endpoint: str
+          This field is not yet supported. The endpoint for which this credential will be generated. Format:
+          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+        :param claims: List[:class:`RequestedClaims`] (optional)
+          The returned token will be scoped to UC tables with the specified permissions.
+
+        :returns: :class:`DatabaseCredential`
+        
+
     .. py:method:: get_branch(name: str) -> Branch
 
         Retrieves information about the specified database branch.
@@ -208,7 +221,7 @@
         :param parent: str
           The Project that owns this collection of branches. Format: projects/{project_id}
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -223,7 +236,7 @@
           The Branch that owns this collection of endpoints. Format:
           projects/{project_id}/branches/{branch_id}
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -235,7 +248,7 @@
         Returns a paginated list of database projects in the workspace that the user has permission to access.
 
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -249,7 +262,7 @@
         :param parent: str
           The Branch that owns this collection of roles. Format: projects/{project_id}/branches/{branch_id}
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 

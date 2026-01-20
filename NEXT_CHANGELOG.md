@@ -45,3 +45,13 @@
 * [Breaking] Remove `default` field for `databricks.sdk.service.postgres.BranchSpec`.
 * [Breaking] Remove `settings` field for `databricks.sdk.service.postgres.ProjectSpec`.
 * [Breaking] Remove `settings` field for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `generate_database_credential()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service.
+* Add `get_public_account_user_preference()`, `list_account_user_preferences_metadata()` and `patch_public_account_user_preference()` methods for [a.account_settings_v2](https://databricks-sdk-py.readthedocs.io/en/latest/account/settingsv2/account_settings_v2.html) account-level service.
+* Add `stderr` field for `databricks.sdk.service.compute.InitScriptInfoAndExecutionDetails`.
+* Add `no_expiry` field for `databricks.sdk.service.postgres.BranchSpec`.
+* Add `outputs` field for `databricks.sdk.service.serving.QueryEndpointResponse`.
+* Add `principal_id` field for `databricks.sdk.service.workspace.CreateCredentialsRequest`.
+* Add `principal_id` field for `databricks.sdk.service.workspace.DeleteCredentialsRequest`.
+* Add `principal_id` field for `databricks.sdk.service.workspace.GetCredentialsRequest`.
+* Add `principal_id` field for `databricks.sdk.service.workspace.ListCredentialsRequest`.
+* Add `principal_id` field for `databricks.sdk.service.workspace.UpdateCredentialsRequest`.

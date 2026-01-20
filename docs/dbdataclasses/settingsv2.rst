@@ -101,6 +101,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ListAccountUserPreferencesMetadataResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListWorkspaceSettingsMetadataResponse
    :members:
    :undoc-members:
@@ -140,5 +144,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: StringMessage
+   :members:
+   :undoc-members:
+
+.. autoclass:: UserPreference
    :members:
    :undoc-members:
