@@ -293,3 +293,125 @@ def test_poll_behavior(
             assert clock.time() >= min_time
         elif scenario in ("halt", "unexpected"):
             assert call_count == attempts
+
+
+def test_max_attempts_respected():
+    """Test that max_attempts parameter is respected and stops retrying after the limit."""
+    clock = FakeClock()
+    call_count = 0
+
+    @retried(
+        is_retryable=lambda _: "always retry",
+        timeout=timedelta(seconds=60),  # High timeout, should hit max_attempts first
+        max_attempts=3,
+        clock=clock,
+    )
+    def failing_function():
+        nonlocal call_count
+        call_count += 1
+        raise ValueError("test error")
+
+    with pytest.raises(TimeoutError) as exc_info:
+        failing_function()
+
+    # Should have attempted 3 times (initial + 2 retries)
+    assert call_count == 3
+    # Error message should indicate max attempts exceeded
+    assert "Exceeded max retry attempts (3)" in str(exc_info.value)
+
+
+def test_timeout_exceeded_before_max_attempts():
+    """Test that timeout is respected even when max_attempts is not reached."""
+    clock = FakeClock()
+    call_count = 0
+
+    @retried(
+        is_retryable=lambda _: "always retry",
+        timeout=timedelta(seconds=2),  # Short timeout
+        max_attempts=100,  # High max attempts
+        clock=clock,
+    )
+    def failing_function():
+        nonlocal call_count
+        call_count += 1
+        raise ValueError("test error")
+
+    with pytest.raises(TimeoutError) as exc_info:
+        failing_function()
+
+    # Should timeout before reaching 100 attempts
+    assert call_count < 100
+    # Error message should indicate timeout (not max attempts)
+    assert "Timed out after" in str(exc_info.value)
+    assert "Exceeded max retry attempts" not in str(exc_info.value)
+
+
+def test_successful_retry_within_max_attempts():
+    """Test that function succeeds when it recovers before max_attempts is hit."""
+    clock = FakeClock()
+    call_count = 0
+
+    @retried(
+        is_retryable=lambda _: "always retry",
+        timeout=timedelta(seconds=60),
+        max_attempts=5,
+        clock=clock,
+    )
+    def eventually_succeeds():
+        nonlocal call_count
+        call_count += 1
+        if call_count < 3:
+            raise ValueError("not yet")
+        return "success"
+
+    result = eventually_succeeds()
+    assert result == "success"
+    assert call_count == 3
+
+
+def test_max_attempts_none_preserves_backward_compatibility():
+    """Test that max_attempts=None only uses timeout (backward compatibility)."""
+    clock = FakeClock()
+    call_count = 0
+
+    @retried(
+        is_retryable=lambda _: "always retry",
+        timeout=timedelta(seconds=3),
+        max_attempts=None,  # No attempt limit
+        clock=clock,
+    )
+    def failing_function():
+        nonlocal call_count
+        call_count += 1
+        raise ValueError("test error")
+
+    with pytest.raises(TimeoutError) as exc_info:
+        failing_function()
+
+    # Should have made multiple attempts based on timeout
+    assert call_count > 1
+    # Error message should indicate timeout
+    assert "Timed out after" in str(exc_info.value)
+
+
+def test_max_attempts_with_non_retryable_error():
+    """Test that non-retryable errors are raised immediately regardless of max_attempts."""
+    clock = FakeClock()
+    call_count = 0
+
+    @retried(
+        on=[ValueError],
+        timeout=timedelta(seconds=60),
+        max_attempts=5,
+        clock=clock,
+    )
+    def raises_non_retryable():
+        nonlocal call_count
+        call_count += 1
+        raise KeyError("not retryable")
+
+    with pytest.raises(KeyError):
+        raises_non_retryable()
+
+    # Should only attempt once since error is not retryable
+    assert call_count == 1

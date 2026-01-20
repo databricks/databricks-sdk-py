@@ -1076,9 +1076,9 @@ class PresignedUrlDownloadTestCase:
             expected_download_api="files_api",
         ),
         PresignedUrlDownloadTestCase(
-            name="Presigned URL download fails with 500 when downloading from URL",
+            name="Presigned URL download fails with 500 when downloading from URL, fallback to Files API",
             file_size=100 * 1024 * 1024,
-            expected_exception_type=TimeoutError,  # TimeoutError is raised after retries are exhausted
+            expected_download_api="files_api",  # 500 is no longer retried, falls back immediately
             custom_response_download_from_url=CustomResponse(code=500),
         ),
         PresignedUrlDownloadTestCase(
@@ -1094,9 +1094,9 @@ class PresignedUrlDownloadTestCase:
         ),
         # Recoverable errors
         PresignedUrlDownloadTestCase(
-            name="Intermittent error should succeed after retry: Presigned URL download fails with 500 when downloading from URL",
+            name="Intermittent error should succeed after retry: Presigned URL download fails with 502 when downloading from URL",
             file_size=100 * 1024 * 1024,
-            custom_response_download_from_url=CustomResponse(code=500, only_invocation=1),
+            custom_response_download_from_url=CustomResponse(code=502, only_invocation=1),
         ),
         PresignedUrlDownloadTestCase(
             name="Intermittent error should succeed after retry: Presigned URL expires with 403 when downloading from URL",
@@ -2197,7 +2197,7 @@ class MultipartUploadTestCase(UploadTestCase):
             content_size=100 * 1024 * 1024,  # 10 parts
             multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(
-                exception=requests.ConnectionError, first_invocation=2, last_invocation=5
+                exception=requests.ConnectionError, first_invocation=2, last_invocation=3
             ),
             expected_multipart_upload_aborted=False,
         ),
@@ -2205,14 +2205,14 @@ class MultipartUploadTestCase(UploadTestCase):
             "Upload part: intermittent retryable status code 429",
             content_size=100 * 1024 * 1024,  # 10 parts
             multipart_upload_part_size=10 * 1024 * 1024,
-            custom_response_on_upload=CustomResponse(code=429, first_invocation=2, last_invocation=4),
+            custom_response_on_upload=CustomResponse(code=429, first_invocation=2, last_invocation=3),
             expected_multipart_upload_aborted=False,
         ),
         MultipartUploadTestCase(
-            "Upload chunk: intermittent retryable status code 500",
+            "Upload chunk: intermittent retryable status code 502",
             content_size=100 * 1024 * 1024,  # 10 parts
             multipart_upload_part_size=10 * 1024 * 1024,
-            custom_response_on_upload=CustomResponse(code=500, first_invocation=2, last_invocation=4),
+            custom_response_on_upload=CustomResponse(code=502, first_invocation=2, last_invocation=3),
             expected_multipart_upload_aborted=False,
         ),
         # -------------------------- failures on abort --------------------------

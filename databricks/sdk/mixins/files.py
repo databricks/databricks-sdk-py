@@ -752,7 +752,7 @@ class FilesExt(files.FilesAPI):
     __doc__ = files.FilesAPI.__doc__
 
     # note that these error codes are retryable only for idempotent operations
-    _RETRYABLE_STATUS_CODES: list[int] = [408, 429, 500, 502, 503, 504]
+    _RETRYABLE_STATUS_CODES: list[int] = [408, 429, 502, 503, 504]
 
     @dataclass(frozen=True)
     class _UploadContext:
@@ -2340,6 +2340,7 @@ class FilesExt(files.FilesAPI):
 
         return retried(
             timeout=timedelta(seconds=retry_timeout_seconds),
+            max_attempts=self._config.files_ext_cloud_api_max_retries,
             # also retry on network errors (connection error, connection timeout)
             # where we believe request didn't reach the server
             is_retryable=extended_is_retryable,

@@ -18,6 +18,7 @@ def retried(
     timeout=timedelta(minutes=20),
     clock: Optional[Clock] = None,
     before_retry: Optional[Callable] = None,
+    max_attempts: Optional[int] = None,
 ):
     has_allowlist = on is not None
     has_callback = is_retryable is not None
@@ -33,7 +34,7 @@ def retried(
             deadline = clock.time() + timeout.total_seconds()
             attempt = 1
             last_err = None
-            while clock.time() < deadline:
+            while clock.time() < deadline and (max_attempts is None or attempt <= max_attempts):
                 try:
                     return func(*args, **kwargs)
                 except Exception as err:
@@ -64,6 +65,10 @@ def retried(
 
                     clock.sleep(sleep + random())
                     attempt += 1
+            
+            # Determine which limit was hit
+            if max_attempts is not None and attempt > max_attempts:
+                raise TimeoutError(f"Exceeded max retry attempts ({max_attempts})") from last_err
             raise TimeoutError(f"Timed out after {timeout}") from last_err
 
         return wrapper
