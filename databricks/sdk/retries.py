@@ -65,7 +65,7 @@ def retried(
 
                     clock.sleep(sleep + random())
                     attempt += 1
-            
+
             # Determine which limit was hit
             if max_attempts is not None and attempt > max_attempts:
                 raise TimeoutError(f"Exceeded max retry attempts ({max_attempts})") from last_err
