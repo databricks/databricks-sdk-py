@@ -557,6 +557,10 @@ class EndpointSpec:
     suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
     console action."""
 
+    no_suspension: Optional[bool] = None
+    """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
+    true when provided."""
+
     settings: Optional[EndpointSettings] = None
 
     suspend_timeout_duration: Optional[Duration] = None
@@ -574,6 +578,8 @@ class EndpointSpec:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type.value
+        if self.no_suspension is not None:
+            body["no_suspension"] = self.no_suspension
         if self.settings:
             body["settings"] = self.settings.as_dict()
         if self.suspend_timeout_duration is not None:
@@ -591,6 +597,8 @@ class EndpointSpec:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type
+        if self.no_suspension is not None:
+            body["no_suspension"] = self.no_suspension
         if self.settings:
             body["settings"] = self.settings
         if self.suspend_timeout_duration is not None:
@@ -605,6 +613,7 @@ class EndpointSpec:
             autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
             disabled=d.get("disabled", None),
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
+            no_suspension=d.get("no_suspension", None),
             settings=_from_dict(d, "settings", EndpointSettings),
             suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
         )
@@ -1076,6 +1085,10 @@ class ProjectDefaultEndpointSettings:
     autoscaling_limit_min_cu: Optional[float] = None
     """The minimum number of Compute Units. Minimum value is 0.5."""
 
+    no_suspension: Optional[bool] = None
+    """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
+    true when provided."""
+
     pg_settings: Optional[Dict[str, str]] = None
     """A raw representation of Postgres settings."""
 
@@ -1090,6 +1103,8 @@ class ProjectDefaultEndpointSettings:
             body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
         if self.autoscaling_limit_min_cu is not None:
             body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.no_suspension is not None:
+            body["no_suspension"] = self.no_suspension
         if self.pg_settings:
             body["pg_settings"] = self.pg_settings
         if self.suspend_timeout_duration is not None:
@@ -1103,6 +1118,8 @@ class ProjectDefaultEndpointSettings:
             body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
         if self.autoscaling_limit_min_cu is not None:
             body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.no_suspension is not None:
+            body["no_suspension"] = self.no_suspension
         if self.pg_settings:
             body["pg_settings"] = self.pg_settings
         if self.suspend_timeout_duration is not None:
@@ -1115,6 +1132,7 @@ class ProjectDefaultEndpointSettings:
         return cls(
             autoscaling_limit_max_cu=d.get("autoscaling_limit_max_cu", None),
             autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
+            no_suspension=d.get("no_suspension", None),
             pg_settings=d.get("pg_settings", None),
             suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
         )
