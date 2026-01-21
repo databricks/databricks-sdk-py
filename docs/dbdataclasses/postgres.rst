@@ -39,6 +39,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: RESETTING
       :value: "RESETTING"
 
+.. autoclass:: DatabaseCredential
+   :members:
+   :undoc-members:
+
 .. autoclass:: DatabricksServiceExceptionWithDetailsProto
    :members:
    :undoc-members:
@@ -374,6 +378,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ProjectStatus
+   :members:
+   :undoc-members:
+
+.. autoclass:: RequestedClaims
+   :members:
+   :undoc-members:
+
+.. py:class:: RequestedClaimsPermissionSet
+
+   .. py:attribute:: READ_ONLY
+      :value: "READ_ONLY"
+
+.. autoclass:: RequestedResource
    :members:
    :undoc-members:
 

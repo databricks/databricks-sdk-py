@@ -4460,6 +4460,10 @@ class InitScriptInfoAndExecutionDetails:
     status: Optional[InitScriptExecutionDetailsInitScriptExecutionStatus] = None
     """The current status of the script"""
 
+    stderr: Optional[str] = None
+    """The stderr output from the init script execution. Only populated when init scripts debug is
+    enabled and script execution fails."""
+
     volumes: Optional[VolumesStorageInfo] = None
     """destination needs to be provided. e.g. `{ \"volumes\" : { \"destination\" :
     \"/Volumes/my-init.sh\" } }`"""
@@ -4487,6 +4491,8 @@ class InitScriptInfoAndExecutionDetails:
             body["s3"] = self.s3.as_dict()
         if self.status is not None:
             body["status"] = self.status.value
+        if self.stderr is not None:
+            body["stderr"] = self.stderr
         if self.volumes:
             body["volumes"] = self.volumes.as_dict()
         if self.workspace:
@@ -4512,6 +4518,8 @@ class InitScriptInfoAndExecutionDetails:
             body["s3"] = self.s3
         if self.status is not None:
             body["status"] = self.status
+        if self.stderr is not None:
+            body["stderr"] = self.stderr
         if self.volumes:
             body["volumes"] = self.volumes
         if self.workspace:
@@ -4530,6 +4538,7 @@ class InitScriptInfoAndExecutionDetails:
             gcs=_from_dict(d, "gcs", GcsStorageInfo),
             s3=_from_dict(d, "s3", S3StorageInfo),
             status=_enum(d, "status", InitScriptExecutionDetailsInitScriptExecutionStatus),
+            stderr=d.get("stderr", None),
             volumes=_from_dict(d, "volumes", VolumesStorageInfo),
             workspace=_from_dict(d, "workspace", WorkspaceStorageInfo),
         )

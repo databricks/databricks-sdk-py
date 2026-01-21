@@ -359,21 +359,23 @@
                 w.clusters.ensure_cluster_is_running(os.environ["DATABRICKS_CLUSTER_ID"]) and os.environ["DATABRICKS_CLUSTER_ID"]
             )
             
-            run = w.jobs.submit(
-                run_name=f"sdk-{time.time_ns()}",
+            created_job = w.jobs.create(
+                name=f"sdk-{time.time_ns()}",
                 tasks=[
-                    jobs.SubmitTask(
+                    jobs.Task(
+                        description="test",
                         existing_cluster_id=cluster_id,
                         notebook_task=jobs.NotebookTask(notebook_path=notebook_path),
-                        task_key=f"sdk-{time.time_ns()}",
+                        task_key="test",
+                        timeout_seconds=0,
                     )
                 ],
-            ).result()
+            )
             
-            output = w.jobs.get_run_output(run_id=run.tasks[0].run_id)
+            by_id = w.jobs.get(job_id=created_job.job_id)
             
             # cleanup
-            w.jobs.delete_run(run_id=run.run_id)
+            w.jobs.delete(job_id=created_job.job_id)
 
         Get a single job.
 

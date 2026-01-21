@@ -2358,6 +2358,9 @@ class QueryEndpointResponse:
     """The type of object returned by the __external/foundation model__ serving endpoint, one of
     [text_completion, chat.completion, list (of embeddings)]."""
 
+    outputs: Optional[List[any]] = None
+    """The outputs of the feature serving endpoint."""
+
     predictions: Optional[List[Any]] = None
     """The predictions returned by the serving endpoint."""
 
@@ -2384,6 +2387,8 @@ class QueryEndpointResponse:
             body["model"] = self.model
         if self.object is not None:
             body["object"] = self.object.value
+        if self.outputs:
+            body["outputs"] = [v for v in self.outputs]
         if self.predictions:
             body["predictions"] = [v for v in self.predictions]
         if self.served_model_name is not None:
@@ -2407,6 +2412,8 @@ class QueryEndpointResponse:
             body["model"] = self.model
         if self.object is not None:
             body["object"] = self.object
+        if self.outputs:
+            body["outputs"] = self.outputs
         if self.predictions:
             body["predictions"] = self.predictions
         if self.served_model_name is not None:
@@ -2425,6 +2432,7 @@ class QueryEndpointResponse:
             id=d.get("id", None),
             model=d.get("model", None),
             object=_enum(d, "object", QueryEndpointResponseObject),
+            outputs=d.get("outputs", None),
             predictions=d.get("predictions", None),
             served_model_name=d.get("served-model-name", None),
             usage=_from_dict(d, "usage", ExternalModelUsageElement),

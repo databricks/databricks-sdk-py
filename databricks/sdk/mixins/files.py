@@ -1645,7 +1645,7 @@ class FilesExt(files.FilesAPI):
         cloud_provider_session = self._create_cloud_provider_session()
         while not aborted.is_set():
             try:
-                (part, content) = task_queue.get(block=False, timeout=0.1)
+                part, content = task_queue.get(block=False, timeout=0.1)
             except Empty:
                 if all_produced.is_set():
                     break  # No more parts will be produced and the queue is empty

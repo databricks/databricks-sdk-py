@@ -1768,7 +1768,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 53"""
+    """Next Id: 72"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
