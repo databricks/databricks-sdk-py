@@ -279,7 +279,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 53
+   Next Id: 72
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"

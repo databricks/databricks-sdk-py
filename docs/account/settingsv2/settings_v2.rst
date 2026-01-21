@@ -16,6 +16,21 @@
         :returns: :class:`Setting`
         
 
+    .. py:method:: get_public_account_user_preference(user_id: str, name: str) -> UserPreference
+
+        Get a user preference for a specific user. User preferences are personal settings that allow
+        individual customization without affecting other users. See
+        :method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via
+        public APIs.
+
+        :param user_id: str
+          User ID of the user whose setting is being retrieved.
+        :param name: str
+          User Setting name.
+
+        :returns: :class:`UserPreference`
+        
+
     .. py:method:: list_account_settings_metadata( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[SettingsMetadata]
 
         List valid setting keys and metadata. These settings are available to be referenced via GET
@@ -35,6 +50,29 @@
         :returns: Iterator over :class:`SettingsMetadata`
         
 
+    .. py:method:: list_account_user_preferences_metadata(user_id: str [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[SettingsMetadata]
+
+        List valid user preferences and their metadata for a specific user. User preferences are personal
+        settings that allow individual customization without affecting other users. These settings are
+        available to be referenced via GET :method:settingsv2/getpublicaccountuserpreference and PATCH
+        :method:settingsv2/patchpublicaccountuserpreference APIs
+
+        :param user_id: str
+          User ID of the user whose settings metadata is being retrieved.
+        :param page_size: int (optional)
+          The maximum number of settings to return. The service may return fewer than this value. If
+          unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000
+          will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListAccountUserPreferencesMetadataRequest` call. Provide
+          this to retrieve the subsequent page.
+
+          When paginating, all other parameters provided to `ListAccountUserPreferencesMetadataRequest` must
+          match the call that provided the page token.
+
+        :returns: Iterator over :class:`SettingsMetadata`
+        
+
     .. py:method:: patch_public_account_setting(name: str, setting: Setting) -> Setting
 
         Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of
@@ -48,4 +86,21 @@
         :param setting: :class:`Setting`
 
         :returns: :class:`Setting`
+        
+
+    .. py:method:: patch_public_account_user_preference(user_id: str, name: str, setting: UserPreference) -> UserPreference
+
+        Update a user preference for a specific user. User preferences are personal settings that allow
+        individual customization without affecting other users. See
+        :method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via
+        public APIs.
+
+        Note: Page refresh is required for changes to take effect in UI.
+
+        :param user_id: str
+          User ID of the user whose setting is being updated.
+        :param name: str
+        :param setting: :class:`UserPreference`
+
+        :returns: :class:`UserPreference`
         

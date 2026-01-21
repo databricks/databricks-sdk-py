@@ -128,6 +128,10 @@ class BranchSpec:
     """When set to true, protects the branch from deletion and reset. Associated compute endpoints and
     the project cannot be deleted while the branch is protected."""
 
+    no_expiry: Optional[bool] = None
+    """Explicitly disable expiration. When set to true, the branch will not expire. If set to false,
+    the request is invalid; provide either ttl or expire_time instead."""
+
     source_branch: Optional[str] = None
     """The name of the source branch from which this branch was created (data lineage for point-in-time
     recovery). If not specified, defaults to the project's default branch. Format:
@@ -140,8 +144,7 @@ class BranchSpec:
     """The point in time on the source branch from which this branch was created."""
 
     ttl: Optional[Duration] = None
-    """Relative time-to-live duration. When set, the branch will expire at creation_time + ttl. Set to
-    -1 second to explicitly disable expiration."""
+    """Relative time-to-live duration. When set, the branch will expire at creation_time + ttl."""
 
     def as_dict(self) -> dict:
         """Serializes the BranchSpec into a dictionary suitable for use as a JSON request body."""
@@ -150,6 +153,8 @@ class BranchSpec:
             body["expire_time"] = self.expire_time.ToJsonString()
         if self.is_protected is not None:
             body["is_protected"] = self.is_protected
+        if self.no_expiry is not None:
+            body["no_expiry"] = self.no_expiry
         if self.source_branch is not None:
             body["source_branch"] = self.source_branch
         if self.source_branch_lsn is not None:
@@ -167,6 +172,8 @@ class BranchSpec:
             body["expire_time"] = self.expire_time
         if self.is_protected is not None:
             body["is_protected"] = self.is_protected
+        if self.no_expiry is not None:
+            body["no_expiry"] = self.no_expiry
         if self.source_branch is not None:
             body["source_branch"] = self.source_branch
         if self.source_branch_lsn is not None:
@@ -183,6 +190,7 @@ class BranchSpec:
         return cls(
             expire_time=_timestamp(d, "expire_time"),
             is_protected=d.get("is_protected", None),
+            no_expiry=d.get("no_expiry", None),
             source_branch=d.get("source_branch", None),
             source_branch_lsn=d.get("source_branch_lsn", None),
             source_branch_time=_timestamp(d, "source_branch_time"),
@@ -298,6 +306,38 @@ class BranchStatusState(Enum):
     INIT = "INIT"
     READY = "READY"
     RESETTING = "RESETTING"
+
+
+@dataclass
+class DatabaseCredential:
+    expire_time: Optional[Timestamp] = None
+    """Timestamp in UTC of when this credential expires."""
+
+    token: Optional[str] = None
+    """The OAuth token that can be used as a password when connecting to a database."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabaseCredential into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time.ToJsonString()
+        if self.token is not None:
+            body["token"] = self.token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabaseCredential into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.expire_time is not None:
+            body["expire_time"] = self.expire_time
+        if self.token is not None:
+            body["token"] = self.token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabaseCredential:
+        """Deserializes the DatabaseCredential from a dictionary."""
+        return cls(expire_time=_timestamp(d, "expire_time"), token=d.get("token", None))
 
 
 @dataclass
@@ -507,10 +547,10 @@ class EndpointSpec:
     """The endpoint type. A branch can only have one READ_WRITE endpoint."""
 
     autoscaling_limit_max_cu: Optional[float] = None
-    """The maximum number of Compute Units."""
+    """The maximum number of Compute Units. Minimum value is 0.5."""
 
     autoscaling_limit_min_cu: Optional[float] = None
-    """The minimum number of Compute Units."""
+    """The minimum number of Compute Units. Minimum value is 0.5."""
 
     disabled: Optional[bool] = None
     """Whether to restrict connections to the compute endpoint. Enabling this option schedules a
@@ -520,7 +560,8 @@ class EndpointSpec:
     settings: Optional[EndpointSettings] = None
 
     suspend_timeout_duration: Optional[Duration] = None
-    """Duration of inactivity after which the compute endpoint is automatically suspended."""
+    """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
+    should be between 60s and 604800s (1 minute to 1 week)."""
 
     def as_dict(self) -> dict:
         """Serializes the EndpointSpec into a dictionary suitable for use as a JSON request body."""
@@ -1030,16 +1071,17 @@ class ProjectDefaultEndpointSettings:
     """A collection of settings for a compute endpoint."""
 
     autoscaling_limit_max_cu: Optional[float] = None
-    """The maximum number of Compute Units."""
+    """The maximum number of Compute Units. Minimum value is 0.5."""
 
     autoscaling_limit_min_cu: Optional[float] = None
-    """The minimum number of Compute Units."""
+    """The minimum number of Compute Units. Minimum value is 0.5."""
 
     pg_settings: Optional[Dict[str, str]] = None
     """A raw representation of Postgres settings."""
 
     suspend_timeout_duration: Optional[Duration] = None
-    """Duration of inactivity after which the compute endpoint is automatically suspended."""
+    """Duration of inactivity after which the compute endpoint is automatically suspended. If specified
+    should be between 60s and 604800s (1 minute to 1 week)."""
 
     def as_dict(self) -> dict:
         """Serializes the ProjectDefaultEndpointSettings into a dictionary suitable for use as a JSON request body."""
@@ -1101,14 +1143,14 @@ class ProjectSpec:
     default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
 
     display_name: Optional[str] = None
-    """Human-readable project name."""
+    """Human-readable project name. Length should be between 1 and 256 characters."""
 
     history_retention_duration: Optional[Duration] = None
     """The number of seconds to retain the shared history for point in time recovery for all branches
-    in this project."""
+    in this project. Value should be between 0s and 2592000s (up to 30 days)."""
 
     pg_version: Optional[int] = None
-    """The major Postgres version number."""
+    """The major Postgres version number. Supported versions are 16 and 17."""
 
     def as_dict(self) -> dict:
         """Serializes the ProjectSpec into a dictionary suitable for use as a JSON request body."""
@@ -1219,6 +1261,76 @@ class ProjectStatus:
             owner=d.get("owner", None),
             pg_version=d.get("pg_version", None),
             synthetic_storage_size_bytes=d.get("synthetic_storage_size_bytes", None),
+        )
+
+
+@dataclass
+class RequestedClaims:
+    permission_set: Optional[RequestedClaimsPermissionSet] = None
+
+    resources: Optional[List[RequestedResource]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RequestedClaims into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.permission_set is not None:
+            body["permission_set"] = self.permission_set.value
+        if self.resources:
+            body["resources"] = [v.as_dict() for v in self.resources]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RequestedClaims into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.permission_set is not None:
+            body["permission_set"] = self.permission_set
+        if self.resources:
+            body["resources"] = self.resources
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RequestedClaims:
+        """Deserializes the RequestedClaims from a dictionary."""
+        return cls(
+            permission_set=_enum(d, "permission_set", RequestedClaimsPermissionSet),
+            resources=_repeated_dict(d, "resources", RequestedResource),
+        )
+
+
+class RequestedClaimsPermissionSet(Enum):
+
+    READ_ONLY = "READ_ONLY"
+
+
+@dataclass
+class RequestedResource:
+    table_name: Optional[str] = None
+
+    unspecified_resource_name: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RequestedResource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        if self.unspecified_resource_name is not None:
+            body["unspecified_resource_name"] = self.unspecified_resource_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RequestedResource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.table_name is not None:
+            body["table_name"] = self.table_name
+        if self.unspecified_resource_name is not None:
+            body["unspecified_resource_name"] = self.unspecified_resource_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RequestedResource:
+        """Deserializes the RequestedResource from a dictionary."""
+        return cls(
+            table_name=d.get("table_name", None), unspecified_resource_name=d.get("unspecified_resource_name", None)
         )
 
 
@@ -1437,9 +1549,9 @@ class PostgresAPI:
         :param branch: :class:`Branch`
           The Branch to create.
         :param branch_id: str
-          The ID to use for the Branch. This becomes the final component of the branch's resource name. This
-          value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens, as
-          defined by RFC 1123. Examples: - With custom ID: `staging` → name becomes
+          The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID
+          must be 1-63 characters long, start with a lowercase letter, and contain only lowercase letters,
+          numbers, and hyphens (RFC 1123). Examples: - With custom ID: `staging` → name becomes
           `projects/{project_id}/branches/staging` - Without custom ID: system generates slug → name becomes
           `projects/{project_id}/branches/br-example-name-x1y2z3a4`
 
@@ -1468,8 +1580,8 @@ class PostgresAPI:
           The Endpoint to create.
         :param endpoint_id: str
           The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
-          This value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens,
-          as defined by RFC 1123. Examples: - With custom ID: `primary` → name becomes
+          The ID must be 1-63 characters long, start with a lowercase letter, and contain only lowercase
+          letters, numbers, and hyphens (RFC 1123). Examples: - With custom ID: `primary` → name becomes
           `projects/{project_id}/branches/{branch_id}/endpoints/primary` - Without custom ID: system generates
           slug → name becomes
           `projects/{project_id}/branches/{branch_id}/endpoints/ep-example-name-x1y2z3a4`
@@ -1497,10 +1609,10 @@ class PostgresAPI:
         :param project: :class:`Project`
           The Project to create.
         :param project_id: str
-          The ID to use for the Project. This becomes the final component of the project's resource name. This
-          value should be 4-63 characters. Valid characters are lowercase letters, numbers, and hyphens, as
-          defined by RFC 1123. Examples: - With custom ID: `production` → name becomes `projects/production`
-          - Without custom ID: system generates UUID → name becomes
+          The ID to use for the Project. This becomes the final component of the project's resource name. The
+          ID must be 1-63 characters long, start with a lowercase letter, and contain only lowercase letters,
+          numbers, and hyphens (RFC 1123). Examples: - With custom ID: `production` → name becomes
+          `projects/production` - Without custom ID: system generates UUID → name becomes
           `projects/a7f89b2c-3d4e-5f6g-7h8i-9j0k1l2m3n4o`
 
         :returns: :class:`Operation`
@@ -1630,6 +1742,33 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return DeleteRoleOperation(self, operation)
 
+    def generate_database_credential(
+        self, endpoint: str, *, claims: Optional[List[RequestedClaims]] = None
+    ) -> DatabaseCredential:
+        """Generate OAuth credentials for a Postgres database.
+
+        :param endpoint: str
+          This field is not yet supported. The endpoint for which this credential will be generated. Format:
+          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+        :param claims: List[:class:`RequestedClaims`] (optional)
+          The returned token will be scoped to UC tables with the specified permissions.
+
+        :returns: :class:`DatabaseCredential`
+        """
+
+        body = {}
+        if claims is not None:
+            body["claims"] = [v.as_dict() for v in claims]
+        if endpoint is not None:
+            body["endpoint"] = endpoint
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do("POST", "/api/2.0/postgres/credentials", body=body, headers=headers)
+        return DatabaseCredential.from_dict(res)
+
     def get_branch(self, name: str) -> Branch:
         """Retrieves information about the specified database branch.
 
@@ -1721,7 +1860,7 @@ class PostgresAPI:
         :param parent: str
           The Project that owns this collection of branches. Format: projects/{project_id}
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -1755,7 +1894,7 @@ class PostgresAPI:
           The Branch that owns this collection of endpoints. Format:
           projects/{project_id}/branches/{branch_id}
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -1784,7 +1923,7 @@ class PostgresAPI:
         """Returns a paginated list of database projects in the workspace that the user has permission to access.
 
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
@@ -1817,7 +1956,7 @@ class PostgresAPI:
         :param parent: str
           The Branch that owns this collection of roles. Format: projects/{project_id}/branches/{branch_id}
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. Cannot be negative.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 

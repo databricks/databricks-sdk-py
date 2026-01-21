@@ -4956,6 +4956,10 @@ class QueryInfo:
     rows_produced: Optional[int] = None
     """The number of results returned by the query."""
 
+    session_id: Optional[str] = None
+    """The spark session UUID that query ran on. This is either the Spark Connect, DBSQL, or SDP
+    session ID."""
+
     spark_ui_url: Optional[str] = None
     """URL to the Spark UI query plan."""
 
@@ -5019,6 +5023,8 @@ class QueryInfo:
             body["query_text"] = self.query_text
         if self.rows_produced is not None:
             body["rows_produced"] = self.rows_produced
+        if self.session_id is not None:
+            body["session_id"] = self.session_id
         if self.spark_ui_url is not None:
             body["spark_ui_url"] = self.spark_ui_url
         if self.statement_type is not None:
@@ -5074,6 +5080,8 @@ class QueryInfo:
             body["query_text"] = self.query_text
         if self.rows_produced is not None:
             body["rows_produced"] = self.rows_produced
+        if self.session_id is not None:
+            body["session_id"] = self.session_id
         if self.spark_ui_url is not None:
             body["spark_ui_url"] = self.spark_ui_url
         if self.statement_type is not None:
@@ -5111,6 +5119,7 @@ class QueryInfo:
             query_start_time_ms=d.get("query_start_time_ms", None),
             query_text=d.get("query_text", None),
             rows_produced=d.get("rows_produced", None),
+            session_id=d.get("session_id", None),
             spark_ui_url=d.get("spark_ui_url", None),
             statement_type=_enum(d, "statement_type", QueryStatementType),
             status=_enum(d, "status", QueryStatus),

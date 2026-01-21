@@ -383,6 +383,42 @@ class ListAccountSettingsMetadataResponse:
 
 
 @dataclass
+class ListAccountUserPreferencesMetadataResponse:
+    next_page_token: Optional[str] = None
+    """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    settings_metadata: Optional[List[SettingsMetadata]] = None
+    """List of all settings available via public APIs and their metadata"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListAccountUserPreferencesMetadataResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.settings_metadata:
+            body["settings_metadata"] = [v.as_dict() for v in self.settings_metadata]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListAccountUserPreferencesMetadataResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.settings_metadata:
+            body["settings_metadata"] = self.settings_metadata
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListAccountUserPreferencesMetadataResponse:
+        """Deserializes the ListAccountUserPreferencesMetadataResponse from a dictionary."""
+        return cls(
+            next_page_token=d.get("next_page_token", None),
+            settings_metadata=_repeated_dict(d, "settings_metadata", SettingsMetadata),
+        )
+
+
+@dataclass
 class ListWorkspaceSettingsMetadataResponse:
     next_page_token: Optional[str] = None
     """A token that can be sent as `page_token` to retrieve the next page. If this field is omitted,
@@ -756,6 +792,73 @@ class StringMessage:
         return cls(value=d.get("value", None))
 
 
+@dataclass
+class UserPreference:
+    """User Preference represents a user-specific setting scoped to an individual user within an
+    account. Unlike workspace or account settings that apply to all users, user preferences allow
+    personal customization (e.g., UI theme, editor preferences) without affecting other users."""
+
+    boolean_val: Optional[BooleanMessage] = None
+
+    effective_boolean_val: Optional[BooleanMessage] = None
+
+    effective_string_val: Optional[StringMessage] = None
+
+    name: Optional[str] = None
+    """Name of the setting."""
+
+    string_val: Optional[StringMessage] = None
+
+    user_id: Optional[str] = None
+    """User ID of the user."""
+
+    def as_dict(self) -> dict:
+        """Serializes the UserPreference into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val.as_dict()
+        if self.effective_boolean_val:
+            body["effective_boolean_val"] = self.effective_boolean_val.as_dict()
+        if self.effective_string_val:
+            body["effective_string_val"] = self.effective_string_val.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.string_val:
+            body["string_val"] = self.string_val.as_dict()
+        if self.user_id is not None:
+            body["user_id"] = self.user_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the UserPreference into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.boolean_val:
+            body["boolean_val"] = self.boolean_val
+        if self.effective_boolean_val:
+            body["effective_boolean_val"] = self.effective_boolean_val
+        if self.effective_string_val:
+            body["effective_string_val"] = self.effective_string_val
+        if self.name is not None:
+            body["name"] = self.name
+        if self.string_val:
+            body["string_val"] = self.string_val
+        if self.user_id is not None:
+            body["user_id"] = self.user_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> UserPreference:
+        """Deserializes the UserPreference from a dictionary."""
+        return cls(
+            boolean_val=_from_dict(d, "boolean_val", BooleanMessage),
+            effective_boolean_val=_from_dict(d, "effective_boolean_val", BooleanMessage),
+            effective_string_val=_from_dict(d, "effective_string_val", StringMessage),
+            name=d.get("name", None),
+            string_val=_from_dict(d, "string_val", StringMessage),
+            user_id=d.get("user_id", None),
+        )
+
+
 class AccountSettingsV2API:
     """APIs to manage account level settings"""
 
@@ -777,6 +880,29 @@ class AccountSettingsV2API:
 
         res = self._api.do("GET", f"/api/2.1/accounts/{self._api.account_id}/settings/{name}", headers=headers)
         return Setting.from_dict(res)
+
+    def get_public_account_user_preference(self, user_id: str, name: str) -> UserPreference:
+        """Get a user preference for a specific user. User preferences are personal settings that allow
+        individual customization without affecting other users. See
+        :method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via
+        public APIs.
+
+        :param user_id: str
+          User ID of the user whose setting is being retrieved.
+        :param name: str
+          User Setting name.
+
+        :returns: :class:`UserPreference`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        res = self._api.do(
+            "GET", f"/api/2.1/accounts/{self._api.account_id}/users/{user_id}/settings/{name}", headers=headers
+        )
+        return UserPreference.from_dict(res)
 
     def list_account_settings_metadata(
         self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
@@ -818,6 +944,53 @@ class AccountSettingsV2API:
                 return
             query["page_token"] = json["next_page_token"]
 
+    def list_account_user_preferences_metadata(
+        self, user_id: str, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[SettingsMetadata]:
+        """List valid user preferences and their metadata for a specific user. User preferences are personal
+        settings that allow individual customization without affecting other users. These settings are
+        available to be referenced via GET :method:settingsv2/getpublicaccountuserpreference and PATCH
+        :method:settingsv2/patchpublicaccountuserpreference APIs
+
+        :param user_id: str
+          User ID of the user whose settings metadata is being retrieved.
+        :param page_size: int (optional)
+          The maximum number of settings to return. The service may return fewer than this value. If
+          unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000
+          will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListAccountUserPreferencesMetadataRequest` call. Provide
+          this to retrieve the subsequent page.
+
+          When paginating, all other parameters provided to `ListAccountUserPreferencesMetadataRequest` must
+          match the call that provided the page token.
+
+        :returns: Iterator over :class:`SettingsMetadata`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        while True:
+            json = self._api.do(
+                "GET",
+                f"/api/2.1/accounts/{self._api.account_id}/users/{user_id}/settings-metadata",
+                query=query,
+                headers=headers,
+            )
+            if "settings_metadata" in json:
+                for v in json["settings_metadata"]:
+                    yield SettingsMetadata.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
     def patch_public_account_setting(self, name: str, setting: Setting) -> Setting:
         """Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of
         setting available via public APIs at account level. To determine the correct field to include in a
@@ -842,6 +1015,36 @@ class AccountSettingsV2API:
             "PATCH", f"/api/2.1/accounts/{self._api.account_id}/settings/{name}", body=body, headers=headers
         )
         return Setting.from_dict(res)
+
+    def patch_public_account_user_preference(self, user_id: str, name: str, setting: UserPreference) -> UserPreference:
+        """Update a user preference for a specific user. User preferences are personal settings that allow
+        individual customization without affecting other users. See
+        :method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via
+        public APIs.
+
+        Note: Page refresh is required for changes to take effect in UI.
+
+        :param user_id: str
+          User ID of the user whose setting is being updated.
+        :param name: str
+        :param setting: :class:`UserPreference`
+
+        :returns: :class:`UserPreference`
+        """
+
+        body = setting.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.1/accounts/{self._api.account_id}/users/{user_id}/settings/{name}",
+            body=body,
+            headers=headers,
+        )
+        return UserPreference.from_dict(res)
 
 
 class WorkspaceSettingsV2API:

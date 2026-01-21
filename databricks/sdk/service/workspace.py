@@ -1719,6 +1719,7 @@ class GitCredentialsAPI:
         is_default_for_provider: Optional[bool] = None,
         name: Optional[str] = None,
         personal_access_token: Optional[str] = None,
+        principal_id: Optional[int] = None,
     ) -> CreateCredentialsResponse:
         """Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
         attempts to create credentials if an entry already exists will fail. Use the PATCH endpoint to update
@@ -1747,6 +1748,9 @@ class GitCredentialsAPI:
           providers, support may exist for other types of scoped access tokens. [Learn more].
 
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
         :returns: :class:`CreateCredentialsResponse`
         """
@@ -1764,6 +1768,8 @@ class GitCredentialsAPI:
             body["name"] = name
         if personal_access_token is not None:
             body["personal_access_token"] = personal_access_token
+        if principal_id is not None:
+            body["principal_id"] = principal_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
@@ -1772,49 +1778,67 @@ class GitCredentialsAPI:
         res = self._api.do("POST", "/api/2.0/git-credentials", body=body, headers=headers)
         return CreateCredentialsResponse.from_dict(res)
 
-    def delete(self, credential_id: int):
+    def delete(self, credential_id: int, *, principal_id: Optional[int] = None):
         """Deletes the specified Git credential.
 
         :param credential_id: int
           The ID for the corresponding credential to access.
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
 
         """
 
+        query = {}
+        if principal_id is not None:
+            query["principal_id"] = principal_id
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", headers=headers)
+        self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", query=query, headers=headers)
 
-    def get(self, credential_id: int) -> GetCredentialsResponse:
+    def get(self, credential_id: int, *, principal_id: Optional[int] = None) -> GetCredentialsResponse:
         """Gets the Git credential with the specified credential ID.
 
         :param credential_id: int
           The ID for the corresponding credential to access.
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
         :returns: :class:`GetCredentialsResponse`
         """
 
+        query = {}
+        if principal_id is not None:
+            query["principal_id"] = principal_id
         headers = {
             "Accept": "application/json",
         }
 
-        res = self._api.do("GET", f"/api/2.0/git-credentials/{credential_id}", headers=headers)
+        res = self._api.do("GET", f"/api/2.0/git-credentials/{credential_id}", query=query, headers=headers)
         return GetCredentialsResponse.from_dict(res)
 
-    def list(self) -> Iterator[CredentialInfo]:
-        """Lists the calling user's Git credentials. One credential per user is supported.
+    def list(self, *, principal_id: Optional[int] = None) -> Iterator[CredentialInfo]:
+        """Lists the calling user's Git credentials.
 
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
         :returns: Iterator over :class:`CredentialInfo`
         """
 
+        query = {}
+        if principal_id is not None:
+            query["principal_id"] = principal_id
         headers = {
             "Accept": "application/json",
         }
 
-        json = self._api.do("GET", "/api/2.0/git-credentials", headers=headers)
+        json = self._api.do("GET", "/api/2.0/git-credentials", query=query, headers=headers)
         parsed = ListCredentialsResponse.from_dict(json).credentials
         return parsed if parsed is not None else []
 
@@ -1828,6 +1852,7 @@ class GitCredentialsAPI:
         is_default_for_provider: Optional[bool] = None,
         name: Optional[str] = None,
         personal_access_token: Optional[str] = None,
+        principal_id: Optional[int] = None,
     ):
         """Updates the specified Git credential.
 
@@ -1856,6 +1881,9 @@ class GitCredentialsAPI:
           providers, support may exist for other types of scoped access tokens. [Learn more].
 
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
 
         """
@@ -1873,6 +1901,8 @@ class GitCredentialsAPI:
             body["name"] = name
         if personal_access_token is not None:
             body["personal_access_token"] = personal_access_token
+        if principal_id is not None:
+            body["principal_id"] = principal_id
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
