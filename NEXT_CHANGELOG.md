@@ -56,3 +56,6 @@
 * Add `principal_id` field for `databricks.sdk.service.workspace.GetCredentialsRequest`.
 * Add `principal_id` field for `databricks.sdk.service.workspace.ListCredentialsRequest`.
 * Add `principal_id` field for `databricks.sdk.service.workspace.UpdateCredentialsRequest`.
+* Add `force` field for `databricks.sdk.service.pipelines.DeletePipelineRequest`.
+* Add `no_suspension` field for `databricks.sdk.service.postgres.EndpointSpec`.
+* Add `no_suspension` field for `databricks.sdk.service.postgres.ProjectDefaultEndpointSettings`.

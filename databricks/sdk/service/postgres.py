@@ -28,14 +28,14 @@ class Branch:
     """A timestamp indicating when the branch was created."""
 
     name: Optional[str] = None
-    """The resource name of the branch. This field is output-only and constructed by the system.
-    Format: `projects/{project_id}/branches/{branch_id}`"""
+    """Output only. The full resource path of the branch. Format:
+    projects/{project_id}/branches/{branch_id}"""
 
     parent: Optional[str] = None
     """The project containing this branch (API resource hierarchy). Format: projects/{project_id}
     
     Note: This field indicates where the branch exists in the resource hierarchy. For point-in-time
-    branching from another branch, see `spec.source_branch`."""
+    branching from another branch, see `status.source_branch`."""
 
     spec: Optional[BranchSpec] = None
     """The spec contains the branch configuration."""
@@ -299,7 +299,7 @@ class BranchStatus:
 
 
 class BranchStatusState(Enum):
-    """The state of the database branch."""
+    """The state of the branch."""
 
     ARCHIVED = "ARCHIVED"
     IMPORTING = "IMPORTING"
@@ -395,8 +395,8 @@ class Endpoint:
     """A timestamp indicating when the compute endpoint was created."""
 
     name: Optional[str] = None
-    """The resource name of the endpoint. This field is output-only and constructed by the system.
-    Format: `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`"""
+    """Output only. The full resource path of the endpoint. Format:
+    projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}"""
 
     parent: Optional[str] = None
     """The branch containing this endpoint (API resource hierarchy). Format:
@@ -557,6 +557,10 @@ class EndpointSpec:
     suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
     console action."""
 
+    no_suspension: Optional[bool] = None
+    """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
+    true when provided."""
+
     settings: Optional[EndpointSettings] = None
 
     suspend_timeout_duration: Optional[Duration] = None
@@ -574,6 +578,8 @@ class EndpointSpec:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type.value
+        if self.no_suspension is not None:
+            body["no_suspension"] = self.no_suspension
         if self.settings:
             body["settings"] = self.settings.as_dict()
         if self.suspend_timeout_duration is not None:
@@ -591,6 +597,8 @@ class EndpointSpec:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type
+        if self.no_suspension is not None:
+            body["no_suspension"] = self.no_suspension
         if self.settings:
             body["settings"] = self.settings
         if self.suspend_timeout_duration is not None:
@@ -605,6 +613,7 @@ class EndpointSpec:
             autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
             disabled=d.get("disabled", None),
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
+            no_suspension=d.get("no_suspension", None),
             settings=_from_dict(d, "settings", EndpointSettings),
             suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
         )
@@ -806,10 +815,10 @@ class ErrorCode(Enum):
 @dataclass
 class ListBranchesResponse:
     branches: Optional[List[Branch]] = None
-    """List of database branches in the project."""
+    """List of branches in the project."""
 
     next_page_token: Optional[str] = None
-    """Token to request the next page of database branches."""
+    """Token to request the next page of branches."""
 
     def as_dict(self) -> dict:
         """Serializes the ListBranchesResponse into a dictionary suitable for use as a JSON request body."""
@@ -870,10 +879,10 @@ class ListEndpointsResponse:
 @dataclass
 class ListProjectsResponse:
     next_page_token: Optional[str] = None
-    """Token to request the next page of database projects."""
+    """Token to request the next page of projects."""
 
     projects: Optional[List[Project]] = None
-    """List of all database projects in the workspace that the user has permission to access."""
+    """List of all projects in the workspace that the user has permission to access."""
 
     def as_dict(self) -> dict:
         """Serializes the ListProjectsResponse into a dictionary suitable for use as a JSON request body."""
@@ -1003,8 +1012,7 @@ class Project:
     """A timestamp indicating when the project was created."""
 
     name: Optional[str] = None
-    """The resource name of the project. This field is output-only and constructed by the system.
-    Format: `projects/{project_id}`"""
+    """Output only. The full resource path of the project. Format: projects/{project_id}"""
 
     spec: Optional[ProjectSpec] = None
     """The spec contains the project configuration, including display_name, pg_version (Postgres
@@ -1076,6 +1084,10 @@ class ProjectDefaultEndpointSettings:
     autoscaling_limit_min_cu: Optional[float] = None
     """The minimum number of Compute Units. Minimum value is 0.5."""
 
+    no_suspension: Optional[bool] = None
+    """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
+    true when provided."""
+
     pg_settings: Optional[Dict[str, str]] = None
     """A raw representation of Postgres settings."""
 
@@ -1090,6 +1102,8 @@ class ProjectDefaultEndpointSettings:
             body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
         if self.autoscaling_limit_min_cu is not None:
             body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.no_suspension is not None:
+            body["no_suspension"] = self.no_suspension
         if self.pg_settings:
             body["pg_settings"] = self.pg_settings
         if self.suspend_timeout_duration is not None:
@@ -1103,6 +1117,8 @@ class ProjectDefaultEndpointSettings:
             body["autoscaling_limit_max_cu"] = self.autoscaling_limit_max_cu
         if self.autoscaling_limit_min_cu is not None:
             body["autoscaling_limit_min_cu"] = self.autoscaling_limit_min_cu
+        if self.no_suspension is not None:
+            body["no_suspension"] = self.no_suspension
         if self.pg_settings:
             body["pg_settings"] = self.pg_settings
         if self.suspend_timeout_duration is not None:
@@ -1115,6 +1131,7 @@ class ProjectDefaultEndpointSettings:
         return cls(
             autoscaling_limit_max_cu=d.get("autoscaling_limit_max_cu", None),
             autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
+            no_suspension=d.get("no_suspension", None),
             pg_settings=d.get("pg_settings", None),
             suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
         )
@@ -1341,7 +1358,7 @@ class Role:
     create_time: Optional[Timestamp] = None
 
     name: Optional[str] = None
-    """The resource name of the role. Format:
+    """Output only. The full resource path of the role. Format:
     projects/{project_id}/branches/{branch_id}/roles/{role_id}"""
 
     parent: Optional[str] = None
@@ -1524,19 +1541,10 @@ class PostgresAPI:
 
     **About resource IDs and names**
 
-    Lakebase APIs use hierarchical resource names in API paths to identify resources, such as
-    `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`.
-
-    When creating a resource, you may optionally provide the final ID component (for example, `project_id`,
-    `branch_id`, or `endpoint_id`). If you do not, the system generates an identifier and uses it as the ID
-    component.
-
-    The `name` field is output-only and represents the full resource path. Note: The term *resource name* in
-    this API refers to this full, hierarchical identifier (for example, `projects/{project_id}`), not the
-    `display_name` field. The `display_name` is a separate, user-visible label shown in the UI.
-
-    The `uid` field is a system-generated, immutable identifier intended for internal reference and should not
-    be used to address or locate resources."""
+    Resources are identified by hierarchical resource names like
+    `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`. The `name` field on each resource
+    contains this full path and is output-only. Note that `name` refers to this resource path, not the
+    user-visible `display_name`."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -1550,10 +1558,9 @@ class PostgresAPI:
           The Branch to create.
         :param branch_id: str
           The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID
-          must be 1-63 characters long, start with a lowercase letter, and contain only lowercase letters,
-          numbers, and hyphens (RFC 1123). Examples: - With custom ID: `staging` → name becomes
-          `projects/{project_id}/branches/staging` - Without custom ID: system generates slug → name becomes
-          `projects/{project_id}/branches/br-example-name-x1y2z3a4`
+          is required and must be 1-63 characters long, start with a lowercase letter, and contain only
+          lowercase letters, numbers, and hyphens. For example, `development` becomes
+          `projects/my-app/branches/development`.
 
         :returns: :class:`Operation`
         """
@@ -1580,11 +1587,9 @@ class PostgresAPI:
           The Endpoint to create.
         :param endpoint_id: str
           The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
-          The ID must be 1-63 characters long, start with a lowercase letter, and contain only lowercase
-          letters, numbers, and hyphens (RFC 1123). Examples: - With custom ID: `primary` → name becomes
-          `projects/{project_id}/branches/{branch_id}/endpoints/primary` - Without custom ID: system generates
-          slug → name becomes
-          `projects/{project_id}/branches/{branch_id}/endpoints/ep-example-name-x1y2z3a4`
+          The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
+          lowercase letters, numbers, and hyphens. For example, `primary` becomes
+          `projects/my-app/branches/development/endpoints/primary`.
 
         :returns: :class:`Operation`
         """
@@ -1610,10 +1615,8 @@ class PostgresAPI:
           The Project to create.
         :param project_id: str
           The ID to use for the Project. This becomes the final component of the project's resource name. The
-          ID must be 1-63 characters long, start with a lowercase letter, and contain only lowercase letters,
-          numbers, and hyphens (RFC 1123). Examples: - With custom ID: `production` → name becomes
-          `projects/production` - Without custom ID: system generates UUID → name becomes
-          `projects/a7f89b2c-3d4e-5f6g-7h8i-9j0k1l2m3n4o`
+          ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
+          lowercase letters, numbers, and hyphens. For example, `my-app` becomes `projects/my-app`.
 
         :returns: :class:`Operation`
         """
@@ -1665,7 +1668,7 @@ class PostgresAPI:
         """Deletes the specified database branch.
 
         :param name: str
-          The name of the Branch to delete. Format: projects/{project_id}/branches/{branch_id}
+          The full resource path of the branch to delete. Format: projects/{project_id}/branches/{branch_id}
 
         :returns: :class:`Operation`
         """
@@ -1682,7 +1685,7 @@ class PostgresAPI:
         """Deletes the specified compute endpoint.
 
         :param name: str
-          The name of the Endpoint to delete. Format:
+          The full resource path of the endpoint to delete. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 
         :returns: :class:`Operation`
@@ -1700,7 +1703,7 @@ class PostgresAPI:
         """Deletes the specified database project.
 
         :param name: str
-          The name of the Project to delete. Format: projects/{project_id}
+          The full resource path of the project to delete. Format: projects/{project_id}
 
         :returns: :class:`Operation`
         """
@@ -1717,7 +1720,7 @@ class PostgresAPI:
         """Deletes the specified Postgres role.
 
         :param name: str
-          The resource name of the postgres role. Format:
+          The full resource path of the role to delete. Format:
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param reassign_owned_to: str (optional)
           Reassign objects. If this is set, all objects owned by the role are reassigned to the role specified
@@ -1773,7 +1776,7 @@ class PostgresAPI:
         """Retrieves information about the specified database branch.
 
         :param name: str
-          The resource name of the branch to retrieve. Format: `projects/{project_id}/branches/{branch_id}`
+          The full resource path of the branch to retrieve. Format: projects/{project_id}/branches/{branch_id}
 
         :returns: :class:`Branch`
         """
@@ -1790,8 +1793,8 @@ class PostgresAPI:
         operational state.
 
         :param name: str
-          The resource name of the endpoint to retrieve. Format:
-          `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
+          The full resource path of the endpoint to retrieve. Format:
+          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 
         :returns: :class:`Endpoint`
         """
@@ -1823,7 +1826,7 @@ class PostgresAPI:
         """Retrieves information about the specified database project.
 
         :param name: str
-          The resource name of the project to retrieve. Format: `projects/{project_id}`
+          The full resource path of the project to retrieve. Format: projects/{project_id}
 
         :returns: :class:`Project`
         """
@@ -1840,7 +1843,8 @@ class PostgresAPI:
         permissions.
 
         :param name: str
-          The name of the Role to retrieve. Format: projects/{project_id}/branches/{branch_id}/roles/{role_id}
+          The full resource path of the role to retrieve. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
 
         :returns: :class:`Role`
         """
@@ -1986,8 +1990,8 @@ class PostgresAPI:
         protect/unprotect it.
 
         :param name: str
-          The resource name of the branch. This field is output-only and constructed by the system. Format:
-          `projects/{project_id}/branches/{branch_id}`
+          Output only. The full resource path of the branch. Format:
+          projects/{project_id}/branches/{branch_id}
         :param branch: :class:`Branch`
           The Branch to update.
 
@@ -2017,8 +2021,8 @@ class PostgresAPI:
         enable/disable the compute endpoint.
 
         :param name: str
-          The resource name of the endpoint. This field is output-only and constructed by the system. Format:
-          `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
+          Output only. The full resource path of the endpoint. Format:
+          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param endpoint: :class:`Endpoint`
           The Endpoint to update.
 
@@ -2047,8 +2051,7 @@ class PostgresAPI:
         """Updates the specified database project.
 
         :param name: str
-          The resource name of the project. This field is output-only and constructed by the system. Format:
-          `projects/{project_id}`
+          Output only. The full resource path of the project. Format: projects/{project_id}
         :param project: :class:`Project`
           The Project to update.
 

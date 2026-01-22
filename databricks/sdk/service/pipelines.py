@@ -700,8 +700,14 @@ class IngestionGatewayPipelineDefinition:
 @dataclass
 class IngestionPipelineDefinition:
     connection_name: Optional[str] = None
-    """Immutable. The Unity Catalog connection that this ingestion pipeline uses to communicate with
-    the source. This is used with connectors for applications like Salesforce, Workday, and so on."""
+    """The Unity Catalog connection that this ingestion pipeline uses to communicate with the source.
+    This is used with both connectors for applications like Salesforce, Workday, and so on, and also
+    database connectors like Oracle, (connector_type = QUERY_BASED OR connector_type = CDC). If
+    connection name corresponds to database connectors like Oracle, and connector_type is not
+    provided then connector_type defaults to QUERY_BASED. If connector_type is passed as CDC we use
+    Combined Cdc Managed Ingestion pipeline. Under certain conditions, this can be replaced with
+    ingestion_gateway_id to change the connector to Cdc Managed Ingestion Pipeline with Gateway
+    pipeline."""
 
     full_refresh_window: Optional[OperationTimeWindow] = None
     """(Optional) A window that specifies a set of time ranges for snapshot queries in CDC."""
@@ -712,8 +718,10 @@ class IngestionPipelineDefinition:
     objects of IngestionConfig are interpreted as the UC foreign catalogs to ingest from."""
 
     ingestion_gateway_id: Optional[str] = None
-    """Immutable. Identifier for the gateway that is used by this ingestion pipeline to communicate
-    with the source database. This is used with connectors to databases like SQL Server."""
+    """Identifier for the gateway that is used by this ingestion pipeline to communicate with the
+    source database. This is used with CDC connectors to databases like SQL Server using a gateway
+    pipeline (connector_type = CDC). Under certain conditions, this can be replaced with
+    connection_name to change the connector to Combined Cdc Managed Ingestion Pipeline."""
 
     netsuite_jar_path: Optional[str] = None
     """Netsuite only configuration. When the field is set for a netsuite connector, the jar stored in
@@ -3992,20 +4000,26 @@ class PipelinesAPI:
         res = self._api.do("POST", "/api/2.0/pipelines", body=body, headers=headers)
         return CreatePipelineResponse.from_dict(res)
 
-    def delete(self, pipeline_id: str):
+    def delete(self, pipeline_id: str, *, force: Optional[bool] = None):
         """Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all
         pipeline tables. Please reach out to Databricks support for assistance to undo this action.
 
         :param pipeline_id: str
+        :param force: bool (optional)
+          If true, deletion will proceed even if resource cleanup fails. By default, deletion will fail if
+          resources cleanup is required but fails.
 
 
         """
 
+        query = {}
+        if force is not None:
+            query["force"] = force
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/pipelines/{pipeline_id}", headers=headers)
+        self._api.do("DELETE", f"/api/2.0/pipelines/{pipeline_id}", query=query, headers=headers)
 
     def get(self, pipeline_id: str) -> GetPipelineResponse:
         """Get a pipeline.

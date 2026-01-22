@@ -12,19 +12,10 @@
 
     **About resource IDs and names**
 
-    Lakebase APIs use hierarchical resource names in API paths to identify resources, such as
-    `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`.
-
-    When creating a resource, you may optionally provide the final ID component (for example, `project_id`,
-    `branch_id`, or `endpoint_id`). If you do not, the system generates an identifier and uses it as the ID
-    component.
-
-    The `name` field is output-only and represents the full resource path. Note: The term *resource name* in
-    this API refers to this full, hierarchical identifier (for example, `projects/{project_id}`), not the
-    `display_name` field. The `display_name` is a separate, user-visible label shown in the UI.
-
-    The `uid` field is a system-generated, immutable identifier intended for internal reference and should not
-    be used to address or locate resources.
+    Resources are identified by hierarchical resource names like
+    `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`. The `name` field on each resource
+    contains this full path and is output-only. Note that `name` refers to this resource path, not the
+    user-visible `display_name`.
 
     .. py:method:: create_branch(parent: str, branch: Branch, branch_id: str) -> CreateBranchOperation
 
@@ -36,10 +27,9 @@
           The Branch to create.
         :param branch_id: str
           The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID
-          must be 1-63 characters long, start with a lowercase letter, and contain only lowercase letters,
-          numbers, and hyphens (RFC 1123). Examples: - With custom ID: `staging` → name becomes
-          `projects/{project_id}/branches/staging` - Without custom ID: system generates slug → name becomes
-          `projects/{project_id}/branches/br-example-name-x1y2z3a4`
+          is required and must be 1-63 characters long, start with a lowercase letter, and contain only
+          lowercase letters, numbers, and hyphens. For example, `development` becomes
+          `projects/my-app/branches/development`.
 
         :returns: :class:`Operation`
         
@@ -54,11 +44,9 @@
           The Endpoint to create.
         :param endpoint_id: str
           The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
-          The ID must be 1-63 characters long, start with a lowercase letter, and contain only lowercase
-          letters, numbers, and hyphens (RFC 1123). Examples: - With custom ID: `primary` → name becomes
-          `projects/{project_id}/branches/{branch_id}/endpoints/primary` - Without custom ID: system generates
-          slug → name becomes
-          `projects/{project_id}/branches/{branch_id}/endpoints/ep-example-name-x1y2z3a4`
+          The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
+          lowercase letters, numbers, and hyphens. For example, `primary` becomes
+          `projects/my-app/branches/development/endpoints/primary`.
 
         :returns: :class:`Operation`
         
@@ -72,10 +60,8 @@
           The Project to create.
         :param project_id: str
           The ID to use for the Project. This becomes the final component of the project's resource name. The
-          ID must be 1-63 characters long, start with a lowercase letter, and contain only lowercase letters,
-          numbers, and hyphens (RFC 1123). Examples: - With custom ID: `production` → name becomes
-          `projects/production` - Without custom ID: system generates UUID → name becomes
-          `projects/a7f89b2c-3d4e-5f6g-7h8i-9j0k1l2m3n4o`
+          ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
+          lowercase letters, numbers, and hyphens. For example, `my-app` becomes `projects/my-app`.
 
         :returns: :class:`Operation`
         
@@ -103,7 +89,7 @@
         Deletes the specified database branch.
 
         :param name: str
-          The name of the Branch to delete. Format: projects/{project_id}/branches/{branch_id}
+          The full resource path of the branch to delete. Format: projects/{project_id}/branches/{branch_id}
 
         :returns: :class:`Operation`
         
@@ -113,7 +99,7 @@
         Deletes the specified compute endpoint.
 
         :param name: str
-          The name of the Endpoint to delete. Format:
+          The full resource path of the endpoint to delete. Format:
           projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 
         :returns: :class:`Operation`
@@ -124,7 +110,7 @@
         Deletes the specified database project.
 
         :param name: str
-          The name of the Project to delete. Format: projects/{project_id}
+          The full resource path of the project to delete. Format: projects/{project_id}
 
         :returns: :class:`Operation`
         
@@ -134,7 +120,7 @@
         Deletes the specified Postgres role.
 
         :param name: str
-          The resource name of the postgres role. Format:
+          The full resource path of the role to delete. Format:
           projects/{project_id}/branches/{branch_id}/roles/{role_id}
         :param reassign_owned_to: str (optional)
           Reassign objects. If this is set, all objects owned by the role are reassigned to the role specified
@@ -166,7 +152,7 @@
         Retrieves information about the specified database branch.
 
         :param name: str
-          The resource name of the branch to retrieve. Format: `projects/{project_id}/branches/{branch_id}`
+          The full resource path of the branch to retrieve. Format: projects/{project_id}/branches/{branch_id}
 
         :returns: :class:`Branch`
         
@@ -177,8 +163,8 @@
         operational state.
 
         :param name: str
-          The resource name of the endpoint to retrieve. Format:
-          `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
+          The full resource path of the endpoint to retrieve. Format:
+          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
 
         :returns: :class:`Endpoint`
         
@@ -198,7 +184,7 @@
         Retrieves information about the specified database project.
 
         :param name: str
-          The resource name of the project to retrieve. Format: `projects/{project_id}`
+          The full resource path of the project to retrieve. Format: projects/{project_id}
 
         :returns: :class:`Project`
         
@@ -209,7 +195,8 @@
         permissions.
 
         :param name: str
-          The name of the Role to retrieve. Format: projects/{project_id}/branches/{branch_id}/roles/{role_id}
+          The full resource path of the role to retrieve. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
 
         :returns: :class:`Role`
         
@@ -275,8 +262,8 @@
         protect/unprotect it.
 
         :param name: str
-          The resource name of the branch. This field is output-only and constructed by the system. Format:
-          `projects/{project_id}/branches/{branch_id}`
+          Output only. The full resource path of the branch. Format:
+          projects/{project_id}/branches/{branch_id}
         :param branch: :class:`Branch`
           The Branch to update.
 
@@ -294,8 +281,8 @@
         enable/disable the compute endpoint.
 
         :param name: str
-          The resource name of the endpoint. This field is output-only and constructed by the system. Format:
-          `projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}`
+          Output only. The full resource path of the endpoint. Format:
+          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
         :param endpoint: :class:`Endpoint`
           The Endpoint to update.
 
@@ -312,8 +299,7 @@
         Updates the specified database project.
 
         :param name: str
-          The resource name of the project. This field is output-only and constructed by the system. Format:
-          `projects/{project_id}`
+          Output only. The full resource path of the project. Format: projects/{project_id}
         :param project: :class:`Project`
           The Project to update.
 

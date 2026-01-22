@@ -22,7 +22,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: BranchStatusState
 
-   The state of the database branch.
+   The state of the branch.
 
    .. py:attribute:: ARCHIVED
       :value: "ARCHIVED"
