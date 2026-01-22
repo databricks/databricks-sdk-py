@@ -7,13 +7,13 @@ import pathlib
 import re
 import sys
 import urllib.parse
-from enum import Enum
 from typing import Dict, Iterable, List, Optional
 
 import requests
 
 from . import useragent
 from ._base_client import _fix_host_if_needed
+from .client_types import ClientType, HostType
 from .clock import Clock, RealClock
 from .credentials_provider import (CredentialsStrategy, DefaultCredentials,
                                    OAuthCredentialsProvider)
@@ -24,21 +24,6 @@ from .oauth import (OidcEndpoints, Token, get_account_endpoints,
                     get_unified_endpoints, get_workspace_endpoints)
 
 logger = logging.getLogger("databricks.sdk")
-
-
-class HostType(Enum):
-    """Enum representing the type of Databricks host."""
-
-    ACCOUNTS = "accounts"
-    WORKSPACE = "workspace"
-    UNIFIED = "unified"
-
-
-class ClientType(Enum):
-    """Enum representing the type of client configuration."""
-
-    ACCOUNT = "account"
-    WORKSPACE = "workspace"
 
 
 class ConfigAttribute:

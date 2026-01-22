@@ -21,6 +21,7 @@ from google.auth.transport.requests import Request  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
 from . import azure, oauth, oidc, oidc_token_supplier
+from .client_types import ClientType
 
 CredentialsProvider = Callable[[], Dict[str, str]]
 
@@ -430,9 +431,9 @@ def _oidc_credentials_provider(
 
     # Determine the audience for token exchange
     audience = cfg.token_audience
-    if audience is None and cfg.client_type.value == "account":
+    if audience is None and cfg.client_type == ClientType.ACCOUNT:
         audience = cfg.account_id
-    if audience is None and cfg.client_type.value != "account":
+    if audience is None and cfg.client_type != ClientType.ACCOUNT:
         audience = cfg.oidc_endpoints.token_endpoint
 
     # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
@@ -589,7 +590,7 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         credentials.refresh(request)
         headers = {"Authorization": f"Bearer {credentials.token}"}
-        if cfg.client_type.value == "account":
+        if cfg.client_type == ClientType.ACCOUNT:
             gcp_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
         return headers
@@ -630,7 +631,7 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         id_creds.refresh(request)
         headers = {"Authorization": f"Bearer {id_creds.token}"}
-        if cfg.client_type.value == "account":
+        if cfg.client_type == ClientType.ACCOUNT:
             gcp_impersonated_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
         return headers
@@ -859,7 +860,7 @@ class DatabricksCliTokenSource(CliTokenSource):
                 args += ["--account-id", cfg.account_id]
             if cfg.workspace_id:
                 args += ["--workspace-id", str(cfg.workspace_id)]
-        elif cfg.client_type.value == "account":
+        elif cfg.client_type == ClientType.ACCOUNT:
             args += ["--account-id", cfg.account_id]
 
         cli_path = cfg.databricks_cli_path
