@@ -12,4 +12,6 @@
 
 ### Internal Changes
 
+* Increase count in integration test for listing workspace groups to reduce API calls and timeout. 
+
 ### API Changes

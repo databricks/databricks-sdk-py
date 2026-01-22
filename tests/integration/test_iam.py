@@ -28,7 +28,7 @@ def test_scim_get_user_as_dict(w):
     "path,call",
     [
         ("/api/2.0/preview/scim/v2/Users", lambda w: w.users.list(count=10)),
-        ("/api/2.0/preview/scim/v2/Groups", lambda w: w.groups.list(count=4)),
+        ("/api/2.0/preview/scim/v2/Groups", lambda w: w.groups.list(count=20)),
         (
             "/api/2.0/preview/scim/v2/ServicePrincipals",
             lambda w: w.service_principals.list(count=1),
