@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.80.0
+## Release v0.81.0
 
 ### New Features and Improvements
 
@@ -11,7 +11,5 @@
 ### Documentation
 
 ### Internal Changes
-
-* Support CLI Profiles for Unified Host.
 
 ### API Changes

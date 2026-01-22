@@ -1,5 +1,12 @@
 # Version changelog
 
+## Release v0.80.0 (2026-01-22)
+
+### Internal Changes
+
+* Support CLI Profiles for Unified Host.
+
+
 ## Release v0.79.0 (2026-01-22)
 
 ### API Changes
