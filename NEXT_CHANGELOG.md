@@ -11,6 +11,7 @@
 ### Documentation
 
 ### Internal Changes
-* Support CLI Profiles for Unified Host
+
+* Support CLI Profiles for Unified Host.
 
 ### API Changes
