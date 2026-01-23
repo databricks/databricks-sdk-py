@@ -13,3 +13,5 @@
 ### Internal Changes
 
 ### API Changes
+* Add `postgres_role` field for `databricks.sdk.service.postgres.RoleRoleSpec`.
+* Add `postgres_role` field for `databricks.sdk.service.postgres.RoleRoleStatus`.

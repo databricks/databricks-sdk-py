@@ -1497,7 +1497,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_WORKDAY_HCM_USERNAME_PASSWORD = 292; Next id: 293
+   Latest kind: CONNECTION_WORKDAY_HCM_USERNAME_PASSWORD = 293; Next id: 294
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
