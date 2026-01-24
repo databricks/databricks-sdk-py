@@ -34,13 +34,15 @@
         :returns: Iterator over :class:`AlertV2`
         
 
-    .. py:method:: trash_alert(id: str)
+    .. py:method:: trash_alert(id: str [, purge: Optional[bool]])
 
         Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer
         trigger. You can restore a trashed alert through the UI. A trashed alert is permanently deleted after
         30 days.
 
         :param id: str
+        :param purge: bool (optional)
+          Whether to permanently delete the alert. If not set, the alert will only be soft deleted.
 
 
         

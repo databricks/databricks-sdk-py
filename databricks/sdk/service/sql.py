@@ -7852,21 +7852,26 @@ class AlertsV2API:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def trash_alert(self, id: str):
+    def trash_alert(self, id: str, *, purge: Optional[bool] = None):
         """Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer
         trigger. You can restore a trashed alert through the UI. A trashed alert is permanently deleted after
         30 days.
 
         :param id: str
+        :param purge: bool (optional)
+          Whether to permanently delete the alert. If not set, the alert will only be soft deleted.
 
 
         """
 
+        query = {}
+        if purge is not None:
+            query["purge"] = purge
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/alerts/{id}", headers=headers)
+        self._api.do("DELETE", f"/api/2.0/alerts/{id}", query=query, headers=headers)
 
     def update_alert(self, id: str, alert: AlertV2, update_mask: str) -> AlertV2:
         """Update alert
