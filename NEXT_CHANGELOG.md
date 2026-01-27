@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.81.0
+## Release v0.82.0
 
 ### New Features and Improvements
 
@@ -13,6 +13,3 @@
 ### Internal Changes
 
 ### API Changes
-* Add `postgres_role` field for `databricks.sdk.service.postgres.RoleRoleSpec`.
-* Add `postgres_role` field for `databricks.sdk.service.postgres.RoleRoleStatus`.
-* Add `purge` field for `databricks.sdk.service.sql.TrashAlertV2Request`.
