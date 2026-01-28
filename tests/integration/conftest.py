@@ -8,6 +8,7 @@ import sys
 import pytest
 
 from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient
+from databricks.sdk.environments import Cloud
 from databricks.sdk.service.catalog import VolumeType
 
 
@@ -163,6 +164,13 @@ def _is_in_debug() -> bool:
         "_jb_pytest_runner.py",
         "testlauncher.py",
     ]
+
+
+def _is_cloud(cloud: Cloud) -> bool:
+    """Check if the CLOUD_PROVIDER environment variable matches the specified cloud provider."""
+    cloud_provider = os.getenv("CLOUD_PROVIDER", "").upper()
+    cloud_upper = cloud.value.upper()
+    return cloud_provider == cloud_upper
 
 
 @pytest.fixture(scope="function")
