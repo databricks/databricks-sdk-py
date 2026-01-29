@@ -2548,6 +2548,11 @@ class Route:
 
 @dataclass
 class ServedEntityInput:
+    burst_scaling_enabled: Optional[bool] = None
+    """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
+    up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains
+    fixed capacity at provisioned_model_units."""
+
     entity_name: Optional[str] = None
     """The name of the entity to be served. The entity may be a model in the Databricks Model Registry,
     a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC
@@ -2619,6 +2624,8 @@ class ServedEntityInput:
     def as_dict(self) -> dict:
         """Serializes the ServedEntityInput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.entity_name is not None:
             body["entity_name"] = self.entity_name
         if self.entity_version is not None:
@@ -2652,6 +2659,8 @@ class ServedEntityInput:
     def as_shallow_dict(self) -> dict:
         """Serializes the ServedEntityInput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.entity_name is not None:
             body["entity_name"] = self.entity_name
         if self.entity_version is not None:
@@ -2686,6 +2695,7 @@ class ServedEntityInput:
     def from_dict(cls, d: Dict[str, Any]) -> ServedEntityInput:
         """Deserializes the ServedEntityInput from a dictionary."""
         return cls(
+            burst_scaling_enabled=d.get("burst_scaling_enabled", None),
             entity_name=d.get("entity_name", None),
             entity_version=d.get("entity_version", None),
             environment_vars=d.get("environment_vars", None),
@@ -2705,6 +2715,11 @@ class ServedEntityInput:
 
 @dataclass
 class ServedEntityOutput:
+    burst_scaling_enabled: Optional[bool] = None
+    """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
+    up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains
+    fixed capacity at provisioned_model_units."""
+
     creation_timestamp: Optional[int] = None
 
     creator: Optional[str] = None
@@ -2784,6 +2799,8 @@ class ServedEntityOutput:
     def as_dict(self) -> dict:
         """Serializes the ServedEntityOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -2825,6 +2842,8 @@ class ServedEntityOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the ServedEntityOutput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -2867,6 +2886,7 @@ class ServedEntityOutput:
     def from_dict(cls, d: Dict[str, Any]) -> ServedEntityOutput:
         """Deserializes the ServedEntityOutput from a dictionary."""
         return cls(
+            burst_scaling_enabled=d.get("burst_scaling_enabled", None),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
             entity_name=d.get("entity_name", None),
@@ -2951,6 +2971,11 @@ class ServedModelInput:
 
     model_version: str
 
+    burst_scaling_enabled: Optional[bool] = None
+    """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
+    up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains
+    fixed capacity at provisioned_model_units."""
+
     environment_vars: Optional[Dict[str, str]] = None
     """An object containing a set of optional, user-specified environment variable key-value pairs used
     for serving this entity. Note: this is an experimental feature and subject to change. Example
@@ -3003,6 +3028,8 @@ class ServedModelInput:
     def as_dict(self) -> dict:
         """Serializes the ServedModelInput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.environment_vars:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
@@ -3034,6 +3061,8 @@ class ServedModelInput:
     def as_shallow_dict(self) -> dict:
         """Serializes the ServedModelInput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.environment_vars:
             body["environment_vars"] = self.environment_vars
         if self.instance_profile_arn is not None:
@@ -3066,6 +3095,7 @@ class ServedModelInput:
     def from_dict(cls, d: Dict[str, Any]) -> ServedModelInput:
         """Deserializes the ServedModelInput from a dictionary."""
         return cls(
+            burst_scaling_enabled=d.get("burst_scaling_enabled", None),
             environment_vars=d.get("environment_vars", None),
             instance_profile_arn=d.get("instance_profile_arn", None),
             max_provisioned_concurrency=d.get("max_provisioned_concurrency", None),
@@ -3094,6 +3124,11 @@ class ServedModelInputWorkloadType(Enum):
 
 @dataclass
 class ServedModelOutput:
+    burst_scaling_enabled: Optional[bool] = None
+    """Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale
+    up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains
+    fixed capacity at provisioned_model_units."""
+
     creation_timestamp: Optional[int] = None
 
     creator: Optional[str] = None
@@ -3153,6 +3188,8 @@ class ServedModelOutput:
     def as_dict(self) -> dict:
         """Serializes the ServedModelOutput into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -3186,6 +3223,8 @@ class ServedModelOutput:
     def as_shallow_dict(self) -> dict:
         """Serializes the ServedModelOutput into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.burst_scaling_enabled is not None:
+            body["burst_scaling_enabled"] = self.burst_scaling_enabled
         if self.creation_timestamp is not None:
             body["creation_timestamp"] = self.creation_timestamp
         if self.creator is not None:
@@ -3220,6 +3259,7 @@ class ServedModelOutput:
     def from_dict(cls, d: Dict[str, Any]) -> ServedModelOutput:
         """Deserializes the ServedModelOutput from a dictionary."""
         return cls(
+            burst_scaling_enabled=d.get("burst_scaling_enabled", None),
             creation_timestamp=d.get("creation_timestamp", None),
             creator=d.get("creator", None),
             environment_vars=d.get("environment_vars", None),

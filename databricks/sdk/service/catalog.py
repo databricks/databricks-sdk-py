@@ -1606,7 +1606,7 @@ class ConnectionDependency:
 
 @dataclass
 class ConnectionInfo:
-    """Next ID: 23"""
+    """Next ID: 24"""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -8571,7 +8571,7 @@ class RowFilterOptions:
 
 @dataclass
 class SchemaInfo:
-    """Next ID: 44"""
+    """Next ID: 45"""
 
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
