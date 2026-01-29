@@ -70,6 +70,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: BackfillSource
+   :members:
+   :undoc-members:
+
 .. autoclass:: BatchCreateMaterializedFeaturesResponse
    :members:
    :undoc-members:
