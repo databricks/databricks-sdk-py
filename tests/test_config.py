@@ -9,7 +9,7 @@ from urllib.parse import parse_qs
 
 import pytest
 
-from databricks.sdk import oauth, useragent, WorkspaceClient, AccountClient
+from databricks.sdk import AccountClient, WorkspaceClient, oauth, useragent
 from databricks.sdk.config import (ClientType, Config, HostType, with_product,
                                    with_user_agent_extra)
 from databricks.sdk.version import __version__
@@ -445,7 +445,10 @@ def test_workspace_org_id_header_on_unified_host(requests_mock):
 def test_not_workspace_org_id_header_on_unified_host_on_account_endpoint(requests_mock):
     """Test that X-Databricks-Org-Id header is added for workspace clients on unified hosts."""
 
-    requests_mock.get("https://unified.databricks.com/api/2.0/accounts/test-account/scim/v2/Groups/test-group-123", json={"result": "success"})
+    requests_mock.get(
+        "https://unified.databricks.com/api/2.0/accounts/test-account/scim/v2/Groups/test-group-123",
+        json={"result": "success"},
+    )
 
     config = Config(
         host="https://unified.databricks.com",
@@ -460,7 +463,6 @@ def test_not_workspace_org_id_header_on_unified_host_on_account_endpoint(request
 
     # Verify the request was made without the X-Databricks-Org-Id header
     assert "X-Databricks-Org-Id" not in requests_mock.last_request.headers
-
 
 
 def test_no_org_id_header_on_regular_workspace(requests_mock):
