@@ -9,7 +9,7 @@ from urllib.parse import parse_qs
 
 import pytest
 
-from databricks.sdk import oauth, useragent
+from databricks.sdk import oauth, useragent, WorkspaceClient
 from databricks.sdk.config import (ClientType, Config, HostType, with_product,
                                    with_user_agent_extra)
 from databricks.sdk.version import __version__
@@ -424,9 +424,8 @@ def test_oidc_endpoints_unified_missing_ids():
 
 def test_workspace_org_id_header_on_unified_host(requests_mock):
     """Test that X-Databricks-Org-Id header is added for workspace clients on unified hosts."""
-    from databricks.sdk.core import ApiClient
 
-    requests_mock.get("https://unified.databricks.com/api/2.0/test", json={"result": "success"})
+    requests_mock.get("https://unified.databricks.com/api/2.0/preview/scim/v2/Me", json={"result": "success"})
 
     config = Config(
         host="https://unified.databricks.com",
@@ -435,8 +434,8 @@ def test_workspace_org_id_header_on_unified_host(requests_mock):
         token="test-token",
     )
 
-    api_client = ApiClient(config)
-    api_client.do("GET", "/api/2.0/test")
+    workspace_client = WorkspaceClient(config=config)
+    workspace_client.current_user.me()
 
     # Verify the request was made with the X-Databricks-Org-Id header
     assert requests_mock.last_request.headers.get("X-Databricks-Org-Id") == "test-workspace-123"

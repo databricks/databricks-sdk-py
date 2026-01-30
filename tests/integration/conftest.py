@@ -93,6 +93,7 @@ def unified_config(env_or_skip) -> Config:
     config.experimental_is_unified_host = True
     return config
 
+
 @pytest.fixture(scope="session")
 def w(env_or_skip) -> WorkspaceClient:
     _load_debug_env_if_runs_from_ide("workspace")

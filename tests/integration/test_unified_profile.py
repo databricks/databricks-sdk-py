@@ -6,6 +6,7 @@ def test_workspace_operations(unified_config):
     user = client.current_user.me()
     assert user is not None
 
+
 def test_account_operations(unified_config):
     client = AccountClient(config=unified_config)
     groups = client.groups.list()
