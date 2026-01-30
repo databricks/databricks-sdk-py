@@ -1683,7 +1683,7 @@ class PostgresAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("PATCH", f"/api/2.0/postgres/{parent}/roles", query=query, body=body, headers=headers)
+        res = self._api.do("POST", f"/api/2.0/postgres/{parent}/roles", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return CreateRoleOperation(self, operation)
 

@@ -54,6 +54,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: POSITIVE
       :value: "POSITIVE"
 
+.. autoclass:: GenieGenerateDownloadFullQueryResultResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: GenieGetDownloadFullQueryResultResponse
+   :members:
+   :undoc-members:
+
 .. autoclass:: GenieGetMessageQueryResultResponse
    :members:
    :undoc-members:
