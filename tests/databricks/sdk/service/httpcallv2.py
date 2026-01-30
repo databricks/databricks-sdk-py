@@ -6,6 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.common.types.fieldmask import FieldMask
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -129,6 +130,10 @@ class HttpCallV2API:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST",
             f"/api/2.0/http-call/{path_param_string}/{path_param_int}/{path_param_bool}",
@@ -170,6 +175,10 @@ class HttpCallV2API:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -237,6 +246,10 @@ class HttpCallV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",

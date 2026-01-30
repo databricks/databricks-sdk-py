@@ -10,6 +10,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict)
 
@@ -2177,6 +2178,10 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.0/apps", query=query, body=body, headers=headers)
         return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
 
@@ -2215,6 +2220,10 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", f"/api/2.0/apps/{app_name}/update", body=body, headers=headers)
         return Wait(self.wait_get_update_app_succeeded, response=AppUpdate.from_dict(op_response), app_name=app_name)
 
@@ -2235,6 +2244,10 @@ class AppsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("DELETE", f"/api/2.0/apps/{name}", headers=headers)
         return App.from_dict(res)
@@ -2257,6 +2270,10 @@ class AppsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{app_name}/deployments", body=body, headers=headers)
         return Wait(
@@ -2284,6 +2301,10 @@ class AppsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/apps/{name}", headers=headers)
         return App.from_dict(res)
 
@@ -2302,6 +2323,10 @@ class AppsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/apps/{app_name}/deployments/{deployment_id}", headers=headers)
         return AppDeployment.from_dict(res)
 
@@ -2317,6 +2342,10 @@ class AppsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}/permissionLevels", headers=headers)
         return GetAppPermissionLevelsResponse.from_dict(res)
@@ -2334,6 +2363,10 @@ class AppsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}", headers=headers)
         return AppPermissions.from_dict(res)
 
@@ -2349,6 +2382,10 @@ class AppsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/apps/{app_name}/update", headers=headers)
         return AppUpdate.from_dict(res)
@@ -2372,6 +2409,10 @@ class AppsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/apps", query=query, headers=headers)
@@ -2406,6 +2447,10 @@ class AppsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", f"/api/2.0/apps/{app_name}/deployments", query=query, headers=headers)
             if "app_deployments" in json:
@@ -2436,6 +2481,10 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PUT", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
         return AppPermissions.from_dict(res)
 
@@ -2454,6 +2503,10 @@ class AppsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/start", headers=headers)
         return Wait(self.wait_get_app_active, response=App.from_dict(op_response), name=op_response["name"])
@@ -2476,6 +2529,10 @@ class AppsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", f"/api/2.0/apps/{name}/stop", headers=headers)
         return Wait(self.wait_get_app_stopped, response=App.from_dict(op_response), name=op_response["name"])
@@ -2500,6 +2557,10 @@ class AppsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.0/apps/{name}", body=body, headers=headers)
         return App.from_dict(res)
 
@@ -2522,6 +2583,10 @@ class AppsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
         return AppPermissions.from_dict(res)
@@ -2547,6 +2612,10 @@ class AppsSettingsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/apps-settings/templates", body=body, headers=headers)
         return CustomTemplate.from_dict(res)
 
@@ -2563,6 +2632,10 @@ class AppsSettingsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("DELETE", f"/api/2.0/apps-settings/templates/{name}", headers=headers)
         return CustomTemplate.from_dict(res)
 
@@ -2578,6 +2651,10 @@ class AppsSettingsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/apps-settings/templates/{name}", headers=headers)
         return CustomTemplate.from_dict(res)
@@ -2604,6 +2681,10 @@ class AppsSettingsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/apps-settings/templates", query=query, headers=headers)
             if "templates" in json:
@@ -2629,6 +2710,10 @@ class AppsSettingsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/apps-settings/templates/{name}", body=body, headers=headers)
         return CustomTemplate.from_dict(res)
