@@ -11,6 +11,7 @@
 ### Documentation
 
 ### Internal Changes
+* add capability to read the `product` field from the env variable.
 
 ### API Changes
 * Add `generate_download_full_query_result()` and `get_download_full_query_result()` methods for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
