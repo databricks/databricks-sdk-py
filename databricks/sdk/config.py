@@ -681,6 +681,10 @@ class Config:
             raise ValueError(f"{self._credentials_strategy.auth_type()} auth: {e}") from e
 
     def _init_product(self, product, product_version):
+        # Check env var if product not explicitly provided
+        if product is None:
+            product = self._sanitize_product(os.environ.get("DATABRICKS_PRODUCT"))
+
         if product is not None or product_version is not None:
             default_product, default_version = useragent.product()
             self._product_info = (
@@ -689,6 +693,16 @@ class Config:
             )
         else:
             self._product_info = None
+
+    def _sanitize_product(self, value: Optional[str]) -> Optional[str]:
+        """Sanitize product string: trim, cap length, replace invalid chars."""
+        if value is None:
+            return None
+        value = value.strip()[:64]
+        if not value:
+            return None
+        # Replace invalid chars with '-' (allow only A-Za-z0-9._-)
+        return re.sub(r"[^A-Za-z0-9._-]", "-", value)
 
     def get_scopes(self) -> list:
         """Get OAuth scopes with proper defaulting.
