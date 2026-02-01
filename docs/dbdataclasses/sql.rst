@@ -1494,6 +1494,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: METASTORE_COMPONENT_UNHEALTHY
       :value: "METASTORE_COMPONENT_UNHEALTHY"
 
+   .. py:attribute:: MTLS_PORT_CONNECTIVITY_FAILURE
+      :value: "MTLS_PORT_CONNECTIVITY_FAILURE"
+
    .. py:attribute:: NEPHOS_RESOURCE_MANAGEMENT
       :value: "NEPHOS_RESOURCE_MANAGEMENT"
 

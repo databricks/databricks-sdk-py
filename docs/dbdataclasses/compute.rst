@@ -597,6 +597,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: HardwareAcceleratorType
+
+   HardwareAcceleratorType: The type of hardware accelerator to use for compute workloads. NOTE: This enum is referenced and is intended to be used by other Databricks services that need to specify hardware accelerator requirements for AI compute workloads.
+
+   .. py:attribute:: GPU_1X_A10
+      :value: "GPU_1X_A10"
+
+   .. py:attribute:: GPU_8X_H100
+      :value: "GPU_8X_H100"
+
 .. autoclass:: InitScriptEventDetails
    :members:
    :undoc-members:
@@ -1399,6 +1409,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: METASTORE_COMPONENT_UNHEALTHY
       :value: "METASTORE_COMPONENT_UNHEALTHY"
+
+   .. py:attribute:: MTLS_PORT_CONNECTIVITY_FAILURE
+      :value: "MTLS_PORT_CONNECTIVITY_FAILURE"
 
    .. py:attribute:: NEPHOS_RESOURCE_MANAGEMENT
       :value: "NEPHOS_RESOURCE_MANAGEMENT"
