@@ -1,4 +1,5 @@
 import json as js
+import warnings
 from typing import Dict, Optional
 
 from requests import Response
@@ -34,6 +35,11 @@ class ServingEndpointsExt(ServingEndpointsAPI):
     def get_open_ai_client(self, **kwargs):
         """Create an OpenAI client configured for Databricks Model Serving.
 
+        .. deprecated::
+            This method is deprecated. Please install the `databricks-openai` package
+            and use `from databricks_openai import DatabricksOpenAI` instead.
+            See https://pypi.org/project/databricks-openai/ for more information.
+
         Returns an OpenAI client instance that is pre-configured to send requests to
         Databricks Model Serving endpoints. The client uses Databricks authentication
         to query endpoints within the workspace associated with the current WorkspaceClient
@@ -66,6 +72,13 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             ...     max_retries=5
             ... )
         """
+        warnings.warn(
+            "get_open_ai_client() is deprecated. Please install the databricks-openai package "
+            "and use 'from databricks_openai import DatabricksOpenAI' instead. "
+            "See https://pypi.org/project/databricks-openai/ for more information.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         try:
             from openai import OpenAI
         except Exception:
@@ -95,6 +108,20 @@ class ServingEndpointsExt(ServingEndpointsAPI):
         return OpenAI(**client_params)
 
     def get_langchain_chat_open_ai_client(self, model):
+        """Create a LangChain ChatOpenAI client configured for Databricks Model Serving.
+
+        .. deprecated::
+            This method is deprecated. Please install the `databricks-openai` package
+            and use `from databricks_openai import AsyncDatabricksOpenAI` instead.
+            See https://pypi.org/project/databricks-openai/ for more information.
+        """
+        warnings.warn(
+            "get_langchain_chat_open_ai_client() is deprecated. Please install the databricks-openai package "
+            "and use 'from databricks_openai import AsyncDatabricksOpenAI' instead. "
+            "See https://pypi.org/project/databricks-openai/ for more information.",
+            DeprecationWarning,
+            stacklevel=2
+        )
         try:
             from langchain_openai import ChatOpenAI
         except Exception:

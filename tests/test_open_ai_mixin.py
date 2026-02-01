@@ -1,4 +1,5 @@
 import sys
+import warnings
 from io import BytesIO
 
 import pytest
@@ -115,3 +116,57 @@ def test_http_request(w, requests_mock):
     assert requests_mock.called
     assert response.status_code == 200  # Verify the response status
     assert response.text == "The request was successful"  # Ensure the response body matches the mocked data
+
+
+def test_get_open_ai_client_deprecation_warning(monkeypatch):
+    """Test that get_open_ai_client raises a DeprecationWarning."""
+    from databricks.sdk import WorkspaceClient
+
+    monkeypatch.setenv("DATABRICKS_HOST", "test_host")
+    monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
+    w = WorkspaceClient(config=Config())
+
+    with warnings.catch_warnings(record=True) as warning_list:
+        warnings.simplefilter("always")
+        client = w.serving_endpoints.get_open_ai_client()
+
+        # Verify a DeprecationWarning was raised
+        assert len(warning_list) == 1
+        assert issubclass(warning_list[0].category, DeprecationWarning)
+        assert "get_open_ai_client() is deprecated" in str(warning_list[0].message)
+        assert "databricks-openai" in str(warning_list[0].message)
+        assert "DatabricksOpenAI" in str(warning_list[0].message)
+
+        # Verify the client still works
+        assert client.base_url == "https://test_host/serving-endpoints/"
+        assert client.api_key == "no-token"
+
+
+@pytest.mark.skipif(sys.version_info < (3, 8), reason="Requires Python > 3.7")
+def test_get_langchain_chat_open_ai_client_deprecation_warning(monkeypatch):
+    """Test that get_langchain_chat_open_ai_client raises a DeprecationWarning."""
+    from databricks.sdk import WorkspaceClient
+
+    monkeypatch.setenv("DATABRICKS_HOST", "test_host")
+    monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
+    w = WorkspaceClient(config=Config())
+
+    with warnings.catch_warnings(record=True) as warning_list:
+        warnings.simplefilter("always")
+        # The method will fail with ImportError if langchain_openai is not installed,
+        # but we still want to verify the deprecation warning is raised first
+        try:
+            client = w.serving_endpoints.get_langchain_chat_open_ai_client("databricks-meta-llama-3-1-70b-instruct")
+            # If langchain is installed, verify the client still works
+            assert client.openai_api_base == "https://test_host/serving-endpoints"
+            assert client.model_name == "databricks-meta-llama-3-1-70b-instruct"
+        except ImportError:
+            # Expected if langchain_openai is not installed
+            pass
+
+        # Verify a DeprecationWarning was raised regardless of ImportError
+        assert len(warning_list) == 1
+        assert issubclass(warning_list[0].category, DeprecationWarning)
+        assert "get_langchain_chat_open_ai_client() is deprecated" in str(warning_list[0].message)
+        assert "databricks-openai" in str(warning_list[0].message)
+        assert "AsyncDatabricksOpenAI" in str(warning_list[0].message)
