@@ -168,5 +168,5 @@ def test_get_langchain_chat_open_ai_client_deprecation_warning(monkeypatch):
         assert len(warning_list) == 1
         assert issubclass(warning_list[0].category, DeprecationWarning)
         assert "get_langchain_chat_open_ai_client() is deprecated" in str(warning_list[0].message)
-        assert "databricks-openai" in str(warning_list[0].message)
-        assert "AsyncDatabricksOpenAI" in str(warning_list[0].message)
+        assert "databricks-langchain" in str(warning_list[0].message)
+        assert "ChatDatabricks" in str(warning_list[0].message)

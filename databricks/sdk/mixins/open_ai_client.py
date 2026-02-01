@@ -111,14 +111,14 @@ class ServingEndpointsExt(ServingEndpointsAPI):
         """Create a LangChain ChatOpenAI client configured for Databricks Model Serving.
 
         .. deprecated::
-            This method is deprecated. Please install the `databricks-openai` package
-            and use `from databricks_openai import AsyncDatabricksOpenAI` instead.
-            See https://pypi.org/project/databricks-openai/ for more information.
+            This method is deprecated. Please install the `databricks-langchain` package
+            and use `from databricks_langchain import ChatDatabricks` instead.
+            See https://pypi.org/project/databricks-langchain/ for more information.
         """
         warnings.warn(
-            "get_langchain_chat_open_ai_client() is deprecated. Please install the databricks-openai package "
-            "and use 'from databricks_openai import AsyncDatabricksOpenAI' instead. "
-            "See https://pypi.org/project/databricks-openai/ for more information.",
+            "get_langchain_chat_open_ai_client() is deprecated. Please install the databricks-langchain package "
+            "and use 'from databricks_langchain import ChatDatabricks' instead. "
+            "See https://pypi.org/project/databricks-langchain/ for more information.",
             DeprecationWarning,
             stacklevel=2
         )
