@@ -91,15 +91,15 @@ def test_langchain_open_ai_client(monkeypatch):
     # Mock the langchain_openai import
     mock_chat_openai = Mock()
     mock_chat_openai.return_value = MagicMock(
-        openai_api_base="https://test_host/serving-endpoints",
-        model_name="databricks-meta-llama-3-1-70b-instruct"
+        openai_api_base="https://test_host/serving-endpoints", model_name="databricks-meta-llama-3-1-70b-instruct"
     )
 
     # Mock the module import
     import sys
+
     mock_module = MagicMock()
     mock_module.ChatOpenAI = mock_chat_openai
-    sys.modules['langchain_openai'] = mock_module
+    sys.modules["langchain_openai"] = mock_module
 
     try:
         w = WorkspaceClient(config=Config())
@@ -109,8 +109,8 @@ def test_langchain_open_ai_client(monkeypatch):
         assert client.model_name == "databricks-meta-llama-3-1-70b-instruct"
     finally:
         # Clean up the mock module
-        if 'langchain_openai' in sys.modules:
-            del sys.modules['langchain_openai']
+        if "langchain_openai" in sys.modules:
+            del sys.modules["langchain_openai"]
 
 
 def test_http_request(w, requests_mock):
@@ -174,15 +174,15 @@ def test_get_langchain_chat_open_ai_client_deprecation_warning(monkeypatch):
     # Mock the langchain_openai import
     mock_chat_openai = Mock()
     mock_chat_openai.return_value = MagicMock(
-        openai_api_base="https://test_host/serving-endpoints",
-        model_name="databricks-meta-llama-3-1-70b-instruct"
+        openai_api_base="https://test_host/serving-endpoints", model_name="databricks-meta-llama-3-1-70b-instruct"
     )
 
     # Mock the module import
     import sys
+
     mock_module = MagicMock()
     mock_module.ChatOpenAI = mock_chat_openai
-    sys.modules['langchain_openai'] = mock_module
+    sys.modules["langchain_openai"] = mock_module
 
     try:
         w = WorkspaceClient(config=Config())
@@ -203,5 +203,5 @@ def test_get_langchain_chat_open_ai_client_deprecation_warning(monkeypatch):
             assert client.model_name == "databricks-meta-llama-3-1-70b-instruct"
     finally:
         # Clean up the mock module
-        if 'langchain_openai' in sys.modules:
-            del sys.modules['langchain_openai']
+        if "langchain_openai" in sys.modules:
+            del sys.modules["langchain_openai"]

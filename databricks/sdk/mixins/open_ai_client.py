@@ -4,9 +4,7 @@ from typing import Dict, Optional
 
 from requests import Response
 
-from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
-                                            HttpRequestResponse,
-                                            ServingEndpointsAPI)
+from databricks.sdk.service.serving import ExternalFunctionRequestHttpMethod, HttpRequestResponse, ServingEndpointsAPI
 
 
 class ServingEndpointsExt(ServingEndpointsAPI):
@@ -77,7 +75,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             "and use 'from databricks_openai import DatabricksOpenAI' instead. "
             "See https://pypi.org/project/databricks-openai/ for more information.",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
         try:
             from openai import OpenAI
@@ -120,7 +118,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
             "and use 'from databricks_langchain import ChatDatabricks' instead. "
             "See https://pypi.org/project/databricks-langchain/ for more information.",
             DeprecationWarning,
-            stacklevel=2
+            stacklevel=2,
         )
         try:
             from langchain_openai import ChatOpenAI
