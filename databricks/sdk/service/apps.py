@@ -1642,6 +1642,10 @@ class ComputeState(Enum):
 
 @dataclass
 class ComputeStatus:
+    active_instances: Optional[int] = None
+    """The number of compute instances currently serving requests for this application. An instance is
+    considered active if it is reachable and ready to handle requests."""
+
     message: Optional[str] = None
     """Compute status message"""
 
@@ -1651,6 +1655,8 @@ class ComputeStatus:
     def as_dict(self) -> dict:
         """Serializes the ComputeStatus into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.active_instances is not None:
+            body["active_instances"] = self.active_instances
         if self.message is not None:
             body["message"] = self.message
         if self.state is not None:
@@ -1660,6 +1666,8 @@ class ComputeStatus:
     def as_shallow_dict(self) -> dict:
         """Serializes the ComputeStatus into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.active_instances is not None:
+            body["active_instances"] = self.active_instances
         if self.message is not None:
             body["message"] = self.message
         if self.state is not None:
@@ -1669,7 +1677,11 @@ class ComputeStatus:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ComputeStatus:
         """Deserializes the ComputeStatus from a dictionary."""
-        return cls(message=d.get("message", None), state=_enum(d, "state", ComputeState))
+        return cls(
+            active_instances=d.get("active_instances", None),
+            message=d.get("message", None),
+            state=_enum(d, "state", ComputeState),
+        )
 
 
 @dataclass

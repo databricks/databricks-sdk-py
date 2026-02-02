@@ -1700,7 +1700,7 @@ class PostgresAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("PATCH", f"/api/2.0/postgres/{parent}/roles", query=query, body=body, headers=headers)
+        res = self._api.do("POST", f"/api/2.0/postgres/{parent}/roles", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return CreateRoleOperation(self, operation)
 

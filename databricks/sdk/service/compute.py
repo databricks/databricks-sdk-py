@@ -4285,6 +4285,15 @@ class GlobalInitScriptDetailsWithContent:
         )
 
 
+class HardwareAcceleratorType(Enum):
+    """HardwareAcceleratorType: The type of hardware accelerator to use for compute workloads. NOTE:
+    This enum is referenced and is intended to be used by other Databricks services that need to
+    specify hardware accelerator requirements for AI compute workloads."""
+
+    GPU_1X_A10 = "GPU_1xA10"
+    GPU_8X_H100 = "GPU_8xH100"
+
+
 @dataclass
 class InitScriptEventDetails:
     cluster: Optional[List[InitScriptInfoAndExecutionDetails]] = None
@@ -7271,6 +7280,7 @@ class TerminationReasonCode(Enum):
     LAZY_ALLOCATION_TIMEOUT = "LAZY_ALLOCATION_TIMEOUT"
     MAINTENANCE_MODE = "MAINTENANCE_MODE"
     METASTORE_COMPONENT_UNHEALTHY = "METASTORE_COMPONENT_UNHEALTHY"
+    MTLS_PORT_CONNECTIVITY_FAILURE = "MTLS_PORT_CONNECTIVITY_FAILURE"
     NEPHOS_RESOURCE_MANAGEMENT = "NEPHOS_RESOURCE_MANAGEMENT"
     NETVISOR_SETUP_TIMEOUT = "NETVISOR_SETUP_TIMEOUT"
     NETWORK_CHECK_CONTROL_PLANE_FAILURE = "NETWORK_CHECK_CONTROL_PLANE_FAILURE"
