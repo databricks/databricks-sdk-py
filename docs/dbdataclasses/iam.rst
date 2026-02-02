@@ -77,6 +77,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_GROUP
       :value: "URN_IETF_PARAMS_SCIM_SCHEMAS_CORE_2_0_GROUP"
 
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
+
 .. autoclass:: ListAccountGroupsResponse
    :members:
    :undoc-members:

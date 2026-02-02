@@ -13,6 +13,7 @@ from typing import Any, BinaryIO, Callable, Dict, Iterator, List, Optional
 
 import requests
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict)
 
@@ -4103,6 +4104,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs", headers=headers
         )
@@ -4173,6 +4178,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.0/serving-endpoints", body=body, headers=headers)
         return Wait(
@@ -4256,6 +4265,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.0/serving-endpoints/pt", body=body, headers=headers)
         return Wait(
             self.wait_get_serving_endpoint_not_updating,
@@ -4293,6 +4306,10 @@ class ServingEndpointsAPI:
 
         headers = {}
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/serving-endpoints/{name}", headers=headers)
 
     def export_metrics(self, name: str) -> ExportMetricsResponse:
@@ -4309,6 +4326,10 @@ class ServingEndpointsAPI:
             "Accept": "text/plain",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/metrics", headers=headers, raw=True)
         return ExportMetricsResponse.from_dict(res)
 
@@ -4324,6 +4345,10 @@ class ServingEndpointsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}", headers=headers)
         return ServingEndpointDetailed.from_dict(res)
@@ -4342,6 +4367,10 @@ class ServingEndpointsAPI:
             "Accept": "text/plain",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/serving-endpoints/{name}/openapi", headers=headers, raw=True)
         return GetOpenApiResponse.from_dict(res)
 
@@ -4357,6 +4386,10 @@ class ServingEndpointsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels", headers=headers
@@ -4376,6 +4409,10 @@ class ServingEndpointsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", headers=headers)
         return ServingEndpointPermissions.from_dict(res)
@@ -4427,6 +4464,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/external-function", body=body, headers=headers, raw=True)
         return HttpRequestResponse.from_dict(res)
 
@@ -4440,6 +4481,10 @@ class ServingEndpointsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/serving-endpoints", headers=headers)
         parsed = ListEndpointsResponse.from_dict(json).endpoints
@@ -4459,6 +4504,10 @@ class ServingEndpointsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs", headers=headers
@@ -4490,6 +4539,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.0/serving-endpoints/{name}/tags", body=body, headers=headers)
         return EndpointTags.from_dict(res)
 
@@ -4511,6 +4564,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/rate-limits", body=body, headers=headers)
         return PutResponse.from_dict(res)
@@ -4562,6 +4619,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/ai-gateway", body=body, headers=headers)
         return PutAiGatewayResponse.from_dict(res)
@@ -4676,6 +4737,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         response_headers = [
             "served-model-name",
         ]
@@ -4711,6 +4776,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", body=body, headers=headers
@@ -4764,6 +4833,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("PUT", f"/api/2.0/serving-endpoints/{name}/config", body=body, headers=headers)
         return Wait(
             self.wait_get_serving_endpoint_not_updating,
@@ -4811,6 +4884,10 @@ class ServingEndpointsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.0/serving-endpoints/{name}/notifications", body=body, headers=headers)
         return UpdateInferenceEndpointNotificationsResponse.from_dict(res)
 
@@ -4837,6 +4914,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}", body=body, headers=headers
@@ -4866,6 +4947,10 @@ class ServingEndpointsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         op_response = self._api.do("PUT", f"/api/2.0/serving-endpoints/pt/{name}/config", body=body, headers=headers)
         return Wait(
@@ -5029,6 +5114,10 @@ class ServingEndpointsDataPlaneAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         response_headers = [
             "served-model-name",
