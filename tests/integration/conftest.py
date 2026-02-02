@@ -84,10 +84,8 @@ def ucacct(env_or_skip) -> AccountClient:
 
 @pytest.fixture(scope="session")
 def unified_config(env_or_skip) -> Config:
-    _load_debug_env_if_runs_from_ide("workspace")
+    _load_debug_env_if_runs_from_ide("account")
     env_or_skip("CLOUD_ENV")
-    if "DATABRICKS_ACCOUNT_ID" in os.environ:
-        pytest.skip("Skipping workspace test on account level")
     config = Config()
     config.workspace_id = env_or_skip("TEST_WORKSPACE_ID")
     config.experimental_is_unified_host = True
