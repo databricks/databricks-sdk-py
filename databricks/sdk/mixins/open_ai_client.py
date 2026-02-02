@@ -4,7 +4,9 @@ from typing import Dict, Optional
 
 from requests import Response
 
-from databricks.sdk.service.serving import ExternalFunctionRequestHttpMethod, HttpRequestResponse, ServingEndpointsAPI
+from databricks.sdk.service.serving import (ExternalFunctionRequestHttpMethod,
+                                            HttpRequestResponse,
+                                            ServingEndpointsAPI)
 
 
 class ServingEndpointsExt(ServingEndpointsAPI):
