@@ -298,13 +298,19 @@ class Generator:
         mapping = {}
         pkgs = {p.name: p for p in self.packages}
         spec = json.loads(self._openapi_spec())
+
+        tag_by_name = {t['name']: t for t in spec['tags']}
+
         for tag in spec['tags']:
             is_account=tag.get('x-databricks-is-accounts')
-            # Unique identifier for the tag. Note that the service name may not be unique
+            # Unique identifier for the tag. Note that the service name may not be unique.
             key = 'a' if is_account else 'w'
-            parent_service = tag.get('x-databricks-parent-service')
-            if parent_service:
-                # SDK generation removes the "account" prefix from account services
+
+            parent_name = tag.get('x-databricks-parent-name')
+            if parent_name:
+                parent_tag = tag_by_name[parent_name]
+                parent_service = parent_tag['x-databricks-service']
+                # SDK generation removes the "account" prefix from account services.
                 clean_parent_service = parent_service.lower().removeprefix("account")
                 key = f"{key}.{clean_parent_service}"
 

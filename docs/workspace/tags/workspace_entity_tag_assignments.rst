@@ -20,7 +20,7 @@
         Delete a tag assignment
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are dashboards, geniespaces
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
         :param entity_id: str
           The identifier of the entity to which the tag is assigned
         :param tag_key: str
@@ -34,7 +34,7 @@
         Get a tag assignment
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are dashboards, geniespaces
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
         :param entity_id: str
           The identifier of the entity to which the tag is assigned
         :param tag_key: str
@@ -48,7 +48,7 @@
         List the tag assignments for an entity
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are dashboards, geniespaces
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
         :param entity_id: str
           The identifier of the entity to which the tag is assigned
         :param page_size: int (optional)
@@ -64,7 +64,7 @@
         Update a tag assignment
 
         :param entity_type: str
-          The type of entity to which the tag is assigned. Allowed values are dashboards, geniespaces
+          The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces
         :param entity_id: str
           The identifier of the entity to which the tag is assigned
         :param tag_key: str

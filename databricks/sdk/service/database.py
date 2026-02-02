@@ -625,13 +625,11 @@ class DatabaseTable:
     logical_database_name: Optional[str] = None
     """Target Postgres database object (logical database) name for this table.
     
-    When creating a table in a registered Postgres catalog, the target Postgres database name is
-    inferred to be that of the registered catalog. If this field is specified in this scenario, the
-    Postgres database name MUST match that of the registered catalog (or the request will be
-    rejected).
-    
     When creating a table in a standard catalog, this field is required. In this scenario,
-    specifying this field will allow targeting an arbitrary postgres database."""
+    specifying this field will allow targeting an arbitrary postgres database.
+    
+    Registration of database tables via /database/tables is currently only supported in standard
+    catalogs."""
 
     def as_dict(self) -> dict:
         """Serializes the DatabaseTable into a dictionary suitable for use as a JSON request body."""

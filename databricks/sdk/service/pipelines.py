@@ -58,6 +58,12 @@ class AutoFullRefreshPolicy:
         return cls(enabled=d.get("enabled", None), min_interval_hours=d.get("min_interval_hours", None))
 
 
+class CloneMode(Enum):
+    """Enum to specify which mode of clone to execute"""
+
+    MIGRATE_TO_UC = "MIGRATE_TO_UC"
+
+
 @dataclass
 class ClonePipelineResponse:
     pipeline_id: Optional[str] = None
@@ -3644,6 +3650,7 @@ class PipelinesAPI:
         budget_policy_id: Optional[str] = None,
         catalog: Optional[str] = None,
         channel: Optional[str] = None,
+        clone_mode: Optional[CloneMode] = None,
         clusters: Optional[List[PipelineCluster]] = None,
         configuration: Optional[Dict[str, str]] = None,
         continuous: Optional[bool] = None,
@@ -3687,6 +3694,8 @@ class PipelinesAPI:
           `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
         :param channel: str (optional)
           DLT Release Channel that specifies which version to use.
+        :param clone_mode: :class:`CloneMode` (optional)
+          The type of clone to perform. Currently, only deep copies are supported
         :param clusters: List[:class:`PipelineCluster`] (optional)
           Cluster settings for this pipeline deployment.
         :param configuration: Dict[str,str] (optional)
@@ -3759,6 +3768,8 @@ class PipelinesAPI:
             body["catalog"] = catalog
         if channel is not None:
             body["channel"] = channel
+        if clone_mode is not None:
+            body["clone_mode"] = clone_mode.value
         if clusters is not None:
             body["clusters"] = [v.as_dict() for v in clusters]
         if configuration is not None:

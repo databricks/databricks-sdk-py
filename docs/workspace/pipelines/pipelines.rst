@@ -16,7 +16,7 @@
     step. You can also enforce data quality with Spark Declarative Pipelines expectations. Expectations allow
     you to define expected data quality and specify how to handle records that fail those expectations.
 
-    .. py:method:: clone(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> ClonePipelineResponse
+    .. py:method:: clone(pipeline_id: str [, allow_duplicate_names: Optional[bool], budget_policy_id: Optional[str], catalog: Optional[str], channel: Optional[str], clone_mode: Optional[CloneMode], clusters: Optional[List[PipelineCluster]], configuration: Optional[Dict[str, str]], continuous: Optional[bool], deployment: Optional[PipelineDeployment], development: Optional[bool], edition: Optional[str], environment: Optional[PipelinesEnvironment], event_log: Optional[EventLogSpec], expected_last_modified: Optional[int], filters: Optional[Filters], gateway_definition: Optional[IngestionGatewayPipelineDefinition], id: Optional[str], ingestion_definition: Optional[IngestionPipelineDefinition], libraries: Optional[List[PipelineLibrary]], name: Optional[str], notifications: Optional[List[Notifications]], photon: Optional[bool], restart_window: Optional[RestartWindow], root_path: Optional[str], schema: Optional[str], serverless: Optional[bool], storage: Optional[str], tags: Optional[Dict[str, str]], target: Optional[str], trigger: Optional[PipelineTrigger], usage_policy_id: Optional[str]]) -> ClonePipelineResponse
 
         Creates a new pipeline using Unity Catalog from a pipeline using Hive Metastore. This method returns
         the ID of the newly created clone. Additionally, this method starts an update for the newly created
@@ -34,6 +34,8 @@
           `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
         :param channel: str (optional)
           DLT Release Channel that specifies which version to use.
+        :param clone_mode: :class:`CloneMode` (optional)
+          The type of clone to perform. Currently, only deep copies are supported
         :param clusters: List[:class:`PipelineCluster`] (optional)
           Cluster settings for this pipeline deployment.
         :param configuration: Dict[str,str] (optional)

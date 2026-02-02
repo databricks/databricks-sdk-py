@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.82.0
+## Release v0.83.0
 
 ### New Features and Improvements
 
@@ -13,5 +13,12 @@
 ### Internal Changes
 
 ### API Changes
-
- * Deprecated `WorkspaceClient.serving_endpoints.get_open_ai_client()` and `WorkspaceClient.serving_endpoints.get_langchain_chat_open_ai_client()` methods in favor of dedicated packages. Users should migrate to `databricks-openai` (using `DatabricksOpenAI`) and `databricks-langchain` (using `ChatDatabricks`) respectively ([#1238](https://github.com/databricks/databricks-sdk-py/pull/1238)).
+* Deprecated `WorkspaceClient.serving_endpoints.get_open_ai_client()` and `WorkspaceClient.serving_endpoints.get_langchain_chat_open_ai_client()` methods in favor of dedicated packages. Users should migrate to `databricks-openai` (using `DatabricksOpenAI`) and `databricks-langchain` (using `ChatDatabricks`) respectively ([#1238](https://github.com/databricks/databricks-sdk-py/pull/1238)).
+* Add `generate_download_full_query_result()` and `get_download_full_query_result()` methods for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
+* Add `active_instances` field for `databricks.sdk.service.apps.ComputeStatus`.
+* [Breaking] Change `create_role()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service. HTTP method/verb has changed.
+* Add `compute` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `compute` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `compute` field for `databricks.sdk.service.jobs.Task`.
+* Add `mtls_port_connectivity_failure` enum value for `databricks.sdk.service.compute.TerminationReasonCode`.
+* Add `mtls_port_connectivity_failure` enum value for `databricks.sdk.service.sql.TerminationReasonCode`.

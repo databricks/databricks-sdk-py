@@ -118,7 +118,7 @@
         Lists the calling user's Git credentials.
 
         :param principal_id: int (optional)
-          The ID of the service principal whose credentials will be modified. Only service principal managers
+          The ID of the service principal whose credentials will be listed. Only service principal managers
           can perform this action.
 
         :returns: Iterator over :class:`CredentialInfo`

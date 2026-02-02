@@ -229,6 +229,33 @@ class AuthConfig:
 
 
 @dataclass
+class BackfillSource:
+    delta_table_source: Optional[DeltaTableSource] = None
+    """The Delta table source containing the historic data to backfill. Only the delta table name is
+    used for backfill, the entity columns and timeseries column are ignored as they are defined by
+    the associated KafkaSource."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BackfillSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delta_table_source:
+            body["delta_table_source"] = self.delta_table_source.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BackfillSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delta_table_source:
+            body["delta_table_source"] = self.delta_table_source
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BackfillSource:
+        """Deserializes the BackfillSource from a dictionary."""
+        return cls(delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource))
+
+
+@dataclass
 class BatchCreateMaterializedFeaturesResponse:
     materialized_features: Optional[List[MaterializedFeature]] = None
     """The created materialized features with assigned IDs."""
@@ -2442,6 +2469,12 @@ class KafkaConfig:
     auth_config: AuthConfig
     """Authentication configuration for connection to topics."""
 
+    backfill_source: Optional[BackfillSource] = None
+    """A user-provided and managed source for backfilling data. Historical data is used when creating a
+    training set from streaming features linked to this Kafka config. In the future, a separate
+    table will be maintained by Databricks for forward filling data. The schema for this source must
+    match exactly that of the key and value schemas specified for this Kafka config."""
+
     extra_options: Optional[Dict[str, str]] = None
     """Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options
     (kafka.*)"""
@@ -2459,6 +2492,8 @@ class KafkaConfig:
         body = {}
         if self.auth_config:
             body["auth_config"] = self.auth_config.as_dict()
+        if self.backfill_source:
+            body["backfill_source"] = self.backfill_source.as_dict()
         if self.bootstrap_servers is not None:
             body["bootstrap_servers"] = self.bootstrap_servers
         if self.extra_options:
@@ -2478,6 +2513,8 @@ class KafkaConfig:
         body = {}
         if self.auth_config:
             body["auth_config"] = self.auth_config
+        if self.backfill_source:
+            body["backfill_source"] = self.backfill_source
         if self.bootstrap_servers is not None:
             body["bootstrap_servers"] = self.bootstrap_servers
         if self.extra_options:
@@ -2497,6 +2534,7 @@ class KafkaConfig:
         """Deserializes the KafkaConfig from a dictionary."""
         return cls(
             auth_config=_from_dict(d, "auth_config", AuthConfig),
+            backfill_source=_from_dict(d, "backfill_source", BackfillSource),
             bootstrap_servers=d.get("bootstrap_servers", None),
             extra_options=d.get("extra_options", None),
             key_schema=_from_dict(d, "key_schema", SchemaConfig),

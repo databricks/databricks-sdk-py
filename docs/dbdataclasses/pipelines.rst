@@ -8,6 +8,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: CloneMode
+
+   Enum to specify which mode of clone to execute
+
+   .. py:attribute:: MIGRATE_TO_UC
+      :value: "MIGRATE_TO_UC"
+
 .. autoclass:: ClonePipelineResponse
    :members:
    :undoc-members:

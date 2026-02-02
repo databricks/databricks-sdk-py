@@ -66,7 +66,7 @@
         :returns: :class:`Operation`
         
 
-    .. py:method:: create_role(parent: str, role: Role, role_id: str) -> CreateRoleOperation
+    .. py:method:: create_role(parent: str, role: Role [, role_id: Optional[str]]) -> CreateRoleOperation
 
         Creates a new Postgres role in the branch.
 
@@ -74,12 +74,14 @@
           The Branch where this Role is created. Format: projects/{project_id}/branches/{branch_id}
         :param role: :class:`Role`
           The desired specification of a Role.
-        :param role_id: str
+        :param role_id: str (optional)
           The ID to use for the Role, which will become the final component of the role's resource name. This
           ID becomes the role in Postgres.
 
           This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and
           hyphens, as defined by RFC 1123.
+
+          If role_id is not specified in the request, it is generated automatically.
 
         :returns: :class:`Operation`
         

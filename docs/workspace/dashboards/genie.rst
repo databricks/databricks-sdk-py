@@ -108,6 +108,53 @@
         :returns: :class:`GenieGetMessageQueryResultResponse`
         
 
+    .. py:method:: generate_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str) -> GenieGenerateDownloadFullQueryResultResponse
+
+        Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
+        the download. The query result is stored in an external link and can be retrieved using the [Get
+        Download Full Query Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
+        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        See [Execute Statement](:method:statementexecution/executestatement) for more details.
+
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+
+        :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
+        
+
+    .. py:method:: get_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str [, download_id_signature: Optional[str]]) -> GenieGetDownloadFullQueryResultResponse
+
+        After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
+        successfully receiving a `download_id`, use this API to poll the download progress. When the download
+        is complete, the API returns one or more external links to the query result files. Warning: Databricks
+        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        You must not set an Authorization header in download requests. When using the `EXTERNAL_LINKS`
+        disposition, Databricks returns presigned URLs that grant temporary access to data. See [Execute
+        Statement](:method:statementexecution/executestatement) for more details.
+
+        :param space_id: str
+          Genie space ID
+        :param conversation_id: str
+          Conversation ID
+        :param message_id: str
+          Message ID
+        :param attachment_id: str
+          Attachment ID
+        :param download_id: str
+          Download ID. This ID is provided by the [Generate Download
+          endpoint](:method:genie/generateDownloadFullQueryResult)
+        :param download_id_signature: str (optional)
+          JWT signature for the download_id to ensure secure access to query results
+
+        :returns: :class:`GenieGetDownloadFullQueryResultResponse`
+        
+
     .. py:method:: get_message(space_id: str, conversation_id: str, message_id: str) -> GenieMessage
 
         Get message from conversation.

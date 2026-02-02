@@ -1655,19 +1655,21 @@ class PostgresAPI:
         operation = Operation.from_dict(res)
         return CreateProjectOperation(self, operation)
 
-    def create_role(self, parent: str, role: Role, role_id: str) -> CreateRoleOperation:
+    def create_role(self, parent: str, role: Role, *, role_id: Optional[str] = None) -> CreateRoleOperation:
         """Creates a new Postgres role in the branch.
 
         :param parent: str
           The Branch where this Role is created. Format: projects/{project_id}/branches/{branch_id}
         :param role: :class:`Role`
           The desired specification of a Role.
-        :param role_id: str
+        :param role_id: str (optional)
           The ID to use for the Role, which will become the final component of the role's resource name. This
           ID becomes the role in Postgres.
 
           This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and
           hyphens, as defined by RFC 1123.
+
+          If role_id is not specified in the request, it is generated automatically.
 
         :returns: :class:`Operation`
         """
@@ -1681,7 +1683,7 @@ class PostgresAPI:
             "Content-Type": "application/json",
         }
 
-        res = self._api.do("PATCH", f"/api/2.0/postgres/{parent}/roles", query=query, body=body, headers=headers)
+        res = self._api.do("POST", f"/api/2.0/postgres/{parent}/roles", query=query, body=body, headers=headers)
         operation = Operation.from_dict(res)
         return CreateRoleOperation(self, operation)
 
