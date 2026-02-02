@@ -347,7 +347,6 @@ class Config:
             self._resolve_environment()
         return self.databricks_environment
 
-
     @property
     def is_azure(self) -> bool:
         if self.azure_workspace_resource_id:
@@ -383,7 +382,9 @@ class Config:
 
     @property
     def client_type(self) -> ClientType:
-        """Determine the type of client configuration.
+        """
+        [Deprecated] Deprecated. Use host_type instead. Some hosts can support both account and workspace clients.
+        Determine the type of client configuration.
 
         This is separate from host_type. For example, a unified host can support both
         workspace and account client types.
@@ -402,18 +403,18 @@ class Config:
             return ClientType.WORKSPACE
 
         if host_type == HostType.UNIFIED:
-            if not self.account_id:
-                raise ValueError("Unified host requires account_id to be set")
             if self.workspace_id:
                 return ClientType.WORKSPACE
-            return ClientType.ACCOUNT
+            if self.account_id:
+                return ClientType.ACCOUNT
+            raise ValueError("Unified host requires account_id or workspace_id to be set")
 
         # Default to workspace for backward compatibility
         return ClientType.WORKSPACE
 
     @property
     def is_account_client(self) -> bool:
-        """[Deprecated] Use host_type or client_type instead.
+        """[Deprecated] Use host_type instead.
 
         Determines if this is an account client based on the host URL.
         """
@@ -479,7 +480,7 @@ class Config:
         # Handle unified hosts
         if self.host_type == HostType.UNIFIED:
             if not self.account_id:
-                raise ValueError("Unified host requires account_id to be set for OAuth endpoints")
+                return get_workspace_endpoints(self.host)
             return get_unified_endpoints(self.host, self.account_id)
 
         # Handle traditional account hosts
@@ -717,9 +718,8 @@ class Config:
     def deep_copy(self):
         """Creates a deep copy of the config object."""
         return copy.deepcopy(self)
-    
 
-    #The code below is used to support legacy hosts.
+    # The code below is used to support legacy hosts.
     def _resolve_environment(self):
         """Resolve the environment based on configuration."""
         if self.databricks_environment:
@@ -736,7 +736,7 @@ class Config:
                 self.databricks_environment = environment
                 return
         self.databricks_environment = get_environment_for_hostname(self.host)
-    
+
     def _resolve_legacy_profile(self):
         """Resolve the legacy profile based on configuration."""
 

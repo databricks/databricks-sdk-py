@@ -333,15 +333,23 @@ def test_client_type_accounts_host():
     assert config.client_type == ClientType.ACCOUNT
 
 
-def test_client_type_unified_without_account_id():
-    """Test that client type raises error for unified host without account_id."""
+def test_client_type_unified_without_account_id(requests_mock):
+    """Test that client type is workspace when unified host fetches workspace_id."""
+    # Mock the SCIM endpoint to return workspace ID
+    requests_mock.get(
+        "https://unified.databricks.com/api/2.0/preview/scim/v2/Me",
+        headers={"x-databricks-org-id": "123456"},
+    )
+
     config = Config(
         host="https://unified.databricks.com",
         experimental_is_unified_host=True,
         token="test-token",
     )
-    with pytest.raises(ValueError, match="Unified host requires account_id"):
-        _ = config.client_type
+
+    # Should return WORKSPACE since workspace_id is fetched from API
+    assert config.client_type == ClientType.WORKSPACE
+    assert config.workspace_id == "123456"
 
 
 def test_is_account_client_backward_compatibility():
@@ -412,14 +420,28 @@ def test_oidc_endpoints_unified_account(mocker, requests_mock):
     assert "accounts/test-account" in endpoints.token_endpoint
 
 
-def test_oidc_endpoints_unified_missing_ids():
-    """Test that oidc_endpoints raises error when unified host lacks required account_id."""
+def test_oidc_endpoints_unified_missing_ids(requests_mock):
+    """Test that unified host without account_id falls back to workspace endpoints."""
+    # Mock the SCIM endpoint for workspace ID fetch
+    requests_mock.get(
+        "https://unified.databricks.com/api/2.0/preview/scim/v2/Me",
+        headers={"x-databricks-org-id": "123456"},
+    )
+    # Mock the workspace OIDC endpoint
+    requests_mock.get(
+        "https://unified.databricks.com/oidc/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://unified.databricks.com/oidc/v1/authorize",
+            "token_endpoint": "https://unified.databricks.com/oidc/v1/token",
+        },
+    )
+
     config = Config(host="https://unified.databricks.com", experimental_is_unified_host=True, token="test-token")
 
-    with pytest.raises(ValueError) as exc_info:
-        _ = config.oidc_endpoints
-
-    assert "Unified host requires account_id" in str(exc_info.value)
+    # Should fall back to workspace endpoints when account_id is missing
+    endpoints = config.oidc_endpoints
+    assert endpoints is not None
+    assert "oidc/v1/authorize" in endpoints.authorization_endpoint
 
 
 def test_workspace_org_id_header_on_unified_host(requests_mock):
@@ -718,14 +740,14 @@ def test_legacy_gcp_workspace_profile_resolves_environment_with_unified_flag(req
 def test_legacy_account_profile_resolves_environment_with_unified_flag(mocker):
     """Test that legacy account profile (accounts host) resolves environment when unified flag is set."""
     mocker.patch("databricks.sdk.config.Config.init_auth")
-    
+
     config = Config(
         host="https://accounts.cloud.databricks.com",
         account_id="test-account",
         experimental_is_unified_host=True,
         token="test-token",
     )
-    
+
     # Environment should be resolved for AWS accounts host
     assert config.environment is not None
     assert config.environment.cloud.value == "AWS"
