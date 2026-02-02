@@ -2340,7 +2340,7 @@ class FilesExt(files.FilesAPI):
 
         return retried(
             timeout=timedelta(seconds=retry_timeout_seconds),
-            max_attempts=self._config.files_ext_cloud_api_max_retries,
+            max_attempts=self._config.experimental_files_ext_cloud_api_max_retries,
             # also retry on network errors (connection error, connection timeout)
             # where we believe request didn't reach the server
             is_retryable=extended_is_retryable,

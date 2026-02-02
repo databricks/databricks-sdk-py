@@ -2181,7 +2181,7 @@ class MultipartUploadTestCase(UploadTestCase):
             content_size=100 * 1024 * 1024,  # 10 parts
             multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(exception=requests.ConnectionError, first_invocation=8),
-            expected_exception_type=TimeoutError,
+            expected_exception_type=RuntimeError,
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(
@@ -2189,7 +2189,7 @@ class MultipartUploadTestCase(UploadTestCase):
             content_size=100 * 1024 * 1024,  # 10 parts
             multipart_upload_part_size=10 * 1024 * 1024,
             custom_response_on_upload=CustomResponse(code=429, first_invocation=8),
-            expected_exception_type=TimeoutError,
+            expected_exception_type=RuntimeError,
             expected_multipart_upload_aborted=True,
         ),
         MultipartUploadTestCase(

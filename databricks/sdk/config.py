@@ -236,7 +236,7 @@ class Config:
     # Maximum number of retry attempts for FilesExt cloud API operations.
     # This works in conjunction with retry_timeout_seconds - whichever limit
     # is hit first will stop the retry loop.
-    files_ext_cloud_api_max_retries: int = 3
+    experimental_files_ext_cloud_api_max_retries: int = 3
 
     def __init__(
         self,

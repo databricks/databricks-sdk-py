@@ -68,7 +68,7 @@ def retried(
 
             # Determine which limit was hit
             if max_attempts is not None and attempt > max_attempts:
-                raise TimeoutError(f"Exceeded max retry attempts ({max_attempts})") from last_err
+                raise RuntimeError(f"Exceeded max retry attempts ({max_attempts})") from last_err
             raise TimeoutError(f"Timed out after {timeout}") from last_err
 
         return wrapper
