@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service import catalog
 from databricks.sdk.service._internal import (_enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
@@ -2607,6 +2608,10 @@ class ProvidersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/providers", body=body, headers=headers)
         return ProviderInfo.from_dict(res)
 
@@ -2621,6 +2626,10 @@ class ProvidersAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
 
@@ -2637,6 +2646,10 @@ class ProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
         return ProviderInfo.from_dict(res)
@@ -2680,6 +2693,10 @@ class ProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -2734,6 +2751,10 @@ class ProvidersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.1/data-sharing/providers/{provider_name}/shares/{share_name}", query=query, headers=headers
         )
@@ -2770,6 +2791,10 @@ class ProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -2824,6 +2849,10 @@ class ProvidersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/providers/{name}", body=body, headers=headers)
         return ProviderInfo.from_dict(res)
 
@@ -2853,6 +2882,10 @@ class RecipientActivationAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do(
             "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}", headers=headers
         )
@@ -2869,6 +2902,10 @@ class RecipientActivationAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}", headers=headers
@@ -2937,6 +2974,10 @@ class RecipientFederationPoliciesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies", body=body, headers=headers
         )
@@ -2958,6 +2999,10 @@ class RecipientFederationPoliciesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do(
             "DELETE", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}", headers=headers
         )
@@ -2977,6 +3022,10 @@ class RecipientFederationPoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}", headers=headers
@@ -3005,6 +3054,10 @@ class RecipientFederationPoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3105,6 +3158,10 @@ class RecipientsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/recipients", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
 
@@ -3118,6 +3175,10 @@ class RecipientsAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
 
@@ -3134,6 +3195,10 @@ class RecipientsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
         return RecipientInfo.from_dict(res)
@@ -3178,6 +3243,10 @@ class RecipientsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
@@ -3210,6 +3279,10 @@ class RecipientsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.1/unity-catalog/recipients/{name}/rotate-token", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
@@ -3244,6 +3317,10 @@ class RecipientsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/recipients/{name}/share-permissions", query=query, headers=headers
@@ -3303,6 +3380,10 @@ class RecipientsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/recipients/{name}", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
 
@@ -3342,6 +3423,10 @@ class SharesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/shares", body=body, headers=headers)
         return ShareInfo.from_dict(res)
 
@@ -3355,6 +3440,10 @@ class SharesAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{name}", headers=headers)
 
@@ -3376,6 +3465,10 @@ class SharesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}", query=query, headers=headers)
         return ShareInfo.from_dict(res)
@@ -3409,6 +3502,10 @@ class SharesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -3451,6 +3548,10 @@ class SharesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}/permissions", query=query, headers=headers)
         return GetSharePermissionsResponse.from_dict(res)
@@ -3513,6 +3614,10 @@ class SharesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}", body=body, headers=headers)
         return ShareInfo.from_dict(res)
 
@@ -3548,6 +3653,10 @@ class SharesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}/permissions", body=body, headers=headers)
         return UpdateSharePermissionsResponse.from_dict(res)

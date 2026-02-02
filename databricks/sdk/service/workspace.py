@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -1775,6 +1776,10 @@ class GitCredentialsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/git-credentials", body=body, headers=headers)
         return CreateCredentialsResponse.from_dict(res)
 
@@ -1797,6 +1802,10 @@ class GitCredentialsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/git-credentials/{credential_id}", query=query, headers=headers)
 
     def get(self, credential_id: int, *, principal_id: Optional[int] = None) -> GetCredentialsResponse:
@@ -1818,6 +1827,10 @@ class GitCredentialsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/git-credentials/{credential_id}", query=query, headers=headers)
         return GetCredentialsResponse.from_dict(res)
 
@@ -1837,6 +1850,10 @@ class GitCredentialsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/git-credentials", query=query, headers=headers)
         parsed = ListCredentialsResponse.from_dict(json).credentials
@@ -1908,6 +1925,10 @@ class GitCredentialsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("PATCH", f"/api/2.0/git-credentials/{credential_id}", body=body, headers=headers)
 
 
@@ -1961,6 +1982,10 @@ class ReposAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/repos", body=body, headers=headers)
         return CreateRepoResponse.from_dict(res)
 
@@ -1977,6 +2002,10 @@ class ReposAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/repos/{repo_id}", headers=headers)
 
     def get(self, repo_id: int) -> GetRepoResponse:
@@ -1991,6 +2020,10 @@ class ReposAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/repos/{repo_id}", headers=headers)
         return GetRepoResponse.from_dict(res)
@@ -2008,6 +2041,10 @@ class ReposAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}/permissionLevels", headers=headers)
         return GetRepoPermissionLevelsResponse.from_dict(res)
 
@@ -2023,6 +2060,10 @@ class ReposAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/repos/{repo_id}", headers=headers)
         return RepoPermissions.from_dict(res)
@@ -2050,6 +2091,10 @@ class ReposAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/repos", query=query, headers=headers)
@@ -2080,6 +2125,10 @@ class ReposAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
         return RepoPermissions.from_dict(res)
@@ -2122,6 +2171,10 @@ class ReposAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("PATCH", f"/api/2.0/repos/{repo_id}", body=body, headers=headers)
 
     def update_permissions(
@@ -2143,6 +2196,10 @@ class ReposAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/repos/{repo_id}", body=body, headers=headers)
         return RepoPermissions.from_dict(res)
@@ -2228,6 +2285,10 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/secrets/scopes/create", body=body, headers=headers)
 
     def delete_acl(self, scope: str, principal: str):
@@ -2262,6 +2323,10 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/secrets/acls/delete", body=body, headers=headers)
 
     def delete_scope(self, scope: str):
@@ -2289,6 +2354,10 @@ class SecretsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/secrets/scopes/delete", body=body, headers=headers)
 
@@ -2325,6 +2394,10 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/secrets/delete", body=body, headers=headers)
 
     def get_acl(self, scope: str, principal: str) -> AclItem:
@@ -2358,6 +2431,10 @@ class SecretsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/secrets/acls/get", query=query, headers=headers)
         return AclItem.from_dict(res)
@@ -2405,6 +2482,10 @@ class SecretsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/secrets/get", query=query, headers=headers)
         return GetSecretResponse.from_dict(res)
 
@@ -2436,6 +2517,10 @@ class SecretsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         json = self._api.do("GET", "/api/2.0/secrets/acls/list", query=query, headers=headers)
         parsed = ListAclsResponse.from_dict(json).items
         return parsed if parsed is not None else []
@@ -2459,6 +2544,10 @@ class SecretsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/secrets/scopes/list", headers=headers)
         parsed = ListScopesResponse.from_dict(json).scopes
@@ -2492,6 +2581,10 @@ class SecretsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/secrets/list", query=query, headers=headers)
         parsed = ListSecretsResponse.from_dict(json).secrets
@@ -2548,6 +2641,10 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/secrets/acls/put", body=body, headers=headers)
 
     def put_secret(
@@ -2602,6 +2699,10 @@ class SecretsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/secrets/put", body=body, headers=headers)
 
 
@@ -2642,6 +2743,10 @@ class WorkspaceAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/workspace/delete", body=body, headers=headers)
 
     def export(self, path: str, *, format: Optional[ExportFormat] = None) -> ExportResponse:
@@ -2679,6 +2784,10 @@ class WorkspaceAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/workspace/export", query=query, headers=headers)
         return ExportResponse.from_dict(res)
 
@@ -2700,6 +2809,10 @@ class WorkspaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -2726,6 +2839,10 @@ class WorkspaceAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", headers=headers
         )
@@ -2747,6 +2864,10 @@ class WorkspaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/workspace/get-status", query=query, headers=headers)
         return ObjectInfo.from_dict(res)
@@ -2810,6 +2931,10 @@ class WorkspaceAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/workspace/import", body=body, headers=headers)
 
     def list(self, path: str, *, notebooks_modified_after: Optional[int] = None) -> Iterator[ObjectInfo]:
@@ -2832,6 +2957,10 @@ class WorkspaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/workspace/list", query=query, headers=headers)
         parsed = ListResponse.from_dict(json).objects
@@ -2859,6 +2988,10 @@ class WorkspaceAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/workspace/mkdirs", body=body, headers=headers)
 
@@ -2891,6 +3024,10 @@ class WorkspaceAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", body=body, headers=headers
@@ -2925,6 +3062,10 @@ class WorkspaceAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}", body=body, headers=headers
