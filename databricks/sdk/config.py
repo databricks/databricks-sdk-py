@@ -274,10 +274,10 @@ class Config:
             self._resolve_legacy_profile()
             self._validate()
             self.init_auth()
+            self._init_product(product, product_version)
             # Extract the workspace ID for legacy profiles. This is extracted from an API call.
             if not self.workspace_id and not self.account_id and self.experimental_is_unified_host:
                 self.workspace_id = self._fetch_workspace_id()
-            self._init_product(product, product_version)
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
@@ -352,15 +352,15 @@ class Config:
     def is_azure(self) -> bool:
         if self.azure_workspace_resource_id:
             return True
-        return self.environment.cloud == Cloud.AZURE
+        return self.environment is not None and self.environment.cloud == Cloud.AZURE
 
     @property
     def is_gcp(self) -> bool:
-        return self.environment.cloud == Cloud.GCP
+        return self.environment is not None and self.environment.cloud == Cloud.GCP
 
     @property
     def is_aws(self) -> bool:
-        return self.environment.cloud == Cloud.AWS
+        return self.environment is not None and self.environment.cloud == Cloud.AWS
 
     @property
     def host_type(self) -> HostType:
@@ -673,11 +673,6 @@ class Config:
             self.auth_type = self._credentials_strategy.auth_type()
             if not self._header_factory:
                 raise ValueError("not configured")
-            # Legacy Workspace Profiles do not have a workspace ID. Try to fetch it here.
-            if not self.workspace_id and not self.account_id:
-                workspace_id = self._fetch_workspace_id()
-                if workspace_id:
-                    self.workspace_id = workspace_id
         except ValueError as e:
             raise ValueError(f"{self._credentials_strategy.auth_type()} auth: {e}") from e
 

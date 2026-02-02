@@ -644,3 +644,130 @@ def test_oidc_scopes_sent_to_token_endpoint(requests_mock, tmp_path, scopes_inpu
     config.authenticate()
 
     assert _get_scope_from_request(token_mock.last_request.text) == expected_scope
+
+
+def test_legacy_workspace_profile_resolves_environment_with_unified_flag(requests_mock):
+    """Test that legacy workspace profile (no account_id) resolves environment and fetches workspace ID."""
+    # Mock the SCIM endpoint to return workspace ID
+    requests_mock.get(
+        "https://test.cloud.databricks.com/api/2.0/preview/scim/v2/Me",
+        headers={"x-databricks-org-id": "123456789"},
+    )
+
+    config = Config(
+        host="https://test.cloud.databricks.com",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    # Environment should be resolved for AWS
+    assert config.environment is not None
+    assert config.environment.cloud.value == "AWS"
+    assert config.environment.dns_zone == ".cloud.databricks.com"
+
+    # Workspace ID should be fetched from API
+    assert config.workspace_id == "123456789"
+
+
+def test_legacy_azure_workspace_profile_resolves_environment_with_unified_flag(requests_mock):
+    """Test that legacy Azure workspace profile resolves environment and fetches workspace ID."""
+    # Mock the SCIM endpoint to return workspace ID
+    requests_mock.get(
+        "https://adb-123.4.azuredatabricks.net/api/2.0/preview/scim/v2/Me",
+        headers={"x-databricks-org-id": "987654321"},
+    )
+
+    config = Config(
+        host="https://adb-123.4.azuredatabricks.net",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    # Environment should be resolved for Azure
+    assert config.environment is not None
+    assert config.environment.cloud.value == "AZURE"
+    assert config.environment.dns_zone == ".azuredatabricks.net"
+
+    # Workspace ID should be fetched from API
+    assert config.workspace_id == "987654321"
+
+
+def test_legacy_gcp_workspace_profile_resolves_environment_with_unified_flag(requests_mock):
+    """Test that legacy GCP workspace profile resolves environment and fetches workspace ID."""
+    # Mock the SCIM endpoint to return workspace ID
+    requests_mock.get(
+        "https://test.gcp.databricks.com/api/2.0/preview/scim/v2/Me",
+        headers={"x-databricks-org-id": "555666777"},
+    )
+
+    config = Config(
+        host="https://test.gcp.databricks.com",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    # Environment should be resolved for GCP
+    assert config.environment is not None
+    assert config.environment.cloud.value == "GCP"
+    assert config.environment.dns_zone == ".gcp.databricks.com"
+
+    # Workspace ID should be fetched from API
+    assert config.workspace_id == "555666777"
+
+
+def test_legacy_account_profile_resolves_environment_with_unified_flag(mocker):
+    """Test that legacy account profile (accounts host) resolves environment when unified flag is set."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    
+    config = Config(
+        host="https://accounts.cloud.databricks.com",
+        account_id="test-account",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+    
+    # Environment should be resolved for AWS accounts host
+    assert config.environment is not None
+    assert config.environment.cloud.value == "AWS"
+
+
+def test_unified_profile_with_account_id_has_none_environment(mocker):
+    """Test that new unified profile with account_id has None environment (cloud-agnostic)."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+
+    config = Config(
+        host="https://unified.databricks.com",
+        account_id="test-account",
+        workspace_id="test-workspace",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    # Unified hosts with account_id should NOT have environment resolved (cloud-agnostic)
+    assert config.environment is None
+    # But the is_cloud properties should still work without crashing
+    assert config.is_azure is False
+    assert config.is_gcp is False
+    assert config.is_aws is False
+
+
+def test_azure_resource_id_sets_is_azure_even_without_environment(mocker):
+    """Test that azure_workspace_resource_id sets is_azure even when environment is None."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+
+    config = Config(
+        host="https://unified.databricks.com",
+        azure_workspace_resource_id="/subscriptions/test/resourceGroups/test/providers/Microsoft.Databricks/workspaces/test",
+        experimental_is_unified_host=True,
+        azure_client_id="test-client-id",
+        azure_tenant_id="test-tenant-id",
+        azure_client_secret="test-secret",
+    )
+
+    # Manually set environment to None to simulate unified without cloud
+    config.databricks_environment = None
+
+    # is_azure should still be True due to azure_workspace_resource_id
+    assert config.is_azure is True
+    assert config.is_gcp is False
+    assert config.is_aws is False
