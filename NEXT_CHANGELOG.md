@@ -13,3 +13,4 @@
 ### Internal Changes
 
 ### API Changes
+* Add `base_environment` field for `databricks.sdk.service.compute.Environment`.
