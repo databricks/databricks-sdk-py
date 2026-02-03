@@ -261,6 +261,9 @@ def test_wif_workspace(ucacct, env_or_skip, random):
         permissions=[iam.WorkspacePermission.ADMIN],
     )
 
+    # Clean env var 
+    os.environ.pop("DATABRICKS_ACCOUNT_ID", None)
+
     ws = WorkspaceClient(
         host=workspace_url,
         client_id=sp.application_id,

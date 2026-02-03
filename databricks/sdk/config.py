@@ -406,11 +406,10 @@ class Config:
             return ClientType.WORKSPACE
 
         if host_type == HostType.UNIFIED:
-            if self.workspace_id:
-                return ClientType.WORKSPACE
             if self.account_id:
                 return ClientType.ACCOUNT
-            raise ValueError("Unified host requires account_id or workspace_id to be set")
+            # Legacy workspace hosts don't have a workspace_id until AFTER the auth is resolved.
+            return ClientType.WORKSPACE
 
         # Default to workspace for backward compatibility
         return ClientType.WORKSPACE
@@ -419,12 +418,10 @@ class Config:
     def is_account_client(self) -> bool:
         """[Deprecated] Use host_type instead.
 
-        Determines if this is an account client based on the host URL.
+        Determines if this config is compatible with an account client based on the host URL and account_id.
         """
         if self.experimental_is_unified_host:
-            raise ValueError(
-                "is_account_client cannot be used with unified hosts; use host_type or client_type instead"
-            )
+            return self.account_id
         if not self.host:
             return False
         return self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")
