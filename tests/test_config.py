@@ -334,19 +334,21 @@ def test_client_type_accounts_host():
 
 
 def test_client_type_unified_without_account_id(requests_mock):
-    """Test that client type is workspace when unified host fetches workspace_id."""
+    """Test that no account_id or workspace_id set client type is detected as workspace and fetches workspace_id."""
     # Mock the SCIM endpoint to return workspace ID
     requests_mock.get(
-        "https://unified.databricks.com/api/2.0/preview/scim/v2/Me",
+        "https://legacyworkspace.databricks.com/api/2.0/preview/scim/v2/Me",
         headers={"x-databricks-org-id": "123456"},
     )
 
     config = Config(
-        host="https://unified.databricks.com",
+        host="https://legacyworkspace.databricks.com",
         experimental_is_unified_host=True,
         token="test-token",
     )
 
+    assert config.account_id is None
+    assert not config.is_account_client
     # Should return WORKSPACE since workspace_id is fetched from API
     assert config.client_type == ClientType.WORKSPACE
     assert config.workspace_id == "123456"
