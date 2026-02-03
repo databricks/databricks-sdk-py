@@ -1,5 +1,4 @@
 {
-    "python.defaultInterpreterPath": "${workspaceFolder}/.databricks/bin/python3",
     "python.testing.pytestArgs": [
         "tests"
     ],
