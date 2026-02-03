@@ -1,6 +1,7 @@
 import base64
 import io
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -261,7 +262,7 @@ def test_wif_workspace(ucacct, env_or_skip, random):
         permissions=[iam.WorkspacePermission.ADMIN],
     )
 
-    # Clean env var 
+    # Clean env var
     os.environ.pop("DATABRICKS_ACCOUNT_ID", None)
 
     ws = WorkspaceClient(

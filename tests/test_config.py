@@ -371,7 +371,7 @@ def test_is_account_client_on_unified_host():
     )
     # Should be falsy since account_id is not set
     assert not config.is_account_client
-    
+
     # With account_id set, should be truthy
     config_with_account = Config(
         host="https://unified.databricks.com",
