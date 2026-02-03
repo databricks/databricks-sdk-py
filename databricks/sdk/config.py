@@ -46,7 +46,10 @@ class ConfigAttribute:
         return cfg._inner.get(self.name, None)
 
     def __set__(self, cfg: "Config", value: any):
-        cfg._inner[self.name] = self.transform(value)
+        if value is None:
+            cfg._inner[self.name] = None
+        else:
+            cfg._inner[self.name] = self.transform(value)
 
     def __repr__(self) -> str:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
