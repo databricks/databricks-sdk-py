@@ -406,6 +406,8 @@ class Config:
             return ClientType.WORKSPACE
 
         if host_type == HostType.UNIFIED:
+            if self.workspace_id:
+                return ClientType.WORKSPACE
             if self.account_id:
                 return ClientType.ACCOUNT
             # Legacy workspace hosts don't have a workspace_id until AFTER the auth is resolved.

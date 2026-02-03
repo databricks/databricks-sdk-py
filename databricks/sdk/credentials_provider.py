@@ -431,9 +431,9 @@ def _oidc_credentials_provider(
 
     # Determine the audience for token exchange
     audience = cfg.token_audience
-    if audience is None and cfg.client_type == ClientType.ACCOUNT:
+    if audience is None and cfg.account_id:
         audience = cfg.account_id
-    if audience is None and cfg.client_type != ClientType.ACCOUNT:
+    if audience is None and not cfg.account_id:
         audience = cfg.oidc_endpoints.token_endpoint
 
     # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
@@ -590,7 +590,7 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         credentials.refresh(request)
         headers = {"Authorization": f"Bearer {credentials.token}"}
-        if cfg.client_type == ClientType.ACCOUNT:
+        if cfg.account_id:
             gcp_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
         return headers
@@ -631,7 +631,7 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         id_creds.refresh(request)
         headers = {"Authorization": f"Bearer {id_creds.token}"}
-        if cfg.client_type == ClientType.ACCOUNT:
+        if cfg.account_id:
             gcp_impersonated_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
         return headers
