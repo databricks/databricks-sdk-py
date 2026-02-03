@@ -65,7 +65,7 @@ def a(env_or_skip) -> AccountClient:
     _load_debug_env_if_runs_from_ide("account")
     env_or_skip("CLOUD_ENV")
     account_client = AccountClient()
-    if not account_client.config.experimental_is_unified_host or not account_client.config.is_account_client:
+    if not account_client.config.account_id:
         pytest.skip("not Databricks Account client")
     return account_client
 
@@ -75,7 +75,7 @@ def ucacct(env_or_skip) -> AccountClient:
     _load_debug_env_if_runs_from_ide("ucacct")
     env_or_skip("CLOUD_ENV")
     account_client = AccountClient()
-    if not account_client.config.experimental_is_unified_host or not account_client.config.is_account_client:
+    if not account_client.config.account_id:
         pytest.skip("not Databricks Account client")
     if "TEST_METASTORE_ID" not in os.environ:
         pytest.skip("not in Unity Catalog Workspace test env")
