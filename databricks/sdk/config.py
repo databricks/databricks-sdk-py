@@ -47,7 +47,7 @@ class ConfigAttribute:
 
     def __set__(self, cfg: "Config", value: any):
         if value is None:
-            cfg._inner[self.name] = None
+            cfg._inner.pop(self.name, None)
         else:
             cfg._inner[self.name] = self.transform(value)
 
