@@ -1,6 +1,6 @@
 # NEXT CHANGELOG
 
-## Release v0.84.0
+## Release v0.85.0
 
 ### New Features and Improvements
 
@@ -13,4 +13,3 @@
 ### Internal Changes
 
 ### API Changes
-* Add `base_environment` field for `databricks.sdk.service.compute.Environment`.
