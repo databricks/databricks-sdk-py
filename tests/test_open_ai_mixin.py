@@ -92,7 +92,13 @@ def test_langchain_open_ai_client(monkeypatch):
     assert client.model_name == "databricks-meta-llama-3-1-70b-instruct"
 
 
-def test_http_request(w, requests_mock):
+def test_http_request(monkeypatch, requests_mock):
+    from databricks.sdk import WorkspaceClient
+
+    monkeypatch.setenv("DATABRICKS_HOST", "http://localhost")
+    monkeypatch.setenv("DATABRICKS_TOKEN", "test_token")
+    w = WorkspaceClient(config=Config())
+
     headers = {
         "Accept": "text/plain",
         "Content-Type": "application/json",
