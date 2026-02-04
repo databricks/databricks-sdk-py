@@ -13,3 +13,4 @@
 ### Internal Changes
 
 ### API Changes
+* [Breaking] Change `username` field for `databricks.sdk.service.iamv2.User` to no longer be required.

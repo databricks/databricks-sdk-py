@@ -232,9 +232,6 @@ class State(Enum):
 class User:
     """The details of a User resource."""
 
-    username: str
-    """Username/email of the user."""
-
     account_id: Optional[str] = None
     """The accountId parent of the user in Databricks."""
 
@@ -248,6 +245,9 @@ class User:
     """Internal userId of the user in Databricks."""
 
     name: Optional[UserName] = None
+
+    username: Optional[str] = None
+    """Username/email of the user."""
 
     def as_dict(self) -> dict:
         """Serializes the User into a dictionary suitable for use as a JSON request body."""
