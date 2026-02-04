@@ -688,8 +688,8 @@ class AwsSqsQueue:
     """Unique identifier included in the name of file events managed cloud resources."""
 
     queue_url: Optional[str] = None
-    """The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}
-    Required for provided_sqs."""
+    """The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}.
+    Only required for provided_sqs."""
 
     def as_dict(self) -> dict:
         """Serializes the AwsSqsQueue into a dictionary suitable for use as a JSON request body."""
@@ -894,10 +894,10 @@ class AzureQueueStorage:
 
     queue_url: Optional[str] = None
     """The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name}
-    Required for provided_aqs."""
+    Only required for provided_aqs."""
 
     resource_group: Optional[str] = None
-    """The resource group for the queue, event grid subscription, and external location storage
+    """Optional resource group for the queue, event grid subscription, and external location storage
     account. Only required for locations with a service principal storage credential"""
 
     subscription_id: Optional[str] = None
@@ -3867,7 +3867,8 @@ class ExternalLocationInfo:
     """Name of the storage credential used with this location."""
 
     enable_file_events: Optional[bool] = None
-    """Whether to enable file events on this external location."""
+    """Whether to enable file events on this external location. Default to `true`. Set to `false` to
+    disable file events."""
 
     encryption_details: Optional[EncryptionDetails] = None
 
@@ -3877,8 +3878,8 @@ class ExternalLocationInfo:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly
-    one of the documented properties."""
+    """File event queue settings. If `enable_file_events` is not `false`, must be defined and have
+    exactly one of the documented properties."""
 
     isolation_mode: Optional[IsolationMode] = None
 
@@ -4831,8 +4832,8 @@ class GcpPubsub:
     """Unique identifier included in the name of file events managed cloud resources."""
 
     subscription_name: Optional[str] = None
-    """The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}
-    Required for provided_pubsub."""
+    """The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription
+    name}. Only required for provided_pubsub."""
 
     def as_dict(self) -> dict:
         """Serializes the GcpPubsub into a dictionary suitable for use as a JSON request body."""
@@ -7788,7 +7789,7 @@ class PolicyInfo:
     moment. Required on create and optional on update."""
 
     policy_type: PolicyType
-    """Type of the policy. Required on create and ignored on update."""
+    """Type of the policy. Required on create."""
 
     column_mask: Optional[ColumnMaskOptions] = None
     """Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`.
@@ -7820,12 +7821,11 @@ class PolicyInfo:
     to a different value on update."""
 
     on_securable_fullname: Optional[str] = None
-    """Full name of the securable on which the policy is defined. Required on create and ignored on
-    update."""
+    """Full name of the securable on which the policy is defined. Required on create."""
 
     on_securable_type: Optional[SecurableType] = None
     """Type of the securable on which the policy is defined. Only `CATALOG`, `SCHEMA` and `TABLE` are
-    supported at this moment. Required on create and ignored on update."""
+    supported at this moment. Required on create."""
 
     row_filter: Optional[RowFilterOptions] = None
     """Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`.
@@ -12402,15 +12402,16 @@ class ExternalLocationsAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location.
+          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          disable file events.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
-          of the documented properties.
+          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
+          one of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -12597,15 +12598,16 @@ class ExternalLocationsAPI:
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location.
+          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          disable file events.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
-          of the documented properties.
+          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
+          one of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)

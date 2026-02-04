@@ -726,9 +726,7 @@ class EndpointType(Enum):
 
 
 class ErrorCode(Enum):
-    """Legacy definition of the ErrorCode enum. Please keep in sync with
-    api-base/proto/error_code.proto (except status code mapping annotations as this file doesn't
-    have them). Will be removed eventually, pending the ScalaPB 0.4 cleanup."""
+    """Error codes returned by Databricks APIs to indicate specific failure conditions."""
 
     ABORTED = "ABORTED"
     ALREADY_EXISTS = "ALREADY_EXISTS"
