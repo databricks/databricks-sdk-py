@@ -755,13 +755,9 @@ class Config:
 
     def _fetch_workspace_id(self) -> Optional[str]:
         """Fetch the workspace ID from the host."""
-        try:
-            headers = self.authenticate()
-            headers["User-Agent"] = f"{self.user_agent} sdk-feature/sql-http-path"
-            response = requests.get(f"{self.host}/api/2.0/preview/scim/v2/Me", headers=headers)
-            response.raise_for_status()
-            # get workspace ID from the response header
-            return response.headers.get("x-databricks-org-id")
-        except Exception as e:
-            logger.debug(f"Failed to fetch workspace ID: {e}")
-            return None
+        headers = self.authenticate()
+        headers["User-Agent"] = f"{self.user_agent} sdk-feature/sql-http-path"
+        response = requests.get(f"{self.host}/api/2.0/preview/scim/v2/Me", headers=headers)
+        response.raise_for_status()
+        # get workspace ID from the response header
+        return response.headers.get("x-databricks-org-id")
