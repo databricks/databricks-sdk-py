@@ -812,31 +812,95 @@ def test_azure_resource_id_sets_is_azure_even_without_environment(mocker):
     "host,account_id,workspace_id,expected_account_id,expected_ws_id,expected_cloud,oidc_endpoint",
     [
         # Legacy Workspace Profile - AWS - no account_id, no workspace_id
-        ("https://dbc-12345678.cloud.databricks.com", None, None, None, None, "aws", "/oidc/.well-known/oauth-authorization-server"),
-        
+        (
+            "https://dbc-12345678.cloud.databricks.com",
+            None,
+            None,
+            None,
+            None,
+            "aws",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
         # Legacy Workspace Profile - AWS - with account_id only (ignored in legacy)
-        ("https://dbc-12345678.cloud.databricks.com", "act1234567890", None, "act1234567890", None, "aws", "/oidc/.well-known/oauth-authorization-server"),
-        
+        (
+            "https://dbc-12345678.cloud.databricks.com",
+            "act1234567890",
+            None,
+            "act1234567890",
+            None,
+            "aws",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
         # Legacy Workspace Profile - AWS - with both account_id and workspace_id
-        ("https://dbc-12345678.cloud.databricks.com", "act1234567890", "12345678", "act1234567890", "12345678", "aws", "/oidc/.well-known/oauth-authorization-server"),
-        
+        (
+            "https://dbc-12345678.cloud.databricks.com",
+            "act1234567890",
+            "12345678",
+            "act1234567890",
+            "12345678",
+            "aws",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
         # Legacy Workspace Profile - Azure
-        ("https://adb-123.4.azuredatabricks.net", None, None, None, None, "azure", "/oidc/.well-known/oauth-authorization-server"),
-        
+        (
+            "https://adb-123.4.azuredatabricks.net",
+            None,
+            None,
+            None,
+            None,
+            "azure",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
         # Legacy Workspace Profile - GCP
-        ("https://test.gcp.databricks.com", None, None, None, None, "gcp", "/oidc/.well-known/oauth-authorization-server"),
-        
+        (
+            "https://test.gcp.databricks.com",
+            None,
+            None,
+            None,
+            None,
+            "gcp",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
         # Custom workspace host (defaults to AWS)
-        ("https://mycustomworkspace.com", None, None, None, None, "aws", "/oidc/.well-known/oauth-authorization-server"),
-        
+        (
+            "https://mycustomworkspace.com",
+            None,
+            None,
+            None,
+            None,
+            "aws",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
         # Legacy Account Profile - AWS - with account_id only
-        ("https://accounts.cloud.databricks.com", "act1234567890", None, "act1234567890", None, "aws", "/oidc/accounts/act1234567890/.well-known/oauth-authorization-server"),
-        
+        (
+            "https://accounts.cloud.databricks.com",
+            "act1234567890",
+            None,
+            "act1234567890",
+            None,
+            "aws",
+            "/oidc/accounts/act1234567890/.well-known/oauth-authorization-server",
+        ),
         # Legacy Account Profile - AWS - with both account_id and workspace_id
-        ("https://accounts.cloud.databricks.com", "act1234567890", "ws567890abcdef", "act1234567890", "ws567890abcdef", "aws", "/oidc/accounts/act1234567890/.well-known/oauth-authorization-server"),
-        
+        (
+            "https://accounts.cloud.databricks.com",
+            "act1234567890",
+            "ws567890abcdef",
+            "act1234567890",
+            "ws567890abcdef",
+            "aws",
+            "/oidc/accounts/act1234567890/.well-known/oauth-authorization-server",
+        ),
         # Custom accounts host (defaults to AWS)
-        ("https://accounts.mydomain.com", "act1234567890", None, "act1234567890", None, "aws", "/oidc/accounts/act1234567890/.well-known/oauth-authorization-server"),
+        (
+            "https://accounts.mydomain.com",
+            "act1234567890",
+            None,
+            "act1234567890",
+            None,
+            "aws",
+            "/oidc/accounts/act1234567890/.well-known/oauth-authorization-server",
+        ),
     ],
     ids=[
         "workspace_aws_no_ids",
@@ -856,7 +920,7 @@ def test_config_legacy_host_combinations(
     """Test legacy host, account_id, and workspace_id combinations without unified flag."""
     # Extract the base path for token endpoint
     token_endpoint_base = oidc_endpoint.replace("/.well-known/oauth-authorization-server", "/v1/token")
-    
+
     # Mock OIDC endpoints for oauth-m2m
     requests_mock.get(
         f"{host}{oidc_endpoint}",
@@ -869,7 +933,7 @@ def test_config_legacy_host_combinations(
         f"{host}{token_endpoint_base}",
         json={"access_token": "test-token", "token_type": "Bearer", "expires_in": 3600},
     )
-    
+
     # Create config with the specified parameters (no unified flag)
     config = Config(
         host=host,
@@ -879,13 +943,15 @@ def test_config_legacy_host_combinations(
         client_secret="test-client-secret",
         auth_type="oauth-m2m",
     )
-    
+
     # Verify account_id matches expected
-    assert config.account_id == expected_account_id, f"Expected account_id {expected_account_id}, got {config.account_id}"
-    
+    assert (
+        config.account_id == expected_account_id
+    ), f"Expected account_id {expected_account_id}, got {config.account_id}"
+
     # Verify workspace_id matches expected
     assert config.workspace_id == expected_ws_id, f"Expected workspace_id {expected_ws_id}, got {config.workspace_id}"
-    
+
     # Verify cloud matches expected
     if expected_cloud == "aws":
         assert config.is_aws is True, f"Expected is_aws=True, got {config.is_aws}"
@@ -903,7 +969,6 @@ def test_config_legacy_host_combinations(
         assert config.is_aws is False
         assert config.is_azure is False
         assert config.is_gcp is False
-    
 
 
 @pytest.mark.parametrize(
@@ -911,40 +976,44 @@ def test_config_legacy_host_combinations(
     [
         # Legacy Workspace Profile - AWS - with unified flag - should fetch workspace_id
         ("https://dbc-12345678.cloud.databricks.com", None, None, None, "123456789", "aws", True),
-        
         # Legacy Workspace Profile - AWS - with unified flag and account_id - workspace_id NOT fetched, cloud-agnostic (no environment)
         ("https://dbc-12345678.cloud.databricks.com", "act1234567890", None, "act1234567890", None, None, False),
-        
         # Legacy Workspace Profile - AWS - with unified flag - with both account_id and workspace_id - cloud-agnostic (no environment)
-        ("https://dbc-12345678.cloud.databricks.com", "act1234567890", "12345678", "act1234567890", "12345678", None, False),
-        
+        (
+            "https://dbc-12345678.cloud.databricks.com",
+            "act1234567890",
+            "12345678",
+            "act1234567890",
+            "12345678",
+            None,
+            False,
+        ),
         # Legacy Workspace Profile - Azure - with unified flag - should fetch workspace_id
         ("https://adb-123.4.azuredatabricks.net", None, None, None, "123456789", "azure", True),
-        
         # Legacy Workspace Profile - GCP - with unified flag - should fetch workspace_id
         ("https://test.gcp.databricks.com", None, None, None, "123456789", "gcp", True),
-        
         # Custom workspace host with unified flag - should fetch workspace_id (defaults to AWS)
         ("https://mycustomworkspace.com", None, None, None, "123456789", "aws", True),
-        
         # Legacy Account Profile - AWS - with unified flag - with account_id only (still resolves to AWS)
         ("https://accounts.cloud.databricks.com", "act1234567890", None, "act1234567890", None, "aws", False),
-        
         # Legacy Account Profile - AWS - with unified flag - with both account_id and workspace_id (still resolves to AWS)
-        ("https://accounts.cloud.databricks.com", "act1234567890", "ws567890abcdef", "act1234567890", "ws567890abcdef", "aws", False),
-        
+        (
+            "https://accounts.cloud.databricks.com",
+            "act1234567890",
+            "ws567890abcdef",
+            "act1234567890",
+            "ws567890abcdef",
+            "aws",
+            False,
+        ),
         # Custom accounts host with unified flag - with account_id (defaults to AWS)
         ("https://accounts.mydomain.com", "act1234567890", None, "act1234567890", None, "aws", False),
-        
         # New SPOG Profile - with account_id only
         ("https://mycompany.databricks.com", "act1234567890", None, "act1234567890", None, None, False),
-        
         # New SPOG Profile - with both account_id and workspace_id
         ("https://mycompany.databricks.com", "act1234567890", "12345678", "act1234567890", "12345678", None, False),
-        
         # New api.databricks.com profile - with account_id only
         ("https://api.databricks.com", "act1234567890", None, "act1234567890", None, None, False),
-        
         # New api.databricks.com profile - with both account_id and workspace_id
         ("https://api.databricks.com", "act1234567890", "12345678", "act1234567890", "12345678", None, False),
     ],
@@ -965,7 +1034,14 @@ def test_config_legacy_host_combinations(
     ],
 )
 def test_config_unified_host_combinations(
-    requests_mock, host, account_id, workspace_id, expected_account_id, expected_ws_id, expected_cloud, fetch_workspace_id
+    requests_mock,
+    host,
+    account_id,
+    workspace_id,
+    expected_account_id,
+    expected_ws_id,
+    expected_cloud,
+    fetch_workspace_id,
 ):
     """Test host, account_id, and workspace_id combinations with unified flag enabled."""
     # Mock workspace ID fetch if needed
@@ -974,7 +1050,7 @@ def test_config_unified_host_combinations(
             f"{host}/api/2.0/preview/scim/v2/Me",
             headers={"x-databricks-org-id": "123456789"},
         )
-    
+
     # Create config with the specified parameters (with unified flag)
     config = Config(
         host=host,
@@ -983,13 +1059,15 @@ def test_config_unified_host_combinations(
         experimental_is_unified_host=True,
         token="test-token",
     )
-    
+
     # Verify account_id matches expected
-    assert config.account_id == expected_account_id, f"Expected account_id {expected_account_id}, got {config.account_id}"
-    
+    assert (
+        config.account_id == expected_account_id
+    ), f"Expected account_id {expected_account_id}, got {config.account_id}"
+
     # Verify workspace_id matches expected
     assert config.workspace_id == expected_ws_id, f"Expected workspace_id {expected_ws_id}, got {config.workspace_id}"
-    
+
     # Verify cloud matches expected
     if expected_cloud == "aws":
         assert config.is_aws is True, f"Expected is_aws=True, got {config.is_aws}"
