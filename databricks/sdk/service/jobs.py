@@ -5,8 +5,8 @@ from __future__ import annotations
 import logging
 import random
 import time
-from dataclasses import dataclass
 from datetime import timedelta
+from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
