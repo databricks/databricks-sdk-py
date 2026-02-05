@@ -242,11 +242,13 @@ class Config:
         product=None,
         product_version=None,
         clock: Optional[Clock] = None,
+        custom_headers: Optional[Dict[str, str]] = None,
         **kwargs,
     ):
         self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []
+        self._custom_headers = custom_headers or {}
         if credentials_strategy and credentials_provider:
             raise ValueError("When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
         if credentials_provider:
