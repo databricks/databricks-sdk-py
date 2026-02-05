@@ -1,5 +1,11 @@
 # Version changelog
 
+## Release v0.85.0 (2026-02-05)
+
+### API Changes
+* [Breaking] Change `username` field for `databricks.sdk.service.iamv2.User` to no longer be required.
+
+
 ## Release v0.84.0 (2026-02-04)
 
 ### API Changes
