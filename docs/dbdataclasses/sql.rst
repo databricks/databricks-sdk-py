@@ -908,6 +908,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: STARTED
       :value: "STARTED"
 
+.. autoclass:: QueryTag
+   :members:
+   :undoc-members:
+
 .. autoclass:: RepeatedEndpointConfPairs
    :members:
    :undoc-members:

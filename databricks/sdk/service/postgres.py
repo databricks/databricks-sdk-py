@@ -1476,7 +1476,13 @@ class RoleRoleSpec:
     This expects a valid Postgres identifier as specified in the link below.
     https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
     
-    Required when creating the Role."""
+    Required when creating the Role.
+    
+    If you wish to create a Postgres Role backed by a managed Databricks identity, then
+    postgres_role must be one of the following:
+    
+    1. user email for IdentityType.USER 2. app ID for IdentityType.SERVICE_PRINCIPAL 2. group name
+    for IdentityType.GROUP"""
 
     def as_dict(self) -> dict:
         """Serializes the RoleRoleSpec into a dictionary suitable for use as a JSON request body."""

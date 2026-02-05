@@ -1432,6 +1432,9 @@ class RecipientInfo:
     expiration_time: Optional[int] = None
     """Expiration timestamp of the token, in epoch milliseconds."""
 
+    id: Optional[str] = None
+    """[Create,Update:IGN] common - id of the recipient"""
+
     ip_access_list: Optional[IpAccessList] = None
     """IP Access List"""
 
@@ -1488,6 +1491,8 @@ class RecipientInfo:
             body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
         if self.expiration_time is not None:
             body["expiration_time"] = self.expiration_time
+        if self.id is not None:
+            body["id"] = self.id
         if self.ip_access_list:
             body["ip_access_list"] = self.ip_access_list.as_dict()
         if self.metastore_id is not None:
@@ -1531,6 +1536,8 @@ class RecipientInfo:
             body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
         if self.expiration_time is not None:
             body["expiration_time"] = self.expiration_time
+        if self.id is not None:
+            body["id"] = self.id
         if self.ip_access_list:
             body["ip_access_list"] = self.ip_access_list
         if self.metastore_id is not None:
@@ -1566,6 +1573,7 @@ class RecipientInfo:
             created_by=d.get("created_by", None),
             data_recipient_global_metastore_id=d.get("data_recipient_global_metastore_id", None),
             expiration_time=d.get("expiration_time", None),
+            id=d.get("id", None),
             ip_access_list=_from_dict(d, "ip_access_list", IpAccessList),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -3100,6 +3108,7 @@ class RecipientsAPI:
         comment: Optional[str] = None,
         data_recipient_global_metastore_id: Optional[str] = None,
         expiration_time: Optional[int] = None,
+        id: Optional[str] = None,
         ip_access_list: Optional[IpAccessList] = None,
         owner: Optional[str] = None,
         properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
@@ -3119,6 +3128,8 @@ class RecipientsAPI:
           __cloud__:__region__:__metastore-uuid__.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
+        :param id: str (optional)
+          [Create,Update:IGN] common - id of the recipient
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param owner: str (optional)
@@ -3143,6 +3154,8 @@ class RecipientsAPI:
             body["data_recipient_global_metastore_id"] = data_recipient_global_metastore_id
         if expiration_time is not None:
             body["expiration_time"] = expiration_time
+        if id is not None:
+            body["id"] = id
         if ip_access_list is not None:
             body["ip_access_list"] = ip_access_list.as_dict()
         if name is not None:
@@ -3333,6 +3346,7 @@ class RecipientsAPI:
         *,
         comment: Optional[str] = None,
         expiration_time: Optional[int] = None,
+        id: Optional[str] = None,
         ip_access_list: Optional[IpAccessList] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
@@ -3348,6 +3362,8 @@ class RecipientsAPI:
           Description about the recipient.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
+        :param id: str (optional)
+          [Create,Update:IGN] common - id of the recipient
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param new_name: str (optional)
@@ -3367,6 +3383,8 @@ class RecipientsAPI:
             body["comment"] = comment
         if expiration_time is not None:
             body["expiration_time"] = expiration_time
+        if id is not None:
+            body["id"] = id
         if ip_access_list is not None:
             body["ip_access_list"] = ip_access_list.as_dict()
         if new_name is not None:

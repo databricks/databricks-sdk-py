@@ -4951,6 +4951,9 @@ class QueryInfo:
     query_start_time_ms: Optional[int] = None
     """The time the query started."""
 
+    query_tags: Optional[List[QueryTag]] = None
+    """A query execution can be optionally annotated with query tags"""
+
     query_text: Optional[str] = None
     """The text of the query."""
 
@@ -5020,6 +5023,8 @@ class QueryInfo:
             body["query_source"] = self.query_source.as_dict()
         if self.query_start_time_ms is not None:
             body["query_start_time_ms"] = self.query_start_time_ms
+        if self.query_tags:
+            body["query_tags"] = [v.as_dict() for v in self.query_tags]
         if self.query_text is not None:
             body["query_text"] = self.query_text
         if self.rows_produced is not None:
@@ -5077,6 +5082,8 @@ class QueryInfo:
             body["query_source"] = self.query_source
         if self.query_start_time_ms is not None:
             body["query_start_time_ms"] = self.query_start_time_ms
+        if self.query_tags:
+            body["query_tags"] = self.query_tags
         if self.query_text is not None:
             body["query_text"] = self.query_text
         if self.rows_produced is not None:
@@ -5118,6 +5125,7 @@ class QueryInfo:
             query_id=d.get("query_id", None),
             query_source=_from_dict(d, "query_source", ExternalQuerySource),
             query_start_time_ms=d.get("query_start_time_ms", None),
+            query_tags=_repeated_dict(d, "query_tags", QueryTag),
             query_text=d.get("query_text", None),
             rows_produced=d.get("rows_produced", None),
             session_id=d.get("session_id", None),
@@ -5616,6 +5624,40 @@ class QueryStatus(Enum):
     QUEUED = "QUEUED"
     RUNNING = "RUNNING"
     STARTED = "STARTED"
+
+
+@dataclass
+class QueryTag:
+    """* A query execution can be annotated with an optional key-value pair to allow users to attribute
+    the executions by key and optional value to filter by. QueryTag is the user-facing
+    representation."""
+
+    key: str
+
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the QueryTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> QueryTag:
+        """Deserializes the QueryTag from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass
@@ -9359,6 +9401,7 @@ class StatementExecutionAPI:
         format: Optional[Format] = None,
         on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout] = None,
         parameters: Optional[List[StatementParameterListItem]] = None,
+        query_tags: Optional[List[QueryTag]] = None,
         row_limit: Optional[int] = None,
         schema: Optional[str] = None,
         wait_timeout: Optional[str] = None,
@@ -9513,6 +9556,14 @@ class StatementExecutionAPI:
 
           [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
           [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+        :param query_tags: List[:class:`QueryTag`] (optional)
+          An array of query tags to annotate a SQL statement. A query tag consists of a non-empty key and,
+          optionally, a value. To represent a NULL value, either omit the `value` field or manually set it to
+          `null` or white space. Refer to the SQL language reference for the format specification of query
+          tags. There's no significance to the order of tags. Only one value per key will be recorded. A
+          sequence in excess of 20 query tags will be coerced to 20. Example:
+
+          { ..., "query_tags": [ { "key": "team", "value": "eng" }, { "key": "some key only tag" } ] }
         :param row_limit: int (optional)
           Applies the given row limit to the statement's result set, but unlike the `LIMIT` clause in SQL, it
           also sets the `truncated` field in the response to indicate whether the result was trimmed due to
@@ -9551,6 +9602,8 @@ class StatementExecutionAPI:
             body["on_wait_timeout"] = on_wait_timeout.value
         if parameters is not None:
             body["parameters"] = [v.as_dict() for v in parameters]
+        if query_tags is not None:
+            body["query_tags"] = [v.as_dict() for v in query_tags]
         if row_limit is not None:
             body["row_limit"] = row_limit
         if schema is not None:
