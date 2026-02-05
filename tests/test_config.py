@@ -333,15 +333,25 @@ def test_client_type_accounts_host():
     assert config.client_type == ClientType.ACCOUNT
 
 
-def test_client_type_unified_without_account_id():
-    """Test that client type raises error for unified host without account_id."""
+def test_client_type_unified_without_account_id(requests_mock):
+    """Test that no account_id or workspace_id set client type is detected as workspace and fetches workspace_id."""
+    # Mock the SCIM endpoint to return workspace ID
+    requests_mock.get(
+        "https://legacyworkspace.databricks.com/api/2.0/preview/scim/v2/Me",
+        headers={"x-databricks-org-id": "123456"},
+    )
+
     config = Config(
-        host="https://unified.databricks.com",
+        host="https://legacyworkspace.databricks.com",
         experimental_is_unified_host=True,
         token="test-token",
     )
-    with pytest.raises(ValueError, match="Unified host requires account_id"):
-        _ = config.client_type
+
+    assert config.account_id is None
+    assert not config.is_account_client
+    # Should return WORKSPACE since workspace_id is fetched from API
+    assert config.client_type == ClientType.WORKSPACE
+    assert config.workspace_id == "123456"
 
 
 def test_is_account_client_backward_compatibility():
@@ -353,16 +363,26 @@ def test_is_account_client_backward_compatibility():
     assert config_account.is_account_client
 
 
-def test_is_account_client_raises_on_unified_host():
-    """Test that is_account_client raises ValueError when used with unified hosts."""
+def test_is_account_client_on_unified_host():
+    """Test that is_account_client returns truthiness of account_id for unified hosts."""
     config = Config(
         host="https://unified.databricks.com",
         experimental_is_unified_host=True,
         workspace_id="test-workspace",
         token="test-token",
     )
-    with pytest.raises(ValueError, match="is_account_client cannot be used with unified hosts"):
-        _ = config.is_account_client
+    # Should be falsy since account_id is not set
+    assert not config.is_account_client
+
+    # With account_id set, should be truthy
+    config_with_account = Config(
+        host="https://unified.databricks.com",
+        experimental_is_unified_host=True,
+        workspace_id="test-workspace",
+        account_id="test-account",
+        token="test-token",
+    )
+    assert config_with_account.is_account_client
 
 
 def test_oidc_endpoints_unified_workspace(mocker, requests_mock):
@@ -412,14 +432,28 @@ def test_oidc_endpoints_unified_account(mocker, requests_mock):
     assert "accounts/test-account" in endpoints.token_endpoint
 
 
-def test_oidc_endpoints_unified_missing_ids():
-    """Test that oidc_endpoints raises error when unified host lacks required account_id."""
+def test_oidc_endpoints_unified_missing_ids(requests_mock):
+    """Test that unified host without account_id falls back to workspace endpoints."""
+    # Mock the SCIM endpoint for workspace ID fetch
+    requests_mock.get(
+        "https://unified.databricks.com/api/2.0/preview/scim/v2/Me",
+        headers={"x-databricks-org-id": "123456"},
+    )
+    # Mock the workspace OIDC endpoint
+    requests_mock.get(
+        "https://unified.databricks.com/oidc/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://unified.databricks.com/oidc/v1/authorize",
+            "token_endpoint": "https://unified.databricks.com/oidc/v1/token",
+        },
+    )
+
     config = Config(host="https://unified.databricks.com", experimental_is_unified_host=True, token="test-token")
 
-    with pytest.raises(ValueError) as exc_info:
-        _ = config.oidc_endpoints
-
-    assert "Unified host requires account_id" in str(exc_info.value)
+    # Should fall back to workspace endpoints when account_id is missing
+    endpoints = config.oidc_endpoints
+    assert endpoints is not None
+    assert "oidc/v1/authorize" in endpoints.authorization_endpoint
 
 
 def test_workspace_org_id_header_on_unified_host(requests_mock):
@@ -644,3 +678,410 @@ def test_oidc_scopes_sent_to_token_endpoint(requests_mock, tmp_path, scopes_inpu
     config.authenticate()
 
     assert _get_scope_from_request(token_mock.last_request.text) == expected_scope
+
+
+def test_legacy_workspace_profile_resolves_environment_with_unified_flag(requests_mock):
+    """Test that legacy workspace profile (no account_id) resolves environment and fetches workspace ID."""
+    # Mock the SCIM endpoint to return workspace ID
+    requests_mock.get(
+        "https://test.cloud.databricks.com/api/2.0/preview/scim/v2/Me",
+        headers={"x-databricks-org-id": "123456789"},
+    )
+
+    config = Config(
+        host="https://test.cloud.databricks.com",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    # Environment should be resolved for AWS
+    assert config.environment is not None
+    assert config.environment.cloud.value == "AWS"
+    assert config.environment.dns_zone == ".cloud.databricks.com"
+
+    # Workspace ID should be fetched from API
+    assert config.workspace_id == "123456789"
+
+
+def test_legacy_azure_workspace_profile_resolves_environment_with_unified_flag(requests_mock):
+    """Test that legacy Azure workspace profile resolves environment and fetches workspace ID."""
+    # Mock the SCIM endpoint to return workspace ID
+    requests_mock.get(
+        "https://adb-123.4.azuredatabricks.net/api/2.0/preview/scim/v2/Me",
+        headers={"x-databricks-org-id": "987654321"},
+    )
+
+    config = Config(
+        host="https://adb-123.4.azuredatabricks.net",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    # Environment should be resolved for Azure
+    assert config.environment is not None
+    assert config.environment.cloud.value == "AZURE"
+    assert config.environment.dns_zone == ".azuredatabricks.net"
+
+    # Workspace ID should be fetched from API
+    assert config.workspace_id == "987654321"
+
+
+def test_legacy_gcp_workspace_profile_resolves_environment_with_unified_flag(requests_mock):
+    """Test that legacy GCP workspace profile resolves environment and fetches workspace ID."""
+    # Mock the SCIM endpoint to return workspace ID
+    requests_mock.get(
+        "https://test.gcp.databricks.com/api/2.0/preview/scim/v2/Me",
+        headers={"x-databricks-org-id": "555666777"},
+    )
+
+    config = Config(
+        host="https://test.gcp.databricks.com",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    # Environment should be resolved for GCP
+    assert config.environment is not None
+    assert config.environment.cloud.value == "GCP"
+    assert config.environment.dns_zone == ".gcp.databricks.com"
+
+    # Workspace ID should be fetched from API
+    assert config.workspace_id == "555666777"
+
+
+def test_legacy_account_profile_resolves_environment_with_unified_flag(mocker):
+    """Test that legacy account profile (accounts host) resolves environment when unified flag is set."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+
+    config = Config(
+        host="https://accounts.cloud.databricks.com",
+        account_id="test-account",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    # Environment should be resolved for AWS accounts host
+    assert config.environment is not None
+    assert config.environment.cloud.value == "AWS"
+
+
+def test_unified_profile_with_account_id_has_none_environment(mocker):
+    """Test that new unified profile with account_id has None environment (cloud-agnostic)."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+
+    config = Config(
+        host="https://unified.databricks.com",
+        account_id="test-account",
+        workspace_id="test-workspace",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    # Unified hosts with account_id should NOT have environment resolved (cloud-agnostic)
+    assert config.environment is None
+    # But the is_cloud properties should still work without crashing
+    assert config.is_azure is False
+    assert config.is_gcp is False
+    assert config.is_aws is False
+
+
+def test_azure_resource_id_sets_is_azure_even_without_environment(mocker):
+    """Test that azure_workspace_resource_id sets is_azure even when environment is None."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    mocker.patch("databricks.sdk.config.Config._fetch_workspace_id", return_value=None)
+
+    config = Config(
+        host="https://unified.databricks.com",
+        azure_workspace_resource_id="/subscriptions/test/resourceGroups/test/providers/Microsoft.Databricks/workspaces/test",
+        experimental_is_unified_host=True,
+        azure_client_id="test-client-id",
+        azure_tenant_id="test-tenant-id",
+        azure_client_secret="test-secret",
+    )
+
+    # Manually set environment to None to simulate unified without cloud
+    config.databricks_environment = None
+
+    # is_azure should still be True due to azure_workspace_resource_id
+    assert config.is_azure is True
+    assert config.is_gcp is False
+    assert config.is_aws is False
+
+
+@pytest.mark.parametrize(
+    "host,account_id,workspace_id,expected_account_id,expected_ws_id,expected_cloud,oidc_endpoint",
+    [
+        # Legacy Workspace Profile - AWS - no account_id, no workspace_id
+        (
+            "https://dbc-12345678.cloud.databricks.com",
+            None,
+            None,
+            None,
+            None,
+            "aws",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
+        # Legacy Workspace Profile - AWS - with account_id only (ignored in legacy)
+        (
+            "https://dbc-12345678.cloud.databricks.com",
+            "act1234567890",
+            None,
+            "act1234567890",
+            None,
+            "aws",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
+        # Legacy Workspace Profile - AWS - with both account_id and workspace_id
+        (
+            "https://dbc-12345678.cloud.databricks.com",
+            "act1234567890",
+            "12345678",
+            "act1234567890",
+            "12345678",
+            "aws",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
+        # Legacy Workspace Profile - Azure
+        (
+            "https://adb-123.4.azuredatabricks.net",
+            None,
+            None,
+            None,
+            None,
+            "azure",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
+        # Legacy Workspace Profile - GCP
+        (
+            "https://test.gcp.databricks.com",
+            None,
+            None,
+            None,
+            None,
+            "gcp",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
+        # Custom workspace host (defaults to AWS)
+        (
+            "https://mycustomworkspace.com",
+            None,
+            None,
+            None,
+            None,
+            "aws",
+            "/oidc/.well-known/oauth-authorization-server",
+        ),
+        # Legacy Account Profile - AWS - with account_id only
+        (
+            "https://accounts.cloud.databricks.com",
+            "act1234567890",
+            None,
+            "act1234567890",
+            None,
+            "aws",
+            "/oidc/accounts/act1234567890/.well-known/oauth-authorization-server",
+        ),
+        # Legacy Account Profile - AWS - with both account_id and workspace_id
+        (
+            "https://accounts.cloud.databricks.com",
+            "act1234567890",
+            "ws567890abcdef",
+            "act1234567890",
+            "ws567890abcdef",
+            "aws",
+            "/oidc/accounts/act1234567890/.well-known/oauth-authorization-server",
+        ),
+        # Custom accounts host (defaults to AWS)
+        (
+            "https://accounts.mydomain.com",
+            "act1234567890",
+            None,
+            "act1234567890",
+            None,
+            "aws",
+            "/oidc/accounts/act1234567890/.well-known/oauth-authorization-server",
+        ),
+    ],
+    ids=[
+        "workspace_aws_no_ids",
+        "workspace_aws_with_account_id",
+        "workspace_aws_with_both_ids",
+        "workspace_azure",
+        "workspace_gcp",
+        "custom_workspace_host",
+        "account_aws_with_account_id",
+        "account_aws_with_both_ids",
+        "custom_accounts_host",
+    ],
+)
+def test_config_legacy_host_combinations(
+    requests_mock, host, account_id, workspace_id, expected_account_id, expected_ws_id, expected_cloud, oidc_endpoint
+):
+    """Test legacy host, account_id, and workspace_id combinations without unified flag."""
+    # Extract the base path for token endpoint
+    token_endpoint_base = oidc_endpoint.replace("/.well-known/oauth-authorization-server", "/v1/token")
+
+    # Mock OIDC endpoints for oauth-m2m
+    requests_mock.get(
+        f"{host}{oidc_endpoint}",
+        json={
+            "authorization_endpoint": f"{host}{oidc_endpoint.replace('/.well-known/oauth-authorization-server', '/v1/authorize')}",
+            "token_endpoint": f"{host}{token_endpoint_base}",
+        },
+    )
+    requests_mock.post(
+        f"{host}{token_endpoint_base}",
+        json={"access_token": "test-token", "token_type": "Bearer", "expires_in": 3600},
+    )
+
+    # Create config with the specified parameters (no unified flag)
+    config = Config(
+        host=host,
+        account_id=account_id,
+        workspace_id=workspace_id,
+        client_id="test-client-id",
+        client_secret="test-client-secret",
+        auth_type="oauth-m2m",
+    )
+
+    # Verify account_id matches expected
+    assert (
+        config.account_id == expected_account_id
+    ), f"Expected account_id {expected_account_id}, got {config.account_id}"
+
+    # Verify workspace_id matches expected
+    assert config.workspace_id == expected_ws_id, f"Expected workspace_id {expected_ws_id}, got {config.workspace_id}"
+
+    # Verify cloud matches expected
+    if expected_cloud == "aws":
+        assert config.is_aws is True, f"Expected is_aws=True, got {config.is_aws}"
+        assert config.is_azure is False
+        assert config.is_gcp is False
+    elif expected_cloud == "azure":
+        assert config.is_azure is True, f"Expected is_azure=True, got {config.is_azure}"
+        assert config.is_aws is False
+        assert config.is_gcp is False
+    elif expected_cloud == "gcp":
+        assert config.is_gcp is True, f"Expected is_gcp=True, got {config.is_gcp}"
+        assert config.is_aws is False
+        assert config.is_azure is False
+    elif expected_cloud is None:
+        assert config.is_aws is False
+        assert config.is_azure is False
+        assert config.is_gcp is False
+
+
+@pytest.mark.parametrize(
+    "host,account_id,workspace_id,expected_account_id,expected_ws_id,expected_cloud,fetch_workspace_id",
+    [
+        # Legacy Workspace Profile - AWS - with unified flag - should fetch workspace_id
+        ("https://dbc-12345678.cloud.databricks.com", None, None, None, "123456789", "aws", True),
+        # Legacy Workspace Profile - AWS - with unified flag and account_id - workspace_id NOT fetched, cloud-agnostic (no environment)
+        ("https://dbc-12345678.cloud.databricks.com", "act1234567890", None, "act1234567890", None, None, False),
+        # Legacy Workspace Profile - AWS - with unified flag - with both account_id and workspace_id - cloud-agnostic (no environment)
+        (
+            "https://dbc-12345678.cloud.databricks.com",
+            "act1234567890",
+            "12345678",
+            "act1234567890",
+            "12345678",
+            None,
+            False,
+        ),
+        # Legacy Workspace Profile - Azure - with unified flag - should fetch workspace_id
+        ("https://adb-123.4.azuredatabricks.net", None, None, None, "123456789", "azure", True),
+        # Legacy Workspace Profile - GCP - with unified flag - should fetch workspace_id
+        ("https://test.gcp.databricks.com", None, None, None, "123456789", "gcp", True),
+        # Custom workspace host with unified flag - should fetch workspace_id (defaults to AWS)
+        ("https://mycustomworkspace.com", None, None, None, "123456789", "aws", True),
+        # Legacy Account Profile - AWS - with unified flag - with account_id only (still resolves to AWS)
+        ("https://accounts.cloud.databricks.com", "act1234567890", None, "act1234567890", None, "aws", False),
+        # Legacy Account Profile - AWS - with unified flag - with both account_id and workspace_id (still resolves to AWS)
+        (
+            "https://accounts.cloud.databricks.com",
+            "act1234567890",
+            "ws567890abcdef",
+            "act1234567890",
+            "ws567890abcdef",
+            "aws",
+            False,
+        ),
+        # Custom accounts host with unified flag - with account_id (defaults to AWS)
+        ("https://accounts.mydomain.com", "act1234567890", None, "act1234567890", None, "aws", False),
+        # New SPOG Profile - with account_id only
+        ("https://mycompany.databricks.com", "act1234567890", None, "act1234567890", None, None, False),
+        # New SPOG Profile - with both account_id and workspace_id
+        ("https://mycompany.databricks.com", "act1234567890", "12345678", "act1234567890", "12345678", None, False),
+        # New api.databricks.com profile - with account_id only
+        ("https://api.databricks.com", "act1234567890", None, "act1234567890", None, None, False),
+        # New api.databricks.com profile - with both account_id and workspace_id
+        ("https://api.databricks.com", "act1234567890", "12345678", "act1234567890", "12345678", None, False),
+    ],
+    ids=[
+        "workspace_aws_no_ids_fetch",
+        "workspace_aws_with_account_id",
+        "workspace_aws_with_both_ids",
+        "workspace_azure_fetch",
+        "workspace_gcp_fetch",
+        "custom_workspace_host",
+        "account_aws_with_account_id",
+        "account_aws_with_both_ids",
+        "custom_accounts_host",
+        "spog_account_only",
+        "spog_both_ids",
+        "api_databricks_account_only",
+        "api_databricks_both_ids",
+    ],
+)
+def test_config_unified_host_combinations(
+    requests_mock,
+    host,
+    account_id,
+    workspace_id,
+    expected_account_id,
+    expected_ws_id,
+    expected_cloud,
+    fetch_workspace_id,
+):
+    """Test host, account_id, and workspace_id combinations with unified flag enabled."""
+    # Mock workspace ID fetch if needed
+    if fetch_workspace_id:
+        requests_mock.get(
+            f"{host}/api/2.0/preview/scim/v2/Me",
+            headers={"x-databricks-org-id": "123456789"},
+        )
+
+    # Create config with the specified parameters (with unified flag)
+    config = Config(
+        host=host,
+        account_id=account_id,
+        workspace_id=workspace_id,
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    # Verify account_id matches expected
+    assert (
+        config.account_id == expected_account_id
+    ), f"Expected account_id {expected_account_id}, got {config.account_id}"
+
+    # Verify workspace_id matches expected
+    assert config.workspace_id == expected_ws_id, f"Expected workspace_id {expected_ws_id}, got {config.workspace_id}"
+
+    # Verify cloud matches expected
+    if expected_cloud == "aws":
+        assert config.is_aws is True, f"Expected is_aws=True, got {config.is_aws}"
+        assert config.is_azure is False
+        assert config.is_gcp is False
+    elif expected_cloud == "azure":
+        assert config.is_azure is True, f"Expected is_azure=True, got {config.is_azure}"
+        assert config.is_aws is False
+        assert config.is_gcp is False
+    elif expected_cloud == "gcp":
+        assert config.is_gcp is True, f"Expected is_gcp=True, got {config.is_gcp}"
+        assert config.is_aws is False
+        assert config.is_azure is False
+    elif expected_cloud is None:
+        assert config.is_aws is False
+        assert config.is_azure is False
+        assert config.is_gcp is False

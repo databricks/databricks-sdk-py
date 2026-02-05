@@ -3,6 +3,7 @@
 ## Release v0.86.0
 
 ### New Features and Improvements
+* Add support for legacy Profiles in Unified Mode. It is now possible to use any host in Unified Mode.
 
 ### Security
 
