@@ -245,6 +245,20 @@ class Config:
         custom_headers: Optional[Dict[str, str]] = None,
         **kwargs,
     ):
+        """Initialize a Config object.
+
+        Args:
+            credentials_provider: (Deprecated) Use credentials_strategy instead.
+            credentials_strategy: Custom credentials strategy for authentication.
+            product: Product name for User-Agent header.
+            product_version: Product version for User-Agent header.
+            clock: Clock instance for time-related operations.
+            custom_headers: Optional dictionary of custom HTTP headers to include in all API requests.
+                These headers will be automatically added to every request made by the client.
+                Request-specific headers passed to individual API calls will override these custom headers
+                if there is a conflict. Example: {"X-Request-ID": "123", "X-Custom-Header": "value"}
+            **kwargs: Additional configuration parameters.
+        """
         self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []

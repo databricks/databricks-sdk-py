@@ -192,6 +192,12 @@ def _make_files_client(apiClient: client.ApiClient, config: client.Config):
 class WorkspaceClient:
     """
     The WorkspaceClient is a client for the workspace-level Databricks REST API.
+
+    Args:
+        custom_headers: Optional dictionary of custom HTTP headers to include in all API requests.
+            These headers will be merged with standard headers (like User-Agent and Content-Type)
+            and automatically added to every request. Request-specific headers can override these
+            if needed. Example: {"X-Request-ID": "unique-id", "X-Custom-Header": "value"}
     """
 
     def __init__(
@@ -1048,6 +1054,12 @@ class WorkspaceClient:
 class AccountClient:
     """
     The AccountClient is a client for the account-level Databricks REST API.
+
+    Args:
+        custom_headers: Optional dictionary of custom HTTP headers to include in all API requests.
+            These headers will be merged with standard headers (like User-Agent and Content-Type)
+            and automatically added to every request. Request-specific headers can override these
+            if needed. Example: {"X-Request-ID": "unique-id", "X-Custom-Header": "value"}
     """
 
     def __init__(
