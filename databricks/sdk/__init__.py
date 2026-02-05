@@ -1359,6 +1359,7 @@ class AccountClient:
         config.host = config.environment.deployment_url(workspace.deployment_name)
         config.azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
         config.account_id = None
+        config.workspace_id = workspace.workspace_id
         config.init_auth()
         return WorkspaceClient(config=config)
 

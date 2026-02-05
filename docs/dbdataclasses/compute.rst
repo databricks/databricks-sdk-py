@@ -522,6 +522,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: TERMINATING
       :value: "TERMINATING"
 
+   .. py:attribute:: UC_VOLUME_MISCONFIGURED
+      :value: "UC_VOLUME_MISCONFIGURED"
+
    .. py:attribute:: UNPINNED
       :value: "UNPINNED"
 

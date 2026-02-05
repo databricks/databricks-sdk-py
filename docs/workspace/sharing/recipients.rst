@@ -18,7 +18,7 @@
     recipient follows the activation link to download the credential file, and then uses the credential file
     to establish a secure connection to receive the shared data. This sharing mode is called **open sharing**.
 
-    .. py:method:: create(name: str, authentication_type: AuthenticationType [, comment: Optional[str], data_recipient_global_metastore_id: Optional[str], expiration_time: Optional[int], ip_access_list: Optional[IpAccessList], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs], sharing_code: Optional[str]]) -> RecipientInfo
+    .. py:method:: create(name: str, authentication_type: AuthenticationType [, comment: Optional[str], data_recipient_global_metastore_id: Optional[str], expiration_time: Optional[int], id: Optional[str], ip_access_list: Optional[IpAccessList], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs], sharing_code: Optional[str]]) -> RecipientInfo
 
 
         Usage:
@@ -50,6 +50,8 @@
           __cloud__:__region__:__metastore-uuid__.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
+        :param id: str (optional)
+          [Create,Update:IGN] common - id of the recipient
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param owner: str (optional)
@@ -212,7 +214,7 @@
         :returns: :class:`GetRecipientSharePermissionsResponse`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], expiration_time: Optional[int], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]]) -> RecipientInfo
+    .. py:method:: update(name: str [, comment: Optional[str], expiration_time: Optional[int], id: Optional[str], ip_access_list: Optional[IpAccessList], new_name: Optional[str], owner: Optional[str], properties_kvpairs: Optional[SecurablePropertiesKvPairs]]) -> RecipientInfo
 
 
         Usage:
@@ -242,6 +244,8 @@
           Description about the recipient.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
+        :param id: str (optional)
+          [Create,Update:IGN] common - id of the recipient
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param new_name: str (optional)
