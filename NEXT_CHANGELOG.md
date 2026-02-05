@@ -3,6 +3,7 @@
 ## Release v0.86.0
 
 ### New Features and Improvements
+* Added `custom_headers` parameter to `WorkspaceClient` and `AccountClient` to support custom HTTP headers in all API requests ([#1245](https://github.com/databricks/databricks-sdk-py/pull/1245)).
 
 ### Security
 
