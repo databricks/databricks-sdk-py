@@ -2582,7 +2582,7 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 14"""
+    """Next Id: 15"""
 
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
@@ -2596,6 +2596,7 @@ class CredentialType(Enum):
     OIDC_TOKEN = "OIDC_TOKEN"
     PEM_PRIVATE_KEY = "PEM_PRIVATE_KEY"
     SERVICE_CREDENTIAL = "SERVICE_CREDENTIAL"
+    SSWS_TOKEN = "SSWS_TOKEN"
     UNKNOWN_CREDENTIAL_TYPE = "UNKNOWN_CREDENTIAL_TYPE"
     USERNAME_PASSWORD = "USERNAME_PASSWORD"
 
@@ -8785,7 +8786,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_ONE_PASSWORD_EVENT_LOGS_BEARER_TOKEN = 294; Next id: 295"""
+    """Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
