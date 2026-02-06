@@ -243,7 +243,16 @@ class RemoteDbUtils:
     def _cluster_id(self) -> str:
         cluster_id = self._config.cluster_id
         if not cluster_id:
-            message = "cluster_id is required in the configuration"
+            message = (
+                "cluster_id is required in the configuration to use dbutils. "
+                "Please configure a cluster_id using one of the following methods:\n"
+                "  1. Set the DATABRICKS_CLUSTER_ID environment variable\n"
+                "  2. Add cluster_id to your ~/.databrickscfg profile\n"
+                "  3. Pass cluster_id directly to the Config object: "
+                "Config(cluster_id='your-cluster-id')\n\n"
+                "For more information, see: "
+                "https://docs.databricks.com/en/dev-tools/sdk-python.html#configure-cluster-id"
+            )
             raise ValueError(self._config.wrap_debug_info(message))
         return cluster_id
 
