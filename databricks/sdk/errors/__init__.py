@@ -1,5 +1,6 @@
 from .base import DatabricksError, ErrorDetail
 from .customizer import _ErrorCustomizer
+from .friendly import _FriendlyErrorCustomizer
 from .parser import _Parser
 from .platform import *
 from .private_link import PrivateLinkValidationError
