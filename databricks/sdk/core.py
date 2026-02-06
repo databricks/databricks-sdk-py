@@ -6,7 +6,7 @@ from ._base_client import _BaseClient
 from .config import *
 # To preserve backwards compatibility (as these definitions were previously in this module)
 from .credentials_provider import *
-from .errors import DatabricksError, _ErrorCustomizer
+from .errors import DatabricksError, _ErrorCustomizer, _FriendlyErrorCustomizer
 from .oauth import retrieve_token
 
 __all__ = ["Config", "DatabricksError"]
@@ -32,7 +32,7 @@ class ApiClient:
             max_connections_per_pool=cfg.max_connections_per_pool,
             pool_block=True,
             http_timeout_seconds=cfg.http_timeout_seconds,
-            extra_error_customizers=[_AddDebugErrorCustomizer(cfg)],
+            extra_error_customizers=[_AddDebugErrorCustomizer(cfg), _FriendlyErrorCustomizer()],
             clock=cfg.clock,
         )
 
