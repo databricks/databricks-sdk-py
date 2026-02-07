@@ -2582,7 +2582,7 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 14"""
+    """Next Id: 15"""
 
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
@@ -2596,6 +2596,7 @@ class CredentialType(Enum):
     OIDC_TOKEN = "OIDC_TOKEN"
     PEM_PRIVATE_KEY = "PEM_PRIVATE_KEY"
     SERVICE_CREDENTIAL = "SERVICE_CREDENTIAL"
+    SSWS_TOKEN = "SSWS_TOKEN"
     UNKNOWN_CREDENTIAL_TYPE = "UNKNOWN_CREDENTIAL_TYPE"
     USERNAME_PASSWORD = "USERNAME_PASSWORD"
 
@@ -8785,7 +8786,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_ONE_PASSWORD_EVENT_LOGS_BEARER_TOKEN = 294; Next id: 295"""
+    """Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -10641,10 +10642,6 @@ class AccountMetastoreAssignmentsAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}",
@@ -10668,10 +10665,6 @@ class AccountMetastoreAssignmentsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}",
@@ -10694,10 +10687,6 @@ class AccountMetastoreAssignmentsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore", headers=headers
         )
@@ -10715,10 +10704,6 @@ class AccountMetastoreAssignmentsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces", headers=headers
@@ -10748,10 +10733,6 @@ class AccountMetastoreAssignmentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",
@@ -10785,10 +10766,6 @@ class AccountMetastoresAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/metastores", body=body, headers=headers)
         return AccountsCreateMetastoreResponse.from_dict(res)
 
@@ -10809,10 +10786,6 @@ class AccountMetastoresAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "DELETE",
@@ -10835,10 +10808,6 @@ class AccountMetastoresAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", headers=headers
         )
@@ -10854,10 +10823,6 @@ class AccountMetastoresAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/metastores", headers=headers)
         parsed = AccountsListMetastoresResponse.from_dict(json).metastores
@@ -10883,10 +10848,6 @@ class AccountMetastoresAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", body=body, headers=headers
@@ -10934,10 +10895,6 @@ class AccountStorageCredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials",
@@ -10969,10 +10926,6 @@ class AccountStorageCredentialsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}",
@@ -10997,10 +10950,6 @@ class AccountStorageCredentialsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}",
@@ -11020,10 +10969,6 @@ class AccountStorageCredentialsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do(
             "GET",
@@ -11064,10 +11009,6 @@ class AccountStorageCredentialsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",
