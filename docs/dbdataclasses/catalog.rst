@@ -420,7 +420,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   Next Id: 14
+   Next Id: 15
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
@@ -457,6 +457,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SERVICE_CREDENTIAL
       :value: "SERVICE_CREDENTIAL"
+
+   .. py:attribute:: SSWS_TOKEN
+      :value: "SSWS_TOKEN"
 
    .. py:attribute:: UNKNOWN_CREDENTIAL_TYPE
       :value: "UNKNOWN_CREDENTIAL_TYPE"
@@ -1510,7 +1513,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_ONE_PASSWORD_EVENT_LOGS_BEARER_TOKEN = 294; Next id: 295
+   Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"

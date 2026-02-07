@@ -269,7 +269,8 @@ class GenieAttachment:
     """Follow-up questions suggested by Genie"""
 
     text: Optional[TextAttachment] = None
-    """Text Attachment if Genie responds with text"""
+    """Text Attachment if Genie responds with text. This also contains the final summary when
+    available."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieAttachment into a dictionary suitable for use as a JSON request body."""

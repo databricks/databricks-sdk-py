@@ -2243,10 +2243,6 @@ class AccountAccessControlAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET",
             f"/api/2.0/preview/accounts/{self._api.account_id}/access-control/assignable-roles",
@@ -2293,10 +2289,6 @@ class AccountAccessControlAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET",
             f"/api/2.0/preview/accounts/{self._api.account_id}/access-control/rule-sets",
@@ -2325,10 +2317,6 @@ class AccountAccessControlAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",
@@ -2508,10 +2496,6 @@ class AccountGroupsV2API:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups", body=body, headers=headers
         )
@@ -2528,10 +2512,6 @@ class AccountGroupsV2API:
 
         headers = {}
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", headers=headers)
 
     def get(self, id: str) -> AccountGroup:
@@ -2546,10 +2526,6 @@ class AccountGroupsV2API:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", headers=headers)
         return AccountGroup.from_dict(res)
@@ -2612,10 +2588,6 @@ class AccountGroupsV2API:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         query["startIndex"] = 1
         if "count" not in query:
             query["count"] = 10000
@@ -2650,10 +2622,6 @@ class AccountGroupsV2API:
         headers = {
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "PATCH", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", body=body, headers=headers
@@ -2700,10 +2668,6 @@ class AccountGroupsV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Groups/{id}", body=body, headers=headers)
 
@@ -2763,10 +2727,6 @@ class AccountServicePrincipalsV2API:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals", body=body, headers=headers
         )
@@ -2782,10 +2742,6 @@ class AccountServicePrincipalsV2API:
         """
 
         headers = {}
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}", headers=headers
@@ -2803,10 +2759,6 @@ class AccountServicePrincipalsV2API:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/ServicePrincipals/{id}", headers=headers
@@ -2868,10 +2820,6 @@ class AccountServicePrincipalsV2API:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         query["startIndex"] = 1
         if "count" not in query:
             query["count"] = 10000
@@ -2910,10 +2858,6 @@ class AccountServicePrincipalsV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "PATCH",
@@ -2966,10 +2910,6 @@ class AccountServicePrincipalsV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "PUT",
@@ -3049,10 +2989,6 @@ class AccountUsersV2API:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users", body=body, headers=headers
         )
@@ -3069,10 +3005,6 @@ class AccountUsersV2API:
         """
 
         headers = {}
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", headers=headers)
 
@@ -3135,10 +3067,6 @@ class AccountUsersV2API:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", query=query, headers=headers
         )
@@ -3200,10 +3128,6 @@ class AccountUsersV2API:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         query["startIndex"] = 1
         if "count" not in query:
             query["count"] = 10000
@@ -3239,10 +3163,6 @@ class AccountUsersV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "PATCH", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", body=body, headers=headers
@@ -3300,10 +3220,6 @@ class AccountUsersV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/accounts/{self._api.account_id}/scim/v2/Users/{id}", body=body, headers=headers)
 
@@ -4578,10 +4494,6 @@ class WorkspaceAssignmentAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/permissionassignments/principals/{principal_id}",
@@ -4600,10 +4512,6 @@ class WorkspaceAssignmentAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -4624,10 +4532,6 @@ class WorkspaceAssignmentAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do(
             "GET",
@@ -4664,10 +4568,6 @@ class WorkspaceAssignmentAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",

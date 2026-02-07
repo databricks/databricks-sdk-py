@@ -455,10 +455,6 @@ class AccountIamV2API:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET",
             f"/api/2.0/identity/accounts/{self._api.account_id}/workspaces/{workspace_id}/workspaceAccessDetails/{principal_id}",
@@ -485,10 +481,6 @@ class AccountIamV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -517,10 +509,6 @@ class AccountIamV2API:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/identity/accounts/{self._api.account_id}/servicePrincipals/resolveByExternalId",
@@ -547,10 +535,6 @@ class AccountIamV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",

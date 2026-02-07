@@ -1013,6 +1013,16 @@ class DashboardTask:
     dashboard_id: Optional[str] = None
     """The identifier of the dashboard to refresh."""
 
+    filters: Optional[Dict[str, str]] = None
+    """Dashboard task parameters. Used to apply dashboard filter values during dashboard task
+    execution. Parameter values get applied to any dashboard filters that have a matching URL
+    identifier as the parameter key. The parameter value format is dependent on the filter type: -
+    For text and single-select filters, provide a single value (e.g. `"value"`) - For date and
+    datetime filters, provide the value in ISO 8601 format (e.g. `"2000-01-01T00:00:00"`) - For
+    multi-select filters, provide a JSON array of values (e.g. `"[\"value1\",\"value2\"]"`) - For
+    range and date range filters, provide a JSON object with `start` and `end` (e.g.
+    `"{\"start\":\"1\",\"end\":\"10\"}"`)"""
+
     subscription: Optional[Subscription] = None
     """Optional: subscription configuration for sending the dashboard snapshot."""
 
@@ -1025,6 +1035,8 @@ class DashboardTask:
         body = {}
         if self.dashboard_id is not None:
             body["dashboard_id"] = self.dashboard_id
+        if self.filters:
+            body["filters"] = self.filters
         if self.subscription:
             body["subscription"] = self.subscription.as_dict()
         if self.warehouse_id is not None:
@@ -1036,6 +1048,8 @@ class DashboardTask:
         body = {}
         if self.dashboard_id is not None:
             body["dashboard_id"] = self.dashboard_id
+        if self.filters:
+            body["filters"] = self.filters
         if self.subscription:
             body["subscription"] = self.subscription
         if self.warehouse_id is not None:
@@ -1047,6 +1061,7 @@ class DashboardTask:
         """Deserializes the DashboardTask from a dictionary."""
         return cls(
             dashboard_id=d.get("dashboard_id", None),
+            filters=d.get("filters", None),
             subscription=_from_dict(d, "subscription", Subscription),
             warehouse_id=d.get("warehouse_id", None),
         )
