@@ -10,7 +10,7 @@
 
     [more info]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
 
-    .. py:method:: create(git_provider: str [, git_email: Optional[str], git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str]]) -> CreateCredentialsResponse
+    .. py:method:: create(git_provider: str [, git_email: Optional[str], git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str], principal_id: Optional[int]]) -> CreateCredentialsResponse
 
 
         Usage:
@@ -53,21 +53,27 @@
           providers, support may exist for other types of scoped access tokens. [Learn more].
 
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
         :returns: :class:`CreateCredentialsResponse`
         
 
-    .. py:method:: delete(credential_id: int)
+    .. py:method:: delete(credential_id: int [, principal_id: Optional[int]])
 
         Deletes the specified Git credential.
 
         :param credential_id: int
           The ID for the corresponding credential to access.
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
 
         
 
-    .. py:method:: get(credential_id: int) -> GetCredentialsResponse
+    .. py:method:: get(credential_id: int [, principal_id: Optional[int]]) -> GetCredentialsResponse
 
 
         Usage:
@@ -89,11 +95,14 @@
 
         :param credential_id: int
           The ID for the corresponding credential to access.
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
         :returns: :class:`GetCredentialsResponse`
         
 
-    .. py:method:: list() -> Iterator[CredentialInfo]
+    .. py:method:: list( [, principal_id: Optional[int]]) -> Iterator[CredentialInfo]
 
 
         Usage:
@@ -106,13 +115,16 @@
             
             list = w.git_credentials.list()
 
-        Lists the calling user's Git credentials. One credential per user is supported.
+        Lists the calling user's Git credentials.
 
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be listed. Only service principal managers
+          can perform this action.
 
         :returns: Iterator over :class:`CredentialInfo`
         
 
-    .. py:method:: update(credential_id: int, git_provider: str [, git_email: Optional[str], git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str]])
+    .. py:method:: update(credential_id: int, git_provider: str [, git_email: Optional[str], git_username: Optional[str], is_default_for_provider: Optional[bool], name: Optional[str], personal_access_token: Optional[str], principal_id: Optional[int]])
 
 
         Usage:
@@ -164,6 +176,9 @@
           providers, support may exist for other types of scoped access tokens. [Learn more].
 
           [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html
+        :param principal_id: int (optional)
+          The ID of the service principal whose credentials will be modified. Only service principal managers
+          can perform this action.
 
 
         

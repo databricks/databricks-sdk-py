@@ -32,6 +32,7 @@ from databricks.sdk.service import marketplace as pkg_marketplace
 from databricks.sdk.service import ml as pkg_ml
 from databricks.sdk.service import oauth2 as pkg_oauth2
 from databricks.sdk.service import pipelines as pkg_pipelines
+from databricks.sdk.service import postgres as pkg_postgres
 from databricks.sdk.service import provisioning as pkg_provisioning
 from databricks.sdk.service import qualitymonitorv2 as pkg_qualitymonitorv2
 from databricks.sdk.service import serving as pkg_serving
@@ -116,6 +117,7 @@ from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
                                            ServicePrincipalSecretsAPI,
                                            ServicePrincipalSecretsProxyAPI)
 from databricks.sdk.service.pipelines import PipelinesAPI
+from databricks.sdk.service.postgres import PostgresAPI
 from databricks.sdk.service.provisioning import (CredentialsAPI,
                                                  EncryptionKeysAPI,
                                                  NetworksAPI, PrivateAccessAPI,
@@ -156,7 +158,8 @@ from databricks.sdk.service.sql import (AlertsAPI, AlertsLegacyAPI,
                                         QueryVisualizationsLegacyAPI,
                                         RedashConfigAPI, StatementExecutionAPI,
                                         WarehousesAPI)
-from databricks.sdk.service.tags import TagPoliciesAPI
+from databricks.sdk.service.tags import (TagPoliciesAPI,
+                                         WorkspaceEntityTagAssignmentsAPI)
 from databricks.sdk.service.vectorsearch import (VectorSearchEndpointsAPI,
                                                  VectorSearchIndexesAPI)
 from databricks.sdk.service.workspace import (GitCredentialsAPI, ReposAPI,
@@ -222,6 +225,7 @@ class WorkspaceClient:
         config: Optional[client.Config] = None,
         scopes: Optional[List[str]] = None,
         authorization_details: Optional[List[AuthorizationDetail]] = None,
+        custom_headers: Optional[dict] = None,
     ):
         if not config:
             config = client.Config(
@@ -250,12 +254,13 @@ class WorkspaceClient:
                 product=product,
                 product_version=product_version,
                 token_audience=token_audience,
-                scopes=" ".join(scopes) if scopes else None,
+                scopes=scopes,
                 authorization_details=(
                     json.dumps([detail.as_dict() for detail in authorization_details])
                     if authorization_details
                     else None
                 ),
+                custom_headers=custom_headers,
             )
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
@@ -330,6 +335,7 @@ class WorkspaceClient:
         self._policy_compliance_for_clusters = pkg_compute.PolicyComplianceForClustersAPI(self._api_client)
         self._policy_compliance_for_jobs = pkg_jobs.PolicyComplianceForJobsAPI(self._api_client)
         self._policy_families = pkg_compute.PolicyFamiliesAPI(self._api_client)
+        self._postgres = pkg_postgres.PostgresAPI(self._api_client)
         self._provider_exchange_filters = pkg_marketplace.ProviderExchangeFiltersAPI(self._api_client)
         self._provider_exchanges = pkg_marketplace.ProviderExchangesAPI(self._api_client)
         self._provider_files = pkg_marketplace.ProviderFilesAPI(self._api_client)
@@ -386,6 +392,7 @@ class WorkspaceClient:
         self._workspace = WorkspaceExt(self._api_client)
         self._workspace_bindings = pkg_catalog.WorkspaceBindingsAPI(self._api_client)
         self._workspace_conf = pkg_settings.WorkspaceConfAPI(self._api_client)
+        self._workspace_entity_tag_assignments = pkg_tags.WorkspaceEntityTagAssignmentsAPI(self._api_client)
         self._workspace_iam_v2 = pkg_iamv2.WorkspaceIamV2API(self._api_client)
         self._workspace_settings_v2 = pkg_settingsv2.WorkspaceSettingsV2API(self._api_client)
         self._groups = pkg_iam.GroupsAPI(self._api_client)
@@ -436,7 +443,7 @@ class WorkspaceClient:
 
     @property
     def apps(self) -> pkg_apps.AppsAPI:
-        """Apps run directly on a customer’s Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on."""
+        """Apps run directly on a customer's Databricks instance, integrate with their data, use and extend Databricks services, and enable users to interact through single sign-on."""
         return self._apps
 
     @property
@@ -745,6 +752,11 @@ class WorkspaceClient:
         return self._policy_families
 
     @property
+    def postgres(self) -> pkg_postgres.PostgresAPI:
+        """Use the Postgres API to create and manage Lakebase Autoscaling Postgres infrastructure, including projects, branches, compute endpoints, and roles."""
+        return self._postgres
+
+    @property
     def provider_exchange_filters(self) -> pkg_marketplace.ProviderExchangeFiltersAPI:
         """Marketplace exchanges filters curate which groups can access an exchange."""
         return self._provider_exchange_filters
@@ -786,12 +798,12 @@ class WorkspaceClient:
 
     @property
     def quality_monitor_v2(self) -> pkg_qualitymonitorv2.QualityMonitorV2API:
-        """Manage data quality of UC objects (currently support `schema`)."""
+        """[DEPRECATED] This API is deprecated."""
         return self._quality_monitor_v2
 
     @property
     def quality_monitors(self) -> pkg_catalog.QualityMonitorsAPI:
-        """A monitor computes and monitors data or model quality metrics for a table over time."""
+        """[DEPRECATED] This API is deprecated."""
         return self._quality_monitors
 
     @property
@@ -856,7 +868,7 @@ class WorkspaceClient:
 
     @property
     def rfa(self) -> pkg_catalog.RfaAPI:
-        """Request for Access enables customers to request access to and manage access request destinations for Unity Catalog securables."""
+        """Request for Access enables users to request access for Unity Catalog securables."""
         return self._rfa
 
     @property
@@ -990,6 +1002,11 @@ class WorkspaceClient:
         return self._workspace_conf
 
     @property
+    def workspace_entity_tag_assignments(self) -> pkg_tags.WorkspaceEntityTagAssignmentsAPI:
+        """Manage tag assignments on workspace-scoped objects."""
+        return self._workspace_entity_tag_assignments
+
+    @property
     def workspace_iam_v2(self) -> pkg_iamv2.WorkspaceIamV2API:
         """These APIs are used to manage identities and the workspace access of these identities in <Databricks>."""
         return self._workspace_iam_v2
@@ -1062,6 +1079,7 @@ class AccountClient:
         credentials_provider: Optional[CredentialsStrategy] = None,
         token_audience: Optional[str] = None,
         config: Optional[client.Config] = None,
+        custom_headers: Optional[dict] = None,
     ):
         if not config:
             config = client.Config(
@@ -1090,6 +1108,7 @@ class AccountClient:
                 product=product,
                 product_version=product_version,
                 token_audience=token_audience,
+                custom_headers=custom_headers,
             )
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)
@@ -1344,6 +1363,7 @@ class AccountClient:
         config.host = config.environment.deployment_url(workspace.deployment_name)
         config.azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
         config.account_id = None
+        config.workspace_id = workspace.workspace_id
         config.init_auth()
         return WorkspaceClient(config=config)
 

@@ -10,6 +10,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
 
@@ -23,25 +24,44 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class AccessRequestDestinations:
-    destinations: List[NotificationDestination]
-    """The access request destinations for the securable."""
-
     securable: Securable
-    """The securable for which the access request destinations are being retrieved."""
+    """The securable for which the access request destinations are being modified or read."""
 
     are_any_destinations_hidden: Optional[bool] = None
     """Indicates whether any destinations are hidden from the caller due to a lack of permissions. This
     value is true if the caller does not have permission to see all destinations."""
+
+    destination_source_securable: Optional[Securable] = None
+    """The source securable from which the destinations are inherited. Either the same value as
+    securable (if destination is set directly on the securable) or the nearest parent securable with
+    destinations set."""
+
+    destinations: Optional[List[NotificationDestination]] = None
+    """The access request destinations for the securable."""
+
+    full_name: Optional[str] = None
+    """The full name of the securable. Redundant with the name in the securable object, but necessary
+    for Terraform integration"""
+
+    securable_type: Optional[str] = None
+    """The type of the securable. Redundant with the type in the securable object, but necessary for
+    Terraform integration"""
 
     def as_dict(self) -> dict:
         """Serializes the AccessRequestDestinations into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.are_any_destinations_hidden is not None:
             body["are_any_destinations_hidden"] = self.are_any_destinations_hidden
+        if self.destination_source_securable:
+            body["destination_source_securable"] = self.destination_source_securable.as_dict()
         if self.destinations:
             body["destinations"] = [v.as_dict() for v in self.destinations]
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
         if self.securable:
             body["securable"] = self.securable.as_dict()
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -49,10 +69,16 @@ class AccessRequestDestinations:
         body = {}
         if self.are_any_destinations_hidden is not None:
             body["are_any_destinations_hidden"] = self.are_any_destinations_hidden
+        if self.destination_source_securable:
+            body["destination_source_securable"] = self.destination_source_securable
         if self.destinations:
             body["destinations"] = self.destinations
+        if self.full_name is not None:
+            body["full_name"] = self.full_name
         if self.securable:
             body["securable"] = self.securable
+        if self.securable_type is not None:
+            body["securable_type"] = self.securable_type
         return body
 
     @classmethod
@@ -60,8 +86,11 @@ class AccessRequestDestinations:
         """Deserializes the AccessRequestDestinations from a dictionary."""
         return cls(
             are_any_destinations_hidden=d.get("are_any_destinations_hidden", None),
+            destination_source_securable=_from_dict(d, "destination_source_securable", Securable),
             destinations=_repeated_dict(d, "destinations", NotificationDestination),
+            full_name=d.get("full_name", None),
             securable=_from_dict(d, "securable", Securable),
+            securable_type=d.get("securable_type", None),
         )
 
 
@@ -659,8 +688,8 @@ class AwsSqsQueue:
     """Unique identifier included in the name of file events managed cloud resources."""
 
     queue_url: Optional[str] = None
-    """The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}
-    Required for provided_sqs."""
+    """The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}.
+    Only required for provided_sqs."""
 
     def as_dict(self) -> dict:
         """Serializes the AwsSqsQueue into a dictionary suitable for use as a JSON request body."""
@@ -865,10 +894,10 @@ class AzureQueueStorage:
 
     queue_url: Optional[str] = None
     """The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name}
-    Required for provided_aqs."""
+    Only required for provided_aqs."""
 
     resource_group: Optional[str] = None
-    """The resource group for the queue, event grid subscription, and external location storage
+    """Optional resource group for the queue, event grid subscription, and external location storage
     account. Only required for locations with a service principal storage credential"""
 
     subscription_id: Optional[str] = None
@@ -1578,7 +1607,7 @@ class ConnectionDependency:
 
 @dataclass
 class ConnectionInfo:
-    """Next ID: 23"""
+    """Next ID: 24"""
 
     comment: Optional[str] = None
     """User-provided free-form text description."""
@@ -1740,7 +1769,7 @@ class ConnectionInfo:
 
 
 class ConnectionType(Enum):
-    """Next Id: 47"""
+    """Next Id: 72"""
 
     BIGQUERY = "BIGQUERY"
     DATABRICKS = "DATABRICKS"
@@ -1750,7 +1779,6 @@ class ConnectionType(Enum):
     HTTP = "HTTP"
     MYSQL = "MYSQL"
     ORACLE = "ORACLE"
-    PALANTIR = "PALANTIR"
     POSTGRESQL = "POSTGRESQL"
     POWER_BI = "POWER_BI"
     REDSHIFT = "REDSHIFT"
@@ -1905,6 +1933,9 @@ class CreateAccountsMetastore:
     name: str
     """The user-specified name of the metastore."""
 
+    external_access_enabled: Optional[bool] = None
+    """Whether to allow non-DBR clients to directly access entities under the metastore."""
+
     region: Optional[str] = None
     """Cloud region which the metastore serves (e.g., `us-west-2`, `westus`)."""
 
@@ -1914,6 +1945,8 @@ class CreateAccountsMetastore:
     def as_dict(self) -> dict:
         """Serializes the CreateAccountsMetastore into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.external_access_enabled is not None:
+            body["external_access_enabled"] = self.external_access_enabled
         if self.name is not None:
             body["name"] = self.name
         if self.region is not None:
@@ -1925,6 +1958,8 @@ class CreateAccountsMetastore:
     def as_shallow_dict(self) -> dict:
         """Serializes the CreateAccountsMetastore into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.external_access_enabled is not None:
+            body["external_access_enabled"] = self.external_access_enabled
         if self.name is not None:
             body["name"] = self.name
         if self.region is not None:
@@ -1936,7 +1971,12 @@ class CreateAccountsMetastore:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> CreateAccountsMetastore:
         """Deserializes the CreateAccountsMetastore from a dictionary."""
-        return cls(name=d.get("name", None), region=d.get("region", None), storage_root=d.get("storage_root", None))
+        return cls(
+            external_access_enabled=d.get("external_access_enabled", None),
+            name=d.get("name", None),
+            region=d.get("region", None),
+            storage_root=d.get("storage_root", None),
+        )
 
 
 @dataclass
@@ -2542,7 +2582,7 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 14"""
+    """Next Id: 15"""
 
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
@@ -2556,6 +2596,7 @@ class CredentialType(Enum):
     OIDC_TOKEN = "OIDC_TOKEN"
     PEM_PRIVATE_KEY = "PEM_PRIVATE_KEY"
     SERVICE_CREDENTIAL = "SERVICE_CREDENTIAL"
+    SSWS_TOKEN = "SSWS_TOKEN"
     UNKNOWN_CREDENTIAL_TYPE = "UNKNOWN_CREDENTIAL_TYPE"
     USERNAME_PASSWORD = "USERNAME_PASSWORD"
 
@@ -3827,7 +3868,8 @@ class ExternalLocationInfo:
     """Name of the storage credential used with this location."""
 
     enable_file_events: Optional[bool] = None
-    """Whether to enable file events on this external location."""
+    """Whether to enable file events on this external location. Default to `true`. Set to `false` to
+    disable file events."""
 
     encryption_details: Optional[EncryptionDetails] = None
 
@@ -3837,8 +3879,8 @@ class ExternalLocationInfo:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly
-    one of the documented properties."""
+    """File event queue settings. If `enable_file_events` is not `false`, must be defined and have
+    exactly one of the documented properties."""
 
     isolation_mode: Optional[IsolationMode] = None
 
@@ -4791,8 +4833,8 @@ class GcpPubsub:
     """Unique identifier included in the name of file events managed cloud resources."""
 
     subscription_name: Optional[str] = None
-    """The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}
-    Required for provided_pubsub."""
+    """The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription
+    name}. Only required for provided_pubsub."""
 
     def as_dict(self) -> dict:
         """Serializes the GcpPubsub into a dictionary suitable for use as a JSON request body."""
@@ -7748,7 +7790,7 @@ class PolicyInfo:
     moment. Required on create and optional on update."""
 
     policy_type: PolicyType
-    """Type of the policy. Required on create and ignored on update."""
+    """Type of the policy. Required on create."""
 
     column_mask: Optional[ColumnMaskOptions] = None
     """Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`.
@@ -7780,12 +7822,11 @@ class PolicyInfo:
     to a different value on update."""
 
     on_securable_fullname: Optional[str] = None
-    """Full name of the securable on which the policy is defined. Required on create and ignored on
-    update."""
+    """Full name of the securable on which the policy is defined. Required on create."""
 
     on_securable_type: Optional[SecurableType] = None
     """Type of the securable on which the policy is defined. Only `CATALOG`, `SCHEMA` and `TABLE` are
-    supported at this moment. Required on create and ignored on update."""
+    supported at this moment. Required on create."""
 
     row_filter: Optional[RowFilterOptions] = None
     """Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`.
@@ -8532,7 +8573,7 @@ class RowFilterOptions:
 
 @dataclass
 class SchemaInfo:
-    """Next ID: 43"""
+    """Next ID: 45"""
 
     browse_only: Optional[bool] = None
     """Indicates whether the principal is limited to retrieving metadata for the associated object
@@ -8745,12 +8786,13 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271"""
+    """Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
     TABLE_DELTASHARING = "TABLE_DELTASHARING"
     TABLE_DELTASHARING_MUTABLE = "TABLE_DELTASHARING_MUTABLE"
+    TABLE_DELTASHARING_OPEN_DIR_BASED = "TABLE_DELTASHARING_OPEN_DIR_BASED"
     TABLE_DELTA_EXTERNAL = "TABLE_DELTA_EXTERNAL"
     TABLE_DELTA_ICEBERG_DELTASHARING = "TABLE_DELTA_ICEBERG_DELTASHARING"
     TABLE_DELTA_ICEBERG_MANAGED = "TABLE_DELTA_ICEBERG_MANAGED"
@@ -8787,7 +8829,6 @@ class SecurableKind(Enum):
     TABLE_FOREIGN_MYSQL = "TABLE_FOREIGN_MYSQL"
     TABLE_FOREIGN_NETSUITE = "TABLE_FOREIGN_NETSUITE"
     TABLE_FOREIGN_ORACLE = "TABLE_FOREIGN_ORACLE"
-    TABLE_FOREIGN_PALANTIR = "TABLE_FOREIGN_PALANTIR"
     TABLE_FOREIGN_POSTGRESQL = "TABLE_FOREIGN_POSTGRESQL"
     TABLE_FOREIGN_REDSHIFT = "TABLE_FOREIGN_REDSHIFT"
     TABLE_FOREIGN_SALESFORCE = "TABLE_FOREIGN_SALESFORCE"
@@ -9411,7 +9452,8 @@ class TableInfo:
     """View dependencies (when table_type == **VIEW** or **MATERIALIZED_VIEW**, **STREAMING_TABLE**) -
     when DependencyList is None, the dependency is not provided; - when DependencyList is an empty
     list, the dependency is provided but is empty; - when DependencyList is not an empty list,
-    dependencies are provided and recorded."""
+    dependencies are provided and recorded. Note: this field is not set in the output of the
+    __listTables__ API."""
 
     def as_dict(self) -> dict:
         """Serializes the TableInfo into a dictionary suitable for use as a JSON request body."""
@@ -9852,6 +9894,9 @@ class UpdateAccountsMetastore:
     delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None
     """The scope of Delta Sharing enabled for the metastore."""
 
+    external_access_enabled: Optional[bool] = None
+    """Whether to allow non-DBR clients to directly access entities under the metastore."""
+
     owner: Optional[str] = None
     """The owner of the metastore."""
 
@@ -9872,6 +9917,8 @@ class UpdateAccountsMetastore:
             )
         if self.delta_sharing_scope is not None:
             body["delta_sharing_scope"] = self.delta_sharing_scope.value
+        if self.external_access_enabled is not None:
+            body["external_access_enabled"] = self.external_access_enabled
         if self.owner is not None:
             body["owner"] = self.owner
         if self.privilege_model_version is not None:
@@ -9891,6 +9938,8 @@ class UpdateAccountsMetastore:
             )
         if self.delta_sharing_scope is not None:
             body["delta_sharing_scope"] = self.delta_sharing_scope
+        if self.external_access_enabled is not None:
+            body["external_access_enabled"] = self.external_access_enabled
         if self.owner is not None:
             body["owner"] = self.owner
         if self.privilege_model_version is not None:
@@ -9908,6 +9957,7 @@ class UpdateAccountsMetastore:
                 "delta_sharing_recipient_token_lifetime_in_seconds", None
             ),
             delta_sharing_scope=_enum(d, "delta_sharing_scope", DeltaSharingScopeEnum),
+            external_access_enabled=d.get("external_access_enabled", None),
             owner=d.get("owner", None),
             privilege_model_version=d.get("privilege_model_version", None),
             storage_root_credential_id=d.get("storage_root_credential_id", None),
@@ -10990,6 +11040,10 @@ class ArtifactAllowlistsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}", headers=headers)
         return ArtifactAllowlistInfo.from_dict(res)
 
@@ -11033,6 +11087,10 @@ class ArtifactAllowlistsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}", body=body, headers=headers
@@ -11110,6 +11168,10 @@ class CatalogsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/catalogs", body=body, headers=headers)
         return CatalogInfo.from_dict(res)
 
@@ -11132,6 +11194,10 @@ class CatalogsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, headers=headers)
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> CatalogInfo:
@@ -11153,6 +11219,10 @@ class CatalogsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/catalogs/{name}", query=query, headers=headers)
         return CatalogInfo.from_dict(res)
@@ -11209,6 +11279,10 @@ class CatalogsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -11276,6 +11350,10 @@ class CatalogsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/catalogs/{name}", body=body, headers=headers)
         return CatalogInfo.from_dict(res)
 
@@ -11342,6 +11420,10 @@ class ConnectionsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/connections", body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
 
@@ -11358,6 +11440,10 @@ class ConnectionsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
 
     def get(self, name: str) -> ConnectionInfo:
@@ -11372,6 +11458,10 @@ class ConnectionsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/connections/{name}", headers=headers)
         return ConnectionInfo.from_dict(res)
@@ -11405,6 +11495,10 @@ class ConnectionsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -11445,6 +11539,10 @@ class ConnectionsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/connections/{name}", body=body, headers=headers)
         return ConnectionInfo.from_dict(res)
@@ -11529,6 +11627,10 @@ class CredentialsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/credentials", body=body, headers=headers)
         return CredentialInfo.from_dict(res)
 
@@ -11551,6 +11653,10 @@ class CredentialsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/credentials/{name_arg}", query=query, headers=headers)
 
@@ -11584,6 +11690,10 @@ class CredentialsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/temporary-service-credentials", body=body, headers=headers)
         return TemporaryCredentials.from_dict(res)
 
@@ -11600,6 +11710,10 @@ class CredentialsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/credentials/{name_arg}", headers=headers)
         return CredentialInfo.from_dict(res)
@@ -11650,6 +11764,10 @@ class CredentialsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/credentials", query=query, headers=headers)
@@ -11739,6 +11857,10 @@ class CredentialsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/credentials/{name_arg}", body=body, headers=headers)
         return CredentialInfo.from_dict(res)
 
@@ -11809,6 +11931,10 @@ class CredentialsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/validate-credentials", body=body, headers=headers)
         return ValidateCredentialResponse.from_dict(res)
 
@@ -11845,6 +11971,10 @@ class EntityTagAssignmentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/entity-tag-assignments", body=body, headers=headers)
         return EntityTagAssignment.from_dict(res)
 
@@ -11875,6 +12005,10 @@ class EntityTagAssignmentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do(
             "DELETE",
             f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
@@ -11898,6 +12032,10 @@ class EntityTagAssignmentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -11936,6 +12074,10 @@ class EntityTagAssignmentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -11996,6 +12138,10 @@ class EntityTagAssignmentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH",
             f"/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}",
@@ -12034,6 +12180,10 @@ class ExternalLineageAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/lineage-tracking/external-lineage", body=body, headers=headers)
         return ExternalLineageRelationship.from_dict(res)
 
@@ -12052,6 +12202,10 @@ class ExternalLineageAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/lineage-tracking/external-lineage", query=query, headers=headers)
 
@@ -12094,6 +12248,10 @@ class ExternalLineageAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/lineage-tracking/external-lineage", query=query, headers=headers)
             if "external_lineage_relationships" in json:
@@ -12132,6 +12290,10 @@ class ExternalLineageAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/lineage-tracking/external-lineage", query=query, body=body, headers=headers
@@ -12181,15 +12343,16 @@ class ExternalLocationsAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location.
+          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          disable file events.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
-          of the documented properties.
+          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
+          one of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -12224,6 +12387,10 @@ class ExternalLocationsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/external-locations", body=body, headers=headers)
         return ExternalLocationInfo.from_dict(res)
 
@@ -12246,6 +12413,10 @@ class ExternalLocationsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.1/unity-catalog/external-locations/{name}", query=query, headers=headers)
 
     def get(self, name: str, *, include_browse: Optional[bool] = None) -> ExternalLocationInfo:
@@ -12267,6 +12438,10 @@ class ExternalLocationsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/external-locations/{name}", query=query, headers=headers)
         return ExternalLocationInfo.from_dict(res)
@@ -12320,6 +12495,10 @@ class ExternalLocationsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
@@ -12360,15 +12539,16 @@ class ExternalLocationsAPI:
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location.
+          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          disable file events.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
-          of the documented properties.
+          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
+          one of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)
@@ -12418,6 +12598,10 @@ class ExternalLocationsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/external-locations/{name}", body=body, headers=headers)
         return ExternalLocationInfo.from_dict(res)
 
@@ -12449,6 +12633,10 @@ class ExternalMetadataAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/lineage-tracking/external-metadata", body=body, headers=headers)
         return ExternalMetadata.from_dict(res)
 
@@ -12465,6 +12653,10 @@ class ExternalMetadataAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/lineage-tracking/external-metadata/{name}", headers=headers)
 
     def get_external_metadata(self, name: str) -> ExternalMetadata:
@@ -12479,6 +12671,10 @@ class ExternalMetadataAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lineage-tracking/external-metadata/{name}", headers=headers)
         return ExternalMetadata.from_dict(res)
@@ -12508,6 +12704,10 @@ class ExternalMetadataAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/lineage-tracking/external-metadata", query=query, headers=headers)
@@ -12552,6 +12752,10 @@ class ExternalMetadataAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", f"/api/2.0/lineage-tracking/external-metadata/{name}", query=query, body=body, headers=headers
         )
@@ -12591,6 +12795,10 @@ class FunctionsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/functions", body=body, headers=headers)
         return FunctionInfo.from_dict(res)
 
@@ -12614,6 +12822,10 @@ class FunctionsAPI:
         if force is not None:
             query["force"] = force
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/functions/{name}", query=query, headers=headers)
 
@@ -12641,6 +12853,10 @@ class FunctionsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/functions/{name}", query=query, headers=headers)
         return FunctionInfo.from_dict(res)
@@ -12700,6 +12916,10 @@ class FunctionsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
@@ -12735,6 +12955,10 @@ class FunctionsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/functions/{name}", body=body, headers=headers)
         return FunctionInfo.from_dict(res)
@@ -12805,6 +13029,10 @@ class GrantsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}", query=query, headers=headers
         )
@@ -12864,6 +13092,10 @@ class GrantsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET",
             f"/api/2.1/unity-catalog/effective-permissions/{securable_type}/{full_name}",
@@ -12894,6 +13126,10 @@ class GrantsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}", body=body, headers=headers
@@ -12943,9 +13179,20 @@ class MetastoresAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("PUT", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", body=body, headers=headers)
 
-    def create(self, name: str, *, region: Optional[str] = None, storage_root: Optional[str] = None) -> MetastoreInfo:
+    def create(
+        self,
+        name: str,
+        *,
+        external_access_enabled: Optional[bool] = None,
+        region: Optional[str] = None,
+        storage_root: Optional[str] = None,
+    ) -> MetastoreInfo:
         """Creates a new metastore based on a provided name and optional storage root path. By default (if the
         __owner__ field is not set), the owner of the new metastore is the user calling the
         __createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is
@@ -12953,6 +13200,8 @@ class MetastoresAPI:
 
         :param name: str
           The user-specified name of the metastore.
+        :param external_access_enabled: bool (optional)
+          Whether to allow non-DBR clients to directly access entities under the metastore.
         :param region: str (optional)
           Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).
         :param storage_root: str (optional)
@@ -12962,6 +13211,8 @@ class MetastoresAPI:
         """
 
         body = {}
+        if external_access_enabled is not None:
+            body["external_access_enabled"] = external_access_enabled
         if name is not None:
             body["name"] = name
         if region is not None:
@@ -12972,6 +13223,10 @@ class MetastoresAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.1/unity-catalog/metastores", body=body, headers=headers)
         return MetastoreInfo.from_dict(res)
@@ -12986,6 +13241,10 @@ class MetastoresAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.1/unity-catalog/current-metastore-assignment", headers=headers)
         return MetastoreAssignment.from_dict(res)
@@ -13008,6 +13267,10 @@ class MetastoresAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.1/unity-catalog/metastores/{id}", query=query, headers=headers)
 
     def get(self, id: str) -> MetastoreInfo:
@@ -13023,6 +13286,10 @@ class MetastoresAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/metastores/{id}", headers=headers)
         return MetastoreInfo.from_dict(res)
@@ -13061,6 +13328,10 @@ class MetastoresAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
@@ -13084,6 +13355,10 @@ class MetastoresAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.1/unity-catalog/metastore_summary", headers=headers)
         return GetMetastoreSummaryResponse.from_dict(res)
 
@@ -13105,6 +13380,10 @@ class MetastoresAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do(
             "DELETE", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", query=query, headers=headers
         )
@@ -13116,6 +13395,7 @@ class MetastoresAPI:
         delta_sharing_organization_name: Optional[str] = None,
         delta_sharing_recipient_token_lifetime_in_seconds: Optional[int] = None,
         delta_sharing_scope: Optional[DeltaSharingScopeEnum] = None,
+        external_access_enabled: Optional[bool] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
         privilege_model_version: Optional[str] = None,
@@ -13133,6 +13413,8 @@ class MetastoresAPI:
           The lifetime of delta sharing recipient token in seconds.
         :param delta_sharing_scope: :class:`DeltaSharingScopeEnum` (optional)
           The scope of Delta Sharing enabled for the metastore.
+        :param external_access_enabled: bool (optional)
+          Whether to allow non-DBR clients to directly access entities under the metastore.
         :param new_name: str (optional)
           New name for the metastore.
         :param owner: str (optional)
@@ -13154,6 +13436,8 @@ class MetastoresAPI:
             )
         if delta_sharing_scope is not None:
             body["delta_sharing_scope"] = delta_sharing_scope.value
+        if external_access_enabled is not None:
+            body["external_access_enabled"] = external_access_enabled
         if new_name is not None:
             body["new_name"] = new_name
         if owner is not None:
@@ -13166,6 +13450,10 @@ class MetastoresAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/metastores/{id}", body=body, headers=headers)
         return MetastoreInfo.from_dict(res)
@@ -13199,6 +13487,10 @@ class MetastoresAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("PATCH", f"/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore", body=body, headers=headers)
 
 
@@ -13230,6 +13522,10 @@ class ModelVersionsAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", headers=headers)
 
@@ -13269,6 +13565,10 @@ class ModelVersionsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", query=query, headers=headers
         )
@@ -13297,6 +13597,10 @@ class ModelVersionsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", query=query, headers=headers
@@ -13354,6 +13658,10 @@ class ModelVersionsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -13481,6 +13789,10 @@ class ModelVersionsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", f"/api/2.1/unity-catalog/models/{full_name}/versions/{version}", body=body, headers=headers
         )
@@ -13539,6 +13851,10 @@ class OnlineTablesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.0/online-tables", body=body, headers=headers)
         return Wait(
             self.wait_get_online_table_active, response=OnlineTable.from_dict(op_response), name=op_response["name"]
@@ -13562,6 +13878,10 @@ class OnlineTablesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/online-tables/{name}", headers=headers)
 
     def get(self, name: str) -> OnlineTable:
@@ -13576,6 +13896,10 @@ class OnlineTablesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/online-tables/{name}", headers=headers)
         return OnlineTable.from_dict(res)
@@ -13607,6 +13931,10 @@ class PoliciesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/policies", body=body, headers=headers)
         return PolicyInfo.from_dict(res)
 
@@ -13626,6 +13954,10 @@ class PoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "DELETE",
@@ -13650,6 +13982,10 @@ class PoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -13701,6 +14037,10 @@ class PoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -13756,6 +14096,10 @@ class PoliciesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH",
             f"/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}/{name}",
@@ -13767,7 +14111,10 @@ class PoliciesAPI:
 
 
 class QualityMonitorsAPI:
-    """A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
+    """[DEPRECATED] This API is deprecated. Please use the Data Quality Monitors API instead (REST:
+    /api/data-quality/v1/monitors), which manages both Data Profiling and Anomaly Detection.
+
+    A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
     tables and a dashboard that you can use to monitor table health and set alerts. Most write operations
     require the user to be the owner of the table (or its parent schema or parent catalog). Viewing the
     dashboard, computed metrics, or monitor configuration only requires the user to have **SELECT** privileges
@@ -13777,7 +14124,8 @@ class QualityMonitorsAPI:
         self._api = api_client
 
     def cancel_refresh(self, table_name: str, refresh_id: int):
-        """Cancels an already-initiated refresh job.
+        """[DEPRECATED] Cancels an already-initiated refresh job. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         :param table_name: str
           UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
@@ -13790,6 +14138,10 @@ class QualityMonitorsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel", headers=headers
@@ -13814,7 +14166,8 @@ class QualityMonitorsAPI:
         time_series: Optional[MonitorTimeSeries] = None,
         warehouse_id: Optional[str] = None,
     ) -> MonitorInfo:
-        """Creates a new monitor for the specified table.
+        """[DEPRECATED] Creates a new monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
         table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
@@ -13901,11 +14254,16 @@ class QualityMonitorsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
         return MonitorInfo.from_dict(res)
 
     def delete(self, table_name: str) -> DeleteMonitorResponse:
-        """Deletes a monitor for the specified table.
+        """[DEPRECATED] Deletes a monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -13928,11 +14286,16 @@ class QualityMonitorsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
         return DeleteMonitorResponse.from_dict(res)
 
     def get(self, table_name: str) -> MonitorInfo:
-        """Gets a monitor for the specified table.
+        """[DEPRECATED] Gets a monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema. 3. have the following
@@ -13954,11 +14317,16 @@ class QualityMonitorsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", headers=headers)
         return MonitorInfo.from_dict(res)
 
     def get_refresh(self, table_name: str, refresh_id: int) -> MonitorRefreshInfo:
-        """Gets info about a specific monitor refresh using the given refresh ID.
+        """[DEPRECATED] Gets info about a specific monitor refresh using the given refresh ID. Use Data Quality
+        Monitors API instead (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -13979,13 +14347,18 @@ class QualityMonitorsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}", headers=headers
         )
         return MonitorRefreshInfo.from_dict(res)
 
     def list_refreshes(self, table_name: str) -> MonitorRefreshListResponse:
-        """Gets an array containing the history of the most recent refreshes (up to 25) for this table.
+        """[DEPRECATED] Gets an array containing the history of the most recent refreshes (up to 25) for this
+        table. Use Data Quality Monitors API instead (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14005,13 +14378,18 @@ class QualityMonitorsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
         return MonitorRefreshListResponse.from_dict(res)
 
     def regenerate_dashboard(
         self, table_name: str, *, warehouse_id: Optional[str] = None
     ) -> RegenerateDashboardResponse:
-        """Regenerates the monitoring dashboard for the specified table.
+        """[DEPRECATED] Regenerates the monitoring dashboard for the specified table. Use Data Quality Monitors
+        API instead (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14039,14 +14417,18 @@ class QualityMonitorsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", f"/api/2.1/quality-monitoring/tables/{table_name}/monitor/dashboard", body=body, headers=headers
         )
         return RegenerateDashboardResponse.from_dict(res)
 
     def run_refresh(self, table_name: str) -> MonitorRefreshInfo:
-        """Queues a metric refresh on the monitor for the specified table. The refresh will execute in the
-        background.
+        """[DEPRECATED] Queues a metric refresh on the monitor for the specified table. Use Data Quality Monitors
+        API instead (/api/data-quality/v1/monitors). The refresh will execute in the background.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14065,6 +14447,10 @@ class QualityMonitorsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes", headers=headers)
         return MonitorRefreshInfo.from_dict(res)
@@ -14086,7 +14472,8 @@ class QualityMonitorsAPI:
         snapshot: Optional[MonitorSnapshot] = None,
         time_series: Optional[MonitorTimeSeries] = None,
     ) -> MonitorInfo:
-        """Updates a monitor for the specified table.
+        """[DEPRECATED] Updates a monitor for the specified table. Use Data Quality Monitors API instead
+        (/api/data-quality/v1/monitors).
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14165,6 +14552,10 @@ class QualityMonitorsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.1/unity-catalog/tables/{table_name}/monitor", body=body, headers=headers)
         return MonitorInfo.from_dict(res)
@@ -14294,6 +14685,10 @@ class RegisteredModelsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/models", body=body, headers=headers)
         return RegisteredModelInfo.from_dict(res)
 
@@ -14311,6 +14706,10 @@ class RegisteredModelsAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}", headers=headers)
 
@@ -14330,6 +14729,10 @@ class RegisteredModelsAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", headers=headers)
 
@@ -14361,6 +14764,10 @@ class RegisteredModelsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/models/{full_name}", query=query, headers=headers)
         return RegisteredModelInfo.from_dict(res)
@@ -14433,6 +14840,10 @@ class RegisteredModelsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/models", query=query, headers=headers)
             if "registered_models" in json:
@@ -14466,6 +14877,10 @@ class RegisteredModelsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}", body=body, headers=headers
@@ -14568,6 +14983,10 @@ class RegisteredModelsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/models/{full_name}", body=body, headers=headers)
         return RegisteredModelInfo.from_dict(res)
 
@@ -14603,6 +15022,10 @@ class ResourceQuotasAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET",
             f"/api/2.1/unity-catalog/resource-quotas/{parent_securable_type}/{parent_full_name}/{quota_name}",
@@ -14637,6 +15060,10 @@ class ResourceQuotasAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do(
                 "GET", "/api/2.1/unity-catalog/resource-quotas/all-resource-quotas", query=query, headers=headers
@@ -14650,12 +15077,10 @@ class ResourceQuotasAPI:
 
 
 class RfaAPI:
-    """Request for Access enables customers to request access to and manage access request destinations for Unity
-    Catalog securables.
+    """Request for Access enables users to request access for Unity Catalog securables.
 
-    These APIs provide a standardized way to update, get, and request to access request destinations.
-    Fine-grained authorization ensures that only users with appropriate permissions can manage access request
-    destinations."""
+    These APIs provide a standardized way for securable owners (or users with MANAGE privileges) to manage
+    access request destinations."""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -14687,6 +15112,10 @@ class RfaAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/3.0/rfa/requests", body=body, headers=headers)
         return BatchCreateAccessRequestsResponse.from_dict(res)
 
@@ -14709,6 +15138,10 @@ class RfaAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/3.0/rfa/destinations/{securable_type}/{full_name}", headers=headers)
         return AccessRequestDestinations.from_dict(res)
@@ -14752,6 +15185,10 @@ class RfaAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/3.0/rfa/destinations", query=query, body=body, headers=headers)
         return AccessRequestDestinations.from_dict(res)
@@ -14808,6 +15245,10 @@ class SchemasAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/schemas", body=body, headers=headers)
         return SchemaInfo.from_dict(res)
 
@@ -14830,6 +15271,10 @@ class SchemasAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
 
     def get(self, full_name: str, *, include_browse: Optional[bool] = None) -> SchemaInfo:
@@ -14851,6 +15296,10 @@ class SchemasAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/schemas/{full_name}", query=query, headers=headers)
         return SchemaInfo.from_dict(res)
@@ -14903,6 +15352,10 @@ class SchemasAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -14961,6 +15414,10 @@ class SchemasAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/schemas/{full_name}", body=body, headers=headers)
         return SchemaInfo.from_dict(res)
@@ -15047,6 +15504,10 @@ class StorageCredentialsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/storage-credentials", body=body, headers=headers)
         return StorageCredentialInfo.from_dict(res)
 
@@ -15070,6 +15531,10 @@ class StorageCredentialsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.1/unity-catalog/storage-credentials/{name}", query=query, headers=headers)
 
     def get(self, name: str) -> StorageCredentialInfo:
@@ -15085,6 +15550,10 @@ class StorageCredentialsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/storage-credentials/{name}", headers=headers)
         return StorageCredentialInfo.from_dict(res)
@@ -15133,6 +15602,10 @@ class StorageCredentialsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -15228,6 +15701,10 @@ class StorageCredentialsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/storage-credentials/{name}", body=body, headers=headers)
         return StorageCredentialInfo.from_dict(res)
 
@@ -15300,6 +15777,10 @@ class StorageCredentialsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/validate-storage-credentials", body=body, headers=headers)
         return ValidateStorageCredentialResponse.from_dict(res)
 
@@ -15327,6 +15808,10 @@ class SystemSchemasAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do(
             "DELETE", f"/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}", headers=headers
         )
@@ -15352,6 +15837,10 @@ class SystemSchemasAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "PUT",
@@ -15394,6 +15883,10 @@ class SystemSchemasAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -15451,6 +15944,10 @@ class TableConstraintsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/constraints", body=body, headers=headers)
         return TableConstraint.from_dict(res)
 
@@ -15483,6 +15980,10 @@ class TableConstraintsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/constraints/{full_name}", query=query, headers=headers)
 
@@ -15571,6 +16072,10 @@ class TablesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/tables", body=body, headers=headers)
         return TableInfo.from_dict(res)
 
@@ -15589,6 +16094,10 @@ class TablesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{full_name}", headers=headers)
 
@@ -15609,6 +16118,10 @@ class TablesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}/exists", headers=headers)
         return TableExistsResponse.from_dict(res)
@@ -15651,6 +16164,10 @@ class TablesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}", query=query, headers=headers)
         return TableInfo.from_dict(res)
 
@@ -15672,6 +16189,8 @@ class TablesAPI:
         latter case, the caller must also be the owner or have the **USE_CATALOG** privilege on the parent
         catalog and the **USE_SCHEMA** privilege on the parent schema. There is no guarantee of a specific
         ordering of the elements in the array.
+
+        NOTE: **view_dependencies** and **table_constraints** are not returned by ListTables queries.
 
         NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls
         will be deprecated soon.
@@ -15729,6 +16248,10 @@ class TablesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -15803,6 +16326,10 @@ class TablesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/table-summaries", query=query, headers=headers)
             if "tables" in json:
@@ -15833,6 +16360,10 @@ class TablesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{full_name}", body=body, headers=headers)
 
@@ -15900,6 +16431,10 @@ class TemporaryPathCredentialsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-path-credentials", body=body, headers=headers)
         return GenerateTemporaryPathCredentialResponse.from_dict(res)
 
@@ -15948,6 +16483,10 @@ class TemporaryTableCredentialsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/unity-catalog/temporary-table-credentials", body=body, headers=headers)
         return GenerateTemporaryTableCredentialResponse.from_dict(res)
@@ -16028,6 +16567,10 @@ class VolumesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/volumes", body=body, headers=headers)
         return VolumeInfo.from_dict(res)
 
@@ -16045,6 +16588,10 @@ class VolumesAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/volumes/{name}", headers=headers)
 
@@ -16112,6 +16659,10 @@ class VolumesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.1/unity-catalog/volumes", query=query, headers=headers)
             if "volumes" in json:
@@ -16143,6 +16694,10 @@ class VolumesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/volumes/{name}", query=query, headers=headers)
         return VolumeInfo.from_dict(res)
@@ -16182,6 +16737,10 @@ class VolumesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/volumes/{name}", body=body, headers=headers)
         return VolumeInfo.from_dict(res)
 
@@ -16218,6 +16777,10 @@ class WorkspaceBindingsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}", headers=headers)
         return GetCatalogWorkspaceBindingsResponse.from_dict(res)
@@ -16265,6 +16828,10 @@ class WorkspaceBindingsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
@@ -16311,6 +16878,10 @@ class WorkspaceBindingsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", f"/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}", body=body, headers=headers
         )
@@ -16351,6 +16922,10 @@ class WorkspaceBindingsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}", body=body, headers=headers

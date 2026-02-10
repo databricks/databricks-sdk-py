@@ -10,6 +10,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service import compute
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict)
@@ -720,6 +721,31 @@ class ClusterSpec:
 
 
 @dataclass
+class Compute:
+    hardware_accelerator: Optional[compute.HardwareAcceleratorType] = None
+    """Hardware accelerator configuration for Serverless GPU workloads."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Compute into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.hardware_accelerator is not None:
+            body["hardware_accelerator"] = self.hardware_accelerator.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Compute into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.hardware_accelerator is not None:
+            body["hardware_accelerator"] = self.hardware_accelerator
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Compute:
+        """Deserializes the Compute from a dictionary."""
+        return cls(hardware_accelerator=_enum(d, "hardware_accelerator", compute.HardwareAcceleratorType))
+
+
+@dataclass
 class ComputeConfig:
     num_gpus: int
     """Number of GPUs."""
@@ -987,6 +1013,16 @@ class DashboardTask:
     dashboard_id: Optional[str] = None
     """The identifier of the dashboard to refresh."""
 
+    filters: Optional[Dict[str, str]] = None
+    """Dashboard task parameters. Used to apply dashboard filter values during dashboard task
+    execution. Parameter values get applied to any dashboard filters that have a matching URL
+    identifier as the parameter key. The parameter value format is dependent on the filter type: -
+    For text and single-select filters, provide a single value (e.g. `"value"`) - For date and
+    datetime filters, provide the value in ISO 8601 format (e.g. `"2000-01-01T00:00:00"`) - For
+    multi-select filters, provide a JSON array of values (e.g. `"[\"value1\",\"value2\"]"`) - For
+    range and date range filters, provide a JSON object with `start` and `end` (e.g.
+    `"{\"start\":\"1\",\"end\":\"10\"}"`)"""
+
     subscription: Optional[Subscription] = None
     """Optional: subscription configuration for sending the dashboard snapshot."""
 
@@ -999,6 +1035,8 @@ class DashboardTask:
         body = {}
         if self.dashboard_id is not None:
             body["dashboard_id"] = self.dashboard_id
+        if self.filters:
+            body["filters"] = self.filters
         if self.subscription:
             body["subscription"] = self.subscription.as_dict()
         if self.warehouse_id is not None:
@@ -1010,6 +1048,8 @@ class DashboardTask:
         body = {}
         if self.dashboard_id is not None:
             body["dashboard_id"] = self.dashboard_id
+        if self.filters:
+            body["filters"] = self.filters
         if self.subscription:
             body["subscription"] = self.subscription
         if self.warehouse_id is not None:
@@ -1021,6 +1061,7 @@ class DashboardTask:
         """Deserializes the DashboardTask from a dictionary."""
         return cls(
             dashboard_id=d.get("dashboard_id", None),
+            filters=d.get("filters", None),
             subscription=_from_dict(d, "subscription", Subscription),
             warehouse_id=d.get("warehouse_id", None),
         )
@@ -2460,7 +2501,8 @@ class JobDeployment:
     kind: JobDeploymentKind
     """The kind of deployment that manages the job.
     
-    * `BUNDLE`: The job is managed by Databricks Asset Bundle."""
+    * `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is
+    managed by Databricks and is read-only."""
 
     metadata_file_path: Optional[str] = None
     """Path of the file that contains deployment metadata."""
@@ -2490,9 +2532,11 @@ class JobDeployment:
 
 
 class JobDeploymentKind(Enum):
-    """* `BUNDLE`: The job is managed by Databricks Asset Bundle."""
+    """* `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is
+    managed by Databricks and is read-only."""
 
     BUNDLE = "BUNDLE"
+    SYSTEM_MANAGED = "SYSTEM_MANAGED"
 
 
 class JobEditMode(Enum):
@@ -2854,6 +2898,10 @@ class JobRunAs:
 
     Either `user_name` or `service_principal_name` should be specified. If not, an error is thrown."""
 
+    group_name: Optional[str] = None
+    """Group name of an account group assigned to the workspace. Setting this field requires being a
+    member of the group."""
+
     service_principal_name: Optional[str] = None
     """Application ID of an active service principal. Setting this field requires the
     `servicePrincipal/user` role."""
@@ -2865,6 +2913,8 @@ class JobRunAs:
     def as_dict(self) -> dict:
         """Serializes the JobRunAs into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
@@ -2874,6 +2924,8 @@ class JobRunAs:
     def as_shallow_dict(self) -> dict:
         """Serializes the JobRunAs into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.group_name is not None:
+            body["group_name"] = self.group_name
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
         if self.user_name is not None:
@@ -2883,7 +2935,11 @@ class JobRunAs:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> JobRunAs:
         """Deserializes the JobRunAs from a dictionary."""
-        return cls(service_principal_name=d.get("service_principal_name", None), user_name=d.get("user_name", None))
+        return cls(
+            group_name=d.get("group_name", None),
+            service_principal_name=d.get("service_principal_name", None),
+            user_name=d.get("user_name", None),
+        )
 
 
 @dataclass
@@ -2915,10 +2971,10 @@ class JobSettings:
 
     environments: Optional[List[JobEnvironment]] = None
     """A list of task execution environment specifications that can be referenced by serverless tasks
-    of this job. An environment is required to be present for serverless tasks. For serverless
-    notebook tasks, the environment is accessible in the notebook environment panel. For other
-    serverless tasks, the task environment is required to be specified using environment_key in the
-    task settings."""
+    of this job. For serverless notebook tasks, if the environment_key is not specified, the
+    notebook environment will be used if present. If a jobs environment is specified, it will
+    override the notebook environment. For other serverless tasks, the task environment is required
+    to be specified using environment_key in the task settings."""
 
     format: Optional[Format] = None
     """Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls.
@@ -2963,7 +3019,8 @@ class JobSettings:
 
     performance_target: Optional[PerformanceTarget] = None
     """The performance mode on a serverless job. This field determines the level of compute performance
-    or cost-efficiency for the run.
+    or cost-efficiency for the run. The performance target does not apply to tasks that run on
+    Serverless GPU compute.
     
     * `STANDARD`: Enables cost-efficient execution of serverless workloads. *
     `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and
@@ -3458,6 +3515,78 @@ class ListRunsResponse:
             prev_page_token=d.get("prev_page_token", None),
             runs=_repeated_dict(d, "runs", BaseRun),
         )
+
+
+@dataclass
+class ModelTriggerConfiguration:
+    condition: ModelTriggerConfigurationCondition
+    """The condition based on which to trigger a job run."""
+
+    aliases: Optional[List[str]] = None
+    """Aliases of the model versions to monitor. Can only be used in conjunction with condition
+    MODEL_ALIAS_SET."""
+
+    min_time_between_triggers_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after the specified amount of time has passed since the
+    last time the trigger fired. The minimum allowed value is 60 seconds."""
+
+    securable_name: Optional[str] = None
+    """Name of the securable to monitor ("mycatalog.myschema.mymodel" in the case of model-level
+    triggers, "mycatalog.myschema" in the case of schema-level triggers) or empty in the case of
+    metastore-level triggers."""
+
+    wait_after_last_change_seconds: Optional[int] = None
+    """If set, the trigger starts a run only after no model updates have occurred for the specified
+    time and can be used to wait for a series of model updates before triggering a run. The minimum
+    allowed value is 60 seconds."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ModelTriggerConfiguration into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = [v for v in self.aliases]
+        if self.condition is not None:
+            body["condition"] = self.condition.value
+        if self.min_time_between_triggers_seconds is not None:
+            body["min_time_between_triggers_seconds"] = self.min_time_between_triggers_seconds
+        if self.securable_name is not None:
+            body["securable_name"] = self.securable_name
+        if self.wait_after_last_change_seconds is not None:
+            body["wait_after_last_change_seconds"] = self.wait_after_last_change_seconds
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ModelTriggerConfiguration into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.aliases:
+            body["aliases"] = self.aliases
+        if self.condition is not None:
+            body["condition"] = self.condition
+        if self.min_time_between_triggers_seconds is not None:
+            body["min_time_between_triggers_seconds"] = self.min_time_between_triggers_seconds
+        if self.securable_name is not None:
+            body["securable_name"] = self.securable_name
+        if self.wait_after_last_change_seconds is not None:
+            body["wait_after_last_change_seconds"] = self.wait_after_last_change_seconds
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ModelTriggerConfiguration:
+        """Deserializes the ModelTriggerConfiguration from a dictionary."""
+        return cls(
+            aliases=d.get("aliases", None),
+            condition=_enum(d, "condition", ModelTriggerConfigurationCondition),
+            min_time_between_triggers_seconds=d.get("min_time_between_triggers_seconds", None),
+            securable_name=d.get("securable_name", None),
+            wait_after_last_change_seconds=d.get("wait_after_last_change_seconds", None),
+        )
+
+
+class ModelTriggerConfigurationCondition(Enum):
+
+    MODEL_ALIAS_SET = "MODEL_ALIAS_SET"
+    MODEL_CREATED = "MODEL_CREATED"
+    MODEL_VERSION_READY = "MODEL_VERSION_READY"
 
 
 @dataclass
@@ -5599,6 +5728,9 @@ class RunTask:
     """The cluster used for this run. If the run is specified to use a new cluster, this field is set
     once the Jobs service has requested a cluster for the run."""
 
+    compute: Optional[Compute] = None
+    """Task level compute configuration."""
+
     condition_task: Optional[RunConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
     `condition_task` field is present. The condition task does not require a cluster to execute and
@@ -5772,6 +5904,8 @@ class RunTask:
             body["cleanup_duration"] = self.cleanup_duration
         if self.cluster_instance:
             body["cluster_instance"] = self.cluster_instance.as_dict()
+        if self.compute:
+            body["compute"] = self.compute.as_dict()
         if self.condition_task:
             body["condition_task"] = self.condition_task.as_dict()
         if self.dashboard_task:
@@ -5869,6 +6003,8 @@ class RunTask:
             body["cleanup_duration"] = self.cleanup_duration
         if self.cluster_instance:
             body["cluster_instance"] = self.cluster_instance
+        if self.compute:
+            body["compute"] = self.compute
         if self.condition_task:
             body["condition_task"] = self.condition_task
         if self.dashboard_task:
@@ -5963,6 +6099,7 @@ class RunTask:
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
             cleanup_duration=d.get("cleanup_duration", None),
             cluster_instance=_from_dict(d, "cluster_instance", ClusterInstance),
+            compute=_from_dict(d, "compute", Compute),
             condition_task=_from_dict(d, "condition_task", RunConditionTask),
             dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
             dbt_cloud_task=_from_dict(d, "dbt_cloud_task", DbtCloudTask),
@@ -6829,6 +6966,9 @@ class SubmitTask:
     
     [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
+    compute: Optional[Compute] = None
+    """Task level compute configuration."""
+
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
     `condition_task` field is present. The condition task does not require a cluster to execute and
@@ -6935,6 +7075,8 @@ class SubmitTask:
         body = {}
         if self.clean_rooms_notebook_task:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task.as_dict()
+        if self.compute:
+            body["compute"] = self.compute.as_dict()
         if self.condition_task:
             body["condition_task"] = self.condition_task.as_dict()
         if self.dashboard_task:
@@ -7000,6 +7142,8 @@ class SubmitTask:
         body = {}
         if self.clean_rooms_notebook_task:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task
+        if self.compute:
+            body["compute"] = self.compute
         if self.condition_task:
             body["condition_task"] = self.condition_task
         if self.dashboard_task:
@@ -7065,6 +7209,7 @@ class SubmitTask:
         """Deserializes the SubmitTask from a dictionary."""
         return cls(
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
+            compute=_from_dict(d, "compute", Compute),
             condition_task=_from_dict(d, "condition_task", ConditionTask),
             dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
             dbt_cloud_task=_from_dict(d, "dbt_cloud_task", DbtCloudTask),
@@ -7308,6 +7453,9 @@ class Task:
     
     [clean rooms]: https://docs.databricks.com/clean-rooms/index.html"""
 
+    compute: Optional[Compute] = None
+    """Task level compute configuration."""
+
     condition_task: Optional[ConditionTask] = None
     """The task evaluates a condition that can be used to control the execution of other tasks when the
     `condition_task` field is present. The condition task does not require a cluster to execute and
@@ -7443,6 +7591,8 @@ class Task:
         body = {}
         if self.clean_rooms_notebook_task:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task.as_dict()
+        if self.compute:
+            body["compute"] = self.compute.as_dict()
         if self.condition_task:
             body["condition_task"] = self.condition_task.as_dict()
         if self.dashboard_task:
@@ -7520,6 +7670,8 @@ class Task:
         body = {}
         if self.clean_rooms_notebook_task:
             body["clean_rooms_notebook_task"] = self.clean_rooms_notebook_task
+        if self.compute:
+            body["compute"] = self.compute
         if self.condition_task:
             body["condition_task"] = self.condition_task
         if self.dashboard_task:
@@ -7597,6 +7749,7 @@ class Task:
         """Deserializes the Task from a dictionary."""
         return cls(
             clean_rooms_notebook_task=_from_dict(d, "clean_rooms_notebook_task", CleanRoomsNotebookTask),
+            compute=_from_dict(d, "compute", Compute),
             condition_task=_from_dict(d, "condition_task", ConditionTask),
             dashboard_task=_from_dict(d, "dashboard_task", DashboardTask),
             dbt_cloud_task=_from_dict(d, "dbt_cloud_task", DbtCloudTask),
@@ -7963,6 +8116,8 @@ class TriggerSettings:
     file_arrival: Optional[FileArrivalTriggerConfiguration] = None
     """File arrival trigger settings."""
 
+    model: Optional[ModelTriggerConfiguration] = None
+
     pause_status: Optional[PauseStatus] = None
     """Whether this trigger is paused or not."""
 
@@ -7976,6 +8131,8 @@ class TriggerSettings:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival.as_dict()
+        if self.model:
+            body["model"] = self.model.as_dict()
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status.value
         if self.periodic:
@@ -7989,6 +8146,8 @@ class TriggerSettings:
         body = {}
         if self.file_arrival:
             body["file_arrival"] = self.file_arrival
+        if self.model:
+            body["model"] = self.model
         if self.pause_status is not None:
             body["pause_status"] = self.pause_status
         if self.periodic:
@@ -8002,6 +8161,7 @@ class TriggerSettings:
         """Deserializes the TriggerSettings from a dictionary."""
         return cls(
             file_arrival=_from_dict(d, "file_arrival", FileArrivalTriggerConfiguration),
+            model=_from_dict(d, "model", ModelTriggerConfiguration),
             pause_status=_enum(d, "pause_status", PauseStatus),
             periodic=_from_dict(d, "periodic", PeriodicTriggerConfiguration),
             table_update=_from_dict(d, "table_update", TableUpdateTriggerConfiguration),
@@ -8246,7 +8406,7 @@ class JobsAPI:
     scalable resources. Your job can consist of a single task or can be a large, multi-task workflow with
     complex dependencies. Databricks manages the task orchestration, cluster management, monitoring, and error
     reporting for all of your jobs. You can run your jobs immediately or periodically through an easy-to-use
-    scheduling system. You can implement job tasks using notebooks, JARS, Delta Live Tables pipelines, or
+    scheduling system. You can implement job tasks using notebooks, JARS, Spark Declarative Pipelines, or
     Python, Scala, Spark submit, and Java applications.
 
     You should never hard code secrets or store them in plain text. Use the [Secrets CLI] to manage secrets in
@@ -8315,6 +8475,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.2/jobs/runs/cancel-all", body=body, headers=headers)
 
     def cancel_run(self, run_id: int) -> Wait[Run]:
@@ -8335,6 +8499,10 @@ class JobsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", "/api/2.2/jobs/runs/cancel", body=body, headers=headers)
         return Wait(self.wait_get_run_job_terminated_or_skipped, run_id=run_id)
@@ -8397,9 +8565,10 @@ class JobsAPI:
           as when this job is deleted.
         :param environments: List[:class:`JobEnvironment`] (optional)
           A list of task execution environment specifications that can be referenced by serverless tasks of
-          this job. An environment is required to be present for serverless tasks. For serverless notebook
-          tasks, the environment is accessible in the notebook environment panel. For other serverless tasks,
-          the task environment is required to be specified using environment_key in the task settings.
+          this job. For serverless notebook tasks, if the environment_key is not specified, the notebook
+          environment will be used if present. If a jobs environment is specified, it will override the
+          notebook environment. For other serverless tasks, the task environment is required to be specified
+          using environment_key in the task settings.
         :param format: :class:`Format` (optional)
           Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When
           using the Jobs API 2.1 this value is always set to `"MULTI_TASK"`.
@@ -8434,7 +8603,8 @@ class JobsAPI:
           Job-level parameter definitions
         :param performance_target: :class:`PerformanceTarget` (optional)
           The performance mode on a serverless job. This field determines the level of compute performance or
-          cost-efficiency for the run.
+          cost-efficiency for the run. The performance target does not apply to tasks that run on Serverless
+          GPU compute.
 
           * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`:
           Prioritizes fast startup and execution times through rapid scaling and optimized cluster
@@ -8532,6 +8702,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.2/jobs/create", body=body, headers=headers)
         return CreateResponse.from_dict(res)
 
@@ -8551,6 +8725,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.2/jobs/delete", body=body, headers=headers)
 
     def delete_run(self, run_id: int):
@@ -8568,6 +8746,10 @@ class JobsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.2/jobs/runs/delete", body=body, headers=headers)
 
@@ -8590,6 +8772,10 @@ class JobsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.2/jobs/runs/export", query=query, headers=headers)
         return ExportRunOutput.from_dict(res)
@@ -8622,6 +8808,10 @@ class JobsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.2/jobs/get", query=query, headers=headers)
         return Job.from_dict(res)
 
@@ -8638,6 +8828,10 @@ class JobsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/jobs/{job_id}/permissionLevels", headers=headers)
         return GetJobPermissionLevelsResponse.from_dict(res)
 
@@ -8653,6 +8847,10 @@ class JobsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/jobs/{job_id}", headers=headers)
         return JobPermissions.from_dict(res)
@@ -8700,6 +8898,10 @@ class JobsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.2/jobs/runs/get", query=query, headers=headers)
         return Run.from_dict(res)
 
@@ -8725,6 +8927,10 @@ class JobsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.2/jobs/runs/get-output", query=query, headers=headers)
         return RunOutput.from_dict(res)
@@ -8772,6 +8978,10 @@ class JobsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.2/jobs/list", query=query, headers=headers)
@@ -8855,6 +9065,10 @@ class JobsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.2/jobs/runs/list", query=query, headers=headers)
@@ -9025,6 +9239,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.2/jobs/runs/repair", body=body, headers=headers)
         return Wait(
             self.wait_get_run_job_terminated_or_skipped,
@@ -9093,6 +9311,10 @@ class JobsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.2/jobs/reset", body=body, headers=headers)
 
@@ -9260,6 +9482,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.2/jobs/run-now", body=body, headers=headers)
         return Wait(
             self.wait_get_run_job_terminated_or_skipped,
@@ -9324,6 +9550,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PUT", f"/api/2.0/permissions/jobs/{job_id}", body=body, headers=headers)
         return JobPermissions.from_dict(res)
 
@@ -9349,6 +9579,12 @@ class JobsAPI:
         """Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.
         Runs submitted using this endpoint don’t display in the UI. Use the `jobs/runs/get` API to check the
         run state after the job is submitted.
+
+        **Important:** Jobs submitted using this endpoint are not saved as a job. They do not show up in the
+        Jobs UI, and do not retry when they fail. Because they are not saved, Databricks cannot auto-optimize
+        serverless compute in case of failure. If your job fails, you may want to use classic compute to
+        specify the compute needs for the job. Alternatively, use the `POST /jobs/create` and `POST
+        /jobs/run-now` endpoints to create and run a saved job.
 
         :param access_control_list: List[:class:`JobAccessControlRequest`] (optional)
           List of permissions to set on the job.
@@ -9442,6 +9678,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.2/jobs/runs/submit", body=body, headers=headers)
         return Wait(
             self.wait_get_run_job_terminated_or_skipped,
@@ -9524,6 +9764,10 @@ class JobsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.2/jobs/update", body=body, headers=headers)
 
     def update_permissions(
@@ -9545,6 +9789,10 @@ class JobsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/jobs/{job_id}", body=body, headers=headers)
         return JobPermissions.from_dict(res)
@@ -9590,6 +9838,10 @@ class PolicyComplianceForJobsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/policies/jobs/enforce-compliance", body=body, headers=headers)
         return EnforcePolicyComplianceResponse.from_dict(res)
 
@@ -9610,6 +9862,10 @@ class PolicyComplianceForJobsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/policies/jobs/get-compliance", query=query, headers=headers)
         return GetPolicyComplianceResponse.from_dict(res)
@@ -9643,6 +9899,10 @@ class PolicyComplianceForJobsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/policies/jobs/list-compliance", query=query, headers=headers)

@@ -93,11 +93,28 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
+
 .. autoclass:: IntegerMessage
    :members:
    :undoc-members:
 
 .. autoclass:: ListAccountSettingsMetadataResponse
+   :members:
+   :undoc-members:
+
+.. autoclass:: ListAccountUserPreferencesMetadataResponse
    :members:
    :undoc-members:
 
@@ -140,5 +157,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: StringMessage
+   :members:
+   :undoc-members:
+
+.. autoclass:: UserPreference
    :members:
    :undoc-members:

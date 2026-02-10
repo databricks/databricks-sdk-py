@@ -279,7 +279,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: ConnectionType
 
-   Next Id: 47
+   Next Id: 72
 
    .. py:attribute:: BIGQUERY
       :value: "BIGQUERY"
@@ -304,9 +304,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ORACLE
       :value: "ORACLE"
-
-   .. py:attribute:: PALANTIR
-      :value: "PALANTIR"
 
    .. py:attribute:: POSTGRESQL
       :value: "POSTGRESQL"
@@ -423,7 +420,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   Next Id: 14
+   Next Id: 15
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
@@ -460,6 +457,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SERVICE_CREDENTIAL
       :value: "SERVICE_CREDENTIAL"
+
+   .. py:attribute:: SSWS_TOKEN
+      :value: "SSWS_TOKEN"
 
    .. py:attribute:: UNKNOWN_CREDENTIAL_TYPE
       :value: "UNKNOWN_CREDENTIAL_TYPE"
@@ -862,6 +862,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: GetWorkspaceBindingsResponse
    :members:
    :undoc-members:
+
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
 
 .. py:class:: IsolationMode
 
@@ -1500,7 +1513,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_AWS_SECRETS_MANAGER = 270; Next id:271
+   Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -1513,6 +1526,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_DELTASHARING_MUTABLE
       :value: "TABLE_DELTASHARING_MUTABLE"
+
+   .. py:attribute:: TABLE_DELTASHARING_OPEN_DIR_BASED
+      :value: "TABLE_DELTASHARING_OPEN_DIR_BASED"
 
    .. py:attribute:: TABLE_DELTA_EXTERNAL
       :value: "TABLE_DELTA_EXTERNAL"
@@ -1603,9 +1619,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: TABLE_FOREIGN_ORACLE
       :value: "TABLE_FOREIGN_ORACLE"
-
-   .. py:attribute:: TABLE_FOREIGN_PALANTIR
-      :value: "TABLE_FOREIGN_PALANTIR"
 
    .. py:attribute:: TABLE_FOREIGN_POSTGRESQL
       :value: "TABLE_FOREIGN_POSTGRESQL"

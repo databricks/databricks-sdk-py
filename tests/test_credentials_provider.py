@@ -1,7 +1,11 @@
 from datetime import datetime, timedelta
 from unittest.mock import Mock
 
+import pytest
+
 from databricks.sdk import credentials_provider, oauth, oidc
+from databricks.sdk.client_types import ClientType
+from databricks.sdk.config import Config
 
 
 # Tests for external_browser function
@@ -174,6 +178,54 @@ def test_external_browser_consent_fails(mocker):
     assert got_credentials_provider is None
 
 
+def _setup_external_browser_mocks(mocker, cfg):
+    """Set up mocks for external_browser scope tests. Returns (TokenCache mock, OAuthClient mock)."""
+    mock_oidc_endpoints = Mock()
+    mock_oidc_endpoints.token_endpoint = "https://test.databricks.com/oidc/v1/token"
+    mocker.patch.object(type(cfg), "oidc_endpoints", new_callable=lambda: property(lambda self: mock_oidc_endpoints))
+
+    mock_token_cache_class = mocker.patch("databricks.sdk.credentials_provider.oauth.TokenCache")
+    mock_token_cache = Mock()
+    mock_token_cache.load.return_value = None
+    mock_token_cache_class.return_value = mock_token_cache
+
+    mock_oauth_client_class = mocker.patch("databricks.sdk.credentials_provider.oauth.OAuthClient")
+    mock_oauth_client = Mock()
+    mock_consent = Mock()
+    mock_consent.launch_external_browser.return_value = Mock()
+    mock_oauth_client.initiate_consent.return_value = mock_consent
+    mock_oauth_client_class.return_value = mock_oauth_client
+
+    return mock_token_cache_class, mock_oauth_client_class
+
+
+@pytest.mark.parametrize(
+    "scopes,disable_refresh,expected_scopes",
+    [
+        (None, False, ["all-apis", "offline_access"]),
+        ("sql, clusters, jobs", False, ["clusters", "jobs", "sql", "offline_access"]),
+        (None, True, ["all-apis"]),
+        ("sql, clusters, jobs, offline_access", False, ["clusters", "jobs", "offline_access", "sql"]),
+    ],
+    ids=["default_scopes", "multiple_scopes_sorted", "disable_offline_access", "offline_access_not_duplicated"],
+)
+def test_external_browser_scopes(mocker, scopes, disable_refresh, expected_scopes):
+    """Tests that external_browser passes correct scopes to TokenCache and OAuthClient."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    cfg = Config(
+        host="https://test.databricks.com",
+        auth_type="external-browser",
+        scopes=scopes,
+        disable_oauth_refresh_token=disable_refresh if disable_refresh else None,
+    )
+    mock_token_cache_class, mock_oauth_client_class = _setup_external_browser_mocks(mocker, cfg)
+
+    credentials_provider.external_browser(cfg)
+
+    assert mock_token_cache_class.call_args.kwargs["scopes"] == expected_scopes
+    assert mock_oauth_client_class.call_args.kwargs["scopes"] == expected_scopes
+
+
 def test_oidc_credentials_provider_invalid_id_token_source():
     # Use a mock config object to avoid initializing the auth initialization.
     mock_cfg = Mock()
@@ -222,3 +274,94 @@ def test_oidc_credentials_provider_valid_id_token_source(mocker):
     # Test that the credentials provider returns the expected headers
     headers = cp()
     assert headers == {"Authorization": "Bearer exchanged-test-jwt-token"}
+
+
+# Tests for DatabricksCliTokenSource CLI argument construction
+class TestDatabricksCliTokenSourceArgs:
+    """Tests that DatabricksCliTokenSource constructs correct CLI arguments."""
+
+    def test_unified_host_passes_all_flags(self, mocker):
+        """Unified host should pass --experimental-is-unified-host, --account-id, and --workspace-id."""
+        # Mock the parent class __init__ to capture the command arguments
+        mock_init = mocker.patch.object(
+            credentials_provider.CliTokenSource,
+            "__init__",
+            return_value=None,
+        )
+
+        mock_cfg = Mock()
+        mock_cfg.host = "https://example.databricks.com"
+        mock_cfg.experimental_is_unified_host = True
+        mock_cfg.account_id = "test-account-id"
+        mock_cfg.workspace_id = 12345
+        mock_cfg.databricks_cli_path = "/path/to/databricks"
+        mock_cfg.disable_async_token_refresh = False
+
+        credentials_provider.DatabricksCliTokenSource(mock_cfg)
+
+        # Verify the command was constructed correctly
+        call_kwargs = mock_init.call_args
+        cmd = call_kwargs.kwargs["cmd"]
+
+        assert cmd[0] == "/path/to/databricks"
+        assert "auth" in cmd
+        assert "token" in cmd
+        assert "--host" in cmd
+        assert "https://example.databricks.com" in cmd
+        assert "--experimental-is-unified-host" in cmd
+        assert "--account-id" in cmd
+        assert "test-account-id" in cmd
+        assert "--workspace-id" in cmd
+        assert "12345" in cmd
+
+    def test_unified_host_without_workspace_id(self, mocker):
+        """Unified host without workspace_id should only pass --experimental-is-unified-host and --account-id."""
+        mock_init = mocker.patch.object(
+            credentials_provider.CliTokenSource,
+            "__init__",
+            return_value=None,
+        )
+
+        mock_cfg = Mock()
+        mock_cfg.host = "https://example.databricks.com"
+        mock_cfg.experimental_is_unified_host = True
+        mock_cfg.account_id = "test-account-id"
+        mock_cfg.workspace_id = None
+        mock_cfg.databricks_cli_path = "/path/to/databricks"
+        mock_cfg.disable_async_token_refresh = False
+
+        credentials_provider.DatabricksCliTokenSource(mock_cfg)
+
+        call_kwargs = mock_init.call_args
+        cmd = call_kwargs.kwargs["cmd"]
+
+        assert "--experimental-is-unified-host" in cmd
+        assert "--account-id" in cmd
+        assert "test-account-id" in cmd
+        assert "--workspace-id" not in cmd
+
+    def test_account_client_passes_account_id(self, mocker):
+        """Non-unified account client should pass --account-id."""
+        mock_init = mocker.patch.object(
+            credentials_provider.CliTokenSource,
+            "__init__",
+            return_value=None,
+        )
+
+        mock_cfg = Mock()
+        mock_cfg.host = "https://accounts.cloud.databricks.com"
+        mock_cfg.experimental_is_unified_host = False
+        mock_cfg.account_id = "test-account-id"
+        mock_cfg.client_type = ClientType.ACCOUNT
+        mock_cfg.databricks_cli_path = "/path/to/databricks"
+        mock_cfg.disable_async_token_refresh = False
+
+        credentials_provider.DatabricksCliTokenSource(mock_cfg)
+
+        call_kwargs = mock_init.call_args
+        cmd = call_kwargs.kwargs["cmd"]
+
+        assert "--experimental-is-unified-host" not in cmd
+        assert "--account-id" in cmd
+        assert "test-account-id" in cmd
+        assert "--workspace-id" not in cmd

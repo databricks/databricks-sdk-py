@@ -100,6 +100,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DATA_PROFILING_STATUS_PENDING
       :value: "DATA_PROFILING_STATUS_PENDING"
 
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
+
 .. autoclass:: InferenceLogConfig
    :members:
    :undoc-members:

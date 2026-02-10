@@ -58,15 +58,16 @@
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location.
+          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          disable file events.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
-          of the documented properties.
+          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
+          one of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -140,10 +141,11 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
+            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            all = w.external_locations.list()
+            all = w.external_locations.list(catalog.ListExternalLocationsRequest())
 
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
@@ -220,15 +222,16 @@
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location.
+          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          disable file events.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
-          of the documented properties.
+          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
+          one of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)

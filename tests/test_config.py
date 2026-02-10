@@ -4,14 +4,17 @@ import platform
 import random
 import string
 from datetime import datetime
+from typing import Optional
+from urllib.parse import parse_qs
 
 import pytest
 
-from databricks.sdk import oauth, useragent
-from databricks.sdk.config import Config, with_product, with_user_agent_extra
+from databricks.sdk import AccountClient, WorkspaceClient, oauth, useragent
+from databricks.sdk.config import (ClientType, Config, HostType, with_product,
+                                   with_user_agent_extra)
 from databricks.sdk.version import __version__
 
-from .conftest import noop_credentials, set_az_path
+from .conftest import noop_credentials, set_az_path, set_home
 
 __tests__ = os.path.dirname(__file__)
 
@@ -260,3 +263,384 @@ def test_oauth_token_reuses_existing_provider(mocker):
     # Both calls should work and use the same provider instance
     assert token1 == token2 == mock_token
     assert mock_oauth_provider.oauth_token.call_count == 2
+
+
+def test_host_type_workspace():
+    """Test that a regular workspace host is identified correctly."""
+    config = Config(host="https://test.databricks.com", token="test-token")
+    assert config.host_type == HostType.WORKSPACE
+
+
+def test_host_type_accounts():
+    """Test that an accounts host is identified correctly."""
+    config = Config(host="https://accounts.cloud.databricks.com", account_id="test-account", token="test-token")
+    assert config.host_type == HostType.ACCOUNTS
+
+
+def test_host_type_accounts_dod():
+    """Test that an accounts-dod host is identified correctly."""
+    config = Config(host="https://accounts-dod.cloud.databricks.us", account_id="test-account", token="test-token")
+    assert config.host_type == HostType.ACCOUNTS
+
+
+def test_host_type_unified():
+    """Test that a unified host is identified when experimental flag is set."""
+    config = Config(
+        host="https://unified.databricks.com",
+        workspace_id="test-workspace",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+    assert config.host_type == HostType.UNIFIED
+
+
+def test_client_type_workspace():
+    """Test that client type is workspace when workspace_id is set on unified host."""
+    config = Config(
+        host="https://unified.databricks.com",
+        workspace_id="test-workspace",
+        account_id="test-account",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+    assert config.client_type == ClientType.WORKSPACE
+
+
+def test_client_type_account():
+    """Test that client type is account when account_id is set without workspace_id."""
+    config = Config(
+        host="https://unified.databricks.com",
+        account_id="test-account",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+    assert config.client_type == ClientType.ACCOUNT
+
+
+def test_client_type_workspace_default():
+    """Test that client type defaults to workspace."""
+    config = Config(host="https://test.databricks.com", token="test-token")
+    assert config.client_type == ClientType.WORKSPACE
+
+
+def test_client_type_accounts_host():
+    """Test that client type is account for accounts host."""
+    config = Config(
+        host="https://accounts.cloud.databricks.com",
+        account_id="test-account",
+        token="test-token",
+    )
+    assert config.client_type == ClientType.ACCOUNT
+
+
+def test_client_type_unified_without_account_id():
+    """Test that client type raises error for unified host without account_id."""
+    config = Config(
+        host="https://unified.databricks.com",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+    with pytest.raises(ValueError, match="Unified host requires account_id"):
+        _ = config.client_type
+
+
+def test_is_account_client_backward_compatibility():
+    """Test that is_account_client property still works for backward compatibility."""
+    config_workspace = Config(host="https://test.databricks.com", token="test-token")
+    assert not config_workspace.is_account_client
+
+    config_account = Config(host="https://accounts.cloud.databricks.com", account_id="test-account", token="test-token")
+    assert config_account.is_account_client
+
+
+def test_is_account_client_raises_on_unified_host():
+    """Test that is_account_client raises ValueError when used with unified hosts."""
+    config = Config(
+        host="https://unified.databricks.com",
+        experimental_is_unified_host=True,
+        workspace_id="test-workspace",
+        token="test-token",
+    )
+    with pytest.raises(ValueError, match="is_account_client cannot be used with unified hosts"):
+        _ = config.is_account_client
+
+
+def test_oidc_endpoints_unified_workspace(mocker, requests_mock):
+    """Test that oidc_endpoints returns unified endpoints for workspace on unified host."""
+    requests_mock.get(
+        "https://unified.databricks.com/oidc/accounts/test-account/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://unified.databricks.com/oidc/accounts/test-account/v1/authorize",
+            "token_endpoint": "https://unified.databricks.com/oidc/accounts/test-account/v1/token",
+        },
+    )
+
+    config = Config(
+        host="https://unified.databricks.com",
+        workspace_id="test-workspace",
+        account_id="test-account",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    endpoints = config.oidc_endpoints
+    assert endpoints is not None
+    assert "accounts/test-account" in endpoints.authorization_endpoint
+    assert "accounts/test-account" in endpoints.token_endpoint
+
+
+def test_oidc_endpoints_unified_account(mocker, requests_mock):
+    """Test that oidc_endpoints returns account endpoints for account on unified host."""
+    requests_mock.get(
+        "https://unified.databricks.com/oidc/accounts/test-account/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://unified.databricks.com/oidc/accounts/test-account/v1/authorize",
+            "token_endpoint": "https://unified.databricks.com/oidc/accounts/test-account/v1/token",
+        },
+    )
+
+    config = Config(
+        host="https://unified.databricks.com",
+        account_id="test-account",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    endpoints = config.oidc_endpoints
+    assert endpoints is not None
+    assert "accounts/test-account" in endpoints.authorization_endpoint
+    assert "accounts/test-account" in endpoints.token_endpoint
+
+
+def test_oidc_endpoints_unified_missing_ids():
+    """Test that oidc_endpoints raises error when unified host lacks required account_id."""
+    config = Config(host="https://unified.databricks.com", experimental_is_unified_host=True, token="test-token")
+
+    with pytest.raises(ValueError) as exc_info:
+        _ = config.oidc_endpoints
+
+    assert "Unified host requires account_id" in str(exc_info.value)
+
+
+def test_workspace_org_id_header_on_unified_host(requests_mock):
+    """Test that X-Databricks-Org-Id header is added for workspace clients on unified hosts."""
+
+    requests_mock.get("https://unified.databricks.com/api/2.0/preview/scim/v2/Me", json={"result": "success"})
+
+    config = Config(
+        host="https://unified.databricks.com",
+        account_id="test-account",
+        workspace_id="test-workspace-123",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    workspace_client = WorkspaceClient(config=config)
+    workspace_client.current_user.me()
+
+    # Verify the request was made with the X-Databricks-Org-Id header
+    assert requests_mock.last_request.headers.get("X-Databricks-Org-Id") == "test-workspace-123"
+
+
+def test_not_workspace_org_id_header_on_unified_host_on_account_endpoint(requests_mock):
+    """Test that X-Databricks-Org-Id header is added for workspace clients on unified hosts."""
+
+    requests_mock.get(
+        "https://unified.databricks.com/api/2.0/accounts/test-account/scim/v2/Groups/test-group-123",
+        json={"result": "success"},
+    )
+
+    config = Config(
+        host="https://unified.databricks.com",
+        account_id="test-account",
+        workspace_id="test-workspace-123",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    account_client = AccountClient(config=config)
+    account_client.groups.get("test-group-123")
+
+    # Verify the request was made without the X-Databricks-Org-Id header
+    assert "X-Databricks-Org-Id" not in requests_mock.last_request.headers
+
+
+def test_no_org_id_header_on_regular_workspace(requests_mock):
+    """Test that X-Databricks-Org-Id header is NOT added for regular workspace hosts."""
+    from databricks.sdk.core import ApiClient
+
+    requests_mock.get("https://test.databricks.com/api/2.0/test", json={"result": "success"})
+
+    config = Config(host="https://test.databricks.com", token="test-token")
+
+    api_client = ApiClient(config)
+    api_client.do("GET", "/api/2.0/test")
+
+    # Verify the X-Databricks-Org-Id header was NOT added
+    assert "X-Databricks-Org-Id" not in requests_mock.last_request.headers
+
+
+def test_disable_oauth_refresh_token_from_env(monkeypatch, mocker):
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    monkeypatch.setenv("DATABRICKS_DISABLE_OAUTH_REFRESH_TOKEN", "true")
+    config = Config(host="https://test.databricks.com")
+    assert config.disable_oauth_refresh_token is True
+
+
+def test_disable_oauth_refresh_token_defaults_to_false(mocker):
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    config = Config(host="https://test.databricks.com")
+    assert not config.disable_oauth_refresh_token
+
+
+@pytest.mark.parametrize(
+    "profile,expected_scopes",
+    [
+        ("scope-empty", ["all-apis"]),
+        ("scope-single", ["clusters"]),
+        ("scope-multiple", ["clusters", "files:read", "iam:read", "jobs", "mlflow", "model-serving:read", "pipelines"]),
+    ],
+    ids=["empty_defaults_to_all_apis", "single_scope", "multiple_sorted"],
+)
+def test_config_file_scopes(monkeypatch, mocker, profile, expected_scopes):
+    """Test scopes from config file profiles."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    set_home(monkeypatch, "/testdata")
+    config = Config(profile=profile)
+    assert config.get_scopes() == expected_scopes
+
+
+@pytest.mark.parametrize(
+    "scopes_input,expected_scopes",
+    [
+        # List input
+        (["jobs", "clusters", "mlflow"], ["clusters", "jobs", "mlflow"]),
+        # Deduplication (list)
+        (["clusters", "jobs", "clusters", "jobs", "mlflow"], ["clusters", "jobs", "mlflow"]),
+        # Deduplication (string)
+        ("clusters,jobs,clusters,jobs,mlflow", ["clusters", "jobs", "mlflow"]),
+        # Space-separated (backwards compatibility)
+        ("clusters jobs mlflow", ["clusters", "jobs", "mlflow"]),
+        # Mixed separators
+        ("clusters, jobs  mlflow,pipelines", ["clusters", "jobs", "mlflow", "pipelines"]),
+        # Empty string defaults to all-apis
+        ("", ["all-apis"]),
+        # Whitespace-only defaults to all-apis
+        ("   ", ["all-apis"]),
+        # None defaults to all-apis
+        (None, ["all-apis"]),
+        # Empty list defaults to all-apis
+        ([], ["all-apis"]),
+        # Empty strings in list are filtered
+        (["clusters", "", "jobs", ""], ["clusters", "jobs"]),
+        # List with only empty strings defaults to all-apis
+        (["", "", ""], ["all-apis"]),
+    ],
+    ids=[
+        "list_input",
+        "deduplication_list",
+        "deduplication_string",
+        "space_separated",
+        "mixed_separators",
+        "empty_string",
+        "whitespace_only",
+        "none",
+        "empty_list",
+        "list_with_empty_strings",
+        "list_only_empty_strings",
+    ],
+)
+def test_scopes_parsing(mocker, scopes_input, expected_scopes):
+    """Test scopes parsing with various input formats."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    config = Config(host="https://test.databricks.com", scopes=scopes_input)
+    assert config.get_scopes() == expected_scopes
+
+
+def test_config_file_scopes_multiple_sorted(monkeypatch, mocker):
+    """Test multiple scopes from config file are sorted."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+    set_home(monkeypatch, "/testdata")
+    config = Config(profile="scope-multiple")
+    # Should be sorted alphabetically
+    expected = ["clusters", "files:read", "iam:read", "jobs", "mlflow", "model-serving:read", "pipelines"]
+    assert config.get_scopes() == expected
+
+
+def _get_scope_from_request(request_text: str) -> Optional[str]:
+    """Extract the scope value from a URL-encoded request body."""
+    params = parse_qs(request_text)
+    scope_list = params.get("scope")
+    return scope_list[0] if scope_list else None
+
+
+@pytest.mark.parametrize(
+    "scopes_input,expected_scope",
+    [
+        (None, "all-apis"),
+        (["unity-catalog:read"], "unity-catalog:read"),
+        (["jobs:read", "clusters", "mlflow:read"], "clusters jobs:read mlflow:read"),
+    ],
+    ids=["default_scope", "single_custom_scope", "multiple_scopes_sorted"],
+)
+def test_m2m_scopes_sent_to_token_endpoint(requests_mock, scopes_input, expected_scope):
+    """Test M2M authentication sends correct scopes to token endpoint."""
+    requests_mock.get(
+        "https://test.databricks.com/oidc/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://test.databricks.com/oidc/v1/authorize",
+            "token_endpoint": "https://test.databricks.com/oidc/v1/token",
+        },
+    )
+    token_mock = requests_mock.post(
+        "https://test.databricks.com/oidc/v1/token",
+        json={"access_token": "test-token", "token_type": "Bearer", "expires_in": 3600},
+    )
+
+    config = Config(
+        host="https://test.databricks.com",
+        client_id="test-client-id",
+        client_secret="test-client-secret",
+        auth_type="oauth-m2m",
+        scopes=scopes_input,
+    )
+    config.authenticate()
+
+    assert _get_scope_from_request(token_mock.last_request.text) == expected_scope
+
+
+@pytest.mark.parametrize(
+    "scopes_input,expected_scope",
+    [
+        (None, "all-apis"),
+        (["unity-catalog:read", "clusters"], "clusters unity-catalog:read"),
+        (["jobs:read"], "jobs:read"),
+    ],
+    ids=["default_scope", "multiple_scopes", "single_scope"],
+)
+def test_oidc_scopes_sent_to_token_endpoint(requests_mock, tmp_path, scopes_input, expected_scope):
+    """Test OIDC token exchange sends correct scopes to token endpoint."""
+    oidc_token_file = tmp_path / "oidc_token"
+    oidc_token_file.write_text("mock-id-token")
+
+    requests_mock.get(
+        "https://test.databricks.com/oidc/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://test.databricks.com/oidc/v1/authorize",
+            "token_endpoint": "https://test.databricks.com/oidc/v1/token",
+        },
+    )
+    token_mock = requests_mock.post(
+        "https://test.databricks.com/oidc/v1/token",
+        json={"access_token": "test-token", "token_type": "Bearer", "expires_in": 3600},
+    )
+
+    config = Config(
+        host="https://test.databricks.com",
+        oidc_token_filepath=str(oidc_token_file),
+        auth_type="file-oidc",
+        scopes=scopes_input,
+    )
+    config.authenticate()
+
+    assert _get_scope_from_request(token_mock.last_request.text) == expected_scope

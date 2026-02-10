@@ -247,7 +247,9 @@ class Refreshable(TokenSource):
 
     _EXECUTOR = None
     _EXECUTOR_LOCK = threading.Lock()
-    _DEFAULT_STALE_DURATION = timedelta(minutes=3)
+    # Default duration for the stale period. This value is chosen to cover the
+    # maximum monthly downtime allowed by a 99.99% uptime SLA (~4.38 minutes).
+    _DEFAULT_STALE_DURATION = timedelta(minutes=5)
 
     @classmethod
     def _get_executor(cls):
@@ -414,6 +416,19 @@ def get_workspace_endpoints(host: str, client: _BaseClient = _BaseClient()) -> O
     """
     host = _fix_host_if_needed(host)
     oidc = f"{host}/oidc/.well-known/oauth-authorization-server"
+    resp = client.do("GET", oidc)
+    return OidcEndpoints.from_dict(resp)
+
+
+def get_unified_endpoints(host: str, account_id: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
+    """
+    Get the OIDC endpoints for a unified host.
+    :param host: The Databricks unified host.
+    :param account_id: The account ID.
+    :return: The OIDC endpoints for the unified host.
+    """
+    host = _fix_host_if_needed(host)
+    oidc = f"{host}/oidc/accounts/{account_id}/.well-known/oauth-authorization-server"
     resp = client.do("GET", oidc)
     return OidcEndpoints.from_dict(resp)
 
@@ -648,10 +663,10 @@ class OAuthClient:
         client_secret: str = None,
     ):
         if not scopes:
-            # all-apis ensures that the returned OAuth token can be used with all APIs, aside
-            # from direct-to-dataplane APIs.
-            # offline_access ensures that the response from the Authorization server includes
-            # a refresh token.
+            # Default for direct OAuthClient users (e.g., via from_host()).
+            # When used via credentials_provider.external_browser(), scopes are always
+            # passed explicitly from Config.get_scopes(), with offline_access handling
+            # controlled by the disable_oauth_refresh_token flag.
             scopes = ["all-apis", "offline_access"]
 
         self.redirect_url = redirect_url

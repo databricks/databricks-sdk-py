@@ -54,6 +54,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AppManifestAppResourceExperimentSpec
+   :members:
+   :undoc-members:
+
+.. py:class:: AppManifestAppResourceExperimentSpecExperimentPermission
+
+   .. py:attribute:: CAN_EDIT
+      :value: "CAN_EDIT"
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_READ
+      :value: "CAN_READ"
+
 .. autoclass:: AppManifestAppResourceJobSpec
    :members:
    :undoc-members:
@@ -129,6 +144,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AppManifestAppResourceUcSecurableSpecUcSecurablePermission
 
+   .. py:attribute:: EXECUTE
+      :value: "EXECUTE"
+
    .. py:attribute:: MANAGE
       :value: "MANAGE"
 
@@ -138,10 +156,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: SELECT
       :value: "SELECT"
 
+   .. py:attribute:: USE_CONNECTION
+      :value: "USE_CONNECTION"
+
    .. py:attribute:: WRITE_VOLUME
       :value: "WRITE_VOLUME"
 
 .. py:class:: AppManifestAppResourceUcSecurableSpecUcSecurableType
+
+   .. py:attribute:: CONNECTION
+      :value: "CONNECTION"
+
+   .. py:attribute:: FUNCTION
+      :value: "FUNCTION"
 
    .. py:attribute:: TABLE
       :value: "TABLE"
@@ -183,6 +210,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: CAN_CONNECT_AND_CREATE
       :value: "CAN_CONNECT_AND_CREATE"
+
+.. autoclass:: AppResourceExperiment
+   :members:
+   :undoc-members:
+
+.. py:class:: AppResourceExperimentExperimentPermission
+
+   .. py:attribute:: CAN_EDIT
+      :value: "CAN_EDIT"
+
+   .. py:attribute:: CAN_MANAGE
+      :value: "CAN_MANAGE"
+
+   .. py:attribute:: CAN_READ
+      :value: "CAN_READ"
 
 .. autoclass:: AppResourceGenieSpace
    :members:
@@ -273,13 +315,31 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: AppResourceUcSecurableUcSecurablePermission
 
+   .. py:attribute:: EXECUTE
+      :value: "EXECUTE"
+
    .. py:attribute:: READ_VOLUME
       :value: "READ_VOLUME"
+
+   .. py:attribute:: SELECT
+      :value: "SELECT"
+
+   .. py:attribute:: USE_CONNECTION
+      :value: "USE_CONNECTION"
 
    .. py:attribute:: WRITE_VOLUME
       :value: "WRITE_VOLUME"
 
 .. py:class:: AppResourceUcSecurableUcSecurableType
+
+   .. py:attribute:: CONNECTION
+      :value: "CONNECTION"
+
+   .. py:attribute:: FUNCTION
+      :value: "FUNCTION"
+
+   .. py:attribute:: TABLE
+      :value: "TABLE"
 
    .. py:attribute:: VOLUME
       :value: "VOLUME"
@@ -329,9 +389,6 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: LARGE
       :value: "LARGE"
 
-   .. py:attribute:: LIQUID
-      :value: "LIQUID"
-
    .. py:attribute:: MEDIUM
       :value: "MEDIUM"
 
@@ -366,9 +423,34 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EnvVar
+   :members:
+   :undoc-members:
+
 .. autoclass:: GetAppPermissionLevelsResponse
    :members:
    :undoc-members:
+
+.. autoclass:: GitRepository
+   :members:
+   :undoc-members:
+
+.. autoclass:: GitSource
+   :members:
+   :undoc-members:
+
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
 
 .. autoclass:: ListAppDeploymentsResponse
    :members:

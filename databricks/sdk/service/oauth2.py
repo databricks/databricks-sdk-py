@@ -6,6 +6,7 @@ import logging
 from dataclasses import dataclass
 from typing import Any, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service._internal import _from_dict, _repeated_dict
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -1836,6 +1837,10 @@ class ServicePrincipalSecretsProxyAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/servicePrincipals/{service_principal_id}/credentials/secrets",
@@ -1856,6 +1861,10 @@ class ServicePrincipalSecretsProxyAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE",
@@ -1891,6 +1900,10 @@ class ServicePrincipalSecretsProxyAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(

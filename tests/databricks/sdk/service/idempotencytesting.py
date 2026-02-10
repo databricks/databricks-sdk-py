@@ -7,6 +7,8 @@ import uuid
 from dataclasses import dataclass
 from typing import Any, Dict, Optional
 
+from databricks.sdk.client_types import HostType
+
 _LOG = logging.getLogger("databricks.sdk")
 
 
@@ -61,6 +63,10 @@ class IdempotencyTestingAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/idempotency-testing/resources", query=query, body=body, headers=headers)
         return TestResource.from_dict(res)

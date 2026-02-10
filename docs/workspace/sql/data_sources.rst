@@ -1,5 +1,5 @@
-``w.data_sources``: Data Sources (legacy)
-=========================================
+``w.data_sources``: Data Sources (deprecated)
+=============================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: DataSourcesAPI
@@ -12,7 +12,7 @@
     advise you to use any text editor, REST client, or `grep` to search the response from this API for the
     name of your SQL warehouse as it appears in Databricks SQL.
 
-    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -33,8 +33,7 @@
         API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new
         queries against it.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:warehouses/list
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:warehouses/list instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 

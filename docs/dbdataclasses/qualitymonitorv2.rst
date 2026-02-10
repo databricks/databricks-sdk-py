@@ -36,10 +36,39 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR
       :value: "ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR"
 
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
+
 .. autoclass:: ListQualityMonitorResponse
    :members:
    :undoc-members:
 
+.. autoclass:: PercentNullValidityCheck
+   :members:
+   :undoc-members:
+
 .. autoclass:: QualityMonitor
+   :members:
+   :undoc-members:
+
+.. autoclass:: RangeValidityCheck
+   :members:
+   :undoc-members:
+
+.. autoclass:: UniquenessValidityCheck
+   :members:
+   :undoc-members:
+
+.. autoclass:: ValidityCheckConfiguration
    :members:
    :undoc-members:

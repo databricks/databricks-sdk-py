@@ -4,6 +4,7 @@ import datetime
 import logging
 import os
 import pathlib
+import re
 import sys
 import urllib.parse
 from typing import Dict, Iterable, List, Optional
@@ -12,6 +13,7 @@ import requests
 
 from . import useragent
 from ._base_client import _fix_host_if_needed
+from .client_types import ClientType, HostType
 from .clock import Clock, RealClock
 from .credentials_provider import (CredentialsStrategy, DefaultCredentials,
                                    OAuthCredentialsProvider)
@@ -19,7 +21,7 @@ from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import (OidcEndpoints, Token, get_account_endpoints,
                     get_azure_entra_id_workspace_endpoints,
-                    get_workspace_endpoints)
+                    get_unified_endpoints, get_workspace_endpoints)
 
 logger = logging.getLogger("databricks.sdk")
 
@@ -30,11 +32,13 @@ class ConfigAttribute:
     # name and transform are discovered from Config.__new__
     name: str = None
     transform: type = str
+    _custom_transform = None
 
-    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False):
+    def __init__(self, env: str = None, auth: str = None, sensitive: bool = False, transform=None):
         self.env = env
         self.auth = auth
         self.sensitive = sensitive
+        self._custom_transform = transform
 
     def __get__(self, cfg: "Config", owner):
         if not cfg:
@@ -46,6 +50,19 @@ class ConfigAttribute:
 
     def __repr__(self) -> str:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
+
+
+def _parse_scopes(value):
+    """Parse scopes into a deduplicated, sorted list."""
+    if value is None:
+        return None
+    if isinstance(value, list):
+        result = sorted(set(s for s in value if s))
+        return result if result else None
+    if isinstance(value, str):
+        parsed: list = sorted(set(s for s in re.split(r"[, ]+", value) if s))
+        return parsed if parsed else None
+    return None
 
 
 def with_product(product: str, product_version: str):
@@ -61,6 +78,10 @@ def with_user_agent_extra(key: str, value: str):
 class Config:
     host: str = ConfigAttribute(env="DATABRICKS_HOST")
     account_id: str = ConfigAttribute(env="DATABRICKS_ACCOUNT_ID")
+    workspace_id: str = ConfigAttribute(env="DATABRICKS_WORKSPACE_ID")
+
+    # Experimental flag to indicate if the host is a unified host (supports both workspace and account APIs)
+    experimental_is_unified_host: bool = ConfigAttribute(env="DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST")
 
     # PAT token.
     token: str = ConfigAttribute(env="DATABRICKS_TOKEN", auth="pat", sensitive=True)
@@ -113,9 +134,13 @@ class Config:
     disable_experimental_files_api_client: bool = ConfigAttribute(
         env="DATABRICKS_DISABLE_EXPERIMENTAL_FILES_API_CLIENT"
     )
-    # TODO: Expose these via environment variables too.
-    scopes: str = ConfigAttribute()
+
+    scopes: list = ConfigAttribute(transform=_parse_scopes)
     authorization_details: str = ConfigAttribute()
+
+    # disable_oauth_refresh_token controls whether a refresh token should be requested
+    # during the U2M authentication flow (default to false).
+    disable_oauth_refresh_token: bool = ConfigAttribute(env="DATABRICKS_DISABLE_OAUTH_REFRESH_TOKEN")
 
     files_ext_client_download_streaming_chunk_size: int = 2 * 1024 * 1024  # 2 MiB
 
@@ -217,11 +242,27 @@ class Config:
         product=None,
         product_version=None,
         clock: Optional[Clock] = None,
+        custom_headers: Optional[Dict[str, str]] = None,
         **kwargs,
     ):
+        """Initialize a Config object.
+
+        Args:
+            credentials_provider: (Deprecated) Use credentials_strategy instead.
+            credentials_strategy: Custom credentials strategy for authentication.
+            product: Product name for User-Agent header.
+            product_version: Product version for User-Agent header.
+            clock: Clock instance for time-related operations.
+            custom_headers: Optional dictionary of custom HTTP headers to include in all API requests.
+                These headers will be automatically added to every request made by the client.
+                Request-specific headers passed to individual API calls will override these custom headers
+                if there is a conflict. Example: {"X-Request-ID": "123", "X-Custom-Header": "value"}
+            **kwargs: Additional configuration parameters.
+        """
         self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []
+        self._custom_headers = custom_headers or {}
         if credentials_strategy and credentials_provider:
             raise ValueError("When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
         if credentials_provider:
@@ -339,7 +380,64 @@ class Config:
         return self.environment.cloud == Cloud.AWS
 
     @property
+    def host_type(self) -> HostType:
+        """Determine the type of host based on the configuration.
+
+        Returns the HostType which can be ACCOUNTS, WORKSPACE, or UNIFIED.
+        """
+        # Check if explicitly marked as unified host
+        if self.experimental_is_unified_host:
+            return HostType.UNIFIED
+
+        if not self.host:
+            return HostType.WORKSPACE
+
+        # Check for accounts host pattern
+        if self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod."):
+            return HostType.ACCOUNTS
+
+        return HostType.WORKSPACE
+
+    @property
+    def client_type(self) -> ClientType:
+        """Determine the type of client configuration.
+
+        This is separate from host_type. For example, a unified host can support both
+        workspace and account client types.
+
+        Returns ClientType.ACCOUNT or ClientType.WORKSPACE based on the configuration.
+
+        For unified hosts, account_id must be set. If workspace_id is also set,
+        returns WORKSPACE, otherwise returns ACCOUNT.
+        """
+        host_type = self.host_type
+
+        if host_type == HostType.ACCOUNTS:
+            return ClientType.ACCOUNT
+
+        if host_type == HostType.WORKSPACE:
+            return ClientType.WORKSPACE
+
+        if host_type == HostType.UNIFIED:
+            if not self.account_id:
+                raise ValueError("Unified host requires account_id to be set")
+            if self.workspace_id:
+                return ClientType.WORKSPACE
+            return ClientType.ACCOUNT
+
+        # Default to workspace for backward compatibility
+        return ClientType.WORKSPACE
+
+    @property
     def is_account_client(self) -> bool:
+        """[Deprecated] Use host_type or client_type instead.
+
+        Determines if this is an account client based on the host URL.
+        """
+        if self.experimental_is_unified_host:
+            raise ValueError(
+                "is_account_client cannot be used with unified hosts; use host_type or client_type instead"
+            )
         if not self.host:
             return False
         return self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")
@@ -394,8 +492,18 @@ class Config:
             return None
         if self.is_azure and self.azure_client_id:
             return get_azure_entra_id_workspace_endpoints(self.host)
-        if self.is_account_client and self.account_id:
+
+        # Handle unified hosts
+        if self.host_type == HostType.UNIFIED:
+            if not self.account_id:
+                raise ValueError("Unified host requires account_id to be set for OAuth endpoints")
+            return get_unified_endpoints(self.host, self.account_id)
+
+        # Handle traditional account hosts
+        if self.host_type == HostType.ACCOUNTS and self.account_id:
             return get_account_endpoints(self.host, self.account_id)
+
+        # Default to workspace endpoints
         return get_workspace_endpoints(self.host)
 
     def debug_string(self) -> str:
@@ -466,7 +574,7 @@ class Config:
             if type(v) != ConfigAttribute:
                 continue
             v.name = name
-            v.transform = anno.get(name, str)
+            v.transform = v._custom_transform if v._custom_transform else anno.get(name, str)
             attrs.append(v)
         cls._attributes = attrs
         return cls._attributes
@@ -597,6 +705,21 @@ class Config:
             )
         else:
             self._product_info = None
+
+    def get_scopes(self) -> list:
+        """Get OAuth scopes with proper defaulting.
+
+        Returns ["all-apis"] if no scopes configured.
+        This is the single source of truth for scope defaulting across all OAuth methods.
+        """
+        return self.scopes if self.scopes else ["all-apis"]
+
+    def get_scopes_as_string(self) -> str:
+        """Get OAuth scopes as a space-separated string.
+
+        Returns "all-apis" if no scopes configured.
+        """
+        return " ".join(self.get_scopes())
 
     def __repr__(self):
         return f"<{self.debug_string()}>"

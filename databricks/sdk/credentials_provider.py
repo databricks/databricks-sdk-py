@@ -21,6 +21,7 @@ from google.auth.transport.requests import Request  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
 from . import azure, oauth, oidc, oidc_token_supplier
+from .client_types import ClientType
 
 CredentialsProvider = Callable[[], Dict[str, str]]
 
@@ -198,7 +199,7 @@ def runtime_oauth(cfg: "Config") -> Optional[CredentialsProvider]:
     token_source = oauth.PATOAuthTokenExchange(
         get_original_token=get_notebook_pat_token,
         host=cfg.host,
-        scopes=cfg.scopes,
+        scopes=cfg.get_scopes_as_string(),
         authorization_details=cfg.authorization_details,
     )
 
@@ -225,7 +226,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
         client_id=cfg.client_id,
         client_secret=cfg.client_secret,
         token_url=oidc.token_endpoint,
-        scopes=cfg.scopes or "all-apis",
+        scopes=cfg.get_scopes_as_string(),
         use_header=True,
         disable_async=cfg.disable_async_token_refresh,
         authorization_details=cfg.authorization_details,
@@ -256,6 +257,11 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
     if not client_id:
         client_id = "databricks-cli"
 
+    scopes = cfg.get_scopes()
+    if not cfg.disable_oauth_refresh_token:
+        if "offline_access" not in scopes:
+            scopes = scopes + ["offline_access"]
+
     # Load cached credentials from disk if they exist. Note that these are
     # local to the Python SDK and not reused by other SDKs.
     oidc_endpoints = cfg.oidc_endpoints
@@ -266,6 +272,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         client_id=client_id,
         client_secret=client_secret,
         redirect_url=redirect_url,
+        scopes=scopes,
     )
     credentials = token_cache.load()
     if credentials:
@@ -284,6 +291,7 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         client_id=client_id,
         redirect_url=redirect_url,
         client_secret=client_secret,
+        scopes=scopes,
     )
     consent = oauth_client.initiate_consent()
     if not consent:
@@ -329,7 +337,7 @@ def azure_service_principal(cfg: "Config") -> CredentialsProvider:
             endpoint_params={"resource": resource},
             use_params=True,
             disable_async=cfg.disable_async_token_refresh,
-            scopes=cfg.scopes,
+            scopes=cfg.get_scopes_as_string(),
             authorization_details=cfg.authorization_details,
         )
 
@@ -387,6 +395,7 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
         account_id=cfg.account_id,
         id_token_source=id_token_source,
         disable_async=cfg.disable_async_token_refresh,
+        scopes=cfg.get_scopes_as_string(),
     )
 
     def refreshed_headers() -> Dict[str, str]:
@@ -422,9 +431,9 @@ def _oidc_credentials_provider(
 
     # Determine the audience for token exchange
     audience = cfg.token_audience
-    if audience is None and cfg.is_account_client:
+    if audience is None and cfg.client_type == ClientType.ACCOUNT:
         audience = cfg.account_id
-    if audience is None and not cfg.is_account_client:
+    if audience is None and cfg.client_type != ClientType.ACCOUNT:
         audience = cfg.oidc_endpoints.token_endpoint
 
     # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
@@ -450,7 +459,7 @@ def _oidc_credentials_provider(
                 "subject_token": id_token,
                 "grant_type": "urn:ietf:params:oauth:grant-type:token-exchange",
             },
-            scopes=cfg.scopes or "all-apis",
+            scopes=cfg.get_scopes_as_string(),
             use_params=True,
             disable_async=cfg.disable_async_token_refresh,
             authorization_details=cfg.authorization_details,
@@ -533,7 +542,7 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
         },
         use_params=True,
         disable_async=cfg.disable_async_token_refresh,
-        scopes=cfg.scopes,
+        scopes=cfg.get_scopes_as_string(),
         authorization_details=cfg.authorization_details,
     )
 
@@ -581,7 +590,7 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         credentials.refresh(request)
         headers = {"Authorization": f"Bearer {credentials.token}"}
-        if cfg.is_account_client:
+        if cfg.client_type == ClientType.ACCOUNT:
             gcp_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
         return headers
@@ -622,7 +631,7 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         id_creds.refresh(request)
         headers = {"Authorization": f"Bearer {id_creds.token}"}
-        if cfg.is_account_client:
+        if cfg.client_type == ClientType.ACCOUNT:
             gcp_impersonated_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
         return headers
@@ -844,7 +853,14 @@ class DatabricksCliTokenSource(CliTokenSource):
 
     def __init__(self, cfg: "Config"):
         args = ["auth", "token", "--host", cfg.host]
-        if cfg.is_account_client:
+        if cfg.experimental_is_unified_host:
+            # For unified hosts, pass account_id, workspace_id, and experimental flag
+            args += ["--experimental-is-unified-host"]
+            if cfg.account_id:
+                args += ["--account-id", cfg.account_id]
+            if cfg.workspace_id:
+                args += ["--workspace-id", str(cfg.workspace_id)]
+        elif cfg.client_type == ClientType.ACCOUNT:
             args += ["--account-id", cfg.account_id]
 
         cli_path = cfg.databricks_cli_path

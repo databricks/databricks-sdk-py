@@ -10,6 +10,7 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service import compute
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
@@ -20,6 +21,100 @@ _LOG = logging.getLogger("databricks.sdk")
 
 
 # all definitions in this file are in alphabetical order
+
+
+@dataclass
+class AutoFullRefreshPolicy:
+    """Policy for auto full refresh."""
+
+    enabled: bool
+    """(Required, Mutable) Whether to enable auto full refresh or not."""
+
+    min_interval_hours: Optional[int] = None
+    """(Optional, Mutable) Specify the minimum interval in hours between the timestamp at which a table
+    was last full refreshed and the current timestamp for triggering auto full If unspecified and
+    autoFullRefresh is enabled then by default min_interval_hours is 24 hours."""
+
+    def as_dict(self) -> dict:
+        """Serializes the AutoFullRefreshPolicy into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.min_interval_hours is not None:
+            body["min_interval_hours"] = self.min_interval_hours
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AutoFullRefreshPolicy into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enabled is not None:
+            body["enabled"] = self.enabled
+        if self.min_interval_hours is not None:
+            body["min_interval_hours"] = self.min_interval_hours
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AutoFullRefreshPolicy:
+        """Deserializes the AutoFullRefreshPolicy from a dictionary."""
+        return cls(enabled=d.get("enabled", None), min_interval_hours=d.get("min_interval_hours", None))
+
+
+class CloneMode(Enum):
+    """Enum to specify which mode of clone to execute"""
+
+    MIGRATE_TO_UC = "MIGRATE_TO_UC"
+
+
+@dataclass
+class ClonePipelineResponse:
+    pipeline_id: Optional[str] = None
+    """The pipeline id of the cloned pipeline"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ClonePipelineResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ClonePipelineResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.pipeline_id is not None:
+            body["pipeline_id"] = self.pipeline_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ClonePipelineResponse:
+        """Deserializes the ClonePipelineResponse from a dictionary."""
+        return cls(pipeline_id=d.get("pipeline_id", None))
+
+
+@dataclass
+class ConnectionParameters:
+    source_catalog: Optional[str] = None
+    """Source catalog for initial connection. This is necessary for schema exploration in some database
+    systems like Oracle, and optional but nice-to-have in some other database systems like Postgres.
+    For Oracle databases, this maps to a service name."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ConnectionParameters into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.source_catalog is not None:
+            body["source_catalog"] = self.source_catalog
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ConnectionParameters into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.source_catalog is not None:
+            body["source_catalog"] = self.source_catalog
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ConnectionParameters:
+        """Deserializes the ConnectionParameters from a dictionary."""
+        return cls(source_catalog=d.get("source_catalog", None))
 
 
 @dataclass
@@ -554,6 +649,9 @@ class IngestionGatewayPipelineDefinition:
     """[Deprecated, use connection_name instead] Immutable. The Unity Catalog connection that this
     gateway pipeline uses to communicate with the source."""
 
+    connection_parameters: Optional[ConnectionParameters] = None
+    """Optional, Internal. Parameters required to establish an initial connection with the source."""
+
     gateway_storage_name: Optional[str] = None
     """Optional. The Unity Catalog-compatible name for the gateway storage location. This is the
     destination to use for the data that is extracted by the gateway. Spark Declarative Pipelines
@@ -566,6 +664,8 @@ class IngestionGatewayPipelineDefinition:
             body["connection_id"] = self.connection_id
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.connection_parameters:
+            body["connection_parameters"] = self.connection_parameters.as_dict()
         if self.gateway_storage_catalog is not None:
             body["gateway_storage_catalog"] = self.gateway_storage_catalog
         if self.gateway_storage_name is not None:
@@ -581,6 +681,8 @@ class IngestionGatewayPipelineDefinition:
             body["connection_id"] = self.connection_id
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.connection_parameters:
+            body["connection_parameters"] = self.connection_parameters
         if self.gateway_storage_catalog is not None:
             body["gateway_storage_catalog"] = self.gateway_storage_catalog
         if self.gateway_storage_name is not None:
@@ -595,6 +697,7 @@ class IngestionGatewayPipelineDefinition:
         return cls(
             connection_id=d.get("connection_id", None),
             connection_name=d.get("connection_name", None),
+            connection_parameters=_from_dict(d, "connection_parameters", ConnectionParameters),
             gateway_storage_catalog=d.get("gateway_storage_catalog", None),
             gateway_storage_name=d.get("gateway_storage_name", None),
             gateway_storage_schema=d.get("gateway_storage_schema", None),
@@ -604,12 +707,28 @@ class IngestionGatewayPipelineDefinition:
 @dataclass
 class IngestionPipelineDefinition:
     connection_name: Optional[str] = None
-    """Immutable. The Unity Catalog connection that this ingestion pipeline uses to communicate with
-    the source. This is used with connectors for applications like Salesforce, Workday, and so on."""
+    """The Unity Catalog connection that this ingestion pipeline uses to communicate with the source.
+    This is used with both connectors for applications like Salesforce, Workday, and so on, and also
+    database connectors like Oracle, (connector_type = QUERY_BASED OR connector_type = CDC). If
+    connection name corresponds to database connectors like Oracle, and connector_type is not
+    provided then connector_type defaults to QUERY_BASED. If connector_type is passed as CDC we use
+    Combined Cdc Managed Ingestion pipeline. Under certain conditions, this can be replaced with
+    ingestion_gateway_id to change the connector to Cdc Managed Ingestion Pipeline with Gateway
+    pipeline."""
+
+    full_refresh_window: Optional[OperationTimeWindow] = None
+    """(Optional) A window that specifies a set of time ranges for snapshot queries in CDC."""
+
+    ingest_from_uc_foreign_catalog: Optional[bool] = None
+    """Immutable. If set to true, the pipeline will ingest tables from the UC foreign catalogs directly
+    without the need to specify a UC connection or ingestion gateway. The `source_catalog` fields in
+    objects of IngestionConfig are interpreted as the UC foreign catalogs to ingest from."""
 
     ingestion_gateway_id: Optional[str] = None
-    """Immutable. Identifier for the gateway that is used by this ingestion pipeline to communicate
-    with the source database. This is used with connectors to databases like SQL Server."""
+    """Identifier for the gateway that is used by this ingestion pipeline to communicate with the
+    source database. This is used with CDC connectors to databases like SQL Server using a gateway
+    pipeline (connector_type = CDC). Under certain conditions, this can be replaced with
+    connection_name to change the connector to Combined Cdc Managed Ingestion Pipeline."""
 
     netsuite_jar_path: Optional[str] = None
     """Netsuite only configuration. When the field is set for a netsuite connector, the jar stored in
@@ -634,6 +753,10 @@ class IngestionPipelineDefinition:
         body = {}
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.full_refresh_window:
+            body["full_refresh_window"] = self.full_refresh_window.as_dict()
+        if self.ingest_from_uc_foreign_catalog is not None:
+            body["ingest_from_uc_foreign_catalog"] = self.ingest_from_uc_foreign_catalog
         if self.ingestion_gateway_id is not None:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.netsuite_jar_path is not None:
@@ -653,6 +776,10 @@ class IngestionPipelineDefinition:
         body = {}
         if self.connection_name is not None:
             body["connection_name"] = self.connection_name
+        if self.full_refresh_window:
+            body["full_refresh_window"] = self.full_refresh_window
+        if self.ingest_from_uc_foreign_catalog is not None:
+            body["ingest_from_uc_foreign_catalog"] = self.ingest_from_uc_foreign_catalog
         if self.ingestion_gateway_id is not None:
             body["ingestion_gateway_id"] = self.ingestion_gateway_id
         if self.netsuite_jar_path is not None:
@@ -672,6 +799,8 @@ class IngestionPipelineDefinition:
         """Deserializes the IngestionPipelineDefinition from a dictionary."""
         return cls(
             connection_name=d.get("connection_name", None),
+            full_refresh_window=_from_dict(d, "full_refresh_window", OperationTimeWindow),
+            ingest_from_uc_foreign_catalog=d.get("ingest_from_uc_foreign_catalog", None),
             ingestion_gateway_id=d.get("ingestion_gateway_id", None),
             netsuite_jar_path=d.get("netsuite_jar_path", None),
             objects=_repeated_dict(d, "objects", IngestionConfig),
@@ -828,31 +957,20 @@ class IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
 class IngestionSourceType(Enum):
 
     BIGQUERY = "BIGQUERY"
-    CONFLUENCE = "CONFLUENCE"
     DYNAMICS365 = "DYNAMICS365"
     FOREIGN_CATALOG = "FOREIGN_CATALOG"
     GA4_RAW_DATA = "GA4_RAW_DATA"
-    GOOGLE_ADS = "GOOGLE_ADS"
-    GUIDEWIRE = "GUIDEWIRE"
-    HUBSPOT = "HUBSPOT"
     MANAGED_POSTGRESQL = "MANAGED_POSTGRESQL"
-    META_MARKETING = "META_MARKETING"
     MYSQL = "MYSQL"
     NETSUITE = "NETSUITE"
     ORACLE = "ORACLE"
     POSTGRESQL = "POSTGRESQL"
-    REDSHIFT = "REDSHIFT"
     SALESFORCE = "SALESFORCE"
-    SALESFORCE_MARKETING_CLOUD = "SALESFORCE_MARKETING_CLOUD"
     SERVICENOW = "SERVICENOW"
     SHAREPOINT = "SHAREPOINT"
-    SQLDW = "SQLDW"
     SQLSERVER = "SQLSERVER"
     TERADATA = "TERADATA"
-    TIKTOK_ADS = "TIKTOK_ADS"
-    WORKDAY_HCM = "WORKDAY_HCM"
     WORKDAY_RAAS = "WORKDAY_RAAS"
-    ZENDESK = "ZENDESK"
 
 
 @dataclass
@@ -1061,6 +1179,54 @@ class Notifications:
     def from_dict(cls, d: Dict[str, Any]) -> Notifications:
         """Deserializes the Notifications from a dictionary."""
         return cls(alerts=d.get("alerts", None), email_recipients=d.get("email_recipients", None))
+
+
+@dataclass
+class OperationTimeWindow:
+    """Proto representing a window"""
+
+    start_hour: int
+    """An integer between 0 and 23 denoting the start hour for the window in the 24-hour day."""
+
+    days_of_week: Optional[List[DayOfWeek]] = None
+    """Days of week in which the window is allowed to happen If not specified all days of the week will
+    be used."""
+
+    time_zone_id: Optional[str] = None
+    """Time zone id of window. See
+    https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
+    for details. If not specified, UTC will be used."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OperationTimeWindow into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.days_of_week:
+            body["days_of_week"] = [v.value for v in self.days_of_week]
+        if self.start_hour is not None:
+            body["start_hour"] = self.start_hour
+        if self.time_zone_id is not None:
+            body["time_zone_id"] = self.time_zone_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OperationTimeWindow into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.days_of_week:
+            body["days_of_week"] = self.days_of_week
+        if self.start_hour is not None:
+            body["start_hour"] = self.start_hour
+        if self.time_zone_id is not None:
+            body["time_zone_id"] = self.time_zone_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OperationTimeWindow:
+        """Deserializes the OperationTimeWindow from a dictionary."""
+        return cls(
+            days_of_week=_repeated_enum(d, "days_of_week", DayOfWeek),
+            start_hour=d.get("start_hour", None),
+            time_zone_id=d.get("time_zone_id", None),
+        )
 
 
 @dataclass
@@ -1686,6 +1852,11 @@ class PipelineEvent:
     timestamp: Optional[str] = None
     """The time of the event."""
 
+    truncation: Optional[Truncation] = None
+    """Information about which fields were truncated from this event due to size constraints. If empty
+    or absent, no truncation occurred. See https://docs.databricks.com/en/ldp/monitor-event-logs for
+    information on retrieving complete event data."""
+
     def as_dict(self) -> dict:
         """Serializes the PipelineEvent into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1707,6 +1878,8 @@ class PipelineEvent:
             body["sequence"] = self.sequence.as_dict()
         if self.timestamp is not None:
             body["timestamp"] = self.timestamp
+        if self.truncation:
+            body["truncation"] = self.truncation.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -1730,6 +1903,8 @@ class PipelineEvent:
             body["sequence"] = self.sequence
         if self.timestamp is not None:
             body["timestamp"] = self.timestamp
+        if self.truncation:
+            body["truncation"] = self.truncation
         return body
 
     @classmethod
@@ -1745,6 +1920,7 @@ class PipelineEvent:
             origin=_from_dict(d, "origin", Origin),
             sequence=_from_dict(d, "sequence", Sequencing),
             timestamp=d.get("timestamp", None),
+            truncation=_from_dict(d, "truncation", Truncation),
         )
 
 
@@ -2527,6 +2703,97 @@ class RestartWindow:
 
 
 @dataclass
+class RewindDatasetSpec:
+    """Configuration for rewinding a specific dataset."""
+
+    cascade: Optional[bool] = None
+    """Whether to cascade the rewind to dependent datasets. Must be specified."""
+
+    identifier: Optional[str] = None
+    """The identifier of the dataset (e.g., "main.foo.tbl1")."""
+
+    reset_checkpoints: Optional[bool] = None
+    """Whether to reset checkpoints for this dataset."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RewindDatasetSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.cascade is not None:
+            body["cascade"] = self.cascade
+        if self.identifier is not None:
+            body["identifier"] = self.identifier
+        if self.reset_checkpoints is not None:
+            body["reset_checkpoints"] = self.reset_checkpoints
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RewindDatasetSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.cascade is not None:
+            body["cascade"] = self.cascade
+        if self.identifier is not None:
+            body["identifier"] = self.identifier
+        if self.reset_checkpoints is not None:
+            body["reset_checkpoints"] = self.reset_checkpoints
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RewindDatasetSpec:
+        """Deserializes the RewindDatasetSpec from a dictionary."""
+        return cls(
+            cascade=d.get("cascade", None),
+            identifier=d.get("identifier", None),
+            reset_checkpoints=d.get("reset_checkpoints", None),
+        )
+
+
+@dataclass
+class RewindSpec:
+    """Information about a rewind being requested for this pipeline or some of the datasets in it."""
+
+    datasets: Optional[List[RewindDatasetSpec]] = None
+    """List of datasets to rewind with specific configuration for each. When not specified, all
+    datasets will be rewound with cascade = true and reset_checkpoints = true."""
+
+    dry_run: Optional[bool] = None
+    """If true, this is a dry run and we should emit the RewindSummary but not perform the rewind."""
+
+    rewind_timestamp: Optional[str] = None
+    """The base timestamp to rewind to. Must be specified."""
+
+    def as_dict(self) -> dict:
+        """Serializes the RewindSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.datasets:
+            body["datasets"] = [v.as_dict() for v in self.datasets]
+        if self.dry_run is not None:
+            body["dry_run"] = self.dry_run
+        if self.rewind_timestamp is not None:
+            body["rewind_timestamp"] = self.rewind_timestamp
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RewindSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.datasets:
+            body["datasets"] = self.datasets
+        if self.dry_run is not None:
+            body["dry_run"] = self.dry_run
+        if self.rewind_timestamp is not None:
+            body["rewind_timestamp"] = self.rewind_timestamp
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RewindSpec:
+        """Deserializes the RewindSpec from a dictionary."""
+        return cls(
+            datasets=_repeated_dict(d, "datasets", RewindDatasetSpec),
+            dry_run=d.get("dry_run", None),
+            rewind_timestamp=d.get("rewind_timestamp", None),
+        )
+
+
+@dataclass
 class RunAs:
     """Write-only setting, available only in Create/Update calls. Specifies the user or service
     principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
@@ -2952,6 +3219,13 @@ class TableSpec:
 
 @dataclass
 class TableSpecificConfig:
+    auto_full_refresh_policy: Optional[AutoFullRefreshPolicy] = None
+    """(Optional, Mutable) Policy for auto full refresh, if enabled pipeline will automatically try to
+    fix issues by doing a full refresh on the table in the retry run. auto_full_refresh_policy in
+    table configuration will override the above level auto_full_refresh_policy. For example, {
+    "auto_full_refresh_policy": { "enabled": true, "min_interval_hours": 23, } } If unspecified,
+    auto full refresh is disabled."""
+
     exclude_columns: Optional[List[str]] = None
     """A list of column names to be excluded for the ingestion. When not specified, include_columns
     fully controls what columns to be ingested. When specified, all other columns including future
@@ -2971,6 +3245,10 @@ class TableSpecificConfig:
         None
     )
 
+    row_filter: Optional[str] = None
+    """(Optional, Immutable) The row filter condition to be applied to the table. It must not contain
+    the WHERE keyword, only the actual filter condition. It must be in DBSQL format."""
+
     salesforce_include_formula_fields: Optional[bool] = None
     """If true, formula fields defined in the table are included in the ingestion. This setting is only
     valid for the Salesforce connector"""
@@ -2988,6 +3266,8 @@ class TableSpecificConfig:
     def as_dict(self) -> dict:
         """Serializes the TableSpecificConfig into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.auto_full_refresh_policy:
+            body["auto_full_refresh_policy"] = self.auto_full_refresh_policy.as_dict()
         if self.exclude_columns:
             body["exclude_columns"] = [v for v in self.exclude_columns]
         if self.include_columns:
@@ -2996,6 +3276,8 @@ class TableSpecificConfig:
             body["primary_keys"] = [v for v in self.primary_keys]
         if self.query_based_connector_config:
             body["query_based_connector_config"] = self.query_based_connector_config.as_dict()
+        if self.row_filter is not None:
+            body["row_filter"] = self.row_filter
         if self.salesforce_include_formula_fields is not None:
             body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
@@ -3009,6 +3291,8 @@ class TableSpecificConfig:
     def as_shallow_dict(self) -> dict:
         """Serializes the TableSpecificConfig into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.auto_full_refresh_policy:
+            body["auto_full_refresh_policy"] = self.auto_full_refresh_policy
         if self.exclude_columns:
             body["exclude_columns"] = self.exclude_columns
         if self.include_columns:
@@ -3017,6 +3301,8 @@ class TableSpecificConfig:
             body["primary_keys"] = self.primary_keys
         if self.query_based_connector_config:
             body["query_based_connector_config"] = self.query_based_connector_config
+        if self.row_filter is not None:
+            body["row_filter"] = self.row_filter
         if self.salesforce_include_formula_fields is not None:
             body["salesforce_include_formula_fields"] = self.salesforce_include_formula_fields
         if self.scd_type is not None:
@@ -3031,6 +3317,7 @@ class TableSpecificConfig:
     def from_dict(cls, d: Dict[str, Any]) -> TableSpecificConfig:
         """Deserializes the TableSpecificConfig from a dictionary."""
         return cls(
+            auto_full_refresh_policy=_from_dict(d, "auto_full_refresh_policy", AutoFullRefreshPolicy),
             exclude_columns=d.get("exclude_columns", None),
             include_columns=d.get("include_columns", None),
             primary_keys=d.get("primary_keys", None),
@@ -3039,6 +3326,7 @@ class TableSpecificConfig:
                 "query_based_connector_config",
                 IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig,
             ),
+            row_filter=d.get("row_filter", None),
             salesforce_include_formula_fields=d.get("salesforce_include_formula_fields", None),
             scd_type=_enum(d, "scd_type", TableSpecificConfigScdType),
             sequence_by=d.get("sequence_by", None),
@@ -3054,6 +3342,60 @@ class TableSpecificConfigScdType(Enum):
     APPEND_ONLY = "APPEND_ONLY"
     SCD_TYPE_1 = "SCD_TYPE_1"
     SCD_TYPE_2 = "SCD_TYPE_2"
+
+
+@dataclass
+class Truncation:
+    """Information about truncations applied to this event."""
+
+    truncated_fields: Optional[List[TruncationTruncationDetail]] = None
+    """List of fields that were truncated from this event. If empty or absent, no truncation occurred."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Truncation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.truncated_fields:
+            body["truncated_fields"] = [v.as_dict() for v in self.truncated_fields]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Truncation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.truncated_fields:
+            body["truncated_fields"] = self.truncated_fields
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Truncation:
+        """Deserializes the Truncation from a dictionary."""
+        return cls(truncated_fields=_repeated_dict(d, "truncated_fields", TruncationTruncationDetail))
+
+
+@dataclass
+class TruncationTruncationDetail:
+    """Details about a specific field that was truncated."""
+
+    field_name: Optional[str] = None
+    """The name of the truncated field (e.g., "error"). Corresponds to field names in PipelineEvent."""
+
+    def as_dict(self) -> dict:
+        """Serializes the TruncationTruncationDetail into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.field_name is not None:
+            body["field_name"] = self.field_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the TruncationTruncationDetail into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.field_name is not None:
+            body["field_name"] = self.field_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> TruncationTruncationDetail:
+        """Deserializes the TruncationTruncationDetail from a dictionary."""
+        return cls(field_name=d.get("field_name", None))
 
 
 @dataclass
@@ -3301,6 +3643,198 @@ class PipelinesAPI:
             attempt += 1
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
+    def clone(
+        self,
+        pipeline_id: str,
+        *,
+        allow_duplicate_names: Optional[bool] = None,
+        budget_policy_id: Optional[str] = None,
+        catalog: Optional[str] = None,
+        channel: Optional[str] = None,
+        clone_mode: Optional[CloneMode] = None,
+        clusters: Optional[List[PipelineCluster]] = None,
+        configuration: Optional[Dict[str, str]] = None,
+        continuous: Optional[bool] = None,
+        deployment: Optional[PipelineDeployment] = None,
+        development: Optional[bool] = None,
+        edition: Optional[str] = None,
+        environment: Optional[PipelinesEnvironment] = None,
+        event_log: Optional[EventLogSpec] = None,
+        expected_last_modified: Optional[int] = None,
+        filters: Optional[Filters] = None,
+        gateway_definition: Optional[IngestionGatewayPipelineDefinition] = None,
+        id: Optional[str] = None,
+        ingestion_definition: Optional[IngestionPipelineDefinition] = None,
+        libraries: Optional[List[PipelineLibrary]] = None,
+        name: Optional[str] = None,
+        notifications: Optional[List[Notifications]] = None,
+        photon: Optional[bool] = None,
+        restart_window: Optional[RestartWindow] = None,
+        root_path: Optional[str] = None,
+        schema: Optional[str] = None,
+        serverless: Optional[bool] = None,
+        storage: Optional[str] = None,
+        tags: Optional[Dict[str, str]] = None,
+        target: Optional[str] = None,
+        trigger: Optional[PipelineTrigger] = None,
+        usage_policy_id: Optional[str] = None,
+    ) -> ClonePipelineResponse:
+        """Creates a new pipeline using Unity Catalog from a pipeline using Hive Metastore. This method returns
+        the ID of the newly created clone. Additionally, this method starts an update for the newly created
+        pipeline.
+
+        :param pipeline_id: str
+          Source pipeline to clone from
+        :param allow_duplicate_names: bool (optional)
+          If false, deployment will fail if name conflicts with that of another pipeline.
+        :param budget_policy_id: str (optional)
+          Budget policy of this pipeline.
+        :param catalog: str (optional)
+          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
+          in this pipeline are published to a `target` schema inside `catalog` (for example,
+          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+        :param channel: str (optional)
+          DLT Release Channel that specifies which version to use.
+        :param clone_mode: :class:`CloneMode` (optional)
+          The type of clone to perform. Currently, only deep copies are supported
+        :param clusters: List[:class:`PipelineCluster`] (optional)
+          Cluster settings for this pipeline deployment.
+        :param configuration: Dict[str,str] (optional)
+          String-String configuration for this pipeline execution.
+        :param continuous: bool (optional)
+          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param deployment: :class:`PipelineDeployment` (optional)
+          Deployment type of this pipeline.
+        :param development: bool (optional)
+          Whether the pipeline is in Development mode. Defaults to false.
+        :param edition: str (optional)
+          Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
+        :param expected_last_modified: int (optional)
+          If present, the last-modified time of the pipeline settings before the clone. If the settings were
+          modified after that time, then the request will fail with a conflict.
+        :param filters: :class:`Filters` (optional)
+          Filters on which Pipeline packages to include in the deployed graph.
+        :param gateway_definition: :class:`IngestionGatewayPipelineDefinition` (optional)
+          The definition of a gateway pipeline to support change data capture.
+        :param id: str (optional)
+          Unique identifier for this pipeline.
+        :param ingestion_definition: :class:`IngestionPipelineDefinition` (optional)
+          The configuration for a managed ingestion pipeline. These settings cannot be used with the
+          'libraries', 'schema', 'target', or 'catalog' settings.
+        :param libraries: List[:class:`PipelineLibrary`] (optional)
+          Libraries or code needed by this deployment.
+        :param name: str (optional)
+          Friendly identifier for this pipeline.
+        :param notifications: List[:class:`Notifications`] (optional)
+          List of notification settings for this pipeline.
+        :param photon: bool (optional)
+          Whether Photon is enabled for this pipeline.
+        :param restart_window: :class:`RestartWindow` (optional)
+          Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
+        :param schema: str (optional)
+          The default schema (database) where tables are read from or published to.
+        :param serverless: bool (optional)
+          Whether serverless compute is enabled for this pipeline.
+        :param storage: str (optional)
+          DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
+        :param target: str (optional)
+          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
+          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
+          for pipeline creation in favor of the `schema` field.
+        :param trigger: :class:`PipelineTrigger` (optional)
+          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+        :param usage_policy_id: str (optional)
+          Usage policy of this pipeline.
+
+        :returns: :class:`ClonePipelineResponse`
+        """
+
+        body = {}
+        if allow_duplicate_names is not None:
+            body["allow_duplicate_names"] = allow_duplicate_names
+        if budget_policy_id is not None:
+            body["budget_policy_id"] = budget_policy_id
+        if catalog is not None:
+            body["catalog"] = catalog
+        if channel is not None:
+            body["channel"] = channel
+        if clone_mode is not None:
+            body["clone_mode"] = clone_mode.value
+        if clusters is not None:
+            body["clusters"] = [v.as_dict() for v in clusters]
+        if configuration is not None:
+            body["configuration"] = configuration
+        if continuous is not None:
+            body["continuous"] = continuous
+        if deployment is not None:
+            body["deployment"] = deployment.as_dict()
+        if development is not None:
+            body["development"] = development
+        if edition is not None:
+            body["edition"] = edition
+        if environment is not None:
+            body["environment"] = environment.as_dict()
+        if event_log is not None:
+            body["event_log"] = event_log.as_dict()
+        if expected_last_modified is not None:
+            body["expected_last_modified"] = expected_last_modified
+        if filters is not None:
+            body["filters"] = filters.as_dict()
+        if gateway_definition is not None:
+            body["gateway_definition"] = gateway_definition.as_dict()
+        if id is not None:
+            body["id"] = id
+        if ingestion_definition is not None:
+            body["ingestion_definition"] = ingestion_definition.as_dict()
+        if libraries is not None:
+            body["libraries"] = [v.as_dict() for v in libraries]
+        if name is not None:
+            body["name"] = name
+        if notifications is not None:
+            body["notifications"] = [v.as_dict() for v in notifications]
+        if photon is not None:
+            body["photon"] = photon
+        if restart_window is not None:
+            body["restart_window"] = restart_window.as_dict()
+        if root_path is not None:
+            body["root_path"] = root_path
+        if schema is not None:
+            body["schema"] = schema
+        if serverless is not None:
+            body["serverless"] = serverless
+        if storage is not None:
+            body["storage"] = storage
+        if tags is not None:
+            body["tags"] = tags
+        if target is not None:
+            body["target"] = target
+        if trigger is not None:
+            body["trigger"] = trigger.as_dict()
+        if usage_policy_id is not None:
+            body["usage_policy_id"] = usage_policy_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/clone", body=body, headers=headers)
+        return ClonePipelineResponse.from_dict(res)
+
     def create(
         self,
         *,
@@ -3479,23 +4013,37 @@ class PipelinesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/pipelines", body=body, headers=headers)
         return CreatePipelineResponse.from_dict(res)
 
-    def delete(self, pipeline_id: str):
-        """Deletes a pipeline. Deleting a pipeline is a permanent action that stops and removes the pipeline and
-        its tables. You cannot undo this action.
+    def delete(self, pipeline_id: str, *, force: Optional[bool] = None):
+        """Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all
+        pipeline tables. Please reach out to Databricks support for assistance to undo this action.
 
         :param pipeline_id: str
+        :param force: bool (optional)
+          If true, deletion will proceed even if resource cleanup fails. By default, deletion will fail if
+          resources cleanup is required but fails.
 
 
         """
 
+        query = {}
+        if force is not None:
+            query["force"] = force
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/pipelines/{pipeline_id}", headers=headers)
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/pipelines/{pipeline_id}", query=query, headers=headers)
 
     def get(self, pipeline_id: str) -> GetPipelineResponse:
         """Get a pipeline.
@@ -3508,6 +4056,10 @@ class PipelinesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}", headers=headers)
         return GetPipelineResponse.from_dict(res)
@@ -3525,6 +4077,10 @@ class PipelinesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels", headers=headers)
         return GetPipelinePermissionLevelsResponse.from_dict(res)
 
@@ -3540,6 +4096,10 @@ class PipelinesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/pipelines/{pipeline_id}", headers=headers)
         return PipelinePermissions.from_dict(res)
@@ -3558,6 +4118,10 @@ class PipelinesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates/{update_id}", headers=headers)
         return GetUpdateResponse.from_dict(res)
@@ -3609,6 +4173,10 @@ class PipelinesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/events", query=query, headers=headers)
@@ -3664,6 +4232,10 @@ class PipelinesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/pipelines", query=query, headers=headers)
             if "statuses" in json:
@@ -3706,6 +4278,10 @@ class PipelinesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/pipelines/{pipeline_id}/updates", query=query, headers=headers)
         return ListUpdatesResponse.from_dict(res)
 
@@ -3730,6 +4306,10 @@ class PipelinesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PUT", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
         return PipelinePermissions.from_dict(res)
 
@@ -3741,6 +4321,7 @@ class PipelinesAPI:
         full_refresh: Optional[bool] = None,
         full_refresh_selection: Optional[List[str]] = None,
         refresh_selection: Optional[List[str]] = None,
+        rewind_spec: Optional[RewindSpec] = None,
         validate_only: Optional[bool] = None,
     ) -> StartUpdateResponse:
         """Starts a new update for the pipeline. If there is already an active update for the pipeline, the
@@ -3758,6 +4339,8 @@ class PipelinesAPI:
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param rewind_spec: :class:`RewindSpec` (optional)
+          The information about the requested rewind operation. If specified this is a rewind mode update.
         :param validate_only: bool (optional)
           If true, this update only validates the correctness of pipeline source code but does not materialize
           or publish any datasets.
@@ -3774,12 +4357,18 @@ class PipelinesAPI:
             body["full_refresh_selection"] = [v for v in full_refresh_selection]
         if refresh_selection is not None:
             body["refresh_selection"] = [v for v in refresh_selection]
+        if rewind_spec is not None:
+            body["rewind_spec"] = rewind_spec.as_dict()
         if validate_only is not None:
             body["validate_only"] = validate_only
         headers = {
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/updates", body=body, headers=headers)
         return StartUpdateResponse.from_dict(res)
@@ -3798,6 +4387,10 @@ class PipelinesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", f"/api/2.0/pipelines/{pipeline_id}/stop", headers=headers)
         return Wait(self.wait_get_pipeline_idle, pipeline_id=pipeline_id)
@@ -3987,6 +4580,10 @@ class PipelinesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("PUT", f"/api/2.0/pipelines/{pipeline_id}", body=body, headers=headers)
 
     def update_permissions(
@@ -4008,6 +4605,10 @@ class PipelinesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/pipelines/{pipeline_id}", body=body, headers=headers)
         return PipelinePermissions.from_dict(res)

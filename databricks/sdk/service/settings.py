@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service._internal import (_enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
 
@@ -846,6 +847,8 @@ class CreatePrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
     
@@ -869,6 +872,8 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -884,6 +889,8 @@ class CreatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.resource_id is not None:
@@ -898,6 +905,7 @@ class CreatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
             group_id=d.get("group_id", None),
             resource_id=d.get("resource_id", None),
             resource_names=d.get("resource_names", None),
@@ -1072,6 +1080,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
 
+    error_message: Optional[str] = None
+
     network_connectivity_config_id: Optional[str] = None
     """The ID of a network connectivity configuration, which is the parent resource of this private
     endpoint rule object."""
@@ -1111,6 +1121,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
             body["enabled"] = self.enabled
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.network_connectivity_config_id is not None:
             body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_names:
@@ -1142,6 +1154,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
             body["enabled"] = self.enabled
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.network_connectivity_config_id is not None:
             body["network_connectivity_config_id"] = self.network_connectivity_config_id
         if self.resource_names:
@@ -1170,6 +1184,7 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_names=d.get("resource_names", None),
             rule_id=d.get("rule_id", None),
@@ -1180,6 +1195,8 @@ class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
 
 class CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState(Enum):
 
+    CREATE_FAILED = "CREATE_FAILED"
+    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
@@ -3732,6 +3749,8 @@ class NccAzurePrivateEndpointRule:
     endpoint_name: Optional[str] = None
     """The name of the Azure private endpoint resource."""
 
+    error_message: Optional[str] = None
+
     group_id: Optional[str] = None
     """Only used by private endpoints to Azure first-party services.
     
@@ -3766,6 +3785,8 @@ class NccAzurePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -3793,6 +3814,8 @@ class NccAzurePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.endpoint_name is not None:
             body["endpoint_name"] = self.endpoint_name
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -3815,6 +3838,7 @@ class NccAzurePrivateEndpointRule:
             deactivated_at=d.get("deactivated_at", None),
             domain_names=d.get("domain_names", None),
             endpoint_name=d.get("endpoint_name", None),
+            error_message=d.get("error_message", None),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
@@ -3825,6 +3849,8 @@ class NccAzurePrivateEndpointRule:
 
 class NccAzurePrivateEndpointRuleConnectionState(Enum):
 
+    CREATE_FAILED = "CREATE_FAILED"
+    CREATING = "CREATING"
     DISCONNECTED = "DISCONNECTED"
     ESTABLISHED = "ESTABLISHED"
     EXPIRED = "EXPIRED"
@@ -4007,7 +4033,10 @@ class NccPrivateEndpointRule:
     and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by
     the private link resource owner. - DISCONNECTED: Connection was removed by the private link
     resource owner, the private endpoint becomes informative and should be deleted for clean-up. -
-    EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED."""
+    EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED. -
+    CREATING: The endpoint creation is in progress. Once successfully created, the state will
+    transition to PENDING. - CREATE_FAILED: The endpoint creation failed. You can check the
+    error_message field for more details."""
 
     creation_time: Optional[int] = None
     """Time in epoch milliseconds when this object was created."""
@@ -4036,6 +4065,8 @@ class NccPrivateEndpointRule:
     endpoint_service: Optional[str] = None
     """The full target AWS endpoint service name that connects to the destination resources of the
     private endpoint."""
+
+    error_message: Optional[str] = None
 
     group_id: Optional[str] = None
     """Not used by customer-managed private endpoint services.
@@ -4087,6 +4118,8 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4124,6 +4157,8 @@ class NccPrivateEndpointRule:
             body["endpoint_name"] = self.endpoint_name
         if self.endpoint_service is not None:
             body["endpoint_service"] = self.endpoint_service
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.group_id is not None:
             body["group_id"] = self.group_id
         if self.network_connectivity_config_id is not None:
@@ -4153,6 +4188,7 @@ class NccPrivateEndpointRule:
             enabled=d.get("enabled", None),
             endpoint_name=d.get("endpoint_name", None),
             endpoint_service=d.get("endpoint_service", None),
+            error_message=d.get("error_message", None),
             group_id=d.get("group_id", None),
             network_connectivity_config_id=d.get("network_connectivity_config_id", None),
             resource_id=d.get("resource_id", None),
@@ -5122,6 +5158,8 @@ class UpdatePrivateEndpointRule:
     Update this field to activate/deactivate this private endpoint to allow egress access from
     serverless compute resources."""
 
+    error_message: Optional[str] = None
+
     resource_names: Optional[List[str]] = None
     """Only used by private endpoints towards AWS S3 service.
     
@@ -5136,6 +5174,8 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = [v for v in self.domain_names]
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.resource_names:
             body["resource_names"] = [v for v in self.resource_names]
         return body
@@ -5147,6 +5187,8 @@ class UpdatePrivateEndpointRule:
             body["domain_names"] = self.domain_names
         if self.enabled is not None:
             body["enabled"] = self.enabled
+        if self.error_message is not None:
+            body["error_message"] = self.error_message
         if self.resource_names:
             body["resource_names"] = self.resource_names
         return body
@@ -5157,6 +5199,7 @@ class UpdatePrivateEndpointRule:
         return cls(
             domain_names=d.get("domain_names", None),
             enabled=d.get("enabled", None),
+            error_message=d.get("error_message", None),
             resource_names=d.get("resource_names", None),
         )
 
@@ -5495,6 +5538,10 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE",
             "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default",
@@ -5523,6 +5570,10 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default", query=query, headers=headers
@@ -5563,6 +5614,10 @@ class AibiDashboardEmbeddingAccessPolicyAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default", body=body, headers=headers
         )
@@ -5597,6 +5652,10 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE",
             "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default",
@@ -5624,6 +5683,10 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -5668,6 +5731,10 @@ class AibiDashboardEmbeddingApprovedDomainsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH",
             "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default",
@@ -5703,6 +5770,10 @@ class AutomaticClusterUpdateAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/automatic_cluster_update/names/default", query=query, headers=headers
@@ -5746,6 +5817,10 @@ class AutomaticClusterUpdateAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/automatic_cluster_update/names/default", body=body, headers=headers
         )
@@ -5780,6 +5855,10 @@ class ComplianceSecurityProfileAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default", query=query, headers=headers
@@ -5823,6 +5902,10 @@ class ComplianceSecurityProfileAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default", body=body, headers=headers
         )
@@ -5863,6 +5946,10 @@ class CredentialsManagerAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/credentials-manager/exchange-tokens/token", body=body, headers=headers)
         return ExchangeTokenResponse.from_dict(res)
@@ -5978,6 +6065,10 @@ class DashboardEmailSubscriptionsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE",
             "/api/2.0/settings/types/dashboard_email_subscriptions/names/default",
@@ -6005,6 +6096,10 @@ class DashboardEmailSubscriptionsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/dashboard_email_subscriptions/names/default", query=query, headers=headers
@@ -6044,6 +6139,10 @@ class DashboardEmailSubscriptionsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/dashboard_email_subscriptions/names/default", body=body, headers=headers
@@ -6089,6 +6188,10 @@ class DefaultNamespaceAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/default_namespace_ws/names/default", query=query, headers=headers
         )
@@ -6113,6 +6216,10 @@ class DefaultNamespaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/default_namespace_ws/names/default", query=query, headers=headers
@@ -6156,6 +6263,10 @@ class DefaultNamespaceAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/default_namespace_ws/names/default", body=body, headers=headers
         )
@@ -6189,6 +6300,10 @@ class DefaultWarehouseIdAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/default_warehouse_id/names/default", query=query, headers=headers
         )
@@ -6213,6 +6328,10 @@ class DefaultWarehouseIdAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/default_warehouse_id/names/default", query=query, headers=headers
@@ -6251,6 +6370,10 @@ class DefaultWarehouseIdAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/default_warehouse_id/names/default", body=body, headers=headers
         )
@@ -6287,6 +6410,10 @@ class DisableLegacyAccessAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/disable_legacy_access/names/default", query=query, headers=headers
         )
@@ -6311,6 +6438,10 @@ class DisableLegacyAccessAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/disable_legacy_access/names/default", query=query, headers=headers
@@ -6348,6 +6479,10 @@ class DisableLegacyAccessAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/disable_legacy_access/names/default", body=body, headers=headers
@@ -6388,6 +6523,10 @@ class DisableLegacyDbfsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/disable_legacy_dbfs/names/default", query=query, headers=headers
         )
@@ -6412,6 +6551,10 @@ class DisableLegacyDbfsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/disable_legacy_dbfs/names/default", query=query, headers=headers
@@ -6449,6 +6592,10 @@ class DisableLegacyDbfsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/disable_legacy_dbfs/names/default", body=body, headers=headers
@@ -6581,6 +6728,10 @@ class EnableExportNotebookAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/settings/types/enable-export-notebook/names/default", headers=headers)
         return EnableExportNotebook.from_dict(res)
 
@@ -6618,6 +6769,10 @@ class EnableExportNotebookAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/enable-export-notebook/names/default", body=body, headers=headers
@@ -6747,6 +6902,10 @@ class EnableNotebookTableClipboardAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default", headers=headers
         )
@@ -6787,6 +6946,10 @@ class EnableNotebookTableClipboardAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default", body=body, headers=headers
         )
@@ -6809,6 +6972,10 @@ class EnableResultsDownloadingAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/settings/types/enable-results-downloading/names/default", headers=headers)
         return EnableResultsDownloading.from_dict(res)
@@ -6848,6 +7015,10 @@ class EnableResultsDownloadingAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/enable-results-downloading/names/default", body=body, headers=headers
         )
@@ -6884,6 +7055,10 @@ class EnhancedSecurityMonitoringAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default", query=query, headers=headers
@@ -6926,6 +7101,10 @@ class EnhancedSecurityMonitoringAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default", body=body, headers=headers
@@ -7072,6 +7251,10 @@ class IpAccessListsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/ip-access-lists", body=body, headers=headers)
         return CreateIpAccessListResponse.from_dict(res)
 
@@ -7085,6 +7268,10 @@ class IpAccessListsAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/ip-access-lists/{ip_access_list_id}", headers=headers)
 
@@ -7101,6 +7288,10 @@ class IpAccessListsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/ip-access-lists/{ip_access_list_id}", headers=headers)
         return FetchIpAccessListResponse.from_dict(res)
 
@@ -7114,6 +7305,10 @@ class IpAccessListsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/ip-access-lists", headers=headers)
         parsed = ListIpAccessListResponse.from_dict(json).ip_access_lists
@@ -7163,6 +7358,10 @@ class IpAccessListsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PUT", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body, headers=headers)
 
@@ -7214,6 +7413,10 @@ class IpAccessListsAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/ip-access-lists/{ip_access_list_id}", body=body, headers=headers)
 
@@ -7399,6 +7602,10 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/llm_proxy_partner_powered/names/default", query=query, headers=headers
         )
@@ -7423,6 +7630,10 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/llm_proxy_partner_powered/names/default", query=query, headers=headers
@@ -7462,6 +7673,10 @@ class LlmProxyPartnerPoweredWorkspaceAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/llm_proxy_partner_powered/names/default", body=body, headers=headers
@@ -7902,6 +8117,10 @@ class NotificationDestinationsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/notification-destinations", body=body, headers=headers)
         return NotificationDestination.from_dict(res)
 
@@ -7917,6 +8136,10 @@ class NotificationDestinationsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/notification-destinations/{id}", headers=headers)
 
     def get(self, id: str) -> NotificationDestination:
@@ -7930,6 +8153,10 @@ class NotificationDestinationsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/notification-destinations/{id}", headers=headers)
         return NotificationDestination.from_dict(res)
@@ -7953,6 +8180,10 @@ class NotificationDestinationsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/notification-destinations", query=query, headers=headers)
@@ -7988,6 +8219,10 @@ class NotificationDestinationsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/notification-destinations/{id}", body=body, headers=headers)
         return NotificationDestination.from_dict(res)
@@ -8139,6 +8374,10 @@ class RestrictWorkspaceAdminsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/restrict_workspace_admins/names/default", query=query, headers=headers
         )
@@ -8163,6 +8402,10 @@ class RestrictWorkspaceAdminsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/restrict_workspace_admins/names/default", query=query, headers=headers
@@ -8205,6 +8448,10 @@ class RestrictWorkspaceAdminsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/restrict_workspace_admins/names/default", body=body, headers=headers
@@ -8343,6 +8590,10 @@ class SqlResultsDownloadAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "DELETE", "/api/2.0/settings/types/sql_results_download/names/default", query=query, headers=headers
         )
@@ -8367,6 +8618,10 @@ class SqlResultsDownloadAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", "/api/2.0/settings/types/sql_results_download/names/default", query=query, headers=headers
@@ -8404,6 +8659,10 @@ class SqlResultsDownloadAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", "/api/2.0/settings/types/sql_results_download/names/default", body=body, headers=headers
@@ -8445,6 +8704,10 @@ class TokenManagementAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/token-management/on-behalf-of/tokens", body=body, headers=headers)
         return CreateOboTokenResponse.from_dict(res)
 
@@ -8458,6 +8721,10 @@ class TokenManagementAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/token-management/tokens/{token_id}", headers=headers)
 
@@ -8474,6 +8741,10 @@ class TokenManagementAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/token-management/tokens/{token_id}", headers=headers)
         return GetTokenResponse.from_dict(res)
 
@@ -8488,6 +8759,10 @@ class TokenManagementAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/permissions/authorization/tokens/permissionLevels", headers=headers)
         return GetTokenPermissionLevelsResponse.from_dict(res)
 
@@ -8501,6 +8776,10 @@ class TokenManagementAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/permissions/authorization/tokens", headers=headers)
         return TokenPermissions.from_dict(res)
@@ -8527,6 +8806,10 @@ class TokenManagementAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         json = self._api.do("GET", "/api/2.0/token-management/tokens", query=query, headers=headers)
         parsed = ListTokensResponse.from_dict(json).token_infos
         return parsed if parsed is not None else []
@@ -8550,6 +8833,10 @@ class TokenManagementAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PUT", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
         return TokenPermissions.from_dict(res)
 
@@ -8570,6 +8857,10 @@ class TokenManagementAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/permissions/authorization/tokens", body=body, headers=headers)
         return TokenPermissions.from_dict(res)
@@ -8592,7 +8883,7 @@ class TokensAPI:
         :param lifetime_seconds: int (optional)
           The lifetime of the token, in seconds.
 
-          If the lifetime is not specified, this token remains valid indefinitely.
+          If the lifetime is not specified, this token remains valid for 2 years.
 
         :returns: :class:`CreateTokenResponse`
         """
@@ -8606,6 +8897,10 @@ class TokensAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/token/create", body=body, headers=headers)
         return CreateTokenResponse.from_dict(res)
@@ -8629,6 +8924,10 @@ class TokensAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/token/delete", body=body, headers=headers)
 
     def list(self) -> Iterator[PublicTokenInfo]:
@@ -8641,6 +8940,10 @@ class TokensAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/token/list", headers=headers)
         parsed = ListPublicTokensResponse.from_dict(json).token_infos
@@ -8668,6 +8971,10 @@ class WorkspaceConfAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/workspace-conf", query=query, headers=headers)
         return res
 
@@ -8677,6 +8984,10 @@ class WorkspaceConfAPI:
         headers = {
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", "/api/2.0/workspace-conf", body=contents, headers=headers)
 

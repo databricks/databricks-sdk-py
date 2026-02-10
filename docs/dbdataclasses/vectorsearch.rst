@@ -71,6 +71,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    Current state of the endpoint
 
+   .. py:attribute:: DELETED
+      :value: "DELETED"
+
    .. py:attribute:: OFFLINE
       :value: "OFFLINE"
 
@@ -93,6 +96,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: STANDARD
       :value: "STANDARD"
 
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
+
 .. autoclass:: ListEndpointResponse
    :members:
    :undoc-members:
@@ -106,6 +122,22 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: MapStringValueEntry
+   :members:
+   :undoc-members:
+
+.. autoclass:: Metric
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricLabel
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricValue
+   :members:
+   :undoc-members:
+
+.. autoclass:: MetricValues
    :members:
    :undoc-members:
 
@@ -144,6 +176,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: ResultManifest
+   :members:
+   :undoc-members:
+
+.. autoclass:: RetrieveUserVisibleMetricsResponse
    :members:
    :undoc-members:
 

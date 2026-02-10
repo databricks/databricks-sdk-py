@@ -208,6 +208,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState
 
+   .. py:attribute:: CREATE_FAILED
+      :value: "CREATE_FAILED"
+
+   .. py:attribute:: CREATING
+      :value: "CREATING"
+
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"
 
@@ -528,6 +534,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
+
 .. autoclass:: IpAccessListInfo
    :members:
    :undoc-members:
@@ -600,6 +619,12 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. py:class:: NccAzurePrivateEndpointRuleConnectionState
+
+   .. py:attribute:: CREATE_FAILED
+      :value: "CREATE_FAILED"
+
+   .. py:attribute:: CREATING
+      :value: "CREATING"
 
    .. py:attribute:: DISCONNECTED
       :value: "DISCONNECTED"

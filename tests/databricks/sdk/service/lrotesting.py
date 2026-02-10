@@ -4,10 +4,10 @@ from __future__ import annotations
 
 import logging
 from dataclasses import dataclass
-from datetime import timedelta
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.common import lro
 from databricks.sdk.retries import RetryError, poll
 from databricks.sdk.service._internal import _enum, _from_dict
@@ -20,14 +20,9 @@ _LOG = logging.getLogger("databricks.sdk")
 
 @dataclass
 class DatabricksServiceExceptionWithDetailsProto:
-    """Serialization format for DatabricksServiceException with error details. This message doesn't
-    work for ScalaPB-04 as google.protobuf.Any is only available to ScalaPB-09. Note the definition
-    of this message should be in sync with DatabricksServiceExceptionProto defined in
-    /api-base/proto/legacy/databricks.proto except the later one doesn't have the error details
-    field defined."""
+    """Databricks Error that is returned by all Databricks APIs."""
 
     details: Optional[List[dict]] = None
-    """@pbjson-skip"""
 
     error_code: Optional[ErrorCode] = None
 
@@ -73,9 +68,7 @@ class DatabricksServiceExceptionWithDetailsProto:
 
 
 class ErrorCode(Enum):
-    """Legacy definition of the ErrorCode enum. Please keep in sync with
-    api-base/proto/error_code.proto (except status code mapping annotations as this file doesn't
-    have them). Will be removed eventually, pending the ScalaPB 0.4 cleanup."""
+    """Error codes returned by Databricks APIs to indicate specific failure conditions."""
 
     ABORTED = "ABORTED"
     ALREADY_EXISTS = "ALREADY_EXISTS"
@@ -174,24 +167,15 @@ class Operation:
     metadata: Optional[dict] = None
     """Service-specific metadata associated with the operation. It typically contains progress
     information and common metadata such as create time. Some services might not provide such
-    metadata. Any method that returns a long-running operation should document the metadata type, if
-    any."""
+    metadata."""
 
     name: Optional[str] = None
     """The server-assigned name, which is only unique within the same service that originally returns
     it. If you use the default HTTP mapping, the `name` should be a resource name ending with
-    `operations/{unique_id}`.
-    
-    Note: multi-segment resource names are not yet supported in the RPC framework and SDK/TF. Until
-    that support is added, `name` must be string without internal `/` separators."""
+    `operations/{unique_id}`."""
 
     response: Optional[dict] = None
-    """The normal, successful response of the operation. If the original method returns no data on
-    success, such as `Delete`, the response is `google.protobuf.Empty`. If the original method is
-    standard `Get`/`Create`/`Update`, the response should be the resource. For other methods, the
-    response should have the type `XxxResponse`, where `Xxx` is the original method name. For
-    example, if the original method name is `TakeSnapshot()`, the inferred response type is
-    `TakeSnapshotResponse`."""
+    """The normal, successful response of the operation."""
 
     def as_dict(self) -> dict:
         """Serializes the Operation into a dictionary suitable for use as a JSON request body."""
@@ -315,6 +299,10 @@ class LroTestingAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", f"/api/2.0/lro-testing/operations/{name}/cancel", headers=headers)
 
     def create_test_resource(self, resource: TestResource) -> CreateTestResourceOperation:
@@ -332,6 +320,10 @@ class LroTestingAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/lro-testing/resources", body=body, headers=headers)
         operation = Operation.from_dict(res)
         return CreateTestResourceOperation(self, operation)
@@ -342,6 +334,10 @@ class LroTestingAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("DELETE", f"/api/2.0/lro-testing/resources/{resource_id}", headers=headers)
         operation = Operation.from_dict(res)
         return DeleteTestResourceOperation(self, operation)
@@ -351,6 +347,10 @@ class LroTestingAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lro-testing/operations/{name}", headers=headers)
         return Operation.from_dict(res)
@@ -368,6 +368,10 @@ class LroTestingAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/lro-testing/resources/{resource_id}", headers=headers)
         return TestResource.from_dict(res)
 
@@ -380,13 +384,13 @@ class CreateTestResourceOperation:
         self._operation = operation
 
     def wait(self, opts: Optional[lro.LroOptions] = None) -> TestResource:
-        """Wait blocks until the long-running operation is completed with default 20 min
-        timeout. If the operation didn't finish within the timeout, this function will
-        raise an error of type TimeoutError, otherwise returns successful response and
-        any errors encountered.
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
 
         :param opts: :class:`LroOptions`
-          Timeout options (default: 20 minutes)
+          Timeout options (default: polls indefinitely)
 
         :returns: :class:`TestResource`
         """
@@ -414,7 +418,7 @@ class CreateTestResourceOperation:
 
             return test_resource, None
 
-        return poll(poll_operation, timeout=opts.timeout if opts is not None else timedelta(minutes=20))
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
 
     def cancel(self):
         """Starts asynchronous cancellation on a long-running operation. The server
@@ -463,13 +467,13 @@ class DeleteTestResourceOperation:
         self._operation = operation
 
     def wait(self, opts: Optional[lro.LroOptions] = None):
-        """Wait blocks until the long-running operation is completed with default 20 min
-        timeout. If the operation didn't finish within the timeout, this function will
-        raise an error of type TimeoutError, otherwise returns successful response and
-        any errors encountered.
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
 
         :param opts: :class:`LroOptions`
-          Timeout options (default: 20 minutes)
+          Timeout options (default: polls indefinitely)
 
         :returns: :class:`Any /* MISSING TYPE */`
         """
@@ -495,7 +499,7 @@ class DeleteTestResourceOperation:
 
             return {}, None
 
-        poll(poll_operation, timeout=opts.timeout if opts is not None else timedelta(minutes=20))
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
 
     def cancel(self):
         """Starts asynchronous cancellation on a long-running operation. The server

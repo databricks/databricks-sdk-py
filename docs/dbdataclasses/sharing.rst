@@ -153,6 +153,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
+
 .. autoclass:: IpAccessList
    :members:
    :undoc-members:
@@ -403,6 +416,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: FEATURE_SPEC
       :value: "FEATURE_SPEC"
 
+   .. py:attribute:: FOREIGN_TABLE
+      :value: "FOREIGN_TABLE"
+
    .. py:attribute:: FUNCTION
       :value: "FUNCTION"
 
@@ -426,6 +442,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VIEW
       :value: "VIEW"
+
+   .. py:attribute:: VOLUME
+      :value: "VOLUME"
 
 .. py:class:: SharedDataObjectHistoryDataSharingStatus
 

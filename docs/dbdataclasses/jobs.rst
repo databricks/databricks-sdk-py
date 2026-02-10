@@ -117,6 +117,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: Compute
+   :members:
+   :undoc-members:
+
 .. autoclass:: ComputeConfig
    :members:
    :undoc-members:
@@ -324,6 +328,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
+
 .. autoclass:: Job
    :members:
    :undoc-members:
@@ -350,10 +367,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: JobDeploymentKind
 
-   * `BUNDLE`: The job is managed by Databricks Asset Bundle.
+   * `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is managed by Databricks and is read-only.
 
    .. py:attribute:: BUNDLE
       :value: "BUNDLE"
+
+   .. py:attribute:: SYSTEM_MANAGED
+      :value: "SYSTEM_MANAGED"
 
 .. py:class:: JobEditMode
 
@@ -483,6 +503,21 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: ListRunsResponse
    :members:
    :undoc-members:
+
+.. autoclass:: ModelTriggerConfiguration
+   :members:
+   :undoc-members:
+
+.. py:class:: ModelTriggerConfigurationCondition
+
+   .. py:attribute:: MODEL_ALIAS_SET
+      :value: "MODEL_ALIAS_SET"
+
+   .. py:attribute:: MODEL_CREATED
+      :value: "MODEL_CREATED"
+
+   .. py:attribute:: MODEL_VERSION_READY
+      :value: "MODEL_VERSION_READY"
 
 .. autoclass:: NotebookOutput
    :members:

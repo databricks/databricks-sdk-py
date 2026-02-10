@@ -10,6 +10,8 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
+from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
 
@@ -876,8 +878,11 @@ class AlertV2Notification:
     """Whether to notify alert subscribers when alert returns back to normal."""
 
     retrigger_seconds: Optional[int] = None
-    """Number of seconds an alert must wait after being triggered to rearm itself. After rearming, it
-    can be triggered again. If 0 or not specified, the alert will not be triggered again."""
+    """Number of seconds an alert waits after being triggered before it is allowed to send another
+    notification. If set to 0 or omitted, the alert will not send any further notifications after
+    the first trigger Setting this value to 1 allows the alert to send a notification on every
+    evaluation where the condition is met, effectively making it always retrigger for notification
+    purposes."""
 
     subscriptions: Optional[List[AlertV2Subscription]] = None
 
@@ -950,6 +955,7 @@ class AlertV2OperandColumn:
     name: str
 
     aggregation: Optional[Aggregation] = None
+    """If not set, the behavior is equivalent to using `First row` in the UI."""
 
     display: Optional[str] = None
 
@@ -2191,6 +2197,69 @@ class DateValueDynamicDate(Enum):
 
     NOW = "NOW"
     YESTERDAY = "YESTERDAY"
+
+
+@dataclass
+class DefaultWarehouseOverride:
+    """Represents a per-user default warehouse override configuration. This resource allows users or
+    administrators to customize how a user's default warehouse is selected for SQL operations. If no
+    override exists for a user, the workspace default warehouse will be used."""
+
+    type: DefaultWarehouseOverrideType
+    """The type of override behavior."""
+
+    default_warehouse_override_id: Optional[str] = None
+    """The ID component of the resource name (user ID)."""
+
+    name: Optional[str] = None
+    """The resource name of the default warehouse override. Format:
+    default-warehouse-overrides/{default_warehouse_override_id}"""
+
+    warehouse_id: Optional[str] = None
+    """The specific warehouse ID when type is CUSTOM. Not set for LAST_SELECTED type."""
+
+    def as_dict(self) -> dict:
+        """Serializes the DefaultWarehouseOverride into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_warehouse_override_id is not None:
+            body["default_warehouse_override_id"] = self.default_warehouse_override_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.type is not None:
+            body["type"] = self.type.value
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DefaultWarehouseOverride into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_warehouse_override_id is not None:
+            body["default_warehouse_override_id"] = self.default_warehouse_override_id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.type is not None:
+            body["type"] = self.type
+        if self.warehouse_id is not None:
+            body["warehouse_id"] = self.warehouse_id
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DefaultWarehouseOverride:
+        """Deserializes the DefaultWarehouseOverride from a dictionary."""
+        return cls(
+            default_warehouse_override_id=d.get("default_warehouse_override_id", None),
+            name=d.get("name", None),
+            type=_enum(d, "type", DefaultWarehouseOverrideType),
+            warehouse_id=d.get("warehouse_id", None),
+        )
+
+
+class DefaultWarehouseOverrideType(Enum):
+    """Type of default warehouse override behavior."""
+
+    CUSTOM = "CUSTOM"
+    LAST_SELECTED = "LAST_SELECTED"
 
 
 @dataclass
@@ -3941,6 +4010,44 @@ class ListAlertsV2Response:
         return cls(alerts=_repeated_dict(d, "alerts", AlertV2), next_page_token=d.get("next_page_token", None))
 
 
+@dataclass
+class ListDefaultWarehouseOverridesResponse:
+    """Response message for ListDefaultWarehouseOverrides."""
+
+    default_warehouse_overrides: Optional[List[DefaultWarehouseOverride]] = None
+    """The default warehouse overrides in the workspace."""
+
+    next_page_token: Optional[str] = None
+    """A token, which can be sent as `page_token` to retrieve the next page. If this field is omitted,
+    there are no subsequent pages."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListDefaultWarehouseOverridesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.default_warehouse_overrides:
+            body["default_warehouse_overrides"] = [v.as_dict() for v in self.default_warehouse_overrides]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListDefaultWarehouseOverridesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.default_warehouse_overrides:
+            body["default_warehouse_overrides"] = self.default_warehouse_overrides
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListDefaultWarehouseOverridesResponse:
+        """Deserializes the ListDefaultWarehouseOverridesResponse from a dictionary."""
+        return cls(
+            default_warehouse_overrides=_repeated_dict(d, "default_warehouse_overrides", DefaultWarehouseOverride),
+            next_page_token=d.get("next_page_token", None),
+        )
+
+
 class ListOrder(Enum):
 
     CREATED_AT = "created_at"
@@ -4844,11 +4951,18 @@ class QueryInfo:
     query_start_time_ms: Optional[int] = None
     """The time the query started."""
 
+    query_tags: Optional[List[QueryTag]] = None
+    """A query execution can be optionally annotated with query tags"""
+
     query_text: Optional[str] = None
     """The text of the query."""
 
     rows_produced: Optional[int] = None
     """The number of results returned by the query."""
+
+    session_id: Optional[str] = None
+    """The spark session UUID that query ran on. This is either the Spark Connect, DBSQL, or SDP
+    session ID."""
 
     spark_ui_url: Optional[str] = None
     """URL to the Spark UI query plan."""
@@ -4909,10 +5023,14 @@ class QueryInfo:
             body["query_source"] = self.query_source.as_dict()
         if self.query_start_time_ms is not None:
             body["query_start_time_ms"] = self.query_start_time_ms
+        if self.query_tags:
+            body["query_tags"] = [v.as_dict() for v in self.query_tags]
         if self.query_text is not None:
             body["query_text"] = self.query_text
         if self.rows_produced is not None:
             body["rows_produced"] = self.rows_produced
+        if self.session_id is not None:
+            body["session_id"] = self.session_id
         if self.spark_ui_url is not None:
             body["spark_ui_url"] = self.spark_ui_url
         if self.statement_type is not None:
@@ -4964,10 +5082,14 @@ class QueryInfo:
             body["query_source"] = self.query_source
         if self.query_start_time_ms is not None:
             body["query_start_time_ms"] = self.query_start_time_ms
+        if self.query_tags:
+            body["query_tags"] = self.query_tags
         if self.query_text is not None:
             body["query_text"] = self.query_text
         if self.rows_produced is not None:
             body["rows_produced"] = self.rows_produced
+        if self.session_id is not None:
+            body["session_id"] = self.session_id
         if self.spark_ui_url is not None:
             body["spark_ui_url"] = self.spark_ui_url
         if self.statement_type is not None:
@@ -5003,8 +5125,10 @@ class QueryInfo:
             query_id=d.get("query_id", None),
             query_source=_from_dict(d, "query_source", ExternalQuerySource),
             query_start_time_ms=d.get("query_start_time_ms", None),
+            query_tags=_repeated_dict(d, "query_tags", QueryTag),
             query_text=d.get("query_text", None),
             rows_produced=d.get("rows_produced", None),
+            session_id=d.get("session_id", None),
             spark_ui_url=d.get("spark_ui_url", None),
             statement_type=_enum(d, "statement_type", QueryStatementType),
             status=_enum(d, "status", QueryStatus),
@@ -5500,6 +5624,40 @@ class QueryStatus(Enum):
     QUEUED = "QUEUED"
     RUNNING = "RUNNING"
     STARTED = "STARTED"
+
+
+@dataclass
+class QueryTag:
+    """* A query execution can be annotated with an optional key-value pair to allow users to attribute
+    the executions by key and optional value to filter by. QueryTag is the user-facing
+    representation."""
+
+    key: str
+
+    value: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the QueryTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the QueryTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> QueryTag:
+        """Deserializes the QueryTag from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
 
 
 @dataclass
@@ -6290,6 +6448,8 @@ class TerminationReasonCode(Enum):
     CLUSTER_OPERATION_TIMEOUT = "CLUSTER_OPERATION_TIMEOUT"
     COMMUNICATION_LOST = "COMMUNICATION_LOST"
     CONTAINER_LAUNCH_FAILURE = "CONTAINER_LAUNCH_FAILURE"
+    CONTROL_PLANE_CONNECTION_FAILURE = "CONTROL_PLANE_CONNECTION_FAILURE"
+    CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG"
     CONTROL_PLANE_REQUEST_FAILURE = "CONTROL_PLANE_REQUEST_FAILURE"
     CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG = "CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG"
     DATABASE_CONNECTION_FAILURE = "DATABASE_CONNECTION_FAILURE"
@@ -6302,7 +6462,6 @@ class TerminationReasonCode(Enum):
     DOCKER_IMAGE_PULL_FAILURE = "DOCKER_IMAGE_PULL_FAILURE"
     DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION = "DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION"
     DOCKER_INVALID_OS_EXCEPTION = "DOCKER_INVALID_OS_EXCEPTION"
-    DRIVER_DNS_RESOLUTION_FAILURE = "DRIVER_DNS_RESOLUTION_FAILURE"
     DRIVER_EVICTION = "DRIVER_EVICTION"
     DRIVER_LAUNCH_TIMEOUT = "DRIVER_LAUNCH_TIMEOUT"
     DRIVER_NODE_UNREACHABLE = "DRIVER_NODE_UNREACHABLE"
@@ -6361,6 +6520,7 @@ class TerminationReasonCode(Enum):
     LAZY_ALLOCATION_TIMEOUT = "LAZY_ALLOCATION_TIMEOUT"
     MAINTENANCE_MODE = "MAINTENANCE_MODE"
     METASTORE_COMPONENT_UNHEALTHY = "METASTORE_COMPONENT_UNHEALTHY"
+    MTLS_PORT_CONNECTIVITY_FAILURE = "MTLS_PORT_CONNECTIVITY_FAILURE"
     NEPHOS_RESOURCE_MANAGEMENT = "NEPHOS_RESOURCE_MANAGEMENT"
     NETVISOR_SETUP_TIMEOUT = "NETVISOR_SETUP_TIMEOUT"
     NETWORK_CHECK_CONTROL_PLANE_FAILURE = "NETWORK_CHECK_CONTROL_PLANE_FAILURE"
@@ -6381,21 +6541,19 @@ class TerminationReasonCode(Enum):
     NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG = "NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG"
     NETWORK_CONFIGURATION_FAILURE = "NETWORK_CONFIGURATION_FAILURE"
     NFS_MOUNT_FAILURE = "NFS_MOUNT_FAILURE"
-    NO_ACTIVATED_K8S = "NO_ACTIVATED_K8S"
-    NO_ACTIVATED_K8S_TESTING_TAG = "NO_ACTIVATED_K8S_TESTING_TAG"
     NO_MATCHED_K8S = "NO_MATCHED_K8S"
     NO_MATCHED_K8S_TESTING_TAG = "NO_MATCHED_K8S_TESTING_TAG"
     NPIP_TUNNEL_SETUP_FAILURE = "NPIP_TUNNEL_SETUP_FAILURE"
     NPIP_TUNNEL_TOKEN_FAILURE = "NPIP_TUNNEL_TOKEN_FAILURE"
     POD_ASSIGNMENT_FAILURE = "POD_ASSIGNMENT_FAILURE"
     POD_SCHEDULING_FAILURE = "POD_SCHEDULING_FAILURE"
+    RATE_LIMITED = "RATE_LIMITED"
     REQUEST_REJECTED = "REQUEST_REJECTED"
     REQUEST_THROTTLED = "REQUEST_THROTTLED"
     RESOURCE_USAGE_BLOCKED = "RESOURCE_USAGE_BLOCKED"
     SECRET_CREATION_FAILURE = "SECRET_CREATION_FAILURE"
     SECRET_PERMISSION_DENIED = "SECRET_PERMISSION_DENIED"
     SECRET_RESOLUTION_ERROR = "SECRET_RESOLUTION_ERROR"
-    SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION = "SECURITY_AGENTS_FAILED_INITIAL_VERIFICATION"
     SECURITY_DAEMON_REGISTRATION_EXCEPTION = "SECURITY_DAEMON_REGISTRATION_EXCEPTION"
     SELF_BOOTSTRAP_FAILURE = "SELF_BOOTSTRAP_FAILURE"
     SERVERLESS_LONG_RUNNING_TERMINATED = "SERVERLESS_LONG_RUNNING_TERMINATED"
@@ -7407,6 +7565,10 @@ class AlertsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/sql/alerts", body=body, headers=headers)
         return Alert.from_dict(res)
 
@@ -7424,6 +7586,10 @@ class AlertsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/sql/alerts/{id}", headers=headers)
 
     def get(self, id: str) -> Alert:
@@ -7437,6 +7603,10 @@ class AlertsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/sql/alerts/{id}", headers=headers)
         return Alert.from_dict(res)
@@ -7461,6 +7631,10 @@ class AlertsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/sql/alerts", query=query, headers=headers)
@@ -7512,6 +7686,10 @@ class AlertsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.0/sql/alerts/{id}", body=body, headers=headers)
         return Alert.from_dict(res)
 
@@ -7522,8 +7700,7 @@ class AlertsLegacyAPI:
     notification destinations if the condition was met. Alerts can be scheduled using the `sql_task` type of
     the Jobs API, e.g. :method:jobs/create.
 
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
-    more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
@@ -7542,8 +7719,7 @@ class AlertsLegacyAPI:
         """Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
         condition of its result, and notifies users or notification destinations if the condition was met.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/create
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/create instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -7578,6 +7754,10 @@ class AlertsLegacyAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/preview/sql/alerts", body=body, headers=headers)
         return LegacyAlert.from_dict(res)
 
@@ -7585,8 +7765,7 @@ class AlertsLegacyAPI:
         """Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
         queries and dashboards, alerts cannot be moved to the trash.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/delete
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/delete instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -7599,13 +7778,16 @@ class AlertsLegacyAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/preview/sql/alerts/{alert_id}", headers=headers)
 
     def get(self, alert_id: str) -> LegacyAlert:
         """Gets an alert.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/get
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/get instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -7618,14 +7800,17 @@ class AlertsLegacyAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/preview/sql/alerts/{alert_id}", headers=headers)
         return LegacyAlert.from_dict(res)
 
     def list(self) -> Iterator[LegacyAlert]:
         """Gets a list of alerts.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/list
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/list instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -7637,14 +7822,17 @@ class AlertsLegacyAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/preview/sql/alerts", headers=headers)
         return [LegacyAlert.from_dict(v) for v in res]
 
     def update(self, alert_id: str, name: str, options: AlertOptions, query_id: str, *, rearm: Optional[int] = None):
         """Updates an alert.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:alerts/update
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:alerts/update instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -7676,6 +7864,10 @@ class AlertsLegacyAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("PUT", f"/api/2.0/preview/sql/alerts/{alert_id}", body=body, headers=headers)
 
 
@@ -7699,6 +7891,10 @@ class AlertsV2API:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/alerts", body=body, headers=headers)
         return AlertV2.from_dict(res)
 
@@ -7713,6 +7909,10 @@ class AlertsV2API:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/alerts/{id}", headers=headers)
         return AlertV2.from_dict(res)
@@ -7735,6 +7935,10 @@ class AlertsV2API:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/alerts", query=query, headers=headers)
             if "alerts" in json:
@@ -7744,21 +7948,30 @@ class AlertsV2API:
                 return
             query["page_token"] = json["next_page_token"]
 
-    def trash_alert(self, id: str):
+    def trash_alert(self, id: str, *, purge: Optional[bool] = None):
         """Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer
         trigger. You can restore a trashed alert through the UI. A trashed alert is permanently deleted after
         30 days.
 
         :param id: str
+        :param purge: bool (optional)
+          Whether to permanently delete the alert. If not set, the alert will only be soft deleted.
 
 
         """
 
+        query = {}
+        if purge is not None:
+            query["purge"] = purge
         headers = {
             "Accept": "application/json",
         }
 
-        self._api.do("DELETE", f"/api/2.0/alerts/{id}", headers=headers)
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/alerts/{id}", query=query, headers=headers)
 
     def update_alert(self, id: str, alert: AlertV2, update_mask: str) -> AlertV2:
         """Update alert
@@ -7788,6 +8001,10 @@ class AlertsV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/alerts/{id}", query=query, body=body, headers=headers)
         return AlertV2.from_dict(res)
@@ -7841,6 +8058,10 @@ class DashboardWidgetsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/preview/sql/widgets", body=body, headers=headers)
         return Widget.from_dict(res)
 
@@ -7856,6 +8077,10 @@ class DashboardWidgetsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/widgets/{id}", headers=headers)
 
@@ -7903,6 +8128,10 @@ class DashboardWidgetsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", f"/api/2.0/preview/sql/widgets/{id}", body=body, headers=headers)
         return Widget.from_dict(res)
 
@@ -7930,6 +8159,10 @@ class DashboardsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
 
     def get(self, dashboard_id: str) -> Dashboard:
@@ -7943,6 +8176,10 @@ class DashboardsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", headers=headers)
         return Dashboard.from_dict(res)
@@ -7985,6 +8222,10 @@ class DashboardsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         query["page"] = 1
         while True:
             json = self._api.do("GET", "/api/2.0/preview/sql/dashboards", query=query, headers=headers)
@@ -8006,6 +8247,10 @@ class DashboardsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/preview/sql/dashboards/trash/{dashboard_id}", headers=headers)
 
@@ -8045,6 +8290,10 @@ class DashboardsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", f"/api/2.0/preview/sql/dashboards/{dashboard_id}", body=body, headers=headers)
         return Dashboard.from_dict(res)
 
@@ -8058,7 +8307,7 @@ class DataSourcesAPI:
     advise you to use any text editor, REST client, or `grep` to search the response from this API for the
     name of your SQL warehouse as it appears in Databricks SQL.
 
-    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
@@ -8070,8 +8319,7 @@ class DataSourcesAPI:
         API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new
         queries against it.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:warehouses/list
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:warehouses/list instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8082,6 +8330,10 @@ class DataSourcesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/preview/sql/data_sources", headers=headers)
         return [DataSource.from_dict(v) for v in res]
@@ -8100,7 +8352,7 @@ class DbsqlPermissionsAPI:
 
     - `CAN_MANAGE`: Allows all actions: read, run, edit, delete, modify permissions (superset of `CAN_RUN`)
 
-    **Note**: A new version of the Databricks SQL API is now available. [Learn more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
@@ -8110,8 +8362,7 @@ class DbsqlPermissionsAPI:
     def get(self, object_type: ObjectTypePlural, object_id: str) -> GetResponse:
         """Gets a JSON representation of the access control list (ACL) for a specified object.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:workspace/getpermissions instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:workspace/getpermissions instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8127,6 +8378,10 @@ class DbsqlPermissionsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}", headers=headers)
         return GetResponse.from_dict(res)
 
@@ -8140,8 +8395,7 @@ class DbsqlPermissionsAPI:
         """Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
         ACL.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:workspace/setpermissions instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:workspace/setpermissions instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8162,6 +8416,10 @@ class DbsqlPermissionsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", f"/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}", body=body, headers=headers
         )
@@ -8172,8 +8430,8 @@ class DbsqlPermissionsAPI:
     ) -> Success:
         """Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
 
-        **Note**: A new version of the Databricks SQL API is now available. For queries and alerts, please use
-        :method:queries/update and :method:alerts/update respectively instead. [Learn more]
+        **Warning**: This API is deprecated. For queries and alerts, please use :method:queries/update and
+        :method:alerts/update respectively instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8194,6 +8452,10 @@ class DbsqlPermissionsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -8235,6 +8497,10 @@ class QueriesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/sql/queries", body=body, headers=headers)
         return Query.from_dict(res)
 
@@ -8252,6 +8518,10 @@ class QueriesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/sql/queries/{id}", headers=headers)
 
     def get(self, id: str) -> Query:
@@ -8265,6 +8535,10 @@ class QueriesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/sql/queries/{id}", headers=headers)
         return Query.from_dict(res)
@@ -8289,6 +8563,10 @@ class QueriesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/sql/queries", query=query, headers=headers)
@@ -8319,6 +8597,10 @@ class QueriesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", f"/api/2.0/sql/queries/{id}/visualizations", query=query, headers=headers)
@@ -8370,6 +8652,10 @@ class QueriesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.0/sql/queries/{id}", body=body, headers=headers)
         return Query.from_dict(res)
 
@@ -8379,8 +8665,7 @@ class QueriesLegacyAPI:
     SQL warehouse, query text, name, description, tags, parameters, and visualizations. Queries can be
     scheduled using the `sql_task` type of the Jobs API, e.g. :method:jobs/create.
 
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
-    more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
@@ -8408,8 +8693,7 @@ class QueriesLegacyAPI:
 
         **Note**: You cannot add a visualization until you create the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/create
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/create instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8460,6 +8744,10 @@ class QueriesLegacyAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/preview/sql/queries", body=body, headers=headers)
         return LegacyQuery.from_dict(res)
 
@@ -8467,8 +8755,7 @@ class QueriesLegacyAPI:
         """Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
         they cannot be used for alerts. The trash is deleted after 30 days.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/delete
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/delete instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8481,14 +8768,17 @@ class QueriesLegacyAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/preview/sql/queries/{query_id}", headers=headers)
 
     def get(self, query_id: str) -> LegacyQuery:
         """Retrieve a query object definition along with contextual permissions information about the currently
         authenticated user.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/get
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/get instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8500,6 +8790,10 @@ class QueriesLegacyAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/preview/sql/queries/{query_id}", headers=headers)
         return LegacyQuery.from_dict(res)
@@ -8517,8 +8811,7 @@ class QueriesLegacyAPI:
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/list
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/list instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8559,6 +8852,10 @@ class QueriesLegacyAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         query["page"] = 1
         while True:
             json = self._api.do("GET", "/api/2.0/preview/sql/queries", query=query, headers=headers)
@@ -8573,8 +8870,7 @@ class QueriesLegacyAPI:
         """Restore a query that has been moved to the trash. A restored query appears in list views and searches.
         You can use restored queries for alerts.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please see the latest version.
-        [Learn more]
+        **Warning**: This API is deprecated. Please see the latest version. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8586,6 +8882,10 @@ class QueriesLegacyAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/preview/sql/queries/trash/{query_id}", headers=headers)
 
@@ -8605,8 +8905,7 @@ class QueriesLegacyAPI:
 
         **Note**: You cannot undo this operation.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use :method:queries/update
-        instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queries/update instead. [Learn more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8653,6 +8952,10 @@ class QueriesLegacyAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.0/preview/sql/queries/{query_id}", body=body, headers=headers)
         return LegacyQuery.from_dict(res)
@@ -8709,6 +9012,10 @@ class QueryHistoryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/sql/history/queries", query=query, headers=headers)
         return ListQueriesResponse.from_dict(res)
 
@@ -8736,6 +9043,10 @@ class QueryVisualizationsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/sql/visualizations", body=body, headers=headers)
         return Visualization.from_dict(res)
 
@@ -8750,6 +9061,10 @@ class QueryVisualizationsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/sql/visualizations/{id}", headers=headers)
 
@@ -8784,6 +9099,10 @@ class QueryVisualizationsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.0/sql/visualizations/{id}", body=body, headers=headers)
         return Visualization.from_dict(res)
 
@@ -8792,8 +9111,7 @@ class QueryVisualizationsLegacyAPI:
     """This is an evolving API that facilitates the addition and removal of vizualisations from existing queries
     within the Databricks Workspace. Data structures may change over time.
 
-    **Note**: A new version of the Databricks SQL API is now available. Please see the latest version. [Learn
-    more]
+    **Warning**: This API is deprecated. Please see the latest version of the Databricks SQL API. [Learn more]
 
     [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html"""
 
@@ -8805,8 +9123,8 @@ class QueryVisualizationsLegacyAPI:
     ) -> LegacyVisualization:
         """Creates visualization in the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/create instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/create instead. [Learn
+        more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8841,14 +9159,18 @@ class QueryVisualizationsLegacyAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/preview/sql/visualizations", body=body, headers=headers)
         return LegacyVisualization.from_dict(res)
 
     def delete(self, id: str):
         """Removes a visualization from the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/delete instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/delete instead. [Learn
+        more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8861,6 +9183,10 @@ class QueryVisualizationsLegacyAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/preview/sql/visualizations/{id}", headers=headers)
 
@@ -8878,8 +9204,8 @@ class QueryVisualizationsLegacyAPI:
     ) -> LegacyVisualization:
         """Updates visualization in the query.
 
-        **Note**: A new version of the Databricks SQL API is now available. Please use
-        :method:queryvisualizations/update instead. [Learn more]
+        **Warning**: This API is deprecated. Please use :method:queryvisualizations/update instead. [Learn
+        more]
 
         [Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html
 
@@ -8923,6 +9249,10 @@ class QueryVisualizationsLegacyAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", f"/api/2.0/preview/sql/visualizations/{id}", body=body, headers=headers)
         return LegacyVisualization.from_dict(res)
 
@@ -8943,6 +9273,10 @@ class RedashConfigAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/redash-v2/config", headers=headers)
         return ClientConfig.from_dict(res)
@@ -9050,6 +9384,10 @@ class StatementExecutionAPI:
 
         headers = {}
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", f"/api/2.0/sql/statements/{statement_id}/cancel", headers=headers)
 
     def execute_statement(
@@ -9063,6 +9401,7 @@ class StatementExecutionAPI:
         format: Optional[Format] = None,
         on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout] = None,
         parameters: Optional[List[StatementParameterListItem]] = None,
+        query_tags: Optional[List[QueryTag]] = None,
         row_limit: Optional[int] = None,
         schema: Optional[str] = None,
         wait_timeout: Optional[str] = None,
@@ -9217,6 +9556,14 @@ class StatementExecutionAPI:
 
           [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
           [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+        :param query_tags: List[:class:`QueryTag`] (optional)
+          An array of query tags to annotate a SQL statement. A query tag consists of a non-empty key and,
+          optionally, a value. To represent a NULL value, either omit the `value` field or manually set it to
+          `null` or white space. Refer to the SQL language reference for the format specification of query
+          tags. There's no significance to the order of tags. Only one value per key will be recorded. A
+          sequence in excess of 20 query tags will be coerced to 20. Example:
+
+          { ..., "query_tags": [ { "key": "team", "value": "eng" }, { "key": "some key only tag" } ] }
         :param row_limit: int (optional)
           Applies the given row limit to the statement's result set, but unlike the `LIMIT` clause in SQL, it
           also sets the `truncated` field in the response to indicate whether the result was trimmed due to
@@ -9255,6 +9602,8 @@ class StatementExecutionAPI:
             body["on_wait_timeout"] = on_wait_timeout.value
         if parameters is not None:
             body["parameters"] = [v.as_dict() for v in parameters]
+        if query_tags is not None:
+            body["query_tags"] = [v.as_dict() for v in query_tags]
         if row_limit is not None:
             body["row_limit"] = row_limit
         if schema is not None:
@@ -9269,6 +9618,10 @@ class StatementExecutionAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/sql/statements", body=body, headers=headers)
         return StatementResponse.from_dict(res)
@@ -9294,6 +9647,10 @@ class StatementExecutionAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/sql/statements/{statement_id}", headers=headers)
         return StatementResponse.from_dict(res)
 
@@ -9317,6 +9674,10 @@ class StatementExecutionAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}", headers=headers
@@ -9503,6 +9864,10 @@ class WarehousesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.0/sql/warehouses", body=body, headers=headers)
         return Wait(
             self.wait_get_warehouse_running,
@@ -9544,6 +9909,39 @@ class WarehousesAPI:
             warehouse_type=warehouse_type,
         ).result(timeout=timeout)
 
+    def create_default_warehouse_override(
+        self, default_warehouse_override: DefaultWarehouseOverride, default_warehouse_override_id: str
+    ) -> DefaultWarehouseOverride:
+        """Creates a new default warehouse override for a user. Users can create their own override. Admins can
+        create overrides for any user.
+
+        :param default_warehouse_override: :class:`DefaultWarehouseOverride`
+          Required. The default warehouse override to create.
+        :param default_warehouse_override_id: str
+          Required. The ID to use for the override, which will become the final component of the override's
+          resource name. Can be a numeric user ID or the literal string "me" for the current user.
+
+        :returns: :class:`DefaultWarehouseOverride`
+        """
+
+        body = default_warehouse_override.as_dict()
+        query = {}
+        if default_warehouse_override_id is not None:
+            query["default_warehouse_override_id"] = default_warehouse_override_id
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "POST", "/api/warehouses/v1/default-warehouse-overrides", query=query, body=body, headers=headers
+        )
+        return DefaultWarehouseOverride.from_dict(res)
+
     def delete(self, id: str):
         """Deletes a SQL warehouse.
 
@@ -9557,7 +9955,33 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/sql/warehouses/{id}", headers=headers)
+
+    def delete_default_warehouse_override(self, name: str):
+        """Deletes the default warehouse override for a user. Users can delete their own override. Admins can
+        delete overrides for any user. After deletion, the workspace default warehouse will be used.
+
+        :param name: str
+          Required. The resource name of the default warehouse override to delete. Format:
+          default-warehouse-overrides/{default_warehouse_override_id} The default_warehouse_override_id can be
+          a numeric user ID or the literal string "me" for the current user.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/warehouses/v1/{name}", headers=headers)
 
     def edit(
         self,
@@ -9673,6 +10097,10 @@ class WarehousesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/edit", body=body, headers=headers)
         return Wait(self.wait_get_warehouse_running, id=id)
 
@@ -9725,8 +10153,36 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/sql/warehouses/{id}", headers=headers)
         return GetWarehouseResponse.from_dict(res)
+
+    def get_default_warehouse_override(self, name: str) -> DefaultWarehouseOverride:
+        """Returns the default warehouse override for a user. Users can fetch their own override. Admins can
+        fetch overrides for any user. If no override exists, the UI will fallback to the workspace default
+        warehouse.
+
+        :param name: str
+          Required. The resource name of the default warehouse override to retrieve. Format:
+          default-warehouse-overrides/{default_warehouse_override_id} The default_warehouse_override_id can be
+          a numeric user ID or the literal string "me" for the current user.
+
+        :returns: :class:`DefaultWarehouseOverride`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/warehouses/v1/{name}", headers=headers)
+        return DefaultWarehouseOverride.from_dict(res)
 
     def get_permission_levels(self, warehouse_id: str) -> GetWarehousePermissionLevelsResponse:
         """Gets the permission levels that a user can have on an object.
@@ -9740,6 +10196,10 @@ class WarehousesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels", headers=headers)
         return GetWarehousePermissionLevelsResponse.from_dict(res)
@@ -9758,6 +10218,10 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/warehouses/{warehouse_id}", headers=headers)
         return WarehousePermissions.from_dict(res)
 
@@ -9771,6 +10235,10 @@ class WarehousesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/sql/config/warehouses", headers=headers)
         return GetWorkspaceWarehouseConfigResponse.from_dict(res)
@@ -9806,11 +10274,57 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/sql/warehouses", query=query, headers=headers)
             if "warehouses" in json:
                 for v in json["warehouses"]:
                     yield EndpointInfo.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_default_warehouse_overrides(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[DefaultWarehouseOverride]:
+        """Lists all default warehouse overrides in the workspace. Only workspace administrators can list all
+        overrides.
+
+        :param page_size: int (optional)
+          The maximum number of overrides to return. The service may return fewer than this value. If
+          unspecified, at most 100 overrides will be returned. The maximum value is 1000; values above 1000
+          will be coerced to 1000.
+        :param page_token: str (optional)
+          A page token, received from a previous `ListDefaultWarehouseOverrides` call. Provide this to
+          retrieve the subsequent page.
+
+          When paginating, all other parameters provided to `ListDefaultWarehouseOverrides` must match the
+          call that provided the page token.
+
+        :returns: Iterator over :class:`DefaultWarehouseOverride`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/warehouses/v1/default-warehouse-overrides", query=query, headers=headers)
+            if "default_warehouse_overrides" in json:
+                for v in json["default_warehouse_overrides"]:
+                    yield DefaultWarehouseOverride.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -9835,6 +10349,10 @@ class WarehousesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
         return WarehousePermissions.from_dict(res)
@@ -9910,6 +10428,10 @@ class WarehousesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("PUT", "/api/2.0/sql/config/warehouses", body=body, headers=headers)
 
     def start(self, id: str) -> Wait[GetWarehouseResponse]:
@@ -9926,6 +10448,10 @@ class WarehousesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/start", headers=headers)
         return Wait(self.wait_get_warehouse_running, id=id)
@@ -9948,11 +10474,62 @@ class WarehousesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", f"/api/2.0/sql/warehouses/{id}/stop", headers=headers)
         return Wait(self.wait_get_warehouse_stopped, id=id)
 
     def stop_and_wait(self, id: str, timeout=timedelta(minutes=20)) -> GetWarehouseResponse:
         return self.stop(id=id).result(timeout=timeout)
+
+    def update_default_warehouse_override(
+        self,
+        name: str,
+        default_warehouse_override: DefaultWarehouseOverride,
+        update_mask: FieldMask,
+        *,
+        allow_missing: Optional[bool] = None,
+    ) -> DefaultWarehouseOverride:
+        """Updates an existing default warehouse override for a user. Users can update their own override. Admins
+        can update overrides for any user.
+
+        :param name: str
+          The resource name of the default warehouse override. Format:
+          default-warehouse-overrides/{default_warehouse_override_id}
+        :param default_warehouse_override: :class:`DefaultWarehouseOverride`
+          Required. The default warehouse override to update. The name field must be set in the format:
+          default-warehouse-overrides/{default_warehouse_override_id} The default_warehouse_override_id can be
+          a numeric user ID or the literal string "me" for the current user.
+        :param update_mask: FieldMask
+          Required. Field mask specifying which fields to update. Only the fields specified in the mask will
+          be updated. Use "*" to update all fields. When allow_missing is true, this field is ignored and all
+          fields are applied.
+        :param allow_missing: bool (optional)
+          If set to true, and the override is not found, a new override will be created. In this situation,
+          `update_mask` is ignored and all fields are applied. Defaults to false.
+
+        :returns: :class:`DefaultWarehouseOverride`
+        """
+
+        body = default_warehouse_override.as_dict()
+        query = {}
+        if allow_missing is not None:
+            query["allow_missing"] = allow_missing
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/warehouses/v1/{name}", query=query, body=body, headers=headers)
+        return DefaultWarehouseOverride.from_dict(res)
 
     def update_permissions(
         self, warehouse_id: str, *, access_control_list: Optional[List[WarehouseAccessControlRequest]] = None
@@ -9974,6 +10551,10 @@ class WarehousesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/warehouses/{warehouse_id}", body=body, headers=headers)
         return WarehousePermissions.from_dict(res)

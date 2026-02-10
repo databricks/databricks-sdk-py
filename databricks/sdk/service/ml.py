@@ -10,6 +10,8 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
+from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
 
@@ -202,6 +204,59 @@ class ApproveTransitionRequestResponse:
 
 
 @dataclass
+class AuthConfig:
+    uc_service_credential_name: Optional[str] = None
+    """Name of the Unity Catalog service credential. This value will be set under the option
+    databricks.serviceCredential"""
+
+    def as_dict(self) -> dict:
+        """Serializes the AuthConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.uc_service_credential_name is not None:
+            body["uc_service_credential_name"] = self.uc_service_credential_name
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AuthConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.uc_service_credential_name is not None:
+            body["uc_service_credential_name"] = self.uc_service_credential_name
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AuthConfig:
+        """Deserializes the AuthConfig from a dictionary."""
+        return cls(uc_service_credential_name=d.get("uc_service_credential_name", None))
+
+
+@dataclass
+class BackfillSource:
+    delta_table_source: Optional[DeltaTableSource] = None
+    """The Delta table source containing the historic data to backfill. Only the delta table name is
+    used for backfill, the entity columns and timeseries column are ignored as they are defined by
+    the associated KafkaSource."""
+
+    def as_dict(self) -> dict:
+        """Serializes the BackfillSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.delta_table_source:
+            body["delta_table_source"] = self.delta_table_source.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the BackfillSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.delta_table_source:
+            body["delta_table_source"] = self.delta_table_source
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> BackfillSource:
+        """Deserializes the BackfillSource from a dictionary."""
+        return cls(delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource))
+
+
+@dataclass
 class BatchCreateMaterializedFeaturesResponse:
     materialized_features: Optional[List[MaterializedFeature]] = None
     """The created materialized features with assigned IDs."""
@@ -224,6 +279,33 @@ class BatchCreateMaterializedFeaturesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> BatchCreateMaterializedFeaturesResponse:
         """Deserializes the BatchCreateMaterializedFeaturesResponse from a dictionary."""
         return cls(materialized_features=_repeated_dict(d, "materialized_features", MaterializedFeature))
+
+
+@dataclass
+class ColumnIdentifier:
+    variant_expr_path: str
+    """String representation of the column name or variant expression path. For nested fields, the leaf
+    value is what will be present in materialized tables and expected to match at query time. For
+    example, the leaf node of value:trip_details.location_details.pickup_zip is pickup_zip."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ColumnIdentifier into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.variant_expr_path is not None:
+            body["variant_expr_path"] = self.variant_expr_path
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ColumnIdentifier into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.variant_expr_path is not None:
+            body["variant_expr_path"] = self.variant_expr_path
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ColumnIdentifier:
+        """Deserializes the ColumnIdentifier from a dictionary."""
+        return cls(variant_expr_path=d.get("variant_expr_path", None))
 
 
 class CommentActivityAction(Enum):
@@ -600,11 +682,15 @@ class CreateWebhookResponse:
 class DataSource:
     delta_table_source: Optional[DeltaTableSource] = None
 
+    kafka_source: Optional[KafkaSource] = None
+
     def as_dict(self) -> dict:
         """Serializes the DataSource into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source.as_dict()
+        if self.kafka_source:
+            body["kafka_source"] = self.kafka_source.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -612,12 +698,17 @@ class DataSource:
         body = {}
         if self.delta_table_source:
             body["delta_table_source"] = self.delta_table_source
+        if self.kafka_source:
+            body["kafka_source"] = self.kafka_source
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> DataSource:
         """Deserializes the DataSource from a dictionary."""
-        return cls(delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource))
+        return cls(
+            delta_table_source=_from_dict(d, "delta_table_source", DeltaTableSource),
+            kafka_source=_from_dict(d, "kafka_source", KafkaSource),
+        )
 
 
 @dataclass
@@ -1375,9 +1466,6 @@ class Feature:
     function: Function
     """The function by which the feature is computed."""
 
-    time_window: TimeWindow
-    """The time window in which the feature is computed."""
-
     description: Optional[str] = None
     """The description of the feature."""
 
@@ -1385,7 +1473,14 @@ class Feature:
     """The filter condition applied to the source data before aggregation."""
 
     lineage_context: Optional[LineageContext] = None
-    """Lineage context information for this feature."""
+    """WARNING: This field is primarily intended for internal use by Databricks systems and is
+    automatically populated when features are created through Databricks notebooks or jobs. Users
+    should not manually set this field as incorrect values may lead to inaccurate lineage tracking
+    or unexpected behavior. This field will be set by feature-engineering client and should be left
+    unset by SDK and terraform users."""
+
+    time_window: Optional[TimeWindow] = None
+    """The time window in which the feature is computed."""
 
     def as_dict(self) -> dict:
         """Serializes the Feature into a dictionary suitable for use as a JSON request body."""
@@ -2360,6 +2455,141 @@ class JobSpecWithoutSecret:
 
 
 @dataclass
+class KafkaConfig:
+    name: str
+    """Name that uniquely identifies this Kafka config within the metastore. This will be the
+    identifier used from the Feature object to reference these configs for a feature. Can be
+    distinct from topic name."""
+
+    bootstrap_servers: str
+    """A comma-separated list of host/port pairs pointing to Kafka cluster."""
+
+    subscription_mode: SubscriptionMode
+    """Options to configure which Kafka topics to pull data from."""
+
+    auth_config: AuthConfig
+    """Authentication configuration for connection to topics."""
+
+    backfill_source: Optional[BackfillSource] = None
+    """A user-provided and managed source for backfilling data. Historical data is used when creating a
+    training set from streaming features linked to this Kafka config. In the future, a separate
+    table will be maintained by Databricks for forward filling data. The schema for this source must
+    match exactly that of the key and value schemas specified for this Kafka config."""
+
+    extra_options: Optional[Dict[str, str]] = None
+    """Catch-all for miscellaneous options. Keys should be source options or Kafka consumer options
+    (kafka.*)"""
+
+    key_schema: Optional[SchemaConfig] = None
+    """Schema configuration for extracting message keys from topics. At least one of key_schema and
+    value_schema must be provided."""
+
+    value_schema: Optional[SchemaConfig] = None
+    """Schema configuration for extracting message values from topics. At least one of key_schema and
+    value_schema must be provided."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.auth_config:
+            body["auth_config"] = self.auth_config.as_dict()
+        if self.backfill_source:
+            body["backfill_source"] = self.backfill_source.as_dict()
+        if self.bootstrap_servers is not None:
+            body["bootstrap_servers"] = self.bootstrap_servers
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.key_schema:
+            body["key_schema"] = self.key_schema.as_dict()
+        if self.name is not None:
+            body["name"] = self.name
+        if self.subscription_mode:
+            body["subscription_mode"] = self.subscription_mode.as_dict()
+        if self.value_schema:
+            body["value_schema"] = self.value_schema.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.auth_config:
+            body["auth_config"] = self.auth_config
+        if self.backfill_source:
+            body["backfill_source"] = self.backfill_source
+        if self.bootstrap_servers is not None:
+            body["bootstrap_servers"] = self.bootstrap_servers
+        if self.extra_options:
+            body["extra_options"] = self.extra_options
+        if self.key_schema:
+            body["key_schema"] = self.key_schema
+        if self.name is not None:
+            body["name"] = self.name
+        if self.subscription_mode:
+            body["subscription_mode"] = self.subscription_mode
+        if self.value_schema:
+            body["value_schema"] = self.value_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaConfig:
+        """Deserializes the KafkaConfig from a dictionary."""
+        return cls(
+            auth_config=_from_dict(d, "auth_config", AuthConfig),
+            backfill_source=_from_dict(d, "backfill_source", BackfillSource),
+            bootstrap_servers=d.get("bootstrap_servers", None),
+            extra_options=d.get("extra_options", None),
+            key_schema=_from_dict(d, "key_schema", SchemaConfig),
+            name=d.get("name", None),
+            subscription_mode=_from_dict(d, "subscription_mode", SubscriptionMode),
+            value_schema=_from_dict(d, "value_schema", SchemaConfig),
+        )
+
+
+@dataclass
+class KafkaSource:
+    name: str
+    """Name of the Kafka source, used to identify it. This is used to look up the corresponding
+    KafkaConfig object. Can be distinct from topic name."""
+
+    entity_column_identifiers: List[ColumnIdentifier]
+    """The entity column identifiers of the Kafka source."""
+
+    timeseries_column_identifier: ColumnIdentifier
+    """The timeseries column identifier of the Kafka source."""
+
+    def as_dict(self) -> dict:
+        """Serializes the KafkaSource into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.entity_column_identifiers:
+            body["entity_column_identifiers"] = [v.as_dict() for v in self.entity_column_identifiers]
+        if self.name is not None:
+            body["name"] = self.name
+        if self.timeseries_column_identifier:
+            body["timeseries_column_identifier"] = self.timeseries_column_identifier.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the KafkaSource into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.entity_column_identifiers:
+            body["entity_column_identifiers"] = self.entity_column_identifiers
+        if self.name is not None:
+            body["name"] = self.name
+        if self.timeseries_column_identifier:
+            body["timeseries_column_identifier"] = self.timeseries_column_identifier
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> KafkaSource:
+        """Deserializes the KafkaSource from a dictionary."""
+        return cls(
+            entity_column_identifiers=_repeated_dict(d, "entity_column_identifiers", ColumnIdentifier),
+            name=d.get("name", None),
+            timeseries_column_identifier=_from_dict(d, "timeseries_column_identifier", ColumnIdentifier),
+        )
+
+
+@dataclass
 class LineageContext:
     """Lineage context information for tracking where an API was invoked. This will allow us to track
     lineage, which currently uses caller entity information for use across the Lineage Client and
@@ -2583,6 +2813,41 @@ class ListFeaturesResponse:
     def from_dict(cls, d: Dict[str, Any]) -> ListFeaturesResponse:
         """Deserializes the ListFeaturesResponse from a dictionary."""
         return cls(features=_repeated_dict(d, "features", Feature), next_page_token=d.get("next_page_token", None))
+
+
+@dataclass
+class ListKafkaConfigsResponse:
+    kafka_configs: List[KafkaConfig]
+    """List of Kafka configs. Schemas are not included in the response."""
+
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of results for this query."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ListKafkaConfigsResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.kafka_configs:
+            body["kafka_configs"] = [v.as_dict() for v in self.kafka_configs]
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListKafkaConfigsResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.kafka_configs:
+            body["kafka_configs"] = self.kafka_configs
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListKafkaConfigsResponse:
+        """Deserializes the ListKafkaConfigsResponse from a dictionary."""
+        return cls(
+            kafka_configs=_repeated_dict(d, "kafka_configs", KafkaConfig),
+            next_page_token=d.get("next_page_token", None),
+        )
 
 
 @dataclass
@@ -3145,6 +3410,10 @@ class MaterializedFeature:
     feature_name: str
     """The full name of the feature in Unity Catalog."""
 
+    cron_schedule: Optional[str] = None
+    """The quartz cron expression that defines the schedule of the materialization pipeline. The
+    schedule is evaluated in the UTC timezone."""
+
     last_materialization_time: Optional[str] = None
     """The timestamp when the pipeline last ran and updated the materialized feature values. If the
     pipeline has not run yet, this field will be null."""
@@ -3154,7 +3423,7 @@ class MaterializedFeature:
 
     offline_store_config: Optional[OfflineStoreConfig] = None
 
-    online_store_config: Optional[OnlineStore] = None
+    online_store_config: Optional[OnlineStoreConfig] = None
 
     pipeline_schedule_state: Optional[MaterializedFeaturePipelineScheduleState] = None
     """The schedule state of the materialization pipeline."""
@@ -3166,6 +3435,8 @@ class MaterializedFeature:
     def as_dict(self) -> dict:
         """Serializes the MaterializedFeature into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.cron_schedule is not None:
+            body["cron_schedule"] = self.cron_schedule
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
         if self.last_materialization_time is not None:
@@ -3185,6 +3456,8 @@ class MaterializedFeature:
     def as_shallow_dict(self) -> dict:
         """Serializes the MaterializedFeature into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.cron_schedule is not None:
+            body["cron_schedule"] = self.cron_schedule
         if self.feature_name is not None:
             body["feature_name"] = self.feature_name
         if self.last_materialization_time is not None:
@@ -3205,11 +3478,12 @@ class MaterializedFeature:
     def from_dict(cls, d: Dict[str, Any]) -> MaterializedFeature:
         """Deserializes the MaterializedFeature from a dictionary."""
         return cls(
+            cron_schedule=d.get("cron_schedule", None),
             feature_name=d.get("feature_name", None),
             last_materialization_time=d.get("last_materialization_time", None),
             materialized_feature_id=d.get("materialized_feature_id", None),
             offline_store_config=_from_dict(d, "offline_store_config", OfflineStoreConfig),
-            online_store_config=_from_dict(d, "online_store_config", OnlineStore),
+            online_store_config=_from_dict(d, "online_store_config", OnlineStoreConfig),
             pipeline_schedule_state=_enum(d, "pipeline_schedule_state", MaterializedFeaturePipelineScheduleState),
             table_name=d.get("table_name", None),
         )
@@ -3966,6 +4240,9 @@ class OnlineStore:
     state: Optional[OnlineStoreState] = None
     """The current state of the online store."""
 
+    usage_policy_id: Optional[str] = None
+    """The usage policy applied to the online store to track billing."""
+
     def as_dict(self) -> dict:
         """Serializes the OnlineStore into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -3981,6 +4258,8 @@ class OnlineStore:
             body["read_replica_count"] = self.read_replica_count
         if self.state is not None:
             body["state"] = self.state.value
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3998,6 +4277,8 @@ class OnlineStore:
             body["read_replica_count"] = self.read_replica_count
         if self.state is not None:
             body["state"] = self.state
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
         return body
 
     @classmethod
@@ -4010,6 +4291,61 @@ class OnlineStore:
             name=d.get("name", None),
             read_replica_count=d.get("read_replica_count", None),
             state=_enum(d, "state", OnlineStoreState),
+            usage_policy_id=d.get("usage_policy_id", None),
+        )
+
+
+@dataclass
+class OnlineStoreConfig:
+    """Configuration for online store destination."""
+
+    catalog_name: str
+    """The Unity Catalog catalog name. This name is also used as the Lakebase logical database name."""
+
+    schema_name: str
+    """The Unity Catalog schema name."""
+
+    table_name_prefix: str
+    """Prefix for Unity Catalog table name. The materialized feature will be stored in a Lakebase table
+    with this prefix and a generated postfix."""
+
+    online_store_name: str
+    """The name of the target online store."""
+
+    def as_dict(self) -> dict:
+        """Serializes the OnlineStoreConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.online_store_name is not None:
+            body["online_store_name"] = self.online_store_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the OnlineStoreConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.catalog_name is not None:
+            body["catalog_name"] = self.catalog_name
+        if self.online_store_name is not None:
+            body["online_store_name"] = self.online_store_name
+        if self.schema_name is not None:
+            body["schema_name"] = self.schema_name
+        if self.table_name_prefix is not None:
+            body["table_name_prefix"] = self.table_name_prefix
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> OnlineStoreConfig:
+        """Deserializes the OnlineStoreConfig from a dictionary."""
+        return cls(
+            catalog_name=d.get("catalog_name", None),
+            online_store_name=d.get("online_store_name", None),
+            schema_name=d.get("schema_name", None),
+            table_name_prefix=d.get("table_name_prefix", None),
         )
 
 
@@ -4927,6 +5263,31 @@ class RunTag:
 
 
 @dataclass
+class SchemaConfig:
+    json_schema: Optional[str] = None
+    """Schema of the JSON object in standard IETF JSON schema format (https://json-schema.org/)"""
+
+    def as_dict(self) -> dict:
+        """Serializes the SchemaConfig into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.json_schema is not None:
+            body["json_schema"] = self.json_schema
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SchemaConfig into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.json_schema is not None:
+            body["json_schema"] = self.json_schema
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SchemaConfig:
+        """Deserializes the SchemaConfig from a dictionary."""
+        return cls(json_schema=d.get("json_schema", None))
+
+
+@dataclass
 class SearchExperimentsResponse:
     experiments: Optional[List[Experiment]] = None
     """Experiments that match the search criteria"""
@@ -5315,6 +5676,51 @@ class Status(Enum):
     FAILED_REGISTRATION = "FAILED_REGISTRATION"
     PENDING_REGISTRATION = "PENDING_REGISTRATION"
     READY = "READY"
+
+
+@dataclass
+class SubscriptionMode:
+    assign: Optional[str] = None
+    """A JSON string that contains the specific topic-partitions to consume from. For example, for
+    '{"topicA":[0,1],"topicB":[2,4]}', topicA's 0'th and 1st partitions will be consumed from."""
+
+    subscribe: Optional[str] = None
+    """A comma-separated list of Kafka topics to read from. For example, 'topicA,topicB,topicC'."""
+
+    subscribe_pattern: Optional[str] = None
+    """A regular expression matching topics to subscribe to. For example, 'topic.*' will subscribe to
+    all topics starting with 'topic'."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SubscriptionMode into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.assign is not None:
+            body["assign"] = self.assign
+        if self.subscribe is not None:
+            body["subscribe"] = self.subscribe
+        if self.subscribe_pattern is not None:
+            body["subscribe_pattern"] = self.subscribe_pattern
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SubscriptionMode into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.assign is not None:
+            body["assign"] = self.assign
+        if self.subscribe is not None:
+            body["subscribe"] = self.subscribe
+        if self.subscribe_pattern is not None:
+            body["subscribe_pattern"] = self.subscribe_pattern
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SubscriptionMode:
+        """Deserializes the SubscriptionMode from a dictionary."""
+        return cls(
+            assign=d.get("assign", None),
+            subscribe=d.get("subscribe", None),
+            subscribe_pattern=d.get("subscribe_pattern", None),
+        )
 
 
 @dataclass
@@ -5714,6 +6120,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/experiments/create", body=body, headers=headers)
         return CreateExperimentResponse.from_dict(res)
 
@@ -5763,6 +6173,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/logged-models", body=body, headers=headers)
         return CreateLoggedModelResponse.from_dict(res)
 
@@ -5810,6 +6224,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/runs/create", body=body, headers=headers)
         return CreateRunResponse.from_dict(res)
 
@@ -5831,6 +6249,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/experiments/delete", body=body, headers=headers)
 
     def delete_logged_model(self, model_id: str):
@@ -5845,6 +6267,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
 
@@ -5862,6 +6288,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.0/mlflow/logged-models/{model_id}/tags/{tag_key}", headers=headers)
 
@@ -5881,6 +6311,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/delete", body=body, headers=headers)
 
@@ -5915,6 +6349,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/databricks/runs/delete-runs", body=body, headers=headers)
         return DeleteRunsResponse.from_dict(res)
 
@@ -5940,6 +6378,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/delete-tag", body=body, headers=headers)
 
     def finalize_logged_model(self, model_id: str, status: LoggedModelStatus) -> FinalizeLoggedModelResponse:
@@ -5961,6 +6403,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}", body=body, headers=headers)
         return FinalizeLoggedModelResponse.from_dict(res)
@@ -5987,6 +6433,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get-by-name", query=query, headers=headers)
         return GetExperimentByNameResponse.from_dict(res)
 
@@ -6005,6 +6455,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/experiments/get", query=query, headers=headers)
         return GetExperimentResponse.from_dict(res)
@@ -6051,6 +6505,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/metrics/get-history", query=query, headers=headers)
             if "metrics" in json:
@@ -6073,6 +6531,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/mlflow/logged-models/{model_id}", headers=headers)
         return GetLoggedModelResponse.from_dict(res)
 
@@ -6089,6 +6551,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/permissions/experiments/{experiment_id}/permissionLevels", headers=headers)
         return GetExperimentPermissionLevelsResponse.from_dict(res)
 
@@ -6104,6 +6570,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/experiments/{experiment_id}", headers=headers)
         return ExperimentPermissions.from_dict(res)
@@ -6131,6 +6601,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/runs/get", query=query, headers=headers)
         return GetRunResponse.from_dict(res)
@@ -6179,6 +6653,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/artifacts/list", query=query, headers=headers)
             if "files" in json:
@@ -6219,6 +6697,10 @@ class ExperimentsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/experiments/list", query=query, headers=headers)
@@ -6307,6 +6789,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-batch", body=body, headers=headers)
 
     def log_inputs(
@@ -6336,6 +6822,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-inputs", body=body, headers=headers)
 
     def log_logged_model_params(self, model_id: str, *, params: Optional[List[LoggedModelParameter]] = None):
@@ -6358,6 +6848,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", f"/api/2.0/mlflow/logged-models/{model_id}/params", body=body, headers=headers)
 
@@ -6427,6 +6921,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-metric", body=body, headers=headers)
 
     def log_model(self, *, model_json: Optional[str] = None, run_id: Optional[str] = None):
@@ -6453,6 +6951,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-model", body=body, headers=headers)
 
     def log_outputs(self, run_id: str, *, models: Optional[List[ModelOutput]] = None):
@@ -6475,6 +6977,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/outputs", body=body, headers=headers)
 
@@ -6510,6 +7016,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/log-parameter", body=body, headers=headers)
 
     def restore_experiment(self, experiment_id: str):
@@ -6533,6 +7043,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/experiments/restore", body=body, headers=headers)
 
     def restore_run(self, run_id: str):
@@ -6553,6 +7067,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("POST", "/api/2.0/mlflow/runs/restore", body=body, headers=headers)
 
@@ -6586,6 +7104,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/databricks/runs/restore-runs", body=body, headers=headers)
         return RestoreRunsResponse.from_dict(res)
@@ -6632,6 +7154,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("POST", "/api/2.0/mlflow/experiments/search", body=body, headers=headers)
@@ -6694,6 +7220,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/logged-models/search", body=body, headers=headers)
         return SearchLoggedModelsResponse.from_dict(res)
@@ -6759,6 +7289,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("POST", "/api/2.0/mlflow/runs/search", body=body, headers=headers)
             if "runs" in json:
@@ -6793,6 +7327,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/experiments/set-experiment-tag", body=body, headers=headers)
 
     def set_logged_model_tags(self, model_id: str, *, tags: Optional[List[LoggedModelTag]] = None):
@@ -6813,6 +7351,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("PATCH", f"/api/2.0/mlflow/logged-models/{model_id}/tags", body=body, headers=headers)
 
@@ -6836,6 +7378,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PUT", f"/api/2.0/permissions/experiments/{experiment_id}", body=body, headers=headers)
         return ExperimentPermissions.from_dict(res)
@@ -6870,6 +7416,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/runs/set-tag", body=body, headers=headers)
 
     def update_experiment(self, experiment_id: str, *, new_name: Optional[str] = None):
@@ -6893,6 +7443,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/experiments/update", body=body, headers=headers)
 
     def update_permissions(
@@ -6914,6 +7468,10 @@ class ExperimentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/experiments/{experiment_id}", body=body, headers=headers)
         return ExperimentPermissions.from_dict(res)
@@ -6960,6 +7518,10 @@ class ExperimentsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/runs/update", body=body, headers=headers)
         return UpdateRunResponse.from_dict(res)
 
@@ -6989,6 +7551,10 @@ class FeatureEngineeringAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", "/api/2.0/feature-engineering/materialized-features:batchCreate", body=body, headers=headers
         )
@@ -7009,8 +7575,34 @@ class FeatureEngineeringAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/feature-engineering/features", body=body, headers=headers)
         return Feature.from_dict(res)
+
+    def create_kafka_config(self, kafka_config: KafkaConfig) -> KafkaConfig:
+        """Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param kafka_config: :class:`KafkaConfig`
+
+        :returns: :class:`KafkaConfig`
+        """
+
+        body = kafka_config.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/feature-engineering/features/kafka-configs", body=body, headers=headers)
+        return KafkaConfig.from_dict(res)
 
     def create_materialized_feature(self, materialized_feature: MaterializedFeature) -> MaterializedFeature:
         """Create a materialized feature.
@@ -7026,6 +7618,10 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/feature-engineering/materialized-features", body=body, headers=headers)
         return MaterializedFeature.from_dict(res)
@@ -7043,7 +7639,31 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
+
+    def delete_kafka_config(self, name: str):
+        """Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param name: str
+          Name of the Kafka config to delete.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/feature-engineering/features/kafka-configs/{name}", headers=headers)
 
     def delete_materialized_feature(self, materialized_feature_id: str):
         """Delete a materialized feature.
@@ -7057,6 +7677,10 @@ class FeatureEngineeringAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE", f"/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}", headers=headers
@@ -7075,8 +7699,33 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/feature-engineering/features/{full_name}", headers=headers)
         return Feature.from_dict(res)
+
+    def get_kafka_config(self, name: str) -> KafkaConfig:
+        """Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the
+        entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param name: str
+          Name of the Kafka config to get.
+
+        :returns: :class:`KafkaConfig`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/feature-engineering/features/kafka-configs/{name}", headers=headers)
+        return KafkaConfig.from_dict(res)
 
     def get_materialized_feature(self, materialized_feature_id: str) -> MaterializedFeature:
         """Get a materialized feature.
@@ -7090,6 +7739,10 @@ class FeatureEngineeringAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}", headers=headers
@@ -7116,11 +7769,53 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/feature-engineering/features", query=query, headers=headers)
             if "features" in json:
                 for v in json["features"]:
                     yield Feature.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_kafka_configs(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None
+    ) -> Iterator[KafkaConfig]:
+        """List Kafka configs. During PrPr, Kafka configs can be read and used when creating features under the
+        entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param page_size: int (optional)
+          The maximum number of results to return.
+        :param page_token: str (optional)
+          Pagination token to go to the next page based on a previous query.
+
+        :returns: Iterator over :class:`KafkaConfig`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do(
+                "GET", "/api/2.0/feature-engineering/features/kafka-configs", query=query, headers=headers
+            )
+            if "kafka_configs" in json:
+                for v in json["kafka_configs"]:
+                    yield KafkaConfig.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -7152,6 +7847,10 @@ class FeatureEngineeringAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -7186,10 +7885,52 @@ class FeatureEngineeringAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "PATCH", f"/api/2.0/feature-engineering/features/{full_name}", query=query, body=body, headers=headers
         )
         return Feature.from_dict(res)
+
+    def update_kafka_config(self, name: str, kafka_config: KafkaConfig, update_mask: FieldMask) -> KafkaConfig:
+        """Update a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
+        the entire metastore. Only the creator of the Kafka config can delete it.
+
+        :param name: str
+          Name that uniquely identifies this Kafka config within the metastore. This will be the identifier
+          used from the Feature object to reference these configs for a feature. Can be distinct from topic
+          name.
+        :param kafka_config: :class:`KafkaConfig`
+          The Kafka config to update.
+        :param update_mask: FieldMask
+          The list of fields to update.
+
+        :returns: :class:`KafkaConfig`
+        """
+
+        body = kafka_config.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do(
+            "PATCH",
+            f"/api/2.0/feature-engineering/features/kafka-configs/{name}",
+            query=query,
+            body=body,
+            headers=headers,
+        )
+        return KafkaConfig.from_dict(res)
 
     def update_materialized_feature(
         self, materialized_feature_id: str, materialized_feature: MaterializedFeature, update_mask: str
@@ -7215,6 +7956,10 @@ class FeatureEngineeringAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -7252,6 +7997,10 @@ class FeatureStoreAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/feature-store/online-stores", body=body, headers=headers)
         return OnlineStore.from_dict(res)
 
@@ -7268,7 +8017,30 @@ class FeatureStoreAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
+
+    def delete_online_table(self, online_table_name: str):
+        """Delete online table.
+
+        :param online_table_name: str
+          The full three-part (catalog, schema, table) name of the online table.
+
+
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        self._api.do("DELETE", f"/api/2.0/feature-store/online-tables/{online_table_name}", headers=headers)
 
     def get_online_store(self, name: str) -> OnlineStore:
         """Get an Online Feature Store.
@@ -7282,6 +8054,10 @@ class FeatureStoreAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/feature-store/online-stores/{name}", headers=headers)
         return OnlineStore.from_dict(res)
@@ -7307,6 +8083,10 @@ class FeatureStoreAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/feature-store/online-stores", query=query, headers=headers)
@@ -7336,6 +8116,10 @@ class FeatureStoreAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", f"/api/2.0/feature-store/tables/{source_table_name}/publish", body=body, headers=headers
         )
@@ -7362,6 +8146,10 @@ class FeatureStoreAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/feature-store/online-stores/{name}", query=query, body=body, headers=headers
@@ -7527,6 +8315,10 @@ class ForecastingAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         op_response = self._api.do("POST", "/api/2.0/automl/create-forecasting-experiment", body=body, headers=headers)
         return Wait(
             self.wait_get_experiment_forecasting_succeeded,
@@ -7589,6 +8381,10 @@ class ForecastingAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", f"/api/2.0/automl/get-forecasting-experiment/{experiment_id}", headers=headers)
         return ForecastingExperiment.from_dict(res)
 
@@ -7616,6 +8412,10 @@ class MaterializedFeaturesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST",
             f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags",
@@ -7641,6 +8441,10 @@ class MaterializedFeaturesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do(
             "DELETE",
             f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags/{key}",
@@ -7662,6 +8466,10 @@ class MaterializedFeaturesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET",
             f"/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/lineage",
@@ -7682,6 +8490,10 @@ class MaterializedFeaturesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -7713,6 +8525,10 @@ class MaterializedFeaturesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -7757,6 +8573,10 @@ class MaterializedFeaturesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -7823,6 +8643,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/approve", body=body, headers=headers)
         return ApproveTransitionRequestResponse.from_dict(res)
 
@@ -7851,6 +8675,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/comments/create", body=body, headers=headers)
         return CreateCommentResponse.from_dict(res)
@@ -7882,6 +8710,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/registered-models/create", body=body, headers=headers)
         return CreateModelResponse.from_dict(res)
@@ -7934,6 +8766,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/model-versions/create", body=body, headers=headers)
         return CreateModelVersionResponse.from_dict(res)
 
@@ -7975,6 +8811,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/create", body=body, headers=headers)
         return CreateTransitionRequestResponse.from_dict(res)
@@ -8059,6 +8899,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/registry-webhooks/create", body=body, headers=headers)
         return CreateWebhookResponse.from_dict(res)
 
@@ -8078,6 +8922,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", "/api/2.0/mlflow/comments/delete", query=query, headers=headers)
 
     def delete_model(self, name: str):
@@ -8095,6 +8943,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete", query=query, headers=headers)
 
@@ -8119,6 +8971,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("DELETE", "/api/2.0/mlflow/registered-models/delete-tag", query=query, headers=headers)
 
     def delete_model_version(self, name: str, version: str):
@@ -8140,6 +8996,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete", query=query, headers=headers)
 
@@ -8167,6 +9027,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/model-versions/delete-tag", query=query, headers=headers)
 
@@ -8213,6 +9077,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("DELETE", "/api/2.0/mlflow/transition-requests/delete", query=query, headers=headers)
         return DeleteTransitionRequestResponse.from_dict(res)
 
@@ -8231,6 +9099,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", "/api/2.0/mlflow/registry-webhooks/delete", query=query, headers=headers)
 
@@ -8254,6 +9126,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("POST", "/api/2.0/mlflow/registered-models/get-latest-versions", body=body, headers=headers)
         parsed = GetLatestVersionsResponse.from_dict(json).model_versions
@@ -8279,6 +9155,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/mlflow/databricks/registered-models/get", query=query, headers=headers)
         return GetModelResponse.from_dict(res)
 
@@ -8301,6 +9181,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", "/api/2.0/mlflow/model-versions/get", query=query, headers=headers)
         return GetModelVersionResponse.from_dict(res)
@@ -8325,6 +9209,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("GET", "/api/2.0/mlflow/model-versions/get-download-uri", query=query, headers=headers)
         return GetModelVersionDownloadUriResponse.from_dict(res)
 
@@ -8340,6 +9228,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels", headers=headers
@@ -8359,6 +9251,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/permissions/registered-models/{registered_model_id}", headers=headers)
         return RegisteredModelPermissions.from_dict(res)
@@ -8382,6 +9278,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/registered-models/list", query=query, headers=headers)
@@ -8411,6 +9311,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", "/api/2.0/mlflow/transition-requests/list", query=query, headers=headers)
         parsed = ListTransitionRequestsResponse.from_dict(json).requests
@@ -8481,6 +9385,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/registry-webhooks/list", query=query, headers=headers)
             if "webhooks" in json:
@@ -8529,6 +9437,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/mlflow/transition-requests/reject", body=body, headers=headers)
         return RejectTransitionRequestResponse.from_dict(res)
 
@@ -8552,6 +9464,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/registered-models/rename", body=body, headers=headers)
         return RenameModelResponse.from_dict(res)
@@ -8593,6 +9509,10 @@ class ModelRegistryAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/model-versions/search", query=query, headers=headers)
@@ -8642,6 +9562,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         while True:
             json = self._api.do("GET", "/api/2.0/mlflow/registered-models/search", query=query, headers=headers)
             if "registered_models" in json:
@@ -8679,6 +9603,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/registered-models/set-tag", body=body, headers=headers)
 
     def set_model_version_tag(self, name: str, version: str, key: str, value: str):
@@ -8713,6 +9641,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", "/api/2.0/mlflow/model-versions/set-tag", body=body, headers=headers)
 
     def set_permissions(
@@ -8738,6 +9670,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/permissions/registered-models/{registered_model_id}", body=body, headers=headers
@@ -8767,6 +9703,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/mlflow/registry-webhooks/test", body=body, headers=headers)
         return TestRegistryWebhookResponse.from_dict(res)
@@ -8817,6 +9757,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", "/api/2.0/mlflow/databricks/model-versions/transition-stage", body=body, headers=headers
         )
@@ -8843,6 +9787,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", "/api/2.0/mlflow/comments/update", body=body, headers=headers)
         return UpdateCommentResponse.from_dict(res)
 
@@ -8866,6 +9814,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/mlflow/registered-models/update", body=body, headers=headers)
         return UpdateModelResponse.from_dict(res)
@@ -8897,6 +9849,10 @@ class ModelRegistryAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", "/api/2.0/mlflow/model-versions/update", body=body, headers=headers)
         return UpdateModelVersionResponse.from_dict(res)
 
@@ -8923,6 +9879,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH", f"/api/2.0/permissions/registered-models/{registered_model_id}", body=body, headers=headers
@@ -8998,6 +9958,10 @@ class ModelRegistryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", "/api/2.0/mlflow/registry-webhooks/update", body=body, headers=headers)
         return UpdateWebhookResponse.from_dict(res)
