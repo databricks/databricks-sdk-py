@@ -1,0 +1,1864 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Databricks Oauth2 API (account)",
+    "description": "OpenAPI specification for the Databricks oauth2 service (account-level APIs), generated from the Databricks Python SDK.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://accounts.cloud.databricks.com",
+      "description": "Databricks account"
+    }
+  ],
+  "paths": {
+    "/api/2.0/accounts/{account_id}/federationPolicies": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create account federation policy.",
+        "tags": [
+          "oauth2",
+          "account_federation_policy"
+        ],
+        "description": "Create account federation policy.\n\n:param policy: :class:`FederationPolicy`\n:param policy_id: str (optional)\n  The identifier for the federation policy. The identifier must contain only lowercase alphanumeric\n  characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.\n\n:returns: :class:`FederationPolicy`",
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "policy": {
+                    "type": "string",
+                    "description": ":param policy_id: str (optional) The identifier for the federation policy. The identifier must contain only lowercase alphanumeric characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks."
+                  }
+                },
+                "required": [
+                  "policy"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FederationPolicy"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "List account federation policies.",
+        "tags": [
+          "oauth2",
+          "account_federation_policy"
+        ],
+        "description": "List account federation policies.\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`FederationPolicy`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[FederationPolicy]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/accounts/{account_id}/federationPolicies/{policy_id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Delete account federation policy.",
+        "tags": [
+          "oauth2",
+          "account_federation_policy"
+        ],
+        "description": "Delete account federation policy.\n\n:param policy_id: str\n  The identifier for the federation policy.",
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The identifier for the federation policy."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Get account federation policy.",
+        "tags": [
+          "oauth2",
+          "account_federation_policy"
+        ],
+        "description": "Get account federation policy.\n\n:param policy_id: str\n  The identifier for the federation policy.\n\n:returns: :class:`FederationPolicy`",
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The identifier for the federation policy."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FederationPolicy"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update",
+        "summary": "Update account federation policy.",
+        "tags": [
+          "oauth2",
+          "account_federation_policy"
+        ],
+        "description": "Update account federation policy.\n\n:param policy_id: str\n  The identifier for the federation policy.\n:param policy: :class:`FederationPolicy`\n:param update_mask: str (optional)\n  The field mask specifies which fields of the policy to update. To specify multiple fields in the\n  field mask, use comma as the separator (no space). The special value '*' indicates that all fields\n  should be updated (full replacement). If unspecified, all fields that are set in the policy provided\n  in the update request will overwrite the corresponding fields in the existing policy. Example value:\n  'description,oidc_policy.audiences'.\n\n:returns: :class:`FederationPolicy`",
+        "parameters": [
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The identifier for the federation policy."
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "policy": {
+                    "type": "string",
+                    "description": ":param update_mask: str (optional) The field mask specifies which fields of the policy to update. To specify multiple fields in the field mask, use comma as the separator (no space). The special value '*' indicates that all fields should be updated (full replacement). If unspecified, all fields that are set in the policy provided in the update request will overwrite the corresponding fields in the existing policy. Example value: 'description,oidc_policy.audiences'."
+                  }
+                },
+                "required": [
+                  "policy"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FederationPolicy"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/accounts/{account_id}/oauth2/custom-app-integrations": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create Custom OAuth App Integration.",
+        "tags": [
+          "oauth2",
+          "custom_app_integration"
+        ],
+        "description": "Create Custom OAuth App Integration.\n\nYou can retrieve the custom OAuth app integration via :method:CustomAppIntegration/get.\n\n:param confidential: bool (optional)\n  This field indicates whether an OAuth client secret is required to authenticate this client.\n:param name: str (optional)\n  Name of the custom OAuth app\n:param redirect_urls: List[str] (optional)\n  List of OAuth redirect urls\n:param scopes: List[str] (optional)\n  OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access, openid,\n  profile, email.\n:param token_access_policy: :class:`TokenAccessPolicy` (optional)\n  Token access policy\n:param user_authorized_scopes: List[str] (optional)\n  Scopes that will need to be consented by end user to mint the access token. If the user does not\n  authorize the access token will not be minted. Must be a subset of scopes.\n\n:returns: :class:`CreateCustomAppIntegrationOutput`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "confidential": {
+                    "type": "string",
+                    "description": "This field indicates whether an OAuth client secret is required to authenticate this client."
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the custom OAuth app"
+                  },
+                  "redirect_urls": {
+                    "type": "string",
+                    "description": "List of OAuth redirect urls"
+                  },
+                  "scopes": {
+                    "type": "string",
+                    "description": "OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access, openid, profile, email."
+                  },
+                  "token_access_policy": {
+                    "type": "string",
+                    "description": "Token access policy"
+                  },
+                  "user_authorized_scopes": {
+                    "type": "string",
+                    "description": "Scopes that will need to be consented by end user to mint the access token. If the user does not authorize the access token will not be minted. Must be a subset of scopes."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCustomAppIntegrationOutput"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "Get the list of custom OAuth app integrations for the specified Databricks account",
+        "tags": [
+          "oauth2",
+          "custom_app_integration"
+        ],
+        "description": "Get the list of custom OAuth app integrations for the specified Databricks account\n\n:param include_creator_username: bool (optional)\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`GetCustomAppIntegrationOutput`",
+        "parameters": [
+          {
+            "name": "include_creator_username",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_size: int (optional)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: Iterator over :class:`GetCustomAppIntegrationOutput`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[GetCustomAppIntegrationOutput]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/accounts/{account_id}/oauth2/custom-app-integrations/{integration_id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via",
+        "tags": [
+          "oauth2",
+          "custom_app_integration"
+        ],
+        "description": "Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via\n:method:CustomAppIntegration/get.\n\n:param integration_id: str",
+        "parameters": [
+          {
+            "name": "integration_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Gets the Custom OAuth App Integration for the given integration id.",
+        "tags": [
+          "oauth2",
+          "custom_app_integration"
+        ],
+        "description": "Gets the Custom OAuth App Integration for the given integration id.\n\n:param integration_id: str\n  The OAuth app integration ID.\n\n:returns: :class:`GetCustomAppIntegrationOutput`",
+        "parameters": [
+          {
+            "name": "integration_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The OAuth app integration ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCustomAppIntegrationOutput"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update",
+        "summary": "Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration",
+        "tags": [
+          "oauth2",
+          "custom_app_integration"
+        ],
+        "description": "Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration\nvia :method:CustomAppIntegration/get.\n\n:param integration_id: str\n:param redirect_urls: List[str] (optional)\n  List of OAuth redirect urls to be updated in the custom OAuth app integration\n:param scopes: List[str] (optional)\n  List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect URIs\n  this will fully replace the existing values instead of appending\n:param token_access_policy: :class:`TokenAccessPolicy` (optional)\n  Token access policy to be updated in the custom OAuth app integration\n:param user_authorized_scopes: List[str] (optional)\n  Scopes that will need to be consented by end user to mint the access token. If the user does not\n  authorize the access token will not be minted. Must be a subset of scopes.",
+        "parameters": [
+          {
+            "name": "integration_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param redirect_urls: List[str] (optional) List of OAuth redirect urls to be updated in the custom OAuth app integration"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "redirect_urls": {
+                    "type": "string"
+                  },
+                  "scopes": {
+                    "type": "string",
+                    "description": "List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect URIs this will fully replace the existing values instead of appending"
+                  },
+                  "token_access_policy": {
+                    "type": "string",
+                    "description": "Token access policy to be updated in the custom OAuth app integration"
+                  },
+                  "user_authorized_scopes": {
+                    "type": "string",
+                    "description": "Scopes that will need to be consented by end user to mint the access token. If the user does not authorize the access token will not be minted. Must be a subset of scopes."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/accounts/{account_id}/oauth2/published-apps": {
+      "get": {
+        "operationId": "list",
+        "summary": "Get all the available published OAuth apps in Databricks.",
+        "tags": [
+          "oauth2",
+          "o_auth_published_apps"
+        ],
+        "description": "Get all the available published OAuth apps in Databricks.\n\n:param page_size: int (optional)\n  The max number of OAuth published apps to return in one page.\n:param page_token: str (optional)\n  A token that can be used to get the next page of results.\n\n:returns: Iterator over :class:`PublishedAppOutput`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The max number of OAuth published apps to return in one page."
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "A token that can be used to get the next page of results."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[PublishedAppOutput]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/accounts/{account_id}/oauth2/published-app-integrations": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create Published OAuth App Integration.",
+        "tags": [
+          "oauth2",
+          "published_app_integration"
+        ],
+        "description": "Create Published OAuth App Integration.\n\nYou can retrieve the published OAuth app integration via :method:PublishedAppIntegration/get.\n\n:param app_id: str (optional)\n  App id of the OAuth published app integration. For example power-bi, tableau-deskop\n:param token_access_policy: :class:`TokenAccessPolicy` (optional)\n  Token access policy\n\n:returns: :class:`CreatePublishedAppIntegrationOutput`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "app_id": {
+                    "type": "string",
+                    "description": "App id of the OAuth published app integration. For example power-bi, tableau-deskop"
+                  },
+                  "token_access_policy": {
+                    "type": "string",
+                    "description": "Token access policy"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePublishedAppIntegrationOutput"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "Get the list of published OAuth app integrations for the specified Databricks account",
+        "tags": [
+          "oauth2",
+          "published_app_integration"
+        ],
+        "description": "Get the list of published OAuth app integrations for the specified Databricks account\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`GetPublishedAppIntegrationOutput`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[GetPublishedAppIntegrationOutput]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/accounts/{account_id}/oauth2/published-app-integrations/{integration_id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app",
+        "tags": [
+          "oauth2",
+          "published_app_integration"
+        ],
+        "description": "Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app\nintegration via :method:PublishedAppIntegration/get.\n\n:param integration_id: str",
+        "parameters": [
+          {
+            "name": "integration_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Gets the Published OAuth App Integration for the given integration id.",
+        "tags": [
+          "oauth2",
+          "published_app_integration"
+        ],
+        "description": "Gets the Published OAuth App Integration for the given integration id.\n\n:param integration_id: str\n\n:returns: :class:`GetPublishedAppIntegrationOutput`",
+        "parameters": [
+          {
+            "name": "integration_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`GetPublishedAppIntegrationOutput`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPublishedAppIntegrationOutput"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update",
+        "summary": "Updates an existing published OAuth App Integration. You can retrieve the published OAuth app",
+        "tags": [
+          "oauth2",
+          "published_app_integration"
+        ],
+        "description": "Updates an existing published OAuth App Integration. You can retrieve the published OAuth app\nintegration via :method:PublishedAppIntegration/get.\n\n:param integration_id: str\n:param token_access_policy: :class:`TokenAccessPolicy` (optional)\n  Token access policy to be updated in the published OAuth app integration",
+        "parameters": [
+          {
+            "name": "integration_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param token_access_policy: :class:`TokenAccessPolicy` (optional) Token access policy to be updated in the published OAuth app integration"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "token_access_policy": {
+                    "type": "string"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/federationPolicies": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create account federation policy.",
+        "tags": [
+          "oauth2",
+          "service_principal_federation_policy"
+        ],
+        "description": "Create account federation policy.\n\n:param service_principal_id: int\n  The service principal id for the federation policy.\n:param policy: :class:`FederationPolicy`\n:param policy_id: str (optional)\n  The identifier for the federation policy. The identifier must contain only lowercase alphanumeric\n  characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.\n\n:returns: :class:`FederationPolicy`",
+        "parameters": [
+          {
+            "name": "service_principal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The service principal id for the federation policy."
+          },
+          {
+            "name": "policy_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "policy": {
+                    "type": "string",
+                    "description": ":param policy_id: str (optional) The identifier for the federation policy. The identifier must contain only lowercase alphanumeric characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks."
+                  }
+                },
+                "required": [
+                  "policy"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FederationPolicy"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "List account federation policies.",
+        "tags": [
+          "oauth2",
+          "service_principal_federation_policy"
+        ],
+        "description": "List account federation policies.\n\n:param service_principal_id: int\n  The service principal id for the federation policy.\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`FederationPolicy`",
+        "parameters": [
+          {
+            "name": "service_principal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The service principal id for the federation policy."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[FederationPolicy]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/federationPolicies/{policy_id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Delete account federation policy.",
+        "tags": [
+          "oauth2",
+          "service_principal_federation_policy"
+        ],
+        "description": "Delete account federation policy.\n\n:param service_principal_id: int\n  The service principal id for the federation policy.\n:param policy_id: str\n  The identifier for the federation policy.",
+        "parameters": [
+          {
+            "name": "service_principal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The service principal id for the federation policy."
+          },
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The identifier for the federation policy."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Get account federation policy.",
+        "tags": [
+          "oauth2",
+          "service_principal_federation_policy"
+        ],
+        "description": "Get account federation policy.\n\n:param service_principal_id: int\n  The service principal id for the federation policy.\n:param policy_id: str\n  The identifier for the federation policy.\n\n:returns: :class:`FederationPolicy`",
+        "parameters": [
+          {
+            "name": "service_principal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The service principal id for the federation policy."
+          },
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The identifier for the federation policy."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FederationPolicy"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update",
+        "summary": "Update account federation policy.",
+        "tags": [
+          "oauth2",
+          "service_principal_federation_policy"
+        ],
+        "description": "Update account federation policy.\n\n:param service_principal_id: int\n  The service principal id for the federation policy.\n:param policy_id: str\n  The identifier for the federation policy.\n:param policy: :class:`FederationPolicy`\n:param update_mask: str (optional)\n  The field mask specifies which fields of the policy to update. To specify multiple fields in the\n  field mask, use comma as the separator (no space). The special value '*' indicates that all fields\n  should be updated (full replacement). If unspecified, all fields that are set in the policy provided\n  in the update request will overwrite the corresponding fields in the existing policy. Example value:\n  'description,oidc_policy.audiences'.\n\n:returns: :class:`FederationPolicy`",
+        "parameters": [
+          {
+            "name": "service_principal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The service principal id for the federation policy."
+          },
+          {
+            "name": "policy_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The identifier for the federation policy."
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "policy": {
+                    "type": "string",
+                    "description": ":param update_mask: str (optional) The field mask specifies which fields of the policy to update. To specify multiple fields in the field mask, use comma as the separator (no space). The special value '*' indicates that all fields should be updated (full replacement). If unspecified, all fields that are set in the policy provided in the update request will overwrite the corresponding fields in the existing policy. Example value: 'description,oidc_policy.audiences'."
+                  }
+                },
+                "required": [
+                  "policy"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/FederationPolicy"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/credentials/secrets": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create a secret for the given service principal.",
+        "tags": [
+          "oauth2",
+          "service_principal_secrets"
+        ],
+        "description": "Create a secret for the given service principal.\n\n:param service_principal_id: str\n  The service principal ID.\n:param lifetime: str (optional)\n  The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a\n  default lifetime of 730 days (63072000s).\n\n:returns: :class:`CreateServicePrincipalSecretResponse`",
+        "parameters": [
+          {
+            "name": "service_principal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The service principal ID."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "lifetime": {
+                    "type": "string",
+                    "description": "The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a default lifetime of 730 days (63072000s)."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateServicePrincipalSecretResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "List all secrets associated with the given service principal. This operation only returns information",
+        "tags": [
+          "oauth2",
+          "service_principal_secrets"
+        ],
+        "description": "List all secrets associated with the given service principal. This operation only returns information\nabout the secrets themselves and does not include the secret values.\n\n:param service_principal_id: str\n  The service principal ID.\n:param page_size: int (optional)\n:param page_token: str (optional)\n  An opaque page token which was the `next_page_token` in the response of the previous request to list\n  the secrets for this service principal. Provide this token to retrieve the next page of secret\n  entries. When providing a `page_token`, all other parameters provided to the request must match the\n  previous request. To list all of the secrets for a service principal, it is necessary to continue\n  requesting pages of entries until the response contains no `next_page_token`. Note that the number\n  of entries returned must not be used to determine when the listing is complete.\n\n:returns: Iterator over :class:`SecretInfo`",
+        "parameters": [
+          {
+            "name": "service_principal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The service principal ID."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional) An opaque page token which was the `next_page_token` in the response of the previous request to list the secrets for this service principal. Provide this token to retrieve the next page of secret entries. When providing a `page_token`, all other parameters provided to the request must match the previous request. To list all of the secrets for a service principal, it is necessary to continue requesting pages of entries until the response contains no `next_page_token`. Note that the number of entries returned must not be used to determine when the listing is complete."
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[SecretInfo]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Delete a secret from the given service principal.",
+        "tags": [
+          "oauth2",
+          "service_principal_secrets"
+        ],
+        "description": "Delete a secret from the given service principal.\n\n:param service_principal_id: str\n  The service principal ID.\n:param secret_id: str\n  The secret ID.",
+        "parameters": [
+          {
+            "name": "service_principal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The service principal ID."
+          },
+          {
+            "name": "secret_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The secret ID."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CreateCustomAppIntegrationOutput": {
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "string"
+          },
+          "client_secret": {
+            "type": "string",
+            "description": "OAuth client-secret generated by the Databricks. If this is a confidential OAuth app client-secret will be generated."
+          },
+          "integration_id": {
+            "type": "string",
+            "description": "Unique integration id for the custom OAuth app"
+          }
+        }
+      },
+      "CreatePublishedAppIntegrationOutput": {
+        "type": "object",
+        "properties": {
+          "integration_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateServicePrincipalSecretResponse": {
+        "type": "object",
+        "properties": {
+          "create_time": {
+            "type": "string"
+          },
+          "expire_time": {
+            "type": "string",
+            "description": "UTC time when the secret will expire. If the field is not present, the secret does not expire."
+          },
+          "id": {
+            "type": "string",
+            "description": "ID of the secret"
+          },
+          "secret": {
+            "type": "string",
+            "description": "Secret Value"
+          },
+          "secret_hash": {
+            "type": "string",
+            "description": "Secret Hash"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the secret"
+          },
+          "update_time": {
+            "type": "string",
+            "description": "UTC time when the secret was updated"
+          }
+        }
+      },
+      "DeleteCustomAppIntegrationOutput": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeletePublishedAppIntegrationOutput": {
+        "type": "object",
+        "properties": {}
+      },
+      "FederationPolicy": {
+        "type": "object",
+        "properties": {
+          "create_time": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the federation policy."
+          },
+          "name": {
+            "type": "string",
+            "description": "Resource name for the federation policy. Example values include `accounts/<account-id>/federationPolicies/my-federation-policy` for Account Federation Policies, and `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy` for Service Principal Federation Policies. Typically an output parameter, which does not need to be specified in create or update requests. If specified in a request, must match the value in the request URL."
+          },
+          "oidc_policy": {
+            "$ref": "#/components/schemas/OidcFederationPolicy"
+          },
+          "policy_id": {
+            "type": "string",
+            "description": "The ID of the federation policy. Output only."
+          },
+          "service_principal_id": {
+            "type": "integer",
+            "description": "The service principal ID that this federation policy applies to. Output only. Only set for service principal federation policies."
+          },
+          "uid": {
+            "type": "string",
+            "description": "Unique, immutable id of the federation policy."
+          },
+          "update_time": {
+            "type": "string",
+            "description": "Last update time of the federation policy."
+          }
+        }
+      },
+      "GetCustomAppIntegrationOutput": {
+        "type": "object",
+        "properties": {
+          "client_id": {
+            "type": "string"
+          },
+          "confidential": {
+            "type": "boolean",
+            "description": "This field indicates whether an OAuth client secret is required to authenticate this client."
+          },
+          "create_time": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "integer"
+          },
+          "creator_username": {
+            "type": "string"
+          },
+          "integration_id": {
+            "type": "string",
+            "description": "ID of this custom app"
+          },
+          "name": {
+            "type": "string",
+            "description": "The display name of the custom OAuth app"
+          },
+          "redirect_urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of OAuth redirect urls"
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "token_access_policy": {
+            "$ref": "#/components/schemas/TokenAccessPolicy",
+            "description": "Token access policy"
+          },
+          "user_authorized_scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Scopes that will need to be consented by end user to mint the access token. If the user does not authorize the access token will not be minted. Must be a subset of scopes."
+          }
+        }
+      },
+      "GetCustomAppIntegrationsOutput": {
+        "type": "object",
+        "properties": {
+          "apps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetCustomAppIntegrationOutput"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "GetPublishedAppIntegrationOutput": {
+        "type": "object",
+        "properties": {
+          "app_id": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string"
+          },
+          "created_by": {
+            "type": "integer"
+          },
+          "integration_id": {
+            "type": "string",
+            "description": "Unique integration id for the published OAuth app"
+          },
+          "name": {
+            "type": "string",
+            "description": "Display name of the published OAuth app"
+          },
+          "token_access_policy": {
+            "$ref": "#/components/schemas/TokenAccessPolicy",
+            "description": "Token access policy"
+          }
+        }
+      },
+      "GetPublishedAppIntegrationsOutput": {
+        "type": "object",
+        "properties": {
+          "apps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/GetPublishedAppIntegrationOutput"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "GetPublishedAppsOutput": {
+        "type": "object",
+        "properties": {
+          "apps": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PublishedAppOutput"
+            }
+          },
+          "next_page_token": {
+            "type": "string",
+            "description": "A token that can be used to get the next page of results. If not present, there are no more results to show."
+          }
+        }
+      },
+      "ListFederationPoliciesResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "policies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FederationPolicy"
+            }
+          }
+        }
+      },
+      "ListServicePrincipalSecretsResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "secrets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SecretInfo"
+            },
+            "description": "List of the secrets"
+          }
+        }
+      },
+      "OidcFederationPolicy": {
+        "type": "object",
+        "properties": {
+          "audiences": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience identifier is intended to represent the recipient of the token. Can be any non-empty string value. As long as the audience in the token matches at least one audience in the policy, the token is considered a match. If audiences is unspecified, defaults to your Databricks account id."
+          },
+          "issuer": {
+            "type": "string",
+            "description": "The required token issuer, as specified in the 'iss' claim of federated tokens."
+          },
+          "jwks_json": {
+            "type": "string",
+            "description": "The public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer\u2019s well known endpoint. Databricks strongly recommends relying on your issuer\u2019s well known endpoint for discovering public keys."
+          },
+          "jwks_uri": {
+            "type": "string",
+            "description": "URL of the public keys used to validate the signature of federated tokens, in JWKS format. Most use cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks automatically fetches the public keys from your issuer\u2019s well known endpoint. Databricks strongly recommends relying on your issuer\u2019s well known endpoint for discovering public keys."
+          },
+          "subject": {
+            "type": "string",
+            "description": "The required token subject, as specified in the subject claim of federated tokens. Must be specified for service principal federation policies. Must not be specified for account federation policies."
+          },
+          "subject_claim": {
+            "type": "string",
+            "description": "The claim that contains the subject of the token. If unspecified, the default value is 'sub'."
+          }
+        },
+        "description": "Specifies the policy to use for validating OIDC claims in your federated tokens."
+      },
+      "PublishedAppOutput": {
+        "type": "object",
+        "properties": {
+          "app_id": {
+            "type": "string"
+          },
+          "client_id": {
+            "type": "string",
+            "description": "Client ID of the published OAuth app. It is the client_id in the OAuth flow"
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the published OAuth app."
+          },
+          "is_confidential_client": {
+            "type": "boolean",
+            "description": "Whether the published OAuth app is a confidential client. It is always false for published OAuth apps."
+          },
+          "name": {
+            "type": "string",
+            "description": "The display name of the published OAuth app."
+          },
+          "redirect_urls": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Redirect URLs of the published OAuth app."
+          },
+          "scopes": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Required scopes for the published OAuth app."
+          }
+        }
+      },
+      "SecretInfo": {
+        "type": "object",
+        "properties": {
+          "create_time": {
+            "type": "string"
+          },
+          "expire_time": {
+            "type": "string",
+            "description": "UTC time when the secret will expire. If the field is not present, the secret does not expire."
+          },
+          "id": {
+            "type": "string",
+            "description": "ID of the secret"
+          },
+          "secret_hash": {
+            "type": "string",
+            "description": "Secret Hash"
+          },
+          "status": {
+            "type": "string",
+            "description": "Status of the secret"
+          },
+          "update_time": {
+            "type": "string",
+            "description": "UTC time when the secret was updated"
+          }
+        }
+      },
+      "TokenAccessPolicy": {
+        "type": "object",
+        "properties": {
+          "absolute_session_lifetime_in_minutes": {
+            "type": "integer"
+          },
+          "access_token_ttl_in_minutes": {
+            "type": "integer",
+            "description": "access token time to live in minutes"
+          },
+          "enable_single_use_refresh_tokens": {
+            "type": "boolean",
+            "description": "Whether to enable single-use refresh tokens (refresh token rotation). If this feature is enabled, upon successfully getting a new access token using a refresh token, Databricks will issue a new refresh token along with the access token in the response and invalidate the old refresh token. The client should use the new refresh token to get access tokens in future requests."
+          },
+          "refresh_token_ttl_in_minutes": {
+            "type": "integer",
+            "description": "Refresh token time to live in minutes. When single-use refresh tokens are enabled, this represents the TTL of an individual refresh token. If the refresh token is used before it expires, a new one is issued with a renewed individual TTL."
+          }
+        }
+      },
+      "UpdateCustomAppIntegrationOutput": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdatePublishedAppIntegrationOutput": {
+        "type": "object",
+        "properties": {}
+      }
+    }
+  }
+}

@@ -1,0 +1,3199 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Databricks Serving API (workspace)",
+    "description": "OpenAPI specification for the Databricks serving service (workspace-level APIs), generated from the Databricks Python SDK.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://{workspace}.cloud.databricks.com",
+      "description": "Databricks workspace",
+      "variables": {
+        "workspace": {
+          "default": "your-workspace",
+          "description": "Your Databricks workspace name"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs": {
+      "get": {
+        "operationId": "build_logs",
+        "summary": "Retrieves the build logs associated with the provided served model.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Retrieves the build logs associated with the provided served model.\n\n:param name: str\n  The name of the serving endpoint that the served model belongs to. This field is required.\n:param served_model_name: str\n  The name of the served model that build logs will be retrieved for. This field is required.\n\n:returns: :class:`BuildLogsResponse`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint that the served model belongs to. This field is required."
+          },
+          {
+            "name": "served_model_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the served model that build logs will be retrieved for. This field is required."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BuildLogsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create a new serving endpoint.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Create a new serving endpoint.\n\n:param name: str\n  The name of the serving endpoint. This field is required and must be unique across a Databricks\n  workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.\n:param ai_gateway: :class:`AiGatewayConfig` (optional)\n  The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned throughput,\n  and pay-per-token endpoints are fully supported; agent endpoints currently only support inference\n  tables.\n:param budget_policy_id: str (optional)\n  The budget policy to be applied to the serving endpoint.\n:param config: :class:`EndpointCoreConfigInput` (optional)\n  The core config of the serving endpoint.\n:param description: str (optional)\n:param email_notifications: :class:`EmailNotifications` (optional)\n  Email notification settings.\n:param rate_limits: List[:class:`RateLimit`] (optional)\n  Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI\n  Gateway to manage rate limits.\n:param route_optimized: bool (optional)\n  Enable route optimization for the serving endpoint.\n:param tags: List[:class:`EndpointTag`] (optional)\n  Tags to be attached to the serving endpoint and automatically propagated to billing logs.\n\n:returns:\n  Long-running operation waiter for :class:`ServingEndpointDetailed`.\n  See :method:wait_get_serving_endpoint_not_updating for more details.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the serving endpoint. This field is required and must be unique across a Databricks workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."
+                  },
+                  "ai_gateway": {
+                    "type": "string",
+                    "description": "The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned throughput, and pay-per-token endpoints are fully supported; agent endpoints currently only support inference tables."
+                  },
+                  "budget_policy_id": {
+                    "type": "string",
+                    "description": "The budget policy to be applied to the serving endpoint."
+                  },
+                  "config": {
+                    "type": "string",
+                    "description": "The core config of the serving endpoint."
+                  },
+                  "description": {
+                    "type": "string",
+                    "description": ":param email_notifications: :class:`EmailNotifications` (optional) Email notification settings."
+                  },
+                  "email_notifications": {
+                    "type": "string"
+                  },
+                  "rate_limits": {
+                    "type": "string",
+                    "description": "Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI Gateway to manage rate limits."
+                  },
+                  "route_optimized": {
+                    "type": "string",
+                    "description": "Enable route optimization for the serving endpoint."
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "Tags to be attached to the serving endpoint and automatically propagated to billing logs."
+                  }
+                },
+                "required": [
+                  "name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wait[ServingEndpointDetailed]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "Get all serving endpoints.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Get all serving endpoints.\n\n\n:returns: Iterator over :class:`ServingEndpoint`",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[ServingEndpoint]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/pt": {
+      "post": {
+        "operationId": "create_provisioned_throughput_endpoint",
+        "summary": "Create a new PT serving endpoint.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Create a new PT serving endpoint.\n\n:param name: str\n  The name of the serving endpoint. This field is required and must be unique across a Databricks\n  workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.\n:param config: :class:`PtEndpointCoreConfig`\n  The core config of the serving endpoint.\n:param ai_gateway: :class:`AiGatewayConfig` (optional)\n  The AI Gateway configuration for the serving endpoint.\n:param budget_policy_id: str (optional)\n  The budget policy associated with the endpoint.\n:param email_notifications: :class:`EmailNotifications` (optional)\n  Email notification settings.\n:param tags: List[:class:`EndpointTag`] (optional)\n  Tags to be attached to the serving endpoint and automatically propagated to billing logs.\n\n:returns:\n  Long-running operation waiter for :class:`ServingEndpointDetailed`.\n  See :method:wait_get_serving_endpoint_not_updating for more details.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "The name of the serving endpoint. This field is required and must be unique across a Databricks workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores."
+                  },
+                  "config": {
+                    "type": "string",
+                    "description": "The core config of the serving endpoint."
+                  },
+                  "ai_gateway": {
+                    "type": "string",
+                    "description": "The AI Gateway configuration for the serving endpoint."
+                  },
+                  "budget_policy_id": {
+                    "type": "string",
+                    "description": "The budget policy associated with the endpoint."
+                  },
+                  "email_notifications": {
+                    "type": "string",
+                    "description": "Email notification settings."
+                  },
+                  "tags": {
+                    "type": "string",
+                    "description": "Tags to be attached to the serving endpoint and automatically propagated to billing logs."
+                  }
+                },
+                "required": [
+                  "name",
+                  "config"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wait[ServingEndpointDetailed]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/{name}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Delete a serving endpoint.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Delete a serving endpoint.\n\n:param name: str",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Retrieves the details for a single serving endpoint.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Retrieves the details for a single serving endpoint.\n\n:param name: str\n  The name of the serving endpoint. This field is required.\n\n:returns: :class:`ServingEndpointDetailed`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint. This field is required."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServingEndpointDetailed"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/{name}/metrics": {
+      "get": {
+        "operationId": "export_metrics",
+        "summary": "Retrieves the metrics associated with the provided serving endpoint in either Prometheus or",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Retrieves the metrics associated with the provided serving endpoint in either Prometheus or\nOpenMetrics exposition format.\n\n:param name: str\n  The name of the serving endpoint to retrieve metrics for. This field is required.\n\n:returns: :class:`ExportMetricsResponse`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint to retrieve metrics for. This field is required."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportMetricsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/{name}/openapi": {
+      "get": {
+        "operationId": "get_open_api",
+        "summary": "Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for\nthe supported paths, input and output format and datatypes.\n\n:param name: str\n  The name of the serving endpoint that the served model belongs to. This field is required.\n\n:returns: :class:`GetOpenApiResponse`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint that the served model belongs to. This field is required."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetOpenApiResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels": {
+      "get": {
+        "operationId": "get_permission_levels",
+        "summary": "Gets the permission levels that a user can have on an object.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Gets the permission levels that a user can have on an object.\n\n:param serving_endpoint_id: str\n  The serving endpoint for which to get or manage permissions.\n\n:returns: :class:`GetServingEndpointPermissionLevelsResponse`",
+        "parameters": [
+          {
+            "name": "serving_endpoint_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The serving endpoint for which to get or manage permissions."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetServingEndpointPermissionLevelsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}": {
+      "get": {
+        "operationId": "get_permissions",
+        "summary": "Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root\nobject.\n\n:param serving_endpoint_id: str\n  The serving endpoint for which to get or manage permissions.\n\n:returns: :class:`ServingEndpointPermissions`",
+        "parameters": [
+          {
+            "name": "serving_endpoint_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The serving endpoint for which to get or manage permissions."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServingEndpointPermissions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "set_permissions",
+        "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct\npermissions if none are specified. Objects can inherit permissions from their root object.\n\n:param serving_endpoint_id: str\n  The serving endpoint for which to get or manage permissions.\n:param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)\n\n:returns: :class:`ServingEndpointPermissions`",
+        "parameters": [
+          {
+            "name": "serving_endpoint_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The serving endpoint for which to get or manage permissions."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "access_control_list": {
+                    "type": "string",
+                    "description": ":returns: :class:`ServingEndpointPermissions`"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServingEndpointPermissions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update_permissions",
+        "summary": "Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their\nroot object.\n\n:param serving_endpoint_id: str\n  The serving endpoint for which to get or manage permissions.\n:param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)\n\n:returns: :class:`ServingEndpointPermissions`",
+        "parameters": [
+          {
+            "name": "serving_endpoint_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The serving endpoint for which to get or manage permissions."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "access_control_list": {
+                    "type": "string",
+                    "description": ":returns: :class:`ServingEndpointPermissions`"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServingEndpointPermissions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/external-function": {
+      "post": {
+        "operationId": "http_request",
+        "summary": "Make external services call using the credentials stored in UC Connection.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Make external services call using the credentials stored in UC Connection.\n\n:param connection_name: str\n  The connection name to use. This is required to identify the external connection.\n:param method: :class:`ExternalFunctionRequestHttpMethod`\n  The HTTP method to use (e.g., 'GET', 'POST').\n:param path: str\n  The relative path for the API endpoint. This is required.\n:param headers: str (optional)\n  Additional headers for the request. If not provided, only auth headers from connections would be\n  passed.\n:param json: str (optional)\n  The JSON payload to send in the request body.\n:param params: str (optional)\n  Query parameters for the request.\n\n:returns: :class:`HttpRequestResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "connection_name": {
+                    "type": "string",
+                    "description": "The connection name to use. This is required to identify the external connection."
+                  },
+                  "method": {
+                    "type": "string",
+                    "description": "The HTTP method to use (e.g., 'GET', 'POST')."
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "The relative path for the API endpoint. This is required."
+                  },
+                  "json": {
+                    "type": "string",
+                    "description": "The JSON payload to send in the request body."
+                  },
+                  "params": {
+                    "type": "string",
+                    "description": "Query parameters for the request."
+                  }
+                },
+                "required": [
+                  "connection_name",
+                  "method",
+                  "path"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HttpRequestResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs": {
+      "get": {
+        "operationId": "logs",
+        "summary": "Retrieves the service logs associated with the provided served model.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Retrieves the service logs associated with the provided served model.\n\n:param name: str\n  The name of the serving endpoint that the served model belongs to. This field is required.\n:param served_model_name: str\n  The name of the served model that logs will be retrieved for. This field is required.\n\n:returns: :class:`ServerLogsResponse`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint that the served model belongs to. This field is required."
+          },
+          {
+            "name": "served_model_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the served model that logs will be retrieved for. This field is required."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ServerLogsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/{name}/tags": {
+      "patch": {
+        "operationId": "patch",
+        "summary": "Used to batch add and delete tags from a serving endpoint with a single API call.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Used to batch add and delete tags from a serving endpoint with a single API call.\n\n:param name: str\n  The name of the serving endpoint who's tags to patch. This field is required.\n:param add_tags: List[:class:`EndpointTag`] (optional)\n  List of endpoint tags to add\n:param delete_tags: List[str] (optional)\n  List of tag keys to delete\n\n:returns: :class:`EndpointTags`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint who's tags to patch. This field is required."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "add_tags": {
+                    "type": "string",
+                    "description": "List of endpoint tags to add"
+                  },
+                  "delete_tags": {
+                    "type": "string",
+                    "description": "List of tag keys to delete"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/EndpointTags"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/{name}/rate-limits": {
+      "put": {
+        "operationId": "put",
+        "summary": "Deprecated: Please use AI Gateway to manage rate limits instead.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Deprecated: Please use AI Gateway to manage rate limits instead.\n\n:param name: str\n  The name of the serving endpoint whose rate limits are being updated. This field is required.\n:param rate_limits: List[:class:`RateLimit`] (optional)\n  The list of endpoint rate limits.\n\n:returns: :class:`PutResponse`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint whose rate limits are being updated. This field is required."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "rate_limits": {
+                    "type": "string",
+                    "description": "The list of endpoint rate limits."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PutResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/{name}/ai-gateway": {
+      "put": {
+        "operationId": "put_ai_gateway",
+        "summary": "Used to update the AI Gateway of a serving endpoint. NOTE: External model, provisioned throughput, and",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Used to update the AI Gateway of a serving endpoint. NOTE: External model, provisioned throughput, and\npay-per-token endpoints are fully supported; agent endpoints currently only support inference tables.\n\n:param name: str\n  The name of the serving endpoint whose AI Gateway is being updated. This field is required.\n:param fallback_config: :class:`FallbackConfig` (optional)\n  Configuration for traffic fallback which auto fallbacks to other served entities if the request to a\n  served entity fails with certain error codes, to increase availability.\n:param guardrails: :class:`AiGatewayGuardrails` (optional)\n  Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses.\n:param inference_table_config: :class:`AiGatewayInferenceTableConfig` (optional)\n  Configuration for payload logging using inference tables. Use these tables to monitor and audit data\n  being sent to and received from model APIs and to improve model quality.\n:param rate_limits: List[:class:`AiGatewayRateLimit`] (optional)\n  Configuration for rate limits which can be set to limit endpoint traffic.\n:param usage_tracking_config: :class:`AiGatewayUsageTrackingConfig` (optional)\n  Configuration to enable usage tracking using system tables. These tables allow you to monitor\n  operational usage on endpoints and their associated costs.\n\n:returns: :class:`PutAiGatewayResponse`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint whose AI Gateway is being updated. This field is required."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "fallback_config": {
+                    "type": "string",
+                    "description": "Configuration for traffic fallback which auto fallbacks to other served entities if the request to a served entity fails with certain error codes, to increase availability."
+                  },
+                  "guardrails": {
+                    "type": "string",
+                    "description": "Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses."
+                  },
+                  "inference_table_config": {
+                    "type": "string",
+                    "description": "Configuration for payload logging using inference tables. Use these tables to monitor and audit data being sent to and received from model APIs and to improve model quality."
+                  },
+                  "rate_limits": {
+                    "type": "string",
+                    "description": "Configuration for rate limits which can be set to limit endpoint traffic."
+                  },
+                  "usage_tracking_config": {
+                    "type": "string",
+                    "description": "Configuration to enable usage tracking using system tables. These tables allow you to monitor operational usage on endpoints and their associated costs."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/PutAiGatewayResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/serving-endpoints/{name}/invocations": {
+      "post": {
+        "operationId": "query",
+        "summary": "Query a serving endpoint",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Query a serving endpoint\n\n:param name: str\n  The name of the serving endpoint. This field is required and is provided via the path parameter.\n:param client_request_id: str (optional)\n  Optional user-provided request identifier that will be recorded in the inference table and the usage\n  tracking table.\n:param dataframe_records: List[Any] (optional)\n  Pandas Dataframe input in the records orientation.\n:param dataframe_split: :class:`DataframeSplitInput` (optional)\n  Pandas Dataframe input in the split orientation.\n:param extra_params: Dict[str,str] (optional)\n  The extra parameters field used ONLY for __completions, chat,__ and __embeddings external &\n  foundation model__ serving endpoints. This is a map of strings and should only be used with other\n  external/foundation model query fields.\n:param input: Any (optional)\n  The input string (or array of strings) field used ONLY for __embeddings external & foundation\n  model__ serving endpoints and is the only field (along with extra_params if needed) used by\n  embeddings queries.\n:param inputs: Any (optional)\n  Tensor-based input in columnar format.\n:param instances: List[Any] (optional)\n  Tensor-based input in row format.\n:param max_tokens: int (optional)\n  The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving\n  endpoints. This is an integer and should only be used with other chat/completions query fields.\n:param messages: List[:class:`ChatMessage`] (optional)\n  The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an\n  array of ChatMessage objects and should only be used with other chat query fields.\n:param n: int (optional)\n  The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation\n  model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be\n  used with other chat/completions query fields.\n:param prompt: Any (optional)\n  The prompt string (or array of strings) field used ONLY for __completions external & foundation\n  model__ serving endpoints and should only be used with other completions query fields.\n:param stop: List[str] (optional)\n  The stop sequences field used ONLY for __completions__ and __chat external & foundation model__\n  serving endpoints. This is a list of strings and should only be used with other chat/completions\n  query fields.\n:param stream: bool (optional)\n  The stream field used ONLY for __completions__ and __chat external & foundation model__ serving\n  endpoints. This is a boolean defaulting to false and should only be used with other chat/completions\n  query fields.\n:param temperature: float (optional)\n  The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving\n  endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with\n  other chat/completions query fields.\n:param usage_context: Dict[str,str] (optional)\n  Optional user-provided context that will be recorded in the usage tracking table.\n\n:returns: :class:`QueryEndpointResponse`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint. This field is required and is provided via the path parameter."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "client_request_id": {
+                    "type": "string",
+                    "description": "Optional user-provided request identifier that will be recorded in the inference table and the usage tracking table."
+                  },
+                  "dataframe_records": {
+                    "type": "string",
+                    "description": "Pandas Dataframe input in the records orientation."
+                  },
+                  "dataframe_split": {
+                    "type": "string",
+                    "description": "Pandas Dataframe input in the split orientation."
+                  },
+                  "extra_params": {
+                    "type": "string",
+                    "description": "The extra parameters field used ONLY for __completions, chat,__ and __embeddings external & foundation model__ serving endpoints. This is a map of strings and should only be used with other external/foundation model query fields."
+                  },
+                  "input": {
+                    "type": "string",
+                    "description": "The input string (or array of strings) field used ONLY for __embeddings external & foundation model__ serving endpoints and is the only field (along with extra_params if needed) used by embeddings queries."
+                  },
+                  "inputs": {
+                    "type": "string",
+                    "description": "Tensor-based input in columnar format."
+                  },
+                  "instances": {
+                    "type": "string",
+                    "description": "Tensor-based input in row format."
+                  },
+                  "max_tokens": {
+                    "type": "string",
+                    "description": "The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving endpoints. This is an integer and should only be used with other chat/completions query fields."
+                  },
+                  "messages": {
+                    "type": "string",
+                    "description": "The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an array of ChatMessage objects and should only be used with other chat query fields."
+                  },
+                  "n": {
+                    "type": "string",
+                    "description": "The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be used with other chat/completions query fields."
+                  },
+                  "prompt": {
+                    "type": "string",
+                    "description": "The prompt string (or array of strings) field used ONLY for __completions external & foundation model__ serving endpoints and should only be used with other completions query fields."
+                  },
+                  "stop": {
+                    "type": "string",
+                    "description": "The stop sequences field used ONLY for __completions__ and __chat external & foundation model__ serving endpoints. This is a list of strings and should only be used with other chat/completions query fields."
+                  },
+                  "stream": {
+                    "type": "string",
+                    "description": "The stream field used ONLY for __completions__ and __chat external & foundation model__ serving endpoints. This is a boolean defaulting to false and should only be used with other chat/completions query fields."
+                  },
+                  "temperature": {
+                    "type": "string",
+                    "description": "The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with other chat/completions query fields."
+                  },
+                  "usage_context": {
+                    "type": "string",
+                    "description": "Optional user-provided context that will be recorded in the usage tracking table."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QueryEndpointResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/{name}/config": {
+      "put": {
+        "operationId": "update_config",
+        "summary": "Updates any combination of the serving endpoint's served entities, the compute configuration of those",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Updates any combination of the serving endpoint's served entities, the compute configuration of those\nserved entities, and the endpoint's traffic config. An endpoint that already has an update in progress\ncan not be updated until the current update completes or fails.\n\n:param name: str\n  The name of the serving endpoint to update. This field is required.\n:param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)\n  Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.\n  Note: this field is deprecated for creating new provisioned throughput endpoints, or updating\n  existing provisioned throughput endpoints that never have inference table configured; in these cases\n  please use AI Gateway to manage inference tables.\n:param served_entities: List[:class:`ServedEntityInput`] (optional)\n  The list of served entities under the serving endpoint config.\n:param served_models: List[:class:`ServedModelInput`] (optional)\n  (Deprecated, use served_entities instead) The list of served models under the serving endpoint\n  config.\n:param traffic_config: :class:`TrafficConfig` (optional)\n  The traffic configuration associated with the serving endpoint config.\n\n:returns:\n  Long-running operation waiter for :class:`ServingEndpointDetailed`.\n  See :method:wait_get_serving_endpoint_not_updating for more details.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint to update. This field is required."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "auto_capture_config": {
+                    "type": "string",
+                    "description": "Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or updating existing provisioned throughput endpoints that never have inference table configured; in these cases please use AI Gateway to manage inference tables."
+                  },
+                  "served_entities": {
+                    "type": "string",
+                    "description": "The list of served entities under the serving endpoint config."
+                  },
+                  "served_models": {
+                    "type": "string",
+                    "description": "(Deprecated, use served_entities instead) The list of served models under the serving endpoint config."
+                  },
+                  "traffic_config": {
+                    "type": "string",
+                    "description": "The traffic configuration associated with the serving endpoint config."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wait[ServingEndpointDetailed]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/{name}/notifications": {
+      "patch": {
+        "operationId": "update_notifications",
+        "summary": "Updates the email and webhook notification settings for an endpoint.",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Updates the email and webhook notification settings for an endpoint.\n\n:param name: str\n  The name of the serving endpoint whose notifications are being updated. This field is required.\n:param email_notifications: :class:`EmailNotifications` (optional)\n  The email notification settings to update. Specify email addresses to notify when endpoint state\n  changes occur.\n\n:returns: :class:`UpdateInferenceEndpointNotificationsResponse`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the serving endpoint whose notifications are being updated. This field is required."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "email_notifications": {
+                    "type": "string",
+                    "description": "The email notification settings to update. Specify email addresses to notify when endpoint state changes occur."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateInferenceEndpointNotificationsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/serving-endpoints/pt/{name}/config": {
+      "put": {
+        "operationId": "update_provisioned_throughput_endpoint_config",
+        "summary": "Updates any combination of the pt endpoint's served entities, the compute configuration of those",
+        "tags": [
+          "serving",
+          "serving_endpoints"
+        ],
+        "description": "Updates any combination of the pt endpoint's served entities, the compute configuration of those\nserved entities, and the endpoint's traffic config. Updates are instantaneous and endpoint should be\nupdated instantly\n\n:param name: str\n  The name of the pt endpoint to update. This field is required.\n:param config: :class:`PtEndpointCoreConfig`\n\n:returns:\n  Long-running operation waiter for :class:`ServingEndpointDetailed`.\n  See :method:wait_get_serving_endpoint_not_updating for more details.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the pt endpoint to update. This field is required."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "config": {
+                    "type": "string",
+                    "description": ":returns: Long-running operation waiter for :class:`ServingEndpointDetailed`. See :method:wait_get_serving_endpoint_not_updating for more details."
+                  }
+                },
+                "required": [
+                  "config"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wait[ServingEndpointDetailed]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Ai21LabsConfig": {
+        "type": "object",
+        "properties": {
+          "ai21labs_api_key": {
+            "type": "string"
+          },
+          "ai21labs_api_key_plaintext": {
+            "type": "string",
+            "description": "An AI21 Labs API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `ai21labs_api_key`. You must provide an API key using one of the following fields: `ai21labs_api_key` or `ai21labs_api_key_plaintext`."
+          }
+        }
+      },
+      "AiGatewayConfig": {
+        "type": "object",
+        "properties": {
+          "fallback_config": {
+            "$ref": "#/components/schemas/FallbackConfig"
+          },
+          "guardrails": {
+            "$ref": "#/components/schemas/AiGatewayGuardrails",
+            "description": "Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses."
+          },
+          "inference_table_config": {
+            "$ref": "#/components/schemas/AiGatewayInferenceTableConfig",
+            "description": "Configuration for payload logging using inference tables. Use these tables to monitor and audit data being sent to and received from model APIs and to improve model quality."
+          },
+          "rate_limits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AiGatewayRateLimit"
+            },
+            "description": "Configuration for rate limits which can be set to limit endpoint traffic."
+          },
+          "usage_tracking_config": {
+            "$ref": "#/components/schemas/AiGatewayUsageTrackingConfig",
+            "description": "Configuration to enable usage tracking using system tables. These tables allow you to monitor operational usage on endpoints and their associated costs."
+          }
+        }
+      },
+      "AiGatewayGuardrailParameters": {
+        "type": "object",
+        "properties": {
+          "invalid_keywords": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "pii": {
+            "$ref": "#/components/schemas/AiGatewayGuardrailPiiBehavior",
+            "description": "Configuration for guardrail PII filter."
+          },
+          "safety": {
+            "type": "boolean",
+            "description": "Indicates whether the safety filter is enabled."
+          },
+          "valid_topics": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "The list of allowed topics. Given a chat request, this guardrail flags the request if its topic is not in the allowed topics."
+          }
+        }
+      },
+      "AiGatewayGuardrailPiiBehavior": {
+        "type": "object",
+        "properties": {
+          "behavior": {
+            "$ref": "#/components/schemas/AiGatewayGuardrailPiiBehaviorBehavior"
+          }
+        }
+      },
+      "AiGatewayGuardrails": {
+        "type": "object",
+        "properties": {
+          "input": {
+            "$ref": "#/components/schemas/AiGatewayGuardrailParameters"
+          },
+          "output": {
+            "$ref": "#/components/schemas/AiGatewayGuardrailParameters",
+            "description": "Configuration for output guardrail filters."
+          }
+        }
+      },
+      "AiGatewayInferenceTableConfig": {
+        "type": "object",
+        "properties": {
+          "catalog_name": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Indicates whether the inference table is enabled."
+          },
+          "schema_name": {
+            "type": "string",
+            "description": "The name of the schema in Unity Catalog. Required when enabling inference tables. NOTE: On update, you have to disable inference table first in order to change the schema name."
+          },
+          "table_name_prefix": {
+            "type": "string",
+            "description": "The prefix of the table in Unity Catalog. NOTE: On update, you have to disable inference table first in order to change the prefix name."
+          }
+        }
+      },
+      "AiGatewayRateLimit": {
+        "type": "object",
+        "properties": {
+          "renewal_period": {
+            "$ref": "#/components/schemas/AiGatewayRateLimitRenewalPeriod"
+          },
+          "calls": {
+            "type": "integer",
+            "description": "Used to specify how many calls are allowed for a key within the renewal_period."
+          },
+          "key": {
+            "$ref": "#/components/schemas/AiGatewayRateLimitKey",
+            "description": "Key field for a rate limit. Currently, 'user', 'user_group, 'service_principal', and 'endpoint' are supported, with 'endpoint' being the default if not specified."
+          },
+          "principal": {
+            "type": "string",
+            "description": "Principal field for a user, user group, or service principal to apply rate limiting to. Accepts a user email, group name, or service principal application ID."
+          },
+          "tokens": {
+            "type": "integer",
+            "description": "Used to specify how many tokens are allowed for a key within the renewal_period."
+          }
+        },
+        "required": [
+          "renewal_period"
+        ]
+      },
+      "AiGatewayUsageTrackingConfig": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        }
+      },
+      "AmazonBedrockConfig": {
+        "type": "object",
+        "properties": {
+          "aws_region": {
+            "type": "string"
+          },
+          "bedrock_provider": {
+            "$ref": "#/components/schemas/AmazonBedrockConfigBedrockProvider",
+            "description": "The underlying provider in Amazon Bedrock. Supported values (case insensitive) include: Anthropic, Cohere, AI21Labs, Amazon."
+          },
+          "aws_access_key_id": {
+            "type": "string",
+            "description": "The Databricks secret key reference for an AWS access key ID with permissions to interact with Bedrock services. If you prefer to paste your API key directly, see `aws_access_key_id_plaintext`. You must provide an API key using one of the following fields: `aws_access_key_id` or `aws_access_key_id_plaintext`."
+          },
+          "aws_access_key_id_plaintext": {
+            "type": "string",
+            "description": "An AWS access key ID with permissions to interact with Bedrock services provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `aws_access_key_id`. You must provide an API key using one of the following fields: `aws_access_key_id` or `aws_access_key_id_plaintext`."
+          },
+          "aws_secret_access_key": {
+            "type": "string",
+            "description": "The Databricks secret key reference for an AWS secret access key paired with the access key ID, with permissions to interact with Bedrock services. If you prefer to paste your API key directly, see `aws_secret_access_key_plaintext`. You must provide an API key using one of the following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."
+          },
+          "aws_secret_access_key_plaintext": {
+            "type": "string",
+            "description": "An AWS secret access key paired with the access key ID, with permissions to interact with Bedrock services provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `aws_secret_access_key`. You must provide an API key using one of the following fields: `aws_secret_access_key` or `aws_secret_access_key_plaintext`."
+          },
+          "instance_profile_arn": {
+            "type": "string",
+            "description": "ARN of the instance profile that the external model will use to access AWS resources. You must authenticate using an instance profile or access keys. If you prefer to authenticate using access keys, see `aws_access_key_id`, `aws_access_key_id_plaintext`, `aws_secret_access_key` and `aws_secret_access_key_plaintext`."
+          }
+        },
+        "required": [
+          "aws_region",
+          "bedrock_provider"
+        ]
+      },
+      "AnthropicConfig": {
+        "type": "object",
+        "properties": {
+          "anthropic_api_key": {
+            "type": "string"
+          },
+          "anthropic_api_key_plaintext": {
+            "type": "string",
+            "description": "The Anthropic API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `anthropic_api_key`. You must provide an API key using one of the following fields: `anthropic_api_key` or `anthropic_api_key_plaintext`."
+          }
+        }
+      },
+      "ApiKeyAuth": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "description": "The Databricks secret key reference for an API Key. If you prefer to paste your token directly, see `value_plaintext`."
+          },
+          "value_plaintext": {
+            "type": "string",
+            "description": "The API Key provided as a plaintext string. If you prefer to reference your token using Databricks Secrets, see `value`."
+          }
+        },
+        "required": [
+          "key"
+        ]
+      },
+      "AutoCaptureConfigInput": {
+        "type": "object",
+        "properties": {
+          "catalog_name": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Indicates whether the inference table is enabled."
+          },
+          "schema_name": {
+            "type": "string",
+            "description": "The name of the schema in Unity Catalog. NOTE: On update, you cannot change the schema name if the inference table is already enabled."
+          },
+          "table_name_prefix": {
+            "type": "string",
+            "description": "The prefix of the table in Unity Catalog. NOTE: On update, you cannot change the prefix name if the inference table is already enabled."
+          }
+        }
+      },
+      "AutoCaptureConfigOutput": {
+        "type": "object",
+        "properties": {
+          "catalog_name": {
+            "type": "string"
+          },
+          "enabled": {
+            "type": "boolean",
+            "description": "Indicates whether the inference table is enabled."
+          },
+          "schema_name": {
+            "type": "string",
+            "description": "The name of the schema in Unity Catalog. NOTE: On update, you cannot change the schema name if the inference table is already enabled."
+          },
+          "state": {
+            "$ref": "#/components/schemas/AutoCaptureState"
+          },
+          "table_name_prefix": {
+            "type": "string",
+            "description": "The prefix of the table in Unity Catalog. NOTE: On update, you cannot change the prefix name if the inference table is already enabled."
+          }
+        }
+      },
+      "AutoCaptureState": {
+        "type": "object",
+        "properties": {
+          "payload_table": {
+            "$ref": "#/components/schemas/PayloadTable"
+          }
+        }
+      },
+      "BearerTokenAuth": {
+        "type": "object",
+        "properties": {
+          "token": {
+            "type": "string"
+          },
+          "token_plaintext": {
+            "type": "string",
+            "description": "The token provided as a plaintext string. If you prefer to reference your token using Databricks Secrets, see `token`."
+          }
+        }
+      },
+      "BuildLogsResponse": {
+        "type": "object",
+        "properties": {
+          "logs": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "logs"
+        ]
+      },
+      "ChatMessage": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string"
+          },
+          "role": {
+            "$ref": "#/components/schemas/ChatMessageRole",
+            "description": "The role of the message. One of [system, user, assistant]."
+          }
+        }
+      },
+      "CohereConfig": {
+        "type": "object",
+        "properties": {
+          "cohere_api_base": {
+            "type": "string"
+          },
+          "cohere_api_key": {
+            "type": "string",
+            "description": "The Databricks secret key reference for a Cohere API key. If you prefer to paste your API key directly, see `cohere_api_key_plaintext`. You must provide an API key using one of the following fields: `cohere_api_key` or `cohere_api_key_plaintext`."
+          },
+          "cohere_api_key_plaintext": {
+            "type": "string",
+            "description": "The Cohere API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `cohere_api_key`. You must provide an API key using one of the following fields: `cohere_api_key` or `cohere_api_key_plaintext`."
+          }
+        }
+      },
+      "CustomProviderConfig": {
+        "type": "object",
+        "properties": {
+          "custom_provider_url": {
+            "type": "string",
+            "description": "This is a field to provide the URL of the custom provider API."
+          },
+          "api_key_auth": {
+            "$ref": "#/components/schemas/ApiKeyAuth",
+            "description": "This is a field to provide API key authentication for the custom provider API. You can only specify one authentication method."
+          },
+          "bearer_token_auth": {
+            "$ref": "#/components/schemas/BearerTokenAuth",
+            "description": "This is a field to provide bearer token authentication for the custom provider API. You can only specify one authentication method."
+          }
+        },
+        "required": [
+          "custom_provider_url"
+        ],
+        "description": "Configs needed to create a custom provider model route."
+      },
+      "DataPlaneInfo": {
+        "type": "object",
+        "properties": {
+          "authorization_details": {
+            "type": "string",
+            "description": "Authorization details as a string."
+          },
+          "endpoint_url": {
+            "type": "string",
+            "description": "The URL of the endpoint for this operation in the dataplane."
+          }
+        },
+        "description": "Details necessary to query this object's API through the DataPlane APIs."
+      },
+      "DatabricksModelServingConfig": {
+        "type": "object",
+        "properties": {
+          "databricks_workspace_url": {
+            "type": "string"
+          },
+          "databricks_api_token": {
+            "type": "string",
+            "description": "The Databricks secret key reference for a Databricks API token that corresponds to a user or service principal with Can Query access to the model serving endpoint pointed to by this external model. If you prefer to paste your API key directly, see `databricks_api_token_plaintext`. You must provide an API key using one of the following fields: `databricks_api_token` or `databricks_api_token_plaintext`."
+          },
+          "databricks_api_token_plaintext": {
+            "type": "string",
+            "description": "The Databricks API token that corresponds to a user or service principal with Can Query access to the model serving endpoint pointed to by this external model provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `databricks_api_token`. You must provide an API key using one of the following fields: `databricks_api_token` or `databricks_api_token_plaintext`."
+          }
+        },
+        "required": [
+          "databricks_workspace_url"
+        ]
+      },
+      "DataframeSplitInput": {
+        "type": "object",
+        "properties": {
+          "columns": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Any"
+            }
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Any"
+            },
+            "description": "Data array for the dataframe"
+          },
+          "index": {
+            "type": "array",
+            "items": {
+              "type": "integer"
+            },
+            "description": "Index array for the dataframe"
+          }
+        }
+      },
+      "EmailNotifications": {
+        "type": "object",
+        "properties": {
+          "on_update_failure": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "on_update_success": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "A list of email addresses to be notified when an endpoint successfully updates its configuration or state."
+          }
+        }
+      },
+      "EmbeddingsV1ResponseEmbeddingElement": {
+        "type": "object",
+        "properties": {
+          "embedding": {
+            "type": "array",
+            "items": {
+              "type": "number"
+            }
+          },
+          "index": {
+            "type": "integer",
+            "description": "The index of the embedding in the response."
+          },
+          "object": {
+            "$ref": "#/components/schemas/EmbeddingsV1ResponseEmbeddingElementObject",
+            "description": "This will always be 'embedding'."
+          }
+        }
+      },
+      "EndpointCoreConfigInput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "auto_capture_config": {
+            "$ref": "#/components/schemas/AutoCaptureConfigInput",
+            "description": "Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog. Note: this field is deprecated for creating new provisioned throughput endpoints, or updating existing provisioned throughput endpoints that never have inference table configured; in these cases please use AI Gateway to manage inference tables."
+          },
+          "served_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServedEntityInput"
+            },
+            "description": "The list of served entities under the serving endpoint config."
+          },
+          "served_models": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServedModelInput"
+            },
+            "description": "(Deprecated, use served_entities instead) The list of served models under the serving endpoint config."
+          },
+          "traffic_config": {
+            "$ref": "#/components/schemas/TrafficConfig",
+            "description": "The traffic configuration associated with the serving endpoint config."
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "EndpointCoreConfigOutput": {
+        "type": "object",
+        "properties": {
+          "auto_capture_config": {
+            "$ref": "#/components/schemas/AutoCaptureConfigOutput"
+          },
+          "config_version": {
+            "type": "integer",
+            "description": "The config version that the serving endpoint is currently serving."
+          },
+          "served_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServedEntityOutput"
+            },
+            "description": "The list of served entities under the serving endpoint config."
+          },
+          "served_models": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServedModelOutput"
+            },
+            "description": "(Deprecated, use served_entities instead) The list of served models under the serving endpoint config."
+          },
+          "traffic_config": {
+            "$ref": "#/components/schemas/TrafficConfig",
+            "description": "The traffic configuration associated with the serving endpoint config."
+          }
+        }
+      },
+      "EndpointCoreConfigSummary": {
+        "type": "object",
+        "properties": {
+          "served_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServedEntitySpec"
+            }
+          },
+          "served_models": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServedModelSpec"
+            },
+            "description": "(Deprecated, use served_entities instead) The list of served models under the serving endpoint config."
+          }
+        }
+      },
+      "EndpointPendingConfig": {
+        "type": "object",
+        "properties": {
+          "auto_capture_config": {
+            "$ref": "#/components/schemas/AutoCaptureConfigOutput"
+          },
+          "config_version": {
+            "type": "integer",
+            "description": "The config version that the serving endpoint is currently serving."
+          },
+          "served_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServedEntityOutput"
+            },
+            "description": "The list of served entities belonging to the last issued update to the serving endpoint."
+          },
+          "served_models": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServedModelOutput"
+            },
+            "description": "(Deprecated, use served_entities instead) The list of served models belonging to the last issued update to the serving endpoint."
+          },
+          "start_time": {
+            "type": "integer",
+            "description": "The timestamp when the update to the pending config started."
+          },
+          "traffic_config": {
+            "$ref": "#/components/schemas/TrafficConfig",
+            "description": "The traffic config defining how invocations to the serving endpoint should be routed."
+          }
+        }
+      },
+      "EndpointState": {
+        "type": "object",
+        "properties": {
+          "config_update": {
+            "$ref": "#/components/schemas/EndpointStateConfigUpdate"
+          },
+          "ready": {
+            "$ref": "#/components/schemas/EndpointStateReady",
+            "description": "The state of an endpoint, indicating whether or not the endpoint is queryable. An endpoint is READY if all of the served entities in its active configuration are ready. If any of the actively served entities are in a non-ready state, the endpoint state will be NOT_READY."
+          }
+        }
+      },
+      "EndpointTag": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "description": "Optional value field for a serving endpoint tag."
+          }
+        },
+        "required": [
+          "key"
+        ]
+      },
+      "EndpointTags": {
+        "type": "object",
+        "properties": {
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EndpointTag"
+            }
+          }
+        }
+      },
+      "ExportMetricsResponse": {
+        "type": "object",
+        "properties": {
+          "contents": {
+            "$ref": "#/components/schemas/BinaryIO"
+          }
+        }
+      },
+      "ExternalModel": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "$ref": "#/components/schemas/ExternalModelProvider"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the external model."
+          },
+          "task": {
+            "type": "string",
+            "description": "The task type of the external model."
+          },
+          "ai21labs_config": {
+            "$ref": "#/components/schemas/Ai21LabsConfig",
+            "description": "AI21Labs Config. Only required if the provider is 'ai21labs'."
+          },
+          "amazon_bedrock_config": {
+            "$ref": "#/components/schemas/AmazonBedrockConfig",
+            "description": "Amazon Bedrock Config. Only required if the provider is 'amazon-bedrock'."
+          },
+          "anthropic_config": {
+            "$ref": "#/components/schemas/AnthropicConfig",
+            "description": "Anthropic Config. Only required if the provider is 'anthropic'."
+          },
+          "cohere_config": {
+            "$ref": "#/components/schemas/CohereConfig",
+            "description": "Cohere Config. Only required if the provider is 'cohere'."
+          },
+          "custom_provider_config": {
+            "$ref": "#/components/schemas/CustomProviderConfig",
+            "description": "Custom Provider Config. Only required if the provider is 'custom'."
+          },
+          "databricks_model_serving_config": {
+            "$ref": "#/components/schemas/DatabricksModelServingConfig",
+            "description": "Databricks Model Serving Config. Only required if the provider is 'databricks-model-serving'."
+          },
+          "google_cloud_vertex_ai_config": {
+            "$ref": "#/components/schemas/GoogleCloudVertexAiConfig",
+            "description": "Google Cloud Vertex AI Config. Only required if the provider is 'google-cloud-vertex-ai'."
+          },
+          "openai_config": {
+            "$ref": "#/components/schemas/OpenAiConfig",
+            "description": "OpenAI Config. Only required if the provider is 'openai'."
+          },
+          "palm_config": {
+            "$ref": "#/components/schemas/PaLmConfig",
+            "description": "PaLM Config. Only required if the provider is 'palm'."
+          }
+        },
+        "required": [
+          "provider",
+          "name",
+          "task"
+        ]
+      },
+      "ExternalModelUsageElement": {
+        "type": "object",
+        "properties": {
+          "completion_tokens": {
+            "type": "integer"
+          },
+          "prompt_tokens": {
+            "type": "integer",
+            "description": "The number of tokens in the prompt."
+          },
+          "total_tokens": {
+            "type": "integer",
+            "description": "The total number of tokens in the prompt and response."
+          }
+        }
+      },
+      "FallbackConfig": {
+        "type": "object",
+        "properties": {
+          "enabled": {
+            "type": "boolean"
+          }
+        },
+        "required": [
+          "enabled"
+        ]
+      },
+      "FoundationModel": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "display_name": {
+            "type": "string"
+          },
+          "docs": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          }
+        },
+        "description": "All fields are not sensitive as they are hard-coded in the system and made available to\n    customers."
+      },
+      "GetOpenApiResponse": {
+        "type": "object",
+        "properties": {
+          "contents": {
+            "$ref": "#/components/schemas/BinaryIO"
+          }
+        }
+      },
+      "GetServingEndpointPermissionLevelsResponse": {
+        "type": "object",
+        "properties": {
+          "permission_levels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServingEndpointPermissionsDescription"
+            }
+          }
+        }
+      },
+      "GoogleCloudVertexAiConfig": {
+        "type": "object",
+        "properties": {
+          "project_id": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string",
+            "description": "This is the region for the Google Cloud Vertex AI Service. See [supported regions] for more details. Some models are only available in specific regions. [supported regions]: https://cloud.google.com/vertex-ai/docs/general/locations"
+          },
+          "private_key": {
+            "type": "string",
+            "description": "The Databricks secret key reference for a private key for the service account which has access to the Google Cloud Vertex AI Service. See [Best practices for managing service account keys]. If you prefer to paste your API key directly, see `private_key_plaintext`. You must provide an API key using one of the following fields: `private_key` or `private_key_plaintext` [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"
+          },
+          "private_key_plaintext": {
+            "type": "string",
+            "description": "The private key for the service account which has access to the Google Cloud Vertex AI Service provided as a plaintext secret. See [Best practices for managing service account keys]. If you prefer to reference your key using Databricks Secrets, see `private_key`. You must provide an API key using one of the following fields: `private_key` or `private_key_plaintext`. [Best practices for managing service account keys]: https://cloud.google.com/iam/docs/best-practices-for-managing-service-account-keys"
+          }
+        },
+        "required": [
+          "project_id",
+          "region"
+        ]
+      },
+      "HttpRequestResponse": {
+        "type": "object",
+        "properties": {
+          "contents": {
+            "$ref": "#/components/schemas/BinaryIO"
+          }
+        }
+      },
+      "ListEndpointsResponse": {
+        "type": "object",
+        "properties": {
+          "endpoints": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServingEndpoint"
+            }
+          }
+        }
+      },
+      "ModelDataPlaneInfo": {
+        "type": "object",
+        "properties": {
+          "query_info": {
+            "$ref": "#/components/schemas/DataPlaneInfo",
+            "description": "Information required to query DataPlane API 'query' endpoint."
+          }
+        },
+        "description": "A representation of all DataPlaneInfo for operations that can be done on a model through Data\n    Plane APIs."
+      },
+      "OpenAiConfig": {
+        "type": "object",
+        "properties": {
+          "microsoft_entra_client_id": {
+            "type": "string",
+            "description": "This field is only required for Azure AD OpenAI and is the Microsoft Entra Client ID."
+          },
+          "microsoft_entra_client_secret": {
+            "type": "string",
+            "description": "The Databricks secret key reference for a client secret used for Microsoft Entra ID authentication. If you prefer to paste your client secret directly, see `microsoft_entra_client_secret_plaintext`. You must provide an API key using one of the following fields: `microsoft_entra_client_secret` or `microsoft_entra_client_secret_plaintext`."
+          },
+          "microsoft_entra_client_secret_plaintext": {
+            "type": "string",
+            "description": "The client secret used for Microsoft Entra ID authentication provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `microsoft_entra_client_secret`. You must provide an API key using one of the following fields: `microsoft_entra_client_secret` or `microsoft_entra_client_secret_plaintext`."
+          },
+          "microsoft_entra_tenant_id": {
+            "type": "string",
+            "description": "This field is only required for Azure AD OpenAI and is the Microsoft Entra Tenant ID."
+          },
+          "openai_api_base": {
+            "type": "string",
+            "description": "This is a field to provide a customized base URl for the OpenAI API. For Azure OpenAI, this field is required, and is the base URL for the Azure OpenAI API service provided by Azure. For other OpenAI API types, this field is optional, and if left unspecified, the standard OpenAI base URL is used."
+          },
+          "openai_api_key": {
+            "type": "string",
+            "description": "The Databricks secret key reference for an OpenAI API key using the OpenAI or Azure service. If you prefer to paste your API key directly, see `openai_api_key_plaintext`. You must provide an API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`."
+          },
+          "openai_api_key_plaintext": {
+            "type": "string",
+            "description": "The OpenAI API key using the OpenAI or Azure service provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `openai_api_key`. You must provide an API key using one of the following fields: `openai_api_key` or `openai_api_key_plaintext`."
+          },
+          "openai_api_type": {
+            "type": "string",
+            "description": "This is an optional field to specify the type of OpenAI API to use. For Azure OpenAI, this field is required, and adjust this parameter to represent the preferred security access validation protocol. For access token validation, use azure. For authentication using Azure Active Directory (Azure AD) use, azuread."
+          },
+          "openai_api_version": {
+            "type": "string",
+            "description": "This is an optional field to specify the OpenAI API version. For Azure OpenAI, this field is required, and is the version of the Azure OpenAI service to utilize, specified by a date."
+          },
+          "openai_deployment_name": {
+            "type": "string",
+            "description": "This field is only required for Azure OpenAI and is the name of the deployment resource for the Azure OpenAI service."
+          },
+          "openai_organization": {
+            "type": "string",
+            "description": "This is an optional field to specify the organization in OpenAI or Azure OpenAI."
+          }
+        },
+        "description": "Configs needed to create an OpenAI model route."
+      },
+      "PaLmConfig": {
+        "type": "object",
+        "properties": {
+          "palm_api_key": {
+            "type": "string"
+          },
+          "palm_api_key_plaintext": {
+            "type": "string",
+            "description": "The PaLM API key provided as a plaintext string. If you prefer to reference your key using Databricks Secrets, see `palm_api_key`. You must provide an API key using one of the following fields: `palm_api_key` or `palm_api_key_plaintext`."
+          }
+        }
+      },
+      "PayloadTable": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "status": {
+            "type": "string"
+          },
+          "status_message": {
+            "type": "string"
+          }
+        }
+      },
+      "PtEndpointCoreConfig": {
+        "type": "object",
+        "properties": {
+          "served_entities": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PtServedModel"
+            }
+          },
+          "traffic_config": {
+            "$ref": "#/components/schemas/TrafficConfig"
+          }
+        }
+      },
+      "PtServedModel": {
+        "type": "object",
+        "properties": {
+          "entity_name": {
+            "type": "string"
+          },
+          "provisioned_model_units": {
+            "type": "integer",
+            "description": "The number of model units to be provisioned."
+          },
+          "burst_scaling_enabled": {
+            "type": "boolean",
+            "description": "Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains fixed capacity at provisioned_model_units."
+          },
+          "entity_version": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+          }
+        },
+        "required": [
+          "entity_name",
+          "provisioned_model_units"
+        ]
+      },
+      "PutAiGatewayResponse": {
+        "type": "object",
+        "properties": {
+          "fallback_config": {
+            "$ref": "#/components/schemas/FallbackConfig"
+          },
+          "guardrails": {
+            "$ref": "#/components/schemas/AiGatewayGuardrails",
+            "description": "Configuration for AI Guardrails to prevent unwanted data and unsafe data in requests and responses."
+          },
+          "inference_table_config": {
+            "$ref": "#/components/schemas/AiGatewayInferenceTableConfig",
+            "description": "Configuration for payload logging using inference tables. Use these tables to monitor and audit data being sent to and received from model APIs and to improve model quality."
+          },
+          "rate_limits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AiGatewayRateLimit"
+            },
+            "description": "Configuration for rate limits which can be set to limit endpoint traffic."
+          },
+          "usage_tracking_config": {
+            "$ref": "#/components/schemas/AiGatewayUsageTrackingConfig",
+            "description": "Configuration to enable usage tracking using system tables. These tables allow you to monitor operational usage on endpoints and their associated costs."
+          }
+        }
+      },
+      "PutResponse": {
+        "type": "object",
+        "properties": {
+          "rate_limits": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RateLimit"
+            }
+          }
+        }
+      },
+      "QueryEndpointResponse": {
+        "type": "object",
+        "properties": {
+          "choices": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/V1ResponseChoiceElement"
+            }
+          },
+          "created": {
+            "type": "integer",
+            "description": "The timestamp in seconds when the query was created in Unix time returned by a __completions or chat external/foundation model__ serving endpoint."
+          },
+          "data": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EmbeddingsV1ResponseEmbeddingElement"
+            },
+            "description": "The list of the embeddings returned by the __embeddings external/foundation model__ serving endpoint."
+          },
+          "id": {
+            "type": "string",
+            "description": "The ID of the query that may be returned by a __completions or chat external/foundation model__ serving endpoint."
+          },
+          "model": {
+            "type": "string",
+            "description": "The name of the __external/foundation model__ used for querying. This is the name of the model that was specified in the endpoint config."
+          },
+          "object": {
+            "$ref": "#/components/schemas/QueryEndpointResponseObject",
+            "description": "The type of object returned by the __external/foundation model__ serving endpoint, one of [text_completion, chat.completion, list (of embeddings)]."
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/any"
+            },
+            "description": "The outputs of the feature serving endpoint."
+          },
+          "predictions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Any"
+            },
+            "description": "The predictions returned by the serving endpoint."
+          },
+          "served_model_name": {
+            "type": "string",
+            "description": "The name of the served model that served the request. This is useful when there are multiple models behind the same endpoint with traffic split."
+          },
+          "usage": {
+            "$ref": "#/components/schemas/ExternalModelUsageElement",
+            "description": "The usage object that may be returned by the __external/foundation model__ serving endpoint. This contains information about the number of tokens used in the prompt and response."
+          }
+        }
+      },
+      "RateLimit": {
+        "type": "object",
+        "properties": {
+          "calls": {
+            "type": "integer"
+          },
+          "renewal_period": {
+            "$ref": "#/components/schemas/RateLimitRenewalPeriod",
+            "description": "Renewal period field for a serving endpoint rate limit. Currently, only 'minute' is supported."
+          },
+          "key": {
+            "$ref": "#/components/schemas/RateLimitKey",
+            "description": "Key field for a serving endpoint rate limit. Currently, only 'user' and 'endpoint' are supported, with 'endpoint' being the default if not specified."
+          }
+        },
+        "required": [
+          "calls",
+          "renewal_period"
+        ]
+      },
+      "Route": {
+        "type": "object",
+        "properties": {
+          "traffic_percentage": {
+            "type": "integer"
+          },
+          "served_entity_name": {
+            "type": "string"
+          },
+          "served_model_name": {
+            "type": "string",
+            "description": "The name of the served model this route configures traffic for."
+          }
+        },
+        "required": [
+          "traffic_percentage"
+        ]
+      },
+      "ServedEntityInput": {
+        "type": "object",
+        "properties": {
+          "burst_scaling_enabled": {
+            "type": "boolean"
+          },
+          "entity_name": {
+            "type": "string",
+            "description": "The name of the entity to be served. The entity may be a model in the Databricks Model Registry, a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC object, the full name of the object should be given in the form of **catalog_name.schema_name.model_name**."
+          },
+          "entity_version": {
+            "type": "string"
+          },
+          "environment_vars": {
+            "type": "object",
+            "description": "An object containing a set of optional, user-specified environment variable key-value pairs used for serving this entity. Note: this is an experimental feature and subject to change. Example entity environment variables that refer to Databricks secrets: `{\"OPENAI_API_KEY\": \"{{secrets/my_scope/my_key}}\", \"DATABRICKS_TOKEN\": \"{{secrets/my_scope2/my_key2}}\"}`"
+          },
+          "external_model": {
+            "$ref": "#/components/schemas/ExternalModel",
+            "description": "The external model to be served. NOTE: Only one of external_model and (entity_name, entity_version, workload_size, workload_type, and scale_to_zero_enabled) can be specified with the latter set being used for custom model serving for a Databricks registered model. For an existing endpoint with external_model, it cannot be updated to an endpoint without external_model. If the endpoint is created without external_model, users cannot update it to add external_model later. The task type of all external models within an endpoint must be the same."
+          },
+          "instance_profile_arn": {
+            "type": "string",
+            "description": "ARN of the instance profile that the served entity uses to access AWS resources."
+          },
+          "max_provisioned_concurrency": {
+            "type": "integer",
+            "description": "The maximum provisioned concurrency that the endpoint can scale up to. Do not use if workload_size is specified."
+          },
+          "max_provisioned_throughput": {
+            "type": "integer",
+            "description": "The maximum tokens per second that the endpoint can scale up to."
+          },
+          "min_provisioned_concurrency": {
+            "type": "integer",
+            "description": "The minimum provisioned concurrency that the endpoint can scale down to. Do not use if workload_size is specified."
+          },
+          "min_provisioned_throughput": {
+            "type": "integer",
+            "description": "The minimum tokens per second that the endpoint can scale down to."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+          },
+          "provisioned_model_units": {
+            "type": "integer",
+            "description": "The number of model units provisioned."
+          },
+          "scale_to_zero_enabled": {
+            "type": "boolean",
+            "description": "Whether the compute resources for the served entity should scale down to zero."
+          },
+          "workload_size": {
+            "type": "string",
+            "description": "The workload size of the served entity. The workload size corresponds to a range of provisioned concurrency that the compute autoscales between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are \"Small\" (4 - 4 provisioned concurrency), \"Medium\" (8 - 16 provisioned concurrency), and \"Large\" (16 - 64 provisioned concurrency). Additional custom workload sizes can also be used when available in the workspace. If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."
+          },
+          "workload_type": {
+            "$ref": "#/components/schemas/ServingModelWorkloadType",
+            "description": "The workload type of the served entity. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is \"CPU\". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types]. [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"
+          }
+        }
+      },
+      "ServedEntityOutput": {
+        "type": "object",
+        "properties": {
+          "burst_scaling_enabled": {
+            "type": "boolean"
+          },
+          "creation_timestamp": {
+            "type": "integer"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "entity_name": {
+            "type": "string",
+            "description": "The name of the entity to be served. The entity may be a model in the Databricks Model Registry, a model in the Unity Catalog (UC), or a function of type FEATURE_SPEC in the UC. If it is a UC object, the full name of the object should be given in the form of **catalog_name.schema_name.model_name**."
+          },
+          "entity_version": {
+            "type": "string"
+          },
+          "environment_vars": {
+            "type": "object",
+            "description": "An object containing a set of optional, user-specified environment variable key-value pairs used for serving this entity. Note: this is an experimental feature and subject to change. Example entity environment variables that refer to Databricks secrets: `{\"OPENAI_API_KEY\": \"{{secrets/my_scope/my_key}}\", \"DATABRICKS_TOKEN\": \"{{secrets/my_scope2/my_key2}}\"}`"
+          },
+          "external_model": {
+            "$ref": "#/components/schemas/ExternalModel",
+            "description": "The external model to be served. NOTE: Only one of external_model and (entity_name, entity_version, workload_size, workload_type, and scale_to_zero_enabled) can be specified with the latter set being used for custom model serving for a Databricks registered model. For an existing endpoint with external_model, it cannot be updated to an endpoint without external_model. If the endpoint is created without external_model, users cannot update it to add external_model later. The task type of all external models within an endpoint must be the same."
+          },
+          "foundation_model": {
+            "$ref": "#/components/schemas/FoundationModel"
+          },
+          "instance_profile_arn": {
+            "type": "string",
+            "description": "ARN of the instance profile that the served entity uses to access AWS resources."
+          },
+          "max_provisioned_concurrency": {
+            "type": "integer",
+            "description": "The maximum provisioned concurrency that the endpoint can scale up to. Do not use if workload_size is specified."
+          },
+          "max_provisioned_throughput": {
+            "type": "integer",
+            "description": "The maximum tokens per second that the endpoint can scale up to."
+          },
+          "min_provisioned_concurrency": {
+            "type": "integer",
+            "description": "The minimum provisioned concurrency that the endpoint can scale down to. Do not use if workload_size is specified."
+          },
+          "min_provisioned_throughput": {
+            "type": "integer",
+            "description": "The minimum tokens per second that the endpoint can scale down to."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+          },
+          "provisioned_model_units": {
+            "type": "integer",
+            "description": "The number of model units provisioned."
+          },
+          "scale_to_zero_enabled": {
+            "type": "boolean",
+            "description": "Whether the compute resources for the served entity should scale down to zero."
+          },
+          "state": {
+            "$ref": "#/components/schemas/ServedModelState"
+          },
+          "workload_size": {
+            "type": "string",
+            "description": "The workload size of the served entity. The workload size corresponds to a range of provisioned concurrency that the compute autoscales between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are \"Small\" (4 - 4 provisioned concurrency), \"Medium\" (8 - 16 provisioned concurrency), and \"Large\" (16 - 64 provisioned concurrency). Additional custom workload sizes can also be used when available in the workspace. If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."
+          },
+          "workload_type": {
+            "$ref": "#/components/schemas/ServingModelWorkloadType",
+            "description": "The workload type of the served entity. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is \"CPU\". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types]. [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"
+          }
+        }
+      },
+      "ServedEntitySpec": {
+        "type": "object",
+        "properties": {
+          "entity_name": {
+            "type": "string"
+          },
+          "entity_version": {
+            "type": "string"
+          },
+          "external_model": {
+            "$ref": "#/components/schemas/ExternalModel"
+          },
+          "foundation_model": {
+            "$ref": "#/components/schemas/FoundationModel"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ServedModelInput": {
+        "type": "object",
+        "properties": {
+          "scale_to_zero_enabled": {
+            "type": "boolean"
+          },
+          "model_name": {
+            "type": "string"
+          },
+          "model_version": {
+            "type": "string"
+          },
+          "burst_scaling_enabled": {
+            "type": "boolean",
+            "description": "Whether burst scaling is enabled. When enabled (default), the endpoint can automatically scale up beyond provisioned capacity to handle traffic spikes. When disabled, the endpoint maintains fixed capacity at provisioned_model_units."
+          },
+          "environment_vars": {
+            "type": "object",
+            "description": "An object containing a set of optional, user-specified environment variable key-value pairs used for serving this entity. Note: this is an experimental feature and subject to change. Example entity environment variables that refer to Databricks secrets: `{\"OPENAI_API_KEY\": \"{{secrets/my_scope/my_key}}\", \"DATABRICKS_TOKEN\": \"{{secrets/my_scope2/my_key2}}\"}`"
+          },
+          "instance_profile_arn": {
+            "type": "string",
+            "description": "ARN of the instance profile that the served entity uses to access AWS resources."
+          },
+          "max_provisioned_concurrency": {
+            "type": "integer",
+            "description": "The maximum provisioned concurrency that the endpoint can scale up to. Do not use if workload_size is specified."
+          },
+          "max_provisioned_throughput": {
+            "type": "integer",
+            "description": "The maximum tokens per second that the endpoint can scale up to."
+          },
+          "min_provisioned_concurrency": {
+            "type": "integer",
+            "description": "The minimum provisioned concurrency that the endpoint can scale down to. Do not use if workload_size is specified."
+          },
+          "min_provisioned_throughput": {
+            "type": "integer",
+            "description": "The minimum tokens per second that the endpoint can scale down to."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+          },
+          "provisioned_model_units": {
+            "type": "integer",
+            "description": "The number of model units provisioned."
+          },
+          "workload_size": {
+            "type": "string",
+            "description": "The workload size of the served entity. The workload size corresponds to a range of provisioned concurrency that the compute autoscales between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are \"Small\" (4 - 4 provisioned concurrency), \"Medium\" (8 - 16 provisioned concurrency), and \"Large\" (16 - 64 provisioned concurrency). Additional custom workload sizes can also be used when available in the workspace. If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."
+          },
+          "workload_type": {
+            "$ref": "#/components/schemas/ServedModelInputWorkloadType",
+            "description": "The workload type of the served entity. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is \"CPU\". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types]. [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"
+          }
+        },
+        "required": [
+          "scale_to_zero_enabled",
+          "model_name",
+          "model_version"
+        ]
+      },
+      "ServedModelOutput": {
+        "type": "object",
+        "properties": {
+          "burst_scaling_enabled": {
+            "type": "boolean"
+          },
+          "creation_timestamp": {
+            "type": "integer"
+          },
+          "creator": {
+            "type": "string"
+          },
+          "environment_vars": {
+            "type": "object",
+            "description": "An object containing a set of optional, user-specified environment variable key-value pairs used for serving this entity. Note: this is an experimental feature and subject to change. Example entity environment variables that refer to Databricks secrets: `{\"OPENAI_API_KEY\": \"{{secrets/my_scope/my_key}}\", \"DATABRICKS_TOKEN\": \"{{secrets/my_scope2/my_key2}}\"}`"
+          },
+          "instance_profile_arn": {
+            "type": "string",
+            "description": "ARN of the instance profile that the served entity uses to access AWS resources."
+          },
+          "max_provisioned_concurrency": {
+            "type": "integer",
+            "description": "The maximum provisioned concurrency that the endpoint can scale up to. Do not use if workload_size is specified."
+          },
+          "min_provisioned_concurrency": {
+            "type": "integer",
+            "description": "The minimum provisioned concurrency that the endpoint can scale down to. Do not use if workload_size is specified."
+          },
+          "model_name": {
+            "type": "string"
+          },
+          "model_version": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of a served entity. It must be unique across an endpoint. A served entity name can consist of alphanumeric characters, dashes, and underscores. If not specified for an external model, this field defaults to external_model.name, with '.' and ':' replaced with '-', and if not specified for other entities, it defaults to entity_name-entity_version."
+          },
+          "provisioned_model_units": {
+            "type": "integer",
+            "description": "The number of model units provisioned."
+          },
+          "scale_to_zero_enabled": {
+            "type": "boolean",
+            "description": "Whether the compute resources for the served entity should scale down to zero."
+          },
+          "state": {
+            "$ref": "#/components/schemas/ServedModelState"
+          },
+          "workload_size": {
+            "type": "string",
+            "description": "The workload size of the served entity. The workload size corresponds to a range of provisioned concurrency that the compute autoscales between. A single unit of provisioned concurrency can process one request at a time. Valid workload sizes are \"Small\" (4 - 4 provisioned concurrency), \"Medium\" (8 - 16 provisioned concurrency), and \"Large\" (16 - 64 provisioned concurrency). Additional custom workload sizes can also be used when available in the workspace. If scale-to-zero is enabled, the lower bound of the provisioned concurrency for each workload size is 0. Do not use if min_provisioned_concurrency and max_provisioned_concurrency are specified."
+          },
+          "workload_type": {
+            "$ref": "#/components/schemas/ServingModelWorkloadType",
+            "description": "The workload type of the served entity. The workload type selects which type of compute to use in the endpoint. The default value for this parameter is \"CPU\". For deep learning workloads, GPU acceleration is available by selecting workload types like GPU_SMALL and others. See the available [GPU types]. [GPU types]: https://docs.databricks.com/en/machine-learning/model-serving/create-manage-serving-endpoints.html#gpu-workload-types"
+          }
+        }
+      },
+      "ServedModelSpec": {
+        "type": "object",
+        "properties": {
+          "model_name": {
+            "type": "string"
+          },
+          "model_version": {
+            "type": "string",
+            "description": "Only one of model_version and entity_version should be populated"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "ServedModelState": {
+        "type": "object",
+        "properties": {
+          "deployment": {
+            "$ref": "#/components/schemas/ServedModelStateDeployment"
+          },
+          "deployment_state_message": {
+            "type": "string"
+          }
+        }
+      },
+      "ServerLogsResponse": {
+        "type": "object",
+        "properties": {
+          "logs": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "logs"
+        ]
+      },
+      "ServingEndpoint": {
+        "type": "object",
+        "properties": {
+          "ai_gateway": {
+            "$ref": "#/components/schemas/AiGatewayConfig"
+          },
+          "budget_policy_id": {
+            "type": "string",
+            "description": "The budget policy associated with the endpoint."
+          },
+          "config": {
+            "$ref": "#/components/schemas/EndpointCoreConfigSummary",
+            "description": "The config that is currently being served by the endpoint."
+          },
+          "creation_timestamp": {
+            "type": "integer",
+            "description": "The timestamp when the endpoint was created in Unix time."
+          },
+          "creator": {
+            "type": "string",
+            "description": "The email of the user who created the serving endpoint."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the endpoint"
+          },
+          "id": {
+            "type": "string",
+            "description": "System-generated ID of the endpoint, included to be used by the Permissions API."
+          },
+          "last_updated_timestamp": {
+            "type": "integer",
+            "description": "The timestamp when the endpoint was last updated by a user in Unix time."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the serving endpoint."
+          },
+          "state": {
+            "$ref": "#/components/schemas/EndpointState",
+            "description": "Information corresponding to the state of the serving endpoint."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EndpointTag"
+            },
+            "description": "Tags attached to the serving endpoint."
+          },
+          "task": {
+            "type": "string",
+            "description": "The task type of the serving endpoint."
+          },
+          "usage_policy_id": {
+            "type": "string",
+            "description": "The usage policy associated with serving endpoint."
+          }
+        }
+      },
+      "ServingEndpointAccessControlRequest": {
+        "type": "object",
+        "properties": {
+          "group_name": {
+            "type": "string"
+          },
+          "permission_level": {
+            "$ref": "#/components/schemas/ServingEndpointPermissionLevel"
+          },
+          "service_principal_name": {
+            "type": "string",
+            "description": "application ID of a service principal"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "name of the user"
+          }
+        }
+      },
+      "ServingEndpointAccessControlResponse": {
+        "type": "object",
+        "properties": {
+          "all_permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServingEndpointPermission"
+            }
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Display name of the user or service principal."
+          },
+          "group_name": {
+            "type": "string",
+            "description": "name of the group"
+          },
+          "service_principal_name": {
+            "type": "string",
+            "description": "Name of the service principal."
+          },
+          "user_name": {
+            "type": "string",
+            "description": "name of the user"
+          }
+        }
+      },
+      "ServingEndpointDetailed": {
+        "type": "object",
+        "properties": {
+          "ai_gateway": {
+            "$ref": "#/components/schemas/AiGatewayConfig"
+          },
+          "budget_policy_id": {
+            "type": "string",
+            "description": "The budget policy associated with the endpoint."
+          },
+          "config": {
+            "$ref": "#/components/schemas/EndpointCoreConfigOutput",
+            "description": "The config that is currently being served by the endpoint."
+          },
+          "creation_timestamp": {
+            "type": "integer",
+            "description": "The timestamp when the endpoint was created in Unix time."
+          },
+          "creator": {
+            "type": "string",
+            "description": "The email of the user who created the serving endpoint."
+          },
+          "data_plane_info": {
+            "$ref": "#/components/schemas/ModelDataPlaneInfo",
+            "description": "Information required to query DataPlane APIs."
+          },
+          "description": {
+            "type": "string",
+            "description": "Description of the serving model"
+          },
+          "email_notifications": {
+            "$ref": "#/components/schemas/EmailNotifications",
+            "description": "Email notification settings."
+          },
+          "endpoint_url": {
+            "type": "string",
+            "description": "Endpoint invocation url if route optimization is enabled for endpoint"
+          },
+          "id": {
+            "type": "string",
+            "description": "System-generated ID of the endpoint. This is used to refer to the endpoint in the Permissions API"
+          },
+          "last_updated_timestamp": {
+            "type": "integer",
+            "description": "The timestamp when the endpoint was last updated by a user in Unix time."
+          },
+          "name": {
+            "type": "string",
+            "description": "The name of the serving endpoint."
+          },
+          "pending_config": {
+            "$ref": "#/components/schemas/EndpointPendingConfig",
+            "description": "The config that the endpoint is attempting to update to."
+          },
+          "permission_level": {
+            "$ref": "#/components/schemas/ServingEndpointDetailedPermissionLevel",
+            "description": "The permission level of the principal making the request."
+          },
+          "route_optimized": {
+            "type": "boolean",
+            "description": "Boolean representing if route optimization has been enabled for the endpoint"
+          },
+          "state": {
+            "$ref": "#/components/schemas/EndpointState",
+            "description": "Information corresponding to the state of the serving endpoint."
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/EndpointTag"
+            },
+            "description": "Tags attached to the serving endpoint."
+          },
+          "task": {
+            "type": "string",
+            "description": "The task type of the serving endpoint."
+          }
+        }
+      },
+      "ServingEndpointPermission": {
+        "type": "object",
+        "properties": {
+          "inherited": {
+            "type": "boolean"
+          },
+          "inherited_from_object": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "permission_level": {
+            "$ref": "#/components/schemas/ServingEndpointPermissionLevel"
+          }
+        }
+      },
+      "ServingEndpointPermissions": {
+        "type": "object",
+        "properties": {
+          "access_control_list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ServingEndpointAccessControlResponse"
+            }
+          },
+          "object_id": {
+            "type": "string"
+          },
+          "object_type": {
+            "type": "string"
+          }
+        }
+      },
+      "ServingEndpointPermissionsDescription": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "permission_level": {
+            "$ref": "#/components/schemas/ServingEndpointPermissionLevel"
+          }
+        }
+      },
+      "TrafficConfig": {
+        "type": "object",
+        "properties": {
+          "routes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Route"
+            }
+          }
+        }
+      },
+      "UpdateInferenceEndpointNotificationsResponse": {
+        "type": "object",
+        "properties": {
+          "email_notifications": {
+            "$ref": "#/components/schemas/EmailNotifications"
+          },
+          "name": {
+            "type": "string"
+          }
+        }
+      },
+      "V1ResponseChoiceElement": {
+        "type": "object",
+        "properties": {
+          "finish_reason": {
+            "type": "string"
+          },
+          "index": {
+            "type": "integer",
+            "description": "The index of the choice in the __chat or completions__ response."
+          },
+          "logprobs": {
+            "type": "integer",
+            "description": "The logprobs returned only by the __completions__ endpoint."
+          },
+          "message": {
+            "$ref": "#/components/schemas/ChatMessage",
+            "description": "The message response from the __chat__ endpoint."
+          },
+          "text": {
+            "type": "string",
+            "description": "The text response from the __completions__ endpoint."
+          }
+        }
+      },
+      "AiGatewayGuardrailPiiBehaviorBehavior": {
+        "type": "string",
+        "enum": [
+          "BLOCK",
+          "MASK",
+          "NONE"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "AiGatewayRateLimitKey": {
+        "type": "string",
+        "enum": [
+          "endpoint",
+          "service_principal",
+          "user",
+          "user_group"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "AiGatewayRateLimitRenewalPeriod": {
+        "type": "string",
+        "enum": [
+          "minute"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "AmazonBedrockConfigBedrockProvider": {
+        "type": "string",
+        "enum": [
+          "ai21labs",
+          "amazon",
+          "anthropic",
+          "cohere"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ChatMessageRole": {
+        "type": "string",
+        "enum": [
+          "assistant",
+          "system",
+          "user"
+        ],
+        "description": "The role of the message. One of [system, user, assistant]."
+      },
+      "EmbeddingsV1ResponseEmbeddingElementObject": {
+        "type": "string",
+        "enum": [
+          "embedding"
+        ],
+        "description": "This will always be 'embedding'."
+      },
+      "EndpointStateConfigUpdate": {
+        "type": "string",
+        "enum": [
+          "IN_PROGRESS",
+          "NOT_UPDATING",
+          "UPDATE_CANCELED",
+          "UPDATE_FAILED"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "EndpointStateReady": {
+        "type": "string",
+        "enum": [
+          "NOT_READY",
+          "READY"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ExternalFunctionRequestHttpMethod": {
+        "type": "string",
+        "enum": [
+          "DELETE",
+          "GET",
+          "PATCH",
+          "POST",
+          "PUT"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ExternalModelProvider": {
+        "type": "string",
+        "enum": [
+          "ai21labs",
+          "amazon-bedrock",
+          "anthropic",
+          "cohere",
+          "custom",
+          "databricks-model-serving",
+          "google-cloud-vertex-ai",
+          "openai",
+          "palm"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "QueryEndpointResponseObject": {
+        "type": "string",
+        "enum": [
+          "chat.completion",
+          "list",
+          "text_completion"
+        ],
+        "description": "The type of object returned by the __external/foundation model__ serving endpoint, one of\n[text_completion, chat.completion, list (of embeddings)]."
+      },
+      "RateLimitKey": {
+        "type": "string",
+        "enum": [
+          "endpoint",
+          "user"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "RateLimitRenewalPeriod": {
+        "type": "string",
+        "enum": [
+          "minute"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ServedModelInputWorkloadType": {
+        "type": "string",
+        "enum": [
+          "CPU",
+          "GPU_LARGE",
+          "GPU_MEDIUM",
+          "GPU_SMALL",
+          "MULTIGPU_MEDIUM"
+        ],
+        "description": "Please keep this in sync with with workload types in InferenceEndpointEntities.scala"
+      },
+      "ServedModelStateDeployment": {
+        "type": "string",
+        "enum": [
+          "DEPLOYMENT_ABORTED",
+          "DEPLOYMENT_CREATING",
+          "DEPLOYMENT_FAILED",
+          "DEPLOYMENT_READY",
+          "DEPLOYMENT_RECOVERING"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ServingEndpointDetailedPermissionLevel": {
+        "type": "string",
+        "enum": [
+          "CAN_MANAGE",
+          "CAN_QUERY",
+          "CAN_VIEW"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ServingEndpointPermissionLevel": {
+        "type": "string",
+        "enum": [
+          "CAN_MANAGE",
+          "CAN_QUERY",
+          "CAN_VIEW"
+        ],
+        "description": "Permission level"
+      },
+      "ServingModelWorkloadType": {
+        "type": "string",
+        "enum": [
+          "CPU",
+          "GPU_LARGE",
+          "GPU_MEDIUM",
+          "GPU_SMALL",
+          "MULTIGPU_MEDIUM"
+        ],
+        "description": "Please keep this in sync with with workload types in InferenceEndpointEntities.scala"
+      }
+    }
+  }
+}

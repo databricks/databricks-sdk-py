@@ -1,0 +1,773 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Databricks Tags API (workspace)",
+    "description": "OpenAPI specification for the Databricks tags service (workspace-level APIs), generated from the Databricks Python SDK.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://{workspace}.cloud.databricks.com",
+      "description": "Databricks workspace",
+      "variables": {
+        "workspace": {
+          "default": "your-workspace",
+          "description": "Your Databricks workspace name"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/api/2.1/tag-policies": {
+      "post": {
+        "operationId": "create_tag_policy",
+        "summary": "Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the [Tag",
+        "tags": [
+          "tags",
+          "tag_policies"
+        ],
+        "description": "Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the [Tag\nPolicy Terraform documentation]. To manage permissions for tag policies, use the [Account Access\nControl Proxy API].\n\n[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy\n[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy\n\n:param tag_policy: :class:`TagPolicy`\n\n:returns: :class:`TagPolicy`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tag_policy": {
+                    "type": "string",
+                    "description": ":returns: :class:`TagPolicy`"
+                  }
+                },
+                "required": [
+                  "tag_policy"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagPolicy"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_tag_policies",
+        "summary": "Lists the tag policies for all governed tags in the account. For Terraform usage, see the [Tag Policy",
+        "tags": [
+          "tags",
+          "tag_policies"
+        ],
+        "description": "Lists the tag policies for all governed tags in the account. For Terraform usage, see the [Tag Policy\nTerraform documentation]. To list granted permissions for tag policies, use the [Account Access\nControl Proxy API].\n\n[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy\n[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policies\n\n:param page_size: int (optional)\n  The maximum number of results to return in this request. Fewer results may be returned than\n  requested. If unspecified or set to 0, this defaults to 1000. The maximum value is 1000; values\n  above 1000 will be coerced down to 1000.\n:param page_token: str (optional)\n  An optional page token received from a previous list tag policies call.\n\n:returns: Iterator over :class:`TagPolicy`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The maximum number of results to return in this request. Fewer results may be returned than requested. If unspecified or set to 0, this defaults to 1000. The maximum value is 1000; values above 1000 will be coerced down to 1000."
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "An optional page token received from a previous list tag policies call."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[TagPolicy]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/tag-policies/{tag_key}": {
+      "delete": {
+        "operationId": "delete_tag_policy",
+        "summary": "Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned. For",
+        "tags": [
+          "tags",
+          "tag_policies"
+        ],
+        "description": "Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned. For\nTerraform usage, see the [Tag Policy Terraform documentation].\n\n[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy\n\n:param tag_key: str",
+        "parameters": [
+          {
+            "name": "tag_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_tag_policy",
+        "summary": "Gets a single tag policy by its associated governed tag's key. For Terraform usage, see the [Tag",
+        "tags": [
+          "tags",
+          "tag_policies"
+        ],
+        "description": "Gets a single tag policy by its associated governed tag's key. For Terraform usage, see the [Tag\nPolicy Terraform documentation]. To list granted permissions for tag policies, use the [Account Access\nControl Proxy API].\n\n[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy\n[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policy\n\n:param tag_key: str\n\n:returns: :class:`TagPolicy`",
+        "parameters": [
+          {
+            "name": "tag_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`TagPolicy`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagPolicy"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update_tag_policy",
+        "summary": "Updates an existing tag policy for a single governed tag. For Terraform usage, see the [Tag Policy",
+        "tags": [
+          "tags",
+          "tag_policies"
+        ],
+        "description": "Updates an existing tag policy for a single governed tag. For Terraform usage, see the [Tag Policy\nTerraform documentation]. To manage permissions for tag policies, use the [Account Access Control\nProxy API].\n\n[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy\n[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy\n\n:param tag_key: str\n:param tag_policy: :class:`TagPolicy`\n:param update_mask: str\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n  A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the\n  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API\n  changes in the future.\n\n:returns: :class:`TagPolicy`",
+        "parameters": [
+          {
+            "name": "tag_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param tag_policy: :class:`TagPolicy`"
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tag_policy": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "tag_policy"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagPolicy"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/entity-tag-assignments": {
+      "post": {
+        "operationId": "create_tag_assignment",
+        "summary": "Create a tag assignment",
+        "tags": [
+          "tags",
+          "workspace_entity_tag_assignments"
+        ],
+        "description": "Create a tag assignment\n\n:param tag_assignment: :class:`TagAssignment`\n\n:returns: :class:`TagAssignment`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tag_assignment": {
+                    "type": "string",
+                    "description": ":returns: :class:`TagAssignment`"
+                  }
+                },
+                "required": [
+                  "tag_assignment"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagAssignment"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}": {
+      "delete": {
+        "operationId": "delete_tag_assignment",
+        "summary": "Delete a tag assignment",
+        "tags": [
+          "tags",
+          "workspace_entity_tag_assignments"
+        ],
+        "description": "Delete a tag assignment\n\n:param entity_type: str\n  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces\n:param entity_id: str\n  The identifier of the entity to which the tag is assigned\n:param tag_key: str\n  The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed",
+        "parameters": [
+          {
+            "name": "entity_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces"
+          },
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The identifier of the entity to which the tag is assigned"
+          },
+          {
+            "name": "tag_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_tag_assignment",
+        "summary": "Get a tag assignment",
+        "tags": [
+          "tags",
+          "workspace_entity_tag_assignments"
+        ],
+        "description": "Get a tag assignment\n\n:param entity_type: str\n  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces\n:param entity_id: str\n  The identifier of the entity to which the tag is assigned\n:param tag_key: str\n  The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed\n\n:returns: :class:`TagAssignment`",
+        "parameters": [
+          {
+            "name": "entity_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces"
+          },
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The identifier of the entity to which the tag is assigned"
+          },
+          {
+            "name": "tag_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagAssignment"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update_tag_assignment",
+        "summary": "Update a tag assignment",
+        "tags": [
+          "tags",
+          "workspace_entity_tag_assignments"
+        ],
+        "description": "Update a tag assignment\n\n:param entity_type: str\n  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces\n:param entity_id: str\n  The identifier of the entity to which the tag is assigned\n:param tag_key: str\n  The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed\n:param tag_assignment: :class:`TagAssignment`\n:param update_mask: str\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n  A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the\n  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API\n  changes in the future.\n\n:returns: :class:`TagAssignment`",
+        "parameters": [
+          {
+            "name": "entity_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces"
+          },
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The identifier of the entity to which the tag is assigned"
+          },
+          {
+            "name": "tag_key",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed"
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "tag_assignment": {
+                    "type": "string",
+                    "description": ":param update_mask: str The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
+                  }
+                },
+                "required": [
+                  "tag_assignment"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/TagAssignment"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags": {
+      "get": {
+        "operationId": "list_tag_assignments",
+        "summary": "List the tag assignments for an entity",
+        "tags": [
+          "tags",
+          "workspace_entity_tag_assignments"
+        ],
+        "description": "List the tag assignments for an entity\n\n:param entity_type: str\n  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces\n:param entity_id: str\n  The identifier of the entity to which the tag is assigned\n:param page_size: int (optional)\n  Optional. Maximum number of tag assignments to return in a single page\n:param page_token: str (optional)\n  Pagination token to go to the next page of tag assignments. Requests first page if absent.\n\n:returns: Iterator over :class:`TagAssignment`",
+        "parameters": [
+          {
+            "name": "entity_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces"
+          },
+          {
+            "name": "entity_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The identifier of the entity to which the tag is assigned"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Optional. Maximum number of tag assignments to return in a single page"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pagination token to go to the next page of tag assignments. Requests first page if absent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[TagAssignment]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "ListTagAssignmentsResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "tag_assignments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagAssignment"
+            }
+          }
+        }
+      },
+      "ListTagPoliciesResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "tag_policies": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TagPolicy"
+            }
+          }
+        }
+      },
+      "TagAssignment": {
+        "type": "object",
+        "properties": {
+          "entity_type": {
+            "type": "string"
+          },
+          "entity_id": {
+            "type": "string",
+            "description": "The identifier of the entity to which the tag is assigned"
+          },
+          "tag_key": {
+            "type": "string",
+            "description": "The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed"
+          },
+          "tag_value": {
+            "type": "string",
+            "description": "The value of the tag"
+          }
+        },
+        "required": [
+          "entity_type",
+          "entity_id",
+          "tag_key"
+        ]
+      },
+      "TagPolicy": {
+        "type": "object",
+        "properties": {
+          "tag_key": {
+            "type": "string"
+          },
+          "create_time": {
+            "type": "string",
+            "description": "Timestamp when the tag policy was created"
+          },
+          "description": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "update_time": {
+            "type": "string",
+            "description": "Timestamp when the tag policy was last updated"
+          },
+          "values": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Value"
+            }
+          }
+        },
+        "required": [
+          "tag_key"
+        ]
+      },
+      "Value": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      }
+    }
+  }
+}
