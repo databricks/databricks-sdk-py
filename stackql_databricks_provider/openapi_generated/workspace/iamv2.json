@@ -1,0 +1,456 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Databricks Iamv2 API (workspace)",
+    "description": "OpenAPI specification for the Databricks iamv2 service (workspace-level APIs), generated from the Databricks Python SDK.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://{workspace}.cloud.databricks.com",
+      "description": "Databricks workspace",
+      "variables": {
+        "workspace": {
+          "default": "your-workspace",
+          "description": "Your Databricks workspace name"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/api/2.0/identity/workspaceAccessDetails/{principal_id}": {
+      "get": {
+        "operationId": "get_workspace_access_detail_local",
+        "summary": "Returns the access details for a principal in the current workspace. Allows for checking access",
+        "tags": [
+          "iamv2",
+          "workspace_iam_v2"
+        ],
+        "description": "Returns the access details for a principal in the current workspace. Allows for checking access\ndetails for any provisioned principal (user, service principal, or group) in the current workspace. *\nProvisioned principal here refers to one that has been synced into Databricks from the customer's IdP\nor added explicitly to Databricks via SCIM/UI. Allows for passing in a \"view\" parameter to control\nwhat fields are returned (BASIC by default or FULL).\n\n:param principal_id: int\n  Required. The internal ID of the principal (user/sp/group) for which the access details are being\n  requested.\n:param view: :class:`WorkspaceAccessDetailView` (optional)\n  Controls what fields are returned.\n\n:returns: :class:`WorkspaceAccessDetail`",
+        "parameters": [
+          {
+            "name": "principal_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Required. The internal ID of the principal (user/sp/group) for which the access details are being requested."
+          },
+          {
+            "name": "view",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Controls what fields are returned."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceAccessDetail"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/identity/groups/resolveByExternalId": {
+      "post": {
+        "operationId": "resolve_group_proxy",
+        "summary": "Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it",
+        "tags": [
+          "iamv2",
+          "workspace_iam_v2"
+        ],
+        "description": "Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it\nwill be created in the account. If the customer is not onboarded onto Automatic Identity Management\n(AIM), this will return an error.\n\n:param external_id: str\n  Required. The external ID of the group in the customer's IdP.\n\n:returns: :class:`ResolveGroupResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "external_id": {
+                    "type": "string",
+                    "description": "Required. The external ID of the group in the customer's IdP."
+                  }
+                },
+                "required": [
+                  "external_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveGroupResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/identity/servicePrincipals/resolveByExternalId": {
+      "post": {
+        "operationId": "resolve_service_principal_proxy",
+        "summary": "Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will",
+        "tags": [
+          "iamv2",
+          "workspace_iam_v2"
+        ],
+        "description": "Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will\nbe created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will\nreturn an error.\n\n:param external_id: str\n  Required. The external ID of the service principal in the customer's IdP.\n\n:returns: :class:`ResolveServicePrincipalResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "external_id": {
+                    "type": "string",
+                    "description": "Required. The external ID of the service principal in the customer's IdP."
+                  }
+                },
+                "required": [
+                  "external_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveServicePrincipalResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/identity/users/resolveByExternalId": {
+      "post": {
+        "operationId": "resolve_user_proxy",
+        "summary": "Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it",
+        "tags": [
+          "iamv2",
+          "workspace_iam_v2"
+        ],
+        "description": "Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it\nwill be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will\nreturn an error.\n\n:param external_id: str\n  Required. The external ID of the user in the customer's IdP.\n\n:returns: :class:`ResolveUserResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "external_id": {
+                    "type": "string",
+                    "description": "Required. The external ID of the user in the customer's IdP."
+                  }
+                },
+                "required": [
+                  "external_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ResolveUserResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "Group": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "description": "The parent account ID for group in Databricks."
+          },
+          "external_id": {
+            "type": "string",
+            "description": "ExternalId of the group in the customer's IdP."
+          },
+          "group_name": {
+            "type": "string",
+            "description": "Display name of the group."
+          },
+          "internal_id": {
+            "type": "integer",
+            "description": "Internal group ID of the group in Databricks."
+          }
+        },
+        "description": "The details of a Group resource."
+      },
+      "ResolveGroupResponse": {
+        "type": "object",
+        "properties": {
+          "group": {
+            "$ref": "#/components/schemas/Group"
+          }
+        }
+      },
+      "ResolveServicePrincipalResponse": {
+        "type": "object",
+        "properties": {
+          "service_principal": {
+            "$ref": "#/components/schemas/ServicePrincipal"
+          }
+        }
+      },
+      "ResolveUserResponse": {
+        "type": "object",
+        "properties": {
+          "user": {
+            "$ref": "#/components/schemas/User"
+          }
+        }
+      },
+      "ServicePrincipal": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "description": "The parent account ID for the service principal in Databricks."
+          },
+          "account_sp_status": {
+            "$ref": "#/components/schemas/State",
+            "description": "The activity status of a service principal in a Databricks account."
+          },
+          "application_id": {
+            "type": "string",
+            "description": "Application ID of the service principal."
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Display name of the service principal."
+          },
+          "external_id": {
+            "type": "string",
+            "description": "ExternalId of the service principal in the customer's IdP."
+          },
+          "internal_id": {
+            "type": "integer",
+            "description": "Internal service principal ID of the service principal in Databricks."
+          }
+        },
+        "description": "The details of a ServicePrincipal resource."
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "account_id": {
+            "type": "string",
+            "description": "The accountId parent of the user in Databricks."
+          },
+          "account_user_status": {
+            "$ref": "#/components/schemas/State",
+            "description": "The activity status of a user in a Databricks account."
+          },
+          "external_id": {
+            "type": "string",
+            "description": "ExternalId of the user in the customer's IdP."
+          },
+          "internal_id": {
+            "type": "integer",
+            "description": "Internal userId of the user in Databricks."
+          },
+          "name": {
+            "$ref": "#/components/schemas/UserName"
+          },
+          "username": {
+            "type": "string",
+            "description": "Username/email of the user."
+          }
+        },
+        "description": "The details of a User resource."
+      },
+      "UserName": {
+        "type": "object",
+        "properties": {
+          "family_name": {
+            "type": "string"
+          },
+          "given_name": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkspaceAccessDetail": {
+        "type": "object",
+        "properties": {
+          "access_type": {
+            "$ref": "#/components/schemas/WorkspaceAccessDetailAccessType"
+          },
+          "account_id": {
+            "type": "string",
+            "description": "The account ID parent of the workspace where the principal has access."
+          },
+          "permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspacePermission"
+            },
+            "description": "The permissions granted to the principal in the workspace."
+          },
+          "principal_id": {
+            "type": "integer",
+            "description": "The internal ID of the principal (user/sp/group) in Databricks."
+          },
+          "principal_type": {
+            "$ref": "#/components/schemas/PrincipalType"
+          },
+          "status": {
+            "$ref": "#/components/schemas/State",
+            "description": "The activity status of the principal in the workspace. Not applicable for groups at the moment."
+          },
+          "workspace_id": {
+            "type": "integer",
+            "description": "The workspace ID where the principal has access."
+          }
+        },
+        "description": "The details of a principal's access to a workspace."
+      },
+      "PrincipalType": {
+        "type": "string",
+        "enum": [
+          "GROUP",
+          "SERVICE_PRINCIPAL",
+          "USER"
+        ],
+        "description": "The type of the principal (user/sp/group)."
+      },
+      "State": {
+        "type": "string",
+        "enum": [
+          "ACTIVE",
+          "INACTIVE"
+        ],
+        "description": "The activity status of a user or service principal in a Databricks account or workspace."
+      },
+      "WorkspaceAccessDetailAccessType": {
+        "type": "string",
+        "enum": [
+          "DIRECT",
+          "INDIRECT"
+        ],
+        "description": "The type of access the principal has to the workspace."
+      },
+      "WorkspaceAccessDetailView": {
+        "type": "string",
+        "enum": [
+          "BASIC",
+          "FULL"
+        ],
+        "description": "Controls what fields are returned in the GetWorkspaceAccessDetail response."
+      },
+      "WorkspacePermission": {
+        "type": "string",
+        "enum": [
+          "ADMIN_PERMISSION",
+          "USER_PERMISSION"
+        ],
+        "description": "The type of permission a principal has to a workspace (admin/user)."
+      }
+    }
+  }
+}

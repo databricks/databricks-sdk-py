@@ -1,0 +1,4441 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Databricks Marketplace API (workspace)",
+    "description": "OpenAPI specification for the Databricks marketplace service (workspace-level APIs), generated from the Databricks Python SDK.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://{workspace}.cloud.databricks.com",
+      "description": "Databricks workspace",
+      "variables": {
+        "workspace": {
+          "default": "your-workspace",
+          "description": "Your Databricks workspace name"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/api/2.1/marketplace-consumer/listings/{listing_id}/content": {
+      "get": {
+        "operationId": "get",
+        "summary": "Get a high level preview of the metadata of listing installable content.",
+        "tags": [
+          "marketplace",
+          "consumer_fulfillments"
+        ],
+        "description": "Get a high level preview of the metadata of listing installable content.\n\n:param listing_id: str\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`SharedDataObject`",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_size: int (optional)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: Iterator over :class:`SharedDataObject`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[SharedDataObject]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/listings/{listing_id}/fulfillments": {
+      "get": {
+        "operationId": "list",
+        "summary": "Get all listings fulfillments associated with a listing. A _fulfillment_ is a potential installation.",
+        "tags": [
+          "marketplace",
+          "consumer_fulfillments"
+        ],
+        "description": "Get all listings fulfillments associated with a listing. A _fulfillment_ is a potential installation.\nStandard installations contain metadata about the attached share or git repo. Only one of these fields\nwill be present. Personalized installations contain metadata about the attached share or git repo, as\nwell as the Delta Sharing recipient type.\n\n:param listing_id: str\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`ListingFulfillment`",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_size: int (optional)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: Iterator over :class:`ListingFulfillment`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[ListingFulfillment]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/listings/{listing_id}/installations": {
+      "post": {
+        "operationId": "create",
+        "summary": "Install payload associated with a Databricks Marketplace listing.",
+        "tags": [
+          "marketplace",
+          "consumer_installations"
+        ],
+        "description": "Install payload associated with a Databricks Marketplace listing.\n\n:param listing_id: str\n:param accepted_consumer_terms: :class:`ConsumerTerms` (optional)\n:param catalog_name: str (optional)\n:param recipient_type: :class:`DeltaSharingRecipientType` (optional)\n:param repo_detail: :class:`RepoInstallation` (optional)\n  for git repo installations\n:param share_name: str (optional)\n\n:returns: :class:`Installation`",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param accepted_consumer_terms: :class:`ConsumerTerms` (optional)"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "accepted_consumer_terms": {
+                    "type": "string"
+                  },
+                  "catalog_name": {
+                    "type": "string",
+                    "description": ":param recipient_type: :class:`DeltaSharingRecipientType` (optional)"
+                  },
+                  "recipient_type": {
+                    "type": "string"
+                  },
+                  "repo_detail": {
+                    "type": "string",
+                    "description": "for git repo installations"
+                  },
+                  "share_name": {
+                    "type": "string",
+                    "description": ":returns: :class:`Installation`"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Installation"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_listing_installations",
+        "summary": "List all installations for a particular listing.",
+        "tags": [
+          "marketplace",
+          "consumer_installations"
+        ],
+        "description": "List all installations for a particular listing.\n\n:param listing_id: str\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`InstallationDetail`",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_size: int (optional)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: Iterator over :class:`InstallationDetail`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[InstallationDetail]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/listings/{listing_id}/installations/{installation_id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Uninstall an installation associated with a Databricks Marketplace listing.",
+        "tags": [
+          "marketplace",
+          "consumer_installations"
+        ],
+        "description": "Uninstall an installation associated with a Databricks Marketplace listing.\n\n:param listing_id: str\n:param installation_id: str",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param installation_id: str"
+          },
+          {
+            "name": "installation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "update",
+        "summary": "This is a update API that will update the part of the fields defined in the installation table as well",
+        "tags": [
+          "marketplace",
+          "consumer_installations"
+        ],
+        "description": "This is a update API that will update the part of the fields defined in the installation table as well\nas interact with external services according to the fields not included in the installation table 1.\nthe token will be rotate if the rotateToken flag is true 2. the token will be forcibly rotate if the\nrotateToken flag is true and the tokenInfo field is empty\n\n:param listing_id: str\n:param installation_id: str\n:param installation: :class:`InstallationDetail`\n:param rotate_token: bool (optional)\n\n:returns: :class:`UpdateInstallationResponse`",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param installation_id: str"
+          },
+          {
+            "name": "installation_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "installation": {
+                    "type": "string",
+                    "description": ":param rotate_token: bool (optional)"
+                  },
+                  "rotate_token": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "installation"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateInstallationResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/installations": {
+      "get": {
+        "operationId": "list",
+        "summary": "List all installations across all listings.",
+        "tags": [
+          "marketplace",
+          "consumer_installations"
+        ],
+        "description": "List all installations across all listings.\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`InstallationDetail`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[InstallationDetail]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/listings:batchGet": {
+      "get": {
+        "operationId": "batch_get",
+        "summary": "Batch get a published listing in the Databricks Marketplace that the consumer has access to.",
+        "tags": [
+          "marketplace",
+          "consumer_listings"
+        ],
+        "description": "Batch get a published listing in the Databricks Marketplace that the consumer has access to.\n\n:param ids: List[str] (optional)\n\n:returns: :class:`BatchGetListingsResponse`",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`BatchGetListingsResponse`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchGetListingsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/listings/{id}": {
+      "get": {
+        "operationId": "get",
+        "summary": "Get a published listing in the Databricks Marketplace that the consumer has access to.",
+        "tags": [
+          "marketplace",
+          "consumer_listings"
+        ],
+        "description": "Get a published listing in the Databricks Marketplace that the consumer has access to.\n\n:param id: str\n\n:returns: :class:`GetListingResponse`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`GetListingResponse`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetListingResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/listings": {
+      "get": {
+        "operationId": "list",
+        "summary": "List all published listings in the Databricks Marketplace that the consumer has access to.",
+        "tags": [
+          "marketplace",
+          "consumer_listings"
+        ],
+        "description": "List all published listings in the Databricks Marketplace that the consumer has access to.\n\n:param assets: List[:class:`AssetType`] (optional)\n  Matches any of the following asset types\n:param categories: List[:class:`Category`] (optional)\n  Matches any of the following categories\n:param is_free: bool (optional)\n  Filters each listing based on if it is free.\n:param is_private_exchange: bool (optional)\n  Filters each listing based on if it is a private exchange.\n:param is_staff_pick: bool (optional)\n  Filters each listing based on whether it is a staff pick.\n:param page_size: int (optional)\n:param page_token: str (optional)\n:param provider_ids: List[str] (optional)\n  Matches any of the following provider ids\n:param tags: List[:class:`ListingTag`] (optional)\n  Matches any of the following tags\n\n:returns: Iterator over :class:`Listing`",
+        "parameters": [
+          {
+            "name": "assets",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Matches any of the following asset types"
+          },
+          {
+            "name": "categories",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Matches any of the following categories"
+          },
+          {
+            "name": "is_free",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters each listing based on if it is free."
+          },
+          {
+            "name": "is_private_exchange",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters each listing based on if it is a private exchange."
+          },
+          {
+            "name": "is_staff_pick",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters each listing based on whether it is a staff pick."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Matches any of the following provider ids"
+          },
+          {
+            "name": "tags",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Matches any of the following tags"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[Listing]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/search-listings": {
+      "get": {
+        "operationId": "search",
+        "summary": "Search published listings in the Databricks Marketplace that the consumer has access to. This query",
+        "tags": [
+          "marketplace",
+          "consumer_listings"
+        ],
+        "description": "Search published listings in the Databricks Marketplace that the consumer has access to. This query\nsupports a variety of different search parameters and performs fuzzy matching.\n\n:param query: str\n  Fuzzy matches query\n:param assets: List[:class:`AssetType`] (optional)\n  Matches any of the following asset types\n:param categories: List[:class:`Category`] (optional)\n  Matches any of the following categories\n:param is_free: bool (optional)\n:param is_private_exchange: bool (optional)\n:param page_size: int (optional)\n:param page_token: str (optional)\n:param provider_ids: List[str] (optional)\n  Matches any of the following provider ids\n\n:returns: Iterator over :class:`Listing`",
+        "parameters": [
+          {
+            "name": "query",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Fuzzy matches query"
+          },
+          {
+            "name": "assets",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Matches any of the following asset types"
+          },
+          {
+            "name": "categories",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Matches any of the following categories"
+          },
+          {
+            "name": "is_free",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param is_private_exchange: bool (optional)"
+          },
+          {
+            "name": "is_private_exchange",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "provider_ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Matches any of the following provider ids"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[Listing]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/listings/{listing_id}/personalization-requests": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create a personalization request for a listing.",
+        "tags": [
+          "marketplace",
+          "consumer_personalization_requests"
+        ],
+        "description": "Create a personalization request for a listing.\n\n:param listing_id: str\n:param intended_use: str\n:param accepted_consumer_terms: :class:`ConsumerTerms`\n:param comment: str (optional)\n:param company: str (optional)\n:param first_name: str (optional)\n:param is_from_lighthouse: bool (optional)\n:param last_name: str (optional)\n:param recipient_type: :class:`DeltaSharingRecipientType` (optional)\n\n:returns: :class:`CreatePersonalizationRequestResponse`",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param intended_use: str"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "intended_use": {
+                    "type": "string"
+                  },
+                  "accepted_consumer_terms": {
+                    "type": "string",
+                    "description": ":param comment: str (optional)"
+                  },
+                  "comment": {
+                    "type": "string"
+                  },
+                  "company": {
+                    "type": "string",
+                    "description": ":param first_name: str (optional)"
+                  },
+                  "first_name": {
+                    "type": "string"
+                  },
+                  "is_from_lighthouse": {
+                    "type": "string",
+                    "description": ":param last_name: str (optional)"
+                  },
+                  "last_name": {
+                    "type": "string"
+                  },
+                  "recipient_type": {
+                    "type": "string",
+                    "description": ":returns: :class:`CreatePersonalizationRequestResponse`"
+                  }
+                },
+                "required": [
+                  "intended_use",
+                  "accepted_consumer_terms"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreatePersonalizationRequestResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Get the personalization request for a listing. Each consumer can make at *most* one personalization",
+        "tags": [
+          "marketplace",
+          "consumer_personalization_requests"
+        ],
+        "description": "Get the personalization request for a listing. Each consumer can make at *most* one personalization\nrequest for a listing.\n\n:param listing_id: str\n\n:returns: :class:`GetPersonalizationRequestResponse`",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`GetPersonalizationRequestResponse`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetPersonalizationRequestResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/personalization-requests": {
+      "get": {
+        "operationId": "list",
+        "summary": "List personalization requests for a consumer across all listings.",
+        "tags": [
+          "marketplace",
+          "consumer_personalization_requests"
+        ],
+        "description": "List personalization requests for a consumer across all listings.\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`PersonalizationRequest`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[PersonalizationRequest]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/providers:batchGet": {
+      "get": {
+        "operationId": "batch_get",
+        "summary": "Batch get a provider in the Databricks Marketplace with at least one visible listing.",
+        "tags": [
+          "marketplace",
+          "consumer_providers"
+        ],
+        "description": "Batch get a provider in the Databricks Marketplace with at least one visible listing.\n\n:param ids: List[str] (optional)\n\n:returns: :class:`BatchGetProvidersResponse`",
+        "parameters": [
+          {
+            "name": "ids",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`BatchGetProvidersResponse`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/BatchGetProvidersResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/providers/{id}": {
+      "get": {
+        "operationId": "get",
+        "summary": "Get a provider in the Databricks Marketplace with at least one visible listing.",
+        "tags": [
+          "marketplace",
+          "consumer_providers"
+        ],
+        "description": "Get a provider in the Databricks Marketplace with at least one visible listing.\n\n:param id: str\n\n:returns: :class:`GetProviderResponse`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`GetProviderResponse`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetProviderResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.1/marketplace-consumer/providers": {
+      "get": {
+        "operationId": "list",
+        "summary": "List all providers in the Databricks Marketplace with at least one visible listing.",
+        "tags": [
+          "marketplace",
+          "consumer_providers"
+        ],
+        "description": "List all providers in the Databricks Marketplace with at least one visible listing.\n\n:param is_featured: bool (optional)\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`ProviderInfo`",
+        "parameters": [
+          {
+            "name": "is_featured",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_size: int (optional)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: Iterator over :class:`ProviderInfo`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[ProviderInfo]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-exchange/filters": {
+      "post": {
+        "operationId": "create",
+        "summary": "Add an exchange filter.",
+        "tags": [
+          "marketplace",
+          "provider_exchange_filters"
+        ],
+        "description": "Add an exchange filter.\n\n:param filter: :class:`ExchangeFilter`\n\n:returns: :class:`CreateExchangeFilterResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filter": {
+                    "type": "string",
+                    "description": ":returns: :class:`CreateExchangeFilterResponse`"
+                  }
+                },
+                "required": [
+                  "filter"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateExchangeFilterResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "List exchange filter",
+        "tags": [
+          "marketplace",
+          "provider_exchange_filters"
+        ],
+        "description": "List exchange filter\n\n:param exchange_id: str\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`ExchangeFilter`",
+        "parameters": [
+          {
+            "name": "exchange_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_size: int (optional)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: Iterator over :class:`ExchangeFilter`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[ExchangeFilter]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-exchange/filters/{id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Delete an exchange filter",
+        "tags": [
+          "marketplace",
+          "provider_exchange_filters"
+        ],
+        "description": "Delete an exchange filter\n\n:param id: str",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "update",
+        "summary": "Update an exchange filter.",
+        "tags": [
+          "marketplace",
+          "provider_exchange_filters"
+        ],
+        "description": "Update an exchange filter.\n\n:param id: str\n:param filter: :class:`ExchangeFilter`\n\n:returns: :class:`UpdateExchangeFilterResponse`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param filter: :class:`ExchangeFilter`"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "filter": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "filter"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateExchangeFilterResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-exchange/exchanges-for-listing": {
+      "post": {
+        "operationId": "add_listing_to_exchange",
+        "summary": "Associate an exchange with a listing",
+        "tags": [
+          "marketplace",
+          "provider_exchanges"
+        ],
+        "description": "Associate an exchange with a listing\n\n:param listing_id: str\n:param exchange_id: str\n\n:returns: :class:`AddExchangeForListingResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "listing_id": {
+                    "type": "string",
+                    "description": ":param exchange_id: str"
+                  },
+                  "exchange_id": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "listing_id",
+                  "exchange_id"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AddExchangeForListingResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_exchanges_for_listing",
+        "summary": "List exchanges associated with a listing",
+        "tags": [
+          "marketplace",
+          "provider_exchanges"
+        ],
+        "description": "List exchanges associated with a listing\n\n:param listing_id: str\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`ExchangeListing`",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_size: int (optional)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: Iterator over :class:`ExchangeListing`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[ExchangeListing]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-exchange/exchanges": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create an exchange",
+        "tags": [
+          "marketplace",
+          "provider_exchanges"
+        ],
+        "description": "Create an exchange\n\n:param exchange: :class:`Exchange`\n\n:returns: :class:`CreateExchangeResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "exchange": {
+                    "type": "string",
+                    "description": ":returns: :class:`CreateExchangeResponse`"
+                  }
+                },
+                "required": [
+                  "exchange"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateExchangeResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "List exchanges visible to provider",
+        "tags": [
+          "marketplace",
+          "provider_exchanges"
+        ],
+        "description": "List exchanges visible to provider\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`Exchange`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[Exchange]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-exchange/exchanges/{id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "This removes a listing from marketplace.",
+        "tags": [
+          "marketplace",
+          "provider_exchanges"
+        ],
+        "description": "This removes a listing from marketplace.\n\n:param id: str",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Get an exchange.",
+        "tags": [
+          "marketplace",
+          "provider_exchanges"
+        ],
+        "description": "Get an exchange.\n\n:param id: str\n\n:returns: :class:`GetExchangeResponse`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`GetExchangeResponse`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetExchangeResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "update",
+        "summary": "Update an exchange",
+        "tags": [
+          "marketplace",
+          "provider_exchanges"
+        ],
+        "description": "Update an exchange\n\n:param id: str\n:param exchange: :class:`Exchange`\n\n:returns: :class:`UpdateExchangeResponse`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param exchange: :class:`Exchange`"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "exchange": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "exchange"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateExchangeResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-exchange/exchanges-for-listing/{id}": {
+      "delete": {
+        "operationId": "delete_listing_from_exchange",
+        "summary": "Disassociate an exchange with a listing",
+        "tags": [
+          "marketplace",
+          "provider_exchanges"
+        ],
+        "description": "Disassociate an exchange with a listing\n\n:param id: str",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-exchange/listings-for-exchange": {
+      "get": {
+        "operationId": "list_listings_for_exchange",
+        "summary": "List listings associated with an exchange",
+        "tags": [
+          "marketplace",
+          "provider_exchanges"
+        ],
+        "description": "List listings associated with an exchange\n\n:param exchange_id: str\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`ExchangeListing`",
+        "parameters": [
+          {
+            "name": "exchange_id",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_size: int (optional)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: Iterator over :class:`ExchangeListing`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[ExchangeListing]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/files": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create a file. Currently, only provider icons and attached notebooks are supported.",
+        "tags": [
+          "marketplace",
+          "provider_files"
+        ],
+        "description": "Create a file. Currently, only provider icons and attached notebooks are supported.\n\n:param file_parent: :class:`FileParent`\n:param marketplace_file_type: :class:`MarketplaceFileType`\n:param mime_type: str\n:param display_name: str (optional)\n\n:returns: :class:`CreateFileResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file_parent": {
+                    "type": "string",
+                    "description": ":param marketplace_file_type: :class:`MarketplaceFileType`"
+                  },
+                  "marketplace_file_type": {
+                    "type": "string"
+                  },
+                  "mime_type": {
+                    "type": "string",
+                    "description": ":param display_name: str (optional)"
+                  },
+                  "display_name": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "file_parent",
+                  "marketplace_file_type",
+                  "mime_type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateFileResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "List files attached to a parent entity.",
+        "tags": [
+          "marketplace",
+          "provider_files"
+        ],
+        "description": "List files attached to a parent entity.\n\n:param file_parent: :class:`FileParent`\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`FileInfo`",
+        "parameters": [
+          {
+            "name": "file_parent",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_size: int (optional)"
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: Iterator over :class:`FileInfo`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[FileInfo]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/files/{file_id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Delete a file",
+        "tags": [
+          "marketplace",
+          "provider_files"
+        ],
+        "description": "Delete a file\n\n:param file_id: str",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Get a file",
+        "tags": [
+          "marketplace",
+          "provider_files"
+        ],
+        "description": "Get a file\n\n:param file_id: str\n\n:returns: :class:`GetFileResponse`",
+        "parameters": [
+          {
+            "name": "file_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`GetFileResponse`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetFileResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/listing": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create a new listing",
+        "tags": [
+          "marketplace",
+          "provider_listings"
+        ],
+        "description": "Create a new listing\n\n:param listing: :class:`Listing`\n\n:returns: :class:`CreateListingResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "listing": {
+                    "type": "string",
+                    "description": ":returns: :class:`CreateListingResponse`"
+                  }
+                },
+                "required": [
+                  "listing"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateListingResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/listings/{id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Delete a listing",
+        "tags": [
+          "marketplace",
+          "provider_listings"
+        ],
+        "description": "Delete a listing\n\n:param id: str",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Get a listing",
+        "tags": [
+          "marketplace",
+          "provider_listings"
+        ],
+        "description": "Get a listing\n\n:param id: str\n\n:returns: :class:`GetListingResponse`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`GetListingResponse`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetListingResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "update",
+        "summary": "Update a listing",
+        "tags": [
+          "marketplace",
+          "provider_listings"
+        ],
+        "description": "Update a listing\n\n:param id: str\n:param listing: :class:`Listing`\n\n:returns: :class:`UpdateListingResponse`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param listing: :class:`Listing`"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "listing": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "listing"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateListingResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/listings": {
+      "get": {
+        "operationId": "list",
+        "summary": "List listings owned by this provider",
+        "tags": [
+          "marketplace",
+          "provider_listings"
+        ],
+        "description": "List listings owned by this provider\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`Listing`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[Listing]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/personalization-requests": {
+      "get": {
+        "operationId": "list",
+        "summary": "List personalization requests to this provider. This will return all personalization requests,",
+        "tags": [
+          "marketplace",
+          "provider_personalization_requests"
+        ],
+        "description": "List personalization requests to this provider. This will return all personalization requests,\nregardless of which listing they are for.\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`PersonalizationRequest`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[PersonalizationRequest]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/listings/{listing_id}/personalization-requests/{request_id}/request-status": {
+      "put": {
+        "operationId": "update",
+        "summary": "Update personalization request. This method only permits updating the status of the request.",
+        "tags": [
+          "marketplace",
+          "provider_personalization_requests"
+        ],
+        "description": "Update personalization request. This method only permits updating the status of the request.\n\n:param listing_id: str\n:param request_id: str\n:param status: :class:`PersonalizationRequestStatus`\n:param reason: str (optional)\n:param share: :class:`ShareInfo` (optional)\n\n:returns: :class:`UpdatePersonalizationRequestResponse`",
+        "parameters": [
+          {
+            "name": "listing_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param request_id: str"
+          },
+          {
+            "name": "request_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "status": {
+                    "type": "string",
+                    "description": ":param reason: str (optional)"
+                  },
+                  "reason": {
+                    "type": "string"
+                  },
+                  "share": {
+                    "type": "string",
+                    "description": ":returns: :class:`UpdatePersonalizationRequestResponse`"
+                  }
+                },
+                "required": [
+                  "status"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdatePersonalizationRequestResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/analytics_dashboard": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the",
+        "tags": [
+          "marketplace",
+          "provider_provider_analytics_dashboards"
+        ],
+        "description": "Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the\nLakeview dashboard id.\n\n\n:returns: :class:`ProviderAnalyticsDashboard`",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ProviderAnalyticsDashboard"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Get provider analytics dashboard.",
+        "tags": [
+          "marketplace",
+          "provider_provider_analytics_dashboards"
+        ],
+        "description": "Get provider analytics dashboard.\n\n\n:returns: :class:`ListProviderAnalyticsDashboardResponse`",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ListProviderAnalyticsDashboardResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/analytics_dashboard/latest": {
+      "get": {
+        "operationId": "get_latest_version",
+        "summary": "Get latest version of provider analytics dashboard.",
+        "tags": [
+          "marketplace",
+          "provider_provider_analytics_dashboards"
+        ],
+        "description": "Get latest version of provider analytics dashboard.\n\n\n:returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetLatestVersionProviderAnalyticsDashboardResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/analytics_dashboard/{id}": {
+      "put": {
+        "operationId": "update",
+        "summary": "Update provider analytics dashboard.",
+        "tags": [
+          "marketplace",
+          "provider_provider_analytics_dashboards"
+        ],
+        "description": "Update provider analytics dashboard.\n\n:param id: str\n  id is immutable property and can't be updated.\n:param version: int (optional)\n  this is the version of the dashboard template we want to update our user to current expectation is\n  that it should be equal to latest version of the dashboard template\n\n:returns: :class:`UpdateProviderAnalyticsDashboardResponse`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "id is immutable property and can't be updated."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "version": {
+                    "type": "string",
+                    "description": "this is the version of the dashboard template we want to update our user to current expectation is that it should be equal to latest version of the dashboard template"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateProviderAnalyticsDashboardResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/provider": {
+      "post": {
+        "operationId": "create",
+        "summary": "Create a provider",
+        "tags": [
+          "marketplace",
+          "provider_providers"
+        ],
+        "description": "Create a provider\n\n:param provider: :class:`ProviderInfo`\n\n:returns: :class:`CreateProviderResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "type": "string",
+                    "description": ":returns: :class:`CreateProviderResponse`"
+                  }
+                },
+                "required": [
+                  "provider"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateProviderResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/providers/{id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Delete provider",
+        "tags": [
+          "marketplace",
+          "provider_providers"
+        ],
+        "description": "Delete provider\n\n:param id: str",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Get provider profile",
+        "tags": [
+          "marketplace",
+          "provider_providers"
+        ],
+        "description": "Get provider profile\n\n:param id: str\n\n:returns: :class:`GetProviderResponse`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`GetProviderResponse`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetProviderResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "update",
+        "summary": "Update provider profile",
+        "tags": [
+          "marketplace",
+          "provider_providers"
+        ],
+        "description": "Update provider profile\n\n:param id: str\n:param provider: :class:`ProviderInfo`\n\n:returns: :class:`UpdateProviderResponse`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param provider: :class:`ProviderInfo`"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "provider": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "provider"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UpdateProviderResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/marketplace-provider/providers": {
+      "get": {
+        "operationId": "list",
+        "summary": "List provider profiles for account.",
+        "tags": [
+          "marketplace",
+          "provider_providers"
+        ],
+        "description": "List provider profiles for account.\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`ProviderInfo`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[ProviderInfo]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AddExchangeForListingResponse": {
+        "type": "object",
+        "properties": {
+          "exchange_for_listing": {
+            "$ref": "#/components/schemas/ExchangeListing"
+          }
+        }
+      },
+      "BatchGetListingsResponse": {
+        "type": "object",
+        "properties": {
+          "listings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Listing"
+            }
+          }
+        }
+      },
+      "BatchGetProvidersResponse": {
+        "type": "object",
+        "properties": {
+          "providers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderInfo"
+            }
+          }
+        }
+      },
+      "ConsumerTerms": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "version"
+        ]
+      },
+      "ContactInfo": {
+        "type": "object",
+        "properties": {
+          "company": {
+            "type": "string"
+          },
+          "email": {
+            "type": "string"
+          },
+          "first_name": {
+            "type": "string"
+          },
+          "last_name": {
+            "type": "string"
+          }
+        },
+        "description": "contact info for the consumer requesting data or performing a listing installation"
+      },
+      "CreateExchangeFilterResponse": {
+        "type": "object",
+        "properties": {
+          "filter_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateExchangeResponse": {
+        "type": "object",
+        "properties": {
+          "exchange_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateFileResponse": {
+        "type": "object",
+        "properties": {
+          "file_info": {
+            "$ref": "#/components/schemas/FileInfo"
+          },
+          "upload_url": {
+            "type": "string",
+            "description": "Pre-signed POST URL to blob storage"
+          }
+        }
+      },
+      "CreateListingResponse": {
+        "type": "object",
+        "properties": {
+          "listing_id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreatePersonalizationRequestResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "CreateProviderResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        }
+      },
+      "DataRefreshInfo": {
+        "type": "object",
+        "properties": {
+          "interval": {
+            "type": "integer"
+          },
+          "unit": {
+            "$ref": "#/components/schemas/DataRefresh"
+          }
+        },
+        "required": [
+          "interval",
+          "unit"
+        ]
+      },
+      "DeleteExchangeFilterResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteExchangeResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteFileResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteInstallationResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteListingResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteProviderResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "Exchange": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "integer"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeFilter"
+            }
+          },
+          "id": {
+            "type": "string"
+          },
+          "linked_listings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeListing"
+            }
+          },
+          "updated_at": {
+            "type": "integer"
+          },
+          "updated_by": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name"
+        ]
+      },
+      "ExchangeFilter": {
+        "type": "object",
+        "properties": {
+          "exchange_id": {
+            "type": "string"
+          },
+          "filter_value": {
+            "type": "string"
+          },
+          "filter_type": {
+            "$ref": "#/components/schemas/ExchangeFilterType"
+          },
+          "created_at": {
+            "type": "integer"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "integer"
+          },
+          "updated_by": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "exchange_id",
+          "filter_value",
+          "filter_type"
+        ]
+      },
+      "ExchangeListing": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "integer"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "exchange_id": {
+            "type": "string"
+          },
+          "exchange_name": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "listing_id": {
+            "type": "string"
+          },
+          "listing_name": {
+            "type": "string"
+          }
+        }
+      },
+      "FileInfo": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "integer"
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Name displayed to users for applicable files, e.g. embedded notebooks"
+          },
+          "download_link": {
+            "type": "string"
+          },
+          "file_parent": {
+            "$ref": "#/components/schemas/FileParent"
+          },
+          "id": {
+            "type": "string"
+          },
+          "marketplace_file_type": {
+            "$ref": "#/components/schemas/MarketplaceFileType"
+          },
+          "mime_type": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/FileStatus"
+          },
+          "status_message": {
+            "type": "string",
+            "description": "Populated if status is in a failed state with more information on reason for the failure."
+          },
+          "updated_at": {
+            "type": "integer"
+          }
+        }
+      },
+      "FileParent": {
+        "type": "object",
+        "properties": {
+          "file_parent_type": {
+            "$ref": "#/components/schemas/FileParentType"
+          },
+          "parent_id": {
+            "type": "string",
+            "description": "TODO make the following fields required"
+          }
+        }
+      },
+      "GetExchangeResponse": {
+        "type": "object",
+        "properties": {
+          "exchange": {
+            "$ref": "#/components/schemas/Exchange"
+          }
+        }
+      },
+      "GetFileResponse": {
+        "type": "object",
+        "properties": {
+          "file_info": {
+            "$ref": "#/components/schemas/FileInfo"
+          }
+        }
+      },
+      "GetLatestVersionProviderAnalyticsDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "version": {
+            "type": "integer"
+          }
+        }
+      },
+      "GetListingContentMetadataResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "shared_data_objects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SharedDataObject"
+            }
+          }
+        }
+      },
+      "GetListingResponse": {
+        "type": "object",
+        "properties": {
+          "listing": {
+            "$ref": "#/components/schemas/Listing"
+          }
+        }
+      },
+      "GetListingsResponse": {
+        "type": "object",
+        "properties": {
+          "listings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Listing"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "GetPersonalizationRequestResponse": {
+        "type": "object",
+        "properties": {
+          "personalization_requests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonalizationRequest"
+            }
+          }
+        }
+      },
+      "GetProviderResponse": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "$ref": "#/components/schemas/ProviderInfo"
+          }
+        }
+      },
+      "Installation": {
+        "type": "object",
+        "properties": {
+          "installation": {
+            "$ref": "#/components/schemas/InstallationDetail"
+          }
+        }
+      },
+      "InstallationDetail": {
+        "type": "object",
+        "properties": {
+          "catalog_name": {
+            "type": "string"
+          },
+          "error_message": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "installed_on": {
+            "type": "integer"
+          },
+          "listing_id": {
+            "type": "string"
+          },
+          "listing_name": {
+            "type": "string"
+          },
+          "recipient_type": {
+            "$ref": "#/components/schemas/DeltaSharingRecipientType"
+          },
+          "repo_name": {
+            "type": "string"
+          },
+          "repo_path": {
+            "type": "string"
+          },
+          "share_name": {
+            "type": "string"
+          },
+          "status": {
+            "$ref": "#/components/schemas/InstallationStatus"
+          },
+          "token_detail": {
+            "$ref": "#/components/schemas/TokenDetail"
+          },
+          "tokens": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/TokenInfo"
+            }
+          }
+        }
+      },
+      "ListAllInstallationsResponse": {
+        "type": "object",
+        "properties": {
+          "installations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InstallationDetail"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListAllPersonalizationRequestsResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "personalization_requests": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/PersonalizationRequest"
+            }
+          }
+        }
+      },
+      "ListExchangeFiltersResponse": {
+        "type": "object",
+        "properties": {
+          "filters": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeFilter"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListExchangesForListingResponse": {
+        "type": "object",
+        "properties": {
+          "exchange_listing": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeListing"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListExchangesResponse": {
+        "type": "object",
+        "properties": {
+          "exchanges": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Exchange"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListFilesResponse": {
+        "type": "object",
+        "properties": {
+          "file_infos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileInfo"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListFulfillmentsResponse": {
+        "type": "object",
+        "properties": {
+          "fulfillments": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListingFulfillment"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListInstallationsResponse": {
+        "type": "object",
+        "properties": {
+          "installations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/InstallationDetail"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListListingsForExchangeResponse": {
+        "type": "object",
+        "properties": {
+          "exchange_listings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ExchangeListing"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListListingsResponse": {
+        "type": "object",
+        "properties": {
+          "listings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Listing"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ListProviderAnalyticsDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dashboard_id": {
+            "type": "string",
+            "description": "dashboard_id will be used to open Lakeview dashboard."
+          },
+          "version": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "dashboard_id"
+        ]
+      },
+      "ListProvidersResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "providers": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ProviderInfo"
+            }
+          }
+        }
+      },
+      "Listing": {
+        "type": "object",
+        "properties": {
+          "summary": {
+            "$ref": "#/components/schemas/ListingSummary"
+          },
+          "detail": {
+            "$ref": "#/components/schemas/ListingDetail"
+          },
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "summary"
+        ]
+      },
+      "ListingDetail": {
+        "type": "object",
+        "properties": {
+          "assets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AssetType"
+            }
+          },
+          "collection_date_end": {
+            "type": "integer",
+            "description": "The ending date timestamp for when the data spans"
+          },
+          "collection_date_start": {
+            "type": "integer",
+            "description": "The starting date timestamp for when the data spans"
+          },
+          "collection_granularity": {
+            "$ref": "#/components/schemas/DataRefreshInfo",
+            "description": "Smallest unit of time in the dataset"
+          },
+          "cost": {
+            "$ref": "#/components/schemas/Cost",
+            "description": "Whether the dataset is free or paid"
+          },
+          "data_source": {
+            "type": "string",
+            "description": "Where/how the data is sourced"
+          },
+          "description": {
+            "type": "string"
+          },
+          "documentation_link": {
+            "type": "string"
+          },
+          "embedded_notebook_file_infos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/FileInfo"
+            }
+          },
+          "file_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "geographical_coverage": {
+            "type": "string",
+            "description": "Which geo region the listing data is collected from"
+          },
+          "license": {
+            "type": "string",
+            "description": "ID 20, 21 removed don't use License of the data asset - Required for listings with model based assets"
+          },
+          "pricing_model": {
+            "type": "string",
+            "description": "What the pricing model is (e.g. paid, subscription, paid upfront); should only be present if cost is paid TODO: Not used yet, should deprecate if we will never use it"
+          },
+          "privacy_policy_link": {
+            "type": "string"
+          },
+          "size": {
+            "type": "number",
+            "description": "size of the dataset in GB"
+          },
+          "support_link": {
+            "type": "string"
+          },
+          "tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ListingTag"
+            },
+            "description": "Listing tags - Simple key value pair to annotate listings. When should I use tags vs dedicated fields? Using tags avoids the need to add new columns in the database for new annotations. However, this should be used sparingly since tags are stored as key value pair. Use tags only: 1. If the field is optional and won't need to have NOT NULL integrity check 2. The value is fairly fixed, static and low cardinality (eg. enums). 3. The value won't be used in filters or joins with other tables."
+          },
+          "terms_of_service": {
+            "type": "string"
+          },
+          "update_frequency": {
+            "$ref": "#/components/schemas/DataRefreshInfo",
+            "description": "How often data is updated"
+          }
+        }
+      },
+      "ListingFulfillment": {
+        "type": "object",
+        "properties": {
+          "listing_id": {
+            "type": "string"
+          },
+          "fulfillment_type": {
+            "$ref": "#/components/schemas/FulfillmentType"
+          },
+          "recipient_type": {
+            "$ref": "#/components/schemas/DeltaSharingRecipientType"
+          },
+          "repo_info": {
+            "$ref": "#/components/schemas/RepoInfo"
+          },
+          "share_info": {
+            "$ref": "#/components/schemas/ShareInfo"
+          }
+        },
+        "required": [
+          "listing_id"
+        ]
+      },
+      "ListingSetting": {
+        "type": "object",
+        "properties": {
+          "visibility": {
+            "$ref": "#/components/schemas/Visibility"
+          }
+        }
+      },
+      "ListingSummary": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "listing_type": {
+            "$ref": "#/components/schemas/ListingType"
+          },
+          "categories": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Category"
+            }
+          },
+          "created_at": {
+            "type": "integer"
+          },
+          "created_by": {
+            "type": "string"
+          },
+          "created_by_id": {
+            "type": "integer"
+          },
+          "exchange_ids": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "git_repo": {
+            "$ref": "#/components/schemas/RepoInfo",
+            "description": "if a git repo is being created, a listing will be initialized with this field as opposed to a share"
+          },
+          "provider_id": {
+            "type": "string"
+          },
+          "provider_region": {
+            "$ref": "#/components/schemas/RegionInfo"
+          },
+          "published_at": {
+            "type": "integer"
+          },
+          "published_by": {
+            "type": "string"
+          },
+          "setting": {
+            "$ref": "#/components/schemas/ListingSetting"
+          },
+          "share": {
+            "$ref": "#/components/schemas/ShareInfo"
+          },
+          "status": {
+            "$ref": "#/components/schemas/ListingStatus"
+          },
+          "subtitle": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "integer"
+          },
+          "updated_by": {
+            "type": "string"
+          },
+          "updated_by_id": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "name",
+          "listing_type"
+        ]
+      },
+      "ListingTag": {
+        "type": "object",
+        "properties": {
+          "tag_name": {
+            "$ref": "#/components/schemas/ListingTagType"
+          },
+          "tag_values": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "String representation of the tag value. Values should be string literals (no complex types)"
+          }
+        }
+      },
+      "PersonalizationRequest": {
+        "type": "object",
+        "properties": {
+          "consumer_region": {
+            "$ref": "#/components/schemas/RegionInfo"
+          },
+          "comment": {
+            "type": "string"
+          },
+          "contact_info": {
+            "$ref": "#/components/schemas/ContactInfo"
+          },
+          "created_at": {
+            "type": "integer"
+          },
+          "id": {
+            "type": "string"
+          },
+          "intended_use": {
+            "type": "string"
+          },
+          "is_from_lighthouse": {
+            "type": "boolean"
+          },
+          "listing_id": {
+            "type": "string"
+          },
+          "listing_name": {
+            "type": "string"
+          },
+          "metastore_id": {
+            "type": "string"
+          },
+          "provider_id": {
+            "type": "string"
+          },
+          "recipient_type": {
+            "$ref": "#/components/schemas/DeltaSharingRecipientType"
+          },
+          "share": {
+            "$ref": "#/components/schemas/ShareInfo",
+            "description": "Share information is required for data listings but should be empty/ignored for non-data listings (MCP and App)."
+          },
+          "status": {
+            "$ref": "#/components/schemas/PersonalizationRequestStatus"
+          },
+          "status_message": {
+            "type": "string"
+          },
+          "updated_at": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "consumer_region"
+        ]
+      },
+      "ProviderAnalyticsDashboard": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "id"
+        ]
+      },
+      "ProviderInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "business_contact_email": {
+            "type": "string"
+          },
+          "term_of_service_link": {
+            "type": "string"
+          },
+          "privacy_policy_link": {
+            "type": "string"
+          },
+          "company_website_link": {
+            "type": "string"
+          },
+          "dark_mode_icon_file_id": {
+            "type": "string"
+          },
+          "dark_mode_icon_file_path": {
+            "type": "string"
+          },
+          "description": {
+            "type": "string"
+          },
+          "icon_file_id": {
+            "type": "string"
+          },
+          "icon_file_path": {
+            "type": "string"
+          },
+          "id": {
+            "type": "string"
+          },
+          "is_featured": {
+            "type": "boolean",
+            "description": "is_featured is accessible by consumers only"
+          },
+          "published_by": {
+            "type": "string",
+            "description": "published_by is only applicable to data aggregators (e.g. Crux)"
+          },
+          "support_contact_email": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "business_contact_email",
+          "term_of_service_link",
+          "privacy_policy_link"
+        ]
+      },
+      "RegionInfo": {
+        "type": "object",
+        "properties": {
+          "cloud": {
+            "type": "string"
+          },
+          "region": {
+            "type": "string"
+          }
+        }
+      },
+      "RemoveExchangeForListingResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "RepoInfo": {
+        "type": "object",
+        "properties": {
+          "git_repo_url": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "git_repo_url"
+        ]
+      },
+      "RepoInstallation": {
+        "type": "object",
+        "properties": {
+          "repo_name": {
+            "type": "string"
+          },
+          "repo_path": {
+            "type": "string",
+            "description": "refers to the full url file path that navigates the user to the repo's entrypoint (e.g. a README.md file, or the repo file view in the unified UI) should just be a relative path"
+          }
+        },
+        "required": [
+          "repo_name",
+          "repo_path"
+        ]
+      },
+      "SearchListingsResponse": {
+        "type": "object",
+        "properties": {
+          "listings": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Listing"
+            }
+          },
+          "next_page_token": {
+            "type": "string"
+          }
+        }
+      },
+      "ShareInfo": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "type": {
+            "$ref": "#/components/schemas/ListingShareType"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ]
+      },
+      "SharedDataObject": {
+        "type": "object",
+        "properties": {
+          "data_object_type": {
+            "type": "string"
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the shared object"
+          }
+        }
+      },
+      "TokenDetail": {
+        "type": "object",
+        "properties": {
+          "bearer_token": {
+            "type": "string"
+          },
+          "endpoint": {
+            "type": "string"
+          },
+          "expiration_time": {
+            "type": "string"
+          },
+          "share_credentials_version": {
+            "type": "integer",
+            "description": "These field names must follow the delta sharing protocol. Original message: RetrieveToken.Response in managed-catalog/api/messages/recipient.proto"
+          }
+        }
+      },
+      "TokenInfo": {
+        "type": "object",
+        "properties": {
+          "activation_url": {
+            "type": "string"
+          },
+          "created_at": {
+            "type": "integer",
+            "description": "Time at which this Recipient Token was created, in epoch milliseconds."
+          },
+          "created_by": {
+            "type": "string",
+            "description": "Username of Recipient Token creator."
+          },
+          "expiration_time": {
+            "type": "integer",
+            "description": "Expiration timestamp of the token in epoch milliseconds."
+          },
+          "id": {
+            "type": "string",
+            "description": "Unique id of the Recipient Token."
+          },
+          "updated_at": {
+            "type": "integer",
+            "description": "Time at which this Recipient Token was updated, in epoch milliseconds."
+          },
+          "updated_by": {
+            "type": "string",
+            "description": "Username of Recipient Token updater."
+          }
+        }
+      },
+      "UpdateExchangeFilterResponse": {
+        "type": "object",
+        "properties": {
+          "filter": {
+            "$ref": "#/components/schemas/ExchangeFilter"
+          }
+        }
+      },
+      "UpdateExchangeResponse": {
+        "type": "object",
+        "properties": {
+          "exchange": {
+            "$ref": "#/components/schemas/Exchange"
+          }
+        }
+      },
+      "UpdateInstallationResponse": {
+        "type": "object",
+        "properties": {
+          "installation": {
+            "$ref": "#/components/schemas/InstallationDetail"
+          }
+        }
+      },
+      "UpdateListingResponse": {
+        "type": "object",
+        "properties": {
+          "listing": {
+            "$ref": "#/components/schemas/Listing"
+          }
+        }
+      },
+      "UpdatePersonalizationRequestResponse": {
+        "type": "object",
+        "properties": {
+          "request": {
+            "$ref": "#/components/schemas/PersonalizationRequest"
+          }
+        }
+      },
+      "UpdateProviderAnalyticsDashboardResponse": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string"
+          },
+          "dashboard_id": {
+            "type": "string",
+            "description": "this is newly created Lakeview dashboard for the user"
+          },
+          "version": {
+            "type": "integer"
+          }
+        },
+        "required": [
+          "id",
+          "dashboard_id"
+        ]
+      },
+      "UpdateProviderResponse": {
+        "type": "object",
+        "properties": {
+          "provider": {
+            "$ref": "#/components/schemas/ProviderInfo"
+          }
+        }
+      },
+      "AssetType": {
+        "type": "string",
+        "enum": [
+          "ASSET_TYPE_APP",
+          "ASSET_TYPE_DATA_TABLE",
+          "ASSET_TYPE_GIT_REPO",
+          "ASSET_TYPE_MCP",
+          "ASSET_TYPE_MEDIA",
+          "ASSET_TYPE_MODEL",
+          "ASSET_TYPE_NOTEBOOK",
+          "ASSET_TYPE_PARTNER_INTEGRATION"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "Category": {
+        "type": "string",
+        "enum": [
+          "ADVERTISING_AND_MARKETING",
+          "CLIMATE_AND_ENVIRONMENT",
+          "COMMERCE",
+          "DEMOGRAPHICS",
+          "ECONOMICS",
+          "EDUCATION",
+          "ENERGY",
+          "FINANCIAL",
+          "GAMING",
+          "GEOSPATIAL",
+          "HEALTH",
+          "LOOKUP_TABLES",
+          "MANUFACTURING",
+          "MEDIA",
+          "OTHER",
+          "PUBLIC_SECTOR",
+          "RETAIL",
+          "SCIENCE_AND_RESEARCH",
+          "SECURITY",
+          "SPORTS",
+          "TRANSPORTATION_AND_LOGISTICS",
+          "TRAVEL_AND_TOURISM"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "Cost": {
+        "type": "string",
+        "enum": [
+          "FREE",
+          "PAID"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "DataRefresh": {
+        "type": "string",
+        "enum": [
+          "DAILY",
+          "HOURLY",
+          "MINUTE",
+          "MONTHLY",
+          "NONE",
+          "QUARTERLY",
+          "SECOND",
+          "WEEKLY",
+          "YEARLY"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "DeltaSharingRecipientType": {
+        "type": "string",
+        "enum": [
+          "DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS",
+          "DELTA_SHARING_RECIPIENT_TYPE_OPEN"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ExchangeFilterType": {
+        "type": "string",
+        "enum": [
+          "GLOBAL_METASTORE_ID"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "FileParentType": {
+        "type": "string",
+        "enum": [
+          "LISTING",
+          "LISTING_RESOURCE",
+          "PROVIDER"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "FileStatus": {
+        "type": "string",
+        "enum": [
+          "FILE_STATUS_PUBLISHED",
+          "FILE_STATUS_SANITIZATION_FAILED",
+          "FILE_STATUS_SANITIZING",
+          "FILE_STATUS_STAGING"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "FulfillmentType": {
+        "type": "string",
+        "enum": [
+          "INSTALL",
+          "REQUEST_ACCESS"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "InstallationStatus": {
+        "type": "string",
+        "enum": [
+          "FAILED",
+          "INSTALLED"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ListingShareType": {
+        "type": "string",
+        "enum": [
+          "FULL",
+          "SAMPLE"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ListingStatus": {
+        "type": "string",
+        "enum": [
+          "DRAFT",
+          "PENDING",
+          "PUBLISHED",
+          "SUSPENDED"
+        ],
+        "description": "Enums"
+      },
+      "ListingTagType": {
+        "type": "string",
+        "enum": [
+          "LISTING_TAG_TYPE_LANGUAGE",
+          "LISTING_TAG_TYPE_TASK"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ListingType": {
+        "type": "string",
+        "enum": [
+          "PERSONALIZED",
+          "STANDARD"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "MarketplaceFileType": {
+        "type": "string",
+        "enum": [
+          "APP",
+          "EMBEDDED_NOTEBOOK",
+          "PROVIDER_ICON"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "PersonalizationRequestStatus": {
+        "type": "string",
+        "enum": [
+          "DENIED",
+          "FULFILLED",
+          "NEW",
+          "REQUEST_PENDING"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "Visibility": {
+        "type": "string",
+        "enum": [
+          "PRIVATE",
+          "PUBLIC"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      }
+    }
+  }
+}

@@ -1,0 +1,2858 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Databricks Workspace API (workspace)",
+    "description": "OpenAPI specification for the Databricks workspace service (workspace-level APIs), generated from the Databricks Python SDK.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://{workspace}.cloud.databricks.com",
+      "description": "Databricks workspace",
+      "variables": {
+        "workspace": {
+          "default": "your-workspace",
+          "description": "Your Databricks workspace name"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/api/2.0/git-credentials": {
+      "post": {
+        "operationId": "create",
+        "summary": "Creates a Git credential entry for the user. Only one Git credential per user is supported, so any",
+        "tags": [
+          "workspace",
+          "git_credentials"
+        ],
+        "description": "Creates a Git credential entry for the user. Only one Git credential per user is supported, so any\nattempts to create credentials if an entry already exists will fail. Use the PATCH endpoint to update\nexisting credentials, or the DELETE endpoint to delete existing credentials.\n\n:param git_provider: str\n  Git provider. This field is case-insensitive. The available Git providers are `gitHub`,\n  `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,\n  `gitLabEnterpriseEdition` and `awsCodeCommit`.\n:param git_email: str (optional)\n  The authenticating email associated with your Git provider user account. Used for authentication\n  with the remote repository and also sets the author & committer identity for commits. Required for\n  most Git providers except AWS CodeCommit. Learn more at\n  https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider\n:param git_username: str (optional)\n  The username provided with your Git provider account and associated with the credential. For most\n  Git providers it is only used to set the Git committer & author names for commits, however it may be\n  required for authentication depending on your Git provider / token requirements. Required for AWS\n  CodeCommit.\n:param is_default_for_provider: bool (optional)\n  if the credential is the default for the given provider\n:param name: str (optional)\n  the name of the git credential, used for identification and ease of lookup\n:param personal_access_token: str (optional)\n  The personal access token used to authenticate to the corresponding Git provider. For certain\n  providers, support may exist for other types of scoped access tokens. [Learn more].\n\n  [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html\n:param principal_id: int (optional)\n  The ID of the service principal whose credentials will be modified. Only service principal managers\n  can perform this action.\n\n:returns: :class:`CreateCredentialsResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "git_provider": {
+                    "type": "string",
+                    "description": "Git provider. This field is case-insensitive. The available Git providers are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and `awsCodeCommit`."
+                  },
+                  "git_email": {
+                    "type": "string",
+                    "description": "The authenticating email associated with your Git provider user account. Used for authentication with the remote repository and also sets the author & committer identity for commits. Required for most Git providers except AWS CodeCommit. Learn more at https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"
+                  },
+                  "git_username": {
+                    "type": "string",
+                    "description": "The username provided with your Git provider account and associated with the credential. For most Git providers it is only used to set the Git committer & author names for commits, however it may be required for authentication depending on your Git provider / token requirements. Required for AWS CodeCommit."
+                  },
+                  "is_default_for_provider": {
+                    "type": "string",
+                    "description": "if the credential is the default for the given provider"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "the name of the git credential, used for identification and ease of lookup"
+                  },
+                  "personal_access_token": {
+                    "type": "string",
+                    "description": "The personal access token used to authenticate to the corresponding Git provider. For certain providers, support may exist for other types of scoped access tokens. [Learn more]. [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"
+                  },
+                  "principal_id": {
+                    "type": "string",
+                    "description": "The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action."
+                  }
+                },
+                "required": [
+                  "git_provider"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateCredentialsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "Lists the calling user's Git credentials.",
+        "tags": [
+          "workspace",
+          "git_credentials"
+        ],
+        "description": "Lists the calling user's Git credentials.\n\n:param principal_id: int (optional)\n  The ID of the service principal whose credentials will be listed. Only service principal managers\n  can perform this action.\n\n:returns: Iterator over :class:`CredentialInfo`",
+        "parameters": [
+          {
+            "name": "principal_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the service principal whose credentials will be listed. Only service principal managers can perform this action."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[CredentialInfo]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/git-credentials/{credential_id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Deletes the specified Git credential.",
+        "tags": [
+          "workspace",
+          "git_credentials"
+        ],
+        "description": "Deletes the specified Git credential.\n\n:param credential_id: int\n  The ID for the corresponding credential to access.\n:param principal_id: int (optional)\n  The ID of the service principal whose credentials will be modified. Only service principal managers\n  can perform this action.",
+        "parameters": [
+          {
+            "name": "credential_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID for the corresponding credential to access."
+          },
+          {
+            "name": "principal_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Gets the Git credential with the specified credential ID.",
+        "tags": [
+          "workspace",
+          "git_credentials"
+        ],
+        "description": "Gets the Git credential with the specified credential ID.\n\n:param credential_id: int\n  The ID for the corresponding credential to access.\n:param principal_id: int (optional)\n  The ID of the service principal whose credentials will be modified. Only service principal managers\n  can perform this action.\n\n:returns: :class:`GetCredentialsResponse`",
+        "parameters": [
+          {
+            "name": "credential_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID for the corresponding credential to access."
+          },
+          {
+            "name": "principal_id",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetCredentialsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update",
+        "summary": "Updates the specified Git credential.",
+        "tags": [
+          "workspace",
+          "git_credentials"
+        ],
+        "description": "Updates the specified Git credential.\n\n:param credential_id: int\n  The ID for the corresponding credential to access.\n:param git_provider: str\n  Git provider. This field is case-insensitive. The available Git providers are `gitHub`,\n  `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,\n  `gitLabEnterpriseEdition` and `awsCodeCommit`.\n:param git_email: str (optional)\n  The authenticating email associated with your Git provider user account. Used for authentication\n  with the remote repository and also sets the author & committer identity for commits. Required for\n  most Git providers except AWS CodeCommit. Learn more at\n  https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider\n:param git_username: str (optional)\n  The username provided with your Git provider account and associated with the credential. For most\n  Git providers it is only used to set the Git committer & author names for commits, however it may be\n  required for authentication depending on your Git provider / token requirements. Required for AWS\n  CodeCommit.\n:param is_default_for_provider: bool (optional)\n  if the credential is the default for the given provider\n:param name: str (optional)\n  the name of the git credential, used for identification and ease of lookup\n:param personal_access_token: str (optional)\n  The personal access token used to authenticate to the corresponding Git provider. For certain\n  providers, support may exist for other types of scoped access tokens. [Learn more].\n\n  [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html\n:param principal_id: int (optional)\n  The ID of the service principal whose credentials will be modified. Only service principal managers\n  can perform this action.",
+        "parameters": [
+          {
+            "name": "credential_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID for the corresponding credential to access."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "git_provider": {
+                    "type": "string",
+                    "description": "Git provider. This field is case-insensitive. The available Git providers are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and `awsCodeCommit`."
+                  },
+                  "git_email": {
+                    "type": "string",
+                    "description": "The authenticating email associated with your Git provider user account. Used for authentication with the remote repository and also sets the author & committer identity for commits. Required for most Git providers except AWS CodeCommit. Learn more at https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"
+                  },
+                  "git_username": {
+                    "type": "string",
+                    "description": "The username provided with your Git provider account and associated with the credential. For most Git providers it is only used to set the Git committer & author names for commits, however it may be required for authentication depending on your Git provider / token requirements. Required for AWS CodeCommit."
+                  },
+                  "is_default_for_provider": {
+                    "type": "string",
+                    "description": "if the credential is the default for the given provider"
+                  },
+                  "name": {
+                    "type": "string",
+                    "description": "the name of the git credential, used for identification and ease of lookup"
+                  },
+                  "personal_access_token": {
+                    "type": "string",
+                    "description": "The personal access token used to authenticate to the corresponding Git provider. For certain providers, support may exist for other types of scoped access tokens. [Learn more]. [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html"
+                  },
+                  "principal_id": {
+                    "type": "string",
+                    "description": "The ID of the service principal whose credentials will be modified. Only service principal managers can perform this action."
+                  }
+                },
+                "required": [
+                  "git_provider"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/repos": {
+      "post": {
+        "operationId": "create",
+        "summary": "Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created",
+        "tags": [
+          "workspace",
+          "repos"
+        ],
+        "description": "Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created\nprogrammatically must be linked to a remote Git repo, unlike repos created in the browser.\n\n:param url: str\n  URL of the Git repository to be linked.\n:param provider: str\n  Git provider. This field is case-insensitive. The available Git providers are `gitHub`,\n  `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,\n  `gitLabEnterpriseEdition` and `awsCodeCommit`.\n:param path: str (optional)\n  Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo\n  is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`.\n:param sparse_checkout: :class:`SparseCheckout` (optional)\n  If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable\n  sparse checkout after the repo is created.\n\n:returns: :class:`CreateRepoResponse`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "description": "URL of the Git repository to be linked."
+                  },
+                  "provider": {
+                    "type": "string",
+                    "description": "Git provider. This field is case-insensitive. The available Git providers are `gitHub`, `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`, `gitLabEnterpriseEdition` and `awsCodeCommit`."
+                  },
+                  "path": {
+                    "type": "string",
+                    "description": "Desired path for the repo in the workspace. Almost any path in the workspace can be chosen. If repo is created in `/Repos`, path must be in the format `/Repos/{folder}/{repo-name}`."
+                  },
+                  "sparse_checkout": {
+                    "type": "string",
+                    "description": "If specified, the repo will be created with sparse checkout enabled. You cannot enable/disable sparse checkout after the repo is created."
+                  }
+                },
+                "required": [
+                  "url",
+                  "provider"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CreateRepoResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list",
+        "summary": "Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate",
+        "tags": [
+          "workspace",
+          "repos"
+        ],
+        "description": "Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate\nthrough additional pages.\n\n:param next_page_token: str (optional)\n  Token used to get the next page of results. If not specified, returns the first page of results as\n  well as a next page token if there are more results.\n:param path_prefix: str (optional)\n  Filters repos that have paths starting with the given path prefix. If not provided or when provided\n  an effectively empty prefix (`/` or `/Workspace`) Git folders (repos) from `/Workspace/Repos` will\n  be served.\n\n:returns: Iterator over :class:`RepoInfo`",
+        "parameters": [
+          {
+            "name": "next_page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Token used to get the next page of results. If not specified, returns the first page of results as well as a next page token if there are more results."
+          },
+          {
+            "name": "path_prefix",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Filters repos that have paths starting with the given path prefix. If not provided or when provided an effectively empty prefix (`/` or `/Workspace`) Git folders (repos) from `/Workspace/Repos` will be served."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[RepoInfo]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/repos/{repo_id}": {
+      "delete": {
+        "operationId": "delete",
+        "summary": "Deletes the specified repo.",
+        "tags": [
+          "workspace",
+          "repos"
+        ],
+        "description": "Deletes the specified repo.\n\n:param repo_id: int\n  The ID for the corresponding repo to delete.",
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "The ID for the corresponding repo to delete."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get",
+        "summary": "Returns the repo with the given repo ID.",
+        "tags": [
+          "workspace",
+          "repos"
+        ],
+        "description": "Returns the repo with the given repo ID.\n\n:param repo_id: int\n  ID of the Git folder (repo) object in the workspace.\n\n:returns: :class:`GetRepoResponse`",
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the Git folder (repo) object in the workspace."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRepoResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update",
+        "summary": "Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same",
+        "tags": [
+          "workspace",
+          "repos"
+        ],
+        "description": "Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same\nbranch.\n\n:param repo_id: int\n  ID of the Git folder (repo) object in the workspace.\n:param branch: str (optional)\n  Branch that the local version of the repo is checked out to.\n:param sparse_checkout: :class:`SparseCheckoutUpdate` (optional)\n  If specified, update the sparse checkout settings. The update will fail if sparse checkout is not\n  enabled for the repo.\n:param tag: str (optional)\n  Tag that the local version of the repo is checked out to. Updating the repo to a tag puts the repo\n  in a detached HEAD state. Before committing new changes, you must update the repo to a branch\n  instead of the detached HEAD.",
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "ID of the Git folder (repo) object in the workspace."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "branch": {
+                    "type": "string",
+                    "description": "Branch that the local version of the repo is checked out to."
+                  },
+                  "sparse_checkout": {
+                    "type": "string",
+                    "description": "If specified, update the sparse checkout settings. The update will fail if sparse checkout is not enabled for the repo."
+                  },
+                  "tag": {
+                    "type": "string",
+                    "description": "Tag that the local version of the repo is checked out to. Updating the repo to a tag puts the repo in a detached HEAD state. Before committing new changes, you must update the repo to a branch instead of the detached HEAD."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/permissions/repos/{repo_id}/permissionLevels": {
+      "get": {
+        "operationId": "get_permission_levels",
+        "summary": "Gets the permission levels that a user can have on an object.",
+        "tags": [
+          "workspace",
+          "repos"
+        ],
+        "description": "Gets the permission levels that a user can have on an object.\n\n:param repo_id: str\n  The repo for which to get or manage permissions.\n\n:returns: :class:`GetRepoPermissionLevelsResponse`",
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The repo for which to get or manage permissions."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetRepoPermissionLevelsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/permissions/repos/{repo_id}": {
+      "get": {
+        "operationId": "get_permissions",
+        "summary": "Gets the permissions of a repo. Repos can inherit permissions from their root object.",
+        "tags": [
+          "workspace",
+          "repos"
+        ],
+        "description": "Gets the permissions of a repo. Repos can inherit permissions from their root object.\n\n:param repo_id: str\n  The repo for which to get or manage permissions.\n\n:returns: :class:`RepoPermissions`",
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The repo for which to get or manage permissions."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoPermissions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "set_permissions",
+        "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
+        "tags": [
+          "workspace",
+          "repos"
+        ],
+        "description": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct\npermissions if none are specified. Objects can inherit permissions from their root object.\n\n:param repo_id: str\n  The repo for which to get or manage permissions.\n:param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)\n\n:returns: :class:`RepoPermissions`",
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The repo for which to get or manage permissions."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "access_control_list": {
+                    "type": "string",
+                    "description": ":returns: :class:`RepoPermissions`"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoPermissions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update_permissions",
+        "summary": "Updates the permissions on a repo. Repos can inherit permissions from their root object.",
+        "tags": [
+          "workspace",
+          "repos"
+        ],
+        "description": "Updates the permissions on a repo. Repos can inherit permissions from their root object.\n\n:param repo_id: str\n  The repo for which to get or manage permissions.\n:param access_control_list: List[:class:`RepoAccessControlRequest`] (optional)\n\n:returns: :class:`RepoPermissions`",
+        "parameters": [
+          {
+            "name": "repo_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The repo for which to get or manage permissions."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "access_control_list": {
+                    "type": "string",
+                    "description": ":returns: :class:`RepoPermissions`"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/RepoPermissions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/scopes/create": {
+      "post": {
+        "operationId": "create_scope",
+        "summary": "Creates a new secret scope.",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Creates a new secret scope.\n\nThe scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not\nexceed 128 characters.\n\nExample request:\n\n.. code::\n\n{ \"scope\": \"my-simple-databricks-scope\", \"initial_manage_principal\": \"users\" \"scope_backend_type\":\n\"databricks|azure_keyvault\", # below is only required if scope type is azure_keyvault\n\"backend_azure_keyvault\": { \"resource_id\":\n\"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxx/providers/Microsoft.KeyVault/vaults/xxxx\",\n\"tenant_id\": \"xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx\", \"dns_name\": \"https://xxxx.vault.azure.net/\", } }\n\nIf ``initial_manage_principal`` is specified, the initial ACL applied to the scope is applied to the\nsupplied principal (user or group) with ``MANAGE`` permissions. The only supported principal for this\noption is the group ``users``, which contains all users in the workspace. If\n``initial_manage_principal`` is not specified, the initial ACL with ``MANAGE`` permission applied to\nthe scope is assigned to the API request issuer's user identity.\n\nIf ``scope_backend_type`` is ``azure_keyvault``, a secret scope is created with secrets from a given\nAzure KeyVault. The caller must provide the keyvault_resource_id and the tenant_id for the key vault.\nIf ``scope_backend_type`` is ``databricks`` or is unspecified, an empty secret scope is created and\nstored in Databricks's own storage.\n\nThrows ``RESOURCE_ALREADY_EXISTS`` if a scope with the given name already exists. Throws\n``RESOURCE_LIMIT_EXCEEDED`` if maximum number of scopes in the workspace is exceeded. Throws\n``INVALID_PARAMETER_VALUE`` if the scope name is invalid. Throws ``BAD_REQUEST`` if request violated\nconstraints. Throws ``CUSTOMER_UNAUTHORIZED`` if normal user attempts to create a scope with name\nreserved for databricks internal usage. Throws ``UNAUTHENTICATED`` if unable to verify user access\npermission on Azure KeyVault\n\n:param scope: str\n  Scope name requested by the user. Scope names are unique.\n:param backend_azure_keyvault: :class:`AzureKeyVaultSecretScopeMetadata` (optional)\n  The metadata for the secret scope if the type is ``AZURE_KEYVAULT``\n:param initial_manage_principal: str (optional)\n  The principal that is initially granted ``MANAGE`` permission to the created scope.\n:param scope_backend_type: :class:`ScopeBackendType` (optional)\n  The backend type the scope will be created with. If not specified, will default to ``DATABRICKS``",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "description": "Scope name requested by the user. Scope names are unique."
+                  },
+                  "backend_azure_keyvault": {
+                    "type": "string",
+                    "description": "The metadata for the secret scope if the type is ``AZURE_KEYVAULT``"
+                  },
+                  "initial_manage_principal": {
+                    "type": "string",
+                    "description": "The principal that is initially granted ``MANAGE`` permission to the created scope."
+                  },
+                  "scope_backend_type": {
+                    "type": "string",
+                    "description": "The backend type the scope will be created with. If not specified, will default to ``DATABRICKS``"
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/acls/delete": {
+      "post": {
+        "operationId": "delete_acl",
+        "summary": "Deletes the given ACL on the given scope.",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Deletes the given ACL on the given scope.\n\nUsers must have the ``MANAGE`` permission to invoke this API.\n\nExample request:\n\n.. code::\n\n{ \"scope\": \"my-secret-scope\", \"principal\": \"data-scientists\" }\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope, principal, or ACL exists. Throws\n``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws\n``INVALID_PARAMETER_VALUE`` if the permission or principal is invalid.\n\n:param scope: str\n  The name of the scope to remove permissions from.\n:param principal: str\n  The principal to remove an existing ACL from.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "description": "The name of the scope to remove permissions from."
+                  },
+                  "principal": {
+                    "type": "string",
+                    "description": "The principal to remove an existing ACL from."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "principal"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/scopes/delete": {
+      "post": {
+        "operationId": "delete_scope",
+        "summary": "Deletes a secret scope.",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Deletes a secret scope.\n\nExample request:\n\n.. code::\n\n{ \"scope\": \"my-secret-scope\" }\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if the scope does not exist. Throws ``PERMISSION_DENIED`` if the\nuser does not have permission to make this API call. Throws ``BAD_REQUEST`` if system user attempts to\ndelete internal secret scope.\n\n:param scope: str\n  Name of the scope to delete.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "description": "Name of the scope to delete."
+                  }
+                },
+                "required": [
+                  "scope"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/delete": {
+      "post": {
+        "operationId": "delete_secret",
+        "summary": "Deletes the secret stored in this secret scope. You must have ``WRITE`` or ``MANAGE`` permission on",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Deletes the secret stored in this secret scope. You must have ``WRITE`` or ``MANAGE`` permission on\nthe Secret Scope.\n\nExample request:\n\n.. code::\n\n{ \"scope\": \"my-secret-scope\", \"key\": \"my-secret-key\" }\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists. Throws\n``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws\n``BAD_REQUEST`` if system user attempts to delete an internal secret, or request is made against Azure\nKeyVault backed scope.\n\n:param scope: str\n  The name of the scope that contains the secret to delete.\n:param key: str\n  Name of the secret to delete.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "description": "The name of the scope that contains the secret to delete."
+                  },
+                  "key": {
+                    "type": "string",
+                    "description": "Name of the secret to delete."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "key"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/acls/get": {
+      "get": {
+        "operationId": "get_acl",
+        "summary": "Describes the details about the given ACL, such as the group and permission.",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Describes the details about the given ACL, such as the group and permission.\n\nUsers must have the ``MANAGE`` permission to invoke this API.\n\nExample response:\n\n.. code::\n\n{ \"principal\": \"data-scientists\", \"permission\": \"READ\" }\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the\nuser does not have permission to make this API call. Throws ``INVALID_PARAMETER_VALUE`` if the\npermission or principal is invalid.\n\n:param scope: str\n  The name of the scope to fetch ACL information from.\n:param principal: str\n  The principal to fetch ACL information for.\n\n:returns: :class:`AclItem`",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the scope to fetch ACL information from."
+          },
+          {
+            "name": "principal",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The principal to fetch ACL information for."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/AclItem"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/get": {
+      "get": {
+        "operationId": "get_secret",
+        "summary": "Gets a secret for a given key and scope. This API can only be called from the DBUtils interface. Users",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Gets a secret for a given key and scope. This API can only be called from the DBUtils interface. Users\nneed the READ permission to make this call.\n\nExample response:\n\n.. code::\n\n{ \"key\": \"my-string-key\", \"value\": <bytes of the secret value> }\n\nNote that the secret value returned is in bytes. The interpretation of the bytes is determined by the\ncaller in DBUtils and the type the data is decoded into.\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if no such secret or secret scope exists. Throws\n``PERMISSION_DENIED`` if the user does not have permission to make this API call.\n\nNote: This is explicitly an undocumented API. It also doesn't need to be supported for the /preview\nprefix, because it's not a customer-facing API (i.e. only used for DBUtils SecretUtils to fetch\nsecrets).\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope or secret exists. Throws ``BAD_REQUEST`` if\nnormal user calls get secret outside of a notebook. AKV specific errors: Throws\n``INVALID_PARAMETER_VALUE`` if secret name is not alphanumeric or too long. Throws\n``PERMISSION_DENIED`` if secret manager cannot access AKV with 403 error Throws ``MALFORMED_REQUEST``\nif secret manager cannot access AKV with any other 4xx error\n\n:param scope: str\n  The name of the scope that contains the secret.\n:param key: str\n  Name of the secret to fetch value information.\n\n:returns: :class:`GetSecretResponse`",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the scope that contains the secret."
+          },
+          {
+            "name": "key",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the secret to fetch value information."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetSecretResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/acls/list": {
+      "get": {
+        "operationId": "list_acls",
+        "summary": "Lists the ACLs set on the given scope.",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Lists the ACLs set on the given scope.\n\nUsers must have the ``MANAGE`` permission to invoke this API.\n\nExample response:\n\n.. code::\n\n{ \"acls\": [{ \"principal\": \"admins\", \"permission\": \"MANAGE\" },{ \"principal\": \"data-scientists\",\n\"permission\": \"READ\" }] }\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the\nuser does not have permission to make this API call.\n\n:param scope: str\n  The name of the scope to fetch ACL information from.\n\n:returns: Iterator over :class:`AclItem`",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the scope to fetch ACL information from."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[AclItem]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/scopes/list": {
+      "get": {
+        "operationId": "list_scopes",
+        "summary": "Lists all secret scopes available in the workspace.",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Lists all secret scopes available in the workspace.\n\nExample response:\n\n.. code::\n\n{ \"scopes\": [{ \"name\": \"my-databricks-scope\", \"backend_type\": \"DATABRICKS\" },{ \"name\": \"mount-points\",\n\"backend_type\": \"DATABRICKS\" }] }\n\nThrows ``PERMISSION_DENIED`` if the user does not have permission to make this API call.\n\n\n:returns: Iterator over :class:`SecretScope`",
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[SecretScope]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/list": {
+      "get": {
+        "operationId": "list_secrets",
+        "summary": "Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data\ncannot be retrieved using this API. Users need the READ permission to make this call.\n\nExample response:\n\n.. code::\n\n{ \"secrets\": [ { \"key\": \"my-string-key\"\", \"last_updated_timestamp\": \"1520467595000\" }, { \"key\":\n\"my-byte-key\", \"last_updated_timestamp\": \"1520467595000\" }, ] }\n\nThe lastUpdatedTimestamp returned is in milliseconds since epoch.\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the\nuser does not have permission to make this API call.\n\n:param scope: str\n  The name of the scope to list secrets within.\n\n:returns: Iterator over :class:`SecretMetadata`",
+        "parameters": [
+          {
+            "name": "scope",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the scope to list secrets within."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[SecretMetadata]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/acls/put": {
+      "post": {
+        "operationId": "put_acl",
+        "summary": "Creates or overwrites the ACL associated with the given principal (user or group) on the specified",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Creates or overwrites the ACL associated with the given principal (user or group) on the specified\nscope point. In general, a user or group will use the most powerful permission available to them, and\npermissions are ordered as follows:\n\n* ``MANAGE`` - Allowed to change ACLs, and read and write to this secret scope. * ``WRITE`` - Allowed\nto read and write to this secret scope. * ``READ`` - Allowed to read this secret scope and list what\nsecrets are available.\n\nNote that in general, secret values can only be read from within a command on a cluster (for example,\nthrough a notebook). There is no API to read the actual secret value material outside of a cluster.\nHowever, the user's permission will be applied based on who is executing the command, and they must\nhave at least READ permission.\n\nUsers must have the ``MANAGE`` permission to invoke this API.\n\nExample request:\n\n.. code::\n\n{ \"scope\": \"my-secret-scope\", \"principal\": \"data-scientists\", \"permission\": \"READ\" }\n\nThe principal is a user or group name corresponding to an existing Databricks principal to be granted\nor revoked access.\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``RESOURCE_ALREADY_EXISTS``\nif a permission for the principal already exists. Throws ``INVALID_PARAMETER_VALUE`` if the permission\nor principal is invalid. Throws ``PERMISSION_DENIED`` if the user does not have permission to make\nthis API call.\n\n:param scope: str\n  The name of the scope to apply permissions to.\n:param principal: str\n  The principal in which the permission is applied.\n:param permission: :class:`AclPermission`\n  The permission level applied to the principal.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "description": "The name of the scope to apply permissions to."
+                  },
+                  "principal": {
+                    "type": "string",
+                    "description": "The principal in which the permission is applied."
+                  },
+                  "permission": {
+                    "type": "string",
+                    "description": "The permission level applied to the principal."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "principal",
+                  "permission"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/secrets/put": {
+      "post": {
+        "operationId": "put_secret",
+        "summary": "Inserts a secret under the provided scope with the given name. If a secret already exists with the",
+        "tags": [
+          "workspace",
+          "secrets"
+        ],
+        "description": "Inserts a secret under the provided scope with the given name. If a secret already exists with the\nsame name, this command overwrites the existing secret's value. The server encrypts the secret using\nthe secret scope's encryption settings before storing it. You must have ``WRITE`` or ``MANAGE``\npermission on the secret scope.\n\nThe secret key must consist of alphanumeric characters, dashes, underscores, and periods, and cannot\nexceed 128 characters. The maximum allowed secret value size is 128 KB. The maximum number of secrets\nin a given scope is 1000.\n\nExample request:\n\n.. code::\n\n{ \"scope\": \"my-databricks-scope\", \"key\": \"my-string-key\", \"string_value\": \"foobar\" }\n\nThe input fields \"string_value\" or \"bytes_value\" specify the type of the secret, which will determine\nthe value returned when the secret value is requested. Exactly one must be specified.\n\nThrows ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``RESOURCE_LIMIT_EXCEEDED``\nif maximum number of secrets in scope is exceeded. Throws ``INVALID_PARAMETER_VALUE`` if the request\nparameters are invalid. Throws ``PERMISSION_DENIED`` if the user does not have permission to make this\nAPI call. Throws ``MALFORMED_REQUEST`` if request is incorrectly formatted or conflicting. Throws\n``BAD_REQUEST`` if request is made against Azure KeyVault backed scope.\n\n:param scope: str\n  The name of the scope to which the secret will be associated with.\n:param key: str\n  A unique name to identify the secret.\n:param bytes_value: str (optional)\n  If specified, value will be stored as bytes.\n:param string_value: str (optional)\n  If specified, note that the value will be stored in UTF-8 (MB4) form.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "scope": {
+                    "type": "string",
+                    "description": "The name of the scope to which the secret will be associated with."
+                  },
+                  "key": {
+                    "type": "string",
+                    "description": "A unique name to identify the secret."
+                  },
+                  "bytes_value": {
+                    "type": "string",
+                    "description": "If specified, value will be stored as bytes."
+                  },
+                  "string_value": {
+                    "type": "string",
+                    "description": "If specified, note that the value will be stored in UTF-8 (MB4) form."
+                  }
+                },
+                "required": [
+                  "scope",
+                  "key"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/workspace/delete": {
+      "post": {
+        "operationId": "delete",
+        "summary": "Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *",
+        "tags": [
+          "workspace"
+        ],
+        "description": "Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *\nIf `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a\nnon-empty directory and `recursive` is set to `false`, this call returns an error\n`DIRECTORY_NOT_EMPTY`.\n\nObject deletion cannot be undone and deleting a directory recursively is not atomic.\n\n:param path: str\n  The absolute path of the notebook or directory.\n:param recursive: bool (optional)\n  The flag that specifies whether to delete the object recursively. It is `false` by default. Please\n  note this deleting directory is not atomic. If it fails in the middle, some of objects under this\n  directory may be deleted and cannot be undone.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "description": "The absolute path of the notebook or directory."
+                  },
+                  "recursive": {
+                    "type": "string",
+                    "description": "The flag that specifies whether to delete the object recursively. It is `false` by default. Please note this deleting directory is not atomic. If it fails in the middle, some of objects under this directory may be deleted and cannot be undone."
+                  }
+                },
+                "required": [
+                  "path"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/workspace/export": {
+      "get": {
+        "operationId": "export",
+        "summary": "Exports an object or the contents of an entire directory.",
+        "tags": [
+          "workspace"
+        ],
+        "description": "Exports an object or the contents of an entire directory.\n\nIf `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.\n\nIf the exported data would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.\nCurrently, this API does not support exporting a library.\n\n:param path: str\n  The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`,\n  `SOURCE`, and `AUTO` format.\n:param format: :class:`ExportFormat` (optional)\n  This specifies the format of the exported file. By default, this is `SOURCE`.\n\n  The value is case sensitive.\n\n  - `SOURCE`: The notebook is exported as source code. Directory exports will not include non-notebook\n  entries. - `HTML`: The notebook is exported as an HTML file. - `JUPYTER`: The notebook is exported\n  as a Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in Databricks archive format.\n  Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to\n  R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type.\n  Directory exports will include notebooks and workspace files.\n\n:returns: :class:`ExportResponse`",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`, `SOURCE`, and `AUTO` format."
+          },
+          {
+            "name": "format",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "This specifies the format of the exported file. By default, this is `SOURCE`. The value is case sensitive. - `SOURCE`: The notebook is exported as source code. Directory exports will not include non-notebook entries. - `HTML`: The notebook is exported as an HTML file. - `JUPYTER`: The notebook is exported as a Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in Databricks archive format. Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type. Directory exports will include notebooks and workspace files."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ExportResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}/permissionLevels": {
+      "get": {
+        "operationId": "get_permission_levels",
+        "summary": "Gets the permission levels that a user can have on an object.",
+        "tags": [
+          "workspace"
+        ],
+        "description": "Gets the permission levels that a user can have on an object.\n\n:param workspace_object_type: str\n  The workspace object type for which to get or manage permissions. Could be one of the following:\n  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,\n  queries\n:param workspace_object_id: str\n  The workspace object for which to get or manage permissions.\n\n:returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`",
+        "parameters": [
+          {
+            "name": "workspace_object_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The workspace object type for which to get or manage permissions. Could be one of the following: alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks, queries"
+          },
+          {
+            "name": "workspace_object_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The workspace object for which to get or manage permissions."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/GetWorkspaceObjectPermissionLevelsResponse"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}": {
+      "get": {
+        "operationId": "get_permissions",
+        "summary": "Gets the permissions of a workspace object. Workspace objects can inherit permissions from their",
+        "tags": [
+          "workspace"
+        ],
+        "description": "Gets the permissions of a workspace object. Workspace objects can inherit permissions from their\nparent objects or root object.\n\n:param workspace_object_type: str\n  The workspace object type for which to get or manage permissions. Could be one of the following:\n  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,\n  queries\n:param workspace_object_id: str\n  The workspace object for which to get or manage permissions.\n\n:returns: :class:`WorkspaceObjectPermissions`",
+        "parameters": [
+          {
+            "name": "workspace_object_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The workspace object type for which to get or manage permissions. Could be one of the following: alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks, queries"
+          },
+          {
+            "name": "workspace_object_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The workspace object for which to get or manage permissions."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceObjectPermissions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "set_permissions",
+        "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
+        "tags": [
+          "workspace"
+        ],
+        "description": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct\npermissions if none are specified. Objects can inherit permissions from their parent objects or root\nobject.\n\n:param workspace_object_type: str\n  The workspace object type for which to get or manage permissions. Could be one of the following:\n  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,\n  queries\n:param workspace_object_id: str\n  The workspace object for which to get or manage permissions.\n:param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)\n\n:returns: :class:`WorkspaceObjectPermissions`",
+        "parameters": [
+          {
+            "name": "workspace_object_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The workspace object type for which to get or manage permissions. Could be one of the following: alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks, queries"
+          },
+          {
+            "name": "workspace_object_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The workspace object for which to get or manage permissions."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "access_control_list": {
+                    "type": "string",
+                    "description": ":returns: :class:`WorkspaceObjectPermissions`"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceObjectPermissions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update_permissions",
+        "summary": "Updates the permissions on a workspace object. Workspace objects can inherit permissions from their",
+        "tags": [
+          "workspace"
+        ],
+        "description": "Updates the permissions on a workspace object. Workspace objects can inherit permissions from their\nparent objects or root object.\n\n:param workspace_object_type: str\n  The workspace object type for which to get or manage permissions. Could be one of the following:\n  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,\n  queries\n:param workspace_object_id: str\n  The workspace object for which to get or manage permissions.\n:param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)\n\n:returns: :class:`WorkspaceObjectPermissions`",
+        "parameters": [
+          {
+            "name": "workspace_object_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The workspace object type for which to get or manage permissions. Could be one of the following: alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks, queries"
+          },
+          {
+            "name": "workspace_object_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The workspace object for which to get or manage permissions."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "access_control_list": {
+                    "type": "string",
+                    "description": ":returns: :class:`WorkspaceObjectPermissions`"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/WorkspaceObjectPermissions"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/workspace/get-status": {
+      "get": {
+        "operationId": "get_status",
+        "summary": "Gets the status of an object or a directory. If `path` does not exist, this call returns an error",
+        "tags": [
+          "workspace"
+        ],
+        "description": "Gets the status of an object or a directory. If `path` does not exist, this call returns an error\n`RESOURCE_DOES_NOT_EXIST`.\n\n:param path: str\n  The absolute path of the notebook or directory.\n\n:returns: :class:`ObjectInfo`",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The absolute path of the notebook or directory."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/ObjectInfo"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/workspace/import": {
+      "post": {
+        "operationId": "import_",
+        "summary": "Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.",
+        "tags": [
+          "workspace"
+        ],
+        "description": "Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.\nIf `path` already exists and `overwrite` is set to `false`, this call returns an error\n`RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`\nformat with the `language` field unset. To import a single file as `SOURCE`, you must set the\n`language` field. Zip files within directories are not supported.\n\n:param path: str\n  The absolute path of the object or directory. Importing a directory is only supported for the `DBC`\n  and `SOURCE` formats.\n:param content: str (optional)\n  The base64-encoded content. This has a limit of 10 MB.\n\n  If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.\n  This parameter might be absent, and instead a posted file is used.\n:param format: :class:`ImportFormat` (optional)\n  This specifies the format of the file to be imported.\n\n  The value is case sensitive.\n\n  - `AUTO`: The item is imported depending on an analysis of the item's extension and the header\n  content provided in the request. If the item is imported as a notebook, then the item's extension is\n  automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`:\n  The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython\n  Notebook file. - `DBC`: The notebook is imported in Databricks archive format. Required for\n  directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format.\n:param language: :class:`Language` (optional)\n  The language of the object. This value is set only if the object type is `NOTEBOOK`.\n:param overwrite: bool (optional)\n  The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`\n  format, `overwrite` is not supported since it may contain a directory.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "description": "The absolute path of the object or directory. Importing a directory is only supported for the `DBC` and `SOURCE` formats."
+                  },
+                  "content": {
+                    "type": "string",
+                    "description": "The base64-encoded content. This has a limit of 10 MB. If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown. This parameter might be absent, and instead a posted file is used."
+                  },
+                  "format": {
+                    "type": "string",
+                    "description": "This specifies the format of the file to be imported. The value is case sensitive. - `AUTO`: The item is imported depending on an analysis of the item's extension and the header content provided in the request. If the item is imported as a notebook, then the item's extension is automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`: The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython Notebook file. - `DBC`: The notebook is imported in Databricks archive format. Required for directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format."
+                  },
+                  "language": {
+                    "type": "string",
+                    "description": "The language of the object. This value is set only if the object type is `NOTEBOOK`."
+                  },
+                  "overwrite": {
+                    "type": "string",
+                    "description": "The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC` format, `overwrite` is not supported since it may contain a directory."
+                  }
+                },
+                "required": [
+                  "path"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/workspace/list": {
+      "get": {
+        "operationId": "list",
+        "summary": "Lists the contents of a directory, or the object if it is not a directory. If the input path does not",
+        "tags": [
+          "workspace"
+        ],
+        "description": "Lists the contents of a directory, or the object if it is not a directory. If the input path does not\nexist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.\n\n:param path: str\n  The absolute path of the notebook or directory.\n:param notebooks_modified_after: int (optional)\n  UTC timestamp in milliseconds\n\n:returns: Iterator over :class:`ObjectInfo`",
+        "parameters": [
+          {
+            "name": "path",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The absolute path of the notebook or directory."
+          },
+          {
+            "name": "notebooks_modified_after",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "UTC timestamp in milliseconds"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[ObjectInfo]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/workspace/mkdirs": {
+      "post": {
+        "operationId": "mkdirs",
+        "summary": "Creates the specified directory (and necessary parent directories if they do not exist). If there is",
+        "tags": [
+          "workspace"
+        ],
+        "description": "Creates the specified directory (and necessary parent directories if they do not exist). If there is\nan object (not a directory) at any prefix of the input path, this call returns an error\n`RESOURCE_ALREADY_EXISTS`.\n\nNote that if this operation fails it may have succeeded in creating some of the necessary parent\ndirectories.\n\n:param path: str\n  The absolute path of the directory. If the parent directories do not exist, it will also create\n  them. If the directory already exists, this command will do nothing and succeed.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "path": {
+                    "type": "string",
+                    "description": "The absolute path of the directory. If the parent directories do not exist, it will also create them. If the directory already exists, this command will do nothing and succeed."
+                  }
+                },
+                "required": [
+                  "path"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AclItem": {
+        "type": "object",
+        "properties": {
+          "principal": {
+            "type": "string",
+            "description": "The principal in which the permission is applied."
+          },
+          "permission": {
+            "$ref": "#/components/schemas/AclPermission",
+            "description": "The permission level applied to the principal."
+          }
+        },
+        "required": [
+          "principal",
+          "permission"
+        ],
+        "description": "An item representing an ACL rule applied to the given principal (user or group) on the\n    associated scope point."
+      },
+      "AzureKeyVaultSecretScopeMetadata": {
+        "type": "object",
+        "properties": {
+          "resource_id": {
+            "type": "string",
+            "description": "The resource id of the azure KeyVault that user wants to associate the scope with."
+          },
+          "dns_name": {
+            "type": "string",
+            "description": "The DNS of the KeyVault"
+          }
+        },
+        "required": [
+          "resource_id",
+          "dns_name"
+        ],
+        "description": "The metadata of the Azure KeyVault for a secret scope of type `AZURE_KEYVAULT`"
+      },
+      "CreateCredentialsResponse": {
+        "type": "object",
+        "properties": {
+          "credential_id": {
+            "type": "integer"
+          },
+          "git_provider": {
+            "type": "string",
+            "description": "The Git provider associated with the credential."
+          },
+          "git_email": {
+            "type": "string",
+            "description": "The authenticating email associated with your Git provider user account. Used for authentication with the remote repository and also sets the author & committer identity for commits. Required for most Git providers except AWS CodeCommit. Learn more at https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"
+          },
+          "git_username": {
+            "type": "string",
+            "description": "The username provided with your Git provider account and associated with the credential. For most Git providers it is only used to set the Git committer & author names for commits, however it may be required for authentication depending on your Git provider / token requirements. Required for AWS CodeCommit."
+          },
+          "is_default_for_provider": {
+            "type": "boolean",
+            "description": "if the credential is the default for the given provider"
+          },
+          "name": {
+            "type": "string",
+            "description": "the name of the git credential, used for identification and ease of lookup"
+          }
+        },
+        "required": [
+          "credential_id",
+          "git_provider"
+        ]
+      },
+      "CreateRepoResponse": {
+        "type": "object",
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "head_commit_id": {
+            "type": "string",
+            "description": "SHA-1 hash representing the commit ID of the current HEAD of the Git folder (repo)."
+          },
+          "id": {
+            "type": "integer",
+            "description": "ID of the Git folder (repo) object in the workspace."
+          },
+          "path": {
+            "type": "string",
+            "description": "Path of the Git folder (repo) in the workspace."
+          },
+          "provider": {
+            "type": "string",
+            "description": "Git provider of the linked Git repository."
+          },
+          "sparse_checkout": {
+            "$ref": "#/components/schemas/SparseCheckout",
+            "description": "Sparse checkout settings for the Git folder (repo)."
+          },
+          "url": {
+            "type": "string",
+            "description": "URL of the linked Git repository."
+          }
+        }
+      },
+      "CredentialInfo": {
+        "type": "object",
+        "properties": {
+          "credential_id": {
+            "type": "integer"
+          },
+          "git_email": {
+            "type": "string",
+            "description": "The authenticating email associated with your Git provider user account. Used for authentication with the remote repository and also sets the author & committer identity for commits. Required for most Git providers except AWS CodeCommit. Learn more at https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"
+          },
+          "git_provider": {
+            "type": "string",
+            "description": "The Git provider associated with the credential."
+          },
+          "git_username": {
+            "type": "string",
+            "description": "The username provided with your Git provider account and associated with the credential. For most Git providers it is only used to set the Git committer & author names for commits, however it may be required for authentication depending on your Git provider / token requirements. Required for AWS CodeCommit."
+          },
+          "is_default_for_provider": {
+            "type": "boolean",
+            "description": "if the credential is the default for the given provider"
+          },
+          "name": {
+            "type": "string",
+            "description": "the name of the git credential, used for identification and ease of lookup"
+          }
+        },
+        "required": [
+          "credential_id"
+        ]
+      },
+      "DeleteCredentialsResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteRepoResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "DeleteSecretResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "ExportResponse": {
+        "type": "object",
+        "properties": {
+          "content": {
+            "type": "string",
+            "description": "The base64-encoded content. If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown."
+          },
+          "file_type": {
+            "type": "string",
+            "description": "The file type of the exported file."
+          }
+        },
+        "description": "The request field `direct_download` determines whether a JSON response or binary contents are\n    returned by this endpoint."
+      },
+      "GetCredentialsResponse": {
+        "type": "object",
+        "properties": {
+          "credential_id": {
+            "type": "integer"
+          },
+          "git_email": {
+            "type": "string",
+            "description": "The authenticating email associated with your Git provider user account. Used for authentication with the remote repository and also sets the author & committer identity for commits. Required for most Git providers except AWS CodeCommit. Learn more at https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider"
+          },
+          "git_provider": {
+            "type": "string",
+            "description": "The Git provider associated with the credential."
+          },
+          "git_username": {
+            "type": "string",
+            "description": "The username provided with your Git provider account and associated with the credential. For most Git providers it is only used to set the Git committer & author names for commits, however it may be required for authentication depending on your Git provider / token requirements. Required for AWS CodeCommit."
+          },
+          "is_default_for_provider": {
+            "type": "boolean",
+            "description": "if the credential is the default for the given provider"
+          },
+          "name": {
+            "type": "string",
+            "description": "the name of the git credential, used for identification and ease of lookup"
+          }
+        },
+        "required": [
+          "credential_id"
+        ]
+      },
+      "GetRepoPermissionLevelsResponse": {
+        "type": "object",
+        "properties": {
+          "permission_levels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepoPermissionsDescription"
+            }
+          }
+        }
+      },
+      "GetRepoResponse": {
+        "type": "object",
+        "properties": {
+          "branch": {
+            "type": "string"
+          },
+          "head_commit_id": {
+            "type": "string",
+            "description": "SHA-1 hash representing the commit ID of the current HEAD of the repo."
+          },
+          "id": {
+            "type": "integer",
+            "description": "ID of the Git folder (repo) object in the workspace."
+          },
+          "path": {
+            "type": "string",
+            "description": "Path of the Git folder (repo) in the workspace."
+          },
+          "provider": {
+            "type": "string",
+            "description": "Git provider of the linked Git repository."
+          },
+          "sparse_checkout": {
+            "$ref": "#/components/schemas/SparseCheckout",
+            "description": "Sparse checkout settings for the Git folder (repo)."
+          },
+          "url": {
+            "type": "string",
+            "description": "URL of the linked Git repository."
+          }
+        }
+      },
+      "GetSecretResponse": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the secret in its byte representation."
+          }
+        }
+      },
+      "GetWorkspaceObjectPermissionLevelsResponse": {
+        "type": "object",
+        "properties": {
+          "permission_levels": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceObjectPermissionsDescription"
+            }
+          }
+        }
+      },
+      "ImportResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "ListAclsResponse": {
+        "type": "object",
+        "properties": {
+          "items": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/AclItem"
+            }
+          }
+        }
+      },
+      "ListCredentialsResponse": {
+        "type": "object",
+        "properties": {
+          "credentials": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CredentialInfo"
+            }
+          }
+        }
+      },
+      "ListReposResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "repos": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepoInfo"
+            },
+            "description": "List of Git folders (repos)."
+          }
+        }
+      },
+      "ListResponse": {
+        "type": "object",
+        "properties": {
+          "objects": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ObjectInfo"
+            }
+          }
+        }
+      },
+      "ListScopesResponse": {
+        "type": "object",
+        "properties": {
+          "scopes": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SecretScope"
+            }
+          }
+        }
+      },
+      "ListSecretsResponse": {
+        "type": "object",
+        "properties": {
+          "secrets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SecretMetadata"
+            }
+          }
+        }
+      },
+      "MkdirsResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "ObjectInfo": {
+        "type": "object",
+        "properties": {
+          "created_at": {
+            "type": "integer",
+            "description": "Only applicable to files. The creation UTC timestamp."
+          },
+          "language": {
+            "$ref": "#/components/schemas/Language",
+            "description": "The language of the object. This value is set only if the object type is ``NOTEBOOK``."
+          },
+          "modified_at": {
+            "type": "integer",
+            "description": "Only applicable to files, the last modified UTC timestamp."
+          },
+          "object_id": {
+            "type": "integer",
+            "description": "Unique identifier for the object."
+          },
+          "object_type": {
+            "$ref": "#/components/schemas/ObjectType",
+            "description": "The type of the object in workspace. - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard"
+          },
+          "path": {
+            "type": "string",
+            "description": "The absolute path of the object."
+          },
+          "resource_id": {
+            "type": "string",
+            "description": "A unique identifier for the object that is consistent across all Databricks APIs."
+          },
+          "size": {
+            "type": "integer",
+            "description": "Only applicable to files. The file size in bytes can be returned."
+          }
+        },
+        "description": "The information of the object in workspace. It will be returned by ``list`` and ``get-status``."
+      },
+      "RepoAccessControlRequest": {
+        "type": "object",
+        "properties": {
+          "group_name": {
+            "type": "string"
+          },
+          "permission_level": {
+            "$ref": "#/components/schemas/RepoPermissionLevel"
+          },
+          "service_principal_name": {
+            "type": "string",
+            "description": "application ID of a service principal"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "name of the user"
+          }
+        }
+      },
+      "RepoAccessControlResponse": {
+        "type": "object",
+        "properties": {
+          "all_permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepoPermission"
+            }
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Display name of the user or service principal."
+          },
+          "group_name": {
+            "type": "string",
+            "description": "name of the group"
+          },
+          "service_principal_name": {
+            "type": "string",
+            "description": "Name of the service principal."
+          },
+          "user_name": {
+            "type": "string",
+            "description": "name of the user"
+          }
+        }
+      },
+      "RepoInfo": {
+        "type": "object",
+        "properties": {
+          "branch": {
+            "type": "string",
+            "description": "Name of the current git branch of the git folder (repo)."
+          },
+          "head_commit_id": {
+            "type": "string",
+            "description": "Current git commit id of the git folder (repo)."
+          },
+          "id": {
+            "type": "integer",
+            "description": "Id of the git folder (repo) in the Workspace."
+          },
+          "path": {
+            "type": "string",
+            "description": "Root path of the git folder (repo) in the Workspace."
+          },
+          "provider": {
+            "type": "string",
+            "description": "Git provider of the remote git repository, e.g. `gitHub`."
+          },
+          "sparse_checkout": {
+            "$ref": "#/components/schemas/SparseCheckout",
+            "description": "Sparse checkout config for the git folder (repo)."
+          },
+          "url": {
+            "type": "string",
+            "description": "URL of the remote git repository."
+          }
+        },
+        "description": "Git folder (repo) information."
+      },
+      "RepoPermission": {
+        "type": "object",
+        "properties": {
+          "inherited": {
+            "type": "boolean"
+          },
+          "inherited_from_object": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "permission_level": {
+            "$ref": "#/components/schemas/RepoPermissionLevel"
+          }
+        }
+      },
+      "RepoPermissions": {
+        "type": "object",
+        "properties": {
+          "access_control_list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RepoAccessControlResponse"
+            }
+          },
+          "object_id": {
+            "type": "string"
+          },
+          "object_type": {
+            "type": "string"
+          }
+        }
+      },
+      "RepoPermissionsDescription": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "permission_level": {
+            "$ref": "#/components/schemas/RepoPermissionLevel"
+          }
+        }
+      },
+      "SecretMetadata": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string",
+            "description": "A unique name to identify the secret."
+          },
+          "last_updated_timestamp": {
+            "type": "integer",
+            "description": "The last updated timestamp (in milliseconds) for the secret."
+          }
+        },
+        "description": "The metadata about a secret. Returned when listing secrets. Does not contain the actual secret\n    value."
+      },
+      "SecretScope": {
+        "type": "object",
+        "properties": {
+          "backend_type": {
+            "$ref": "#/components/schemas/ScopeBackendType",
+            "description": "The type of secret scope backend."
+          },
+          "keyvault_metadata": {
+            "$ref": "#/components/schemas/AzureKeyVaultSecretScopeMetadata",
+            "description": "The metadata for the secret scope if the type is ``AZURE_KEYVAULT``"
+          },
+          "name": {
+            "type": "string",
+            "description": "A unique name to identify the secret scope."
+          }
+        },
+        "description": "An organizational resource for storing secrets. Secret scopes can be different types\n    (Databricks-managed, Azure KeyVault backed, etc), and ACLs can be applied to control permissions\n    for all secrets within a scope."
+      },
+      "SparseCheckout": {
+        "type": "object",
+        "properties": {
+          "patterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of sparse checkout cone patterns, see [cone mode handling] for details. [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling"
+          }
+        },
+        "description": "Sparse checkout configuration, it contains options like cone patterns."
+      },
+      "SparseCheckoutUpdate": {
+        "type": "object",
+        "properties": {
+          "patterns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "List of sparse checkout cone patterns, see [cone mode handling] for details. [cone mode handling]: https://git-scm.com/docs/git-sparse-checkout#_internalscone_mode_handling"
+          }
+        },
+        "description": "Sparse checkout configuration, it contains options like cone patterns."
+      },
+      "UpdateCredentialsResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "UpdateRepoResponse": {
+        "type": "object",
+        "properties": {}
+      },
+      "WorkspaceObjectAccessControlRequest": {
+        "type": "object",
+        "properties": {
+          "group_name": {
+            "type": "string"
+          },
+          "permission_level": {
+            "$ref": "#/components/schemas/WorkspaceObjectPermissionLevel"
+          },
+          "service_principal_name": {
+            "type": "string",
+            "description": "application ID of a service principal"
+          },
+          "user_name": {
+            "type": "string",
+            "description": "name of the user"
+          }
+        }
+      },
+      "WorkspaceObjectAccessControlResponse": {
+        "type": "object",
+        "properties": {
+          "all_permissions": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceObjectPermission"
+            }
+          },
+          "display_name": {
+            "type": "string",
+            "description": "Display name of the user or service principal."
+          },
+          "group_name": {
+            "type": "string",
+            "description": "name of the group"
+          },
+          "service_principal_name": {
+            "type": "string",
+            "description": "Name of the service principal."
+          },
+          "user_name": {
+            "type": "string",
+            "description": "name of the user"
+          }
+        }
+      },
+      "WorkspaceObjectPermission": {
+        "type": "object",
+        "properties": {
+          "inherited": {
+            "type": "boolean"
+          },
+          "inherited_from_object": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "permission_level": {
+            "$ref": "#/components/schemas/WorkspaceObjectPermissionLevel"
+          }
+        }
+      },
+      "WorkspaceObjectPermissions": {
+        "type": "object",
+        "properties": {
+          "access_control_list": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/WorkspaceObjectAccessControlResponse"
+            }
+          },
+          "object_id": {
+            "type": "string"
+          },
+          "object_type": {
+            "type": "string"
+          }
+        }
+      },
+      "WorkspaceObjectPermissionsDescription": {
+        "type": "object",
+        "properties": {
+          "description": {
+            "type": "string"
+          },
+          "permission_level": {
+            "$ref": "#/components/schemas/WorkspaceObjectPermissionLevel"
+          }
+        }
+      },
+      "AclPermission": {
+        "type": "string",
+        "enum": [
+          "MANAGE",
+          "READ",
+          "WRITE"
+        ],
+        "description": "The ACL permission levels for Secret ACLs applied to secret scopes."
+      },
+      "ExportFormat": {
+        "type": "string",
+        "enum": [
+          "AUTO",
+          "DBC",
+          "HTML",
+          "JUPYTER",
+          "RAW",
+          "R_MARKDOWN",
+          "SOURCE"
+        ],
+        "description": "The format for workspace import and export."
+      },
+      "ImportFormat": {
+        "type": "string",
+        "enum": [
+          "AUTO",
+          "DBC",
+          "HTML",
+          "JUPYTER",
+          "RAW",
+          "R_MARKDOWN",
+          "SOURCE"
+        ],
+        "description": "The format for workspace import and export."
+      },
+      "Language": {
+        "type": "string",
+        "enum": [
+          "PYTHON",
+          "R",
+          "SCALA",
+          "SQL"
+        ],
+        "description": "The language of notebook."
+      },
+      "ObjectType": {
+        "type": "string",
+        "enum": [
+          "DASHBOARD",
+          "DIRECTORY",
+          "FILE",
+          "LIBRARY",
+          "NOTEBOOK",
+          "REPO"
+        ],
+        "description": "The type of the object in workspace."
+      },
+      "RepoPermissionLevel": {
+        "type": "string",
+        "enum": [
+          "CAN_EDIT",
+          "CAN_MANAGE",
+          "CAN_READ",
+          "CAN_RUN"
+        ],
+        "description": "Permission level"
+      },
+      "ScopeBackendType": {
+        "type": "string",
+        "enum": [
+          "AZURE_KEYVAULT",
+          "DATABRICKS"
+        ],
+        "description": "The types of secret scope backends in the Secret Manager. Azure KeyVault backed secret scopes\nwill be supported in a later release."
+      },
+      "WorkspaceObjectPermissionLevel": {
+        "type": "string",
+        "enum": [
+          "CAN_EDIT",
+          "CAN_MANAGE",
+          "CAN_READ",
+          "CAN_RUN"
+        ],
+        "description": "Permission level"
+      }
+    }
+  }
+}

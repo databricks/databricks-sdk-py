@@ -1,0 +1,2143 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Databricks Database API (workspace)",
+    "description": "OpenAPI specification for the Databricks database service (workspace-level APIs), generated from the Databricks Python SDK.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://{workspace}.cloud.databricks.com",
+      "description": "Databricks workspace",
+      "variables": {
+        "workspace": {
+          "default": "your-workspace",
+          "description": "Your Databricks workspace name"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/api/2.0/database/catalogs": {
+      "post": {
+        "operationId": "create_database_catalog",
+        "summary": "Create a Database Catalog.",
+        "tags": [
+          "database"
+        ],
+        "description": "Create a Database Catalog.\n\n:param catalog: :class:`DatabaseCatalog`\n\n:returns: :class:`DatabaseCatalog`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "catalog": {
+                    "type": "string",
+                    "description": ":returns: :class:`DatabaseCatalog`"
+                  }
+                },
+                "required": [
+                  "catalog"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseCatalog"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/instances": {
+      "post": {
+        "operationId": "create_database_instance",
+        "summary": "Create a Database Instance.",
+        "tags": [
+          "database"
+        ],
+        "description": "Create a Database Instance.\n\n:param database_instance: :class:`DatabaseInstance`\n  Instance to create.\n\n:returns:\n  Long-running operation waiter for :class:`DatabaseInstance`.\n  See :method:wait_get_database_instance_database_available for more details.",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "database_instance": {
+                    "type": "string",
+                    "description": "Instance to create."
+                  }
+                },
+                "required": [
+                  "database_instance"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Wait[DatabaseInstance]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_database_instances",
+        "summary": "List Database Instances.",
+        "tags": [
+          "database"
+        ],
+        "description": "List Database Instances.\n\n:param page_size: int (optional)\n  Upper bound for items returned.\n:param page_token: str (optional)\n  Pagination token to go to the next page of Database Instances. Requests first page if absent.\n\n:returns: Iterator over :class:`DatabaseInstance`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Upper bound for items returned."
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pagination token to go to the next page of Database Instances. Requests first page if absent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[DatabaseInstance]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/instances/{instance_name}/roles": {
+      "post": {
+        "operationId": "create_database_instance_role",
+        "summary": "Create a role for a Database Instance.",
+        "tags": [
+          "database"
+        ],
+        "description": "Create a role for a Database Instance.\n\n:param instance_name: str\n:param database_instance_role: :class:`DatabaseInstanceRole`\n:param database_instance_name: str (optional)\n\n:returns: :class:`DatabaseInstanceRole`",
+        "parameters": [
+          {
+            "name": "instance_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param database_instance_role: :class:`DatabaseInstanceRole`"
+          },
+          {
+            "name": "database_instance_name",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`DatabaseInstanceRole`"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "database_instance_role": {
+                    "type": "string"
+                  }
+                },
+                "required": [
+                  "database_instance_role"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseInstanceRole"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_database_instance_roles",
+        "summary": "START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage < PUBLIC_PREVIEW. With more",
+        "tags": [
+          "database"
+        ],
+        "description": "START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage < PUBLIC_PREVIEW. With more\nrecent Lakebase V2 plans, we don't plan to ever advance these to PUBLIC_PREVIEW. These APIs will\nremain effectively undocumented/UI-only and we'll aim for a new public roles API as part of V2 PuPr.\n\n:param instance_name: str\n:param page_size: int (optional)\n  Upper bound for items returned.\n:param page_token: str (optional)\n  Pagination token to go to the next page of Database Instances. Requests first page if absent.\n\n:returns: Iterator over :class:`DatabaseInstanceRole`",
+        "parameters": [
+          {
+            "name": "instance_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_size: int (optional) Upper bound for items returned."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pagination token to go to the next page of Database Instances. Requests first page if absent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[DatabaseInstanceRole]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/tables": {
+      "post": {
+        "operationId": "create_database_table",
+        "summary": "Create a Database Table. Useful for registering pre-existing PG tables in UC. See",
+        "tags": [
+          "database"
+        ],
+        "description": "Create a Database Table. Useful for registering pre-existing PG tables in UC. See\nCreateSyncedDatabaseTable for creating synced tables in PG from a source table in UC.\n\n:param table: :class:`DatabaseTable`\n\n:returns: :class:`DatabaseTable`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "table": {
+                    "type": "string",
+                    "description": ":returns: :class:`DatabaseTable`"
+                  }
+                },
+                "required": [
+                  "table"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseTable"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/synced_tables": {
+      "post": {
+        "operationId": "create_synced_database_table",
+        "summary": "Create a Synced Database Table.",
+        "tags": [
+          "database"
+        ],
+        "description": "Create a Synced Database Table.\n\n:param synced_table: :class:`SyncedDatabaseTable`\n\n:returns: :class:`SyncedDatabaseTable`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "synced_table": {
+                    "type": "string",
+                    "description": ":returns: :class:`SyncedDatabaseTable`"
+                  }
+                },
+                "required": [
+                  "synced_table"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncedDatabaseTable"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/catalogs/{name}": {
+      "delete": {
+        "operationId": "delete_database_catalog",
+        "summary": "Delete a Database Catalog.",
+        "tags": [
+          "database"
+        ],
+        "description": "Delete a Database Catalog.\n\n:param name: str",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_database_catalog",
+        "summary": "Get a Database Catalog.",
+        "tags": [
+          "database"
+        ],
+        "description": "Get a Database Catalog.\n\n:param name: str\n\n:returns: :class:`DatabaseCatalog`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`DatabaseCatalog`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseCatalog"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update_database_catalog",
+        "summary": "This API is currently unimplemented, but exposed for Terraform support.",
+        "tags": [
+          "database"
+        ],
+        "description": "This API is currently unimplemented, but exposed for Terraform support.\n\n:param name: str\n  The name of the catalog in UC.\n:param database_catalog: :class:`DatabaseCatalog`\n  Note that updating a database catalog is not yet supported.\n:param update_mask: str\n  The list of fields to update. Setting this field is not yet supported.\n\n:returns: :class:`DatabaseCatalog`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the catalog in UC."
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The list of fields to update. Setting this field is not yet supported."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "database_catalog": {
+                    "type": "string",
+                    "description": "Note that updating a database catalog is not yet supported."
+                  }
+                },
+                "required": [
+                  "database_catalog"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseCatalog"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/instances/{name}": {
+      "delete": {
+        "operationId": "delete_database_instance",
+        "summary": "Delete a Database Instance.",
+        "tags": [
+          "database"
+        ],
+        "description": "Delete a Database Instance.\n\n:param name: str\n  Name of the instance to delete.\n:param force: bool (optional)\n  By default, a instance cannot be deleted if it has descendant instances created via PITR. If this\n  flag is specified as true, all descendent instances will be deleted as well.\n:param purge: bool (optional)\n  Deprecated. Omitting the field or setting it to true will result in the field being hard deleted.\n  Setting a value of false will throw a bad request.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the instance to delete."
+          },
+          {
+            "name": "force",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "By default, a instance cannot be deleted if it has descendant instances created via PITR. If this flag is specified as true, all descendent instances will be deleted as well."
+          },
+          {
+            "name": "purge",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Deprecated. Omitting the field or setting it to true will result in the field being hard deleted. Setting a value of false will throw a bad request."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_database_instance",
+        "summary": "Get a Database Instance.",
+        "tags": [
+          "database"
+        ],
+        "description": "Get a Database Instance.\n\n:param name: str\n  Name of the cluster to get.\n\n:returns: :class:`DatabaseInstance`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the cluster to get."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseInstance"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update_database_instance",
+        "summary": "Update a Database Instance.",
+        "tags": [
+          "database"
+        ],
+        "description": "Update a Database Instance.\n\n:param name: str\n  The name of the instance. This is the unique identifier for the instance.\n:param database_instance: :class:`DatabaseInstance`\n:param update_mask: str\n  The list of fields to update. If unspecified, all fields will be updated when possible. To wipe out\n  custom_tags, specify custom_tags in the update_mask with an empty custom_tags map.\n\n:returns: :class:`DatabaseInstance`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The name of the instance. This is the unique identifier for the instance."
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "database_instance": {
+                    "type": "string",
+                    "description": ":param update_mask: str The list of fields to update. If unspecified, all fields will be updated when possible. To wipe out custom_tags, specify custom_tags in the update_mask with an empty custom_tags map."
+                  }
+                },
+                "required": [
+                  "database_instance"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseInstance"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/instances/{instance_name}/roles/{name}": {
+      "delete": {
+        "operationId": "delete_database_instance_role",
+        "summary": "Deletes a role for a Database Instance.",
+        "tags": [
+          "database"
+        ],
+        "description": "Deletes a role for a Database Instance.\n\n:param instance_name: str\n:param name: str\n:param allow_missing: bool (optional)\n  This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option\n:param reassign_owned_to: str (optional)",
+        "parameters": [
+          {
+            "name": "instance_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param name: str"
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "allow_missing",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option"
+          },
+          {
+            "name": "reassign_owned_to",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str (optional)"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_database_instance_role",
+        "summary": "Gets a role for a Database Instance.",
+        "tags": [
+          "database"
+        ],
+        "description": "Gets a role for a Database Instance.\n\n:param instance_name: str\n:param name: str\n\n:returns: :class:`DatabaseInstanceRole`",
+        "parameters": [
+          {
+            "name": "instance_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param name: str"
+          },
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseInstanceRole"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/tables/{name}": {
+      "delete": {
+        "operationId": "delete_database_table",
+        "summary": "Delete a Database Table.",
+        "tags": [
+          "database"
+        ],
+        "description": "Delete a Database Table.\n\n:param name: str",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_database_table",
+        "summary": "Get a Database Table.",
+        "tags": [
+          "database"
+        ],
+        "description": "Get a Database Table.\n\n:param name: str\n\n:returns: :class:`DatabaseTable`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`DatabaseTable`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseTable"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/synced_tables/{name}": {
+      "delete": {
+        "operationId": "delete_synced_database_table",
+        "summary": "Delete a Synced Database Table.",
+        "tags": [
+          "database"
+        ],
+        "description": "Delete a Synced Database Table.\n\n:param name: str\n:param purge_data: bool (optional)\n  Optional. When set to true, the actual PostgreSQL table will be dropped from the database.",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param purge_data: bool (optional) Optional. When set to true, the actual PostgreSQL table will be dropped from the database."
+          },
+          {
+            "name": "purge_data",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_synced_database_table",
+        "summary": "Get a Synced Database Table.",
+        "tags": [
+          "database"
+        ],
+        "description": "Get a Synced Database Table.\n\n:param name: str\n\n:returns: :class:`SyncedDatabaseTable`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":returns: :class:`SyncedDatabaseTable`"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncedDatabaseTable"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update_synced_database_table",
+        "summary": "This API is currently unimplemented, but exposed for Terraform support.",
+        "tags": [
+          "database"
+        ],
+        "description": "This API is currently unimplemented, but exposed for Terraform support.\n\n:param name: str\n  Full three-part (catalog, schema, table) name of the table.\n:param synced_table: :class:`SyncedDatabaseTable`\n  Note that updating a synced database table is not yet supported.\n:param update_mask: str\n  The list of fields to update. Setting this field is not yet supported.\n\n:returns: :class:`SyncedDatabaseTable`",
+        "parameters": [
+          {
+            "name": "name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Full three-part (catalog, schema, table) name of the table."
+          },
+          {
+            "name": "update_mask",
+            "in": "query",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The list of fields to update. Setting this field is not yet supported."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "synced_table": {
+                    "type": "string",
+                    "description": "Note that updating a synced database table is not yet supported."
+                  }
+                },
+                "required": [
+                  "synced_table"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/SyncedDatabaseTable"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/instances:findByUid": {
+      "get": {
+        "operationId": "find_database_instance_by_uid",
+        "summary": "Find a Database Instance by uid.",
+        "tags": [
+          "database"
+        ],
+        "description": "Find a Database Instance by uid.\n\n:param uid: str (optional)\n  UID of the cluster to get.\n\n:returns: :class:`DatabaseInstance`",
+        "parameters": [
+          {
+            "name": "uid",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "UID of the cluster to get."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseInstance"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/credentials": {
+      "post": {
+        "operationId": "generate_database_credential",
+        "summary": "Generates a credential that can be used to access database instances.",
+        "tags": [
+          "database"
+        ],
+        "description": "Generates a credential that can be used to access database instances.\n\n:param claims: List[:class:`RequestedClaims`] (optional)\n  The returned token will be scoped to the union of instance_names and instances containing the\n  specified UC tables, so instance_names is allowed to be empty.\n:param instance_names: List[str] (optional)\n  Instances to which the token will be scoped.\n:param request_id: str (optional)\n\n:returns: :class:`DatabaseCredential`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "claims": {
+                    "type": "string",
+                    "description": "The returned token will be scoped to the union of instance_names and instances containing the specified UC tables, so instance_names is allowed to be empty."
+                  },
+                  "instance_names": {
+                    "type": "string",
+                    "description": "Instances to which the token will be scoped."
+                  },
+                  "request_id": {
+                    "type": "string",
+                    "description": ":returns: :class:`DatabaseCredential`"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/DatabaseCredential"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/instances/{instance_name}/catalogs": {
+      "get": {
+        "operationId": "list_database_catalogs",
+        "summary": "This API is currently unimplemented, but exposed for Terraform support.",
+        "tags": [
+          "database"
+        ],
+        "description": "This API is currently unimplemented, but exposed for Terraform support.\n\n:param instance_name: str\n  Name of the instance to get database catalogs for.\n:param page_size: int (optional)\n  Upper bound for items returned.\n:param page_token: str (optional)\n  Pagination token to go to the next page of synced database tables. Requests first page if absent.\n\n:returns: Iterator over :class:`DatabaseCatalog`",
+        "parameters": [
+          {
+            "name": "instance_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the instance to get database catalogs for."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Upper bound for items returned."
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pagination token to go to the next page of synced database tables. Requests first page if absent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[DatabaseCatalog]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/database/instances/{instance_name}/synced_tables": {
+      "get": {
+        "operationId": "list_synced_database_tables",
+        "summary": "This API is currently unimplemented, but exposed for Terraform support.",
+        "tags": [
+          "database"
+        ],
+        "description": "This API is currently unimplemented, but exposed for Terraform support.\n\n:param instance_name: str\n  Name of the instance to get synced tables for.\n:param page_size: int (optional)\n  Upper bound for items returned.\n:param page_token: str (optional)\n  Pagination token to go to the next page of synced database tables. Requests first page if absent.\n\n:returns: Iterator over :class:`SyncedDatabaseTable`",
+        "parameters": [
+          {
+            "name": "instance_name",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Name of the instance to get synced tables for."
+          },
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Upper bound for items returned."
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "Pagination token to go to the next page of synced database tables. Requests first page if absent."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[SyncedDatabaseTable]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CustomTag": {
+        "type": "object",
+        "properties": {
+          "key": {
+            "type": "string"
+          },
+          "value": {
+            "type": "string",
+            "description": "The value of the custom tag."
+          }
+        }
+      },
+      "DatabaseCatalog": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "database_instance_name": {
+            "type": "string",
+            "description": "The name of the DatabaseInstance housing the database."
+          },
+          "database_name": {
+            "type": "string",
+            "description": "The name of the database (in a instance) associated with the catalog."
+          },
+          "create_database_if_not_exists": {
+            "type": "boolean"
+          },
+          "uid": {
+            "type": "string"
+          }
+        },
+        "required": [
+          "name",
+          "database_instance_name",
+          "database_name"
+        ]
+      },
+      "DatabaseCredential": {
+        "type": "object",
+        "properties": {
+          "expiration_time": {
+            "type": "string"
+          },
+          "token": {
+            "type": "string"
+          }
+        }
+      },
+      "DatabaseInstance": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the instance. This is the unique identifier for the instance."
+          },
+          "capacity": {
+            "type": "string",
+            "description": "The sku of the instance. Valid values are \"CU_1\", \"CU_2\", \"CU_4\", \"CU_8\"."
+          },
+          "child_instance_refs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DatabaseInstanceRef"
+            },
+            "description": "The refs of the child instances. This is only available if the instance is parent instance."
+          },
+          "creation_time": {
+            "type": "string",
+            "description": "The timestamp when the instance was created."
+          },
+          "creator": {
+            "type": "string",
+            "description": "The email of the creator of the instance."
+          },
+          "custom_tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomTag"
+            },
+            "description": "Custom tags associated with the instance. This field is only included on create and update responses."
+          },
+          "effective_capacity": {
+            "type": "string",
+            "description": "Deprecated. The sku of the instance; this field will always match the value of capacity. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "effective_custom_tags": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/CustomTag"
+            },
+            "description": "The recorded custom tags associated with the instance. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "effective_enable_pg_native_login": {
+            "type": "boolean",
+            "description": "Whether the instance has PG native password login enabled. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "effective_enable_readable_secondaries": {
+            "type": "boolean",
+            "description": "Whether secondaries serving read-only traffic are enabled. Defaults to false. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "effective_node_count": {
+            "type": "integer",
+            "description": "The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults to 1 primary and 0 secondaries. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "effective_retention_window_in_days": {
+            "type": "integer",
+            "description": "The retention window for the instance. This is the time window in days for which the historical data is retained. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "effective_stopped": {
+            "type": "boolean",
+            "description": "Whether the instance is stopped. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "effective_usage_policy_id": {
+            "type": "string",
+            "description": "The policy that is applied to the instance. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "enable_pg_native_login": {
+            "type": "boolean",
+            "description": "Whether to enable PG native password login on the instance. Defaults to false."
+          },
+          "enable_readable_secondaries": {
+            "type": "boolean",
+            "description": "Whether to enable secondaries to serve read-only traffic. Defaults to false."
+          },
+          "node_count": {
+            "type": "integer",
+            "description": "The number of nodes in the instance, composed of 1 primary and 0 or more secondaries. Defaults to 1 primary and 0 secondaries. This field is input only, see effective_node_count for the output."
+          },
+          "parent_instance_ref": {
+            "$ref": "#/components/schemas/DatabaseInstanceRef",
+            "description": "The ref of the parent instance. This is only available if the instance is child instance. Input: For specifying the parent instance to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+          },
+          "pg_version": {
+            "type": "string",
+            "description": "The version of Postgres running on the instance."
+          },
+          "read_only_dns": {
+            "type": "string",
+            "description": "The DNS endpoint to connect to the instance for read only access. This is only available if enable_readable_secondaries is true."
+          },
+          "read_write_dns": {
+            "type": "string",
+            "description": "The DNS endpoint to connect to the instance for read+write access."
+          },
+          "retention_window_in_days": {
+            "type": "integer",
+            "description": "The retention window for the instance. This is the time window in days for which the historical data is retained. The default value is 7 days. Valid values are 2 to 35 days."
+          },
+          "state": {
+            "$ref": "#/components/schemas/DatabaseInstanceState",
+            "description": "The current state of the instance."
+          },
+          "stopped": {
+            "type": "boolean",
+            "description": "Whether to stop the instance. An input only param, see effective_stopped for the output."
+          },
+          "uid": {
+            "type": "string",
+            "description": "An immutable UUID identifier for the instance."
+          },
+          "usage_policy_id": {
+            "type": "string",
+            "description": "The desired usage policy to associate with the instance."
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "description": "A DatabaseInstance represents a logical Postgres instance, comprised of both compute and\n    storage."
+      },
+      "DatabaseInstanceRef": {
+        "type": "object",
+        "properties": {
+          "branch_time": {
+            "type": "string",
+            "description": "Branch time of the ref database instance. For a parent ref instance, this is the point in time on the parent instance from which the instance was created. For a child ref instance, this is the point in time on the instance from which the child instance was created. Input: For specifying the point in time to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+          },
+          "effective_lsn": {
+            "type": "string",
+            "description": "For a parent ref instance, this is the LSN on the parent instance from which the instance was created. For a child ref instance, this is the LSN on the instance from which the child instance was created. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "lsn": {
+            "type": "string",
+            "description": "User-specified WAL LSN of the ref database instance. Input: For specifying the WAL LSN to create a child instance. Optional. Output: Only populated if provided as input to create a child instance."
+          },
+          "name": {
+            "type": "string",
+            "description": "Name of the ref database instance."
+          },
+          "uid": {
+            "type": "string",
+            "description": "Id of the ref database instance."
+          }
+        },
+        "description": "DatabaseInstanceRef is a reference to a database instance. It is used in the DatabaseInstance\n    object to refer to the parent instance of an instance and to refer the child instances of an\n    instance. To specify as a parent instance during creation of an instance, the lsn and\n    branch_time fields are optional. If not specified, the child instance will be created from the\n    latest lsn of the parent. If both lsn and branch_time are specified, the lsn will be used to\n    create the child instance."
+      },
+      "DatabaseInstanceRole": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "The name of the role. This is the unique identifier for the role in an instance."
+          },
+          "attributes": {
+            "$ref": "#/components/schemas/DatabaseInstanceRoleAttributes",
+            "description": "The desired API-exposed Postgres role attribute to associate with the role. Optional."
+          },
+          "effective_attributes": {
+            "$ref": "#/components/schemas/DatabaseInstanceRoleAttributes",
+            "description": "The attributes that are applied to the role. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "identity_type": {
+            "$ref": "#/components/schemas/DatabaseInstanceRoleIdentityType",
+            "description": "The type of the role."
+          },
+          "instance_name": {
+            "type": "string"
+          },
+          "membership_role": {
+            "$ref": "#/components/schemas/DatabaseInstanceRoleMembershipRole",
+            "description": "An enum value for a standard role that this role is a member of."
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "description": "A DatabaseInstanceRole represents a Postgres role in a database instance."
+      },
+      "DatabaseInstanceRoleAttributes": {
+        "type": "object",
+        "properties": {
+          "bypassrls": {
+            "type": "boolean"
+          },
+          "createdb": {
+            "type": "boolean"
+          },
+          "createrole": {
+            "type": "boolean"
+          }
+        },
+        "description": "Attributes that can be granted to a Postgres role. We are only implementing a subset for now,\n    see xref: https://www.postgresql.org/docs/16/sql-createrole.html The values follow Postgres\n    keyword naming e.g. CREATEDB, BYPASSRLS, etc. which is why they don't include typical\n    underscores between words. We were requested to make this a nested object/struct representation\n    since these are knobs from an external spec."
+      },
+      "DatabaseTable": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full three-part (catalog, schema, table) name of the table."
+          },
+          "database_instance_name": {
+            "type": "string",
+            "description": "Name of the target database instance. This is required when creating database tables in standard catalogs. This is optional when creating database tables in registered catalogs. If this field is specified when creating database tables in registered catalogs, the database instance name MUST match that of the registered catalog (or the request will be rejected)."
+          },
+          "logical_database_name": {
+            "type": "string",
+            "description": "Target Postgres database object (logical database) name for this table. When creating a table in a standard catalog, this field is required. In this scenario, specifying this field will allow targeting an arbitrary postgres database. Registration of database tables via /database/tables is currently only supported in standard catalogs."
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "description": "Next field marker: 13"
+      },
+      "DeltaTableSyncInfo": {
+        "type": "object",
+        "properties": {
+          "delta_commit_timestamp": {
+            "type": "string"
+          },
+          "delta_commit_version": {
+            "type": "integer",
+            "description": "The Delta Lake commit version that was last successfully synced."
+          }
+        }
+      },
+      "ListDatabaseCatalogsResponse": {
+        "type": "object",
+        "properties": {
+          "database_catalogs": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DatabaseCatalog"
+            }
+          },
+          "next_page_token": {
+            "type": "string",
+            "description": "Pagination token to request the next page of database catalogs."
+          }
+        }
+      },
+      "ListDatabaseInstanceRolesResponse": {
+        "type": "object",
+        "properties": {
+          "database_instance_roles": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DatabaseInstanceRole"
+            }
+          },
+          "next_page_token": {
+            "type": "string",
+            "description": "Pagination token to request the next page of instances."
+          }
+        }
+      },
+      "ListDatabaseInstancesResponse": {
+        "type": "object",
+        "properties": {
+          "database_instances": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/DatabaseInstance"
+            }
+          },
+          "next_page_token": {
+            "type": "string",
+            "description": "Pagination token to request the next page of instances."
+          }
+        }
+      },
+      "ListSyncedDatabaseTablesResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "synced_tables": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/SyncedDatabaseTable"
+            }
+          }
+        }
+      },
+      "NewPipelineSpec": {
+        "type": "object",
+        "properties": {
+          "budget_policy_id": {
+            "type": "string",
+            "description": "Budget policy to set on the newly created pipeline."
+          },
+          "storage_catalog": {
+            "type": "string",
+            "description": "This field needs to be specified if the destination catalog is a managed postgres catalog. UC catalog for the pipeline to store intermediate files (checkpoints, event logs etc). This needs to be a standard catalog where the user has permissions to create Delta tables."
+          },
+          "storage_schema": {
+            "type": "string",
+            "description": "This field needs to be specified if the destination catalog is a managed postgres catalog. UC schema for the pipeline to store intermediate files (checkpoints, event logs etc). This needs to be in the standard catalog where the user has permissions to create Delta tables."
+          }
+        },
+        "description": "Custom fields that user can set for pipeline while creating SyncedDatabaseTable. Note that other\n    fields of pipeline are still inferred by table def internally"
+      },
+      "RequestedClaims": {
+        "type": "object",
+        "properties": {
+          "permission_set": {
+            "$ref": "#/components/schemas/RequestedClaimsPermissionSet"
+          },
+          "resources": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/RequestedResource"
+            }
+          }
+        }
+      },
+      "RequestedResource": {
+        "type": "object",
+        "properties": {
+          "table_name": {
+            "type": "string"
+          },
+          "unspecified_resource_name": {
+            "type": "string"
+          }
+        }
+      },
+      "SyncedDatabaseTable": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Full three-part (catalog, schema, table) name of the table."
+          },
+          "data_synchronization_status": {
+            "$ref": "#/components/schemas/SyncedTableStatus",
+            "description": "Synced Table data synchronization status"
+          },
+          "database_instance_name": {
+            "type": "string",
+            "description": "Name of the target database instance. This is required when creating synced database tables in standard catalogs. This is optional when creating synced database tables in registered catalogs. If this field is specified when creating synced database tables in registered catalogs, the database instance name MUST match that of the registered catalog (or the request will be rejected)."
+          },
+          "effective_database_instance_name": {
+            "type": "string",
+            "description": "The name of the database instance that this table is registered to. This field is always returned, and for tables inside database catalogs is inferred database instance associated with the catalog. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "effective_logical_database_name": {
+            "type": "string",
+            "description": "The name of the logical database that this table is registered to. This is an output only field that contains the value computed from the input field combined with server side defaults. Use the field without the effective_ prefix to set the value."
+          },
+          "logical_database_name": {
+            "type": "string",
+            "description": "Target Postgres database object (logical database) name for this table. When creating a synced table in a registered Postgres catalog, the target Postgres database name is inferred to be that of the registered catalog. If this field is specified in this scenario, the Postgres database name MUST match that of the registered catalog (or the request will be rejected). When creating a synced table in a standard catalog, this field is required. In this scenario, specifying this field will allow targeting an arbitrary postgres database. Note that this has implications for the `create_database_objects_is_missing` field in `spec`."
+          },
+          "spec": {
+            "$ref": "#/components/schemas/SyncedTableSpec"
+          },
+          "unity_catalog_provisioning_state": {
+            "$ref": "#/components/schemas/ProvisioningInfoState",
+            "description": "The provisioning state of the synced table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in \"ACTIVE\" but the pipeline may be in \"PROVISIONING\" as it runs asynchronously)."
+          }
+        },
+        "required": [
+          "name"
+        ],
+        "description": "Next field marker: 18"
+      },
+      "SyncedTableContinuousUpdateStatus": {
+        "type": "object",
+        "properties": {
+          "initial_pipeline_sync_progress": {
+            "$ref": "#/components/schemas/SyncedTablePipelineProgress",
+            "description": "Progress of the initial data synchronization."
+          },
+          "last_processed_commit_version": {
+            "type": "integer",
+            "description": "The last source table Delta version that was successfully synced to the synced table."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "The end timestamp of the last time any data was synchronized from the source table to the synced table. This is when the data is available in the synced table."
+          }
+        },
+        "description": "Detailed status of a synced table. Shown if the synced table is in the SYNCED_CONTINUOUS_UPDATE\n    or the SYNCED_UPDATING_PIPELINE_RESOURCES state."
+      },
+      "SyncedTableFailedStatus": {
+        "type": "object",
+        "properties": {
+          "last_processed_commit_version": {
+            "type": "integer",
+            "description": "The last source table Delta version that was successfully synced to the synced table. The last source table Delta version that was synced to the synced table. Only populated if the table is still synced and available for serving."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "The end timestamp of the last time any data was synchronized from the source table to the synced table. Only populated if the table is still synced and available for serving."
+          }
+        },
+        "description": "Detailed status of a synced table. Shown if the synced table is in the OFFLINE_FAILED or the\n    SYNCED_PIPELINE_FAILED state."
+      },
+      "SyncedTablePipelineProgress": {
+        "type": "object",
+        "properties": {
+          "estimated_completion_time_seconds": {
+            "type": "number",
+            "description": "The estimated time remaining to complete this update in seconds."
+          },
+          "latest_version_currently_processing": {
+            "type": "integer",
+            "description": "The source table Delta version that was last processed by the pipeline. The pipeline may not have completely processed this version yet."
+          },
+          "provisioning_phase": {
+            "$ref": "#/components/schemas/ProvisioningPhase",
+            "description": "The current phase of the data synchronization pipeline."
+          },
+          "sync_progress_completion": {
+            "type": "number",
+            "description": "The completion ratio of this update. This is a number between 0 and 1."
+          },
+          "synced_row_count": {
+            "type": "integer",
+            "description": "The number of rows that have been synced in this update."
+          },
+          "total_row_count": {
+            "type": "integer",
+            "description": "The total number of rows that need to be synced in this update. This number may be an estimate."
+          }
+        },
+        "description": "Progress information of the Synced Table data synchronization pipeline."
+      },
+      "SyncedTablePosition": {
+        "type": "object",
+        "properties": {
+          "delta_table_sync_info": {
+            "$ref": "#/components/schemas/DeltaTableSyncInfo"
+          },
+          "sync_end_timestamp": {
+            "type": "string",
+            "description": "The end timestamp of the most recent successful synchronization. This is the time when the data is available in the synced table."
+          },
+          "sync_start_timestamp": {
+            "type": "string",
+            "description": "The starting timestamp of the most recent successful synchronization from the source table to the destination (synced) table. Note this is the starting timestamp of the sync operation, not the end time. E.g., for a batch, this is the time when the sync operation started."
+          }
+        }
+      },
+      "SyncedTableProvisioningStatus": {
+        "type": "object",
+        "properties": {
+          "initial_pipeline_sync_progress": {
+            "$ref": "#/components/schemas/SyncedTablePipelineProgress",
+            "description": "Details about initial data synchronization. Only populated when in the PROVISIONING_INITIAL_SNAPSHOT state."
+          }
+        },
+        "description": "Detailed status of a synced table. Shown if the synced table is in the\n    PROVISIONING_PIPELINE_RESOURCES or the PROVISIONING_INITIAL_SNAPSHOT state."
+      },
+      "SyncedTableSpec": {
+        "type": "object",
+        "properties": {
+          "create_database_objects_if_missing": {
+            "type": "boolean",
+            "description": "If true, the synced table's logical database and schema resources in PG will be created if they do not already exist."
+          },
+          "existing_pipeline_id": {
+            "type": "string",
+            "description": "At most one of existing_pipeline_id and new_pipeline_spec should be defined. If existing_pipeline_id is defined, the synced table will be bin packed into the existing pipeline referenced. This avoids creating a new pipeline and allows sharing existing compute. In this case, the scheduling_policy of this synced table must match the scheduling policy of the existing pipeline."
+          },
+          "new_pipeline_spec": {
+            "$ref": "#/components/schemas/NewPipelineSpec",
+            "description": "At most one of existing_pipeline_id and new_pipeline_spec should be defined. If new_pipeline_spec is defined, a new pipeline is created for this synced table. The location pointed to is used to store intermediate files (checkpoints, event logs etc). The caller must have write permissions to create Delta tables in the specified catalog and schema. Again, note this requires write permissions, whereas the source table only requires read permissions."
+          },
+          "primary_key_columns": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Primary Key columns to be used for data insert/update in the destination."
+          },
+          "scheduling_policy": {
+            "$ref": "#/components/schemas/SyncedTableSchedulingPolicy",
+            "description": "Scheduling policy of the underlying pipeline."
+          },
+          "source_table_full_name": {
+            "type": "string",
+            "description": "Three-part (catalog, schema, table) name of the source Delta table."
+          },
+          "timeseries_key": {
+            "type": "string",
+            "description": "Time series key to deduplicate (tie-break) rows with the same primary key."
+          }
+        },
+        "description": "Specification of a synced database table."
+      },
+      "SyncedTableStatus": {
+        "type": "object",
+        "properties": {
+          "continuous_update_status": {
+            "$ref": "#/components/schemas/SyncedTableContinuousUpdateStatus"
+          },
+          "detailed_state": {
+            "$ref": "#/components/schemas/SyncedTableState",
+            "description": "The state of the synced table."
+          },
+          "failed_status": {
+            "$ref": "#/components/schemas/SyncedTableFailedStatus"
+          },
+          "last_sync": {
+            "$ref": "#/components/schemas/SyncedTablePosition",
+            "description": "Summary of the last successful synchronization from source to destination. Will always be present if there has been a successful sync. Even if the most recent syncs have failed. Limitation: The only exception is if the synced table is doing a FULL REFRESH, then the last sync information will not be available until the full refresh is complete. This limitation will be addressed in a future version. This top-level field is a convenience for consumers who want easy access to last sync information without having to traverse detailed_status."
+          },
+          "message": {
+            "type": "string",
+            "description": "A text description of the current state of the synced table."
+          },
+          "pipeline_id": {
+            "type": "string",
+            "description": "ID of the associated pipeline. The pipeline ID may have been provided by the client (in the case of bin packing), or generated by the server (when creating a new pipeline)."
+          },
+          "provisioning_status": {
+            "$ref": "#/components/schemas/SyncedTableProvisioningStatus"
+          },
+          "triggered_update_status": {
+            "$ref": "#/components/schemas/SyncedTableTriggeredUpdateStatus"
+          }
+        },
+        "description": "Status of a synced table."
+      },
+      "SyncedTableTriggeredUpdateStatus": {
+        "type": "object",
+        "properties": {
+          "last_processed_commit_version": {
+            "type": "integer",
+            "description": "The last source table Delta version that was successfully synced to the synced table."
+          },
+          "timestamp": {
+            "type": "string",
+            "description": "The end timestamp of the last time any data was synchronized from the source table to the synced table. This is when the data is available in the synced table."
+          },
+          "triggered_update_progress": {
+            "$ref": "#/components/schemas/SyncedTablePipelineProgress",
+            "description": "Progress of the active data synchronization pipeline."
+          }
+        },
+        "description": "Detailed status of a synced table. Shown if the synced table is in the SYNCED_TRIGGERED_UPDATE\n    or the SYNCED_NO_PENDING_UPDATE state."
+      },
+      "DatabaseInstanceRoleIdentityType": {
+        "type": "string",
+        "enum": [
+          "GROUP",
+          "PG_ONLY",
+          "SERVICE_PRINCIPAL",
+          "USER"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "DatabaseInstanceRoleMembershipRole": {
+        "type": "string",
+        "enum": [
+          "DATABRICKS_SUPERUSER"
+        ],
+        "description": "Roles that the DatabaseInstanceRole can be a member of."
+      },
+      "DatabaseInstanceState": {
+        "type": "string",
+        "enum": [
+          "AVAILABLE",
+          "DELETING",
+          "FAILING_OVER",
+          "STARTING",
+          "STOPPED",
+          "UPDATING"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ProvisioningInfoState": {
+        "type": "string",
+        "enum": [
+          "ACTIVE",
+          "DEGRADED",
+          "DELETING",
+          "FAILED",
+          "PROVISIONING",
+          "UPDATING"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "ProvisioningPhase": {
+        "type": "string",
+        "enum": [
+          "PROVISIONING_PHASE_INDEX_SCAN",
+          "PROVISIONING_PHASE_INDEX_SORT",
+          "PROVISIONING_PHASE_MAIN"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "RequestedClaimsPermissionSet": {
+        "type": "string",
+        "enum": [
+          "READ_ONLY"
+        ],
+        "description": "Might add WRITE in the future"
+      },
+      "SyncedTableSchedulingPolicy": {
+        "type": "string",
+        "enum": [
+          "CONTINUOUS",
+          "SNAPSHOT",
+          "TRIGGERED"
+        ],
+        "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access::\n\n>>> Color.RED\n<Color.RED: 1>\n\n- value lookup:\n\n>>> Color(1)\n<Color.RED: 1>\n\n- name lookup:\n\n>>> Color['RED']\n<Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
+      },
+      "SyncedTableState": {
+        "type": "string",
+        "enum": [
+          "SYNCED_TABLED_OFFLINE",
+          "SYNCED_TABLE_OFFLINE_FAILED",
+          "SYNCED_TABLE_ONLINE",
+          "SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE",
+          "SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE",
+          "SYNCED_TABLE_ONLINE_PIPELINE_FAILED",
+          "SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE",
+          "SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES",
+          "SYNCED_TABLE_PROVISIONING",
+          "SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT",
+          "SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES"
+        ],
+        "description": "The state of a synced table."
+      }
+    }
+  }
+}

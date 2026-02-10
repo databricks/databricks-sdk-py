@@ -1,0 +1,462 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Databricks Agentbricks API (workspace)",
+    "description": "OpenAPI specification for the Databricks agentbricks service (workspace-level APIs), generated from the Databricks Python SDK.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://{workspace}.cloud.databricks.com",
+      "description": "Databricks workspace",
+      "variables": {
+        "workspace": {
+          "default": "your-workspace",
+          "description": "Your Databricks workspace name"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/api/2.0/custom-llms/{id}/optimize/cancel": {
+      "post": {
+        "operationId": "cancel_optimize",
+        "summary": "Cancel a Custom LLM Optimization Run.",
+        "tags": [
+          "agentbricks",
+          "agent_bricks"
+        ],
+        "description": "Cancel a Custom LLM Optimization Run.\n\n:param id: str",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "str"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/custom-llms": {
+      "post": {
+        "operationId": "create_custom_llm",
+        "summary": "Create a Custom LLM.",
+        "tags": [
+          "agentbricks",
+          "agent_bricks"
+        ],
+        "description": "Create a Custom LLM.\n\n:param name: str\n  Name of the custom LLM. Only alphanumeric characters and dashes allowed.\n:param instructions: str\n  Instructions for the custom LLM to follow\n:param agent_artifact_path: str (optional)\n  This will soon be deprecated!! Optional: UC path for agent artifacts. If you are using a dataset\n  that you only have read permissions, please provide a destination path where you have write\n  permissions. Please provide this in catalog.schema format.\n:param datasets: List[:class:`Dataset`] (optional)\n  Datasets used for training and evaluating the model, not for inference. Currently, only 1 dataset is\n  accepted.\n:param guidelines: List[str] (optional)\n  Guidelines for the custom LLM to adhere to\n\n:returns: :class:`CustomLlm`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "description": "Name of the custom LLM. Only alphanumeric characters and dashes allowed."
+                  },
+                  "instructions": {
+                    "type": "string",
+                    "description": "Instructions for the custom LLM to follow"
+                  },
+                  "agent_artifact_path": {
+                    "type": "string",
+                    "description": "This will soon be deprecated!! Optional: UC path for agent artifacts. If you are using a dataset that you only have read permissions, please provide a destination path where you have write permissions. Please provide this in catalog.schema format."
+                  },
+                  "datasets": {
+                    "type": "string",
+                    "description": "Datasets used for training and evaluating the model, not for inference. Currently, only 1 dataset is accepted."
+                  },
+                  "guidelines": {
+                    "type": "string",
+                    "description": "Guidelines for the custom LLM to adhere to"
+                  }
+                },
+                "required": [
+                  "name",
+                  "instructions"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomLlm"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/custom-llms/{id}": {
+      "delete": {
+        "operationId": "delete_custom_llm",
+        "summary": "Delete a Custom LLM.",
+        "tags": [
+          "agentbricks",
+          "agent_bricks"
+        ],
+        "description": "Delete a Custom LLM.\n\n:param id: str\n  The id of the custom llm",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The id of the custom llm"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_custom_llm",
+        "summary": "Get a Custom LLM.",
+        "tags": [
+          "agentbricks",
+          "agent_bricks"
+        ],
+        "description": "Get a Custom LLM.\n\n:param id: str\n  The id of the custom llm\n\n:returns: :class:`CustomLlm`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The id of the custom llm"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomLlm"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "patch": {
+        "operationId": "update_custom_llm",
+        "summary": "Update a Custom LLM.",
+        "tags": [
+          "agentbricks",
+          "agent_bricks"
+        ],
+        "description": "Update a Custom LLM.\n\n:param id: str\n  The id of the custom llm\n:param custom_llm: :class:`CustomLlm`\n  The CustomLlm containing the fields which should be updated.\n:param update_mask: str\n  The list of the CustomLlm fields to update. These should correspond to the values (or lack thereof)\n  present in `custom_llm`.\n\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n  A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the\n  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API\n  changes in the future.\n\n:returns: :class:`CustomLlm`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The id of the custom llm"
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "custom_llm": {
+                    "type": "string",
+                    "description": "The CustomLlm containing the fields which should be updated."
+                  },
+                  "update_mask": {
+                    "type": "string",
+                    "description": "The list of the CustomLlm fields to update. These should correspond to the values (or lack thereof) present in `custom_llm`. The field mask must be a single string, with multiple fields separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API changes in the future."
+                  }
+                },
+                "required": [
+                  "custom_llm",
+                  "update_mask"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomLlm"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/custom-llms/{id}/optimize": {
+      "post": {
+        "operationId": "start_optimize",
+        "summary": "Start a Custom LLM Optimization Run.",
+        "tags": [
+          "agentbricks",
+          "agent_bricks"
+        ],
+        "description": "Start a Custom LLM Optimization Run.\n\n:param id: str\n  The Id of the tile.\n\n:returns: :class:`CustomLlm`",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The Id of the tile."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/CustomLlm"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "CustomLlm": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "instructions": {
+            "type": "string",
+            "description": "Instructions for the custom LLM to follow"
+          },
+          "agent_artifact_path": {
+            "type": "string"
+          },
+          "creation_time": {
+            "type": "string",
+            "description": "Creation timestamp of the custom LLM"
+          },
+          "creator": {
+            "type": "string",
+            "description": "Creator of the custom LLM"
+          },
+          "datasets": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/Dataset"
+            },
+            "description": "Datasets used for training and evaluating the model, not for inference"
+          },
+          "endpoint_name": {
+            "type": "string",
+            "description": "Name of the endpoint that will be used to serve the custom LLM"
+          },
+          "guidelines": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Guidelines for the custom LLM to adhere to"
+          },
+          "id": {
+            "type": "string"
+          },
+          "optimization_state": {
+            "$ref": "#/components/schemas/State",
+            "description": "If optimization is kicked off, tracks the state of the custom LLM"
+          }
+        },
+        "required": [
+          "name",
+          "instructions"
+        ]
+      },
+      "Dataset": {
+        "type": "object",
+        "properties": {
+          "table": {
+            "$ref": "#/components/schemas/Table"
+          }
+        },
+        "required": [
+          "table"
+        ]
+      },
+      "Table": {
+        "type": "object",
+        "properties": {
+          "table_path": {
+            "type": "string"
+          },
+          "request_col": {
+            "type": "string",
+            "description": "Name of the request column"
+          },
+          "response_col": {
+            "type": "string",
+            "description": "Optional: Name of the response column if the data is labeled"
+          }
+        },
+        "required": [
+          "table_path",
+          "request_col"
+        ]
+      },
+      "State": {
+        "type": "string",
+        "enum": [
+          "CANCELLED",
+          "COMPLETED",
+          "CREATED",
+          "FAILED",
+          "PENDING",
+          "RUNNING"
+        ],
+        "description": "States of Custom LLM optimization lifecycle."
+      }
+    }
+  }
+}

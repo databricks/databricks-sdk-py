@@ -1,0 +1,468 @@
+{
+  "openapi": "3.0.0",
+  "info": {
+    "title": "Databricks Qualitymonitorv2 API (workspace)",
+    "description": "OpenAPI specification for the Databricks qualitymonitorv2 service (workspace-level APIs), generated from the Databricks Python SDK.",
+    "version": "0.1.0"
+  },
+  "servers": [
+    {
+      "url": "https://{workspace}.cloud.databricks.com",
+      "description": "Databricks workspace",
+      "variables": {
+        "workspace": {
+          "default": "your-workspace",
+          "description": "Your Databricks workspace name"
+        }
+      }
+    }
+  ],
+  "paths": {
+    "/api/2.0/quality-monitors": {
+      "post": {
+        "operationId": "create_quality_monitor",
+        "summary": "[DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.",
+        "tags": [
+          "qualitymonitorv2",
+          "quality_monitor_v2"
+        ],
+        "description": "[DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.\n\n:param quality_monitor: :class:`QualityMonitor`\n\n:returns: :class:`QualityMonitor`",
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quality_monitor": {
+                    "type": "string",
+                    "description": ":returns: :class:`QualityMonitor`"
+                  }
+                },
+                "required": [
+                  "quality_monitor"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityMonitor"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "list_quality_monitor",
+        "summary": "[DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality Monitoring API instead.",
+        "tags": [
+          "qualitymonitorv2",
+          "quality_monitor_v2"
+        ],
+        "description": "[DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality Monitoring API instead.\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`QualityMonitor`",
+        "parameters": [
+          {
+            "name": "page_size",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": ":param page_token: str (optional)"
+          },
+          {
+            "name": "page_token",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/Iterator[QualityMonitor]"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/api/2.0/quality-monitors/{object_type}/{object_id}": {
+      "delete": {
+        "operationId": "delete_quality_monitor",
+        "summary": "[DEPRECATED] Delete a quality monitor on UC object. Use Data Quality Monitoring API instead.",
+        "tags": [
+          "qualitymonitorv2",
+          "quality_monitor_v2"
+        ],
+        "description": "[DEPRECATED] Delete a quality monitor on UC object. Use Data Quality Monitoring API instead.\n\n:param object_type: str\n  The type of the monitored object. Can be one of the following: schema.\n:param object_id: str\n  The uuid of the request object. For example, schema id.",
+        "parameters": [
+          {
+            "name": "object_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The type of the monitored object. Can be one of the following: schema."
+          },
+          {
+            "name": "object_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The uuid of the request object. For example, schema id."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success"
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "get": {
+        "operationId": "get_quality_monitor",
+        "summary": "[DEPRECATED] Read a quality monitor on UC object. Use Data Quality Monitoring API instead.",
+        "tags": [
+          "qualitymonitorv2",
+          "quality_monitor_v2"
+        ],
+        "description": "[DEPRECATED] Read a quality monitor on UC object. Use Data Quality Monitoring API instead.\n\n:param object_type: str\n  The type of the monitored object. Can be one of the following: schema.\n:param object_id: str\n  The uuid of the request object. For example, schema id.\n\n:returns: :class:`QualityMonitor`",
+        "parameters": [
+          {
+            "name": "object_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The type of the monitored object. Can be one of the following: schema."
+          },
+          {
+            "name": "object_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The uuid of the request object. For example, schema id."
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityMonitor"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "put": {
+        "operationId": "update_quality_monitor",
+        "summary": "[DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API",
+        "tags": [
+          "qualitymonitorv2",
+          "quality_monitor_v2"
+        ],
+        "description": "[DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API\ninstead.\n\n:param object_type: str\n  The type of the monitored object. Can be one of the following: schema.\n:param object_id: str\n  The uuid of the request object. For example, schema id.\n:param quality_monitor: :class:`QualityMonitor`\n\n:returns: :class:`QualityMonitor`",
+        "parameters": [
+          {
+            "name": "object_type",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The type of the monitored object. Can be one of the following: schema."
+          },
+          {
+            "name": "object_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The uuid of the request object. For example, schema id."
+          }
+        ],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "quality_monitor": {
+                    "type": "string",
+                    "description": ":returns: :class:`QualityMonitor`"
+                  }
+                },
+                "required": [
+                  "quality_monitor"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Success",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/QualityMonitor"
+                }
+              }
+            }
+          },
+          "default": {
+            "description": "Error response",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "error": {
+                      "type": "string"
+                    },
+                    "message": {
+                      "type": "string"
+                    }
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AnomalyDetectionConfig": {
+        "type": "object",
+        "properties": {
+          "excluded_table_full_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "last_run_id": {
+            "type": "string",
+            "description": "Run id of the last run of the workflow"
+          },
+          "latest_run_status": {
+            "$ref": "#/components/schemas/AnomalyDetectionRunStatus",
+            "description": "The status of the last run of the workflow."
+          }
+        }
+      },
+      "ListQualityMonitorResponse": {
+        "type": "object",
+        "properties": {
+          "next_page_token": {
+            "type": "string"
+          },
+          "quality_monitors": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/QualityMonitor"
+            }
+          }
+        }
+      },
+      "PercentNullValidityCheck": {
+        "type": "object",
+        "properties": {
+          "column_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "upper_bound": {
+            "type": "number",
+            "description": "Optional upper bound; we should use auto determined bounds for now"
+          }
+        }
+      },
+      "QualityMonitor": {
+        "type": "object",
+        "properties": {
+          "object_type": {
+            "type": "string"
+          },
+          "object_id": {
+            "type": "string",
+            "description": "The uuid of the request object. For example, schema id."
+          },
+          "anomaly_detection_config": {
+            "$ref": "#/components/schemas/AnomalyDetectionConfig"
+          },
+          "validity_check_configurations": {
+            "type": "array",
+            "items": {
+              "$ref": "#/components/schemas/ValidityCheckConfiguration"
+            },
+            "description": "Validity check configurations for anomaly detection."
+          }
+        },
+        "required": [
+          "object_type",
+          "object_id"
+        ]
+      },
+      "RangeValidityCheck": {
+        "type": "object",
+        "properties": {
+          "column_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          },
+          "lower_bound": {
+            "type": "number",
+            "description": "Lower bound for the range"
+          },
+          "upper_bound": {
+            "type": "number",
+            "description": "Upper bound for the range"
+          }
+        }
+      },
+      "UniquenessValidityCheck": {
+        "type": "object",
+        "properties": {
+          "column_names": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "ValidityCheckConfiguration": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string"
+          },
+          "percent_null_validity_check": {
+            "$ref": "#/components/schemas/PercentNullValidityCheck"
+          },
+          "range_validity_check": {
+            "$ref": "#/components/schemas/RangeValidityCheck"
+          },
+          "uniqueness_validity_check": {
+            "$ref": "#/components/schemas/UniquenessValidityCheck"
+          }
+        }
+      },
+      "AnomalyDetectionRunStatus": {
+        "type": "string",
+        "enum": [
+          "ANOMALY_DETECTION_RUN_STATUS_CANCELED",
+          "ANOMALY_DETECTION_RUN_STATUS_FAILED",
+          "ANOMALY_DETECTION_RUN_STATUS_JOB_DELETED",
+          "ANOMALY_DETECTION_RUN_STATUS_PENDING",
+          "ANOMALY_DETECTION_RUN_STATUS_RUNNING",
+          "ANOMALY_DETECTION_RUN_STATUS_SUCCESS",
+          "ANOMALY_DETECTION_RUN_STATUS_UNKNOWN",
+          "ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR"
+        ],
+        "description": "Status of Anomaly Detection Job Run"
+      }
+    }
+  }
+}
