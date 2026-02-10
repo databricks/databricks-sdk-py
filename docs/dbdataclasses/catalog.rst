@@ -1936,6 +1936,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: VIEW
       :value: "VIEW"
 
+.. py:class:: TagAssignmentSourceType
+
+   Enum representing the source type of a tag assignment
+
+   .. py:attribute:: TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION
+      :value: "TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION"
+
 .. autoclass:: TagKeyValue
    :members:
    :undoc-members:

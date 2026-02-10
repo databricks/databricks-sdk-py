@@ -2140,6 +2140,8 @@ class GitSource:
     job_source: Optional[JobSource] = None
     """The source of the job specification in the remote repository when the job is source controlled."""
 
+    sparse_checkout: Optional[SparseCheckout] = None
+
     def as_dict(self) -> dict:
         """Serializes the GitSource into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2157,6 +2159,8 @@ class GitSource:
             body["git_url"] = self.git_url
         if self.job_source:
             body["job_source"] = self.job_source.as_dict()
+        if self.sparse_checkout:
+            body["sparse_checkout"] = self.sparse_checkout.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2176,6 +2180,8 @@ class GitSource:
             body["git_url"] = self.git_url
         if self.job_source:
             body["job_source"] = self.job_source
+        if self.sparse_checkout:
+            body["sparse_checkout"] = self.sparse_checkout
         return body
 
     @classmethod
@@ -2189,6 +2195,7 @@ class GitSource:
             git_tag=d.get("git_tag", None),
             git_url=d.get("git_url", None),
             job_source=_from_dict(d, "job_source", JobSource),
+            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
         )
 
 
@@ -6316,6 +6323,31 @@ class SparkSubmitTask:
     def from_dict(cls, d: Dict[str, Any]) -> SparkSubmitTask:
         """Deserializes the SparkSubmitTask from a dictionary."""
         return cls(parameters=d.get("parameters", None))
+
+
+@dataclass
+class SparseCheckout:
+    patterns: Optional[List[str]] = None
+    """List of patterns to include for sparse checkout."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SparseCheckout into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.patterns:
+            body["patterns"] = [v for v in self.patterns]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SparseCheckout into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.patterns:
+            body["patterns"] = self.patterns
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SparseCheckout:
+        """Deserializes the SparseCheckout from a dictionary."""
+        return cls(patterns=d.get("patterns", None))
 
 
 @dataclass

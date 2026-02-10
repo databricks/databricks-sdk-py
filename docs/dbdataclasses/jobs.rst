@@ -853,6 +853,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: SparseCheckout
+   :members:
+   :undoc-members:
+
 .. autoclass:: SqlAlertOutput
    :members:
    :undoc-members:
