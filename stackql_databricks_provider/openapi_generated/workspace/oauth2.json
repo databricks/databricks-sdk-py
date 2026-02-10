@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/accounts/servicePrincipals/{service_principal_id}/credentials/secrets": {
       "post": {
-        "operationId": "create",
+        "operationId": "service_principal_secrets_proxy_create",
         "summary": "Create a secret for the given service principal.",
         "tags": [
           "oauth2",
@@ -85,7 +85,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "service_principal_secrets_proxy_list",
         "summary": "List all secrets associated with the given service principal. This operation only returns information",
         "tags": [
           "oauth2",
@@ -154,7 +154,7 @@
     },
     "/api/2.0/accounts/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "service_principal_secrets_proxy_delete",
         "summary": "Delete a secret from the given service principal.",
         "tags": [
           "oauth2",

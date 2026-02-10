@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/identity/workspaceAccessDetails/{principal_id}": {
       "get": {
-        "operationId": "get_workspace_access_detail_local",
+        "operationId": "workspace_iam_v2_get_workspace_access_detail_local",
         "summary": "Returns the access details for a principal in the current workspace. Allows for checking access",
         "tags": [
           "iamv2",
@@ -81,7 +81,7 @@
     },
     "/api/2.0/identity/groups/resolveByExternalId": {
       "post": {
-        "operationId": "resolve_group_proxy",
+        "operationId": "workspace_iam_v2_resolve_group_proxy",
         "summary": "Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it",
         "tags": [
           "iamv2",
@@ -140,7 +140,7 @@
     },
     "/api/2.0/identity/servicePrincipals/resolveByExternalId": {
       "post": {
-        "operationId": "resolve_service_principal_proxy",
+        "operationId": "workspace_iam_v2_resolve_service_principal_proxy",
         "summary": "Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will",
         "tags": [
           "iamv2",
@@ -199,7 +199,7 @@
     },
     "/api/2.0/identity/users/resolveByExternalId": {
       "post": {
-        "operationId": "resolve_user_proxy",
+        "operationId": "workspace_iam_v2_resolve_user_proxy",
         "summary": "Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it",
         "tags": [
           "iamv2",

@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/policies/clusters/create": {
       "post": {
-        "operationId": "create",
+        "operationId": "cluster_policies_create",
         "summary": "Creates a new policy with prescribed settings.",
         "tags": [
           "compute",
@@ -100,7 +100,7 @@
     },
     "/api/2.0/policies/clusters/delete": {
       "post": {
-        "operationId": "delete",
+        "operationId": "cluster_policies_delete",
         "summary": "Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.",
         "tags": [
           "compute",
@@ -152,7 +152,7 @@
     },
     "/api/2.0/policies/clusters/edit": {
       "post": {
-        "operationId": "edit",
+        "operationId": "cluster_policies_edit",
         "summary": "Update an existing policy for cluster. This operation may make some clusters governed by the previous",
         "tags": [
           "compute",
@@ -232,7 +232,7 @@
     },
     "/api/2.0/policies/clusters/get": {
       "get": {
-        "operationId": "get",
+        "operationId": "cluster_policies_get",
         "summary": "Get a cluster policy entity. Creation and editing is available to admins only.",
         "tags": [
           "compute",
@@ -284,7 +284,7 @@
     },
     "/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "cluster_policies_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "compute",
@@ -336,7 +336,7 @@
     },
     "/api/2.0/permissions/cluster-policies/{cluster_policy_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "cluster_policies_get_permissions",
         "summary": "Gets the permissions of a cluster policy. Cluster policies can inherit permissions from their root",
         "tags": [
           "compute",
@@ -386,7 +386,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "cluster_policies_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "compute",
@@ -451,7 +451,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "cluster_policies_update_permissions",
         "summary": "Updates the permissions on a cluster policy. Cluster policies can inherit permissions from their root",
         "tags": [
           "compute",
@@ -518,7 +518,7 @@
     },
     "/api/2.0/policies/clusters/list": {
       "get": {
-        "operationId": "list",
+        "operationId": "cluster_policies_list",
         "summary": "Returns a list of policies accessible by the requesting user.",
         "tags": [
           "compute",
@@ -579,7 +579,7 @@
     },
     "/api/2.1/clusters/change-owner": {
       "post": {
-        "operationId": "change_owner",
+        "operationId": "clusters_change_owner",
         "summary": "Change the owner of the cluster. You must be an admin and the cluster must be terminated to perform",
         "tags": [
           "compute",
@@ -635,7 +635,7 @@
     },
     "/api/2.1/clusters/create": {
       "post": {
-        "operationId": "create",
+        "operationId": "clusters_create",
         "summary": "Creates a new Spark cluster. This method will acquire new instances from the cloud provider if",
         "tags": [
           "compute",
@@ -828,7 +828,7 @@
     },
     "/api/2.1/clusters/delete": {
       "post": {
-        "operationId": "delete",
+        "operationId": "clusters_delete",
         "summary": "Terminates the Spark cluster with the specified ID. The cluster is removed asynchronously. Once the",
         "tags": [
           "compute",
@@ -887,7 +887,7 @@
     },
     "/api/2.1/clusters/edit": {
       "post": {
-        "operationId": "edit",
+        "operationId": "clusters_edit",
         "summary": "Updates the configuration of a cluster to match the provided attributes and size. A cluster can be",
         "tags": [
           "compute",
@@ -1081,7 +1081,7 @@
     },
     "/api/2.1/clusters/events": {
       "post": {
-        "operationId": "events",
+        "operationId": "clusters_events",
         "summary": "Retrieves a list of events about the activity of a cluster. This API is paginated. If there are more",
         "tags": [
           "compute",
@@ -1172,7 +1172,7 @@
     },
     "/api/2.1/clusters/get": {
       "get": {
-        "operationId": "get",
+        "operationId": "clusters_get",
         "summary": "Retrieves the information for a cluster given its identifier. Clusters can be described while they are",
         "tags": [
           "compute",
@@ -1224,7 +1224,7 @@
     },
     "/api/2.0/permissions/clusters/{cluster_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "clusters_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "compute",
@@ -1276,7 +1276,7 @@
     },
     "/api/2.0/permissions/clusters/{cluster_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "clusters_get_permissions",
         "summary": "Gets the permissions of a cluster. Clusters can inherit permissions from their root object.",
         "tags": [
           "compute",
@@ -1326,7 +1326,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "clusters_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "compute",
@@ -1391,7 +1391,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "clusters_update_permissions",
         "summary": "Updates the permissions on a cluster. Clusters can inherit permissions from their root object.",
         "tags": [
           "compute",
@@ -1458,7 +1458,7 @@
     },
     "/api/2.1/clusters/list": {
       "get": {
-        "operationId": "list",
+        "operationId": "clusters_list",
         "summary": "Return information about all pinned and active clusters, and all clusters terminated within the last",
         "tags": [
           "compute",
@@ -1537,7 +1537,7 @@
     },
     "/api/2.1/clusters/list-node-types": {
       "get": {
-        "operationId": "list_node_types",
+        "operationId": "clusters_list_node_types",
         "summary": "Returns a list of supported Spark node types. These node types can be used to launch a cluster.",
         "tags": [
           "compute",
@@ -1578,7 +1578,7 @@
     },
     "/api/2.1/clusters/list-zones": {
       "get": {
-        "operationId": "list_zones",
+        "operationId": "clusters_list_zones",
         "summary": "Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These",
         "tags": [
           "compute",
@@ -1619,7 +1619,7 @@
     },
     "/api/2.1/clusters/permanent-delete": {
       "post": {
-        "operationId": "permanent_delete",
+        "operationId": "clusters_permanent_delete",
         "summary": "Permanently deletes a Spark cluster. This cluster is terminated and resources are asynchronously",
         "tags": [
           "compute",
@@ -1671,7 +1671,7 @@
     },
     "/api/2.1/clusters/pin": {
       "post": {
-        "operationId": "pin",
+        "operationId": "clusters_pin",
         "summary": "Pinning a cluster ensures that the cluster will always be returned by the ListClusters API. Pinning a",
         "tags": [
           "compute",
@@ -1723,7 +1723,7 @@
     },
     "/api/2.1/clusters/resize": {
       "post": {
-        "operationId": "resize",
+        "operationId": "clusters_resize",
         "summary": "Resizes a cluster to have a desired number of workers. This will fail unless the cluster is in a",
         "tags": [
           "compute",
@@ -1790,7 +1790,7 @@
     },
     "/api/2.1/clusters/restart": {
       "post": {
-        "operationId": "restart",
+        "operationId": "clusters_restart",
         "summary": "Restarts a Spark cluster with the supplied ID. If the cluster is not currently in a `RUNNING` state,",
         "tags": [
           "compute",
@@ -1853,7 +1853,7 @@
     },
     "/api/2.1/clusters/spark-versions": {
       "get": {
-        "operationId": "spark_versions",
+        "operationId": "clusters_spark_versions",
         "summary": "Returns the list of available Spark versions. These versions can be used to launch a cluster.",
         "tags": [
           "compute",
@@ -1894,7 +1894,7 @@
     },
     "/api/2.1/clusters/start": {
       "post": {
-        "operationId": "start",
+        "operationId": "clusters_start",
         "summary": "Starts a terminated Spark cluster with the supplied ID. This works similar to `createCluster` except:",
         "tags": [
           "compute",
@@ -1953,7 +1953,7 @@
     },
     "/api/2.1/clusters/unpin": {
       "post": {
-        "operationId": "unpin",
+        "operationId": "clusters_unpin",
         "summary": "Unpinning a cluster will allow the cluster to eventually be removed from the ListClusters API.",
         "tags": [
           "compute",
@@ -2005,7 +2005,7 @@
     },
     "/api/2.1/clusters/update": {
       "post": {
-        "operationId": "update",
+        "operationId": "clusters_update",
         "summary": "Updates the configuration of a cluster to match the partial set of attributes and size. Denote which",
         "tags": [
           "compute",
@@ -2073,7 +2073,7 @@
     },
     "/api/1.2/commands/cancel": {
       "post": {
-        "operationId": "cancel",
+        "operationId": "command_execution_cancel",
         "summary": "Cancels a currently running command within an execution context.",
         "tags": [
           "compute",
@@ -2136,7 +2136,7 @@
     },
     "/api/1.2/commands/status": {
       "get": {
-        "operationId": "command_status",
+        "operationId": "command_execution_command_status",
         "summary": "Gets the status of and, if available, the results from a currently executing command.",
         "tags": [
           "compute",
@@ -2205,7 +2205,7 @@
     },
     "/api/1.2/contexts/status": {
       "get": {
-        "operationId": "context_status",
+        "operationId": "command_execution_context_status",
         "summary": "Gets the status for an execution context.",
         "tags": [
           "compute",
@@ -2265,7 +2265,7 @@
     },
     "/api/1.2/contexts/create": {
       "post": {
-        "operationId": "create",
+        "operationId": "command_execution_create",
         "summary": "Creates an execution context for running cluster commands.",
         "tags": [
           "compute",
@@ -2325,7 +2325,7 @@
     },
     "/api/1.2/contexts/destroy": {
       "post": {
-        "operationId": "destroy",
+        "operationId": "command_execution_destroy",
         "summary": "Deletes an execution context.",
         "tags": [
           "compute",
@@ -2381,7 +2381,7 @@
     },
     "/api/1.2/commands/execute": {
       "post": {
-        "operationId": "execute",
+        "operationId": "command_execution_execute",
         "summary": "Runs a cluster command in the given execution context, using the provided language.",
         "tags": [
           "compute",
@@ -2449,7 +2449,7 @@
     },
     "/api/2.0/global-init-scripts": {
       "post": {
-        "operationId": "create",
+        "operationId": "global_init_scripts_create",
         "summary": "Creates a new global init script in this workspace.",
         "tags": [
           "compute",
@@ -2519,7 +2519,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "global_init_scripts_list",
         "summary": "Get a list of all global init scripts for this workspace. This returns all properties for each script",
         "tags": [
           "compute",
@@ -2560,7 +2560,7 @@
     },
     "/api/2.0/global-init-scripts/{script_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "global_init_scripts_delete",
         "summary": "Deletes a global init script.",
         "tags": [
           "compute",
@@ -2603,7 +2603,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "global_init_scripts_get",
         "summary": "Gets all the details of a script, including its Base64-encoded contents.",
         "tags": [
           "compute",
@@ -2653,7 +2653,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "global_init_scripts_update",
         "summary": "Updates a global init script, specifying only the fields to change. All fields are optional.",
         "tags": [
           "compute",
@@ -2729,7 +2729,7 @@
     },
     "/api/2.0/instance-pools/create": {
       "post": {
-        "operationId": "create",
+        "operationId": "instance_pools_create",
         "summary": "Creates a new instance pool using idle and ready-to-use cloud instances.",
         "tags": [
           "compute",
@@ -2849,7 +2849,7 @@
     },
     "/api/2.0/instance-pools/delete": {
       "post": {
-        "operationId": "delete",
+        "operationId": "instance_pools_delete",
         "summary": "Deletes the instance pool permanently. The idle instances in the pool are terminated asynchronously.",
         "tags": [
           "compute",
@@ -2901,7 +2901,7 @@
     },
     "/api/2.0/instance-pools/edit": {
       "post": {
-        "operationId": "edit",
+        "operationId": "instance_pools_edit",
         "summary": "Modifies the configuration of an existing instance pool.",
         "tags": [
           "compute",
@@ -2991,7 +2991,7 @@
     },
     "/api/2.0/instance-pools/get": {
       "get": {
-        "operationId": "get",
+        "operationId": "instance_pools_get",
         "summary": "Retrieve the information for an instance pool based on its identifier.",
         "tags": [
           "compute",
@@ -3043,7 +3043,7 @@
     },
     "/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "instance_pools_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "compute",
@@ -3095,7 +3095,7 @@
     },
     "/api/2.0/permissions/instance-pools/{instance_pool_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "instance_pools_get_permissions",
         "summary": "Gets the permissions of an instance pool. Instance pools can inherit permissions from their root",
         "tags": [
           "compute",
@@ -3145,7 +3145,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "instance_pools_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "compute",
@@ -3210,7 +3210,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "instance_pools_update_permissions",
         "summary": "Updates the permissions on an instance pool. Instance pools can inherit permissions from their root",
         "tags": [
           "compute",
@@ -3277,7 +3277,7 @@
     },
     "/api/2.0/instance-pools/list": {
       "get": {
-        "operationId": "list",
+        "operationId": "instance_pools_list",
         "summary": "Gets a list of instance pools with their statistics.",
         "tags": [
           "compute",
@@ -3318,7 +3318,7 @@
     },
     "/api/2.0/instance-profiles/add": {
       "post": {
-        "operationId": "add",
+        "operationId": "instance_profiles_add",
         "summary": "Registers an instance profile in Databricks. In the UI, you can then give users the permission to use",
         "tags": [
           "compute",
@@ -3382,7 +3382,7 @@
     },
     "/api/2.0/instance-profiles/edit": {
       "post": {
-        "operationId": "edit",
+        "operationId": "instance_profiles_edit",
         "summary": "The only supported field to change is the optional IAM role ARN associated with the instance profile.",
         "tags": [
           "compute",
@@ -3442,7 +3442,7 @@
     },
     "/api/2.0/instance-profiles/list": {
       "get": {
-        "operationId": "list",
+        "operationId": "instance_profiles_list",
         "summary": "List the instance profiles that the calling user can use to launch a cluster.",
         "tags": [
           "compute",
@@ -3483,7 +3483,7 @@
     },
     "/api/2.0/instance-profiles/remove": {
       "post": {
-        "operationId": "remove",
+        "operationId": "instance_profiles_remove",
         "summary": "Remove the instance profile with the provided ARN. Existing clusters with this instance profile will",
         "tags": [
           "compute",
@@ -3535,7 +3535,7 @@
     },
     "/api/2.0/libraries/all-cluster-statuses": {
       "get": {
-        "operationId": "all_cluster_statuses",
+        "operationId": "libraries_all_cluster_statuses",
         "summary": "Get the status of all libraries on all clusters. A status is returned for all libraries installed on",
         "tags": [
           "compute",
@@ -3576,7 +3576,7 @@
     },
     "/api/2.0/libraries/cluster-status": {
       "get": {
-        "operationId": "cluster_status",
+        "operationId": "libraries_cluster_status",
         "summary": "Get the status of libraries on a cluster. A status is returned for all libraries installed on this",
         "tags": [
           "compute",
@@ -3628,7 +3628,7 @@
     },
     "/api/2.0/libraries/install": {
       "post": {
-        "operationId": "install",
+        "operationId": "libraries_install",
         "summary": "Add libraries to install on a cluster. The installation is asynchronous; it happens in the background",
         "tags": [
           "compute",
@@ -3685,7 +3685,7 @@
     },
     "/api/2.0/libraries/uninstall": {
       "post": {
-        "operationId": "uninstall",
+        "operationId": "libraries_uninstall",
         "summary": "Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is",
         "tags": [
           "compute",
@@ -3742,7 +3742,7 @@
     },
     "/api/2.0/policies/clusters/enforce-compliance": {
       "post": {
-        "operationId": "enforce_compliance",
+        "operationId": "policy_compliance_for_clusters_enforce_compliance",
         "summary": "Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if",
         "tags": [
           "compute",
@@ -3805,7 +3805,7 @@
     },
     "/api/2.0/policies/clusters/get-compliance": {
       "get": {
-        "operationId": "get_compliance",
+        "operationId": "policy_compliance_for_clusters_get_compliance",
         "summary": "Returns the policy compliance status of a cluster. Clusters could be out of compliance if their policy",
         "tags": [
           "compute",
@@ -3857,7 +3857,7 @@
     },
     "/api/2.0/policies/clusters/list-compliance": {
       "get": {
-        "operationId": "list_compliance",
+        "operationId": "policy_compliance_for_clusters_list_compliance",
         "summary": "Returns the policy compliance status of all clusters that use a given policy. Clusters could be out of",
         "tags": [
           "compute",
@@ -3927,7 +3927,7 @@
     },
     "/api/2.0/policy-families/{policy_family_id}": {
       "get": {
-        "operationId": "get",
+        "operationId": "policy_families_get",
         "summary": "Retrieve the information for an policy family based on its identifier and version",
         "tags": [
           "compute",
@@ -3988,7 +3988,7 @@
     },
     "/api/2.0/policy-families": {
       "get": {
-        "operationId": "list",
+        "operationId": "policy_families_list",
         "summary": "Returns the list of policy definition types available to use at their latest version. This API is",
         "tags": [
           "compute",

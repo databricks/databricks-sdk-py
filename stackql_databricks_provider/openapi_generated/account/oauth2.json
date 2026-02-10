@@ -14,7 +14,7 @@
   "paths": {
     "/api/2.0/accounts/{account_id}/federationPolicies": {
       "post": {
-        "operationId": "create",
+        "operationId": "account_federation_policy_create",
         "summary": "Create account federation policy.",
         "tags": [
           "oauth2",
@@ -81,7 +81,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "account_federation_policy_list",
         "summary": "List account federation policies.",
         "tags": [
           "oauth2",
@@ -141,7 +141,7 @@
     },
     "/api/2.0/accounts/{account_id}/federationPolicies/{policy_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "account_federation_policy_delete",
         "summary": "Delete account federation policy.",
         "tags": [
           "oauth2",
@@ -184,7 +184,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "account_federation_policy_get",
         "summary": "Get account federation policy.",
         "tags": [
           "oauth2",
@@ -234,7 +234,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "account_federation_policy_update",
         "summary": "Update account federation policy.",
         "tags": [
           "oauth2",
@@ -312,7 +312,7 @@
     },
     "/api/2.0/accounts/{account_id}/oauth2/custom-app-integrations": {
       "post": {
-        "operationId": "create",
+        "operationId": "custom_app_integration_create",
         "summary": "Create Custom OAuth App Integration.",
         "tags": [
           "oauth2",
@@ -386,7 +386,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "custom_app_integration_list",
         "summary": "Get the list of custom OAuth app integrations for the specified Databricks account",
         "tags": [
           "oauth2",
@@ -455,7 +455,7 @@
     },
     "/api/2.0/accounts/{account_id}/oauth2/custom-app-integrations/{integration_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "custom_app_integration_delete",
         "summary": "Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via",
         "tags": [
           "oauth2",
@@ -498,7 +498,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "custom_app_integration_get",
         "summary": "Gets the Custom OAuth App Integration for the given integration id.",
         "tags": [
           "oauth2",
@@ -548,7 +548,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "custom_app_integration_update",
         "summary": "Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration",
         "tags": [
           "oauth2",
@@ -619,7 +619,7 @@
     },
     "/api/2.0/accounts/{account_id}/oauth2/published-apps": {
       "get": {
-        "operationId": "list",
+        "operationId": "o_auth_published_apps_list",
         "summary": "Get all the available published OAuth apps in Databricks.",
         "tags": [
           "oauth2",
@@ -680,7 +680,7 @@
     },
     "/api/2.0/accounts/{account_id}/oauth2/published-app-integrations": {
       "post": {
-        "operationId": "create",
+        "operationId": "published_app_integration_create",
         "summary": "Create Published OAuth App Integration.",
         "tags": [
           "oauth2",
@@ -738,7 +738,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "published_app_integration_list",
         "summary": "Get the list of published OAuth app integrations for the specified Databricks account",
         "tags": [
           "oauth2",
@@ -798,7 +798,7 @@
     },
     "/api/2.0/accounts/{account_id}/oauth2/published-app-integrations/{integration_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "published_app_integration_delete",
         "summary": "Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app",
         "tags": [
           "oauth2",
@@ -841,7 +841,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "published_app_integration_get",
         "summary": "Gets the Published OAuth App Integration for the given integration id.",
         "tags": [
           "oauth2",
@@ -891,7 +891,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "published_app_integration_update",
         "summary": "Updates an existing published OAuth App Integration. You can retrieve the published OAuth app",
         "tags": [
           "oauth2",
@@ -950,7 +950,7 @@
     },
     "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/federationPolicies": {
       "post": {
-        "operationId": "create",
+        "operationId": "service_principal_federation_policy_create",
         "summary": "Create account federation policy.",
         "tags": [
           "oauth2",
@@ -1026,7 +1026,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "service_principal_federation_policy_list",
         "summary": "List account federation policies.",
         "tags": [
           "oauth2",
@@ -1095,7 +1095,7 @@
     },
     "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/federationPolicies/{policy_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "service_principal_federation_policy_delete",
         "summary": "Delete account federation policy.",
         "tags": [
           "oauth2",
@@ -1147,7 +1147,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "service_principal_federation_policy_get",
         "summary": "Get account federation policy.",
         "tags": [
           "oauth2",
@@ -1206,7 +1206,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "service_principal_federation_policy_update",
         "summary": "Update account federation policy.",
         "tags": [
           "oauth2",
@@ -1293,7 +1293,7 @@
     },
     "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/credentials/secrets": {
       "post": {
-        "operationId": "create",
+        "operationId": "service_principal_secrets_create",
         "summary": "Create a secret for the given service principal.",
         "tags": [
           "oauth2",
@@ -1358,7 +1358,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "service_principal_secrets_list",
         "summary": "List all secrets associated with the given service principal. This operation only returns information",
         "tags": [
           "oauth2",
@@ -1427,7 +1427,7 @@
     },
     "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "service_principal_secrets_delete",
         "summary": "Delete a secret from the given service principal.",
         "tags": [
           "oauth2",

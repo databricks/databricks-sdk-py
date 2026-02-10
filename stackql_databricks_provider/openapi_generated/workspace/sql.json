@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/sql/alerts": {
       "post": {
-        "operationId": "create",
+        "operationId": "alerts_create",
         "summary": "Creates an alert.",
         "tags": [
           "sql",
@@ -77,7 +77,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "alerts_list",
         "summary": "Gets a list of alerts accessible to the user, ordered by creation time. **Warning:** Calling this API",
         "tags": [
           "sql",
@@ -137,7 +137,7 @@
     },
     "/api/2.0/sql/alerts/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "alerts_delete",
         "summary": "Moves an alert to the trash. Trashed alerts immediately disappear from searches and list views, and",
         "tags": [
           "sql",
@@ -180,7 +180,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "alerts_get",
         "summary": "Gets an alert.",
         "tags": [
           "sql",
@@ -230,7 +230,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "alerts_update",
         "summary": "Updates an alert.",
         "tags": [
           "sql",
@@ -306,7 +306,7 @@
     },
     "/api/2.0/preview/sql/alerts": {
       "post": {
-        "operationId": "create",
+        "operationId": "alerts_legacy_create",
         "summary": "Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a",
         "tags": [
           "sql",
@@ -381,7 +381,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "alerts_legacy_list",
         "summary": "Gets a list of alerts.",
         "tags": [
           "sql",
@@ -422,7 +422,7 @@
     },
     "/api/2.0/preview/sql/alerts/{alert_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "alerts_legacy_delete",
         "summary": "Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike",
         "tags": [
           "sql",
@@ -465,7 +465,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "alerts_legacy_get",
         "summary": "Gets an alert.",
         "tags": [
           "sql",
@@ -515,7 +515,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "alerts_legacy_update",
         "summary": "Updates an alert.",
         "tags": [
           "sql",
@@ -591,7 +591,7 @@
     },
     "/api/2.0/alerts": {
       "post": {
-        "operationId": "create_alert",
+        "operationId": "alerts_v2_create_alert",
         "summary": "Create Alert",
         "tags": [
           "sql",
@@ -648,7 +648,7 @@
         }
       },
       "get": {
-        "operationId": "list_alerts",
+        "operationId": "alerts_v2_list_alerts",
         "summary": "Gets a list of alerts accessible to the user, ordered by creation time.",
         "tags": [
           "sql",
@@ -708,7 +708,7 @@
     },
     "/api/2.0/alerts/{id}": {
       "get": {
-        "operationId": "get_alert",
+        "operationId": "alerts_v2_get_alert",
         "summary": "Gets an alert.",
         "tags": [
           "sql",
@@ -758,7 +758,7 @@
         }
       },
       "delete": {
-        "operationId": "trash_alert",
+        "operationId": "alerts_v2_trash_alert",
         "summary": "Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer",
         "tags": [
           "sql",
@@ -809,7 +809,7 @@
         }
       },
       "patch": {
-        "operationId": "update_alert",
+        "operationId": "alerts_v2_update_alert",
         "summary": "Update alert",
         "tags": [
           "sql",
@@ -887,7 +887,7 @@
     },
     "/api/2.0/preview/sql/widgets": {
       "post": {
-        "operationId": "create",
+        "operationId": "dashboard_widgets_create",
         "summary": "Adds a widget to a dashboard",
         "tags": [
           "sql",
@@ -963,7 +963,7 @@
     },
     "/api/2.0/preview/sql/widgets/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "dashboard_widgets_delete",
         "summary": "Removes a widget from a dashboard",
         "tags": [
           "sql",
@@ -1006,7 +1006,7 @@
         }
       },
       "post": {
-        "operationId": "update",
+        "operationId": "dashboard_widgets_update",
         "summary": "Updates an existing widget",
         "tags": [
           "sql",
@@ -1093,7 +1093,7 @@
     },
     "/api/2.0/preview/sql/dashboards/{dashboard_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "dashboards_delete",
         "summary": "Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot",
         "tags": [
           "sql",
@@ -1136,7 +1136,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "dashboards_get",
         "summary": "Returns a JSON representation of a dashboard object, including its visualization and query objects.",
         "tags": [
           "sql",
@@ -1186,7 +1186,7 @@
         }
       },
       "post": {
-        "operationId": "update",
+        "operationId": "dashboards_update",
         "summary": "Modify this dashboard definition. This operation only affects attributes of the dashboard object. It",
         "tags": [
           "sql",
@@ -1260,7 +1260,7 @@
     },
     "/api/2.0/preview/sql/dashboards": {
       "get": {
-        "operationId": "list",
+        "operationId": "dashboards_list",
         "summary": "Fetch a paginated list of dashboard objects.",
         "tags": [
           "sql",
@@ -1339,7 +1339,7 @@
     },
     "/api/2.0/preview/sql/dashboards/trash/{dashboard_id}": {
       "post": {
-        "operationId": "restore",
+        "operationId": "dashboards_restore",
         "summary": "A restored dashboard appears in list views and searches and can be shared.",
         "tags": [
           "sql",
@@ -1384,7 +1384,7 @@
     },
     "/api/2.0/preview/sql/data_sources": {
       "get": {
-        "operationId": "list",
+        "operationId": "data_sources_list",
         "summary": "Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this",
         "tags": [
           "sql",
@@ -1425,7 +1425,7 @@
     },
     "/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}": {
       "get": {
-        "operationId": "get",
+        "operationId": "dbsql_permissions_get",
         "summary": "Gets a JSON representation of the access control list (ACL) for a specified object.",
         "tags": [
           "sql",
@@ -1492,7 +1492,7 @@
         }
       },
       "post": {
-        "operationId": "set",
+        "operationId": "dbsql_permissions_set",
         "summary": "Sets the access control list (ACL) for a specified object. This operation will complete rewrite the",
         "tags": [
           "sql",
@@ -1574,7 +1574,7 @@
     },
     "/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}/transfer": {
       "post": {
-        "operationId": "transfer_ownership",
+        "operationId": "dbsql_permissions_transfer_ownership",
         "summary": "Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.",
         "tags": [
           "sql",
@@ -1656,7 +1656,7 @@
     },
     "/api/2.0/sql/queries": {
       "post": {
-        "operationId": "create",
+        "operationId": "queries_create",
         "summary": "Creates a query.",
         "tags": [
           "sql",
@@ -1714,7 +1714,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "queries_list",
         "summary": "Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API",
         "tags": [
           "sql",
@@ -1774,7 +1774,7 @@
     },
     "/api/2.0/sql/queries/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "queries_delete",
         "summary": "Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and",
         "tags": [
           "sql",
@@ -1817,7 +1817,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "queries_get",
         "summary": "Gets a query.",
         "tags": [
           "sql",
@@ -1867,7 +1867,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "queries_update",
         "summary": "Updates a query.",
         "tags": [
           "sql",
@@ -1944,7 +1944,7 @@
     },
     "/api/2.0/sql/queries/{id}/visualizations": {
       "get": {
-        "operationId": "list_visualizations",
+        "operationId": "queries_list_visualizations",
         "summary": "Gets a list of visualizations on a query.",
         "tags": [
           "sql",
@@ -2013,7 +2013,7 @@
     },
     "/api/2.0/preview/sql/queries": {
       "post": {
-        "operationId": "create",
+        "operationId": "queries_legacy_create",
         "summary": "Creates a new query definition. Queries created with this endpoint belong to the authenticated user",
         "tags": [
           "sql",
@@ -2095,7 +2095,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "queries_legacy_list",
         "summary": "Gets a list of queries. Optionally, this list can be filtered by a search term.",
         "tags": [
           "sql",
@@ -2174,7 +2174,7 @@
     },
     "/api/2.0/preview/sql/queries/{query_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "queries_legacy_delete",
         "summary": "Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and",
         "tags": [
           "sql",
@@ -2217,7 +2217,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "queries_legacy_get",
         "summary": "Retrieve a query object definition along with contextual permissions information about the currently",
         "tags": [
           "sql",
@@ -2267,7 +2267,7 @@
         }
       },
       "post": {
-        "operationId": "update",
+        "operationId": "queries_legacy_update",
         "summary": "Modify this query definition.",
         "tags": [
           "sql",
@@ -2357,7 +2357,7 @@
     },
     "/api/2.0/preview/sql/queries/trash/{query_id}": {
       "post": {
-        "operationId": "restore",
+        "operationId": "queries_legacy_restore",
         "summary": "Restore a query that has been moved to the trash. A restored query appears in list views and searches.",
         "tags": [
           "sql",
@@ -2402,7 +2402,7 @@
     },
     "/api/2.0/sql/history/queries": {
       "get": {
-        "operationId": "list",
+        "operationId": "query_history_list",
         "summary": "List the history of queries through SQL warehouses, and serverless compute.",
         "tags": [
           "sql",
@@ -2481,7 +2481,7 @@
     },
     "/api/2.0/sql/visualizations": {
       "post": {
-        "operationId": "create",
+        "operationId": "query_visualizations_create",
         "summary": "Adds a visualization to a query.",
         "tags": [
           "sql",
@@ -2537,7 +2537,7 @@
     },
     "/api/2.0/sql/visualizations/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "query_visualizations_delete",
         "summary": "Removes a visualization.",
         "tags": [
           "sql",
@@ -2580,7 +2580,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "query_visualizations_update",
         "summary": "Updates a visualization.",
         "tags": [
           "sql",
@@ -2653,7 +2653,7 @@
     },
     "/api/2.0/preview/sql/visualizations": {
       "post": {
-        "operationId": "create",
+        "operationId": "query_visualizations_legacy_create",
         "summary": "Creates visualization in the query.",
         "tags": [
           "sql",
@@ -2730,7 +2730,7 @@
     },
     "/api/2.0/preview/sql/visualizations/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "query_visualizations_legacy_delete",
         "summary": "Removes a visualization from the query.",
         "tags": [
           "sql",
@@ -2773,7 +2773,7 @@
         }
       },
       "post": {
-        "operationId": "update",
+        "operationId": "query_visualizations_legacy_update",
         "summary": "Updates visualization in the query.",
         "tags": [
           "sql",
@@ -2862,7 +2862,7 @@
     },
     "/api/2.0/redash-v2/config": {
       "get": {
-        "operationId": "get_config",
+        "operationId": "redash_config_get_config",
         "summary": "Read workspace configuration for Redash-v2.",
         "tags": [
           "sql",
@@ -2903,7 +2903,7 @@
     },
     "/api/2.0/sql/statements/{statement_id}/cancel": {
       "post": {
-        "operationId": "cancel_execution",
+        "operationId": "statement_execution_cancel_execution",
         "summary": "Requests that an executing statement be canceled. Callers must poll for status to see the terminal",
         "tags": [
           "sql",
@@ -2948,7 +2948,7 @@
     },
     "/api/2.0/sql/statements": {
       "post": {
-        "operationId": "execute_statement",
+        "operationId": "statement_execution_execute_statement",
         "summary": "Execute a SQL statement and optionally await its results for a specified time.",
         "tags": [
           "sql",
@@ -3052,7 +3052,7 @@
     },
     "/api/2.0/sql/statements/{statement_id}": {
       "get": {
-        "operationId": "get_statement",
+        "operationId": "statement_execution_get_statement",
         "summary": "This request can be used to poll for the statement's status. StatementResponse contains `statement_id`",
         "tags": [
           "sql",
@@ -3104,7 +3104,7 @@
     },
     "/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}": {
       "get": {
-        "operationId": "get_statement_result_chunk_n",
+        "operationId": "statement_execution_get_statement_result_chunk_n",
         "summary": "After the statement execution has `SUCCEEDED`, this request can be used to fetch any chunk by index.",
         "tags": [
           "sql",
@@ -3165,7 +3165,7 @@
     },
     "/api/2.0/sql/warehouses": {
       "post": {
-        "operationId": "create",
+        "operationId": "warehouses_create",
         "summary": "Creates a new SQL warehouse.",
         "tags": [
           "sql",
@@ -3267,7 +3267,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "warehouses_list",
         "summary": "Lists all SQL warehouses that a user has access to.",
         "tags": [
           "sql",
@@ -3337,7 +3337,7 @@
     },
     "/api/warehouses/v1/default-warehouse-overrides": {
       "post": {
-        "operationId": "create_default_warehouse_override",
+        "operationId": "warehouses_create_default_warehouse_override",
         "summary": "Creates a new default warehouse override for a user. Users can create their own override. Admins can",
         "tags": [
           "sql",
@@ -3405,7 +3405,7 @@
         }
       },
       "get": {
-        "operationId": "list_default_warehouse_overrides",
+        "operationId": "warehouses_list_default_warehouse_overrides",
         "summary": "Lists all default warehouse overrides in the workspace. Only workspace administrators can list all",
         "tags": [
           "sql",
@@ -3466,7 +3466,7 @@
     },
     "/api/2.0/sql/warehouses/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "warehouses_delete",
         "summary": "Deletes a SQL warehouse.",
         "tags": [
           "sql",
@@ -3509,7 +3509,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "warehouses_get",
         "summary": "Gets the information for a single SQL warehouse.",
         "tags": [
           "sql",
@@ -3561,7 +3561,7 @@
     },
     "/api/warehouses/v1/{name}": {
       "delete": {
-        "operationId": "delete_default_warehouse_override",
+        "operationId": "warehouses_delete_default_warehouse_override",
         "summary": "Deletes the default warehouse override for a user. Users can delete their own override. Admins can",
         "tags": [
           "sql",
@@ -3604,7 +3604,7 @@
         }
       },
       "get": {
-        "operationId": "get_default_warehouse_override",
+        "operationId": "warehouses_get_default_warehouse_override",
         "summary": "Returns the default warehouse override for a user. Users can fetch their own override. Admins can",
         "tags": [
           "sql",
@@ -3654,7 +3654,7 @@
         }
       },
       "patch": {
-        "operationId": "update_default_warehouse_override",
+        "operationId": "warehouses_update_default_warehouse_override",
         "summary": "Updates an existing default warehouse override for a user. Users can update their own override. Admins",
         "tags": [
           "sql",
@@ -3742,7 +3742,7 @@
     },
     "/api/2.0/sql/warehouses/{id}/edit": {
       "post": {
-        "operationId": "edit",
+        "operationId": "warehouses_edit",
         "summary": "Updates the configuration for a SQL warehouse.",
         "tags": [
           "sql",
@@ -3857,7 +3857,7 @@
     },
     "/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "warehouses_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "sql",
@@ -3909,7 +3909,7 @@
     },
     "/api/2.0/permissions/warehouses/{warehouse_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "warehouses_get_permissions",
         "summary": "Gets the permissions of a SQL warehouse. SQL warehouses can inherit permissions from their root",
         "tags": [
           "sql",
@@ -3959,7 +3959,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "warehouses_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "sql",
@@ -4024,7 +4024,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "warehouses_update_permissions",
         "summary": "Updates the permissions on a SQL warehouse. SQL warehouses can inherit permissions from their root",
         "tags": [
           "sql",
@@ -4091,7 +4091,7 @@
     },
     "/api/2.0/sql/config/warehouses": {
       "get": {
-        "operationId": "get_workspace_warehouse_config",
+        "operationId": "warehouses_get_workspace_warehouse_config",
         "summary": "Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.",
         "tags": [
           "sql",
@@ -4130,7 +4130,7 @@
         }
       },
       "put": {
-        "operationId": "set_workspace_warehouse_config",
+        "operationId": "warehouses_set_workspace_warehouse_config",
         "summary": "Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.",
         "tags": [
           "sql",
@@ -4215,7 +4215,7 @@
     },
     "/api/2.0/sql/warehouses/{id}/start": {
       "post": {
-        "operationId": "start",
+        "operationId": "warehouses_start",
         "summary": "Starts a SQL warehouse.",
         "tags": [
           "sql",
@@ -4267,7 +4267,7 @@
     },
     "/api/2.0/sql/warehouses/{id}/stop": {
       "post": {
-        "operationId": "stop",
+        "operationId": "warehouses_stop",
         "summary": "Stops a SQL warehouse.",
         "tags": [
           "sql",

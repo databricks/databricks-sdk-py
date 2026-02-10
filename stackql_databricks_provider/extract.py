@@ -115,8 +115,14 @@ def get_operation_details(
     tags = _build_tags(service_name, resource_snake_name)
     summary = _extract_summary(docstring)
 
+    # Build a unique operationId: resource_snake_name + method_name
+    if resource_snake_name:
+        operation_id = f"{resource_snake_name}_{method_name}"
+    else:
+        operation_id = method_name
+
     operation: Dict[str, Any] = {
-        "operationId": method_name,
+        "operationId": operation_id,
         "summary": summary,
         "tags": tags,
         "description": docstring,

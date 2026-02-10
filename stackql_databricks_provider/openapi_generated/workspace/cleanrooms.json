@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/revisions/{etag}": {
       "get": {
-        "operationId": "get",
+        "operationId": "clean_room_asset_revisions_get",
         "summary": "Get a specific revision of an asset",
         "tags": [
           "cleanrooms",
@@ -107,7 +107,7 @@
     },
     "/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/revisions": {
       "get": {
-        "operationId": "list",
+        "operationId": "clean_room_asset_revisions_list",
         "summary": "List revisions for an asset",
         "tags": [
           "cleanrooms",
@@ -203,7 +203,7 @@
     },
     "/api/2.0/clean-rooms/{clean_room_name}/assets": {
       "post": {
-        "operationId": "create",
+        "operationId": "clean_room_assets_create",
         "summary": "Create a clean room asset \u2014share an asset like a notebook or table into the clean room. For each UC",
         "tags": [
           "cleanrooms",
@@ -271,7 +271,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "clean_room_assets_list",
         "summary": "List assets.",
         "tags": [
           "cleanrooms",
@@ -332,7 +332,7 @@
     },
     "/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/reviews": {
       "post": {
-        "operationId": "create_clean_room_asset_review",
+        "operationId": "clean_room_assets_create_clean_room_asset_review",
         "summary": "Submit an asset review",
         "tags": [
           "cleanrooms",
@@ -423,7 +423,7 @@
     },
     "/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "clean_room_assets_delete",
         "summary": "Delete a clean room asset - unshare/remove the asset from the clean room",
         "tags": [
           "cleanrooms",
@@ -492,7 +492,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "clean_room_assets_get",
         "summary": "Get the details of a clean room asset by its type and full name.",
         "tags": [
           "cleanrooms",
@@ -568,7 +568,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "clean_room_assets_update",
         "summary": "Update a clean room asset. For example, updating the content of a notebook; changing the shared",
         "tags": [
           "cleanrooms",
@@ -660,7 +660,7 @@
     },
     "/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules": {
       "post": {
-        "operationId": "create",
+        "operationId": "clean_room_auto_approval_rules_create",
         "summary": "Create an auto-approval rule",
         "tags": [
           "cleanrooms",
@@ -728,7 +728,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "clean_room_auto_approval_rules_list",
         "summary": "List all auto-approval rules for the caller",
         "tags": [
           "cleanrooms",
@@ -797,7 +797,7 @@
     },
     "/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "clean_room_auto_approval_rules_delete",
         "summary": "Delete a auto-approval rule by rule ID",
         "tags": [
           "cleanrooms",
@@ -848,7 +848,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "clean_room_auto_approval_rules_get",
         "summary": "Get a auto-approval rule by rule ID",
         "tags": [
           "cleanrooms",
@@ -906,7 +906,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "clean_room_auto_approval_rules_update",
         "summary": "Update a auto-approval rule by rule ID",
         "tags": [
           "cleanrooms",
@@ -985,7 +985,7 @@
     },
     "/api/2.0/clean-rooms/{clean_room_name}/runs": {
       "get": {
-        "operationId": "list",
+        "operationId": "clean_room_task_runs_list",
         "summary": "List all the historical notebook task runs in a clean room.",
         "tags": [
           "cleanrooms",
@@ -1064,7 +1064,7 @@
     },
     "/api/2.0/clean-rooms": {
       "post": {
-        "operationId": "create",
+        "operationId": "clean_rooms_create",
         "summary": "Create a new clean room with the specified collaborators. This method is asynchronous; the returned",
         "tags": [
           "cleanrooms",
@@ -1121,7 +1121,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "clean_rooms_list",
         "summary": "Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are",
         "tags": [
           "cleanrooms",
@@ -1182,7 +1182,7 @@
     },
     "/api/2.0/clean-rooms/{clean_room_name}/output-catalogs": {
       "post": {
-        "operationId": "create_output_catalog",
+        "operationId": "clean_rooms_create_output_catalog",
         "summary": "Create the output catalog of the clean room.",
         "tags": [
           "cleanrooms",
@@ -1252,7 +1252,7 @@
     },
     "/api/2.0/clean-rooms/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "clean_rooms_delete",
         "summary": "Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other",
         "tags": [
           "cleanrooms",
@@ -1295,7 +1295,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "clean_rooms_get",
         "summary": "Get the details of a clean room given its name.",
         "tags": [
           "cleanrooms",
@@ -1345,7 +1345,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "clean_rooms_update",
         "summary": "Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**",
         "tags": [
           "cleanrooms",

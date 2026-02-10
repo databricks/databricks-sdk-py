@@ -109,7 +109,7 @@ class TestGetOperationDetails:
         assert path in details
         assert "get" in details[path]
         op = details[path]["get"]
-        assert op["operationId"] == "get_custom_llm"
+        assert op["operationId"] == "agent_bricks_get_custom_llm"
         assert "parameters" in op
         assert op["parameters"][0]["name"] == "id"
         assert op["parameters"][0]["in"] == "path"

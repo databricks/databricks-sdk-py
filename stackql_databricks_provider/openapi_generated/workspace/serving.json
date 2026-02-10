@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs": {
       "get": {
-        "operationId": "build_logs",
+        "operationId": "serving_endpoints_build_logs",
         "summary": "Retrieves the build logs associated with the provided served model.",
         "tags": [
           "serving",
@@ -81,7 +81,7 @@
     },
     "/api/2.0/serving-endpoints": {
       "post": {
-        "operationId": "create",
+        "operationId": "serving_endpoints_create",
         "summary": "Create a new serving endpoint.",
         "tags": [
           "serving",
@@ -169,7 +169,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "serving_endpoints_list",
         "summary": "Get all serving endpoints.",
         "tags": [
           "serving",
@@ -210,7 +210,7 @@
     },
     "/api/2.0/serving-endpoints/pt": {
       "post": {
-        "operationId": "create_provisioned_throughput_endpoint",
+        "operationId": "serving_endpoints_create_provisioned_throughput_endpoint",
         "summary": "Create a new PT serving endpoint.",
         "tags": [
           "serving",
@@ -290,7 +290,7 @@
     },
     "/api/2.0/serving-endpoints/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "serving_endpoints_delete",
         "summary": "Delete a serving endpoint.",
         "tags": [
           "serving",
@@ -333,7 +333,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "serving_endpoints_get",
         "summary": "Retrieves the details for a single serving endpoint.",
         "tags": [
           "serving",
@@ -385,7 +385,7 @@
     },
     "/api/2.0/serving-endpoints/{name}/metrics": {
       "get": {
-        "operationId": "export_metrics",
+        "operationId": "serving_endpoints_export_metrics",
         "summary": "Retrieves the metrics associated with the provided serving endpoint in either Prometheus or",
         "tags": [
           "serving",
@@ -437,7 +437,7 @@
     },
     "/api/2.0/serving-endpoints/{name}/openapi": {
       "get": {
-        "operationId": "get_open_api",
+        "operationId": "serving_endpoints_get_open_api",
         "summary": "Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for",
         "tags": [
           "serving",
@@ -489,7 +489,7 @@
     },
     "/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "serving_endpoints_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "serving",
@@ -541,7 +541,7 @@
     },
     "/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "serving_endpoints_get_permissions",
         "summary": "Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root",
         "tags": [
           "serving",
@@ -591,7 +591,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "serving_endpoints_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "serving",
@@ -656,7 +656,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "serving_endpoints_update_permissions",
         "summary": "Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their",
         "tags": [
           "serving",
@@ -723,7 +723,7 @@
     },
     "/api/2.0/external-function": {
       "post": {
-        "operationId": "http_request",
+        "operationId": "serving_endpoints_http_request",
         "summary": "Make external services call using the credentials stored in UC Connection.",
         "tags": [
           "serving",
@@ -800,7 +800,7 @@
     },
     "/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs": {
       "get": {
-        "operationId": "logs",
+        "operationId": "serving_endpoints_logs",
         "summary": "Retrieves the service logs associated with the provided served model.",
         "tags": [
           "serving",
@@ -861,7 +861,7 @@
     },
     "/api/2.0/serving-endpoints/{name}/tags": {
       "patch": {
-        "operationId": "patch",
+        "operationId": "serving_endpoints_patch",
         "summary": "Used to batch add and delete tags from a serving endpoint with a single API call.",
         "tags": [
           "serving",
@@ -932,7 +932,7 @@
     },
     "/api/2.0/serving-endpoints/{name}/rate-limits": {
       "put": {
-        "operationId": "put",
+        "operationId": "serving_endpoints_put",
         "summary": "Deprecated: Please use AI Gateway to manage rate limits instead.",
         "tags": [
           "serving",
@@ -999,7 +999,7 @@
     },
     "/api/2.0/serving-endpoints/{name}/ai-gateway": {
       "put": {
-        "operationId": "put_ai_gateway",
+        "operationId": "serving_endpoints_put_ai_gateway",
         "summary": "Used to update the AI Gateway of a serving endpoint. NOTE: External model, provisioned throughput, and",
         "tags": [
           "serving",
@@ -1082,7 +1082,7 @@
     },
     "/serving-endpoints/{name}/invocations": {
       "post": {
-        "operationId": "query",
+        "operationId": "serving_endpoints_query",
         "summary": "Query a serving endpoint",
         "tags": [
           "serving",
@@ -1205,7 +1205,7 @@
     },
     "/api/2.0/serving-endpoints/{name}/config": {
       "put": {
-        "operationId": "update_config",
+        "operationId": "serving_endpoints_update_config",
         "summary": "Updates any combination of the serving endpoint's served entities, the compute configuration of those",
         "tags": [
           "serving",
@@ -1284,7 +1284,7 @@
     },
     "/api/2.0/serving-endpoints/{name}/notifications": {
       "patch": {
-        "operationId": "update_notifications",
+        "operationId": "serving_endpoints_update_notifications",
         "summary": "Updates the email and webhook notification settings for an endpoint.",
         "tags": [
           "serving",
@@ -1351,7 +1351,7 @@
     },
     "/api/2.0/serving-endpoints/pt/{name}/config": {
       "put": {
-        "operationId": "update_provisioned_throughput_endpoint_config",
+        "operationId": "serving_endpoints_update_provisioned_throughput_endpoint_config",
         "summary": "Updates any combination of the pt endpoint's served entities, the compute configuration of those",
         "tags": [
           "serving",

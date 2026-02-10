@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.1/marketplace-consumer/listings/{listing_id}/content": {
       "get": {
-        "operationId": "get",
+        "operationId": "consumer_fulfillments_get",
         "summary": "Get a high level preview of the metadata of listing installable content.",
         "tags": [
           "marketplace",
@@ -89,7 +89,7 @@
     },
     "/api/2.1/marketplace-consumer/listings/{listing_id}/fulfillments": {
       "get": {
-        "operationId": "list",
+        "operationId": "consumer_fulfillments_list",
         "summary": "Get all listings fulfillments associated with a listing. A _fulfillment_ is a potential installation.",
         "tags": [
           "marketplace",
@@ -158,7 +158,7 @@
     },
     "/api/2.1/marketplace-consumer/listings/{listing_id}/installations": {
       "post": {
-        "operationId": "create",
+        "operationId": "consumer_installations_create",
         "summary": "Install payload associated with a Databricks Marketplace listing.",
         "tags": [
           "marketplace",
@@ -237,7 +237,7 @@
         }
       },
       "get": {
-        "operationId": "list_listing_installations",
+        "operationId": "consumer_installations_list_listing_installations",
         "summary": "List all installations for a particular listing.",
         "tags": [
           "marketplace",
@@ -306,7 +306,7 @@
     },
     "/api/2.1/marketplace-consumer/listings/{listing_id}/installations/{installation_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "consumer_installations_delete",
         "summary": "Uninstall an installation associated with a Databricks Marketplace listing.",
         "tags": [
           "marketplace",
@@ -357,7 +357,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "consumer_installations_update",
         "summary": "This is a update API that will update the part of the fields defined in the installation table as well",
         "tags": [
           "marketplace",
@@ -438,7 +438,7 @@
     },
     "/api/2.1/marketplace-consumer/installations": {
       "get": {
-        "operationId": "list",
+        "operationId": "consumer_installations_list",
         "summary": "List all installations across all listings.",
         "tags": [
           "marketplace",
@@ -498,7 +498,7 @@
     },
     "/api/2.1/marketplace-consumer/listings:batchGet": {
       "get": {
-        "operationId": "batch_get",
+        "operationId": "consumer_listings_batch_get",
         "summary": "Batch get a published listing in the Databricks Marketplace that the consumer has access to.",
         "tags": [
           "marketplace",
@@ -550,7 +550,7 @@
     },
     "/api/2.1/marketplace-consumer/listings/{id}": {
       "get": {
-        "operationId": "get",
+        "operationId": "consumer_listings_get",
         "summary": "Get a published listing in the Databricks Marketplace that the consumer has access to.",
         "tags": [
           "marketplace",
@@ -602,7 +602,7 @@
     },
     "/api/2.1/marketplace-consumer/listings": {
       "get": {
-        "operationId": "list",
+        "operationId": "consumer_listings_list",
         "summary": "List all published listings in the Databricks Marketplace that the consumer has access to.",
         "tags": [
           "marketplace",
@@ -725,7 +725,7 @@
     },
     "/api/2.1/marketplace-consumer/search-listings": {
       "get": {
-        "operationId": "search",
+        "operationId": "consumer_listings_search",
         "summary": "Search published listings in the Databricks Marketplace that the consumer has access to. This query",
         "tags": [
           "marketplace",
@@ -838,7 +838,7 @@
     },
     "/api/2.1/marketplace-consumer/listings/{listing_id}/personalization-requests": {
       "post": {
-        "operationId": "create",
+        "operationId": "consumer_personalization_requests_create",
         "summary": "Create a personalization request for a listing.",
         "tags": [
           "marketplace",
@@ -931,7 +931,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "consumer_personalization_requests_get",
         "summary": "Get the personalization request for a listing. Each consumer can make at *most* one personalization",
         "tags": [
           "marketplace",
@@ -983,7 +983,7 @@
     },
     "/api/2.1/marketplace-consumer/personalization-requests": {
       "get": {
-        "operationId": "list",
+        "operationId": "consumer_personalization_requests_list",
         "summary": "List personalization requests for a consumer across all listings.",
         "tags": [
           "marketplace",
@@ -1043,7 +1043,7 @@
     },
     "/api/2.1/marketplace-consumer/providers:batchGet": {
       "get": {
-        "operationId": "batch_get",
+        "operationId": "consumer_providers_batch_get",
         "summary": "Batch get a provider in the Databricks Marketplace with at least one visible listing.",
         "tags": [
           "marketplace",
@@ -1095,7 +1095,7 @@
     },
     "/api/2.1/marketplace-consumer/providers/{id}": {
       "get": {
-        "operationId": "get",
+        "operationId": "consumer_providers_get",
         "summary": "Get a provider in the Databricks Marketplace with at least one visible listing.",
         "tags": [
           "marketplace",
@@ -1147,7 +1147,7 @@
     },
     "/api/2.1/marketplace-consumer/providers": {
       "get": {
-        "operationId": "list",
+        "operationId": "consumer_providers_list",
         "summary": "List all providers in the Databricks Marketplace with at least one visible listing.",
         "tags": [
           "marketplace",
@@ -1216,7 +1216,7 @@
     },
     "/api/2.0/marketplace-exchange/filters": {
       "post": {
-        "operationId": "create",
+        "operationId": "provider_exchange_filters_create",
         "summary": "Add an exchange filter.",
         "tags": [
           "marketplace",
@@ -1273,7 +1273,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "provider_exchange_filters_list",
         "summary": "List exchange filter",
         "tags": [
           "marketplace",
@@ -1342,7 +1342,7 @@
     },
     "/api/2.0/marketplace-exchange/filters/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "provider_exchange_filters_delete",
         "summary": "Delete an exchange filter",
         "tags": [
           "marketplace",
@@ -1385,7 +1385,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "provider_exchange_filters_update",
         "summary": "Update an exchange filter.",
         "tags": [
           "marketplace",
@@ -1454,7 +1454,7 @@
     },
     "/api/2.0/marketplace-exchange/exchanges-for-listing": {
       "post": {
-        "operationId": "add_listing_to_exchange",
+        "operationId": "provider_exchanges_add_listing_to_exchange",
         "summary": "Associate an exchange with a listing",
         "tags": [
           "marketplace",
@@ -1515,7 +1515,7 @@
         }
       },
       "get": {
-        "operationId": "list_exchanges_for_listing",
+        "operationId": "provider_exchanges_list_exchanges_for_listing",
         "summary": "List exchanges associated with a listing",
         "tags": [
           "marketplace",
@@ -1584,7 +1584,7 @@
     },
     "/api/2.0/marketplace-exchange/exchanges": {
       "post": {
-        "operationId": "create",
+        "operationId": "provider_exchanges_create",
         "summary": "Create an exchange",
         "tags": [
           "marketplace",
@@ -1641,7 +1641,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "provider_exchanges_list",
         "summary": "List exchanges visible to provider",
         "tags": [
           "marketplace",
@@ -1701,7 +1701,7 @@
     },
     "/api/2.0/marketplace-exchange/exchanges/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "provider_exchanges_delete",
         "summary": "This removes a listing from marketplace.",
         "tags": [
           "marketplace",
@@ -1744,7 +1744,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "provider_exchanges_get",
         "summary": "Get an exchange.",
         "tags": [
           "marketplace",
@@ -1794,7 +1794,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "provider_exchanges_update",
         "summary": "Update an exchange",
         "tags": [
           "marketplace",
@@ -1863,7 +1863,7 @@
     },
     "/api/2.0/marketplace-exchange/exchanges-for-listing/{id}": {
       "delete": {
-        "operationId": "delete_listing_from_exchange",
+        "operationId": "provider_exchanges_delete_listing_from_exchange",
         "summary": "Disassociate an exchange with a listing",
         "tags": [
           "marketplace",
@@ -1908,7 +1908,7 @@
     },
     "/api/2.0/marketplace-exchange/listings-for-exchange": {
       "get": {
-        "operationId": "list_listings_for_exchange",
+        "operationId": "provider_exchanges_list_listings_for_exchange",
         "summary": "List listings associated with an exchange",
         "tags": [
           "marketplace",
@@ -1977,7 +1977,7 @@
     },
     "/api/2.0/marketplace-provider/files": {
       "post": {
-        "operationId": "create",
+        "operationId": "provider_files_create",
         "summary": "Create a file. Currently, only provider icons and attached notebooks are supported.",
         "tags": [
           "marketplace",
@@ -2046,7 +2046,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "provider_files_list",
         "summary": "List files attached to a parent entity.",
         "tags": [
           "marketplace",
@@ -2115,7 +2115,7 @@
     },
     "/api/2.0/marketplace-provider/files/{file_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "provider_files_delete",
         "summary": "Delete a file",
         "tags": [
           "marketplace",
@@ -2158,7 +2158,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "provider_files_get",
         "summary": "Get a file",
         "tags": [
           "marketplace",
@@ -2210,7 +2210,7 @@
     },
     "/api/2.0/marketplace-provider/listing": {
       "post": {
-        "operationId": "create",
+        "operationId": "provider_listings_create",
         "summary": "Create a new listing",
         "tags": [
           "marketplace",
@@ -2269,7 +2269,7 @@
     },
     "/api/2.0/marketplace-provider/listings/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "provider_listings_delete",
         "summary": "Delete a listing",
         "tags": [
           "marketplace",
@@ -2312,7 +2312,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "provider_listings_get",
         "summary": "Get a listing",
         "tags": [
           "marketplace",
@@ -2362,7 +2362,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "provider_listings_update",
         "summary": "Update a listing",
         "tags": [
           "marketplace",
@@ -2431,7 +2431,7 @@
     },
     "/api/2.0/marketplace-provider/listings": {
       "get": {
-        "operationId": "list",
+        "operationId": "provider_listings_list",
         "summary": "List listings owned by this provider",
         "tags": [
           "marketplace",
@@ -2491,7 +2491,7 @@
     },
     "/api/2.0/marketplace-provider/personalization-requests": {
       "get": {
-        "operationId": "list",
+        "operationId": "provider_personalization_requests_list",
         "summary": "List personalization requests to this provider. This will return all personalization requests,",
         "tags": [
           "marketplace",
@@ -2551,7 +2551,7 @@
     },
     "/api/2.0/marketplace-provider/listings/{listing_id}/personalization-requests/{request_id}/request-status": {
       "put": {
-        "operationId": "update",
+        "operationId": "provider_personalization_requests_update",
         "summary": "Update personalization request. This method only permits updating the status of the request.",
         "tags": [
           "marketplace",
@@ -2636,7 +2636,7 @@
     },
     "/api/2.0/marketplace-provider/analytics_dashboard": {
       "post": {
-        "operationId": "create",
+        "operationId": "provider_provider_analytics_dashboards_create",
         "summary": "Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the",
         "tags": [
           "marketplace",
@@ -2675,7 +2675,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "provider_provider_analytics_dashboards_get",
         "summary": "Get provider analytics dashboard.",
         "tags": [
           "marketplace",
@@ -2716,7 +2716,7 @@
     },
     "/api/2.0/marketplace-provider/analytics_dashboard/latest": {
       "get": {
-        "operationId": "get_latest_version",
+        "operationId": "provider_provider_analytics_dashboards_get_latest_version",
         "summary": "Get latest version of provider analytics dashboard.",
         "tags": [
           "marketplace",
@@ -2757,7 +2757,7 @@
     },
     "/api/2.0/marketplace-provider/analytics_dashboard/{id}": {
       "put": {
-        "operationId": "update",
+        "operationId": "provider_provider_analytics_dashboards_update",
         "summary": "Update provider analytics dashboard.",
         "tags": [
           "marketplace",
@@ -2824,7 +2824,7 @@
     },
     "/api/2.0/marketplace-provider/provider": {
       "post": {
-        "operationId": "create",
+        "operationId": "provider_providers_create",
         "summary": "Create a provider",
         "tags": [
           "marketplace",
@@ -2883,7 +2883,7 @@
     },
     "/api/2.0/marketplace-provider/providers/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "provider_providers_delete",
         "summary": "Delete provider",
         "tags": [
           "marketplace",
@@ -2926,7 +2926,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "provider_providers_get",
         "summary": "Get provider profile",
         "tags": [
           "marketplace",
@@ -2976,7 +2976,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "provider_providers_update",
         "summary": "Update provider profile",
         "tags": [
           "marketplace",
@@ -3045,7 +3045,7 @@
     },
     "/api/2.0/marketplace-provider/providers": {
       "get": {
-        "operationId": "list",
+        "operationId": "provider_providers_list",
         "summary": "List provider profiles for account.",
         "tags": [
           "marketplace",

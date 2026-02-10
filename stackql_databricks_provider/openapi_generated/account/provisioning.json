@@ -14,7 +14,7 @@
   "paths": {
     "/api/2.0/accounts/{account_id}/credentials": {
       "post": {
-        "operationId": "create",
+        "operationId": "credentials_create",
         "summary": "Creates a Databricks credential configuration that represents cloud cross-account credentials for a",
         "tags": [
           "provisioning",
@@ -76,7 +76,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "credentials_list",
         "summary": "List Databricks credential configuration objects for an account, specified by ID.",
         "tags": [
           "provisioning",
@@ -117,7 +117,7 @@
     },
     "/api/2.0/accounts/{account_id}/credentials/{credentials_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "credentials_delete",
         "summary": "Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot",
         "tags": [
           "provisioning",
@@ -167,7 +167,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "credentials_get",
         "summary": "Gets a Databricks credential configuration object for an account, both specified by ID.",
         "tags": [
           "provisioning",
@@ -219,7 +219,7 @@
     },
     "/api/2.0/accounts/{account_id}/customer-managed-keys": {
       "post": {
-        "operationId": "create",
+        "operationId": "encryption_keys_create",
         "summary": "Creates a customer-managed key configuration object for an account, specified by ID. This operation",
         "tags": [
           "provisioning",
@@ -283,7 +283,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "encryption_keys_list",
         "summary": "Lists Databricks customer-managed key configurations for an account.",
         "tags": [
           "provisioning",
@@ -324,7 +324,7 @@
     },
     "/api/2.0/accounts/{account_id}/customer-managed-keys/{customer_managed_key_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "encryption_keys_delete",
         "summary": "Deletes a customer-managed key configuration object for an account. You cannot delete a configuration",
         "tags": [
           "provisioning",
@@ -374,7 +374,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "encryption_keys_get",
         "summary": "Gets a customer-managed key configuration object for an account, specified by ID. This operation",
         "tags": [
           "provisioning",
@@ -426,7 +426,7 @@
     },
     "/api/2.0/accounts/{account_id}/networks": {
       "post": {
-        "operationId": "create",
+        "operationId": "networks_create",
         "summary": "Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be",
         "tags": [
           "provisioning",
@@ -498,7 +498,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "networks_list",
         "summary": "Lists Databricks network configurations for an account.",
         "tags": [
           "provisioning",
@@ -539,7 +539,7 @@
     },
     "/api/2.0/accounts/{account_id}/networks/{network_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "networks_delete",
         "summary": "Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot",
         "tags": [
           "provisioning",
@@ -589,7 +589,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "networks_get",
         "summary": "Gets a Databricks network configuration, which represents a cloud VPC and its resources.",
         "tags": [
           "provisioning",
@@ -641,7 +641,7 @@
     },
     "/api/2.0/accounts/{account_id}/private-access-settings": {
       "post": {
-        "operationId": "create",
+        "operationId": "private_access_create",
         "summary": "Creates a private access settings configuration, which represents network access restrictions for",
         "tags": [
           "provisioning",
@@ -711,7 +711,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "private_access_list",
         "summary": "Lists Databricks private access settings for an account.",
         "tags": [
           "provisioning",
@@ -752,7 +752,7 @@
     },
     "/api/2.0/accounts/{account_id}/private-access-settings/{private_access_settings_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "private_access_delete",
         "summary": "Deletes a Databricks private access settings configuration, both specified by ID.",
         "tags": [
           "provisioning",
@@ -802,7 +802,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "private_access_get",
         "summary": "Gets a Databricks private access settings configuration, both specified by ID.",
         "tags": [
           "provisioning",
@@ -852,7 +852,7 @@
         }
       },
       "put": {
-        "operationId": "replace",
+        "operationId": "private_access_replace",
         "summary": "Updates an existing private access settings object, which specifies how your workspace is accessed",
         "tags": [
           "provisioning",
@@ -922,7 +922,7 @@
     },
     "/api/2.0/accounts/{account_id}/storage-configurations": {
       "post": {
-        "operationId": "create",
+        "operationId": "storage_create",
         "summary": "Creates a Databricks storage configuration for an account.",
         "tags": [
           "provisioning",
@@ -988,7 +988,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "storage_list",
         "summary": "Lists Databricks storage configurations for an account, specified by ID.",
         "tags": [
           "provisioning",
@@ -1029,7 +1029,7 @@
     },
     "/api/2.0/accounts/{account_id}/storage-configurations/{storage_configuration_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "storage_delete",
         "summary": "Deletes a Databricks storage configuration. You cannot delete a storage configuration that is",
         "tags": [
           "provisioning",
@@ -1079,7 +1079,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "storage_get",
         "summary": "Gets a Databricks storage configuration for an account, both specified by ID.",
         "tags": [
           "provisioning",
@@ -1131,7 +1131,7 @@
     },
     "/api/2.0/accounts/{account_id}/vpc-endpoints": {
       "post": {
-        "operationId": "create",
+        "operationId": "vpc_endpoints_create",
         "summary": "Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to",
         "tags": [
           "provisioning",
@@ -1197,7 +1197,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "vpc_endpoints_list",
         "summary": "Lists Databricks VPC endpoint configurations for an account.",
         "tags": [
           "provisioning",
@@ -1238,7 +1238,7 @@
     },
     "/api/2.0/accounts/{account_id}/vpc-endpoints/{vpc_endpoint_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "vpc_endpoints_delete",
         "summary": "Deletes a Databricks VPC endpoint configuration. You cannot delete a VPC endpoint configuration that",
         "tags": [
           "provisioning",
@@ -1288,7 +1288,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "vpc_endpoints_get",
         "summary": "Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate",
         "tags": [
           "provisioning",
@@ -1340,7 +1340,7 @@
     },
     "/api/2.0/accounts/{account_id}/workspaces": {
       "post": {
-        "operationId": "create",
+        "operationId": "workspaces_create",
         "summary": "Creates a new workspace using a credential configuration and a storage configuration, an optional",
         "tags": [
           "provisioning",
@@ -1458,7 +1458,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "workspaces_list",
         "summary": "Lists Databricks workspaces for an account.",
         "tags": [
           "provisioning",
@@ -1499,7 +1499,7 @@
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "workspaces_delete",
         "summary": "Deletes a Databricks workspace, both specified by ID.",
         "tags": [
           "provisioning",
@@ -1549,7 +1549,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "workspaces_get",
         "summary": "Gets information including status for a Databricks workspace, specified by ID. In the response, the",
         "tags": [
           "provisioning",
@@ -1599,7 +1599,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "workspaces_update",
         "summary": "Updates a workspace.",
         "tags": [
           "provisioning",

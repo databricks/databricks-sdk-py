@@ -19,12 +19,17 @@ stackql_databricks_provider/
 ├── extract.py               # Core extraction functions (routes, schemas, params)
 ├── registry.py              # Service registry (account vs workspace classification)
 ├── generate.py              # OpenAPI spec generation and CLI entry point
+├── inventory_gen.py         # CSV inventory generator (operation mapping files)
 ├── README.md                # This file
 ├── tests/
 │   ├── __init__.py
 │   ├── test_extract.py      # Tests for extraction functions
 │   ├── test_registry.py     # Tests for service registry
-│   └── test_generate.py     # Tests for spec generation
+│   ├── test_generate.py     # Tests for spec generation
+│   └── test_inventory_gen.py # Tests for CSV inventory generator
+├── inventory/               # CSV operation inventories (after running inventory_gen)
+│   ├── account/             # One CSV per account-level service
+│   └── workspace/           # One CSV per workspace-level service
 └── openapi_generated/       # Generated output (after running the generator)
     ├── account/             # Account-level service specs
     │   ├── billing.json
@@ -100,6 +105,35 @@ python -m stackql_databricks_provider.generate -o /path/to/output
 python -m stackql_databricks_provider.generate -v
 ```
 
+### Generate CSV operation inventories
+
+After generating the OpenAPI specs, generate the CSV inventory files:
+
+```bash
+python -m stackql_databricks_provider.inventory_gen
+```
+
+This produces one CSV per service under `stackql_databricks_provider/inventory/{account,workspace}/`.
+
+**Important:** The inventory generator respects existing CSV files. If a CSV already exists for a service, only *new* operations (by `operation_id`) are appended. Existing rows are preserved as-is, so any manual edits to `stackql_resource_name`, `stackql_method_name`, or `stackql_verb` are not overwritten.
+
+### CSV columns
+
+| Column | Description |
+|--------|-------------|
+| `service` | Spec file name (without `.json`) |
+| `operation_id` | Unique operation identifier (e.g. `clusters_create`) |
+| `http_path` | REST API path |
+| `http_verb` | HTTP method (`get`, `post`, `put`, `patch`, `delete`) |
+| `tags` | Comma-delimited list of OpenAPI tags |
+| `params` | Comma-delimited list of all parameter names |
+| `success_response_object` | Response schema name from `$ref` (without `#/components/schemas/`) |
+| `summary` | Operation summary |
+| `description` | Full operation description |
+| `stackql_resource_name` | StackQL resource name (defaults to last tag) |
+| `stackql_method_name` | StackQL method name (defaults to `operation_id`) |
+| `stackql_verb` | StackQL verb: `SELECT`, `INSERT`, `REPLACE`, `UPDATE`, `DELETE` |
+
 ## How to Test
 
 Run the full test suite:
@@ -136,12 +170,17 @@ When the upstream Databricks Python SDK is updated with new services or API chan
    python -m stackql_databricks_provider.generate
    ```
 
-5. **Run tests** to verify nothing broke:
+5. **Regenerate inventories** (existing manual edits are preserved):
+   ```bash
+   python -m stackql_databricks_provider.inventory_gen
+   ```
+
+6. **Run tests** to verify nothing broke:
    ```bash
    python -m pytest stackql_databricks_provider/tests/ -v
    ```
 
-6. **Review the diff** in the generated files to understand what changed.
+7. **Review the diff** in the generated files to understand what changed.
 
 ## Public API
 

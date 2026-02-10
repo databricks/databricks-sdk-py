@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/git-credentials": {
       "post": {
-        "operationId": "create",
+        "operationId": "git_credentials_create",
         "summary": "Creates a Git credential entry for the user. Only one Git credential per user is supported, so any",
         "tags": [
           "workspace",
@@ -101,7 +101,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "git_credentials_list",
         "summary": "Lists the calling user's Git credentials.",
         "tags": [
           "workspace",
@@ -153,7 +153,7 @@
     },
     "/api/2.0/git-credentials/{credential_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "git_credentials_delete",
         "summary": "Deletes the specified Git credential.",
         "tags": [
           "workspace",
@@ -205,7 +205,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "git_credentials_get",
         "summary": "Gets the Git credential with the specified credential ID.",
         "tags": [
           "workspace",
@@ -264,7 +264,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "git_credentials_update",
         "summary": "Updates the specified Git credential.",
         "tags": [
           "workspace",
@@ -351,7 +351,7 @@
     },
     "/api/2.0/repos": {
       "post": {
-        "operationId": "create",
+        "operationId": "repos_create",
         "summary": "Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created",
         "tags": [
           "workspace",
@@ -421,7 +421,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "repos_list",
         "summary": "Returns repos that the calling user has Manage permissions on. Use `next_page_token` to iterate",
         "tags": [
           "workspace",
@@ -482,7 +482,7 @@
     },
     "/api/2.0/repos/{repo_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "repos_delete",
         "summary": "Deletes the specified repo.",
         "tags": [
           "workspace",
@@ -525,7 +525,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "repos_get",
         "summary": "Returns the repo with the given repo ID.",
         "tags": [
           "workspace",
@@ -575,7 +575,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "repos_update",
         "summary": "Updates the repo to a different branch or tag, or updates the repo to the latest commit on the same",
         "tags": [
           "workspace",
@@ -643,7 +643,7 @@
     },
     "/api/2.0/permissions/repos/{repo_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "repos_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "workspace",
@@ -695,7 +695,7 @@
     },
     "/api/2.0/permissions/repos/{repo_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "repos_get_permissions",
         "summary": "Gets the permissions of a repo. Repos can inherit permissions from their root object.",
         "tags": [
           "workspace",
@@ -745,7 +745,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "repos_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "workspace",
@@ -810,7 +810,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "repos_update_permissions",
         "summary": "Updates the permissions on a repo. Repos can inherit permissions from their root object.",
         "tags": [
           "workspace",
@@ -877,7 +877,7 @@
     },
     "/api/2.0/secrets/scopes/create": {
       "post": {
-        "operationId": "create_scope",
+        "operationId": "secrets_create_scope",
         "summary": "Creates a new secret scope.",
         "tags": [
           "workspace",
@@ -941,7 +941,7 @@
     },
     "/api/2.0/secrets/acls/delete": {
       "post": {
-        "operationId": "delete_acl",
+        "operationId": "secrets_delete_acl",
         "summary": "Deletes the given ACL on the given scope.",
         "tags": [
           "workspace",
@@ -998,7 +998,7 @@
     },
     "/api/2.0/secrets/scopes/delete": {
       "post": {
-        "operationId": "delete_scope",
+        "operationId": "secrets_delete_scope",
         "summary": "Deletes a secret scope.",
         "tags": [
           "workspace",
@@ -1050,7 +1050,7 @@
     },
     "/api/2.0/secrets/delete": {
       "post": {
-        "operationId": "delete_secret",
+        "operationId": "secrets_delete_secret",
         "summary": "Deletes the secret stored in this secret scope. You must have ``WRITE`` or ``MANAGE`` permission on",
         "tags": [
           "workspace",
@@ -1107,7 +1107,7 @@
     },
     "/api/2.0/secrets/acls/get": {
       "get": {
-        "operationId": "get_acl",
+        "operationId": "secrets_get_acl",
         "summary": "Describes the details about the given ACL, such as the group and permission.",
         "tags": [
           "workspace",
@@ -1168,7 +1168,7 @@
     },
     "/api/2.0/secrets/get": {
       "get": {
-        "operationId": "get_secret",
+        "operationId": "secrets_get_secret",
         "summary": "Gets a secret for a given key and scope. This API can only be called from the DBUtils interface. Users",
         "tags": [
           "workspace",
@@ -1229,7 +1229,7 @@
     },
     "/api/2.0/secrets/acls/list": {
       "get": {
-        "operationId": "list_acls",
+        "operationId": "secrets_list_acls",
         "summary": "Lists the ACLs set on the given scope.",
         "tags": [
           "workspace",
@@ -1281,7 +1281,7 @@
     },
     "/api/2.0/secrets/scopes/list": {
       "get": {
-        "operationId": "list_scopes",
+        "operationId": "secrets_list_scopes",
         "summary": "Lists all secret scopes available in the workspace.",
         "tags": [
           "workspace",
@@ -1322,7 +1322,7 @@
     },
     "/api/2.0/secrets/list": {
       "get": {
-        "operationId": "list_secrets",
+        "operationId": "secrets_list_secrets",
         "summary": "Lists the secret keys that are stored at this scope. This is a metadata-only operation; secret data",
         "tags": [
           "workspace",
@@ -1374,7 +1374,7 @@
     },
     "/api/2.0/secrets/acls/put": {
       "post": {
-        "operationId": "put_acl",
+        "operationId": "secrets_put_acl",
         "summary": "Creates or overwrites the ACL associated with the given principal (user or group) on the specified",
         "tags": [
           "workspace",
@@ -1436,7 +1436,7 @@
     },
     "/api/2.0/secrets/put": {
       "post": {
-        "operationId": "put_secret",
+        "operationId": "secrets_put_secret",
         "summary": "Inserts a secret under the provided scope with the given name. If a secret already exists with the",
         "tags": [
           "workspace",
@@ -1501,7 +1501,7 @@
     },
     "/api/2.0/workspace/delete": {
       "post": {
-        "operationId": "delete",
+        "operationId": "workspace_delete",
         "summary": "Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *",
         "tags": [
           "workspace"
@@ -1556,7 +1556,7 @@
     },
     "/api/2.0/workspace/export": {
       "get": {
-        "operationId": "export",
+        "operationId": "workspace_export",
         "summary": "Exports an object or the contents of an entire directory.",
         "tags": [
           "workspace"
@@ -1616,7 +1616,7 @@
     },
     "/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "workspace_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "workspace"
@@ -1676,7 +1676,7 @@
     },
     "/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "workspace_get_permissions",
         "summary": "Gets the permissions of a workspace object. Workspace objects can inherit permissions from their",
         "tags": [
           "workspace"
@@ -1734,7 +1734,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "workspace_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "workspace"
@@ -1807,7 +1807,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "workspace_update_permissions",
         "summary": "Updates the permissions on a workspace object. Workspace objects can inherit permissions from their",
         "tags": [
           "workspace"
@@ -1882,7 +1882,7 @@
     },
     "/api/2.0/workspace/get-status": {
       "get": {
-        "operationId": "get_status",
+        "operationId": "workspace_get_status",
         "summary": "Gets the status of an object or a directory. If `path` does not exist, this call returns an error",
         "tags": [
           "workspace"
@@ -1933,7 +1933,7 @@
     },
     "/api/2.0/workspace/import": {
       "post": {
-        "operationId": "import_",
+        "operationId": "workspace_import_",
         "summary": "Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.",
         "tags": [
           "workspace"
@@ -2000,7 +2000,7 @@
     },
     "/api/2.0/workspace/list": {
       "get": {
-        "operationId": "list",
+        "operationId": "workspace_list",
         "summary": "Lists the contents of a directory, or the object if it is not a directory. If the input path does not",
         "tags": [
           "workspace"
@@ -2060,7 +2060,7 @@
     },
     "/api/2.0/workspace/mkdirs": {
       "post": {
-        "operationId": "mkdirs",
+        "operationId": "workspace_mkdirs",
         "summary": "Creates the specified directory (and necessary parent directories if they do not exist). If there is",
         "tags": [
           "workspace"

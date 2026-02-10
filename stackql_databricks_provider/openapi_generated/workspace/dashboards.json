@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages": {
       "post": {
-        "operationId": "create_message",
+        "operationId": "genie_create_message",
         "summary": "Create new message in a [conversation](:method:genie/startconversation). The AI response uses all",
         "tags": [
           "dashboards",
@@ -97,7 +97,7 @@
         }
       },
       "get": {
-        "operationId": "list_conversation_messages",
+        "operationId": "genie_list_conversation_messages",
         "summary": "List messages in a conversation",
         "tags": [
           "dashboards",
@@ -176,7 +176,7 @@
     },
     "/api/2.0/genie/spaces": {
       "post": {
-        "operationId": "create_space",
+        "operationId": "genie_create_space",
         "summary": "Creates a Genie space from a serialized payload.",
         "tags": [
           "dashboards",
@@ -250,7 +250,7 @@
         }
       },
       "get": {
-        "operationId": "list_spaces",
+        "operationId": "genie_list_spaces",
         "summary": "Get list of Genie Spaces.",
         "tags": [
           "dashboards",
@@ -311,7 +311,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}": {
       "delete": {
-        "operationId": "delete_conversation",
+        "operationId": "genie_delete_conversation",
         "summary": "Delete a conversation.",
         "tags": [
           "dashboards",
@@ -365,7 +365,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}": {
       "delete": {
-        "operationId": "delete_conversation_message",
+        "operationId": "genie_delete_conversation_message",
         "summary": "Delete a conversation message.",
         "tags": [
           "dashboards",
@@ -426,7 +426,7 @@
         }
       },
       "get": {
-        "operationId": "get_message",
+        "operationId": "genie_get_message",
         "summary": "Get message from conversation.",
         "tags": [
           "dashboards",
@@ -496,7 +496,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/execute-query": {
       "post": {
-        "operationId": "execute_message_attachment_query",
+        "operationId": "genie_execute_message_attachment_query",
         "summary": "Execute the SQL for a message query attachment. Use this API when the query attachment has expired and",
         "tags": [
           "dashboards",
@@ -575,7 +575,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/execute-query": {
       "post": {
-        "operationId": "execute_message_query",
+        "operationId": "genie_execute_message_query",
         "summary": "DEPRECATED: Use [Execute Message Attachment Query](:method:genie/executemessageattachmentquery)",
         "tags": [
           "dashboards",
@@ -645,7 +645,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads": {
       "post": {
-        "operationId": "generate_download_full_query_result",
+        "operationId": "genie_generate_download_full_query_result",
         "summary": "Initiates a new SQL execution and returns a `download_id` and `download_id_signature` that you can use",
         "tags": [
           "dashboards",
@@ -724,7 +724,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads/{download_id}": {
       "get": {
-        "operationId": "get_download_full_query_result",
+        "operationId": "genie_get_download_full_query_result",
         "summary": "After [Generating a Full Query Result Download](:method:genie/generatedownloadfullqueryresult) and",
         "tags": [
           "dashboards",
@@ -821,7 +821,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/query-result": {
       "get": {
-        "operationId": "get_message_attachment_query_result",
+        "operationId": "genie_get_message_attachment_query_result",
         "summary": "Get the result of SQL query if the message has a query attachment. This is only available if a message",
         "tags": [
           "dashboards",
@@ -900,7 +900,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/query-result": {
       "get": {
-        "operationId": "get_message_query_result",
+        "operationId": "genie_get_message_query_result",
         "summary": "DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)",
         "tags": [
           "dashboards",
@@ -970,7 +970,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/query-result/{attachment_id}": {
       "get": {
-        "operationId": "get_message_query_result_by_attachment",
+        "operationId": "genie_get_message_query_result_by_attachment",
         "summary": "DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)",
         "tags": [
           "dashboards",
@@ -1049,7 +1049,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}": {
       "get": {
-        "operationId": "get_space",
+        "operationId": "genie_get_space",
         "summary": "Get details of a Genie Space.",
         "tags": [
           "dashboards",
@@ -1108,7 +1108,7 @@
         }
       },
       "delete": {
-        "operationId": "trash_space",
+        "operationId": "genie_trash_space",
         "summary": "Move a Genie Space to the trash.",
         "tags": [
           "dashboards",
@@ -1151,7 +1151,7 @@
         }
       },
       "patch": {
-        "operationId": "update_space",
+        "operationId": "genie_update_space",
         "summary": "Updates a Genie space with a serialized payload.",
         "tags": [
           "dashboards",
@@ -1230,7 +1230,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations": {
       "get": {
-        "operationId": "list_conversations",
+        "operationId": "genie_list_conversations",
         "summary": "Get a list of conversations in a Genie Space.",
         "tags": [
           "dashboards",
@@ -1309,7 +1309,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/feedback": {
       "post": {
-        "operationId": "send_message_feedback",
+        "operationId": "genie_send_message_feedback",
         "summary": "Send feedback for a message.",
         "tags": [
           "dashboards",
@@ -1390,7 +1390,7 @@
     },
     "/api/2.0/genie/spaces/{space_id}/start-conversation": {
       "post": {
-        "operationId": "start_conversation",
+        "operationId": "genie_start_conversation",
         "summary": "Start a new conversation.",
         "tags": [
           "dashboards",
@@ -1460,7 +1460,7 @@
     },
     "/api/2.0/lakeview/dashboards": {
       "post": {
-        "operationId": "create",
+        "operationId": "lakeview_create",
         "summary": "Create a draft dashboard.",
         "tags": [
           "dashboards",
@@ -1536,7 +1536,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "lakeview_list",
         "summary": "List dashboards.",
         "tags": [
           "dashboards",
@@ -1615,7 +1615,7 @@
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/schedules": {
       "post": {
-        "operationId": "create_schedule",
+        "operationId": "lakeview_create_schedule",
         "summary": "Create dashboard schedule.",
         "tags": [
           "dashboards",
@@ -1683,7 +1683,7 @@
         }
       },
       "get": {
-        "operationId": "list_schedules",
+        "operationId": "lakeview_list_schedules",
         "summary": "List dashboard schedules.",
         "tags": [
           "dashboards",
@@ -1753,7 +1753,7 @@
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}/subscriptions": {
       "post": {
-        "operationId": "create_subscription",
+        "operationId": "lakeview_create_subscription",
         "summary": "Create schedule subscription.",
         "tags": [
           "dashboards",
@@ -1830,7 +1830,7 @@
         }
       },
       "get": {
-        "operationId": "list_subscriptions",
+        "operationId": "lakeview_list_subscriptions",
         "summary": "List schedule subscriptions.",
         "tags": [
           "dashboards",
@@ -1909,7 +1909,7 @@
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}": {
       "delete": {
-        "operationId": "delete_schedule",
+        "operationId": "lakeview_delete_schedule",
         "summary": "Delete dashboard schedule.",
         "tags": [
           "dashboards",
@@ -1970,7 +1970,7 @@
         }
       },
       "get": {
-        "operationId": "get_schedule",
+        "operationId": "lakeview_get_schedule",
         "summary": "Get dashboard schedule.",
         "tags": [
           "dashboards",
@@ -2029,7 +2029,7 @@
         }
       },
       "put": {
-        "operationId": "update_schedule",
+        "operationId": "lakeview_update_schedule",
         "summary": "Update dashboard schedule.",
         "tags": [
           "dashboards",
@@ -2108,7 +2108,7 @@
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}/subscriptions/{subscription_id}": {
       "delete": {
-        "operationId": "delete_subscription",
+        "operationId": "lakeview_delete_subscription",
         "summary": "Delete schedule subscription.",
         "tags": [
           "dashboards",
@@ -2178,7 +2178,7 @@
         }
       },
       "get": {
-        "operationId": "get_subscription",
+        "operationId": "lakeview_get_subscription",
         "summary": "Get schedule subscription.",
         "tags": [
           "dashboards",
@@ -2248,7 +2248,7 @@
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}": {
       "get": {
-        "operationId": "get",
+        "operationId": "lakeview_get",
         "summary": "Get a draft dashboard.",
         "tags": [
           "dashboards",
@@ -2298,7 +2298,7 @@
         }
       },
       "delete": {
-        "operationId": "trash",
+        "operationId": "lakeview_trash",
         "summary": "Trash a dashboard.",
         "tags": [
           "dashboards",
@@ -2341,7 +2341,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "lakeview_update",
         "summary": "Update a draft dashboard.",
         "tags": [
           "dashboards",
@@ -2428,7 +2428,7 @@
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/published": {
       "get": {
-        "operationId": "get_published",
+        "operationId": "lakeview_get_published",
         "summary": "Get the current published dashboard.",
         "tags": [
           "dashboards",
@@ -2478,7 +2478,7 @@
         }
       },
       "post": {
-        "operationId": "publish",
+        "operationId": "lakeview_publish",
         "summary": "Publish the current draft dashboard.",
         "tags": [
           "dashboards",
@@ -2547,7 +2547,7 @@
         }
       },
       "delete": {
-        "operationId": "unpublish",
+        "operationId": "lakeview_unpublish",
         "summary": "Unpublish the dashboard.",
         "tags": [
           "dashboards",
@@ -2592,7 +2592,7 @@
     },
     "/api/2.0/lakeview/dashboards/migrate": {
       "post": {
-        "operationId": "migrate",
+        "operationId": "lakeview_migrate",
         "summary": "Migrates a classic SQL dashboard to Lakeview.",
         "tags": [
           "dashboards",
@@ -2663,7 +2663,7 @@
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/published/tokeninfo": {
       "get": {
-        "operationId": "get_published_dashboard_token_info",
+        "operationId": "lakeview_embedded_get_published_dashboard_token_info",
         "summary": "Get a required authorization details and scopes of a published dashboard to mint an OAuth token.",
         "tags": [
           "dashboards",

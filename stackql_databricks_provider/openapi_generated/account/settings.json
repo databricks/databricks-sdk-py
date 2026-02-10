@@ -14,7 +14,7 @@
   "paths": {
     "/api/2.0/accounts/{account_id}/ip-access-lists": {
       "post": {
-        "operationId": "create",
+        "operationId": "account_ip_access_lists_create",
         "summary": "Creates an IP access list for the account.",
         "tags": [
           "settings",
@@ -79,7 +79,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "account_ip_access_lists_list",
         "summary": "Gets all IP access lists for the specified account.",
         "tags": [
           "settings",
@@ -120,7 +120,7 @@
     },
     "/api/2.0/accounts/{account_id}/ip-access-lists/{ip_access_list_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "account_ip_access_lists_delete",
         "summary": "Deletes an IP access list, specified by its list ID.",
         "tags": [
           "settings",
@@ -163,7 +163,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "account_ip_access_lists_get",
         "summary": "Gets an IP access list, specified by its list ID.",
         "tags": [
           "settings",
@@ -213,7 +213,7 @@
         }
       },
       "put": {
-        "operationId": "replace",
+        "operationId": "account_ip_access_lists_replace",
         "summary": "Replaces an IP access list, specified by its ID.",
         "tags": [
           "settings",
@@ -287,7 +287,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "account_ip_access_lists_update",
         "summary": "Updates an existing IP access list, specified by its ID.",
         "tags": [
           "settings",
@@ -358,7 +358,7 @@
     },
     "/api/2.0/accounts/{account_id}/network-connectivity-configs": {
       "post": {
-        "operationId": "create_network_connectivity_configuration",
+        "operationId": "network_connectivity_create_network_connectivity_configuration",
         "summary": "Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when",
         "tags": [
           "settings",
@@ -415,7 +415,7 @@
         }
       },
       "get": {
-        "operationId": "list_network_connectivity_configurations",
+        "operationId": "network_connectivity_list_network_connectivity_configurations",
         "summary": "Gets an array of network connectivity configurations.",
         "tags": [
           "settings",
@@ -467,7 +467,7 @@
     },
     "/api/2.0/accounts/{account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules": {
       "post": {
-        "operationId": "create_private_endpoint_rule",
+        "operationId": "network_connectivity_create_private_endpoint_rule",
         "summary": "Create a private endpoint rule for the specified network connectivity config object. Once the object",
         "tags": [
           "settings",
@@ -535,7 +535,7 @@
         }
       },
       "get": {
-        "operationId": "list_private_endpoint_rules",
+        "operationId": "network_connectivity_list_private_endpoint_rules",
         "summary": "Gets an array of private endpoint rules.",
         "tags": [
           "settings",
@@ -596,7 +596,7 @@
     },
     "/api/2.0/accounts/{account_id}/network-connectivity-configs/{network_connectivity_config_id}": {
       "delete": {
-        "operationId": "delete_network_connectivity_configuration",
+        "operationId": "network_connectivity_delete_network_connectivity_configuration",
         "summary": "Deletes a network connectivity configuration.",
         "tags": [
           "settings",
@@ -639,7 +639,7 @@
         }
       },
       "get": {
-        "operationId": "get_network_connectivity_configuration",
+        "operationId": "network_connectivity_get_network_connectivity_configuration",
         "summary": "Gets a network connectivity configuration.",
         "tags": [
           "settings",
@@ -691,7 +691,7 @@
     },
     "/api/2.0/accounts/{account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules/{private_endpoint_rule_id}": {
       "delete": {
-        "operationId": "delete_private_endpoint_rule",
+        "operationId": "network_connectivity_delete_private_endpoint_rule",
         "summary": "Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private",
         "tags": [
           "settings",
@@ -750,7 +750,7 @@
         }
       },
       "get": {
-        "operationId": "get_private_endpoint_rule",
+        "operationId": "network_connectivity_get_private_endpoint_rule",
         "summary": "Gets the private endpoint rule.",
         "tags": [
           "settings",
@@ -809,7 +809,7 @@
         }
       },
       "patch": {
-        "operationId": "update_private_endpoint_rule",
+        "operationId": "network_connectivity_update_private_endpoint_rule",
         "summary": "Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources",
         "tags": [
           "settings",
@@ -896,7 +896,7 @@
     },
     "/api/2.0/accounts/{account_id}/network-policies": {
       "post": {
-        "operationId": "create_network_policy_rpc",
+        "operationId": "network_policies_create_network_policy_rpc",
         "summary": "Creates a new network policy to manage which network destinations can be accessed from the Databricks",
         "tags": [
           "settings",
@@ -953,7 +953,7 @@
         }
       },
       "get": {
-        "operationId": "list_network_policies_rpc",
+        "operationId": "network_policies_list_network_policies_rpc",
         "summary": "Gets an array of network policies.",
         "tags": [
           "settings",
@@ -1005,7 +1005,7 @@
     },
     "/api/2.0/accounts/{account_id}/network-policies/{network_policy_id}": {
       "delete": {
-        "operationId": "delete_network_policy_rpc",
+        "operationId": "network_policies_delete_network_policy_rpc",
         "summary": "Deletes a network policy. Cannot be called on 'default-policy'.",
         "tags": [
           "settings",
@@ -1048,7 +1048,7 @@
         }
       },
       "get": {
-        "operationId": "get_network_policy_rpc",
+        "operationId": "network_policies_get_network_policy_rpc",
         "summary": "Gets a network policy.",
         "tags": [
           "settings",
@@ -1098,7 +1098,7 @@
         }
       },
       "put": {
-        "operationId": "update_network_policy_rpc",
+        "operationId": "network_policies_update_network_policy_rpc",
         "summary": "Updates a network policy. This allows you to modify the configuration of a network policy.",
         "tags": [
           "settings",
@@ -1168,7 +1168,7 @@
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}/network": {
       "get": {
-        "operationId": "get_workspace_network_option_rpc",
+        "operationId": "workspace_network_configuration_get_workspace_network_option_rpc",
         "summary": "Gets the network option for a workspace. Every workspace has exactly one network policy binding, with",
         "tags": [
           "settings",
@@ -1218,7 +1218,7 @@
         }
       },
       "put": {
-        "operationId": "update_workspace_network_option_rpc",
+        "operationId": "workspace_network_configuration_update_workspace_network_option_rpc",
         "summary": "Updates the network option for a workspace. This operation associates the workspace with the specified",
         "tags": [
           "settings",

@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}": {
       "get": {
-        "operationId": "get",
+        "operationId": "artifact_allowlists_get",
         "summary": "Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have",
         "tags": [
           "catalog",
@@ -78,7 +78,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "artifact_allowlists_update",
         "summary": "Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with",
         "tags": [
           "catalog",
@@ -164,7 +164,7 @@
     },
     "/api/2.1/unity-catalog/catalogs": {
       "post": {
-        "operationId": "create",
+        "operationId": "catalogs_create",
         "summary": "Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the",
         "tags": [
           "catalog",
@@ -249,7 +249,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "catalogs_list",
         "summary": "Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be",
         "tags": [
           "catalog",
@@ -328,7 +328,7 @@
     },
     "/api/2.1/unity-catalog/catalogs/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "catalogs_delete",
         "summary": "Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner",
         "tags": [
           "catalog",
@@ -380,7 +380,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "catalogs_get",
         "summary": "Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the",
         "tags": [
           "catalog",
@@ -439,7 +439,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "catalogs_update",
         "summary": "Updates the catalog that matches the supplied name. The caller must be either the owner of the",
         "tags": [
           "catalog",
@@ -530,7 +530,7 @@
     },
     "/api/2.1/unity-catalog/connections": {
       "post": {
-        "operationId": "create",
+        "operationId": "connections_create",
         "summary": "Creates a new connection",
         "tags": [
           "catalog",
@@ -609,7 +609,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "connections_list",
         "summary": "List all connections.",
         "tags": [
           "catalog",
@@ -670,7 +670,7 @@
     },
     "/api/2.1/unity-catalog/connections/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "connections_delete",
         "summary": "Deletes the connection that matches the supplied name.",
         "tags": [
           "catalog",
@@ -713,7 +713,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "connections_get",
         "summary": "Gets a connection from it's name.",
         "tags": [
           "catalog",
@@ -763,7 +763,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "connections_update",
         "summary": "Updates the connection that matches the supplied name.",
         "tags": [
           "catalog",
@@ -841,7 +841,7 @@
     },
     "/api/2.1/unity-catalog/entity-tag-assignments": {
       "post": {
-        "operationId": "create",
+        "operationId": "entity_tag_assignments_create",
         "summary": "Creates a tag assignment for an Unity Catalog entity.",
         "tags": [
           "catalog",
@@ -900,7 +900,7 @@
     },
     "/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "entity_tag_assignments_delete",
         "summary": "Deletes a tag assignment for an Unity Catalog entity by its key.",
         "tags": [
           "catalog",
@@ -961,7 +961,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "entity_tag_assignments_get",
         "summary": "Gets a tag assignment for an Unity Catalog entity by tag key.",
         "tags": [
           "catalog",
@@ -1029,7 +1029,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "entity_tag_assignments_update",
         "summary": "Updates an existing tag assignment for an Unity Catalog entity.",
         "tags": [
           "catalog",
@@ -1125,7 +1125,7 @@
     },
     "/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags": {
       "get": {
-        "operationId": "list",
+        "operationId": "entity_tag_assignments_list",
         "summary": "List tag assignments for an Unity Catalog entity",
         "tags": [
           "catalog",
@@ -1204,7 +1204,7 @@
     },
     "/api/2.0/lineage-tracking/external-lineage": {
       "post": {
-        "operationId": "create_external_lineage_relationship",
+        "operationId": "external_lineage_create_external_lineage_relationship",
         "summary": "Creates an external lineage relationship between a Databricks or external metadata object and another",
         "tags": [
           "catalog",
@@ -1261,7 +1261,7 @@
         }
       },
       "delete": {
-        "operationId": "delete_external_lineage_relationship",
+        "operationId": "external_lineage_delete_external_lineage_relationship",
         "summary": "Deletes an external lineage relationship between a Databricks or external metadata object and another",
         "tags": [
           "catalog",
@@ -1304,7 +1304,7 @@
         }
       },
       "get": {
-        "operationId": "list_external_lineage_relationships",
+        "operationId": "external_lineage_list_external_lineage_relationships",
         "summary": "Lists external lineage relationships of a Databricks object or external metadata given a supplied",
         "tags": [
           "catalog",
@@ -1381,7 +1381,7 @@
         }
       },
       "patch": {
-        "operationId": "update_external_lineage_relationship",
+        "operationId": "external_lineage_update_external_lineage_relationship",
         "summary": "Updates an external lineage relationship between a Databricks or external metadata object and another",
         "tags": [
           "catalog",
@@ -1450,7 +1450,7 @@
     },
     "/api/2.1/unity-catalog/external-locations": {
       "post": {
-        "operationId": "create",
+        "operationId": "external_locations_create",
         "summary": "Creates a new external location entry in the metastore. The caller must be a metastore admin or have",
         "tags": [
           "catalog",
@@ -1544,7 +1544,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "external_locations_list",
         "summary": "Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller",
         "tags": [
           "catalog",
@@ -1623,7 +1623,7 @@
     },
     "/api/2.1/unity-catalog/external-locations/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "external_locations_delete",
         "summary": "Deletes the specified external location from the metastore. The caller must be the owner of the",
         "tags": [
           "catalog",
@@ -1675,7 +1675,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "external_locations_get",
         "summary": "Gets an external location from the metastore. The caller must be either a metastore admin, the owner",
         "tags": [
           "catalog",
@@ -1734,7 +1734,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "external_locations_update",
         "summary": "Updates an external location in the metastore. The caller must be the owner of the external location,",
         "tags": [
           "catalog",
@@ -1847,7 +1847,7 @@
     },
     "/api/2.0/lineage-tracking/external-metadata": {
       "post": {
-        "operationId": "create_external_metadata",
+        "operationId": "external_metadata_create_external_metadata",
         "summary": "Creates a new external metadata object in the parent metastore if the caller is a metastore admin or",
         "tags": [
           "catalog",
@@ -1904,7 +1904,7 @@
         }
       },
       "get": {
-        "operationId": "list_external_metadata",
+        "operationId": "external_metadata_list_external_metadata",
         "summary": "Gets an array of external metadata objects in the metastore. If the caller is the metastore admin, all",
         "tags": [
           "catalog",
@@ -1965,7 +1965,7 @@
     },
     "/api/2.0/lineage-tracking/external-metadata/{name}": {
       "delete": {
-        "operationId": "delete_external_metadata",
+        "operationId": "external_metadata_delete_external_metadata",
         "summary": "Deletes the external metadata object that matches the supplied name. The caller must be a metastore",
         "tags": [
           "catalog",
@@ -2008,7 +2008,7 @@
         }
       },
       "get": {
-        "operationId": "get_external_metadata",
+        "operationId": "external_metadata_get_external_metadata",
         "summary": "Gets the specified external metadata object in a metastore. The caller must be a metastore admin, the",
         "tags": [
           "catalog",
@@ -2058,7 +2058,7 @@
         }
       },
       "patch": {
-        "operationId": "update_external_metadata",
+        "operationId": "external_metadata_update_external_metadata",
         "summary": "Updates the external metadata object that matches the supplied name. The caller can only update either",
         "tags": [
           "catalog",
@@ -2136,7 +2136,7 @@
     },
     "/api/2.1/unity-catalog/functions": {
       "post": {
-        "operationId": "create",
+        "operationId": "functions_create",
         "summary": "**WARNING: This API is experimental and will change in future versions**",
         "tags": [
           "catalog",
@@ -2193,7 +2193,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "functions_list",
         "summary": "List functions within the specified parent catalog and schema. If the user is a metastore admin, all",
         "tags": [
           "catalog",
@@ -2281,7 +2281,7 @@
     },
     "/api/2.1/unity-catalog/functions/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "functions_delete",
         "summary": "Deletes the function that matches the supplied name. For the deletion to succeed, the user must",
         "tags": [
           "catalog",
@@ -2333,7 +2333,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "functions_get",
         "summary": "Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must",
         "tags": [
           "catalog",
@@ -2392,7 +2392,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "functions_update",
         "summary": "Updates the function that matches the supplied name. Only the owner of the function can be updated. If",
         "tags": [
           "catalog",
@@ -2459,7 +2459,7 @@
     },
     "/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}": {
       "get": {
-        "operationId": "get",
+        "operationId": "grants_get",
         "summary": "Gets the permissions for a securable. Does not include inherited permissions.",
         "tags": [
           "catalog",
@@ -2545,7 +2545,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "grants_update",
         "summary": "Updates the permissions for a securable.",
         "tags": [
           "catalog",
@@ -2621,7 +2621,7 @@
     },
     "/api/2.1/unity-catalog/effective-permissions/{securable_type}/{full_name}": {
       "get": {
-        "operationId": "get_effective",
+        "operationId": "grants_get_effective",
         "summary": "Gets the effective permissions for a securable. Includes inherited permissions from any parent",
         "tags": [
           "catalog",
@@ -2709,7 +2709,7 @@
     },
     "/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore": {
       "put": {
-        "operationId": "assign",
+        "operationId": "metastores_assign",
         "summary": "Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be",
         "tags": [
           "catalog",
@@ -2775,7 +2775,7 @@
         }
       },
       "delete": {
-        "operationId": "unassign",
+        "operationId": "metastores_unassign",
         "summary": "Deletes a metastore assignment. The caller must be an account administrator.",
         "tags": [
           "catalog",
@@ -2827,7 +2827,7 @@
         }
       },
       "patch": {
-        "operationId": "update_assignment",
+        "operationId": "metastores_update_assignment",
         "summary": "Updates a metastore assignment. This operation can be used to update __metastore_id__ or",
         "tags": [
           "catalog",
@@ -2891,7 +2891,7 @@
     },
     "/api/2.1/unity-catalog/metastores": {
       "post": {
-        "operationId": "create",
+        "operationId": "metastores_create",
         "summary": "Creates a new metastore based on a provided name and optional storage root path. By default (if the",
         "tags": [
           "catalog",
@@ -2960,7 +2960,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "metastores_list",
         "summary": "Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin",
         "tags": [
           "catalog",
@@ -3021,7 +3021,7 @@
     },
     "/api/2.1/unity-catalog/current-metastore-assignment": {
       "get": {
-        "operationId": "current",
+        "operationId": "metastores_current",
         "summary": "Gets the metastore assignment for the workspace being accessed.",
         "tags": [
           "catalog",
@@ -3062,7 +3062,7 @@
     },
     "/api/2.1/unity-catalog/metastores/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "metastores_delete",
         "summary": "Deletes a metastore. The caller must be a metastore admin.",
         "tags": [
           "catalog",
@@ -3114,7 +3114,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "metastores_get",
         "summary": "Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this",
         "tags": [
           "catalog",
@@ -3164,7 +3164,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "metastores_update",
         "summary": "Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__",
         "tags": [
           "catalog",
@@ -3259,7 +3259,7 @@
     },
     "/api/2.1/unity-catalog/metastore_summary": {
       "get": {
-        "operationId": "summary",
+        "operationId": "metastores_summary",
         "summary": "Gets information about a metastore. This summary includes the storage credential, the cloud vendor,",
         "tags": [
           "catalog",
@@ -3300,7 +3300,7 @@
     },
     "/api/2.1/unity-catalog/models/{full_name}/versions/{version}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "model_versions_delete",
         "summary": "Deletes a model version from the specified registered model. Any aliases assigned to the model version",
         "tags": [
           "catalog",
@@ -3352,7 +3352,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "model_versions_get",
         "summary": "Get a model version.",
         "tags": [
           "catalog",
@@ -3429,7 +3429,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "model_versions_update",
         "summary": "Updates the specified model version.",
         "tags": [
           "catalog",
@@ -3567,7 +3567,7 @@
     },
     "/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}": {
       "get": {
-        "operationId": "get_by_alias",
+        "operationId": "model_versions_get_by_alias",
         "summary": "Get a model version by alias.",
         "tags": [
           "catalog",
@@ -3635,7 +3635,7 @@
         }
       },
       "delete": {
-        "operationId": "delete_alias",
+        "operationId": "registered_models_delete_alias",
         "summary": "Deletes a registered model alias.",
         "tags": [
           "catalog",
@@ -3687,7 +3687,7 @@
         }
       },
       "put": {
-        "operationId": "set_alias",
+        "operationId": "registered_models_set_alias",
         "summary": "Set an alias on the specified registered model.",
         "tags": [
           "catalog",
@@ -3766,7 +3766,7 @@
     },
     "/api/2.1/unity-catalog/models/{full_name}/versions": {
       "get": {
-        "operationId": "list",
+        "operationId": "model_versions_list",
         "summary": "List model versions. You can list model versions under a particular schema, or list all model versions",
         "tags": [
           "catalog",
@@ -3845,7 +3845,7 @@
     },
     "/api/2.0/online-tables": {
       "post": {
-        "operationId": "create",
+        "operationId": "online_tables_create",
         "summary": "Create a new Online Table.",
         "tags": [
           "catalog",
@@ -3904,7 +3904,7 @@
     },
     "/api/2.0/online-tables/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "online_tables_delete",
         "summary": "Delete an online table. Warning: This will delete all the data in the online table. If the source",
         "tags": [
           "catalog",
@@ -3947,7 +3947,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "online_tables_get",
         "summary": "Get information about an existing online table and its status.",
         "tags": [
           "catalog",
@@ -3999,7 +3999,7 @@
     },
     "/api/2.1/unity-catalog/policies": {
       "post": {
-        "operationId": "create_policy",
+        "operationId": "policies_create_policy",
         "summary": "Creates a new policy on a securable. The new policy applies to the securable and all its descendants.",
         "tags": [
           "catalog",
@@ -4058,7 +4058,7 @@
     },
     "/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}/{name}": {
       "delete": {
-        "operationId": "delete_policy",
+        "operationId": "policies_delete_policy",
         "summary": "Delete an ABAC policy defined on a securable.",
         "tags": [
           "catalog",
@@ -4126,7 +4126,7 @@
         }
       },
       "get": {
-        "operationId": "get_policy",
+        "operationId": "policies_get_policy",
         "summary": "Get the policy definition on a securable",
         "tags": [
           "catalog",
@@ -4194,7 +4194,7 @@
         }
       },
       "patch": {
-        "operationId": "update_policy",
+        "operationId": "policies_update_policy",
         "summary": "Update an ABAC policy on a securable.",
         "tags": [
           "catalog",
@@ -4291,7 +4291,7 @@
     },
     "/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}": {
       "get": {
-        "operationId": "list_policies",
+        "operationId": "policies_list_policies",
         "summary": "List all policies defined on a securable. Optionally, the list can include inherited policies defined",
         "tags": [
           "catalog",
@@ -4379,7 +4379,7 @@
     },
     "/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel": {
       "post": {
-        "operationId": "cancel_refresh",
+        "operationId": "quality_monitors_cancel_refresh",
         "summary": "[DEPRECATED] Cancels an already-initiated refresh job. Use Data Quality Monitors API instead",
         "tags": [
           "catalog",
@@ -4433,7 +4433,7 @@
     },
     "/api/2.1/unity-catalog/tables/{table_name}/monitor": {
       "post": {
-        "operationId": "create",
+        "operationId": "quality_monitors_create",
         "summary": "[DEPRECATED] Creates a new monitor for the specified table. Use Data Quality Monitors API instead",
         "tags": [
           "catalog",
@@ -4553,7 +4553,7 @@
         }
       },
       "delete": {
-        "operationId": "delete",
+        "operationId": "quality_monitors_delete",
         "summary": "[DEPRECATED] Deletes a monitor for the specified table. Use Data Quality Monitors API instead",
         "tags": [
           "catalog",
@@ -4603,7 +4603,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "quality_monitors_get",
         "summary": "[DEPRECATED] Gets a monitor for the specified table. Use Data Quality Monitors API instead",
         "tags": [
           "catalog",
@@ -4653,7 +4653,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "quality_monitors_update",
         "summary": "[DEPRECATED] Updates a monitor for the specified table. Use Data Quality Monitors API instead",
         "tags": [
           "catalog",
@@ -4766,7 +4766,7 @@
     },
     "/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}": {
       "get": {
-        "operationId": "get_refresh",
+        "operationId": "quality_monitors_get_refresh",
         "summary": "[DEPRECATED] Gets info about a specific monitor refresh using the given refresh ID. Use Data Quality",
         "tags": [
           "catalog",
@@ -4827,7 +4827,7 @@
     },
     "/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes": {
       "get": {
-        "operationId": "list_refreshes",
+        "operationId": "quality_monitors_list_refreshes",
         "summary": "[DEPRECATED] Gets an array containing the history of the most recent refreshes (up to 25) for this",
         "tags": [
           "catalog",
@@ -4877,7 +4877,7 @@
         }
       },
       "post": {
-        "operationId": "run_refresh",
+        "operationId": "quality_monitors_run_refresh",
         "summary": "[DEPRECATED] Queues a metric refresh on the monitor for the specified table. Use Data Quality Monitors",
         "tags": [
           "catalog",
@@ -4929,7 +4929,7 @@
     },
     "/api/2.1/quality-monitoring/tables/{table_name}/monitor/dashboard": {
       "post": {
-        "operationId": "regenerate_dashboard",
+        "operationId": "quality_monitors_regenerate_dashboard",
         "summary": "[DEPRECATED] Regenerates the monitoring dashboard for the specified table. Use Data Quality Monitors",
         "tags": [
           "catalog",
@@ -4996,7 +4996,7 @@
     },
     "/api/2.1/unity-catalog/models": {
       "post": {
-        "operationId": "create",
+        "operationId": "registered_models_create",
         "summary": "Creates a new registered model in Unity Catalog.",
         "tags": [
           "catalog",
@@ -5102,7 +5102,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "registered_models_list",
         "summary": "List registered models. You can list registered models under a particular schema, or list all",
         "tags": [
           "catalog",
@@ -5190,7 +5190,7 @@
     },
     "/api/2.1/unity-catalog/models/{full_name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "registered_models_delete",
         "summary": "Deletes a registered model and all its model versions from the specified parent catalog and schema.",
         "tags": [
           "catalog",
@@ -5233,7 +5233,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "registered_models_get",
         "summary": "Get a registered model.",
         "tags": [
           "catalog",
@@ -5301,7 +5301,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "registered_models_update",
         "summary": "Updates the specified registered model.",
         "tags": [
           "catalog",
@@ -5420,7 +5420,7 @@
     },
     "/api/2.1/unity-catalog/resource-quotas/{parent_securable_type}/{parent_full_name}/{quota_name}": {
       "get": {
-        "operationId": "get_quota",
+        "operationId": "resource_quotas_get_quota",
         "summary": "The GetQuota API returns usage information for a single resource quota, defined as a child-parent",
         "tags": [
           "catalog",
@@ -5490,7 +5490,7 @@
     },
     "/api/2.1/unity-catalog/resource-quotas/all-resource-quotas": {
       "get": {
-        "operationId": "list_quotas",
+        "operationId": "resource_quotas_list_quotas",
         "summary": "ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the",
         "tags": [
           "catalog",
@@ -5551,7 +5551,7 @@
     },
     "/api/3.0/rfa/requests": {
       "post": {
-        "operationId": "batch_create_access_requests",
+        "operationId": "rfa_batch_create_access_requests",
         "summary": "Creates access requests for Unity Catalog permissions for a specified principal on a securable object.",
         "tags": [
           "catalog",
@@ -5607,7 +5607,7 @@
     },
     "/api/3.0/rfa/destinations/{securable_type}/{full_name}": {
       "get": {
-        "operationId": "get_access_request_destinations",
+        "operationId": "rfa_get_access_request_destinations",
         "summary": "Gets an array of access request destinations for the specified securable. Any caller can see URL",
         "tags": [
           "catalog",
@@ -5668,7 +5668,7 @@
     },
     "/api/3.0/rfa/destinations": {
       "patch": {
-        "operationId": "update_access_request_destinations",
+        "operationId": "rfa_update_access_request_destinations",
         "summary": "Updates the access request destinations for the given securable. The caller must be a metastore admin,",
         "tags": [
           "catalog",
@@ -5738,7 +5738,7 @@
     },
     "/api/2.1/unity-catalog/schemas": {
       "post": {
-        "operationId": "create",
+        "operationId": "schemas_create",
         "summary": "Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the",
         "tags": [
           "catalog",
@@ -5812,7 +5812,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "schemas_list",
         "summary": "Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the",
         "tags": [
           "catalog",
@@ -5891,7 +5891,7 @@
     },
     "/api/2.1/unity-catalog/schemas/{full_name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "schemas_delete",
         "summary": "Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an",
         "tags": [
           "catalog",
@@ -5943,7 +5943,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "schemas_get",
         "summary": "Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the",
         "tags": [
           "catalog",
@@ -6002,7 +6002,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "schemas_update",
         "summary": "Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If",
         "tags": [
           "catalog",
@@ -6085,7 +6085,7 @@
     },
     "/api/2.1/unity-catalog/storage-credentials": {
       "post": {
-        "operationId": "create",
+        "operationId": "storage_credentials_create",
         "summary": "Creates a new storage credential.",
         "tags": [
           "catalog",
@@ -6174,7 +6174,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "storage_credentials_list",
         "summary": "Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to",
         "tags": [
           "catalog",
@@ -6244,7 +6244,7 @@
     },
     "/api/2.1/unity-catalog/storage-credentials/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "storage_credentials_delete",
         "summary": "Deletes a storage credential from the metastore. The caller must be an owner of the storage",
         "tags": [
           "catalog",
@@ -6296,7 +6296,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "storage_credentials_get",
         "summary": "Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the",
         "tags": [
           "catalog",
@@ -6346,7 +6346,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "storage_credentials_update",
         "summary": "Updates a storage credential on the metastore.",
         "tags": [
           "catalog",
@@ -6457,7 +6457,7 @@
     },
     "/api/2.1/unity-catalog/validate-storage-credentials": {
       "post": {
-        "operationId": "validate",
+        "operationId": "storage_credentials_validate",
         "summary": "Validates a storage credential. At least one of __external_location_name__ and __url__ need to be",
         "tags": [
           "catalog",
@@ -6545,7 +6545,7 @@
     },
     "/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}": {
       "delete": {
-        "operationId": "disable",
+        "operationId": "system_schemas_disable",
         "summary": "Disables the system schema and removes it from the system catalog. The caller must be an account admin",
         "tags": [
           "catalog",
@@ -6597,7 +6597,7 @@
         }
       },
       "put": {
-        "operationId": "enable",
+        "operationId": "system_schemas_enable",
         "summary": "Enables the system schema and adds it to the system catalog. The caller must be an account admin or a",
         "tags": [
           "catalog",
@@ -6666,7 +6666,7 @@
     },
     "/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas": {
       "get": {
-        "operationId": "list",
+        "operationId": "system_schemas_list",
         "summary": "Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore",
         "tags": [
           "catalog",
@@ -6736,7 +6736,7 @@
     },
     "/api/2.1/unity-catalog/constraints": {
       "post": {
-        "operationId": "create",
+        "operationId": "table_constraints_create",
         "summary": "Creates a new table constraint.",
         "tags": [
           "catalog",
@@ -6800,7 +6800,7 @@
     },
     "/api/2.1/unity-catalog/constraints/{full_name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "table_constraints_delete",
         "summary": "Deletes a table constraint.",
         "tags": [
           "catalog",
@@ -6863,7 +6863,7 @@
     },
     "/api/2.1/unity-catalog/tables": {
       "post": {
-        "operationId": "create",
+        "operationId": "tables_create",
         "summary": "Creates a new table in the specified catalog and schema.",
         "tags": [
           "catalog",
@@ -6952,7 +6952,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "tables_list",
         "summary": "Gets an array of all tables for the current metastore under the parent catalog and schema. The caller",
         "tags": [
           "catalog",
@@ -7076,7 +7076,7 @@
     },
     "/api/2.1/unity-catalog/tables/{full_name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "tables_delete",
         "summary": "Deletes a table from the specified parent catalog and schema. The caller must be the owner of the",
         "tags": [
           "catalog",
@@ -7119,7 +7119,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "tables_get",
         "summary": "Gets a table from the metastore for a specific catalog and schema. The caller must satisfy one of the",
         "tags": [
           "catalog",
@@ -7196,7 +7196,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "tables_update",
         "summary": "Change the owner of the table. The caller must be the owner of the parent catalog, have the",
         "tags": [
           "catalog",
@@ -7256,7 +7256,7 @@
     },
     "/api/2.1/unity-catalog/tables/{full_name}/exists": {
       "get": {
-        "operationId": "exists",
+        "operationId": "tables_exists",
         "summary": "Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one",
         "tags": [
           "catalog",
@@ -7308,7 +7308,7 @@
     },
     "/api/2.1/unity-catalog/table-summaries": {
       "get": {
-        "operationId": "list_summaries",
+        "operationId": "tables_list_summaries",
         "summary": "Gets an array of summaries for tables for a schema and catalog within the metastore. The table",
         "tags": [
           "catalog",
@@ -7405,7 +7405,7 @@
     },
     "/api/2.0/unity-catalog/temporary-path-credentials": {
       "post": {
-        "operationId": "generate_temporary_path_credentials",
+        "operationId": "temporary_path_credentials_generate_temporary_path_credentials",
         "summary": "Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.",
         "tags": [
           "catalog",
@@ -7473,7 +7473,7 @@
     },
     "/api/2.0/unity-catalog/temporary-table-credentials": {
       "post": {
-        "operationId": "generate_temporary_table_credentials",
+        "operationId": "temporary_table_credentials_generate_temporary_table_credentials",
         "summary": "Get a short-lived credential for directly accessing the table data on cloud storage. The metastore",
         "tags": [
           "catalog",
@@ -7533,7 +7533,7 @@
     },
     "/api/2.1/unity-catalog/volumes": {
       "post": {
-        "operationId": "create",
+        "operationId": "volumes_create",
         "summary": "Creates a new volume.",
         "tags": [
           "catalog",
@@ -7613,7 +7613,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "volumes_list",
         "summary": "Gets an array of volumes for the current metastore under the parent catalog and schema.",
         "tags": [
           "catalog",
@@ -7701,7 +7701,7 @@
     },
     "/api/2.1/unity-catalog/volumes/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "volumes_delete",
         "summary": "Deletes a volume from the specified parent catalog and schema.",
         "tags": [
           "catalog",
@@ -7744,7 +7744,7 @@
         }
       },
       "get": {
-        "operationId": "read",
+        "operationId": "volumes_read",
         "summary": "Gets a volume from the metastore for a specific catalog and schema.",
         "tags": [
           "catalog",
@@ -7803,7 +7803,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "volumes_update",
         "summary": "Updates the specified volume under the specified parent catalog and schema.",
         "tags": [
           "catalog",
@@ -7878,7 +7878,7 @@
     },
     "/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}": {
       "get": {
-        "operationId": "get",
+        "operationId": "workspace_bindings_get",
         "summary": "Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the",
         "tags": [
           "catalog",
@@ -7928,7 +7928,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "workspace_bindings_update",
         "summary": "Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the",
         "tags": [
           "catalog",
@@ -7999,7 +7999,7 @@
     },
     "/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}": {
       "get": {
-        "operationId": "get_bindings",
+        "operationId": "workspace_bindings_get_bindings",
         "summary": "Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the",
         "tags": [
           "catalog",
@@ -8076,7 +8076,7 @@
         }
       },
       "patch": {
-        "operationId": "update_bindings",
+        "operationId": "workspace_bindings_update_bindings",
         "summary": "Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the",
         "tags": [
           "catalog",

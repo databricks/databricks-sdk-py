@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/apps": {
       "post": {
-        "operationId": "create",
+        "operationId": "apps_create",
         "summary": "Creates a new app.",
         "tags": [
           "apps"
@@ -86,7 +86,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "apps_list",
         "summary": "Lists all apps in the workspace.",
         "tags": [
           "apps"
@@ -146,7 +146,7 @@
     },
     "/api/2.0/apps/{app_name}/update": {
       "post": {
-        "operationId": "create_update",
+        "operationId": "apps_create_update",
         "summary": "Creates an app update and starts the update process. The update process is asynchronous and the status",
         "tags": [
           "apps"
@@ -216,7 +216,7 @@
         }
       },
       "get": {
-        "operationId": "get_update",
+        "operationId": "apps_get_update",
         "summary": "Gets the status of an app update.",
         "tags": [
           "apps"
@@ -267,7 +267,7 @@
     },
     "/api/2.0/apps/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "apps_delete",
         "summary": "Deletes an app.",
         "tags": [
           "apps"
@@ -316,7 +316,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "apps_get",
         "summary": "Retrieves information for the app with the supplied name.",
         "tags": [
           "apps"
@@ -365,7 +365,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "apps_update",
         "summary": "Updates the app with the supplied name.",
         "tags": [
           "apps"
@@ -434,7 +434,7 @@
     },
     "/api/2.0/apps/{app_name}/deployments": {
       "post": {
-        "operationId": "deploy",
+        "operationId": "apps_deploy",
         "summary": "Creates an app deployment for the app with the supplied name.",
         "tags": [
           "apps"
@@ -501,7 +501,7 @@
         }
       },
       "get": {
-        "operationId": "list_deployments",
+        "operationId": "apps_list_deployments",
         "summary": "Lists all app deployments for the app with the supplied name.",
         "tags": [
           "apps"
@@ -570,7 +570,7 @@
     },
     "/api/2.0/apps/{app_name}/deployments/{deployment_id}": {
       "get": {
-        "operationId": "get_deployment",
+        "operationId": "apps_get_deployment",
         "summary": "Retrieves information for the app deployment with the supplied name and deployment id.",
         "tags": [
           "apps"
@@ -630,7 +630,7 @@
     },
     "/api/2.0/permissions/apps/{app_name}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "apps_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "apps"
@@ -681,7 +681,7 @@
     },
     "/api/2.0/permissions/apps/{app_name}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "apps_get_permissions",
         "summary": "Gets the permissions of an app. Apps can inherit permissions from their root object.",
         "tags": [
           "apps"
@@ -730,7 +730,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "apps_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "apps"
@@ -794,7 +794,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "apps_update_permissions",
         "summary": "Updates the permissions on an app. Apps can inherit permissions from their root object.",
         "tags": [
           "apps"
@@ -860,7 +860,7 @@
     },
     "/api/2.0/apps/{name}/start": {
       "post": {
-        "operationId": "start",
+        "operationId": "apps_start",
         "summary": "Start the last active deployment of the app in the workspace.",
         "tags": [
           "apps"
@@ -911,7 +911,7 @@
     },
     "/api/2.0/apps/{name}/stop": {
       "post": {
-        "operationId": "stop",
+        "operationId": "apps_stop",
         "summary": "Stops the active deployment of the app in the workspace.",
         "tags": [
           "apps"
@@ -962,7 +962,7 @@
     },
     "/api/2.0/apps-settings/templates": {
       "post": {
-        "operationId": "create_custom_template",
+        "operationId": "apps_settings_create_custom_template",
         "summary": "Creates a custom template.",
         "tags": [
           "apps",
@@ -1019,7 +1019,7 @@
         }
       },
       "get": {
-        "operationId": "list_custom_templates",
+        "operationId": "apps_settings_list_custom_templates",
         "summary": "Lists all custom templates in the workspace.",
         "tags": [
           "apps",
@@ -1080,7 +1080,7 @@
     },
     "/api/2.0/apps-settings/templates/{name}": {
       "delete": {
-        "operationId": "delete_custom_template",
+        "operationId": "apps_settings_delete_custom_template",
         "summary": "Deletes the custom template with the specified name.",
         "tags": [
           "apps",
@@ -1130,7 +1130,7 @@
         }
       },
       "get": {
-        "operationId": "get_custom_template",
+        "operationId": "apps_settings_get_custom_template",
         "summary": "Gets the custom template with the specified name.",
         "tags": [
           "apps",
@@ -1180,7 +1180,7 @@
         }
       },
       "put": {
-        "operationId": "update_custom_template",
+        "operationId": "apps_settings_update_custom_template",
         "summary": "Updates the custom template with the specified name. Note that the template name cannot be updated.",
         "tags": [
           "apps",
