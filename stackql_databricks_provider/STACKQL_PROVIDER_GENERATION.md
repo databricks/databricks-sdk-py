@@ -1,44 +1,125 @@
+# StackQL Databricks Provider Generation
+
+This document describes the end-to-end workflow for generating, testing, and publishing the StackQL Databricks provider.
+
+## Prerequisites
+
+- Python 3.9+ with the Databricks SDK installed (`pip install -e ".[dev]"` from repo root)
+- Node.js 18+ with npm
+- npm dependencies installed (`cd stackql_databricks_provider && npm install`)
+
+## Overview
+
+The Databricks provider is split into two scopes:
+
+| Scope | Provider ID | Base URL |
+|-------|-------------|----------|
+| **Account** | `databricks_account` | `https://accounts.cloud.databricks.com` |
+| **Workspace** | `databricks_workspace` | `https://{deployment_name}.cloud.databricks.com` |
+
+Each scope has its own set of OpenAPI specs, CSV mappings, and generated provider output.
+
+## Workflow
+
+### 1. Generate OpenAPI Specs
+
+Extract OpenAPI 3.0 specs from the Databricks Python SDK:
+
+```bash
+python -m stackql_databricks_provider.generate
+```
+
+This produces JSON specs under `stackql_databricks_provider/openapi_generated/{account,workspace}/`.
+
+To regenerate a single service:
+
+```bash
+python -m stackql_databricks_provider.generate -s compute
+```
+
+### 2. Generate CSV Operation Inventories
+
+Generate CSV mapping files from the OpenAPI specs:
+
+```bash
+python -m stackql_databricks_provider.inventory_gen
+```
+
+This produces:
+- Per-service CSVs under `stackql_databricks_provider/inventory/{account,workspace}/`
+- Consolidated `all_services.csv` per scope
+
+**Important:** The inventory generator preserves existing CSV mappings. Only new operations are appended. Any manual edits to `stackql_resource_name`, `stackql_method_name`, `stackql_verb`, or `stackql_object_key` are retained.
+
+### 3. Review and Edit CSV Mappings
+
+Edit the CSV files to customize resource/method mappings before generating the provider. Key columns:
+
+| Column | Description |
+|--------|-------------|
+| `stackql_resource_name` | StackQL resource name (defaults to last tag) |
+| `stackql_method_name` | StackQL method name (defaults to operationId) |
+| `stackql_verb` | SQL verb: `select`, `insert`, `replace`, `update`, `delete`, `exec` |
+| `stackql_object_key` | JSON path to response data array (e.g. `$.items`) |
+
 ### 4. Generate Provider
 
-This step transforms the split OpenAPI service specs into a fully-functional StackQL provider by applying the resource and method mappings defined in your CSV file.
+This step transforms the OpenAPI specs into a fully-functional StackQL provider using the CSV mappings. Run this **separately for each scope**:
+
+#### Account scope
 
 ```bash
 npm run generate-provider -- \
-  --provider-name okta \
-  --input-dir provider-dev/source \
-  --output-dir provider-dev/openapi/src/okta \
-  --config-path provider-dev/config/all_services.csv \
-  --servers '[{"url": "https://{subdomain}.okta.com/", "variables": {"subdomain": {"default": "my-org","description": "The domain of your organization. This can be a provided subdomain of an official okta domain (okta.com, oktapreview.com, etc) or one of your configured custom domains."}}}]' \
-  --provider-config '{"auth": {"credentialsenvvar": "OKTA_API_TOKEN","type": "api_key","valuePrefix": "SSWS "}}' \
-  --skip-files _well_known.yaml \
+  --provider-name databricks_account \
+  --input-dir openapi_generated/account \
+  --output-dir provider-dev/openapi/src/databricks_account \
+  --config-path inventory/account/all_services.csv \
+  --servers '[{"url": "https://accounts.cloud.databricks.com"}]' \
+  --provider-config '{"auth": {"type": "bearer", "credentialsenvvar": "DATABRICKS_TOKEN"}}' \
   --overwrite
 ```
-Make necessary updates to the output docs:
+
+#### Workspace scope
 
 ```bash
-sh provider-dev/scripts/post_processing.sh
+npm run generate-provider -- \
+  --provider-name databricks_workspace \
+  --input-dir openapi_generated/workspace \
+  --output-dir provider-dev/openapi/src/databricks_workspace \
+  --config-path inventory/workspace/all_services.csv \
+  --servers '[{"url": "https://{deployment_name}.cloud.databricks.com", "variables": {"deployment_name": {"default": "dbc-abcd1234-1234", "description": "The deployment name of your Databricks workspace (e.g. dbc-abcd1234-1234)."}}}]' \
+  --provider-config '{"auth": {"type": "bearer", "credentialsenvvar": "DATABRICKS_TOKEN"}}' \
+  --overwrite
 ```
 
-The `--servers` parameter defines the base URL pattern for API requests, with variables that users can customize. For Okta, this allows specifying different subdomains for different Okta instances.
+**Parameters explained:**
 
-The `--provider-config` parameter sets up the authentication method. For Okta, this configures an API token authentication scheme that:
-- Looks for the API token in the `OKTA_API_TOKEN` environment variable
-- Applies the `SSWS ` prefix required by Okta's API
-- Uses the token as an API key in the Authorization header
-
-The generated provider will be structured according to the StackQL conventions, with properly organized resources and methods that map to the underlying API operations.
-
-After running this command, you'll have a complete provider structure in the `provider-dev/openapi/src` directory, ready for testing or packaging.
+- `--provider-name` - The StackQL provider identifier
+- `--input-dir` - Directory containing the OpenAPI JSON specs (must be flat, no subdirectories)
+- `--output-dir` - Output directory for the generated provider
+- `--config-path` - Path to the consolidated CSV mapping file
+- `--servers` - JSON array defining the base URL pattern for API requests
+- `--provider-config` - Authentication configuration; Databricks uses Bearer token auth via the `DATABRICKS_TOKEN` environment variable
+- `--overwrite` - Overwrite existing generated files
 
 ### 5. Test Provider
 
 #### Starting the StackQL Server
 
-Before running tests, start a StackQL server with your provider:
+Before running tests, start a StackQL server with your provider. Test each scope separately:
+
+**Account scope:**
 
 ```bash
-PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/provider-dev/openapi"
-npm run start-server -- --provider okta --registry $PROVIDER_REGISTRY_ROOT_DIR
+PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/provider-dev/openapi/src"
+npm run start-server -- --provider databricks_account --registry $PROVIDER_REGISTRY_ROOT_DIR
+```
+
+**Workspace scope:**
+
+```bash
+PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/provider-dev/openapi/src"
+npm run start-server -- --provider databricks_workspace --registry $PROVIDER_REGISTRY_ROOT_DIR
 ```
 
 #### Test Meta Routes
@@ -46,94 +127,116 @@ npm run start-server -- --provider okta --registry $PROVIDER_REGISTRY_ROOT_DIR
 Test all metadata routes (services, resources, methods) in the provider:
 
 ```bash
-npm run test-meta-routes -- okta --verbose
-```
-When you're done testing, stop the StackQL server:
+# Test account provider
+npm run test-meta-routes -- databricks_account --verbose
 
-```bash
-npm run stop-server
+# Test workspace provider
+npm run test-meta-routes -- databricks_workspace --verbose
 ```
 
-use this command to view the server status:
+#### Server Management
+
+Check server status:
 
 ```bash
 npm run server-status
 ```
 
-#### Run test queries
-
-Run some test queries against the provider using the `stackql shell`:
+Stop the server:
 
 ```bash
-PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/provider-dev/openapi"
+npm run stop-server
+```
+
+#### Run Test Queries
+
+Run interactive queries against the provider using the StackQL shell:
+
+```bash
+PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/provider-dev/openapi/src"
 REG_STR='{"url": "file://'${PROVIDER_REGISTRY_ROOT_DIR}'", "localDocRoot": "'${PROVIDER_REGISTRY_ROOT_DIR}'", "verifyConfig": {"nopVerify": true}}'
 ./stackql shell --registry="${REG_STR}"
 ```
 
-### 6. Publish the provider
+Example queries:
 
-To publish the provider push the `okta` dir to `providers/src` in a feature branch of the [`stackql-provider-registry`](https://github.com/stackql/stackql-provider-registry).  Follow the [registry release flow](https://github.com/stackql/stackql-provider-registry/blob/dev/docs/build-and-deployment.md).  
+```sql
+-- List workspace clusters
+SELECT *
+FROM databricks_workspace.compute.clusters
+WHERE deployment_name = 'dbc-abcd1234-1234';
 
-Launch the StackQL shell:
+-- List account users
+SELECT *
+FROM databricks_account.iam.users
+WHERE account_id = '12345678-1234-1234-1234-123456789012';
+```
+
+### 6. Publish the Provider
+
+To publish the provider, push the generated `databricks_account` and/or `databricks_workspace` directories to `providers/src` in a feature branch of the [`stackql-provider-registry`](https://github.com/stackql/stackql-provider-registry). Follow the [registry release flow](https://github.com/stackql/stackql-provider-registry/blob/dev/docs/build-and-deployment.md).
+
+Test against the dev registry:
 
 ```bash
-export DEV_REG="{ \"url\": \"https://registry-dev.stackql.app/providers\", \"verifyConfig\": { \"nopVerify\": true }}"
+export DEV_REG='{"url": "https://registry-dev.stackql.app/providers", "verifyConfig": {"nopVerify": true}}'
 ./stackql --registry="${DEV_REG}" shell
 ```
 
-pull the latest dev `okta` provider:
+Pull the latest dev provider:
 
 ```sql
-registry pull okta;
+REGISTRY PULL databricks_workspace;
+REGISTRY PULL databricks_account;
 ```
 
-Run some test queries, for example...
-
-```sql
-SELECT
-id,
-activated,
-created,
-lastLogin,
-lastUpdated,
-passwordChanged,
-JSON_EXTRACT(profile, '$.email') as email,
-JSON_EXTRACT(profile, '$.firstName') as first_name,
-JSON_EXTRACT(profile, '$.lastName') as last_name,
-status,
-statusChanged
-FROM okta.users.users
-WHERE subdomain = 'your-subdomain';
-```
-
-### 7. Generate web docs
+### 7. Generate Web Docs
 
 ```bash
+# Account docs
 npm run generate-docs -- \
-  --provider-name okta \
-  --provider-dir ./provider-dev/openapi/src/okta/v00.00.00000 \
+  --provider-name databricks_account \
+  --provider-dir ./provider-dev/openapi/src/databricks_account/v00.00.00000 \
   --output-dir ./website \
   --provider-data-dir ./provider-dev/docgen/provider-data
-```  
 
-### 8. Test web docs locally
-
-```bash
-cd website
-# test build
-yarn build
-
-# run local dev server
-yarn start
+# Workspace docs
+npm run generate-docs -- \
+  --provider-name databricks_workspace \
+  --provider-dir ./provider-dev/openapi/src/databricks_workspace/v00.00.00000 \
+  --output-dir ./website \
+  --provider-data-dir ./provider-dev/docgen/provider-data
 ```
 
-### 9. Publish web docs to GitHub Pages
+### 8. Authentication
 
-Under __Pages__ in the repository, in the __Build and deployment__ section select __GitHub Actions__ as the __Source__.  In Netlify DNS create the following records:  
+Databricks uses personal access tokens (PAT) for authentication. Set the token in your environment:
 
-| Source Domain | Record Type  | Target |
-|---------------|--------------|--------|
-| okta-provider.stackql.io | CNAME | stackql.github.io |
+```bash
+export DATABRICKS_TOKEN="dapi1234567890abcdef"
+```
+
+For account-level operations you may also need:
+
+```bash
+export DATABRICKS_ACCOUNT_ID="12345678-1234-1234-1234-123456789012"
+```
+
+## Quick Reference
+
+```bash
+# Full regeneration pipeline
+python -m stackql_databricks_provider.generate          # Step 1: OpenAPI specs
+python -m stackql_databricks_provider.inventory_gen      # Step 2: CSV inventories
+# Step 3: Edit CSVs as needed
+npm run generate-provider -- ...                         # Step 4: Generate provider (run for each scope)
+
+# Testing
+python -m pytest stackql_databricks_provider/tests/ -v   # Unit tests
+npm run start-server -- --provider <name> --registry ...  # Start StackQL server
+npm run test-meta-routes -- <provider-name> --verbose     # Meta route tests
+npm run stop-server                                       # Stop server
+```
 
 ## License
 
@@ -141,4 +244,4 @@ MIT
 
 ## Contributing
 
-Contributions to the Okta provider are welcome! Please feel free to submit a Pull Request.
+Contributions to the Databricks provider are welcome! Please feel free to submit a Pull Request.

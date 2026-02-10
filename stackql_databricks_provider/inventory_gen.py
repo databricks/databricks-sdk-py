@@ -1,8 +1,9 @@
 """
 Generate CSV inventory files from OpenAPI specs.
 
-Produces one CSV per service spec, with columns describing each operation
-and its default StackQL mapping. Respects existing CSV files so that
+Produces one CSV per service spec plus a consolidated ``all_services.csv``
+per scope, with columns matching the format expected by
+``@stackql/provider-utils``.  Respects existing CSV files so that
 manually-edited mappings are preserved.
 """
 
@@ -22,28 +23,30 @@ INVENTORY_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "inventory"
 )
 
+# Column order matches @stackql/provider-utils analyze output
 CSV_COLUMNS = [
-    "service",
-    "operation_id",
-    "http_path",
-    "http_verb",
+    "filename",
+    "path",
+    "operationId",
+    "verb",
+    "response_object",
     "tags",
     "params",
-    "success_response_object",
     "summary",
     "description",
     "stackql_resource_name",
     "stackql_method_name",
     "stackql_verb",
+    "stackql_object_key",
 ]
 
-# Maps HTTP verbs to default StackQL verbs
+# Maps HTTP verbs to default StackQL verbs (lowercase for provider-utils)
 HTTP_TO_STACKQL_VERB = {
-    "get": "SELECT",
-    "post": "INSERT",
-    "put": "REPLACE",
-    "patch": "UPDATE",
-    "delete": "DELETE",
+    "get": "select",
+    "post": "insert",
+    "put": "replace",
+    "patch": "update",
+    "delete": "delete",
 }
 
 
@@ -93,56 +96,70 @@ def _get_last_tag(operation: Dict[str, Any]) -> str:
 
 
 def _get_stackql_verb(http_verb: str) -> str:
-    """Map HTTP verb to default StackQL verb."""
+    """Map HTTP verb to default StackQL verb (lowercase)."""
     return HTTP_TO_STACKQL_VERB.get(http_verb.lower(), "")
 
 
-def extract_operations_from_spec(spec: Dict[str, Any], service_name: str) -> List[Dict[str, str]]:
+def extract_operations_from_spec(
+    spec: Dict[str, Any],
+    service_name: str,
+    filename: str = "",
+) -> List[Dict[str, str]]:
     """Extract all operations from an OpenAPI spec as inventory rows.
 
     Args:
         spec: Parsed OpenAPI spec dict.
         service_name: Service name (spec file name without extension).
+        filename: Spec filename (e.g. ``"compute.json"``).
 
     Returns:
         List of dicts, one per operation, with keys matching CSV_COLUMNS.
     """
+    if not filename:
+        filename = f"{service_name}.json"
+
     rows = []
-    for path, methods in spec.get("paths", {}).items():
+    for path_str, methods in spec.get("paths", {}).items():
         for http_verb, operation in methods.items():
             verb_lower = http_verb.lower()
             stackql_verb = _get_stackql_verb(verb_lower)
             if not stackql_verb:
                 # Skip unmapped HTTP methods (HEAD, OPTIONS, etc.)
-                logger.debug("Skipping %s %s (unmapped HTTP verb)", http_verb, path)
+                logger.debug("Skipping %s %s (unmapped HTTP verb)", http_verb, path_str)
                 continue
 
             row = {
-                "service": service_name,
-                "operation_id": operation.get("operationId", ""),
-                "http_path": path,
-                "http_verb": verb_lower,
+                "filename": filename,
+                "path": path_str,
+                "operationId": operation.get("operationId", ""),
+                "verb": verb_lower,
+                "response_object": _get_success_response_object(operation),
                 "tags": _get_tags_str(operation),
                 "params": _get_params_list(operation),
-                "success_response_object": _get_success_response_object(operation),
                 "summary": operation.get("summary", ""),
                 "description": operation.get("description", "").replace("\n", " ").strip(),
                 "stackql_resource_name": _get_last_tag(operation),
                 "stackql_method_name": operation.get("operationId", ""),
                 "stackql_verb": stackql_verb,
+                "stackql_object_key": "",
             }
             rows.append(row)
     return rows
 
 
+def _make_row_key(row: Dict[str, str]) -> str:
+    """Build the canonical lookup key for a row: ``filename::path::verb``."""
+    return f"{row.get('filename', '')}::{row.get('path', '')}::{row.get('verb', '')}"
+
+
 def load_existing_csv(csv_path: str) -> Dict[str, Dict[str, str]]:
-    """Load an existing CSV inventory, keyed by operation_id.
+    """Load an existing CSV inventory, keyed by ``filename::path::verb``.
 
     Args:
         csv_path: Path to the CSV file.
 
     Returns:
-        Dict mapping ``operation_id`` to its full row dict.
+        Dict mapping canonical key to its full row dict.
     """
     existing: Dict[str, Dict[str, str]] = {}
     if not os.path.exists(csv_path):
@@ -150,9 +167,9 @@ def load_existing_csv(csv_path: str) -> Dict[str, Dict[str, str]]:
     with open(csv_path, "r", newline="") as f:
         reader = csv.DictReader(f)
         for row in reader:
-            op_id = row.get("operation_id", "")
-            if op_id:
-                existing[op_id] = dict(row)
+            key = _make_row_key(row)
+            if key:
+                existing[key] = dict(row)
     logger.info("Loaded %d existing operations from %s", len(existing), csv_path)
     return existing
 
@@ -176,11 +193,12 @@ def generate_inventory_for_spec(
         Tuple of (csv_path, new_count, existing_count).
     """
     service_name = os.path.splitext(os.path.basename(spec_path))[0]
+    filename = f"{service_name}.json"
 
     with open(spec_path) as f:
         spec = json.load(f)
 
-    rows = extract_operations_from_spec(spec, service_name)
+    rows = extract_operations_from_spec(spec, service_name, filename)
 
     scope_dir = os.path.join(output_dir, scope)
     os.makedirs(scope_dir, exist_ok=True)
@@ -192,20 +210,20 @@ def generate_inventory_for_spec(
 
     # Build final row list: existing rows first (preserve order), then new rows
     final_rows: List[Dict[str, str]] = []
-    seen_ids: Set[str] = set()
+    seen_keys: Set[str] = set()
 
     # Keep all existing rows in their original order
-    for op_id, row in existing.items():
+    for key, row in existing.items():
         final_rows.append(row)
-        seen_ids.add(op_id)
+        seen_keys.add(key)
         existing_count += 1
 
     # Add new rows only
     for row in rows:
-        op_id = row["operation_id"]
-        if op_id not in seen_ids:
+        key = _make_row_key(row)
+        if key not in seen_keys:
             final_rows.append(row)
-            seen_ids.add(op_id)
+            seen_keys.add(key)
             new_count += 1
 
     # Write
@@ -226,6 +244,9 @@ def generate_all_inventories(
     output_dir: Optional[str] = None,
 ) -> Dict[str, Any]:
     """Generate CSV inventories for all OpenAPI spec files.
+
+    Produces per-service CSVs and a consolidated ``all_services.csv``
+    per scope.
 
     Args:
         spec_dir: Root directory containing ``account/`` and ``workspace/``
@@ -250,6 +271,9 @@ def generate_all_inventories(
         scope_spec_dir = os.path.join(spec_dir, scope)
         if not os.path.isdir(scope_spec_dir):
             continue
+
+        all_rows: List[Dict[str, str]] = []
+
         for fname in sorted(os.listdir(scope_spec_dir)):
             if not fname.endswith(".json"):
                 continue
@@ -261,8 +285,25 @@ def generate_all_inventories(
                 summary["files_generated"] += 1
                 summary["total_new"] += new_count
                 summary["total_existing"] += existing_count
+
+                # Collect rows for consolidated CSV
+                with open(csv_path, "r", newline="") as f:
+                    reader = csv.DictReader(f)
+                    for row in reader:
+                        all_rows.append(row)
+
             except Exception as e:
                 logger.error("Failed to process %s: %s", spec_path, e)
+
+        # Write consolidated all_services.csv per scope
+        if all_rows:
+            scope_dir = os.path.join(output_dir, scope)
+            consolidated_path = os.path.join(scope_dir, "all_services.csv")
+            with open(consolidated_path, "w", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS, extrasaction="ignore")
+                writer.writeheader()
+                writer.writerows(all_rows)
+            logger.info("Wrote consolidated %s/all_services.csv (%d rows)", scope, len(all_rows))
 
     return summary
 
