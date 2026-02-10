@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/database/catalogs": {
       "post": {
-        "operationId": "create_database_catalog",
+        "operationId": "database_create_database_catalog",
         "summary": "Create a Database Catalog.",
         "tags": [
           "database"
@@ -78,7 +78,7 @@
     },
     "/api/2.0/database/instances": {
       "post": {
-        "operationId": "create_database_instance",
+        "operationId": "database_create_database_instance",
         "summary": "Create a Database Instance.",
         "tags": [
           "database"
@@ -134,7 +134,7 @@
         }
       },
       "get": {
-        "operationId": "list_database_instances",
+        "operationId": "database_list_database_instances",
         "summary": "List Database Instances.",
         "tags": [
           "database"
@@ -194,7 +194,7 @@
     },
     "/api/2.0/database/instances/{instance_name}/roles": {
       "post": {
-        "operationId": "create_database_instance_role",
+        "operationId": "database_create_database_instance_role",
         "summary": "Create a role for a Database Instance.",
         "tags": [
           "database"
@@ -269,7 +269,7 @@
         }
       },
       "get": {
-        "operationId": "list_database_instance_roles",
+        "operationId": "database_list_database_instance_roles",
         "summary": "START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage < PUBLIC_PREVIEW. With more",
         "tags": [
           "database"
@@ -337,7 +337,7 @@
     },
     "/api/2.0/database/tables": {
       "post": {
-        "operationId": "create_database_table",
+        "operationId": "database_create_database_table",
         "summary": "Create a Database Table. Useful for registering pre-existing PG tables in UC. See",
         "tags": [
           "database"
@@ -395,7 +395,7 @@
     },
     "/api/2.0/database/synced_tables": {
       "post": {
-        "operationId": "create_synced_database_table",
+        "operationId": "database_create_synced_database_table",
         "summary": "Create a Synced Database Table.",
         "tags": [
           "database"
@@ -453,7 +453,7 @@
     },
     "/api/2.0/database/catalogs/{name}": {
       "delete": {
-        "operationId": "delete_database_catalog",
+        "operationId": "database_delete_database_catalog",
         "summary": "Delete a Database Catalog.",
         "tags": [
           "database"
@@ -495,7 +495,7 @@
         }
       },
       "get": {
-        "operationId": "get_database_catalog",
+        "operationId": "database_get_database_catalog",
         "summary": "Get a Database Catalog.",
         "tags": [
           "database"
@@ -544,7 +544,7 @@
         }
       },
       "patch": {
-        "operationId": "update_database_catalog",
+        "operationId": "database_update_database_catalog",
         "summary": "This API is currently unimplemented, but exposed for Terraform support.",
         "tags": [
           "database"
@@ -622,7 +622,7 @@
     },
     "/api/2.0/database/instances/{name}": {
       "delete": {
-        "operationId": "delete_database_instance",
+        "operationId": "database_delete_database_instance",
         "summary": "Delete a Database Instance.",
         "tags": [
           "database"
@@ -682,7 +682,7 @@
         }
       },
       "get": {
-        "operationId": "get_database_instance",
+        "operationId": "database_get_database_instance",
         "summary": "Get a Database Instance.",
         "tags": [
           "database"
@@ -731,7 +731,7 @@
         }
       },
       "patch": {
-        "operationId": "update_database_instance",
+        "operationId": "database_update_database_instance",
         "summary": "Update a Database Instance.",
         "tags": [
           "database"
@@ -808,7 +808,7 @@
     },
     "/api/2.0/database/instances/{instance_name}/roles/{name}": {
       "delete": {
-        "operationId": "delete_database_instance_role",
+        "operationId": "database_delete_database_instance_role",
         "summary": "Deletes a role for a Database Instance.",
         "tags": [
           "database"
@@ -876,7 +876,7 @@
         }
       },
       "get": {
-        "operationId": "get_database_instance_role",
+        "operationId": "database_get_database_instance_role",
         "summary": "Gets a role for a Database Instance.",
         "tags": [
           "database"
@@ -935,7 +935,7 @@
     },
     "/api/2.0/database/tables/{name}": {
       "delete": {
-        "operationId": "delete_database_table",
+        "operationId": "database_delete_database_table",
         "summary": "Delete a Database Table.",
         "tags": [
           "database"
@@ -977,7 +977,7 @@
         }
       },
       "get": {
-        "operationId": "get_database_table",
+        "operationId": "database_get_database_table",
         "summary": "Get a Database Table.",
         "tags": [
           "database"
@@ -1028,7 +1028,7 @@
     },
     "/api/2.0/database/synced_tables/{name}": {
       "delete": {
-        "operationId": "delete_synced_database_table",
+        "operationId": "database_delete_synced_database_table",
         "summary": "Delete a Synced Database Table.",
         "tags": [
           "database"
@@ -1078,7 +1078,7 @@
         }
       },
       "get": {
-        "operationId": "get_synced_database_table",
+        "operationId": "database_get_synced_database_table",
         "summary": "Get a Synced Database Table.",
         "tags": [
           "database"
@@ -1127,7 +1127,7 @@
         }
       },
       "patch": {
-        "operationId": "update_synced_database_table",
+        "operationId": "database_update_synced_database_table",
         "summary": "This API is currently unimplemented, but exposed for Terraform support.",
         "tags": [
           "database"
@@ -1205,7 +1205,7 @@
     },
     "/api/2.0/database/instances:findByUid": {
       "get": {
-        "operationId": "find_database_instance_by_uid",
+        "operationId": "database_find_database_instance_by_uid",
         "summary": "Find a Database Instance by uid.",
         "tags": [
           "database"
@@ -1256,7 +1256,7 @@
     },
     "/api/2.0/database/credentials": {
       "post": {
-        "operationId": "generate_database_credential",
+        "operationId": "database_generate_database_credential",
         "summary": "Generates a credential that can be used to access database instances.",
         "tags": [
           "database"
@@ -1319,7 +1319,7 @@
     },
     "/api/2.0/database/instances/{instance_name}/catalogs": {
       "get": {
-        "operationId": "list_database_catalogs",
+        "operationId": "database_list_database_catalogs",
         "summary": "This API is currently unimplemented, but exposed for Terraform support.",
         "tags": [
           "database"
@@ -1388,7 +1388,7 @@
     },
     "/api/2.0/database/instances/{instance_name}/synced_tables": {
       "get": {
-        "operationId": "list_synced_database_tables",
+        "operationId": "database_list_synced_database_tables",
         "summary": "This API is currently unimplemented, but exposed for Terraform support.",
         "tags": [
           "database"

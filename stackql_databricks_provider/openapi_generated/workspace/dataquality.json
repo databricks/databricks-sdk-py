@@ -20,7 +20,7 @@
   "paths": {
     "/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}/cancel": {
       "post": {
-        "operationId": "cancel_refresh",
+        "operationId": "data_quality_cancel_refresh",
         "summary": "Cancels a data quality monitor refresh. Currently only supported for the `table` `object_type`. The",
         "tags": [
           "dataquality",
@@ -90,7 +90,7 @@
     },
     "/api/data-quality/v1/monitors": {
       "post": {
-        "operationId": "create_monitor",
+        "operationId": "data_quality_create_monitor",
         "summary": "Create a data quality monitor on a Unity Catalog object. The caller must provide either",
         "tags": [
           "dataquality",
@@ -147,7 +147,7 @@
         }
       },
       "get": {
-        "operationId": "list_monitor",
+        "operationId": "data_quality_list_monitor",
         "summary": "(Unimplemented) List data quality monitors.",
         "tags": [
           "dataquality",
@@ -207,7 +207,7 @@
     },
     "/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes": {
       "post": {
-        "operationId": "create_refresh",
+        "operationId": "data_quality_create_refresh",
         "summary": "Creates a refresh. Currently only supported for the `table` `object_type`. The call must be made in",
         "tags": [
           "dataquality",
@@ -284,7 +284,7 @@
         }
       },
       "get": {
-        "operationId": "list_refresh",
+        "operationId": "data_quality_list_refresh",
         "summary": "List data quality monitor refreshes. The call must be made in the same workspace as where the monitor",
         "tags": [
           "dataquality",
@@ -362,7 +362,7 @@
     },
     "/api/data-quality/v1/monitors/{object_type}/{object_id}": {
       "delete": {
-        "operationId": "delete_monitor",
+        "operationId": "data_quality_delete_monitor",
         "summary": "Delete a data quality monitor on Unity Catalog object.",
         "tags": [
           "dataquality",
@@ -414,7 +414,7 @@
         }
       },
       "get": {
-        "operationId": "get_monitor",
+        "operationId": "data_quality_get_monitor",
         "summary": "Read a data quality monitor on a Unity Catalog object.",
         "tags": [
           "dataquality",
@@ -473,7 +473,7 @@
         }
       },
       "patch": {
-        "operationId": "update_monitor",
+        "operationId": "data_quality_update_monitor",
         "summary": "Update a data quality monitor on Unity Catalog object.",
         "tags": [
           "dataquality",
@@ -561,7 +561,7 @@
     },
     "/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}": {
       "delete": {
-        "operationId": "delete_refresh",
+        "operationId": "data_quality_delete_refresh",
         "summary": "(Unimplemented) Delete a refresh",
         "tags": [
           "dataquality",
@@ -622,7 +622,7 @@
         }
       },
       "get": {
-        "operationId": "get_refresh",
+        "operationId": "data_quality_get_refresh",
         "summary": "Get data quality monitor refresh. The call must be made in the same workspace as where the monitor was",
         "tags": [
           "dataquality",
@@ -690,7 +690,7 @@
         }
       },
       "patch": {
-        "operationId": "update_refresh",
+        "operationId": "data_quality_update_refresh",
         "summary": "(Unimplemented) Update a refresh",
         "tags": [
           "dataquality",

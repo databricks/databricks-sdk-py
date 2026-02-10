@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.1/unity-catalog/providers": {
       "post": {
-        "operationId": "create",
+        "operationId": "providers_create",
         "summary": "Creates a new authentication provider minimally based on a name and authentication type. The caller",
         "tags": [
           "sharing",
@@ -89,7 +89,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "providers_list",
         "summary": "Gets an array of available authentication providers. The caller must either be a metastore admin, have",
         "tags": [
           "sharing",
@@ -159,7 +159,7 @@
     },
     "/api/2.1/unity-catalog/providers/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "providers_delete",
         "summary": "Deletes an authentication provider, if the caller is a metastore admin or is the owner of the",
         "tags": [
           "sharing",
@@ -202,7 +202,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "providers_get",
         "summary": "Gets a specific authentication provider. The caller must supply the name of the provider, and must",
         "tags": [
           "sharing",
@@ -252,7 +252,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "providers_update",
         "summary": "Updates the information for an authentication provider, if the caller is a metastore admin or is the",
         "tags": [
           "sharing",
@@ -331,7 +331,7 @@
     },
     "/api/2.1/data-sharing/providers/{provider_name}/shares/{share_name}": {
       "get": {
-        "operationId": "list_provider_share_assets",
+        "operationId": "providers_list_provider_share_assets",
         "summary": "Get arrays of assets associated with a specified provider's share. The caller is the recipient of the",
         "tags": [
           "sharing",
@@ -428,7 +428,7 @@
     },
     "/api/2.1/unity-catalog/providers/{name}/shares": {
       "get": {
-        "operationId": "list_shares",
+        "operationId": "providers_list_shares",
         "summary": "Gets an array of a specified provider's shares within the metastore where:",
         "tags": [
           "sharing",
@@ -498,7 +498,7 @@
     },
     "/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}": {
       "get": {
-        "operationId": "get_activation_url_info",
+        "operationId": "recipient_activation_get_activation_url_info",
         "summary": "Gets an activation URL for a share.",
         "tags": [
           "sharing",
@@ -543,7 +543,7 @@
     },
     "/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}": {
       "get": {
-        "operationId": "retrieve_token",
+        "operationId": "recipient_activation_retrieve_token",
         "summary": "Retrieve access token with an activation url. This is a public API without any authentication.",
         "tags": [
           "sharing",
@@ -595,7 +595,7 @@
     },
     "/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies": {
       "post": {
-        "operationId": "create",
+        "operationId": "recipient_federation_policies_create",
         "summary": "Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to",
         "tags": [
           "sharing",
@@ -663,7 +663,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "recipient_federation_policies_list",
         "summary": "Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to",
         "tags": [
           "sharing",
@@ -732,7 +732,7 @@
     },
     "/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "recipient_federation_policies_delete",
         "summary": "Deletes an existing federation policy for an OIDC_FEDERATION recipient. The caller must be the owner",
         "tags": [
           "sharing",
@@ -784,7 +784,7 @@
         }
       },
       "get": {
-        "operationId": "get_federation_policy",
+        "operationId": "recipient_federation_policies_get_federation_policy",
         "summary": "Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks",
         "tags": [
           "sharing",
@@ -845,7 +845,7 @@
     },
     "/api/2.1/unity-catalog/recipients": {
       "post": {
-        "operationId": "create",
+        "operationId": "recipients_create",
         "summary": "Creates a new recipient with the delta sharing authentication type in the metastore. The caller must",
         "tags": [
           "sharing",
@@ -938,7 +938,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "recipients_list",
         "summary": "Gets an array of all share recipients within the current metastore where:",
         "tags": [
           "sharing",
@@ -1008,7 +1008,7 @@
     },
     "/api/2.1/unity-catalog/recipients/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "recipients_delete",
         "summary": "Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.",
         "tags": [
           "sharing",
@@ -1051,7 +1051,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "recipients_get",
         "summary": "Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**",
         "tags": [
           "sharing",
@@ -1101,7 +1101,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "recipients_update",
         "summary": "Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of",
         "tags": [
           "sharing",
@@ -1192,7 +1192,7 @@
     },
     "/api/2.1/unity-catalog/recipients/{name}/rotate-token": {
       "post": {
-        "operationId": "rotate_token",
+        "operationId": "recipients_rotate_token",
         "summary": "Refreshes the specified recipient's delta sharing authentication token with the provided token info.",
         "tags": [
           "sharing",
@@ -1262,7 +1262,7 @@
     },
     "/api/2.1/unity-catalog/recipients/{name}/share-permissions": {
       "get": {
-        "operationId": "share_permissions",
+        "operationId": "recipients_share_permissions",
         "summary": "Gets the share permissions for the specified Recipient. The caller must have the **USE_RECIPIENT**",
         "tags": [
           "sharing",
@@ -1332,7 +1332,7 @@
     },
     "/api/2.1/unity-catalog/shares": {
       "post": {
-        "operationId": "create",
+        "operationId": "shares_create",
         "summary": "Creates a new share for data objects. Data objects can be added after creation with **update**. The",
         "tags": [
           "sharing",
@@ -1397,7 +1397,7 @@
         }
       },
       "get": {
-        "operationId": "list_shares",
+        "operationId": "shares_list_shares",
         "summary": "Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on",
         "tags": [
           "sharing",
@@ -1458,7 +1458,7 @@
     },
     "/api/2.1/unity-catalog/shares/{name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "shares_delete",
         "summary": "Deletes a data object share from the metastore. The caller must be an owner of the share.",
         "tags": [
           "sharing",
@@ -1501,7 +1501,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "shares_get",
         "summary": "Gets a data object share from the metastore. The caller must have the USE_SHARE privilege on the",
         "tags": [
           "sharing",
@@ -1560,7 +1560,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "shares_update",
         "summary": "Updates the share with the changes and data objects in the request. The caller must be the owner of",
         "tags": [
           "sharing",
@@ -1643,7 +1643,7 @@
     },
     "/api/2.1/unity-catalog/shares/{name}/permissions": {
       "get": {
-        "operationId": "share_permissions",
+        "operationId": "shares_share_permissions",
         "summary": "Gets the permissions for a data share from the metastore. The caller must have the USE_SHARE privilege",
         "tags": [
           "sharing",
@@ -1711,7 +1711,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "shares_update_permissions",
         "summary": "Updates the permissions for a data share in the metastore. The caller must have both the USE_SHARE and",
         "tags": [
           "sharing",

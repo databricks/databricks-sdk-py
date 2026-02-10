@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/postgres/{parent}/branches": {
       "post": {
-        "operationId": "create_branch",
+        "operationId": "postgres_create_branch",
         "summary": "Creates a new database branch in the project.",
         "tags": [
           "postgres"
@@ -96,7 +96,7 @@
         }
       },
       "get": {
-        "operationId": "list_branches",
+        "operationId": "postgres_list_branches",
         "summary": "Returns a paginated list of database branches in the project.",
         "tags": [
           "postgres"
@@ -165,7 +165,7 @@
     },
     "/api/2.0/postgres/{parent}/endpoints": {
       "post": {
-        "operationId": "create_endpoint",
+        "operationId": "postgres_create_endpoint",
         "summary": "Creates a new compute endpoint in the branch.",
         "tags": [
           "postgres"
@@ -241,7 +241,7 @@
         }
       },
       "get": {
-        "operationId": "list_endpoints",
+        "operationId": "postgres_list_endpoints",
         "summary": "Returns a paginated list of compute endpoints in the branch.",
         "tags": [
           "postgres"
@@ -310,7 +310,7 @@
     },
     "/api/2.0/postgres/projects": {
       "post": {
-        "operationId": "create_project",
+        "operationId": "postgres_create_project",
         "summary": "Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute",
         "tags": [
           "postgres"
@@ -377,7 +377,7 @@
         }
       },
       "get": {
-        "operationId": "list_projects",
+        "operationId": "postgres_list_projects",
         "summary": "Returns a paginated list of database projects in the workspace that the user has permission to access.",
         "tags": [
           "postgres"
@@ -437,7 +437,7 @@
     },
     "/api/2.0/postgres/{parent}/roles": {
       "post": {
-        "operationId": "create_role",
+        "operationId": "postgres_create_role",
         "summary": "Creates a new Postgres role in the branch.",
         "tags": [
           "postgres"
@@ -513,7 +513,7 @@
         }
       },
       "get": {
-        "operationId": "list_roles",
+        "operationId": "postgres_list_roles",
         "summary": "Returns a paginated list of Postgres roles in the branch.",
         "tags": [
           "postgres"
@@ -582,7 +582,7 @@
     },
     "/api/2.0/postgres/{name}": {
       "delete": {
-        "operationId": "delete_role",
+        "operationId": "postgres_delete_role",
         "summary": "Deletes the specified Postgres role.",
         "tags": [
           "postgres"
@@ -640,7 +640,7 @@
         }
       },
       "get": {
-        "operationId": "get_role",
+        "operationId": "postgres_get_role",
         "summary": "Retrieves information about the specified Postgres role, including its authentication method and",
         "tags": [
           "postgres"
@@ -689,7 +689,7 @@
         }
       },
       "patch": {
-        "operationId": "update_project",
+        "operationId": "postgres_update_project",
         "summary": "Updates the specified database project.",
         "tags": [
           "postgres"
@@ -767,7 +767,7 @@
     },
     "/api/2.0/postgres/credentials": {
       "post": {
-        "operationId": "generate_database_credential",
+        "operationId": "postgres_generate_database_credential",
         "summary": "Generate OAuth credentials for a Postgres database.",
         "tags": [
           "postgres"

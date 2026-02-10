@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "aibi_dashboard_embedding_access_policy_delete",
         "summary": "Delete the AI/BI dashboard embedding access policy, reverting back to the default.",
         "tags": [
           "settings",
@@ -70,7 +70,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "aibi_dashboard_embedding_access_policy_get",
         "summary": "Retrieves the AI/BI dashboard embedding access policy. The default setting is ALLOW_APPROVED_DOMAINS,",
         "tags": [
           "settings",
@@ -120,7 +120,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "aibi_dashboard_embedding_access_policy_update",
         "summary": "Updates the AI/BI dashboard embedding access policy at the workspace level.",
         "tags": [
           "settings",
@@ -188,7 +188,7 @@
     },
     "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "aibi_dashboard_embedding_approved_domains_delete",
         "summary": "Delete the list of domains approved to host embedded AI/BI dashboards, reverting back to the default",
         "tags": [
           "settings",
@@ -238,7 +238,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "aibi_dashboard_embedding_approved_domains_get",
         "summary": "Retrieves the list of domains approved to host embedded AI/BI dashboards.",
         "tags": [
           "settings",
@@ -288,7 +288,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "aibi_dashboard_embedding_approved_domains_update",
         "summary": "Updates the list of domains approved to host embedded AI/BI dashboards. This update will fail if the",
         "tags": [
           "settings",
@@ -356,7 +356,7 @@
     },
     "/api/2.0/settings/types/automatic_cluster_update/names/default": {
       "get": {
-        "operationId": "get",
+        "operationId": "automatic_cluster_update_get",
         "summary": "Gets the automatic cluster update setting.",
         "tags": [
           "settings",
@@ -406,7 +406,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "automatic_cluster_update_update",
         "summary": "Updates the automatic cluster update setting for the workspace. A fresh etag needs to be provided in",
         "tags": [
           "settings",
@@ -474,7 +474,7 @@
     },
     "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default": {
       "get": {
-        "operationId": "get",
+        "operationId": "compliance_security_profile_get",
         "summary": "Gets the compliance security profile setting.",
         "tags": [
           "settings",
@@ -524,7 +524,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "compliance_security_profile_update",
         "summary": "Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided",
         "tags": [
           "settings",
@@ -592,7 +592,7 @@
     },
     "/api/2.0/credentials-manager/exchange-tokens/token": {
       "post": {
-        "operationId": "exchange_token",
+        "operationId": "credentials_manager_exchange_token",
         "summary": "Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to",
         "tags": [
           "settings",
@@ -661,7 +661,7 @@
     },
     "/api/2.0/accounts/{account_id}/settings/types/shield_csp_enablement_ac/names/default": {
       "get": {
-        "operationId": "get",
+        "operationId": "csp_enablement_account_get",
         "summary": "Gets the compliance security profile setting for new workspaces.",
         "tags": [
           "settings",
@@ -711,7 +711,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "csp_enablement_account_update",
         "summary": "Updates the value of the compliance security profile setting for new workspaces.",
         "tags": [
           "settings",
@@ -779,7 +779,7 @@
     },
     "/api/2.0/settings/types/dashboard_email_subscriptions/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "dashboard_email_subscriptions_delete",
         "summary": "Reverts the Dashboard Email Subscriptions setting to its default value.",
         "tags": [
           "settings",
@@ -829,7 +829,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "dashboard_email_subscriptions_get",
         "summary": "Gets the Dashboard Email Subscriptions setting.",
         "tags": [
           "settings",
@@ -879,7 +879,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "dashboard_email_subscriptions_update",
         "summary": "Updates the Dashboard Email Subscriptions setting.",
         "tags": [
           "settings",
@@ -947,7 +947,7 @@
     },
     "/api/2.0/settings/types/default_namespace_ws/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "default_namespace_delete",
         "summary": "Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`",
         "tags": [
           "settings",
@@ -997,7 +997,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "default_namespace_get",
         "summary": "Gets the default namespace setting.",
         "tags": [
           "settings",
@@ -1047,7 +1047,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "default_namespace_update",
         "summary": "Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`",
         "tags": [
           "settings",
@@ -1115,7 +1115,7 @@
     },
     "/api/2.0/settings/types/default_warehouse_id/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "default_warehouse_id_delete",
         "summary": "Reverts the Default Warehouse Id setting to its default value.",
         "tags": [
           "settings",
@@ -1165,7 +1165,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "default_warehouse_id_get",
         "summary": "Gets the Default Warehouse Id setting.",
         "tags": [
           "settings",
@@ -1215,7 +1215,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "default_warehouse_id_update",
         "summary": "Updates the Default Warehouse Id setting.",
         "tags": [
           "settings",
@@ -1283,7 +1283,7 @@
     },
     "/api/2.0/settings/types/disable_legacy_access/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "disable_legacy_access_delete",
         "summary": "Deletes legacy access disablement status.",
         "tags": [
           "settings",
@@ -1333,7 +1333,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "disable_legacy_access_get",
         "summary": "Retrieves legacy access disablement Status.",
         "tags": [
           "settings",
@@ -1383,7 +1383,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "disable_legacy_access_update",
         "summary": "Updates legacy access disablement status.",
         "tags": [
           "settings",
@@ -1451,7 +1451,7 @@
     },
     "/api/2.0/settings/types/disable_legacy_dbfs/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "disable_legacy_dbfs_delete",
         "summary": "Deletes the disable legacy DBFS setting for a workspace, reverting back to the default.",
         "tags": [
           "settings",
@@ -1501,7 +1501,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "disable_legacy_dbfs_get",
         "summary": "Gets the disable legacy DBFS setting.",
         "tags": [
           "settings",
@@ -1551,7 +1551,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "disable_legacy_dbfs_update",
         "summary": "Updates the disable legacy DBFS setting for the workspace.",
         "tags": [
           "settings",
@@ -1619,7 +1619,7 @@
     },
     "/api/2.0/accounts/{account_id}/settings/types/disable_legacy_features/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "disable_legacy_features_delete",
         "summary": "Deletes the disable legacy features setting.",
         "tags": [
           "settings",
@@ -1669,7 +1669,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "disable_legacy_features_get",
         "summary": "Gets the value of the disable legacy features setting.",
         "tags": [
           "settings",
@@ -1719,7 +1719,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "disable_legacy_features_update",
         "summary": "Updates the value of the disable legacy features setting.",
         "tags": [
           "settings",
@@ -1787,7 +1787,7 @@
     },
     "/api/2.0/settings/types/enable-export-notebook/names/default": {
       "get": {
-        "operationId": "get_enable_export_notebook",
+        "operationId": "enable_export_notebook_get_enable_export_notebook",
         "summary": "Gets the Notebook and File exporting setting.",
         "tags": [
           "settings",
@@ -1826,7 +1826,7 @@
         }
       },
       "patch": {
-        "operationId": "patch_enable_export_notebook",
+        "operationId": "enable_export_notebook_patch_enable_export_notebook",
         "summary": "Updates the Notebook and File exporting setting. The model follows eventual consistency, which means",
         "tags": [
           "settings",
@@ -1894,7 +1894,7 @@
     },
     "/api/2.0/accounts/{account_id}/settings/types/acct_ip_acl_enable/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "enable_ip_access_lists_delete",
         "summary": "Reverts the value of the account IP access toggle setting to default (ON)",
         "tags": [
           "settings",
@@ -1944,7 +1944,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "enable_ip_access_lists_get",
         "summary": "Gets the value of the account IP access toggle setting.",
         "tags": [
           "settings",
@@ -1994,7 +1994,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "enable_ip_access_lists_update",
         "summary": "Updates the value of the account IP access toggle setting.",
         "tags": [
           "settings",
@@ -2062,7 +2062,7 @@
     },
     "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default": {
       "get": {
-        "operationId": "get_enable_notebook_table_clipboard",
+        "operationId": "enable_notebook_table_clipboard_get_enable_notebook_table_clipboard",
         "summary": "Gets the Results Table Clipboard features setting.",
         "tags": [
           "settings",
@@ -2101,7 +2101,7 @@
         }
       },
       "patch": {
-        "operationId": "patch_enable_notebook_table_clipboard",
+        "operationId": "enable_notebook_table_clipboard_patch_enable_notebook_table_clipboard",
         "summary": "Updates the Results Table Clipboard features setting. The model follows eventual consistency, which",
         "tags": [
           "settings",
@@ -2169,7 +2169,7 @@
     },
     "/api/2.0/settings/types/enable-results-downloading/names/default": {
       "get": {
-        "operationId": "get_enable_results_downloading",
+        "operationId": "enable_results_downloading_get_enable_results_downloading",
         "summary": "Gets the Notebook results download setting.",
         "tags": [
           "settings",
@@ -2208,7 +2208,7 @@
         }
       },
       "patch": {
-        "operationId": "patch_enable_results_downloading",
+        "operationId": "enable_results_downloading_patch_enable_results_downloading",
         "summary": "Updates the Notebook results download setting. The model follows eventual consistency, which means the",
         "tags": [
           "settings",
@@ -2276,7 +2276,7 @@
     },
     "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default": {
       "get": {
-        "operationId": "get",
+        "operationId": "enhanced_security_monitoring_get",
         "summary": "Gets the enhanced security monitoring setting.",
         "tags": [
           "settings",
@@ -2326,7 +2326,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "enhanced_security_monitoring_update",
         "summary": "Updates the enhanced security monitoring setting for the workspace. A fresh etag needs to be provided",
         "tags": [
           "settings",
@@ -2394,7 +2394,7 @@
     },
     "/api/2.0/accounts/{account_id}/settings/types/shield_esm_enablement_ac/names/default": {
       "get": {
-        "operationId": "get",
+        "operationId": "esm_enablement_account_get",
         "summary": "Gets the enhanced security monitoring setting for new workspaces.",
         "tags": [
           "settings",
@@ -2444,7 +2444,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "esm_enablement_account_update",
         "summary": "Updates the value of the enhanced security monitoring setting for new workspaces.",
         "tags": [
           "settings",
@@ -2512,7 +2512,7 @@
     },
     "/api/2.0/ip-access-lists": {
       "post": {
-        "operationId": "create",
+        "operationId": "ip_access_lists_create",
         "summary": "Creates an IP access list for this workspace.",
         "tags": [
           "settings",
@@ -2577,7 +2577,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "ip_access_lists_list",
         "summary": "Gets all IP access lists for the specified workspace.",
         "tags": [
           "settings",
@@ -2618,7 +2618,7 @@
     },
     "/api/2.0/ip-access-lists/{ip_access_list_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "ip_access_lists_delete",
         "summary": "Deletes an IP access list, specified by its list ID.",
         "tags": [
           "settings",
@@ -2661,7 +2661,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "ip_access_lists_get",
         "summary": "Gets an IP access list, specified by its list ID.",
         "tags": [
           "settings",
@@ -2711,7 +2711,7 @@
         }
       },
       "put": {
-        "operationId": "replace",
+        "operationId": "ip_access_lists_replace",
         "summary": "Replaces an IP access list, specified by its ID.",
         "tags": [
           "settings",
@@ -2785,7 +2785,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "ip_access_lists_update",
         "summary": "Updates an existing IP access list, specified by its ID.",
         "tags": [
           "settings",
@@ -2856,7 +2856,7 @@
     },
     "/api/2.0/accounts/{account_id}/settings/types/llm_proxy_partner_powered/names/default": {
       "get": {
-        "operationId": "get",
+        "operationId": "llm_proxy_partner_powered_account_get",
         "summary": "Gets the enable partner powered AI features account setting.",
         "tags": [
           "settings",
@@ -2906,7 +2906,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "llm_proxy_partner_powered_account_update",
         "summary": "Updates the enable partner powered AI features account setting.",
         "tags": [
           "settings",
@@ -2974,7 +2974,7 @@
     },
     "/api/2.0/accounts/{account_id}/settings/types/llm_proxy_partner_powered_enforce/names/default": {
       "get": {
-        "operationId": "get",
+        "operationId": "llm_proxy_partner_powered_enforce_get",
         "summary": "Gets the enforcement status of partner powered AI features account setting.",
         "tags": [
           "settings",
@@ -3024,7 +3024,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "llm_proxy_partner_powered_enforce_update",
         "summary": "Updates the enable enforcement status of partner powered AI features account setting.",
         "tags": [
           "settings",
@@ -3092,7 +3092,7 @@
     },
     "/api/2.0/settings/types/llm_proxy_partner_powered/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "llm_proxy_partner_powered_workspace_delete",
         "summary": "Reverts the enable partner powered AI features workspace setting to its default value.",
         "tags": [
           "settings",
@@ -3142,7 +3142,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "llm_proxy_partner_powered_workspace_get",
         "summary": "Gets the enable partner powered AI features workspace setting.",
         "tags": [
           "settings",
@@ -3192,7 +3192,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "llm_proxy_partner_powered_workspace_update",
         "summary": "Updates the enable partner powered AI features workspace setting.",
         "tags": [
           "settings",
@@ -3260,7 +3260,7 @@
     },
     "/api/2.0/notification-destinations": {
       "post": {
-        "operationId": "create",
+        "operationId": "notification_destinations_create",
         "summary": "Creates a notification destination. Requires workspace admin permissions.",
         "tags": [
           "settings",
@@ -3318,7 +3318,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "notification_destinations_list",
         "summary": "Lists notification destinations.",
         "tags": [
           "settings",
@@ -3378,7 +3378,7 @@
     },
     "/api/2.0/notification-destinations/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "notification_destinations_delete",
         "summary": "Deletes a notification destination. Requires workspace admin permissions.",
         "tags": [
           "settings",
@@ -3421,7 +3421,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "notification_destinations_get",
         "summary": "Gets a notification destination.",
         "tags": [
           "settings",
@@ -3471,7 +3471,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "notification_destinations_update",
         "summary": "Updates a notification destination. Requires workspace admin permissions. At least one field is",
         "tags": [
           "settings",
@@ -3542,7 +3542,7 @@
     },
     "/api/2.0/accounts/{account_id}/settings/types/dcp_acct_enable/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "personal_compute_delete",
         "summary": "Reverts back the Personal Compute setting value to default (ON)",
         "tags": [
           "settings",
@@ -3592,7 +3592,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "personal_compute_get",
         "summary": "Gets the value of the Personal Compute setting.",
         "tags": [
           "settings",
@@ -3642,7 +3642,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "personal_compute_update",
         "summary": "Updates the value of the Personal Compute setting.",
         "tags": [
           "settings",
@@ -3710,7 +3710,7 @@
     },
     "/api/2.0/settings/types/restrict_workspace_admins/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "restrict_workspace_admins_delete",
         "summary": "Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be",
         "tags": [
           "settings",
@@ -3760,7 +3760,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "restrict_workspace_admins_get",
         "summary": "Gets the restrict workspace admins setting.",
         "tags": [
           "settings",
@@ -3810,7 +3810,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "restrict_workspace_admins_update",
         "summary": "Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in",
         "tags": [
           "settings",
@@ -3878,7 +3878,7 @@
     },
     "/api/2.0/settings/types/sql_results_download/names/default": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "sql_results_download_delete",
         "summary": "Reverts the SQL Results Download setting to its default value.",
         "tags": [
           "settings",
@@ -3928,7 +3928,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "sql_results_download_get",
         "summary": "Gets the SQL Results Download setting.",
         "tags": [
           "settings",
@@ -3978,7 +3978,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "sql_results_download_update",
         "summary": "Updates the SQL Results Download setting.",
         "tags": [
           "settings",
@@ -4046,7 +4046,7 @@
     },
     "/api/2.0/token-management/on-behalf-of/tokens": {
       "post": {
-        "operationId": "create_obo_token",
+        "operationId": "token_management_create_obo_token",
         "summary": "Creates a token on behalf of a service principal.",
         "tags": [
           "settings",
@@ -4113,7 +4113,7 @@
     },
     "/api/2.0/token-management/tokens/{token_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "token_management_delete",
         "summary": "Deletes a token, specified by its ID.",
         "tags": [
           "settings",
@@ -4156,7 +4156,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "token_management_get",
         "summary": "Gets information about a token, specified by its ID.",
         "tags": [
           "settings",
@@ -4208,7 +4208,7 @@
     },
     "/api/2.0/permissions/authorization/tokens/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "token_management_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "settings",
@@ -4249,7 +4249,7 @@
     },
     "/api/2.0/permissions/authorization/tokens": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "token_management_get_permissions",
         "summary": "Gets the permissions of all tokens. Tokens can inherit permissions from their root object.",
         "tags": [
           "settings",
@@ -4288,7 +4288,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "token_management_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "settings",
@@ -4342,7 +4342,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "token_management_update_permissions",
         "summary": "Updates the permissions on all tokens. Tokens can inherit permissions from their root object.",
         "tags": [
           "settings",
@@ -4398,7 +4398,7 @@
     },
     "/api/2.0/token-management/tokens": {
       "get": {
-        "operationId": "list",
+        "operationId": "token_management_list",
         "summary": "Lists all tokens associated with the specified workspace or user.",
         "tags": [
           "settings",
@@ -4459,7 +4459,7 @@
     },
     "/api/2.0/token/create": {
       "post": {
-        "operationId": "create",
+        "operationId": "tokens_create",
         "summary": "Creates and returns a token for a user. If this call is made through token authentication, it creates",
         "tags": [
           "settings",
@@ -4519,7 +4519,7 @@
     },
     "/api/2.0/token/delete": {
       "post": {
-        "operationId": "delete",
+        "operationId": "tokens_delete",
         "summary": "Revokes an access token.",
         "tags": [
           "settings",
@@ -4571,7 +4571,7 @@
     },
     "/api/2.0/token/list": {
       "get": {
-        "operationId": "list",
+        "operationId": "tokens_list",
         "summary": "Lists all the valid tokens for a user-workspace pair.",
         "tags": [
           "settings",
@@ -4612,7 +4612,7 @@
     },
     "/api/2.0/workspace-conf": {
       "get": {
-        "operationId": "get_status",
+        "operationId": "workspace_conf_get_status",
         "summary": "Gets the configuration status for a workspace.",
         "tags": [
           "settings",
@@ -4662,7 +4662,7 @@
         }
       },
       "patch": {
-        "operationId": "set_status",
+        "operationId": "workspace_conf_set_status",
         "summary": "Sets the configuration status for a workspace, including enabling or disabling it.",
         "tags": [
           "settings",

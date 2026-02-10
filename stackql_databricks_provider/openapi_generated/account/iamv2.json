@@ -14,7 +14,7 @@
   "paths": {
     "/api/2.0/identity/accounts/{account_id}/workspaces/{workspace_id}/workspaceAccessDetails/{principal_id}": {
       "get": {
-        "operationId": "get_workspace_access_detail",
+        "operationId": "account_iam_v2_get_workspace_access_detail",
         "summary": "Returns the access details for a principal in a workspace. Allows for checking access details for any",
         "tags": [
           "iamv2",
@@ -84,7 +84,7 @@
     },
     "/api/2.0/identity/accounts/{account_id}/groups/resolveByExternalId": {
       "post": {
-        "operationId": "resolve_group",
+        "operationId": "account_iam_v2_resolve_group",
         "summary": "Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it",
         "tags": [
           "iamv2",
@@ -143,7 +143,7 @@
     },
     "/api/2.0/identity/accounts/{account_id}/servicePrincipals/resolveByExternalId": {
       "post": {
-        "operationId": "resolve_service_principal",
+        "operationId": "account_iam_v2_resolve_service_principal",
         "summary": "Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will",
         "tags": [
           "iamv2",
@@ -202,7 +202,7 @@
     },
     "/api/2.0/identity/accounts/{account_id}/users/resolveByExternalId": {
       "post": {
-        "operationId": "resolve_user",
+        "operationId": "account_iam_v2_resolve_user",
         "summary": "Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it",
         "tags": [
           "iamv2",

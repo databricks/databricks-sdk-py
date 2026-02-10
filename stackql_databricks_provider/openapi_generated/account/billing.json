@@ -14,7 +14,7 @@
   "paths": {
     "/api/2.0/accounts/{account_id}/usage/download": {
       "get": {
-        "operationId": "download",
+        "operationId": "billable_usage_download",
         "summary": "Returns billable usage logs in CSV format for the specified account and date range. For the data",
         "tags": [
           "billing",
@@ -84,7 +84,7 @@
     },
     "/api/2.1/accounts/{account_id}/budget-policies": {
       "post": {
-        "operationId": "create",
+        "operationId": "budget_policy_create",
         "summary": "Creates a new policy.",
         "tags": [
           "billing",
@@ -142,7 +142,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "budget_policy_list",
         "summary": "Lists all policies. Policies are returned in the alphabetically ascending order of their names.",
         "tags": [
           "billing",
@@ -221,7 +221,7 @@
     },
     "/api/2.1/accounts/{account_id}/budget-policies/{policy_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "budget_policy_delete",
         "summary": "Deletes a policy",
         "tags": [
           "billing",
@@ -264,7 +264,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "budget_policy_get",
         "summary": "Retrieves a policy by it's ID.",
         "tags": [
           "billing",
@@ -314,7 +314,7 @@
         }
       },
       "patch": {
-        "operationId": "update",
+        "operationId": "budget_policy_update",
         "summary": "Updates a policy",
         "tags": [
           "billing",
@@ -393,7 +393,7 @@
     },
     "/api/2.1/accounts/{account_id}/budgets": {
       "post": {
-        "operationId": "create",
+        "operationId": "budgets_create",
         "summary": "Create a new budget configuration for an account. For full details, see",
         "tags": [
           "billing",
@@ -450,7 +450,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "budgets_list",
         "summary": "Gets all budgets associated with this account.",
         "tags": [
           "billing",
@@ -502,7 +502,7 @@
     },
     "/api/2.1/accounts/{account_id}/budgets/{budget_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "budgets_delete",
         "summary": "Deletes a budget configuration for an account. Both account and budget configuration are specified by",
         "tags": [
           "billing",
@@ -545,7 +545,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "budgets_get",
         "summary": "Gets a budget configuration for an account. Both account and budget configuration are specified by ID.",
         "tags": [
           "billing",
@@ -595,7 +595,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "budgets_update",
         "summary": "Updates a budget configuration for an account. Both account and budget configuration are specified by",
         "tags": [
           "billing",
@@ -665,7 +665,7 @@
     },
     "/api/2.0/accounts/{account_id}/log-delivery": {
       "post": {
-        "operationId": "create",
+        "operationId": "log_delivery_create",
         "summary": "Creates a new Databricks log delivery configuration to enable delivery of the specified type of logs",
         "tags": [
           "billing",
@@ -722,7 +722,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "log_delivery_list",
         "summary": "Gets all Databricks log delivery configurations associated with an account specified by ID.",
         "tags": [
           "billing",
@@ -801,7 +801,7 @@
     },
     "/api/2.0/accounts/{account_id}/log-delivery/{log_delivery_configuration_id}": {
       "get": {
-        "operationId": "get",
+        "operationId": "log_delivery_get",
         "summary": "Gets a Databricks log delivery configuration object for an account, both specified by ID.",
         "tags": [
           "billing",
@@ -851,7 +851,7 @@
         }
       },
       "patch": {
-        "operationId": "patch_status",
+        "operationId": "log_delivery_patch_status",
         "summary": "Enables or disables a log delivery configuration. Deletion of delivery configurations is not",
         "tags": [
           "billing",
@@ -914,7 +914,7 @@
     },
     "/api/2.0/accounts/{account_id}/dashboard": {
       "post": {
-        "operationId": "create",
+        "operationId": "usage_dashboards_create",
         "summary": "Create a usage dashboard specified by workspaceId, accountId, and dashboard type.",
         "tags": [
           "billing",
@@ -976,7 +976,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "usage_dashboards_get",
         "summary": "Get a usage dashboard specified by workspaceId, accountId, and dashboard type.",
         "tags": [
           "billing",

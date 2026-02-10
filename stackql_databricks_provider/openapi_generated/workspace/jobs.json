@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.2/jobs/runs/cancel-all": {
       "post": {
-        "operationId": "cancel_all_runs",
+        "operationId": "jobs_cancel_all_runs",
         "summary": "Cancels all active runs of a job. The runs are canceled asynchronously, so it doesn't prevent new runs",
         "tags": [
           "jobs"
@@ -72,7 +72,7 @@
     },
     "/api/2.2/jobs/runs/cancel": {
       "post": {
-        "operationId": "cancel_run",
+        "operationId": "jobs_cancel_run",
         "summary": "Cancels a job run or a task run. The run is canceled asynchronously, so it may still be running when",
         "tags": [
           "jobs"
@@ -130,7 +130,7 @@
     },
     "/api/2.2/jobs/create": {
       "post": {
-        "operationId": "create",
+        "operationId": "jobs_create",
         "summary": "Create a new job.",
         "tags": [
           "jobs"
@@ -284,7 +284,7 @@
     },
     "/api/2.2/jobs/delete": {
       "post": {
-        "operationId": "delete",
+        "operationId": "jobs_delete",
         "summary": "Deletes a job.",
         "tags": [
           "jobs"
@@ -335,7 +335,7 @@
     },
     "/api/2.2/jobs/runs/delete": {
       "post": {
-        "operationId": "delete_run",
+        "operationId": "jobs_delete_run",
         "summary": "Deletes a non-active run. Returns an error if the run is active.",
         "tags": [
           "jobs"
@@ -386,7 +386,7 @@
     },
     "/api/2.2/jobs/runs/export": {
       "get": {
-        "operationId": "export_run",
+        "operationId": "jobs_export_run",
         "summary": "Export and retrieve the job run task.",
         "tags": [
           "jobs"
@@ -446,7 +446,7 @@
     },
     "/api/2.2/jobs/get": {
       "get": {
-        "operationId": "get",
+        "operationId": "jobs_get",
         "summary": "Retrieves the details for a single job.",
         "tags": [
           "jobs"
@@ -506,7 +506,7 @@
     },
     "/api/2.0/permissions/jobs/{job_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "jobs_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "jobs"
@@ -557,7 +557,7 @@
     },
     "/api/2.0/permissions/jobs/{job_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "jobs_get_permissions",
         "summary": "Gets the permissions of a job. Jobs can inherit permissions from their root object.",
         "tags": [
           "jobs"
@@ -606,7 +606,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "jobs_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "jobs"
@@ -670,7 +670,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "jobs_update_permissions",
         "summary": "Updates the permissions on a job. Jobs can inherit permissions from their root object.",
         "tags": [
           "jobs"
@@ -736,7 +736,7 @@
     },
     "/api/2.2/jobs/runs/get": {
       "get": {
-        "operationId": "get_run",
+        "operationId": "jobs_get_run",
         "summary": "Retrieves the metadata of a run.",
         "tags": [
           "jobs"
@@ -814,7 +814,7 @@
     },
     "/api/2.2/jobs/runs/get-output": {
       "get": {
-        "operationId": "get_run_output",
+        "operationId": "jobs_get_run_output",
         "summary": "Retrieve the output and metadata of a single task run. When a notebook task returns a value through",
         "tags": [
           "jobs"
@@ -865,7 +865,7 @@
     },
     "/api/2.2/jobs/list": {
       "get": {
-        "operationId": "list",
+        "operationId": "jobs_list",
         "summary": "Retrieves a list of jobs.",
         "tags": [
           "jobs"
@@ -952,7 +952,7 @@
     },
     "/api/2.2/jobs/runs/list": {
       "get": {
-        "operationId": "list_runs",
+        "operationId": "jobs_list_runs",
         "summary": "List runs in descending order by start time.",
         "tags": [
           "jobs"
@@ -1084,7 +1084,7 @@
     },
     "/api/2.2/jobs/runs/repair": {
       "post": {
-        "operationId": "repair_run",
+        "operationId": "jobs_repair_run",
         "summary": "Re-run one or more tasks. Tasks are re-run as part of the original job run. They use the current job",
         "tags": [
           "jobs"
@@ -1197,7 +1197,7 @@
     },
     "/api/2.2/jobs/reset": {
       "post": {
-        "operationId": "reset",
+        "operationId": "jobs_reset",
         "summary": "Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jobs/update) to update",
         "tags": [
           "jobs"
@@ -1253,7 +1253,7 @@
     },
     "/api/2.2/jobs/run-now": {
       "post": {
-        "operationId": "run_now",
+        "operationId": "jobs_run_now",
         "summary": "Run a job and return the `run_id` of the triggered run.",
         "tags": [
           "jobs"
@@ -1362,7 +1362,7 @@
     },
     "/api/2.2/jobs/runs/submit": {
       "post": {
-        "operationId": "submit",
+        "operationId": "jobs_submit",
         "summary": "Submit a one-time run. This endpoint allows you to submit a workload directly without creating a job.",
         "tags": [
           "jobs"
@@ -1471,7 +1471,7 @@
     },
     "/api/2.2/jobs/update": {
       "post": {
-        "operationId": "update",
+        "operationId": "jobs_update",
         "summary": "Add, update, or remove specific settings of an existing job. Use the [_Reset_",
         "tags": [
           "jobs"
@@ -1530,7 +1530,7 @@
     },
     "/api/2.0/policies/jobs/enforce-compliance": {
       "post": {
-        "operationId": "enforce_compliance",
+        "operationId": "policy_compliance_for_jobs_enforce_compliance",
         "summary": "Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)",
         "tags": [
           "jobs",
@@ -1593,7 +1593,7 @@
     },
     "/api/2.0/policies/jobs/get-compliance": {
       "get": {
-        "operationId": "get_compliance",
+        "operationId": "policy_compliance_for_jobs_get_compliance",
         "summary": "Returns the policy compliance status of a job. Jobs could be out of compliance if a cluster policy",
         "tags": [
           "jobs",
@@ -1645,7 +1645,7 @@
     },
     "/api/2.0/policies/jobs/list-compliance": {
       "get": {
-        "operationId": "list_compliance",
+        "operationId": "policy_compliance_for_jobs_list_compliance",
         "summary": "Returns the policy compliance status of all jobs that use a given policy. Jobs could be out of",
         "tags": [
           "jobs",

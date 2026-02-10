@@ -14,7 +14,7 @@
   "paths": {
     "/api/2.1/accounts/{account_id}/settings/{name}": {
       "get": {
-        "operationId": "get_public_account_setting",
+        "operationId": "account_settings_v2_get_public_account_setting",
         "summary": "Get a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of",
         "tags": [
           "settingsv2",
@@ -64,7 +64,7 @@
         }
       },
       "patch": {
-        "operationId": "patch_public_account_setting",
+        "operationId": "account_settings_v2_patch_public_account_setting",
         "summary": "Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of",
         "tags": [
           "settingsv2",
@@ -133,7 +133,7 @@
     },
     "/api/2.1/accounts/{account_id}/users/{user_id}/settings/{name}": {
       "get": {
-        "operationId": "get_public_account_user_preference",
+        "operationId": "account_settings_v2_get_public_account_user_preference",
         "summary": "Get a user preference for a specific user. User preferences are personal settings that allow",
         "tags": [
           "settingsv2",
@@ -192,7 +192,7 @@
         }
       },
       "patch": {
-        "operationId": "patch_public_account_user_preference",
+        "operationId": "account_settings_v2_patch_public_account_user_preference",
         "summary": "Update a user preference for a specific user. User preferences are personal settings that allow",
         "tags": [
           "settingsv2",
@@ -270,7 +270,7 @@
     },
     "/api/2.1/accounts/{account_id}/settings-metadata": {
       "get": {
-        "operationId": "list_account_settings_metadata",
+        "operationId": "account_settings_v2_list_account_settings_metadata",
         "summary": "List valid setting keys and metadata. These settings are available to be referenced via GET",
         "tags": [
           "settingsv2",
@@ -331,7 +331,7 @@
     },
     "/api/2.1/accounts/{account_id}/users/{user_id}/settings-metadata": {
       "get": {
-        "operationId": "list_account_user_preferences_metadata",
+        "operationId": "account_settings_v2_list_account_user_preferences_metadata",
         "summary": "List valid user preferences and their metadata for a specific user. User preferences are personal",
         "tags": [
           "settingsv2",

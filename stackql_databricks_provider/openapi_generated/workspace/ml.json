@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/mlflow/experiments/create": {
       "post": {
-        "operationId": "create_experiment",
+        "operationId": "experiments_create_experiment",
         "summary": "Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that",
         "tags": [
           "ml",
@@ -87,7 +87,7 @@
     },
     "/api/2.0/mlflow/logged-models": {
       "post": {
-        "operationId": "create_logged_model",
+        "operationId": "experiments_create_logged_model",
         "summary": "Create a logged model.",
         "tags": [
           "ml",
@@ -166,7 +166,7 @@
     },
     "/api/2.0/mlflow/runs/create": {
       "post": {
-        "operationId": "create_run",
+        "operationId": "experiments_create_run",
         "summary": "Creates a new run within an experiment. A run is usually a single execution of a machine learning or",
         "tags": [
           "ml",
@@ -238,7 +238,7 @@
     },
     "/api/2.0/mlflow/experiments/delete": {
       "post": {
-        "operationId": "delete_experiment",
+        "operationId": "experiments_delete_experiment",
         "summary": "Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the",
         "tags": [
           "ml",
@@ -290,7 +290,7 @@
     },
     "/api/2.0/mlflow/logged-models/{model_id}": {
       "delete": {
-        "operationId": "delete_logged_model",
+        "operationId": "experiments_delete_logged_model",
         "summary": "Delete a logged model.",
         "tags": [
           "ml",
@@ -333,7 +333,7 @@
         }
       },
       "patch": {
-        "operationId": "finalize_logged_model",
+        "operationId": "experiments_finalize_logged_model",
         "summary": "Finalize a logged model.",
         "tags": [
           "ml",
@@ -401,7 +401,7 @@
         }
       },
       "get": {
-        "operationId": "get_logged_model",
+        "operationId": "experiments_get_logged_model",
         "summary": "Get a logged model.",
         "tags": [
           "ml",
@@ -453,7 +453,7 @@
     },
     "/api/2.0/mlflow/logged-models/{model_id}/tags/{tag_key}": {
       "delete": {
-        "operationId": "delete_logged_model_tag",
+        "operationId": "experiments_delete_logged_model_tag",
         "summary": "Delete a tag on a logged model.",
         "tags": [
           "ml",
@@ -507,7 +507,7 @@
     },
     "/api/2.0/mlflow/runs/delete": {
       "post": {
-        "operationId": "delete_run",
+        "operationId": "experiments_delete_run",
         "summary": "Marks a run for deletion.",
         "tags": [
           "ml",
@@ -559,7 +559,7 @@
     },
     "/api/2.0/mlflow/databricks/runs/delete-runs": {
       "post": {
-        "operationId": "delete_runs",
+        "operationId": "experiments_delete_runs",
         "summary": "Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at",
         "tags": [
           "ml",
@@ -627,7 +627,7 @@
     },
     "/api/2.0/mlflow/runs/delete-tag": {
       "post": {
-        "operationId": "delete_tag",
+        "operationId": "experiments_delete_tag",
         "summary": "Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run",
         "tags": [
           "ml",
@@ -684,7 +684,7 @@
     },
     "/api/2.0/mlflow/experiments/get-by-name": {
       "get": {
-        "operationId": "get_by_name",
+        "operationId": "experiments_get_by_name",
         "summary": "Gets metadata for an experiment.",
         "tags": [
           "ml",
@@ -736,7 +736,7 @@
     },
     "/api/2.0/mlflow/experiments/get": {
       "get": {
-        "operationId": "get_experiment",
+        "operationId": "experiments_get_experiment",
         "summary": "Gets metadata for an experiment. This method works on deleted experiments.",
         "tags": [
           "ml",
@@ -788,7 +788,7 @@
     },
     "/api/2.0/mlflow/metrics/get-history": {
       "get": {
-        "operationId": "get_history",
+        "operationId": "experiments_get_history",
         "summary": "Gets a list of all values for the specified metric for a given run.",
         "tags": [
           "ml",
@@ -876,7 +876,7 @@
     },
     "/api/2.0/permissions/experiments/{experiment_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "experiments_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "ml",
@@ -928,7 +928,7 @@
     },
     "/api/2.0/permissions/experiments/{experiment_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "experiments_get_permissions",
         "summary": "Gets the permissions of an experiment. Experiments can inherit permissions from their root object.",
         "tags": [
           "ml",
@@ -978,7 +978,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "experiments_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "ml",
@@ -1043,7 +1043,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "experiments_update_permissions",
         "summary": "Updates the permissions on an experiment. Experiments can inherit permissions from their root object.",
         "tags": [
           "ml",
@@ -1110,7 +1110,7 @@
     },
     "/api/2.0/mlflow/runs/get": {
       "get": {
-        "operationId": "get_run",
+        "operationId": "experiments_get_run",
         "summary": "Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the",
         "tags": [
           "ml",
@@ -1171,7 +1171,7 @@
     },
     "/api/2.0/mlflow/artifacts/list": {
       "get": {
-        "operationId": "list_artifacts",
+        "operationId": "experiments_list_artifacts",
         "summary": "List artifacts for a run. Takes an optional `artifact_path` prefix which if specified, the response",
         "tags": [
           "ml",
@@ -1250,7 +1250,7 @@
     },
     "/api/2.0/mlflow/experiments/list": {
       "get": {
-        "operationId": "list_experiments",
+        "operationId": "experiments_list_experiments",
         "summary": "Gets a list of all experiments.",
         "tags": [
           "ml",
@@ -1320,7 +1320,7 @@
     },
     "/api/2.0/mlflow/runs/log-batch": {
       "post": {
-        "operationId": "log_batch",
+        "operationId": "experiments_log_batch",
         "summary": "Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server",
         "tags": [
           "ml",
@@ -1381,7 +1381,7 @@
     },
     "/api/2.0/mlflow/runs/log-inputs": {
       "post": {
-        "operationId": "log_inputs",
+        "operationId": "experiments_log_inputs",
         "summary": "Logs inputs, such as datasets and models, to an MLflow Run.",
         "tags": [
           "ml",
@@ -1441,7 +1441,7 @@
     },
     "/api/2.0/mlflow/logged-models/{model_id}/params": {
       "post": {
-        "operationId": "log_logged_model_params",
+        "operationId": "experiments_log_logged_model_params",
         "summary": "Logs params for a logged model. A param is a key-value pair (string key, string value). Examples",
         "tags": [
           "ml",
@@ -1501,7 +1501,7 @@
     },
     "/api/2.0/mlflow/runs/log-metric": {
       "post": {
-        "operationId": "log_metric",
+        "operationId": "experiments_log_metric",
         "summary": "Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated",
         "tags": [
           "ml",
@@ -1587,7 +1587,7 @@
     },
     "/api/2.0/mlflow/runs/log-model": {
       "post": {
-        "operationId": "log_model",
+        "operationId": "experiments_log_model",
         "summary": "**Note:** the [Create a logged model](/api/workspace/experiments/createloggedmodel) API replaces this",
         "tags": [
           "ml",
@@ -1640,7 +1640,7 @@
     },
     "/api/2.0/mlflow/runs/outputs": {
       "post": {
-        "operationId": "log_outputs",
+        "operationId": "experiments_log_outputs",
         "summary": "Logs outputs, such as models, from an MLflow Run.",
         "tags": [
           "ml",
@@ -1696,7 +1696,7 @@
     },
     "/api/2.0/mlflow/runs/log-parameter": {
       "post": {
-        "operationId": "log_param",
+        "operationId": "experiments_log_param",
         "summary": "Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include",
         "tags": [
           "ml",
@@ -1761,7 +1761,7 @@
     },
     "/api/2.0/mlflow/experiments/restore": {
       "post": {
-        "operationId": "restore_experiment",
+        "operationId": "experiments_restore_experiment",
         "summary": "Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,",
         "tags": [
           "ml",
@@ -1813,7 +1813,7 @@
     },
     "/api/2.0/mlflow/runs/restore": {
       "post": {
-        "operationId": "restore_run",
+        "operationId": "experiments_restore_run",
         "summary": "Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.",
         "tags": [
           "ml",
@@ -1865,7 +1865,7 @@
     },
     "/api/2.0/mlflow/databricks/runs/restore-runs": {
       "post": {
-        "operationId": "restore_runs",
+        "operationId": "experiments_restore_runs",
         "summary": "Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores",
         "tags": [
           "ml",
@@ -1933,7 +1933,7 @@
     },
     "/api/2.0/mlflow/experiments/search": {
       "post": {
-        "operationId": "search_experiments",
+        "operationId": "experiments_search_experiments",
         "summary": "Searches for experiments that satisfy specified search criteria.",
         "tags": [
           "ml",
@@ -2005,7 +2005,7 @@
     },
     "/api/2.0/mlflow/logged-models/search": {
       "post": {
-        "operationId": "search_logged_models",
+        "operationId": "experiments_search_logged_models",
         "summary": "Search for Logged Models that satisfy specified search criteria.",
         "tags": [
           "ml",
@@ -2081,7 +2081,7 @@
     },
     "/api/2.0/mlflow/runs/search": {
       "post": {
-        "operationId": "search_runs",
+        "operationId": "experiments_search_runs",
         "summary": "Searches for runs that satisfy expressions.",
         "tags": [
           "ml",
@@ -2157,7 +2157,7 @@
     },
     "/api/2.0/mlflow/experiments/set-experiment-tag": {
       "post": {
-        "operationId": "set_experiment_tag",
+        "operationId": "experiments_set_experiment_tag",
         "summary": "Sets a tag on an experiment. Experiment tags are metadata that can be updated.",
         "tags": [
           "ml",
@@ -2219,7 +2219,7 @@
     },
     "/api/2.0/mlflow/logged-models/{model_id}/tags": {
       "patch": {
-        "operationId": "set_logged_model_tags",
+        "operationId": "experiments_set_logged_model_tags",
         "summary": "Set tags for a logged model.",
         "tags": [
           "ml",
@@ -2279,7 +2279,7 @@
     },
     "/api/2.0/mlflow/runs/set-tag": {
       "post": {
-        "operationId": "set_tag",
+        "operationId": "experiments_set_tag",
         "summary": "Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.",
         "tags": [
           "ml",
@@ -2344,7 +2344,7 @@
     },
     "/api/2.0/mlflow/experiments/update": {
       "post": {
-        "operationId": "update_experiment",
+        "operationId": "experiments_update_experiment",
         "summary": "Updates experiment metadata.",
         "tags": [
           "ml",
@@ -2400,7 +2400,7 @@
     },
     "/api/2.0/mlflow/runs/update": {
       "post": {
-        "operationId": "update_run",
+        "operationId": "experiments_update_run",
         "summary": "Updates run metadata.",
         "tags": [
           "ml",
@@ -2472,7 +2472,7 @@
     },
     "/api/2.0/feature-engineering/materialized-features:batchCreate": {
       "post": {
-        "operationId": "batch_create_materialized_features",
+        "operationId": "feature_engineering_batch_create_materialized_features",
         "summary": "Batch create materialized features.",
         "tags": [
           "ml",
@@ -2531,7 +2531,7 @@
     },
     "/api/2.0/feature-engineering/features": {
       "post": {
-        "operationId": "create_feature",
+        "operationId": "feature_engineering_create_feature",
         "summary": "Create a Feature.",
         "tags": [
           "ml",
@@ -2588,7 +2588,7 @@
         }
       },
       "get": {
-        "operationId": "list_features",
+        "operationId": "feature_engineering_list_features",
         "summary": "List Features.",
         "tags": [
           "ml",
@@ -2649,7 +2649,7 @@
     },
     "/api/2.0/feature-engineering/features/kafka-configs": {
       "post": {
-        "operationId": "create_kafka_config",
+        "operationId": "feature_engineering_create_kafka_config",
         "summary": "Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under",
         "tags": [
           "ml",
@@ -2706,7 +2706,7 @@
         }
       },
       "get": {
-        "operationId": "list_kafka_configs",
+        "operationId": "feature_engineering_list_kafka_configs",
         "summary": "List Kafka configs. During PrPr, Kafka configs can be read and used when creating features under the",
         "tags": [
           "ml",
@@ -2767,7 +2767,7 @@
     },
     "/api/2.0/feature-engineering/materialized-features": {
       "post": {
-        "operationId": "create_materialized_feature",
+        "operationId": "feature_engineering_create_materialized_feature",
         "summary": "Create a materialized feature.",
         "tags": [
           "ml",
@@ -2824,7 +2824,7 @@
         }
       },
       "get": {
-        "operationId": "list_materialized_features",
+        "operationId": "feature_engineering_list_materialized_features",
         "summary": "List materialized features.",
         "tags": [
           "ml",
@@ -2894,7 +2894,7 @@
     },
     "/api/2.0/feature-engineering/features/{full_name}": {
       "delete": {
-        "operationId": "delete_feature",
+        "operationId": "feature_engineering_delete_feature",
         "summary": "Delete a Feature.",
         "tags": [
           "ml",
@@ -2937,7 +2937,7 @@
         }
       },
       "get": {
-        "operationId": "get_feature",
+        "operationId": "feature_engineering_get_feature",
         "summary": "Get a Feature.",
         "tags": [
           "ml",
@@ -2987,7 +2987,7 @@
         }
       },
       "patch": {
-        "operationId": "update_feature",
+        "operationId": "feature_engineering_update_feature",
         "summary": "Update a Feature.",
         "tags": [
           "ml",
@@ -3066,7 +3066,7 @@
     },
     "/api/2.0/feature-engineering/features/kafka-configs/{name}": {
       "delete": {
-        "operationId": "delete_kafka_config",
+        "operationId": "feature_engineering_delete_kafka_config",
         "summary": "Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under",
         "tags": [
           "ml",
@@ -3109,7 +3109,7 @@
         }
       },
       "get": {
-        "operationId": "get_kafka_config",
+        "operationId": "feature_engineering_get_kafka_config",
         "summary": "Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the",
         "tags": [
           "ml",
@@ -3159,7 +3159,7 @@
         }
       },
       "patch": {
-        "operationId": "update_kafka_config",
+        "operationId": "feature_engineering_update_kafka_config",
         "summary": "Update a Kafka config. During PrPr, Kafka configs can be read and used when creating features under",
         "tags": [
           "ml",
@@ -3238,7 +3238,7 @@
     },
     "/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}": {
       "delete": {
-        "operationId": "delete_materialized_feature",
+        "operationId": "feature_engineering_delete_materialized_feature",
         "summary": "Delete a materialized feature.",
         "tags": [
           "ml",
@@ -3281,7 +3281,7 @@
         }
       },
       "get": {
-        "operationId": "get_materialized_feature",
+        "operationId": "feature_engineering_get_materialized_feature",
         "summary": "Get a materialized feature.",
         "tags": [
           "ml",
@@ -3331,7 +3331,7 @@
         }
       },
       "patch": {
-        "operationId": "update_materialized_feature",
+        "operationId": "feature_engineering_update_materialized_feature",
         "summary": "Update a materialized feature (pause/resume).",
         "tags": [
           "ml",
@@ -3410,7 +3410,7 @@
     },
     "/api/2.0/feature-store/online-stores": {
       "post": {
-        "operationId": "create_online_store",
+        "operationId": "feature_store_create_online_store",
         "summary": "Create an Online Feature Store.",
         "tags": [
           "ml",
@@ -3467,7 +3467,7 @@
         }
       },
       "get": {
-        "operationId": "list_online_stores",
+        "operationId": "feature_store_list_online_stores",
         "summary": "List Online Feature Stores.",
         "tags": [
           "ml",
@@ -3528,7 +3528,7 @@
     },
     "/api/2.0/feature-store/online-stores/{name}": {
       "delete": {
-        "operationId": "delete_online_store",
+        "operationId": "feature_store_delete_online_store",
         "summary": "Delete an Online Feature Store.",
         "tags": [
           "ml",
@@ -3571,7 +3571,7 @@
         }
       },
       "get": {
-        "operationId": "get_online_store",
+        "operationId": "feature_store_get_online_store",
         "summary": "Get an Online Feature Store.",
         "tags": [
           "ml",
@@ -3621,7 +3621,7 @@
         }
       },
       "patch": {
-        "operationId": "update_online_store",
+        "operationId": "feature_store_update_online_store",
         "summary": "Update an Online Feature Store.",
         "tags": [
           "ml",
@@ -3700,7 +3700,7 @@
     },
     "/api/2.0/feature-store/online-tables/{online_table_name}": {
       "delete": {
-        "operationId": "delete_online_table",
+        "operationId": "feature_store_delete_online_table",
         "summary": "Delete online table.",
         "tags": [
           "ml",
@@ -3745,7 +3745,7 @@
     },
     "/api/2.0/feature-store/tables/{source_table_name}/publish": {
       "post": {
-        "operationId": "publish_table",
+        "operationId": "feature_store_publish_table",
         "summary": "Publish features.",
         "tags": [
           "ml",
@@ -3815,7 +3815,7 @@
     },
     "/api/2.0/automl/create-forecasting-experiment": {
       "post": {
-        "operationId": "create_experiment",
+        "operationId": "forecasting_create_experiment",
         "summary": "Creates a serverless forecasting experiment. Returns the experiment ID.",
         "tags": [
           "ml",
@@ -3942,7 +3942,7 @@
     },
     "/api/2.0/automl/get-forecasting-experiment/{experiment_id}": {
       "get": {
-        "operationId": "get_experiment",
+        "operationId": "forecasting_get_experiment",
         "summary": "Public RPC to get forecasting experiment",
         "tags": [
           "ml",
@@ -3994,7 +3994,7 @@
     },
     "/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags": {
       "post": {
-        "operationId": "create_feature_tag",
+        "operationId": "materialized_features_create_feature_tag",
         "summary": "Creates a FeatureTag.",
         "tags": [
           "ml",
@@ -4070,7 +4070,7 @@
         }
       },
       "get": {
-        "operationId": "list_feature_tags",
+        "operationId": "materialized_features_list_feature_tags",
         "summary": "Lists FeatureTags.",
         "tags": [
           "ml",
@@ -4148,7 +4148,7 @@
     },
     "/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags/{key}": {
       "delete": {
-        "operationId": "delete_feature_tag",
+        "operationId": "materialized_features_delete_feature_tag",
         "summary": "Deletes a FeatureTag.",
         "tags": [
           "ml",
@@ -4209,7 +4209,7 @@
         }
       },
       "get": {
-        "operationId": "get_feature_tag",
+        "operationId": "materialized_features_get_feature_tag",
         "summary": "Gets a FeatureTag.",
         "tags": [
           "ml",
@@ -4276,7 +4276,7 @@
         }
       },
       "patch": {
-        "operationId": "update_feature_tag",
+        "operationId": "materialized_features_update_feature_tag",
         "summary": "Updates a FeatureTag.",
         "tags": [
           "ml",
@@ -4371,7 +4371,7 @@
     },
     "/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/lineage": {
       "get": {
-        "operationId": "get_feature_lineage",
+        "operationId": "materialized_features_get_feature_lineage",
         "summary": "Get Feature Lineage.",
         "tags": [
           "ml",
@@ -4432,7 +4432,7 @@
     },
     "/api/2.0/mlflow/transition-requests/approve": {
       "post": {
-        "operationId": "approve_transition_request",
+        "operationId": "model_registry_approve_transition_request",
         "summary": "Approves a model version stage transition request.",
         "tags": [
           "ml",
@@ -4510,7 +4510,7 @@
     },
     "/api/2.0/mlflow/comments/create": {
       "post": {
-        "operationId": "create_comment",
+        "operationId": "model_registry_create_comment",
         "summary": "Posts a comment on a model version. A comment can be submitted either by a user or programmatically to",
         "tags": [
           "ml",
@@ -4579,7 +4579,7 @@
     },
     "/api/2.0/mlflow/registered-models/create": {
       "post": {
-        "operationId": "create_model",
+        "operationId": "model_registry_create_model",
         "summary": "Creates a new registered model with the name specified in the request body. Throws",
         "tags": [
           "ml",
@@ -4646,7 +4646,7 @@
     },
     "/api/2.0/mlflow/model-versions/create": {
       "post": {
-        "operationId": "create_model_version",
+        "operationId": "model_registry_create_model_version",
         "summary": "Creates a model version.",
         "tags": [
           "ml",
@@ -4726,7 +4726,7 @@
     },
     "/api/2.0/mlflow/transition-requests/create": {
       "post": {
-        "operationId": "create_transition_request",
+        "operationId": "model_registry_create_transition_request",
         "summary": "Creates a model version stage transition request.",
         "tags": [
           "ml",
@@ -4799,7 +4799,7 @@
     },
     "/api/2.0/mlflow/registry-webhooks/create": {
       "post": {
-        "operationId": "create_webhook",
+        "operationId": "model_registry_create_webhook",
         "summary": "**NOTE:** This endpoint is in Public Preview. Creates a registry webhook.",
         "tags": [
           "ml",
@@ -4878,7 +4878,7 @@
     },
     "/api/2.0/mlflow/comments/delete": {
       "delete": {
-        "operationId": "delete_comment",
+        "operationId": "model_registry_delete_comment",
         "summary": "Deletes a comment on a model version.",
         "tags": [
           "ml",
@@ -4923,7 +4923,7 @@
     },
     "/api/2.0/mlflow/registered-models/delete": {
       "delete": {
-        "operationId": "delete_model",
+        "operationId": "model_registry_delete_model",
         "summary": "Deletes a registered model.",
         "tags": [
           "ml",
@@ -4968,7 +4968,7 @@
     },
     "/api/2.0/mlflow/registered-models/delete-tag": {
       "delete": {
-        "operationId": "delete_model_tag",
+        "operationId": "model_registry_delete_model_tag",
         "summary": "Deletes the tag for a registered model.",
         "tags": [
           "ml",
@@ -5022,7 +5022,7 @@
     },
     "/api/2.0/mlflow/model-versions/delete": {
       "delete": {
-        "operationId": "delete_model_version",
+        "operationId": "model_registry_delete_model_version",
         "summary": "Deletes a model version.",
         "tags": [
           "ml",
@@ -5076,7 +5076,7 @@
     },
     "/api/2.0/mlflow/model-versions/delete-tag": {
       "delete": {
-        "operationId": "delete_model_version_tag",
+        "operationId": "model_registry_delete_model_version_tag",
         "summary": "Deletes a model version tag.",
         "tags": [
           "ml",
@@ -5139,7 +5139,7 @@
     },
     "/api/2.0/mlflow/transition-requests/delete": {
       "delete": {
-        "operationId": "delete_transition_request",
+        "operationId": "model_registry_delete_transition_request",
         "summary": "Cancels a model version stage transition request.",
         "tags": [
           "ml",
@@ -5227,7 +5227,7 @@
     },
     "/api/2.0/mlflow/registry-webhooks/delete": {
       "delete": {
-        "operationId": "delete_webhook",
+        "operationId": "model_registry_delete_webhook",
         "summary": "**NOTE:** This endpoint is in Public Preview. Deletes a registry webhook.",
         "tags": [
           "ml",
@@ -5272,7 +5272,7 @@
     },
     "/api/2.0/mlflow/registered-models/get-latest-versions": {
       "post": {
-        "operationId": "get_latest_versions",
+        "operationId": "model_registry_get_latest_versions",
         "summary": "Gets the latest version of a registered model.",
         "tags": [
           "ml",
@@ -5335,7 +5335,7 @@
     },
     "/api/2.0/mlflow/databricks/registered-models/get": {
       "get": {
-        "operationId": "get_model",
+        "operationId": "model_registry_get_model",
         "summary": "Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also",
         "tags": [
           "ml",
@@ -5387,7 +5387,7 @@
     },
     "/api/2.0/mlflow/model-versions/get": {
       "get": {
-        "operationId": "get_model_version",
+        "operationId": "model_registry_get_model_version",
         "summary": "Get a model version.",
         "tags": [
           "ml",
@@ -5448,7 +5448,7 @@
     },
     "/api/2.0/mlflow/model-versions/get-download-uri": {
       "get": {
-        "operationId": "get_model_version_download_uri",
+        "operationId": "model_registry_get_model_version_download_uri",
         "summary": "Gets a URI to download the model version.",
         "tags": [
           "ml",
@@ -5509,7 +5509,7 @@
     },
     "/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "model_registry_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "ml",
@@ -5561,7 +5561,7 @@
     },
     "/api/2.0/permissions/registered-models/{registered_model_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "model_registry_get_permissions",
         "summary": "Gets the permissions of a registered model. Registered models can inherit permissions from their root",
         "tags": [
           "ml",
@@ -5611,7 +5611,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "model_registry_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "ml",
@@ -5676,7 +5676,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "model_registry_update_permissions",
         "summary": "Updates the permissions on a registered model. Registered models can inherit permissions from their",
         "tags": [
           "ml",
@@ -5743,7 +5743,7 @@
     },
     "/api/2.0/mlflow/registered-models/list": {
       "get": {
-        "operationId": "list_models",
+        "operationId": "model_registry_list_models",
         "summary": "Lists all available registered models, up to the limit specified in __max_results__.",
         "tags": [
           "ml",
@@ -5804,7 +5804,7 @@
     },
     "/api/2.0/mlflow/transition-requests/list": {
       "get": {
-        "operationId": "list_transition_requests",
+        "operationId": "model_registry_list_transition_requests",
         "summary": "Gets a list of all open stage transition requests for the model version.",
         "tags": [
           "ml",
@@ -5865,7 +5865,7 @@
     },
     "/api/2.0/mlflow/registry-webhooks/list": {
       "get": {
-        "operationId": "list_webhooks",
+        "operationId": "model_registry_list_webhooks",
         "summary": "**NOTE:** This endpoint is in Public Preview. Lists all registry webhooks.",
         "tags": [
           "ml",
@@ -5943,7 +5943,7 @@
     },
     "/api/2.0/mlflow/transition-requests/reject": {
       "post": {
-        "operationId": "reject_transition_request",
+        "operationId": "model_registry_reject_transition_request",
         "summary": "Rejects a model version stage transition request.",
         "tags": [
           "ml",
@@ -6016,7 +6016,7 @@
     },
     "/api/2.0/mlflow/registered-models/rename": {
       "post": {
-        "operationId": "rename_model",
+        "operationId": "model_registry_rename_model",
         "summary": "Renames a registered model.",
         "tags": [
           "ml",
@@ -6079,7 +6079,7 @@
     },
     "/api/2.0/mlflow/model-versions/search": {
       "get": {
-        "operationId": "search_model_versions",
+        "operationId": "model_registry_search_model_versions",
         "summary": "Searches for specific model versions based on the supplied __filter__.",
         "tags": [
           "ml",
@@ -6158,7 +6158,7 @@
     },
     "/api/2.0/mlflow/registered-models/search": {
       "get": {
-        "operationId": "search_models",
+        "operationId": "model_registry_search_models",
         "summary": "Search for registered models based on the specified __filter__.",
         "tags": [
           "ml",
@@ -6237,7 +6237,7 @@
     },
     "/api/2.0/mlflow/registered-models/set-tag": {
       "post": {
-        "operationId": "set_model_tag",
+        "operationId": "model_registry_set_model_tag",
         "summary": "Sets a tag on a registered model.",
         "tags": [
           "ml",
@@ -6299,7 +6299,7 @@
     },
     "/api/2.0/mlflow/model-versions/set-tag": {
       "post": {
-        "operationId": "set_model_version_tag",
+        "operationId": "model_registry_set_model_version_tag",
         "summary": "Sets a model version tag.",
         "tags": [
           "ml",
@@ -6366,7 +6366,7 @@
     },
     "/api/2.0/mlflow/registry-webhooks/test": {
       "post": {
-        "operationId": "test_registry_webhook",
+        "operationId": "model_registry_test_registry_webhook",
         "summary": "**NOTE:** This endpoint is in Public Preview. Tests a registry webhook.",
         "tags": [
           "ml",
@@ -6429,7 +6429,7 @@
     },
     "/api/2.0/mlflow/databricks/model-versions/transition-stage": {
       "post": {
-        "operationId": "transition_stage",
+        "operationId": "model_registry_transition_stage",
         "summary": "Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]",
         "tags": [
           "ml",
@@ -6507,7 +6507,7 @@
     },
     "/api/2.0/mlflow/comments/update": {
       "patch": {
-        "operationId": "update_comment",
+        "operationId": "model_registry_update_comment",
         "summary": "Post an edit to a comment on a model version.",
         "tags": [
           "ml",
@@ -6571,7 +6571,7 @@
     },
     "/api/2.0/mlflow/registered-models/update": {
       "patch": {
-        "operationId": "update_model",
+        "operationId": "model_registry_update_model",
         "summary": "Updates a registered model.",
         "tags": [
           "ml",
@@ -6634,7 +6634,7 @@
     },
     "/api/2.0/mlflow/model-versions/update": {
       "patch": {
-        "operationId": "update_model_version",
+        "operationId": "model_registry_update_model_version",
         "summary": "Updates the model version.",
         "tags": [
           "ml",
@@ -6702,7 +6702,7 @@
     },
     "/api/2.0/mlflow/registry-webhooks/update": {
       "patch": {
-        "operationId": "update_webhook",
+        "operationId": "model_registry_update_webhook",
         "summary": "**NOTE:** This endpoint is in Public Preview. Updates a registry webhook.",
         "tags": [
           "ml",

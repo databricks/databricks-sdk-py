@@ -14,7 +14,7 @@
   "paths": {
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}/metastores/{metastore_id}": {
       "post": {
-        "operationId": "create",
+        "operationId": "account_metastore_assignments_create",
         "summary": "Creates an assignment to a metastore for a workspace",
         "tags": [
           "catalog",
@@ -88,7 +88,7 @@
         }
       },
       "delete": {
-        "operationId": "delete",
+        "operationId": "account_metastore_assignments_delete",
         "summary": "Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.",
         "tags": [
           "catalog",
@@ -147,7 +147,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "account_metastore_assignments_update",
         "summary": "Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be",
         "tags": [
           "catalog",
@@ -223,7 +223,7 @@
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}/metastore": {
       "get": {
-        "operationId": "get",
+        "operationId": "account_metastore_assignments_get",
         "summary": "Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned",
         "tags": [
           "catalog",
@@ -275,7 +275,7 @@
     },
     "/api/2.0/accounts/{account_id}/metastores/{metastore_id}/workspaces": {
       "get": {
-        "operationId": "list",
+        "operationId": "account_metastore_assignments_list",
         "summary": "Gets a list of all Databricks workspace IDs that have been assigned to given metastore.",
         "tags": [
           "catalog",
@@ -327,7 +327,7 @@
     },
     "/api/2.0/accounts/{account_id}/metastores": {
       "post": {
-        "operationId": "create",
+        "operationId": "account_metastores_create",
         "summary": "Creates a Unity Catalog metastore.",
         "tags": [
           "catalog",
@@ -381,7 +381,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "account_metastores_list",
         "summary": "Gets all Unity Catalog metastores associated with an account specified by ID.",
         "tags": [
           "catalog",
@@ -422,7 +422,7 @@
     },
     "/api/2.0/accounts/{account_id}/metastores/{metastore_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "account_metastores_delete",
         "summary": "Deletes a Unity Catalog metastore for an account, both specified by ID.",
         "tags": [
           "catalog",
@@ -481,7 +481,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "account_metastores_get",
         "summary": "Gets a Unity Catalog metastore from an account, both specified by ID.",
         "tags": [
           "catalog",
@@ -531,7 +531,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "account_metastores_update",
         "summary": "Updates an existing Unity Catalog metastore.",
         "tags": [
           "catalog",
@@ -598,7 +598,7 @@
     },
     "/api/2.0/accounts/{account_id}/metastores/{metastore_id}/storage-credentials": {
       "post": {
-        "operationId": "create",
+        "operationId": "account_storage_credentials_create",
         "summary": "Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for",
         "tags": [
           "catalog",
@@ -666,7 +666,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "account_storage_credentials_list",
         "summary": "Gets a list of all storage credentials that have been assigned to given metastore.",
         "tags": [
           "catalog",
@@ -718,7 +718,7 @@
     },
     "/api/2.0/accounts/{account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "account_storage_credentials_delete",
         "summary": "Deletes a storage credential from the metastore. The caller must be an owner of the storage",
         "tags": [
           "catalog",
@@ -786,7 +786,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "account_storage_credentials_get",
         "summary": "Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the",
         "tags": [
           "catalog",
@@ -845,7 +845,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "account_storage_credentials_update",
         "summary": "Updates a storage credential on the metastore. The caller must be the owner of the storage credential.",
         "tags": [
           "catalog",
@@ -924,7 +924,7 @@
     },
     "/api/2.1/unity-catalog/credentials": {
       "post": {
-        "operationId": "create_credential",
+        "operationId": "credentials_create_credential",
         "summary": "Creates a new credential. The type of credential to be created is determined by the **purpose** field,",
         "tags": [
           "catalog",
@@ -1013,7 +1013,7 @@
         }
       },
       "get": {
-        "operationId": "list_credentials",
+        "operationId": "credentials_list_credentials",
         "summary": "Gets an array of credentials (as __CredentialInfo__ objects).",
         "tags": [
           "catalog",
@@ -1092,7 +1092,7 @@
     },
     "/api/2.1/unity-catalog/credentials/{name_arg}": {
       "delete": {
-        "operationId": "delete_credential",
+        "operationId": "credentials_delete_credential",
         "summary": "Deletes a service or storage credential from the metastore. The caller must be an owner of the",
         "tags": [
           "catalog",
@@ -1144,7 +1144,7 @@
         }
       },
       "get": {
-        "operationId": "get_credential",
+        "operationId": "credentials_get_credential",
         "summary": "Gets a service or storage credential from the metastore. The caller must be a metastore admin, the",
         "tags": [
           "catalog",
@@ -1194,7 +1194,7 @@
         }
       },
       "patch": {
-        "operationId": "update_credential",
+        "operationId": "credentials_update_credential",
         "summary": "Updates a service or storage credential on the metastore.",
         "tags": [
           "catalog",
@@ -1301,7 +1301,7 @@
     },
     "/api/2.1/unity-catalog/temporary-service-credentials": {
       "post": {
-        "operationId": "generate_temporary_service_credential",
+        "operationId": "credentials_generate_temporary_service_credential",
         "summary": "Returns a set of temporary credentials generated using the specified service credential. The caller",
         "tags": [
           "catalog",
@@ -1367,7 +1367,7 @@
     },
     "/api/2.1/unity-catalog/validate-credentials": {
       "post": {
-        "operationId": "validate_credential",
+        "operationId": "credentials_validate_credential",
         "summary": "Validates a credential.",
         "tags": [
           "catalog",

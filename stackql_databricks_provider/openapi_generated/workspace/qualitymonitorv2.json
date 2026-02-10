@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/quality-monitors": {
       "post": {
-        "operationId": "create_quality_monitor",
+        "operationId": "quality_monitor_v2_create_quality_monitor",
         "summary": "[DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.",
         "tags": [
           "qualitymonitorv2",
@@ -77,7 +77,7 @@
         }
       },
       "get": {
-        "operationId": "list_quality_monitor",
+        "operationId": "quality_monitor_v2_list_quality_monitor",
         "summary": "[DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality Monitoring API instead.",
         "tags": [
           "qualitymonitorv2",
@@ -137,7 +137,7 @@
     },
     "/api/2.0/quality-monitors/{object_type}/{object_id}": {
       "delete": {
-        "operationId": "delete_quality_monitor",
+        "operationId": "quality_monitor_v2_delete_quality_monitor",
         "summary": "[DEPRECATED] Delete a quality monitor on UC object. Use Data Quality Monitoring API instead.",
         "tags": [
           "qualitymonitorv2",
@@ -189,7 +189,7 @@
         }
       },
       "get": {
-        "operationId": "get_quality_monitor",
+        "operationId": "quality_monitor_v2_get_quality_monitor",
         "summary": "[DEPRECATED] Read a quality monitor on UC object. Use Data Quality Monitoring API instead.",
         "tags": [
           "qualitymonitorv2",
@@ -248,7 +248,7 @@
         }
       },
       "put": {
-        "operationId": "update_quality_monitor",
+        "operationId": "quality_monitor_v2_update_quality_monitor",
         "summary": "[DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API",
         "tags": [
           "qualitymonitorv2",

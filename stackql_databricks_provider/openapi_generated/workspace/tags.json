@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.1/tag-policies": {
       "post": {
-        "operationId": "create_tag_policy",
+        "operationId": "tag_policies_create_tag_policy",
         "summary": "Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the [Tag",
         "tags": [
           "tags",
@@ -77,7 +77,7 @@
         }
       },
       "get": {
-        "operationId": "list_tag_policies",
+        "operationId": "tag_policies_list_tag_policies",
         "summary": "Lists the tag policies for all governed tags in the account. For Terraform usage, see the [Tag Policy",
         "tags": [
           "tags",
@@ -138,7 +138,7 @@
     },
     "/api/2.1/tag-policies/{tag_key}": {
       "delete": {
-        "operationId": "delete_tag_policy",
+        "operationId": "tag_policies_delete_tag_policy",
         "summary": "Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned. For",
         "tags": [
           "tags",
@@ -181,7 +181,7 @@
         }
       },
       "get": {
-        "operationId": "get_tag_policy",
+        "operationId": "tag_policies_get_tag_policy",
         "summary": "Gets a single tag policy by its associated governed tag's key. For Terraform usage, see the [Tag",
         "tags": [
           "tags",
@@ -231,7 +231,7 @@
         }
       },
       "patch": {
-        "operationId": "update_tag_policy",
+        "operationId": "tag_policies_update_tag_policy",
         "summary": "Updates an existing tag policy for a single governed tag. For Terraform usage, see the [Tag Policy",
         "tags": [
           "tags",
@@ -309,7 +309,7 @@
     },
     "/api/2.0/entity-tag-assignments": {
       "post": {
-        "operationId": "create_tag_assignment",
+        "operationId": "workspace_entity_tag_assignments_create_tag_assignment",
         "summary": "Create a tag assignment",
         "tags": [
           "tags",
@@ -368,7 +368,7 @@
     },
     "/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}": {
       "delete": {
-        "operationId": "delete_tag_assignment",
+        "operationId": "workspace_entity_tag_assignments_delete_tag_assignment",
         "summary": "Delete a tag assignment",
         "tags": [
           "tags",
@@ -429,7 +429,7 @@
         }
       },
       "get": {
-        "operationId": "get_tag_assignment",
+        "operationId": "workspace_entity_tag_assignments_get_tag_assignment",
         "summary": "Get a tag assignment",
         "tags": [
           "tags",
@@ -497,7 +497,7 @@
         }
       },
       "patch": {
-        "operationId": "update_tag_assignment",
+        "operationId": "workspace_entity_tag_assignments_update_tag_assignment",
         "summary": "Update a tag assignment",
         "tags": [
           "tags",
@@ -593,7 +593,7 @@
     },
     "/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags": {
       "get": {
-        "operationId": "list_tag_assignments",
+        "operationId": "workspace_entity_tag_assignments_list_tag_assignments",
         "summary": "List the tag assignments for an entity",
         "tags": [
           "tags",

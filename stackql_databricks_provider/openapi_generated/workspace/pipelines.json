@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/pipelines/{pipeline_id}/clone": {
       "post": {
-        "operationId": "clone",
+        "operationId": "pipelines_clone",
         "summary": "Creates a new pipeline using Unity Catalog from a pipeline using Hive Metastore. This method returns",
         "tags": [
           "pipelines"
@@ -206,7 +206,7 @@
     },
     "/api/2.0/pipelines": {
       "post": {
-        "operationId": "create",
+        "operationId": "pipelines_create",
         "summary": "Creates a new data processing pipeline based on the requested configuration. If successful, this",
         "tags": [
           "pipelines"
@@ -377,7 +377,7 @@
         }
       },
       "get": {
-        "operationId": "list_pipelines",
+        "operationId": "pipelines_list_pipelines",
         "summary": "Lists pipelines defined in the Spark Declarative Pipelines system.",
         "tags": [
           "pipelines"
@@ -455,7 +455,7 @@
     },
     "/api/2.0/pipelines/{pipeline_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "pipelines_delete",
         "summary": "Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline deletion will cascade to all",
         "tags": [
           "pipelines"
@@ -505,7 +505,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "pipelines_get",
         "summary": "Get a pipeline.",
         "tags": [
           "pipelines"
@@ -554,7 +554,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "pipelines_update",
         "summary": "Updates a pipeline with the supplied configuration.",
         "tags": [
           "pipelines"
@@ -732,7 +732,7 @@
     },
     "/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels": {
       "get": {
-        "operationId": "get_permission_levels",
+        "operationId": "pipelines_get_permission_levels",
         "summary": "Gets the permission levels that a user can have on an object.",
         "tags": [
           "pipelines"
@@ -783,7 +783,7 @@
     },
     "/api/2.0/permissions/pipelines/{pipeline_id}": {
       "get": {
-        "operationId": "get_permissions",
+        "operationId": "pipelines_get_permissions",
         "summary": "Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.",
         "tags": [
           "pipelines"
@@ -832,7 +832,7 @@
         }
       },
       "put": {
-        "operationId": "set_permissions",
+        "operationId": "pipelines_set_permissions",
         "summary": "Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct",
         "tags": [
           "pipelines"
@@ -896,7 +896,7 @@
         }
       },
       "patch": {
-        "operationId": "update_permissions",
+        "operationId": "pipelines_update_permissions",
         "summary": "Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.",
         "tags": [
           "pipelines"
@@ -962,7 +962,7 @@
     },
     "/api/2.0/pipelines/{pipeline_id}/updates/{update_id}": {
       "get": {
-        "operationId": "get_update",
+        "operationId": "pipelines_get_update",
         "summary": "Gets an update from an active pipeline.",
         "tags": [
           "pipelines"
@@ -1022,7 +1022,7 @@
     },
     "/api/2.0/pipelines/{pipeline_id}/events": {
       "get": {
-        "operationId": "list_pipeline_events",
+        "operationId": "pipelines_list_pipeline_events",
         "summary": "Retrieves events for a pipeline.",
         "tags": [
           "pipelines"
@@ -1109,7 +1109,7 @@
     },
     "/api/2.0/pipelines/{pipeline_id}/updates": {
       "get": {
-        "operationId": "list_updates",
+        "operationId": "pipelines_list_updates",
         "summary": "List updates for an active pipeline.",
         "tags": [
           "pipelines"
@@ -1185,7 +1185,7 @@
         }
       },
       "post": {
-        "operationId": "start_update",
+        "operationId": "pipelines_start_update",
         "summary": "Starts a new update for the pipeline. If there is already an active update for the pipeline, the",
         "tags": [
           "pipelines"
@@ -1270,7 +1270,7 @@
     },
     "/api/2.0/pipelines/{pipeline_id}/stop": {
       "post": {
-        "operationId": "stop",
+        "operationId": "pipelines_stop",
         "summary": "Stops the pipeline by canceling the active update. If there is no active update for the pipeline, this",
         "tags": [
           "pipelines"

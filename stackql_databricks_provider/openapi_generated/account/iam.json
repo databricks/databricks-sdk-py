@@ -14,7 +14,7 @@
   "paths": {
     "/api/2.0/preview/accounts/{account_id}/access-control/assignable-roles": {
       "get": {
-        "operationId": "get_assignable_roles_for_resource",
+        "operationId": "account_access_control_get_assignable_roles_for_resource",
         "summary": "Gets all the roles that can be granted on an account level resource. A role is grantable if the rule",
         "tags": [
           "iam",
@@ -66,7 +66,7 @@
     },
     "/api/2.0/preview/accounts/{account_id}/access-control/rule-sets": {
       "get": {
-        "operationId": "get_rule_set",
+        "operationId": "account_access_control_get_rule_set",
         "summary": "Get a rule set by its name. A rule set is always attached to a resource and contains a list of access",
         "tags": [
           "iam",
@@ -125,7 +125,7 @@
         }
       },
       "put": {
-        "operationId": "update_rule_set",
+        "operationId": "account_access_control_update_rule_set",
         "summary": "Replace the rules of a rule set. First, use get to read the current version of the rule set before",
         "tags": [
           "iam",
@@ -189,7 +189,7 @@
     },
     "/api/2.0/accounts/{account_id}/scim/v2/Groups": {
       "post": {
-        "operationId": "create",
+        "operationId": "account_groups_v2_create",
         "summary": "Creates a group in the Databricks account with a unique name, using the supplied group details.",
         "tags": [
           "iam",
@@ -261,7 +261,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "account_groups_v2_list",
         "summary": "Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint",
         "tags": [
           "iam",
@@ -367,7 +367,7 @@
     },
     "/api/2.0/accounts/{account_id}/scim/v2/Groups/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "account_groups_v2_delete",
         "summary": "Deletes a group from the Databricks account.",
         "tags": [
           "iam",
@@ -410,7 +410,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "account_groups_v2_get",
         "summary": "Gets the information for a specific group in the Databricks account.",
         "tags": [
           "iam",
@@ -460,7 +460,7 @@
         }
       },
       "patch": {
-        "operationId": "patch",
+        "operationId": "account_groups_v2_patch",
         "summary": "Partially updates the details of a group.",
         "tags": [
           "iam",
@@ -521,7 +521,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "account_groups_v2_update",
         "summary": "Updates the details of a group by replacing the entire group entity.",
         "tags": [
           "iam",
@@ -596,7 +596,7 @@
     },
     "/api/2.0/accounts/{account_id}/scim/v2/ServicePrincipals": {
       "post": {
-        "operationId": "create",
+        "operationId": "account_service_principals_v2_create",
         "summary": "Creates a new service principal in the Databricks account.",
         "tags": [
           "iam",
@@ -669,7 +669,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "account_service_principals_v2_list",
         "summary": "Gets the set of service principals associated with a Databricks account.",
         "tags": [
           "iam",
@@ -775,7 +775,7 @@
     },
     "/api/2.0/accounts/{account_id}/scim/v2/ServicePrincipals/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "account_service_principals_v2_delete",
         "summary": "Delete a single service principal in the Databricks account.",
         "tags": [
           "iam",
@@ -818,7 +818,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "account_service_principals_v2_get",
         "summary": "Gets the details for a single service principal define in the Databricks account.",
         "tags": [
           "iam",
@@ -868,7 +868,7 @@
         }
       },
       "patch": {
-        "operationId": "patch",
+        "operationId": "account_service_principals_v2_patch",
         "summary": "Partially updates the details of a single service principal in the Databricks account.",
         "tags": [
           "iam",
@@ -929,7 +929,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "account_service_principals_v2_update",
         "summary": "Updates the details of a single service principal.",
         "tags": [
           "iam",
@@ -1004,7 +1004,7 @@
     },
     "/api/2.0/accounts/{account_id}/scim/v2/Users": {
       "post": {
-        "operationId": "create",
+        "operationId": "account_users_v2_create",
         "summary": "Creates a new user in the Databricks account. This new user will also be added to the Databricks",
         "tags": [
           "iam",
@@ -1085,7 +1085,7 @@
         }
       },
       "get": {
-        "operationId": "list",
+        "operationId": "account_users_v2_list",
         "summary": "Gets details for all the users associated with a Databricks account.",
         "tags": [
           "iam",
@@ -1191,7 +1191,7 @@
     },
     "/api/2.0/accounts/{account_id}/scim/v2/Users/{id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "account_users_v2_delete",
         "summary": "Deletes a user. Deleting a user from a Databricks account also removes objects associated with the",
         "tags": [
           "iam",
@@ -1234,7 +1234,7 @@
         }
       },
       "get": {
-        "operationId": "get",
+        "operationId": "account_users_v2_get",
         "summary": "Gets information for a specific user in Databricks account.",
         "tags": [
           "iam",
@@ -1347,7 +1347,7 @@
         }
       },
       "patch": {
-        "operationId": "patch",
+        "operationId": "account_users_v2_patch",
         "summary": "Partially updates a user resource by applying the supplied operations on specific user attributes.",
         "tags": [
           "iam",
@@ -1408,7 +1408,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "account_users_v2_update",
         "summary": "Replaces a user's information with the data supplied in request.",
         "tags": [
           "iam",
@@ -1491,7 +1491,7 @@
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}/permissionassignments/principals/{principal_id}": {
       "delete": {
-        "operationId": "delete",
+        "operationId": "workspace_assignment_delete",
         "summary": "Deletes the workspace permissions assignment in a given account and workspace for the specified",
         "tags": [
           "iam",
@@ -1543,7 +1543,7 @@
         }
       },
       "put": {
-        "operationId": "update",
+        "operationId": "workspace_assignment_update",
         "summary": "Creates or updates the workspace permissions assignment in a given account and workspace for the",
         "tags": [
           "iam",
@@ -1619,7 +1619,7 @@
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}/permissionassignments/permissions": {
       "get": {
-        "operationId": "get",
+        "operationId": "workspace_assignment_get",
         "summary": "Get an array of workspace permissions for the specified account and workspace.",
         "tags": [
           "iam",
@@ -1671,7 +1671,7 @@
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}/permissionassignments": {
       "get": {
-        "operationId": "list",
+        "operationId": "workspace_assignment_list",
         "summary": "Get the permission assignments for the specified Databricks account and Databricks workspace.",
         "tags": [
           "iam",

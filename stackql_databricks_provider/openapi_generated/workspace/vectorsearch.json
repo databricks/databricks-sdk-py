@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/vector-search/endpoints": {
       "post": {
-        "operationId": "create_endpoint",
+        "operationId": "vector_search_endpoints_create_endpoint",
         "summary": "Create a new endpoint.",
         "tags": [
           "vectorsearch",
@@ -86,7 +86,7 @@
         }
       },
       "get": {
-        "operationId": "list_endpoints",
+        "operationId": "vector_search_endpoints_list_endpoints",
         "summary": "List all vector search endpoints in the workspace.",
         "tags": [
           "vectorsearch",
@@ -138,7 +138,7 @@
     },
     "/api/2.0/vector-search/endpoints/{endpoint_name}": {
       "delete": {
-        "operationId": "delete_endpoint",
+        "operationId": "vector_search_endpoints_delete_endpoint",
         "summary": "Delete a vector search endpoint.",
         "tags": [
           "vectorsearch",
@@ -181,7 +181,7 @@
         }
       },
       "get": {
-        "operationId": "get_endpoint",
+        "operationId": "vector_search_endpoints_get_endpoint",
         "summary": "Get details for a single vector search endpoint.",
         "tags": [
           "vectorsearch",
@@ -233,7 +233,7 @@
     },
     "/api/2.0/vector-search/endpoints/{name}/metrics": {
       "post": {
-        "operationId": "retrieve_user_visible_metrics",
+        "operationId": "vector_search_endpoints_retrieve_user_visible_metrics",
         "summary": "Retrieve user-visible metrics for an endpoint",
         "tags": [
           "vectorsearch",
@@ -316,7 +316,7 @@
     },
     "/api/2.0/vector-search/endpoints/{endpoint_name}/budget-policy": {
       "patch": {
-        "operationId": "update_endpoint_budget_policy",
+        "operationId": "vector_search_endpoints_update_endpoint_budget_policy",
         "summary": "Update the budget policy of an endpoint",
         "tags": [
           "vectorsearch",
@@ -386,7 +386,7 @@
     },
     "/api/2.0/vector-search/endpoints/{endpoint_name}/tags": {
       "patch": {
-        "operationId": "update_endpoint_custom_tags",
+        "operationId": "vector_search_endpoints_update_endpoint_custom_tags",
         "summary": "Update the custom tags of an endpoint.",
         "tags": [
           "vectorsearch",
@@ -456,7 +456,7 @@
     },
     "/api/2.0/vector-search/indexes": {
       "post": {
-        "operationId": "create_index",
+        "operationId": "vector_search_indexes_create_index",
         "summary": "Create a new index.",
         "tags": [
           "vectorsearch",
@@ -535,7 +535,7 @@
         }
       },
       "get": {
-        "operationId": "list_indexes",
+        "operationId": "vector_search_indexes_list_indexes",
         "summary": "List all indexes in the given endpoint.",
         "tags": [
           "vectorsearch",
@@ -596,7 +596,7 @@
     },
     "/api/2.0/vector-search/indexes/{index_name}/delete-data": {
       "delete": {
-        "operationId": "delete_data_vector_index",
+        "operationId": "vector_search_indexes_delete_data_vector_index",
         "summary": "Handles the deletion of data from a specified vector index.",
         "tags": [
           "vectorsearch",
@@ -657,7 +657,7 @@
     },
     "/api/2.0/vector-search/indexes/{index_name}": {
       "delete": {
-        "operationId": "delete_index",
+        "operationId": "vector_search_indexes_delete_index",
         "summary": "Delete an index.",
         "tags": [
           "vectorsearch",
@@ -700,7 +700,7 @@
         }
       },
       "get": {
-        "operationId": "get_index",
+        "operationId": "vector_search_indexes_get_index",
         "summary": "Get an index.",
         "tags": [
           "vectorsearch",
@@ -761,7 +761,7 @@
     },
     "/api/2.0/vector-search/indexes/{index_name}/query": {
       "post": {
-        "operationId": "query_index",
+        "operationId": "vector_search_indexes_query_index",
         "summary": "Query the specified vector index.",
         "tags": [
           "vectorsearch",
@@ -863,7 +863,7 @@
     },
     "/api/2.0/vector-search/indexes/{index_name}/query-next-page": {
       "post": {
-        "operationId": "query_next_page",
+        "operationId": "vector_search_indexes_query_next_page",
         "summary": "Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request",
         "tags": [
           "vectorsearch",
@@ -934,7 +934,7 @@
     },
     "/api/2.0/vector-search/indexes/{index_name}/scan": {
       "post": {
-        "operationId": "scan_index",
+        "operationId": "vector_search_indexes_scan_index",
         "summary": "Scan the specified vector index and return the first `num_results` entries after the exclusive",
         "tags": [
           "vectorsearch",
@@ -1005,7 +1005,7 @@
     },
     "/api/2.0/vector-search/indexes/{index_name}/sync": {
       "post": {
-        "operationId": "sync_index",
+        "operationId": "vector_search_indexes_sync_index",
         "summary": "Triggers a synchronization process for a specified vector index.",
         "tags": [
           "vectorsearch",
@@ -1050,7 +1050,7 @@
     },
     "/api/2.0/vector-search/indexes/{index_name}/upsert-data": {
       "post": {
-        "operationId": "upsert_data_vector_index",
+        "operationId": "vector_search_indexes_upsert_data_vector_index",
         "summary": "Handles the upserting of data into a specified vector index.",
         "tags": [
           "vectorsearch",

@@ -20,7 +20,7 @@
   "paths": {
     "/api/2.0/custom-llms/{id}/optimize/cancel": {
       "post": {
-        "operationId": "cancel_optimize",
+        "operationId": "agent_bricks_cancel_optimize",
         "summary": "Cancel a Custom LLM Optimization Run.",
         "tags": [
           "agentbricks",
@@ -65,7 +65,7 @@
     },
     "/api/2.0/custom-llms": {
       "post": {
-        "operationId": "create_custom_llm",
+        "operationId": "agent_bricks_create_custom_llm",
         "summary": "Create a Custom LLM.",
         "tags": [
           "agentbricks",
@@ -141,7 +141,7 @@
     },
     "/api/2.0/custom-llms/{id}": {
       "delete": {
-        "operationId": "delete_custom_llm",
+        "operationId": "agent_bricks_delete_custom_llm",
         "summary": "Delete a Custom LLM.",
         "tags": [
           "agentbricks",
@@ -184,7 +184,7 @@
         }
       },
       "get": {
-        "operationId": "get_custom_llm",
+        "operationId": "agent_bricks_get_custom_llm",
         "summary": "Get a Custom LLM.",
         "tags": [
           "agentbricks",
@@ -234,7 +234,7 @@
         }
       },
       "patch": {
-        "operationId": "update_custom_llm",
+        "operationId": "agent_bricks_update_custom_llm",
         "summary": "Update a Custom LLM.",
         "tags": [
           "agentbricks",
@@ -309,7 +309,7 @@
     },
     "/api/2.0/custom-llms/{id}/optimize": {
       "post": {
-        "operationId": "start_optimize",
+        "operationId": "agent_bricks_start_optimize",
         "summary": "Start a Custom LLM Optimization Run.",
         "tags": [
           "agentbricks",
