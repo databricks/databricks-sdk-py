@@ -271,7 +271,7 @@ def test_wif_workspace(ucacct, env_or_skip, random):
     ws.current_user.me()
 
 
-def test_workspace_oauth_m2m_auth(w,env_or_skip):
+def test_workspace_oauth_m2m_auth(w, env_or_skip):
     env_or_skip("CLOUD_ENV")
 
     # Get environment variables
