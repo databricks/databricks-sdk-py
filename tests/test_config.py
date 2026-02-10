@@ -422,6 +422,142 @@ def test_oidc_endpoints_unified_missing_ids():
     assert "Unified host requires account_id" in str(exc_info.value)
 
 
+def test_databricks_oidc_endpoints_ignores_azure_client_id(mocker, requests_mock):
+    """Test that databricks_oidc_endpoints returns Databricks endpoints even when azure_client_id is set."""
+    requests_mock.get(
+        "https://adb-123.4.azuredatabricks.net/oidc/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://adb-123.4.azuredatabricks.net/oidc/v1/authorize",
+            "token_endpoint": "https://adb-123.4.azuredatabricks.net/oidc/v1/token",
+        },
+    )
+
+    config = Config(
+        host="https://adb-123.4.azuredatabricks.net",
+        azure_client_id="test-azure-client-id",  # This should be ignored by databricks_oidc_endpoints
+        token="test-token",
+    )
+
+    endpoints = config.databricks_oidc_endpoints
+    assert endpoints is not None
+    assert "https://adb-123.4.azuredatabricks.net/oidc/v1/authorize" == endpoints.authorization_endpoint
+    assert "https://adb-123.4.azuredatabricks.net/oidc/v1/token" == endpoints.token_endpoint
+
+
+def test_databricks_oidc_endpoints_unified_workspace(mocker, requests_mock):
+    """Test that databricks_oidc_endpoints returns unified endpoints for workspace on unified host."""
+    requests_mock.get(
+        "https://unified.databricks.com/oidc/accounts/test-account/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://unified.databricks.com/oidc/accounts/test-account/v1/authorize",
+            "token_endpoint": "https://unified.databricks.com/oidc/accounts/test-account/v1/token",
+        },
+    )
+
+    config = Config(
+        host="https://unified.databricks.com",
+        workspace_id="test-workspace",
+        account_id="test-account",
+        experimental_is_unified_host=True,
+        token="test-token",
+    )
+
+    endpoints = config.databricks_oidc_endpoints
+    assert endpoints is not None
+    assert "accounts/test-account" in endpoints.authorization_endpoint
+    assert "accounts/test-account" in endpoints.token_endpoint
+
+
+def test_databricks_oidc_endpoints_account(mocker, requests_mock):
+    """Test that databricks_oidc_endpoints returns account endpoints for account hosts."""
+    requests_mock.get(
+        "https://accounts.cloud.databricks.com/oidc/accounts/test-account/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://accounts.cloud.databricks.com/oidc/accounts/test-account/v1/authorize",
+            "token_endpoint": "https://accounts.cloud.databricks.com/oidc/accounts/test-account/v1/token",
+        },
+    )
+
+    config = Config(
+        host="https://accounts.cloud.databricks.com",
+        account_id="test-account",
+        token="test-token",
+    )
+
+    endpoints = config.databricks_oidc_endpoints
+    assert endpoints is not None
+    assert "accounts/test-account" in endpoints.authorization_endpoint
+    assert "accounts/test-account" in endpoints.token_endpoint
+
+
+def test_databricks_oidc_endpoints_workspace(mocker, requests_mock):
+    """Test that databricks_oidc_endpoints returns workspace endpoints for workspace hosts."""
+    requests_mock.get(
+        "https://test-workspace.cloud.databricks.com/oidc/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://test-workspace.cloud.databricks.com/oidc/v1/authorize",
+            "token_endpoint": "https://test-workspace.cloud.databricks.com/oidc/v1/token",
+        },
+    )
+
+    config = Config(
+        host="https://test-workspace.cloud.databricks.com",
+        token="test-token",
+    )
+
+    endpoints = config.databricks_oidc_endpoints
+    assert endpoints is not None
+    assert "https://test-workspace.cloud.databricks.com/oidc/v1/authorize" == endpoints.authorization_endpoint
+    assert "https://test-workspace.cloud.databricks.com/oidc/v1/token" == endpoints.token_endpoint
+
+
+def test_oidc_endpoints_returns_azure_when_azure_client_id_set(mocker):
+    """Test that deprecated oidc_endpoints returns Azure endpoints when azure_client_id is set on Azure.
+
+    This tests the deprecated behavior that is maintained for backward compatibility.
+    """
+    # Mock the Azure endpoint detection
+    mocker.patch(
+        "databricks.sdk.config.get_azure_entra_id_workspace_endpoints",
+        return_value=mocker.Mock(
+            authorization_endpoint="https://login.microsoftonline.com/tenant-id/oauth2/v2.0/authorize",
+            token_endpoint="https://login.microsoftonline.com/tenant-id/oauth2/v2.0/token",
+        ),
+    )
+
+    config = Config(
+        host="https://adb-123.4.azuredatabricks.net",
+        azure_client_id="test-azure-client-id",
+        token="test-token",
+    )
+
+    endpoints = config.oidc_endpoints
+    assert endpoints is not None
+    assert "login.microsoftonline.com" in endpoints.authorization_endpoint
+    assert "login.microsoftonline.com" in endpoints.token_endpoint
+
+
+def test_oidc_endpoints_falls_back_to_databricks_when_no_azure_client_id(mocker, requests_mock):
+    """Test that deprecated oidc_endpoints falls back to Databricks endpoints when azure_client_id is not set."""
+    requests_mock.get(
+        "https://adb-123.4.azuredatabricks.net/oidc/.well-known/oauth-authorization-server",
+        json={
+            "authorization_endpoint": "https://adb-123.4.azuredatabricks.net/oidc/v1/authorize",
+            "token_endpoint": "https://adb-123.4.azuredatabricks.net/oidc/v1/token",
+        },
+    )
+
+    config = Config(
+        host="https://adb-123.4.azuredatabricks.net",
+        token="test-token",
+    )
+
+    endpoints = config.oidc_endpoints
+    assert endpoints is not None
+    assert "https://adb-123.4.azuredatabricks.net/oidc/v1/authorize" == endpoints.authorization_endpoint
+    assert "https://adb-123.4.azuredatabricks.net/oidc/v1/token" == endpoints.token_endpoint
+
+
 def test_workspace_org_id_header_on_unified_host(requests_mock):
     """Test that X-Databricks-Org-Id header is added for workspace clients on unified hosts."""
 
