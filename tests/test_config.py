@@ -432,10 +432,11 @@ def test_databricks_oidc_endpoints_ignores_azure_client_id(mocker, requests_mock
         },
     )
 
+    # Disable auth validation since we're only testing oidc_endpoints property
+    mocker.patch("databricks.sdk.config.Config.init_auth")
     config = Config(
         host="https://adb-123.4.azuredatabricks.net",
         azure_client_id="test-azure-client-id",  # This should be ignored by databricks_oidc_endpoints
-        token="test-token",
     )
 
     endpoints = config.databricks_oidc_endpoints
@@ -524,11 +525,12 @@ def test_oidc_endpoints_returns_azure_when_azure_client_id_set(mocker):
             token_endpoint="https://login.microsoftonline.com/tenant-id/oauth2/v2.0/token",
         ),
     )
+    # Disable auth validation since we're only testing oidc_endpoints property
+    mocker.patch("databricks.sdk.config.Config.init_auth")
 
     config = Config(
         host="https://adb-123.4.azuredatabricks.net",
         azure_client_id="test-azure-client-id",
-        token="test-token",
     )
 
     endpoints = config.oidc_endpoints
