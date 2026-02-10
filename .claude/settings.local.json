@@ -1,0 +1,14 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(python -m pytest:*)",
+      "Bash(python -m unittest:*)",
+      "Bash(python -c:*)",
+      "Bash(python examples/extract_api_info.py:*)",
+      "Bash(python -m pip install:*)",
+      "Bash($env:PYTHONPATH=\"c:\\LocalGitRepos\\stackql\\providers\\stackql-provider-databricks\")"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
