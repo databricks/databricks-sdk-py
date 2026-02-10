@@ -269,3 +269,98 @@ def test_wif_workspace(ucacct, env_or_skip, random):
     )
 
     ws.current_user.me()
+
+
+def test_workspace_oauth_m2m_auth(w, env_or_skip):
+    env_or_skip("CLOUD_ENV")
+
+    # Get environment variables
+    host = env_or_skip("DATABRICKS_HOST")
+    client_id = env_or_skip("TEST_DATABRICKS_CLIENT_ID")
+    client_secret = env_or_skip("TEST_DATABRICKS_CLIENT_SECRET")
+
+    # Create workspace client with OAuth M2M authentication
+    ws = WorkspaceClient(
+        host=host,
+        client_id=client_id,
+        client_secret=client_secret,
+        auth_type="oauth-m2m",
+    )
+
+    # Call the "me" API
+    me = ws.current_user.me()
+
+    # Verify we got a valid response
+    assert me.user_name, "expected non-empty user_name"
+
+
+def test_workspace_azure_client_secret_auth(w, env_or_skip):
+    env_or_skip("CLOUD_ENV")
+
+    host = env_or_skip("DATABRICKS_HOST")
+    azure_client_id = env_or_skip("ARM_CLIENT_ID")
+    azure_client_secret = env_or_skip("ARM_CLIENT_SECRET")
+    azure_tenant_id = env_or_skip("ARM_TENANT_ID")
+
+    # Create workspace client with Azure client secret authentication
+    ws = WorkspaceClient(
+        host=host,
+        azure_client_id=azure_client_id,
+        azure_client_secret=azure_client_secret,
+        azure_tenant_id=azure_tenant_id,
+        auth_type="azure-client-secret",
+    )
+
+    # Call the "me" API
+    me = ws.current_user.me()
+
+    # Verify we got a valid response
+    assert me.user_name, "expected non-empty user_name"
+
+
+def test_account_oauth_m2m_auth(a, env_or_skip):
+    env_or_skip("CLOUD_ENV")
+
+    # Get environment variables
+    host = env_or_skip("DATABRICKS_HOST")
+    account_id = env_or_skip("DATABRICKS_ACCOUNT_ID")
+    client_id = env_or_skip("TEST_DATABRICKS_CLIENT_ID")
+    client_secret = env_or_skip("TEST_DATABRICKS_CLIENT_SECRET")
+
+    # Create account client with OAuth M2M authentication
+    ac = AccountClient(
+        host=host,
+        account_id=account_id,
+        client_id=client_id,
+        client_secret=client_secret,
+        auth_type="oauth-m2m",
+    )
+
+    # List service principals to verify authentication works
+    sps = ac.service_principals.list()
+    next(sps)
+
+
+def test_account_azure_client_secret_auth(a, env_or_skip):
+    env_or_skip("CLOUD_ENV")
+
+    # Get environment variables
+    host = env_or_skip("DATABRICKS_HOST")
+    account_id = env_or_skip("DATABRICKS_ACCOUNT_ID")
+    azure_client_id = env_or_skip("ARM_CLIENT_ID")
+    azure_client_secret = env_or_skip("ARM_CLIENT_SECRET")
+    azure_tenant_id = env_or_skip("ARM_TENANT_ID")
+
+    # Create account client with Azure client secret authentication
+    ac = AccountClient(
+        host=host,
+        account_id=account_id,
+        azure_client_id=azure_client_id,
+        azure_client_secret=azure_client_secret,
+        azure_tenant_id=azure_tenant_id,
+        auth_type="azure-client-secret",
+    )
+
+    # List service principals to verify authentication works
+    sps = ac.service_principals.list()
+    next(sps)

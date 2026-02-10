@@ -20,7 +20,6 @@ from .credentials_provider import (CredentialsStrategy, DefaultCredentials,
 from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import (OidcEndpoints, Token, get_account_endpoints,
-                    get_azure_entra_id_workspace_endpoints,
                     get_unified_endpoints, get_workspace_endpoints)
 
 logger = logging.getLogger("databricks.sdk")
@@ -490,9 +489,6 @@ class Config:
         self._fix_host_if_needed()
         if not self.host:
             return None
-        if self.is_azure and self.azure_client_id:
-            return get_azure_entra_id_workspace_endpoints(self.host)
-
         # Handle unified hosts
         if self.host_type == HostType.UNIFIED:
             if not self.account_id:
