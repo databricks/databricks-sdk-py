@@ -1,0 +1,26 @@
+{
+  "name": "stackql-provider-databricks",
+  "version": "0.1.0",
+  "description": "StackQL Provider for Databricks",
+  "type": "module",
+  "scripts": {
+    "generate-docs": "./bin/generate-docs.sh",
+    "generate-provider": "./bin/generate-provider.sh",
+    "start-server": "bash ./bin/start-server.sh",
+    "stop-server": "bash ./bin/stop-server.sh",
+    "server-status": "bash ./bin/server-status.sh",
+    "test-meta-routes": "node ./bin/test-meta-routes.cjs"
+  },
+  "dependencies": {
+    "@stackql/pgwire-lite": "^1.0.1",
+    "@stackql/provider-utils": "^0.5.3"
+  },
+  "keywords": [
+    "stackql",
+    "databricks",
+    "provider"
+  ],
+  "engines": {
+    "node": ">=14.16.0"
+  }
+}
