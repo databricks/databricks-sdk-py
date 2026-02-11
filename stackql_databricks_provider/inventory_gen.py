@@ -324,6 +324,10 @@ def _build_object_key_map() -> Dict[str, str]:
     from stackql_databricks_provider.extract import _class_name_to_snake
     from stackql_databricks_provider.registry import ACCOUNT_API_CLASSES, SERVICE_MODULES
 
+    # Primitive types where objectKey makes no sense (the response is
+    # a flat list of scalars, not a list of objects with schema fields).
+    _PRIMITIVE_TYPES = {"int", "str", "float", "bool", "bytes"}
+
     mapping: Dict[str, str] = {}
 
     for mod_name in SERVICE_MODULES:
@@ -346,6 +350,15 @@ def _build_object_key_map() -> Dict[str, str]:
                 hints = getattr(method, "__annotations__", {})
                 ret = hints.get("return", "")
                 if not isinstance(ret, str) or not ret.strip().startswith("Iterator["):
+                    continue
+
+                # Skip primitive-type iterators (e.g. Iterator[int])
+                inner = ret.strip()[len("Iterator["):-1].strip()
+                if inner in _PRIMITIVE_TYPES:
+                    logger.debug(
+                        "Skipping primitive Iterator[%s] for %s.%s",
+                        inner, cls_name, method_name,
+                    )
                     continue
 
                 try:
