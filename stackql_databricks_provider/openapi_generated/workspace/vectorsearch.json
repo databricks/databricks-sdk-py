@@ -110,7 +110,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EndpointInfo"
+                  "$ref": "#/components/schemas/ListEndpointResponse"
                 }
               }
             }
@@ -568,7 +568,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MiniVectorIndex"
+                  "$ref": "#/components/schemas/ListVectorIndexesResponse"
                 }
               }
             }

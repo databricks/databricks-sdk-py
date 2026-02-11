@@ -110,7 +110,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TagPolicy"
+                  "$ref": "#/components/schemas/ListTagPoliciesResponse"
                 }
               }
             }
@@ -644,7 +644,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TagAssignment"
+                  "$ref": "#/components/schemas/ListTagAssignmentsResponse"
                 }
               }
             }

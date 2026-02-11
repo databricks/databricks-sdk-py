@@ -136,6 +136,16 @@ def get_operation_details(
         operation["requestBody"] = _build_request_body(body_params, sig, docstring)
 
     return_type = _get_return_type(method)
+    # For Iterator methods, use the list response wrapper schema instead
+    # of the individual item type, since the HTTP response is the envelope.
+    if _is_iterator_method(method) and return_type:
+        list_response = _find_list_response_type(service_module, return_type)
+        if list_response:
+            logger.debug(
+                "Iterator method %s.%s: using %s instead of %s",
+                class_name, method_name, list_response, return_type,
+            )
+            return_type = list_response
     operation["responses"] = _build_responses(return_type)
 
     openapi_path = _normalize_path(url_path)
@@ -185,6 +195,9 @@ def get_enums(service_module) -> List[Type]:
 def get_schema_from_data_class(service_module, dc: Type) -> Dict[str, Any]:
     """Generate an OpenAPI component schema from a dataclass.
 
+    Uses the actual JSON wire field names (parsed from ``from_dict``) rather
+    than the Python attribute names so the schema matches the HTTP response.
+
     Args:
         service_module: The service module (used to resolve type references).
         dc: A dataclass type.
@@ -197,6 +210,8 @@ def get_schema_from_data_class(service_module, dc: Type) -> Dict[str, Any]:
     if not dataclasses.is_dataclass(dc):
         raise TypeError(f"{dc} is not a dataclass")
 
+    json_mapping = _extract_json_field_mapping(dc)
+
     properties: Dict[str, Any] = {}
     required: List[str] = []
     field_docs = _extract_field_docs(dc)
@@ -207,10 +222,12 @@ def get_schema_from_data_class(service_module, dc: Type) -> Dict[str, Any]:
         desc = field_docs.get(field.name)
         if desc:
             prop["description"] = desc
-        properties[field.name] = prop
+        # Use the JSON wire name (from from_dict) instead of the Python field name
+        json_name = json_mapping.get(field.name, field.name)
+        properties[json_name] = prop
 
         if _is_required_field(field):
-            required.append(field.name)
+            required.append(json_name)
 
     schema: Dict[str, Any] = {
         "type": "object",
@@ -532,6 +549,112 @@ def _get_return_type(method) -> Optional[str]:
     if origin is not None:
         return None
     return name
+
+
+def _is_iterator_method(method) -> bool:
+    """Check if a method's return type is ``Iterator[X]``."""
+    hints = {}
+    try:
+        hints = method.__annotations__
+    except AttributeError:
+        return False
+    ret = hints.get("return")
+    if ret is None:
+        return False
+    if isinstance(ret, str):
+        return ret.strip().startswith("Iterator[")
+    origin = getattr(ret, "__origin__", None)
+    origin_name = getattr(origin, "__name__", "") or getattr(origin, "_name", "")
+    return origin_name == "Iterator"
+
+
+def _find_list_response_type(service_module, item_type_name: str) -> Optional[str]:
+    """Find a List/Response wrapper dataclass that contains ``List[item_type_name]``.
+
+    Searches all dataclasses in the module for one whose fields include a
+    ``List[item_type_name]`` (or ``Optional[List[item_type_name]]``).  This
+    corresponds to the actual HTTP response envelope that wraps a collection
+    of items.
+
+    Returns the wrapper class name or ``None`` if no match is found.
+    """
+    candidates = []
+    for name, cls in inspect.getmembers(service_module, inspect.isclass):
+        if not dataclasses.is_dataclass(cls):
+            continue
+        if cls.__module__ != service_module.__name__:
+            continue
+        for field in dataclasses.fields(cls):
+            field_type = field.type
+            if isinstance(field_type, str):
+                if f"List[{item_type_name}]" in field_type:
+                    candidates.append(name)
+                    break
+            else:
+                # Handle resolved type annotations
+                origin = getattr(field_type, "__origin__", None)
+                args = getattr(field_type, "__args__", None)
+                origin_name = getattr(origin, "__name__", "") or getattr(origin, "_name", "")
+                if origin_name in ("List", "list") and args:
+                    inner = getattr(args[0], "__name__", "")
+                    if inner == item_type_name:
+                        candidates.append(name)
+                        break
+                # Check Optional[List[X]] = Union[List[X], None]
+                if origin_name == "Union" and args:
+                    for a in args:
+                        a_origin = getattr(a, "__origin__", None)
+                        a_origin_name = getattr(a_origin, "__name__", "") or getattr(a_origin, "_name", "")
+                        if a_origin_name in ("List", "list"):
+                            a_args = getattr(a, "__args__", None)
+                            if a_args:
+                                inner = getattr(a_args[0], "__name__", "")
+                                if inner == item_type_name:
+                                    candidates.append(name)
+                                    break
+
+    if not candidates:
+        return None
+    # Prefer a class whose name contains "Response" or "List"
+    for c in candidates:
+        if "Response" in c or "List" in c:
+            return c
+    return candidates[0]
+
+
+def _extract_json_field_mapping(dc: Type) -> Dict[str, str]:
+    """Parse the ``from_dict`` classmethod to extract JSON-to-Python field name mapping.
+
+    The SDK's ``from_dict`` methods contain the authoritative mapping between
+    JSON wire names and Python attribute names, e.g.::
+
+        display_name=d.get("displayName", None)
+        resources=_repeated_dict(d, "Resources", AccountUser)
+
+    Returns:
+        Dict mapping Python field name to JSON wire name.  Falls back to
+        identity mapping (python_name → python_name) for fields where parsing fails.
+    """
+    mapping: Dict[str, str] = {}
+    from_dict = getattr(dc, "from_dict", None)
+    if from_dict is None:
+        return mapping
+
+    try:
+        source = inspect.getsource(from_dict)
+    except (OSError, TypeError):
+        return mapping
+
+    # Pattern 1: field_name=d.get("json_name", ...)
+    for m in re.finditer(r'(\w+)\s*=\s*d\.get\(\s*"([^"]+)"', source):
+        mapping[m.group(1)] = m.group(2)
+
+    # Pattern 2: field_name=_helper(d, "json_name", ...)
+    # Covers _repeated_dict, _repeated_enum, _from_dict, _enum, etc.
+    for m in re.finditer(r'(\w+)\s*=\s*_\w+\(\s*d\s*,\s*"([^"]+)"', source):
+        mapping[m.group(1)] = m.group(2)
+
+    return mapping
 
 
 def _normalize_path(url_path: str) -> str:

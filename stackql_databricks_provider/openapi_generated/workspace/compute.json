@@ -551,7 +551,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Policy"
+                  "$ref": "#/components/schemas/ListPoliciesResponse"
                 }
               }
             }
@@ -1144,7 +1144,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ClusterEvent"
+                  "$ref": "#/components/schemas/GetEventsResponse"
                 }
               }
             }
@@ -1509,7 +1509,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ClusterDetails"
+                  "$ref": "#/components/schemas/ListClustersResponse"
                 }
               }
             }
@@ -2532,7 +2532,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GlobalInitScriptDetails"
+                  "$ref": "#/components/schemas/ListGlobalInitScriptsResponse"
                 }
               }
             }
@@ -3290,7 +3290,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InstancePoolAndStats"
+                  "$ref": "#/components/schemas/ListInstancePools"
                 }
               }
             }
@@ -3455,7 +3455,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InstanceProfile"
+                  "$ref": "#/components/schemas/ListInstanceProfilesResponse"
                 }
               }
             }
@@ -3548,7 +3548,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ClusterLibraryStatuses"
+                  "$ref": "#/components/schemas/ListAllClusterLibraryStatusesResponse"
                 }
               }
             }
@@ -3600,7 +3600,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LibraryFullStatus"
+                  "$ref": "#/components/schemas/ClusterLibraryStatuses"
                 }
               }
             }
@@ -3899,7 +3899,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ClusterCompliance"
+                  "$ref": "#/components/schemas/ListClusterCompliancesResponse"
                 }
               }
             }
@@ -4021,7 +4021,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PolicyFamily"
+                  "$ref": "#/components/schemas/ListPolicyFamiliesResponse"
                 }
               }
             }
@@ -5670,7 +5670,7 @@
               "$ref": "#/components/schemas/InitScriptInfoAndExecutionDetails"
             }
           },
-          "global_": {
+          "global": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/InitScriptInfoAndExecutionDetails"
@@ -6622,18 +6622,18 @@
           "data": {
             "type": "object"
           },
-          "file_name": {
+          "fileName": {
             "type": "string",
             "description": "The image data in one of the following formats: 1. A Data URL with base64-encoded image data: `data:image/{type};base64,{base64-data}`. Example: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...` 2. A FileStore file path for large images: `/plots/{filename}.png`. Example: `/plots/b6a7ad70-fb2c-4353-8aed-3f1e015174a4.png`"
           },
-          "file_names": {
+          "fileNames": {
             "type": "array",
             "items": {
               "type": "string"
             },
             "description": "List of image data for multiple images. Each element follows the same format as file_name."
           },
-          "is_json_schema": {
+          "isJsonSchema": {
             "type": "boolean",
             "description": "true if a JSON schema is returned instead of a string representation of the Hive type."
           },
@@ -6641,7 +6641,7 @@
             "type": "integer",
             "description": "internal field used by SDK"
           },
-          "result_type": {
+          "resultType": {
             "$ref": "#/components/schemas/ResultType"
           },
           "schema": {

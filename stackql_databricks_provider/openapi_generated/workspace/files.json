@@ -324,7 +324,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileInfo"
+                  "$ref": "#/components/schemas/ListStatusResponse"
                 }
               }
             }
@@ -758,7 +758,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DirectoryEntry"
+                  "$ref": "#/components/schemas/ListDirectoryResponse"
                 }
               }
             }
@@ -1047,14 +1047,14 @@
           "content_length": {
             "type": "integer"
           },
-          "content_type": {
+          "content-type": {
             "type": "string"
           },
           "contents": {
             "type": "string",
             "format": "binary"
           },
-          "last_modified": {
+          "last-modified": {
             "type": "string",
             "description": "The last modified time of the file in HTTP-date (RFC 7231) format."
           }
@@ -1086,10 +1086,10 @@
           "content_length": {
             "type": "integer"
           },
-          "content_type": {
+          "content-type": {
             "type": "string"
           },
-          "last_modified": {
+          "last-modified": {
             "type": "string",
             "description": "The last modified time of the file in HTTP-date (RFC 7231) format."
           }

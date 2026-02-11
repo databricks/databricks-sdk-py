@@ -112,7 +112,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/IpAccessListInfo"
+                  "$ref": "#/components/schemas/GetIpAccessListsResponse"
                 }
               }
             }
@@ -509,7 +509,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NetworkConnectivityConfiguration"
+                  "$ref": "#/components/schemas/ListNetworkConnectivityConfigurationsResponse"
                 }
               }
             }
@@ -654,7 +654,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/NccPrivateEndpointRule"
+                  "$ref": "#/components/schemas/ListPrivateEndpointRulesResponse"
                 }
               }
             }
@@ -1121,7 +1121,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AccountNetworkPolicy"
+                  "$ref": "#/components/schemas/ListNetworkPoliciesResponse"
                 }
               }
             }
@@ -2484,11 +2484,11 @@
             "type": "string",
             "description": "The requested token."
           },
-          "credential_eol_time": {
+          "credentialEolTime": {
             "type": "integer",
             "description": "The end-of-life timestamp of the token. The value is in milliseconds since the Unix epoch."
           },
-          "owner_id": {
+          "ownerId": {
             "type": "integer",
             "description": "User ID of the user that owns this token."
           },
@@ -2499,7 +2499,7 @@
             },
             "description": "The scopes of access granted in the token."
           },
-          "token_type": {
+          "tokenType": {
             "$ref": "#/components/schemas/TokenType",
             "description": "The type of this exchange token"
           }
@@ -3150,7 +3150,7 @@
       "PartitionId": {
         "type": "object",
         "properties": {
-          "workspace_id": {
+          "workspaceId": {
             "type": "integer",
             "description": "The ID of the workspace."
           }

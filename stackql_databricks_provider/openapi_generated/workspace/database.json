@@ -166,7 +166,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DatabaseInstance"
+                  "$ref": "#/components/schemas/ListDatabaseInstancesResponse"
                 }
               }
             }
@@ -309,7 +309,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DatabaseInstanceRole"
+                  "$ref": "#/components/schemas/ListDatabaseInstanceRolesResponse"
                 }
               }
             }
@@ -1360,7 +1360,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DatabaseCatalog"
+                  "$ref": "#/components/schemas/ListDatabaseCatalogsResponse"
                 }
               }
             }
@@ -1429,7 +1429,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SyncedDatabaseTable"
+                  "$ref": "#/components/schemas/ListSyncedDatabaseTablesResponse"
                 }
               }
             }

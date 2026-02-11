@@ -118,7 +118,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/App"
+                  "$ref": "#/components/schemas/ListAppsResponse"
                 }
               }
             }
@@ -542,7 +542,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AppDeployment"
+                  "$ref": "#/components/schemas/ListAppDeploymentsResponse"
                 }
               }
             }
@@ -1052,7 +1052,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CustomTemplate"
+                  "$ref": "#/components/schemas/ListCustomTemplatesResponse"
                 }
               }
             }

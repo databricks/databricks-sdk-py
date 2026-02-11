@@ -300,7 +300,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CatalogInfo"
+                  "$ref": "#/components/schemas/ListCatalogsResponse"
                 }
               }
             }
@@ -642,7 +642,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ConnectionInfo"
+                  "$ref": "#/components/schemas/ListConnectionsResponse"
                 }
               }
             }
@@ -1176,7 +1176,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EntityTagAssignment"
+                  "$ref": "#/components/schemas/ListEntityTagAssignmentsResponse"
                 }
               }
             }
@@ -1355,7 +1355,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExternalLineageInfo"
+                  "$ref": "#/components/schemas/ListExternalLineageRelationshipsResponse"
                 }
               }
             }
@@ -1595,7 +1595,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExternalLocationInfo"
+                  "$ref": "#/components/schemas/ListExternalLocationsResponse"
                 }
               }
             }
@@ -1937,7 +1937,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExternalMetadata"
+                  "$ref": "#/components/schemas/ListExternalMetadataResponse"
                 }
               }
             }
@@ -2253,7 +2253,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FunctionInfo"
+                  "$ref": "#/components/schemas/ListFunctionsResponse"
                 }
               }
             }
@@ -2993,7 +2993,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MetastoreInfo"
+                  "$ref": "#/components/schemas/AccountsListMetastoresResponse"
                 }
               }
             }
@@ -3817,7 +3817,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ModelVersionInfo"
+                  "$ref": "#/components/schemas/ListModelVersionsResponse"
                 }
               }
             }
@@ -4351,7 +4351,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PolicyInfo"
+                  "$ref": "#/components/schemas/ListPoliciesResponse"
                 }
               }
             }
@@ -5162,7 +5162,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegisteredModelInfo"
+                  "$ref": "#/components/schemas/ListRegisteredModelsResponse"
                 }
               }
             }
@@ -5523,7 +5523,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/QuotaInfo"
+                  "$ref": "#/components/schemas/ListQuotasResponse"
                 }
               }
             }
@@ -5863,7 +5863,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SchemaInfo"
+                  "$ref": "#/components/schemas/ListSchemasResponse"
                 }
               }
             }
@@ -6216,7 +6216,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StorageCredentialInfo"
+                  "$ref": "#/components/schemas/ListAccountStorageCredentialsResponse"
                 }
               }
             }
@@ -6708,7 +6708,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SystemSchemaInfo"
+                  "$ref": "#/components/schemas/ListSystemSchemasResponse"
                 }
               }
             }
@@ -7048,7 +7048,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TableInfo"
+                  "$ref": "#/components/schemas/ListTablesResponse"
                 }
               }
             }
@@ -7377,7 +7377,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/TableSummary"
+                  "$ref": "#/components/schemas/ListTableSummariesResponse"
                 }
               }
             }
@@ -7673,7 +7673,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/VolumeInfo"
+                  "$ref": "#/components/schemas/ListVolumesResponseContent"
                 }
               }
             }
@@ -8050,7 +8050,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WorkspaceBinding"
+                  "$ref": "#/components/schemas/GetWorkspaceBindingsResponse"
                 }
               }
             }
@@ -12374,7 +12374,7 @@
       "ValidateCredentialResponse": {
         "type": "object",
         "properties": {
-          "is_dir": {
+          "isDir": {
             "type": "boolean"
           },
           "results": {
@@ -12389,7 +12389,7 @@
       "ValidateStorageCredentialResponse": {
         "type": "object",
         "properties": {
-          "is_dir": {
+          "isDir": {
             "type": "boolean"
           },
           "results": {

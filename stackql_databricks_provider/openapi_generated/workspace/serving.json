@@ -182,7 +182,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ServingEndpoint"
+                  "$ref": "#/components/schemas/ListEndpointsResponse"
                 }
               }
             }
@@ -2386,7 +2386,7 @@
             },
             "description": "The predictions returned by the serving endpoint."
           },
-          "served_model_name": {
+          "served-model-name": {
             "type": "string",
             "description": "The name of the served model that served the request. This is useful when there are multiple models behind the same endpoint with traffic split."
           },
@@ -3005,7 +3005,7 @@
       "V1ResponseChoiceElement": {
         "type": "object",
         "properties": {
-          "finish_reason": {
+          "finishReason": {
             "type": "string"
           },
           "index": {

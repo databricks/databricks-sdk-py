@@ -339,7 +339,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object"
+                  "$ref": "#/components/schemas/GetCatalogWorkspaceBindingsResponse"
                 }
               }
             }
@@ -454,7 +454,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MetastoreInfo"
+                  "$ref": "#/components/schemas/AccountsListMetastoresResponse"
                 }
               }
             }
@@ -790,7 +790,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/StorageCredentialInfo"
+                  "$ref": "#/components/schemas/ListAccountStorageCredentialsResponse"
                 }
               }
             }
@@ -1188,7 +1188,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CredentialInfo"
+                  "$ref": "#/components/schemas/ListCredentialsResponse"
                 }
               }
             }
@@ -5791,7 +5791,7 @@
       "ValidateCredentialResponse": {
         "type": "object",
         "properties": {
-          "is_dir": {
+          "isDir": {
             "type": "boolean"
           },
           "results": {
@@ -5806,7 +5806,7 @@
       "ValidateStorageCredentialResponse": {
         "type": "object",
         "properties": {
-          "is_dir": {
+          "isDir": {
             "type": "boolean"
           },
           "results": {

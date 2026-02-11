@@ -109,7 +109,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListAlertsResponseAlert"
+                  "$ref": "#/components/schemas/ListAlertsResponse"
                 }
               }
             }
@@ -680,7 +680,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AlertV2"
+                  "$ref": "#/components/schemas/ListAlertsV2Response"
                 }
               }
             }
@@ -1311,7 +1311,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Dashboard"
+                  "$ref": "#/components/schemas/ListResponse"
                 }
               }
             }
@@ -1746,7 +1746,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListQueryObjectsResponseQuery"
+                  "$ref": "#/components/schemas/ListQueryObjectsResponse"
                 }
               }
             }
@@ -1985,7 +1985,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Visualization"
+                  "$ref": "#/components/schemas/ListVisualizationsForQueryResponse"
                 }
               }
             }
@@ -2146,7 +2146,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LegacyQuery"
+                  "$ref": "#/components/schemas/QueryList"
                 }
               }
             }
@@ -3309,7 +3309,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/EndpointInfo"
+                  "$ref": "#/components/schemas/ListWarehousesResponse"
                 }
               }
             }
@@ -3438,7 +3438,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/DefaultWarehouseOverride"
+                  "$ref": "#/components/schemas/ListDefaultWarehouseOverridesResponse"
                 }
               }
             }
@@ -6117,10 +6117,10 @@
       "Parameter": {
         "type": "object",
         "properties": {
-          "enum_options": {
+          "enumOptions": {
             "type": "string"
           },
-          "multi_values_options": {
+          "multiValuesOptions": {
             "$ref": "#/components/schemas/MultiValuesOptions",
             "description": "If specified, allows multiple values to be selected for this parameter. Only applies to dropdown list and query-based dropdown list parameters."
           },
@@ -6128,7 +6128,7 @@
             "type": "string",
             "description": "The literal parameter marker that appears between double curly braces in the query text."
           },
-          "query_id": {
+          "queryId": {
             "type": "string",
             "description": "The UUID of the query that provides the parameter values. Only applies for query-based dropdown list parameters."
           },
@@ -7192,11 +7192,11 @@
             "type": "string",
             "description": "Custom description of the widget"
           },
-          "is_hidden": {
+          "isHidden": {
             "type": "boolean",
             "description": "Whether this widget is hidden on the dashboard."
           },
-          "parameter_mappings": {
+          "parameterMappings": {
             "type": "object",
             "description": "How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does not recommend modifying this definition in JSON."
           },
@@ -7217,7 +7217,7 @@
       "WidgetPosition": {
         "type": "object",
         "properties": {
-          "auto_height": {
+          "autoHeight": {
             "type": "boolean",
             "description": "reserved for internal use"
           },
@@ -7229,11 +7229,11 @@
             "type": "integer",
             "description": "row in the dashboard grid. Values start with 0"
           },
-          "size_x": {
+          "sizeX": {
             "type": "integer",
             "description": "width of the widget measured in dashboard grid cells"
           },
-          "size_y": {
+          "sizeY": {
             "type": "integer",
             "description": "height of the widget measured in dashboard grid cells"
           }

@@ -427,7 +427,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PipelineStateInfo"
+                  "$ref": "#/components/schemas/ListPipelinesResponse"
                 }
               }
             }
@@ -1081,7 +1081,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PipelineEvent"
+                  "$ref": "#/components/schemas/ListPipelineEventsResponse"
                 }
               }
             }

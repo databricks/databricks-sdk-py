@@ -125,7 +125,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CredentialInfo"
+                  "$ref": "#/components/schemas/ListCredentialsResponse"
                 }
               }
             }
@@ -454,7 +454,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RepoInfo"
+                  "$ref": "#/components/schemas/ListReposResponse"
                 }
               }
             }
@@ -1253,7 +1253,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/AclItem"
+                  "$ref": "#/components/schemas/ListAclsResponse"
                 }
               }
             }
@@ -1294,7 +1294,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SecretScope"
+                  "$ref": "#/components/schemas/ListScopesResponse"
                 }
               }
             }
@@ -1346,7 +1346,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SecretMetadata"
+                  "$ref": "#/components/schemas/ListSecretsResponse"
                 }
               }
             }
@@ -2032,7 +2032,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ObjectInfo"
+                  "$ref": "#/components/schemas/ListResponse"
                 }
               }
             }
