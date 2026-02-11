@@ -1,0 +1,10 @@
+{
+  "_comment": "Post-extraction overrides for generated OpenAPI specs. Each key is scope/service (e.g. workspace/database). Each override specifies a json_path (dot-delimited, with array index support) and the value to set at that path.",
+  "workspace/database": [
+    {
+      "description": "Make uid parameter required for findByUid",
+      "json_path": "paths./api/2.0/database/instances:findByUid.get.parameters[name=uid].required",
+      "value": true
+    }
+  ]
+}
