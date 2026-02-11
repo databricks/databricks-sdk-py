@@ -38,7 +38,7 @@ class ServingEndpointsExt(ServingEndpointsAPI):
         .. deprecated::
             This method is deprecated. Please install the `databricks-openai` package
             and use `from databricks_openai import DatabricksOpenAI` instead.
-            See https://pypi.org/project/databricks-openai/ for more information.
+            See https://api-docs.databricks.com/python/databricks-ai-bridge/latest/databricks_openai.html for more information.
 
         Returns an OpenAI client instance that is pre-configured to send requests to
         Databricks Model Serving endpoints. The client uses Databricks authentication
