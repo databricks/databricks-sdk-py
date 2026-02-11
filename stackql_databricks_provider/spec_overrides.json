@@ -6,5 +6,12 @@
       "json_path": "paths./api/2.0/database/instances:findByUid.get.parameters[name=uid].required",
       "value": true
     }
+  ],
+  "workspace/ml": [
+    {
+      "description": "Make filter parameter required for search registered models",
+      "json_path": "paths./api/2.0/mlflow/registered-models/search.get.parameters[name=filter].required",
+      "value": true
+    }
   ]
 }
