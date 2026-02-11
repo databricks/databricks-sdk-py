@@ -23,6 +23,14 @@
         "description": "Returns the access details for a principal in a workspace. Allows for checking access details for any\nprovisioned principal (user, service principal, or group) in a workspace. * Provisioned principal here\nrefers to one that has been synced into Databricks from the customer's IdP or added explicitly to\nDatabricks via SCIM/UI. Allows for passing in a \"view\" parameter to control what fields are returned\n(BASIC by default or FULL).\n\n:param workspace_id: int\n  Required. The workspace ID for which the access details are being requested.\n:param principal_id: int\n  Required. The internal ID of the principal (user/sp/group) for which the access details are being\n  requested.\n:param view: :class:`WorkspaceAccessDetailView` (optional)\n  Controls what fields are returned.\n\n:returns: :class:`WorkspaceAccessDetail`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "workspace_id",
             "in": "path",
             "required": true,
@@ -91,6 +99,16 @@
           "account_iam_v2"
         ],
         "description": "Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it\nwill be created in the account. If the customer is not onboarded onto Automatic Identity Management\n(AIM), this will return an error.\n\n:param external_id: str\n  Required. The external ID of the group in the customer's IdP.\n\n:returns: :class:`ResolveGroupResponse`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -150,6 +168,16 @@
           "account_iam_v2"
         ],
         "description": "Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will\nbe created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will\nreturn an error.\n\n:param external_id: str\n  Required. The external ID of the service principal in the customer's IdP.\n\n:returns: :class:`ResolveServicePrincipalResponse`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -209,6 +237,16 @@
           "account_iam_v2"
         ],
         "description": "Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it\nwill be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will\nreturn an error.\n\n:param external_id: str\n  Required. The external ID of the user in the customer's IdP.\n\n:returns: :class:`ResolveUserResponse`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {

@@ -670,6 +670,14 @@
         "description": "Gets the compliance security profile setting for new workspaces.\n\n:param etag: str (optional)\n  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for\n  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting\n  each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern\n  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET\n  request, and pass it with the DELETE request to identify the rule set version you are deleting.\n\n:returns: :class:`CspEnablementAccountSetting`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "etag",
             "in": "query",
             "required": false,
@@ -718,6 +726,16 @@
           "csp_enablement_account"
         ],
         "description": "Updates the value of the compliance security profile setting for new workspaces.\n\n:param allow_missing: bool\n  This should always be set to true for Settings API. Added for AIP compliance.\n:param setting: :class:`CspEnablementAccountSetting`\n:param field_mask: str\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n  A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the\n  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API\n  changes in the future.\n\n:returns: :class:`CspEnablementAccountSetting`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1628,6 +1646,14 @@
         "description": "Deletes the disable legacy features setting.\n\n:param etag: str (optional)\n  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for\n  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting\n  each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern\n  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET\n  request, and pass it with the DELETE request to identify the rule set version you are deleting.\n\n:returns: :class:`DeleteDisableLegacyFeaturesResponse`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "etag",
             "in": "query",
             "required": false,
@@ -1678,6 +1704,14 @@
         "description": "Gets the value of the disable legacy features setting.\n\n:param etag: str (optional)\n  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for\n  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting\n  each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern\n  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET\n  request, and pass it with the DELETE request to identify the rule set version you are deleting.\n\n:returns: :class:`DisableLegacyFeatures`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "etag",
             "in": "query",
             "required": false,
@@ -1726,6 +1760,16 @@
           "disable_legacy_features"
         ],
         "description": "Updates the value of the disable legacy features setting.\n\n:param allow_missing: bool\n  This should always be set to true for Settings API. Added for AIP compliance.\n:param setting: :class:`DisableLegacyFeatures`\n:param field_mask: str\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n  A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the\n  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API\n  changes in the future.\n\n:returns: :class:`DisableLegacyFeatures`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -1903,6 +1947,14 @@
         "description": "Reverts the value of the account IP access toggle setting to default (ON)\n\n:param etag: str (optional)\n  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for\n  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting\n  each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern\n  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET\n  request, and pass it with the DELETE request to identify the rule set version you are deleting.\n\n:returns: :class:`DeleteAccountIpAccessEnableResponse`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "etag",
             "in": "query",
             "required": false,
@@ -1953,6 +2005,14 @@
         "description": "Gets the value of the account IP access toggle setting.\n\n:param etag: str (optional)\n  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for\n  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting\n  each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern\n  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET\n  request, and pass it with the DELETE request to identify the rule set version you are deleting.\n\n:returns: :class:`AccountIpAccessEnable`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "etag",
             "in": "query",
             "required": false,
@@ -2001,6 +2061,16 @@
           "enable_ip_access_lists"
         ],
         "description": "Updates the value of the account IP access toggle setting.\n\n:param allow_missing: bool\n  This should always be set to true for Settings API. Added for AIP compliance.\n:param setting: :class:`AccountIpAccessEnable`\n:param field_mask: str\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n  A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the\n  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API\n  changes in the future.\n\n:returns: :class:`AccountIpAccessEnable`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2403,6 +2473,14 @@
         "description": "Gets the enhanced security monitoring setting for new workspaces.\n\n:param etag: str (optional)\n  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for\n  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting\n  each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern\n  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET\n  request, and pass it with the DELETE request to identify the rule set version you are deleting.\n\n:returns: :class:`EsmEnablementAccountSetting`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "etag",
             "in": "query",
             "required": false,
@@ -2451,6 +2529,16 @@
           "esm_enablement_account"
         ],
         "description": "Updates the value of the enhanced security monitoring setting for new workspaces.\n\n:param allow_missing: bool\n  This should always be set to true for Settings API. Added for AIP compliance.\n:param setting: :class:`EsmEnablementAccountSetting`\n:param field_mask: str\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n  A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the\n  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API\n  changes in the future.\n\n:returns: :class:`EsmEnablementAccountSetting`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2865,6 +2953,14 @@
         "description": "Gets the enable partner powered AI features account setting.\n\n:param etag: str (optional)\n  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for\n  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting\n  each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern\n  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET\n  request, and pass it with the DELETE request to identify the rule set version you are deleting.\n\n:returns: :class:`LlmProxyPartnerPoweredAccount`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "etag",
             "in": "query",
             "required": false,
@@ -2913,6 +3009,16 @@
           "llm_proxy_partner_powered_account"
         ],
         "description": "Updates the enable partner powered AI features account setting.\n\n:param allow_missing: bool\n  This should always be set to true for Settings API. Added for AIP compliance.\n:param setting: :class:`LlmProxyPartnerPoweredAccount`\n:param field_mask: str\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n  A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the\n  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API\n  changes in the future.\n\n:returns: :class:`LlmProxyPartnerPoweredAccount`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -2983,6 +3089,14 @@
         "description": "Gets the enforcement status of partner powered AI features account setting.\n\n:param etag: str (optional)\n  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for\n  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting\n  each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern\n  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET\n  request, and pass it with the DELETE request to identify the rule set version you are deleting.\n\n:returns: :class:`LlmProxyPartnerPoweredEnforce`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "etag",
             "in": "query",
             "required": false,
@@ -3031,6 +3145,16 @@
           "llm_proxy_partner_powered_enforce"
         ],
         "description": "Updates the enable enforcement status of partner powered AI features account setting.\n\n:param allow_missing: bool\n  This should always be set to true for Settings API. Added for AIP compliance.\n:param setting: :class:`LlmProxyPartnerPoweredEnforce`\n:param field_mask: str\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n  A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the\n  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API\n  changes in the future.\n\n:returns: :class:`LlmProxyPartnerPoweredEnforce`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -3551,6 +3675,14 @@
         "description": "Reverts back the Personal Compute setting value to default (ON)\n\n:param etag: str (optional)\n  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for\n  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting\n  each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern\n  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET\n  request, and pass it with the DELETE request to identify the rule set version you are deleting.\n\n:returns: :class:`DeletePersonalComputeSettingResponse`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "etag",
             "in": "query",
             "required": false,
@@ -3601,6 +3733,14 @@
         "description": "Gets the value of the Personal Compute setting.\n\n:param etag: str (optional)\n  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for\n  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting\n  each other. It is strongly suggested that systems make use of the etag in the read -> delete pattern\n  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET\n  request, and pass it with the DELETE request to identify the rule set version you are deleting.\n\n:returns: :class:`PersonalComputeSetting`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "etag",
             "in": "query",
             "required": false,
@@ -3649,6 +3789,16 @@
           "personal_compute"
         ],
         "description": "Updates the value of the Personal Compute setting.\n\n:param allow_missing: bool\n  This should always be set to true for Settings API. Added for AIP compliance.\n:param setting: :class:`PersonalComputeSetting`\n:param field_mask: str\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n  A field mask of `*` indicates full replacement. It\u2019s recommended to always explicitly list the\n  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API\n  changes in the future.\n\n:returns: :class:`PersonalComputeSetting`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {

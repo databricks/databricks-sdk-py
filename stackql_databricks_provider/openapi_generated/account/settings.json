@@ -21,6 +21,16 @@
           "account_ip_access_lists"
         ],
         "description": "Creates an IP access list for the account.\n\nA list can be an allow list or a block list. See the top of this file for a description of how the\nserver treats allow lists and block lists at runtime.\n\nWhen creating or updating an IP access list:\n\n* For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,\nwhere one CIDR counts as a single value. Attempts to exceed that number return error 400 with\n`error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,\nerror 400 is returned with `error_code` value `INVALID_STATE`.\n\nIt can take a few minutes for the changes to take effect.\n\n:param label: str\n  Label for the IP access list. This **cannot** be empty.\n:param list_type: :class:`ListType`\n:param ip_addresses: List[str] (optional)\n\n:returns: :class:`CreateIpAccessListResponse`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -86,6 +96,16 @@
           "account_ip_access_lists"
         ],
         "description": "Gets all IP access lists for the specified account.\n\n\n:returns: Iterator over :class:`IpAccessListInfo`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -129,6 +149,14 @@
         "description": "Deletes an IP access list, specified by its list ID.\n\n:param ip_access_list_id: str\n  The ID for the corresponding IP access list",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "ip_access_list_id",
             "in": "path",
             "required": true,
@@ -171,6 +199,14 @@
         ],
         "description": "Gets an IP access list, specified by its list ID.\n\n:param ip_access_list_id: str\n  The ID for the corresponding IP access list\n\n:returns: :class:`GetIpAccessListResponse`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "ip_access_list_id",
             "in": "path",
@@ -221,6 +257,14 @@
         ],
         "description": "Replaces an IP access list, specified by its ID.\n\nA list can include allow lists and block lists. See the top of this file for a description of how the\nserver treats allow lists and block lists at run time. When replacing an IP access list: * For all\nallow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values, where one\nCIDR counts as a single value. Attempts to exceed that number return error 400 with `error_code` value\n`QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is\nreturned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take\neffect.\n\n:param ip_access_list_id: str\n  The ID for the corresponding IP access list\n:param label: str\n  Label for the IP access list. This **cannot** be empty.\n:param list_type: :class:`ListType`\n:param enabled: bool\n  Specifies whether this IP access list is enabled.\n:param ip_addresses: List[str] (optional)",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "ip_access_list_id",
             "in": "path",
@@ -296,6 +340,14 @@
         "description": "Updates an existing IP access list, specified by its ID.\n\nA list can include allow lists and block lists. See the top of this file for a description of how the\nserver treats allow lists and block lists at run time.\n\nWhen updating an IP access list:\n\n* For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,\nwhere one CIDR counts as a single value. Attempts to exceed that number return error 400 with\n`error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,\nerror 400 is returned with `error_code` value `INVALID_STATE`.\n\nIt can take a few minutes for the changes to take effect.\n\n:param ip_access_list_id: str\n  The ID for the corresponding IP access list\n:param enabled: bool (optional)\n  Specifies whether this IP access list is enabled.\n:param ip_addresses: List[str] (optional)\n:param label: str (optional)\n  Label for the IP access list. This **cannot** be empty.\n:param list_type: :class:`ListType` (optional)",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "ip_access_list_id",
             "in": "path",
             "required": true,
@@ -365,6 +417,16 @@
           "network_connectivity"
         ],
         "description": "Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when\naccessing your Azure Storage accounts. You can also use a network connectivity configuration to create\nDatabricks managed private endpoints so that Databricks serverless compute resources privately access\nyour resources.\n\n**IMPORTANT**: After you create the network connectivity configuration, you must assign one or more\nworkspaces to the new network connectivity configuration. You can share one network connectivity\nconfiguration with multiple workspaces from the same Azure region within the same Databricks account.\nSee [configure serverless secure connectivity].\n\n[configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security\n\n:param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`\n\n:returns: :class:`NetworkConnectivityConfiguration`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -424,6 +486,14 @@
         "description": "Gets an array of network connectivity configurations.\n\n:param page_token: str (optional)\n  Pagination token to go to next page based on previous query.\n\n:returns: Iterator over :class:`NetworkConnectivityConfiguration`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page_token",
             "in": "query",
             "required": false,
@@ -475,6 +545,14 @@
         ],
         "description": "Create a private endpoint rule for the specified network connectivity config object. Once the object\nis created, Databricks asynchronously provisions a new Azure private endpoint to your specified Azure\nresource.\n\n**IMPORTANT**: You must use Azure portal or other Azure tools to approve the private endpoint to\ncomplete the connection. To get the information of the private endpoint created, make a `GET` request\non the new private endpoint rule. See [serverless private link].\n\n[serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link\n\n:param network_connectivity_config_id: str\n  Your Network Connectivity Configuration ID.\n:param private_endpoint_rule: :class:`CreatePrivateEndpointRule`\n\n:returns: :class:`NccPrivateEndpointRule`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "network_connectivity_config_id",
             "in": "path",
@@ -544,6 +622,14 @@
         "description": "Gets an array of private endpoint rules.\n\n:param network_connectivity_config_id: str\n  Your Network Connectvity Configuration ID.\n:param page_token: str (optional)\n  Pagination token to go to next page based on previous query.\n\n:returns: Iterator over :class:`NccPrivateEndpointRule`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "network_connectivity_config_id",
             "in": "path",
             "required": true,
@@ -605,6 +691,14 @@
         "description": "Deletes a network connectivity configuration.\n\n:param network_connectivity_config_id: str\n  Your Network Connectivity Configuration ID.",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "network_connectivity_config_id",
             "in": "path",
             "required": true,
@@ -647,6 +741,14 @@
         ],
         "description": "Gets a network connectivity configuration.\n\n:param network_connectivity_config_id: str\n  Your Network Connectivity Configuration ID.\n\n:returns: :class:`NetworkConnectivityConfiguration`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "network_connectivity_config_id",
             "in": "path",
@@ -699,6 +801,14 @@
         ],
         "description": "Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private\nendpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted\nafter seven days of deactivation. When a private endpoint is deactivated, the `deactivated` field is\nset to `true` and the private endpoint is not available to your serverless compute resources.\n\n:param network_connectivity_config_id: str\n  Your Network Connectvity Configuration ID.\n:param private_endpoint_rule_id: str\n  Your private endpoint rule ID.\n\n:returns: :class:`NccPrivateEndpointRule`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "network_connectivity_config_id",
             "in": "path",
@@ -759,6 +869,14 @@
         "description": "Gets the private endpoint rule.\n\n:param network_connectivity_config_id: str\n  Your Network Connectvity Configuration ID.\n:param private_endpoint_rule_id: str\n  Your private endpoint rule ID.\n\n:returns: :class:`NccPrivateEndpointRule`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "network_connectivity_config_id",
             "in": "path",
             "required": true,
@@ -817,6 +935,14 @@
         ],
         "description": "Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources\nis allowed to be updated.\n\n:param network_connectivity_config_id: str\n  The ID of a network connectivity configuration, which is the parent resource of this private\n  endpoint rule object.\n:param private_endpoint_rule_id: str\n  Your private endpoint rule ID.\n:param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`\n:param update_mask: str\n  The field mask must be a single string, with multiple fields separated by commas (no spaces). The\n  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,\n  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only\n  the entire collection field can be specified. Field names must exactly match the resource field\n  names.\n\n:returns: :class:`NccPrivateEndpointRule`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "network_connectivity_config_id",
             "in": "path",
@@ -903,6 +1029,16 @@
           "network_policies"
         ],
         "description": "Creates a new network policy to manage which network destinations can be accessed from the Databricks\nenvironment.\n\n:param network_policy: :class:`AccountNetworkPolicy`\n  Network policy configuration details.\n\n:returns: :class:`AccountNetworkPolicy`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -962,6 +1098,14 @@
         "description": "Gets an array of network policies.\n\n:param page_token: str (optional)\n  Pagination token to go to next page based on previous query.\n\n:returns: Iterator over :class:`AccountNetworkPolicy`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page_token",
             "in": "query",
             "required": false,
@@ -1014,6 +1158,14 @@
         "description": "Deletes a network policy. Cannot be called on 'default-policy'.\n\n:param network_policy_id: str\n  The unique identifier of the network policy to delete.",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "network_policy_id",
             "in": "path",
             "required": true,
@@ -1056,6 +1208,14 @@
         ],
         "description": "Gets a network policy.\n\n:param network_policy_id: str\n  The unique identifier of the network policy to retrieve.\n\n:returns: :class:`AccountNetworkPolicy`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "network_policy_id",
             "in": "path",
@@ -1106,6 +1266,14 @@
         ],
         "description": "Updates a network policy. This allows you to modify the configuration of a network policy.\n\n:param network_policy_id: str\n  The unique identifier for the network policy.\n:param network_policy: :class:`AccountNetworkPolicy`\n  Updated network policy configuration details.\n\n:returns: :class:`AccountNetworkPolicy`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "network_policy_id",
             "in": "path",
@@ -1177,6 +1345,14 @@
         "description": "Gets the network option for a workspace. Every workspace has exactly one network policy binding, with\n'default-policy' used if no explicit assignment exists.\n\n:param workspace_id: int\n  The workspace ID.\n\n:returns: :class:`WorkspaceNetworkOption`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "workspace_id",
             "in": "path",
             "required": true,
@@ -1226,6 +1402,14 @@
         ],
         "description": "Updates the network option for a workspace. This operation associates the workspace with the specified\nnetwork policy. To revert to the default policy, specify 'default-policy' as the network_policy_id.\n\n:param workspace_id: int\n  The workspace ID.\n:param workspace_network_option: :class:`WorkspaceNetworkOption`\n  The network option details for the workspace.\n\n:returns: :class:`WorkspaceNetworkOption`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "workspace_id",
             "in": "path",

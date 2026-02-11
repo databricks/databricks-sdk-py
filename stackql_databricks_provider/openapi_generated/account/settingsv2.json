@@ -23,6 +23,14 @@
         "description": "Get a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of\nsetting available via public APIs at account level.\n\n:param name: str\n\n:returns: :class:`Setting`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "name",
             "in": "path",
             "required": true,
@@ -72,6 +80,14 @@
         ],
         "description": "Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of\nsetting available via public APIs at account level. To determine the correct field to include in a\npatch request, refer to the type field of the setting returned in the\n:method:settingsv2/listaccountsettingsmetadata response.\n\nNote: Page refresh is required for changes to take effect in UI.\n\n:param name: str\n:param setting: :class:`Setting`\n\n:returns: :class:`Setting`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "name",
             "in": "path",
@@ -142,6 +158,14 @@
         "description": "Get a user preference for a specific user. User preferences are personal settings that allow\nindividual customization without affecting other users. See\n:method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via\npublic APIs.\n\n:param user_id: str\n  User ID of the user whose setting is being retrieved.\n:param name: str\n  User Setting name.\n\n:returns: :class:`UserPreference`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "user_id",
             "in": "path",
             "required": true,
@@ -200,6 +224,14 @@
         ],
         "description": "Update a user preference for a specific user. User preferences are personal settings that allow\nindividual customization without affecting other users. See\n:method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via\npublic APIs.\n\nNote: Page refresh is required for changes to take effect in UI.\n\n:param user_id: str\n  User ID of the user whose setting is being updated.\n:param name: str\n:param setting: :class:`UserPreference`\n\n:returns: :class:`UserPreference`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "user_id",
             "in": "path",
@@ -279,6 +311,14 @@
         "description": "List valid setting keys and metadata. These settings are available to be referenced via GET\n:method:settingsv2/getpublicaccountsetting and PATCH :method:settingsv2/patchpublicaccountsetting APIs\n\n:param page_size: int (optional)\n  The maximum number of settings to return. The service may return fewer than this value. If\n  unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000\n  will be coerced to 1000.\n:param page_token: str (optional)\n  A page token, received from a previous `ListAccountSettingsMetadataRequest` call. Provide this to\n  retrieve the subsequent page.\n\n  When paginating, all other parameters provided to `ListAccountSettingsMetadataRequest` must match\n  the call that provided the page token.\n\n:returns: Iterator over :class:`SettingsMetadata`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page_size",
             "in": "query",
             "required": false,
@@ -339,6 +379,14 @@
         ],
         "description": "List valid user preferences and their metadata for a specific user. User preferences are personal\nsettings that allow individual customization without affecting other users. These settings are\navailable to be referenced via GET :method:settingsv2/getpublicaccountuserpreference and PATCH\n:method:settingsv2/patchpublicaccountuserpreference APIs\n\n:param user_id: str\n  User ID of the user whose settings metadata is being retrieved.\n:param page_size: int (optional)\n  The maximum number of settings to return. The service may return fewer than this value. If\n  unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000\n  will be coerced to 1000.\n:param page_token: str (optional)\n  A page token, received from a previous `ListAccountUserPreferencesMetadataRequest` call. Provide\n  this to retrieve the subsequent page.\n\n  When paginating, all other parameters provided to `ListAccountUserPreferencesMetadataRequest` must\n  match the call that provided the page token.\n\n:returns: Iterator over :class:`SettingsMetadata`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "user_id",
             "in": "path",
