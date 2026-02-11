@@ -6,11 +6,11 @@ info:
     generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/access-control/check-policy-v2:
     get:
@@ -504,7 +504,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Group]'
+                $ref: '#/components/schemas/Group'
         default:
           description: Error response
           content:
@@ -1222,7 +1222,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ServicePrincipal]'
+                $ref: '#/components/schemas/ServicePrincipal'
         default:
           description: Error response
           content:
@@ -1652,7 +1652,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[User]'
+                $ref: '#/components/schemas/User'
         default:
           description: Error response
           content:
@@ -2584,7 +2584,7 @@ components:
           type: string
           description: Selection of patch operation
         value:
-          $ref: '#/components/schemas/Any'
+          type: object
           description: Value to modify
     Permission:
       type: object
@@ -3220,7 +3220,7 @@ components:
       name: access_control
       title: Access Control
       methods:
-        access_control_check_policy:
+        check:
           operation:
             $ref: '#/paths/~1api~12.0~1access-control~1check-policy-v2/get'
           response:
@@ -3228,32 +3228,43 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/access_control/methods/access_control_check_policy
+          - $ref: '#/components/x-stackQL-resources/access_control/methods/check'
         insert: []
         update: []
         delete: []
         replace: []
-    account_access_control_proxy:
-      id: databricks_workspace.iam.account_access_control_proxy
-      name: account_access_control_proxy
-      title: Account Access Control Proxy
+    assignable_roles:
+      id: databricks_workspace.iam.assignable_roles
+      name: assignable_roles
+      title: Assignable Roles
       methods:
-        account_access_control_proxy_get_assignable_roles_for_resource:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1accounts~1access-control~1assignable-roles/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_access_control_proxy_get_rule_set:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/assignable_roles/methods/get'
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    rule_sets:
+      id: databricks_workspace.iam.rule_sets
+      name: rule_sets
+      title: Rule Sets
+      methods:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1accounts~1access-control~1rule-sets/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_access_control_proxy_update_rule_set:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1accounts~1access-control~1rule-sets/put
@@ -3262,22 +3273,18 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_access_control_proxy/methods/account_access_control_proxy_get_assignable_roles_for_resource
-          - $ref: >-
-              #/components/x-stackQL-resources/account_access_control_proxy/methods/account_access_control_proxy_get_rule_set
+          - $ref: '#/components/x-stackQL-resources/rule_sets/methods/get'
         insert: []
         update: []
         delete: []
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_access_control_proxy/methods/account_access_control_proxy_update_rule_set
+          - $ref: '#/components/x-stackQL-resources/rule_sets/methods/update'
     current_user:
       id: databricks_workspace.iam.current_user
       name: current_user
       title: Current User
       methods:
-        current_user_me:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Me/get'
           response:
@@ -3285,8 +3292,7 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/current_user/methods/current_user_me
+          - $ref: '#/components/x-stackQL-resources/current_user/methods/get'
         insert: []
         update: []
         delete: []
@@ -3296,37 +3302,37 @@ components:
       name: groups_v2
       title: Groups V2
       methods:
-        groups_v2_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Groups/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        groups_v2_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Groups/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        groups_v2_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Groups~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        groups_v2_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Groups~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        groups_v2_patch:
+        patch:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Groups~1{id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        groups_v2_update:
+        replace:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Groups~1{id}/put'
           response:
@@ -3334,25 +3340,22 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/groups_v2/methods/groups_v2_get'
-          - $ref: '#/components/x-stackQL-resources/groups_v2/methods/groups_v2_list'
+          - $ref: '#/components/x-stackQL-resources/groups_v2/methods/get'
+          - $ref: '#/components/x-stackQL-resources/groups_v2/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/groups_v2/methods/groups_v2_create
+          - $ref: '#/components/x-stackQL-resources/groups_v2/methods/create'
         update:
-          - $ref: '#/components/x-stackQL-resources/groups_v2/methods/groups_v2_patch'
+          - $ref: '#/components/x-stackQL-resources/groups_v2/methods/patch'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/groups_v2/methods/groups_v2_delete
+          - $ref: '#/components/x-stackQL-resources/groups_v2/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/groups_v2/methods/groups_v2_update
+          - $ref: '#/components/x-stackQL-resources/groups_v2/methods/replace'
     permission_migration:
       id: databricks_workspace.iam.permission_migration
       name: permission_migration
       title: Permission Migration
       methods:
-        permission_migration_migrate_permissions:
+        migrate:
           operation:
             $ref: '#/paths/~1api~12.0~1permissionmigration/post'
           response:
@@ -3362,7 +3365,7 @@ components:
         select: []
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/permission_migration/methods/permission_migration_migrate_permissions
+              #/components/x-stackQL-resources/permission_migration/methods/migrate
         update: []
         delete: []
         replace: []
@@ -3371,28 +3374,42 @@ components:
       name: permissions
       title: Permissions
       methods:
-        permissions_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1{request_object_type}~1{request_object_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        permissions_set:
+        set:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1{request_object_type}~1{request_object_id}/put
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        permissions_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1{request_object_type}~1{request_object_id}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        permissions_get_permission_levels:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/permissions/methods/get'
+        insert: []
+        update:
+          - $ref: '#/components/x-stackQL-resources/permissions/methods/update'
+        delete: []
+        replace:
+          - $ref: '#/components/x-stackQL-resources/permissions/methods/set'
+    permission_levels:
+      id: databricks_workspace.iam.permission_levels
+      name: permission_levels
+      title: Permission Levels
+      methods:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1{request_object_type}~1{request_object_id}~1permissionLevels/get
@@ -3401,56 +3418,49 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/permissions/methods/permissions_get
-          - $ref: >-
-              #/components/x-stackQL-resources/permissions/methods/permissions_get_permission_levels
+          - $ref: '#/components/x-stackQL-resources/permission_levels/methods/get'
         insert: []
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/permissions/methods/permissions_update
+        update: []
         delete: []
-        replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/permissions/methods/permissions_set
+        replace: []
     service_principals_v2:
       id: databricks_workspace.iam.service_principals_v2
       name: service_principals_v2
       title: Service Principals V2
       methods:
-        service_principals_v2_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1ServicePrincipals/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        service_principals_v2_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1ServicePrincipals/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        service_principals_v2_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1scim~1v2~1ServicePrincipals~1{id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        service_principals_v2_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1ServicePrincipals~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        service_principals_v2_patch:
+        patch:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1scim~1v2~1ServicePrincipals~1{id}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        service_principals_v2_update:
+        replace:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1ServicePrincipals~1{id}/put'
           response:
@@ -3458,83 +3468,112 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
+          - $ref: '#/components/x-stackQL-resources/service_principals_v2/methods/get'
           - $ref: >-
-              #/components/x-stackQL-resources/service_principals_v2/methods/service_principals_v2_get
-          - $ref: >-
-              #/components/x-stackQL-resources/service_principals_v2/methods/service_principals_v2_list
+              #/components/x-stackQL-resources/service_principals_v2/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/service_principals_v2/methods/service_principals_v2_create
+              #/components/x-stackQL-resources/service_principals_v2/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/service_principals_v2/methods/service_principals_v2_patch
+              #/components/x-stackQL-resources/service_principals_v2/methods/patch
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/service_principals_v2/methods/service_principals_v2_delete
+              #/components/x-stackQL-resources/service_principals_v2/methods/delete
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/service_principals_v2/methods/service_principals_v2_update
+              #/components/x-stackQL-resources/service_principals_v2/methods/replace
     users_v2:
       id: databricks_workspace.iam.users_v2
       name: users_v2
       title: Users V2
       methods:
-        users_v2_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Users/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        users_v2_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Users/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        users_v2_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Users~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        users_v2_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Users~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        users_v2_patch:
+        patch:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Users~1{id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        users_v2_update:
+        replace:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Users~1{id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        users_v2_get_permission_levels:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/users_v2/methods/get'
+          - $ref: '#/components/x-stackQL-resources/users_v2/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/users_v2/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/users_v2/methods/patch'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/users_v2/methods/delete'
+        replace:
+          - $ref: '#/components/x-stackQL-resources/users_v2/methods/replace'
+    password_permission_levels:
+      id: databricks_workspace.iam.password_permission_levels
+      name: password_permission_levels
+      title: Password Permission Levels
+      methods:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1authorization~1passwords~1permissionLevels/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        users_v2_get_permissions:
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/password_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    password_permissions:
+      id: databricks_workspace.iam.password_permissions
+      name: password_permissions
+      title: Password Permissions
+      methods:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1authorization~1passwords/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        users_v2_set_permissions:
+        set:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1authorization~1passwords/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        users_v2_update_permissions:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1authorization~1passwords/patch'
           response:
@@ -3542,21 +3581,11 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/users_v2/methods/users_v2_get'
-          - $ref: '#/components/x-stackQL-resources/users_v2/methods/users_v2_list'
-          - $ref: >-
-              #/components/x-stackQL-resources/users_v2/methods/users_v2_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/users_v2/methods/users_v2_get_permissions
-        insert:
-          - $ref: '#/components/x-stackQL-resources/users_v2/methods/users_v2_create'
+          - $ref: '#/components/x-stackQL-resources/password_permissions/methods/get'
+        insert: []
         update:
-          - $ref: '#/components/x-stackQL-resources/users_v2/methods/users_v2_patch'
           - $ref: >-
-              #/components/x-stackQL-resources/users_v2/methods/users_v2_update_permissions
-        delete:
-          - $ref: '#/components/x-stackQL-resources/users_v2/methods/users_v2_delete'
+              #/components/x-stackQL-resources/password_permissions/methods/update
+        delete: []
         replace:
-          - $ref: '#/components/x-stackQL-resources/users_v2/methods/users_v2_update'
-          - $ref: >-
-              #/components/x-stackQL-resources/users_v2/methods/users_v2_set_permissions
+          - $ref: '#/components/x-stackQL-resources/password_permissions/methods/set'

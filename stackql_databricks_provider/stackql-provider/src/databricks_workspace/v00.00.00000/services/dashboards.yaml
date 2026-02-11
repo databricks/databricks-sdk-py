@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages:
     post:
@@ -70,7 +70,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[GenieMessage]'
+                $ref: '#/components/schemas/GenieMessage'
         default:
           description: Error response
           content:
@@ -1310,7 +1310,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[GenieMessage]'
+                $ref: '#/components/schemas/GenieMessage'
         default:
           description: Error response
           content:
@@ -1451,7 +1451,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Dashboard]'
+                $ref: '#/components/schemas/Dashboard'
         default:
           description: Error response
           content:
@@ -1562,7 +1562,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Schedule]'
+                $ref: '#/components/schemas/Schedule'
         default:
           description: Error response
           content:
@@ -1689,7 +1689,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Subscription]'
+                $ref: '#/components/schemas/Subscription'
         default:
           description: Error response
           content:
@@ -3219,139 +3219,144 @@ components:
         - FOLLOW_UP_QUESTION
       description: Purpose/intent of a text attachment
   x-stackQL-resources:
-    genie:
-      id: databricks_workspace.dashboards.genie
-      name: genie
-      title: Genie
+    genie_messages:
+      id: databricks_workspace.dashboards.genie_messages
+      name: genie_messages
+      title: Genie Messages
       methods:
-        genie_create_message:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        genie_list_conversation_messages:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        genie_create_space:
-          operation:
-            $ref: '#/paths/~1api~12.0~1genie~1spaces/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_list_spaces:
-          operation:
-            $ref: '#/paths/~1api~12.0~1genie~1spaces/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_delete_conversation:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}/delete
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_delete_conversation_message:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        genie_get_message:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        genie_execute_message_attachment_query:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1attachments~1{attachment_id}~1execute-query/post
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_execute_message_query:
+        execute_query:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1execute-query/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        genie_generate_download_full_query_result:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1attachments~1{attachment_id}~1downloads/post
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_get_download_full_query_result:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1attachments~1{attachment_id}~1downloads~1{download_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_get_message_attachment_query_result:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1attachments~1{attachment_id}~1query-result/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_get_message_query_result:
+        get_query_result_deprecated:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1query-result/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        genie_get_message_query_result_by_attachment:
+        get_query_result_by_attachment:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1query-result~1{attachment_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        genie_get_space:
-          operation:
-            $ref: '#/paths/~1api~12.0~1genie~1spaces~1{space_id}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_trash_space:
-          operation:
-            $ref: '#/paths/~1api~12.0~1genie~1spaces~1{space_id}/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_update_space:
-          operation:
-            $ref: '#/paths/~1api~12.0~1genie~1spaces~1{space_id}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_list_conversations:
-          operation:
-            $ref: '#/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        genie_send_message_feedback:
+        send_feedback:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1feedback/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        genie_start_conversation:
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/genie_messages/methods/get_query_result_by_attachment
+          - $ref: '#/components/x-stackQL-resources/genie_messages/methods/get'
+          - $ref: '#/components/x-stackQL-resources/genie_messages/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/genie_messages/methods/create'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/genie_messages/methods/delete'
+        replace: []
+    genie:
+      id: databricks_workspace.dashboards.genie
+      name: genie
+      title: Genie
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1genie~1spaces/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1genie~1spaces/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1genie~1spaces~1{space_id}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1genie~1spaces~1{space_id}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1genie~1spaces~1{space_id}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/genie/methods/get'
+          - $ref: '#/components/x-stackQL-resources/genie/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/genie/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/genie/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/genie/methods/delete'
+        replace: []
+    genie_conversations:
+      id: databricks_workspace.dashboards.genie_conversations
+      name: genie_conversations
+      title: Genie Conversations
+      methods:
+        delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        start:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1start-conversation/post
@@ -3360,164 +3365,103 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_get_download_full_query_result
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_get_message_attachment_query_result
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_get_message_query_result_by_attachment
-          - $ref: '#/components/x-stackQL-resources/genie/methods/genie_get_message'
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_get_message_query_result
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_list_conversation_messages
-          - $ref: '#/components/x-stackQL-resources/genie/methods/genie_get_space'
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_list_conversations
-          - $ref: '#/components/x-stackQL-resources/genie/methods/genie_list_spaces'
-        insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_execute_message_attachment_query
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_generate_download_full_query_result
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_execute_message_query
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_send_message_feedback
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_create_message
-          - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_start_conversation
-          - $ref: '#/components/x-stackQL-resources/genie/methods/genie_create_space'
-        update:
-          - $ref: '#/components/x-stackQL-resources/genie/methods/genie_update_space'
+          - $ref: '#/components/x-stackQL-resources/genie_conversations/methods/list'
+        insert: []
+        update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_delete_conversation_message
+              #/components/x-stackQL-resources/genie_conversations/methods/delete
+        replace: []
+    genie_message_attachments:
+      id: databricks_workspace.dashboards.genie_message_attachments
+      name: genie_message_attachments
+      title: Genie Message Attachments
+      methods:
+        execute_attachment_query:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1attachments~1{attachment_id}~1execute-query/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get_query_result:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1attachments~1{attachment_id}~1query-result/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/genie/methods/genie_delete_conversation
-          - $ref: '#/components/x-stackQL-resources/genie/methods/genie_trash_space'
+              #/components/x-stackQL-resources/genie_message_attachments/methods/get_query_result
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    genie_message_attachment_downloads:
+      id: databricks_workspace.dashboards.genie_message_attachment_downloads
+      name: genie_message_attachment_downloads
+      title: Genie Message Attachment Downloads
+      methods:
+        generate_download:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1attachments~1{attachment_id}~1downloads/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get_download:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1attachments~1{attachment_id}~1downloads~1{download_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/genie_message_attachment_downloads/methods/get_download
+        insert: []
+        update: []
+        delete: []
         replace: []
     lakeview:
       id: databricks_workspace.dashboards.lakeview
       name: lakeview
       title: Lakeview
       methods:
-        lakeview_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1lakeview~1dashboards/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        lakeview_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1lakeview~1dashboards/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        lakeview_create_schedule:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules/post
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_list_schedules:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_create_subscription:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}~1subscriptions/post
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_list_subscriptions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}~1subscriptions/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_delete_schedule:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}/delete
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_get_schedule:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_update_schedule:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}/put
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_delete_subscription:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}~1subscriptions~1{subscription_id}/delete
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_get_subscription:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}~1subscriptions~1{subscription_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_get:
-          operation:
-            $ref: '#/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_trash:
-          operation:
-            $ref: '#/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        lakeview_get_published:
+        get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1published/get
+            $ref: '#/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        lakeview_publish:
+        delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1published/post
+            $ref: '#/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        lakeview_unpublish:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1published/delete
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        lakeview_migrate:
+        migrate:
           operation:
             $ref: '#/paths/~1api~12.0~1lakeview~1dashboards~1migrate/post'
           response:
@@ -3525,45 +3469,145 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
+          - $ref: '#/components/x-stackQL-resources/lakeview/methods/get'
+          - $ref: '#/components/x-stackQL-resources/lakeview/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/lakeview/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/lakeview/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/lakeview/methods/delete'
+        replace:
+          - $ref: '#/components/x-stackQL-resources/lakeview/methods/update'
+    lakeview_schedules:
+      id: databricks_workspace.dashboards.lakeview_schedules
+      name: lakeview_schedules
+      title: Lakeview Schedules
+      methods:
+        create:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/lakeview_schedules/methods/get'
+          - $ref: '#/components/x-stackQL-resources/lakeview_schedules/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/lakeview_schedules/methods/create'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/lakeview_schedules/methods/delete'
+        replace: []
+    lakeview_subscriptions:
+      id: databricks_workspace.dashboards.lakeview_subscriptions
+      name: lakeview_subscriptions
+      title: Lakeview Subscriptions
+      methods:
+        create:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}~1subscriptions/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}~1subscriptions/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}~1subscriptions~1{subscription_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}~1subscriptions~1{subscription_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_get_subscription
+              #/components/x-stackQL-resources/lakeview_subscriptions/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_list_subscriptions
-          - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_get_schedule
-          - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_list_schedules
-          - $ref: '#/components/x-stackQL-resources/lakeview/methods/lakeview_get'
-          - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_get_published
-          - $ref: '#/components/x-stackQL-resources/lakeview/methods/lakeview_list'
+              #/components/x-stackQL-resources/lakeview_subscriptions/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_create_subscription
-          - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_create_schedule
-          - $ref: '#/components/x-stackQL-resources/lakeview/methods/lakeview_publish'
-          - $ref: '#/components/x-stackQL-resources/lakeview/methods/lakeview_create'
-          - $ref: '#/components/x-stackQL-resources/lakeview/methods/lakeview_migrate'
-        update:
-          - $ref: '#/components/x-stackQL-resources/lakeview/methods/lakeview_update'
+              #/components/x-stackQL-resources/lakeview_subscriptions/methods/create
+        update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_delete_subscription
-          - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_delete_schedule
-          - $ref: '#/components/x-stackQL-resources/lakeview/methods/lakeview_trash'
-          - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_unpublish
-        replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/lakeview/methods/lakeview_update_schedule
+              #/components/x-stackQL-resources/lakeview_subscriptions/methods/delete
+        replace: []
+    lakeview_published:
+      id: databricks_workspace.dashboards.lakeview_published
+      name: lakeview_published
+      title: Lakeview Published
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1published/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        publish:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1published/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        unpublish:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1published/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/lakeview_published/methods/get'
+        insert: []
+        update: []
+        delete: []
+        replace: []
     lakeview_embedded:
       id: databricks_workspace.dashboards.lakeview_embedded
       name: lakeview_embedded
       title: Lakeview Embedded
       methods:
-        lakeview_embedded_get_published_dashboard_token_info:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1published~1tokeninfo/get
@@ -3572,8 +3616,7 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/lakeview_embedded/methods/lakeview_embedded_get_published_dashboard_token_info
+          - $ref: '#/components/x-stackQL-resources/lakeview_embedded/methods/get'
         insert: []
         update: []
         delete: []

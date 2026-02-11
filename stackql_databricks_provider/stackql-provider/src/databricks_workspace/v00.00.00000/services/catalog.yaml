@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.1/unity-catalog/artifact-allowlists/{artifact_type.value}:
     get:
@@ -332,7 +332,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[CatalogInfo]'
+                $ref: '#/components/schemas/CatalogInfo'
         default:
           description: Error response
           content:
@@ -675,7 +675,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ConnectionInfo]'
+                $ref: '#/components/schemas/ConnectionInfo'
         default:
           description: Error response
           content:
@@ -1194,7 +1194,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[EntityTagAssignment]'
+                $ref: '#/components/schemas/EntityTagAssignment'
         default:
           description: Error response
           content:
@@ -1360,7 +1360,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ExternalLineageInfo]'
+                $ref: '#/components/schemas/ExternalLineageInfo'
         default:
           description: Error response
           content:
@@ -1654,7 +1654,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ExternalLocationInfo]'
+                $ref: '#/components/schemas/ExternalLocationInfo'
         default:
           description: Error response
           content:
@@ -2007,7 +2007,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ExternalMetadata]'
+                $ref: '#/components/schemas/ExternalMetadata'
         default:
           description: Error response
           content:
@@ -2352,7 +2352,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[FunctionInfo]'
+                $ref: '#/components/schemas/FunctionInfo'
         default:
           description: Error response
           content:
@@ -3168,7 +3168,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[MetastoreInfo]'
+                $ref: '#/components/schemas/MetastoreInfo'
         default:
           description: Error response
           content:
@@ -4037,7 +4037,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ModelVersionInfo]'
+                $ref: '#/components/schemas/ModelVersionInfo'
         default:
           description: Error response
           content:
@@ -4082,7 +4082,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[OnlineTable]'
+                $ref: '#/components/schemas/OnlineTable'
         default:
           description: Error response
           content:
@@ -4517,7 +4517,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[PolicyInfo]'
+                $ref: '#/components/schemas/PolicyInfo'
         default:
           description: Error response
           content:
@@ -5619,7 +5619,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[RegisteredModelInfo]'
+                $ref: '#/components/schemas/RegisteredModelInfo'
         default:
           description: Error response
           content:
@@ -6006,7 +6006,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[QuotaInfo]'
+                $ref: '#/components/schemas/QuotaInfo'
         default:
           description: Error response
           content:
@@ -6409,7 +6409,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SchemaInfo]'
+                $ref: '#/components/schemas/SchemaInfo'
         default:
           description: Error response
           content:
@@ -6792,7 +6792,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[StorageCredentialInfo]'
+                $ref: '#/components/schemas/StorageCredentialInfo'
         default:
           description: Error response
           content:
@@ -7311,7 +7311,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SystemSchemaInfo]'
+                $ref: '#/components/schemas/SystemSchemaInfo'
         default:
           description: Error response
           content:
@@ -7737,7 +7737,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[TableInfo]'
+                $ref: '#/components/schemas/TableInfo'
         default:
           description: Error response
           content:
@@ -8108,7 +8108,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[TableSummary]'
+                $ref: '#/components/schemas/TableSummary'
         default:
           description: Error response
           content:
@@ -8499,7 +8499,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[VolumeInfo]'
+                $ref: '#/components/schemas/VolumeInfo'
         default:
           description: Error response
           content:
@@ -8880,7 +8880,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[WorkspaceBinding]'
+                $ref: '#/components/schemas/WorkspaceBinding'
         default:
           description: Error response
           content:
@@ -14548,14 +14548,14 @@ components:
       name: artifact_allowlists
       title: Artifact Allowlists
       methods:
-        artifact_allowlists_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1artifact-allowlists~1{artifact_type.value}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        artifact_allowlists_update:
+        replace:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1artifact-allowlists~1{artifact_type.value}/put
@@ -14564,44 +14564,43 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/artifact_allowlists/methods/artifact_allowlists_get
+          - $ref: '#/components/x-stackQL-resources/artifact_allowlists/methods/get'
         insert: []
         update: []
         delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/artifact_allowlists/methods/artifact_allowlists_update
+              #/components/x-stackQL-resources/artifact_allowlists/methods/replace
     catalogs:
       id: databricks_workspace.catalog.catalogs
       name: catalogs
       title: Catalogs
       methods:
-        catalogs_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1catalogs/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        catalogs_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1catalogs/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        catalogs_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1catalogs~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        catalogs_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1catalogs~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        catalogs_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1catalogs~1{name}/patch'
           response:
@@ -14609,45 +14608,45 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/catalogs/methods/catalogs_get'
-          - $ref: '#/components/x-stackQL-resources/catalogs/methods/catalogs_list'
+          - $ref: '#/components/x-stackQL-resources/catalogs/methods/get'
+          - $ref: '#/components/x-stackQL-resources/catalogs/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/catalogs/methods/catalogs_create'
+          - $ref: '#/components/x-stackQL-resources/catalogs/methods/create'
         update:
-          - $ref: '#/components/x-stackQL-resources/catalogs/methods/catalogs_update'
+          - $ref: '#/components/x-stackQL-resources/catalogs/methods/update'
         delete:
-          - $ref: '#/components/x-stackQL-resources/catalogs/methods/catalogs_delete'
+          - $ref: '#/components/x-stackQL-resources/catalogs/methods/delete'
         replace: []
     connections:
       id: databricks_workspace.catalog.connections
       name: connections
       title: Connections
       methods:
-        connections_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1connections/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        connections_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1connections/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        connections_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1connections~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        connections_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1connections~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        connections_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1connections~1{name}/patch'
           response:
@@ -14655,53 +14654,48 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/connections/methods/connections_get
-          - $ref: >-
-              #/components/x-stackQL-resources/connections/methods/connections_list
+          - $ref: '#/components/x-stackQL-resources/connections/methods/get'
+          - $ref: '#/components/x-stackQL-resources/connections/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/connections/methods/connections_create
+          - $ref: '#/components/x-stackQL-resources/connections/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/connections/methods/connections_update
+          - $ref: '#/components/x-stackQL-resources/connections/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/connections/methods/connections_delete
+          - $ref: '#/components/x-stackQL-resources/connections/methods/delete'
         replace: []
     entity_tag_assignments:
       id: databricks_workspace.catalog.entity_tag_assignments
       name: entity_tag_assignments
       title: Entity Tag Assignments
       methods:
-        entity_tag_assignments_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1entity-tag-assignments/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        entity_tag_assignments_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1entity-tag-assignments~1{entity_type}~1{entity_name}~1tags~1{tag_key}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        entity_tag_assignments_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1entity-tag-assignments~1{entity_type}~1{entity_name}~1tags~1{tag_key}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        entity_tag_assignments_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1entity-tag-assignments~1{entity_type}~1{entity_name}~1tags~1{tag_key}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        entity_tag_assignments_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1entity-tag-assignments~1{entity_type}~1{entity_name}~1tags/get
@@ -14711,43 +14705,43 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/entity_tag_assignments/methods/entity_tag_assignments_get
+              #/components/x-stackQL-resources/entity_tag_assignments/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/entity_tag_assignments/methods/entity_tag_assignments_list
+              #/components/x-stackQL-resources/entity_tag_assignments/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/entity_tag_assignments/methods/entity_tag_assignments_create
+              #/components/x-stackQL-resources/entity_tag_assignments/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/entity_tag_assignments/methods/entity_tag_assignments_update
+              #/components/x-stackQL-resources/entity_tag_assignments/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/entity_tag_assignments/methods/entity_tag_assignments_delete
+              #/components/x-stackQL-resources/entity_tag_assignments/methods/delete
         replace: []
     external_lineage:
       id: databricks_workspace.catalog.external_lineage
       name: external_lineage
       title: External Lineage
       methods:
-        external_lineage_create_external_lineage_relationship:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1lineage-tracking~1external-lineage/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_lineage_delete_external_lineage_relationship:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1lineage-tracking~1external-lineage/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_lineage_list_external_lineage_relationships:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1lineage-tracking~1external-lineage/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_lineage_update_external_lineage_relationship:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1lineage-tracking~1external-lineage/patch'
           response:
@@ -14755,49 +14749,45 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_lineage/methods/external_lineage_list_external_lineage_relationships
+          - $ref: '#/components/x-stackQL-resources/external_lineage/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_lineage/methods/external_lineage_create_external_lineage_relationship
+          - $ref: '#/components/x-stackQL-resources/external_lineage/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_lineage/methods/external_lineage_update_external_lineage_relationship
+          - $ref: '#/components/x-stackQL-resources/external_lineage/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_lineage/methods/external_lineage_delete_external_lineage_relationship
+          - $ref: '#/components/x-stackQL-resources/external_lineage/methods/delete'
         replace: []
     external_locations:
       id: databricks_workspace.catalog.external_locations
       name: external_locations
       title: External Locations
       methods:
-        external_locations_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1external-locations/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_locations_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1external-locations/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_locations_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1external-locations~1{name}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_locations_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1external-locations~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_locations_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1external-locations~1{name}/patch
@@ -14806,52 +14796,47 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_locations/methods/external_locations_get
-          - $ref: >-
-              #/components/x-stackQL-resources/external_locations/methods/external_locations_list
+          - $ref: '#/components/x-stackQL-resources/external_locations/methods/get'
+          - $ref: '#/components/x-stackQL-resources/external_locations/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_locations/methods/external_locations_create
+          - $ref: '#/components/x-stackQL-resources/external_locations/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_locations/methods/external_locations_update
+          - $ref: '#/components/x-stackQL-resources/external_locations/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_locations/methods/external_locations_delete
+          - $ref: '#/components/x-stackQL-resources/external_locations/methods/delete'
         replace: []
     external_metadata:
       id: databricks_workspace.catalog.external_metadata
       name: external_metadata
       title: External Metadata
       methods:
-        external_metadata_create_external_metadata:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1lineage-tracking~1external-metadata/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_metadata_list_external_metadata:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1lineage-tracking~1external-metadata/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_metadata_delete_external_metadata:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1lineage-tracking~1external-metadata~1{name}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_metadata_get_external_metadata:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1lineage-tracking~1external-metadata~1{name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        external_metadata_update_external_metadata:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1lineage-tracking~1external-metadata~1{name}/patch
@@ -14860,50 +14845,45 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_metadata/methods/external_metadata_get_external_metadata
-          - $ref: >-
-              #/components/x-stackQL-resources/external_metadata/methods/external_metadata_list_external_metadata
+          - $ref: '#/components/x-stackQL-resources/external_metadata/methods/get'
+          - $ref: '#/components/x-stackQL-resources/external_metadata/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_metadata/methods/external_metadata_create_external_metadata
+          - $ref: '#/components/x-stackQL-resources/external_metadata/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_metadata/methods/external_metadata_update_external_metadata
+          - $ref: '#/components/x-stackQL-resources/external_metadata/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/external_metadata/methods/external_metadata_delete_external_metadata
+          - $ref: '#/components/x-stackQL-resources/external_metadata/methods/delete'
         replace: []
     functions:
       id: databricks_workspace.catalog.functions
       name: functions
       title: Functions
       methods:
-        functions_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1functions/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        functions_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1functions/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        functions_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1functions~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        functions_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1functions~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        functions_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1functions~1{name}/patch'
           response:
@@ -14911,38 +14891,48 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/functions/methods/functions_get'
-          - $ref: '#/components/x-stackQL-resources/functions/methods/functions_list'
+          - $ref: '#/components/x-stackQL-resources/functions/methods/get'
+          - $ref: '#/components/x-stackQL-resources/functions/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/functions/methods/functions_create
+          - $ref: '#/components/x-stackQL-resources/functions/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/functions/methods/functions_update
+          - $ref: '#/components/x-stackQL-resources/functions/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/functions/methods/functions_delete
+          - $ref: '#/components/x-stackQL-resources/functions/methods/delete'
         replace: []
     grants:
       id: databricks_workspace.catalog.grants
       name: grants
       title: Grants
       methods:
-        grants_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1permissions~1{securable_type}~1{full_name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        grants_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1permissions~1{securable_type}~1{full_name}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        grants_get_effective:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/grants/methods/get'
+        insert: []
+        update:
+          - $ref: '#/components/x-stackQL-resources/grants/methods/update'
+        delete: []
+        replace: []
+    effective_grants:
+      id: databricks_workspace.catalog.effective_grants
+      name: effective_grants
+      title: Effective Grants
+      methods:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1effective-permissions~1{securable_type}~1{full_name}/get
@@ -14951,12 +14941,9 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/grants/methods/grants_get'
-          - $ref: >-
-              #/components/x-stackQL-resources/grants/methods/grants_get_effective
+          - $ref: '#/components/x-stackQL-resources/effective_grants/methods/get'
         insert: []
-        update:
-          - $ref: '#/components/x-stackQL-resources/grants/methods/grants_update'
+        update: []
         delete: []
         replace: []
     metastores:
@@ -14964,65 +14951,98 @@ components:
       name: metastores
       title: Metastores
       methods:
-        metastores_assign:
+        assign:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1workspaces~1{workspace_id}~1metastore/put
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        metastores_unassign:
+        unassign:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1workspaces~1{workspace_id}~1metastore/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        metastores_update_assignment:
+        update_assignment:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1workspaces~1{workspace_id}~1metastore/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        metastores_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        metastores_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        metastores_current:
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores~1{id}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores~1{id}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores~1{id}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/metastores/methods/get'
+          - $ref: '#/components/x-stackQL-resources/metastores/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/metastores/methods/create'
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/metastores/methods/update_assignment
+          - $ref: '#/components/x-stackQL-resources/metastores/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/metastores/methods/unassign'
+          - $ref: '#/components/x-stackQL-resources/metastores/methods/delete'
+        replace:
+          - $ref: '#/components/x-stackQL-resources/metastores/methods/assign'
+    current_metastore_assignment:
+      id: databricks_workspace.catalog.current_metastore_assignment
+      name: current_metastore_assignment
+      title: Current Metastore Assignment
+      methods:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1current-metastore-assignment/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        metastores_delete:
-          operation:
-            $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores~1{id}/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        metastores_get:
-          operation:
-            $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores~1{id}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        metastores_update:
-          operation:
-            $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores~1{id}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        metastores_summary:
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/current_metastore_assignment/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    metastore_summary:
+      id: databricks_workspace.catalog.metastore_summary
+      name: metastore_summary
+      title: Metastore Summary
+      methods:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1metastore_summary/get'
           response:
@@ -15030,63 +15050,45 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/metastores/methods/metastores_get'
-          - $ref: >-
-              #/components/x-stackQL-resources/metastores/methods/metastores_list
-          - $ref: >-
-              #/components/x-stackQL-resources/metastores/methods/metastores_current
-          - $ref: >-
-              #/components/x-stackQL-resources/metastores/methods/metastores_summary
-        insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/metastores/methods/metastores_create
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/metastores/methods/metastores_update_assignment
-          - $ref: >-
-              #/components/x-stackQL-resources/metastores/methods/metastores_update
-        delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/metastores/methods/metastores_unassign
-          - $ref: >-
-              #/components/x-stackQL-resources/metastores/methods/metastores_delete
-        replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/metastores/methods/metastores_assign
+          - $ref: '#/components/x-stackQL-resources/metastore_summary/methods/get'
+        insert: []
+        update: []
+        delete: []
+        replace: []
     model_versions:
       id: databricks_workspace.catalog.model_versions
       name: model_versions
       title: Model Versions
       methods:
-        model_versions_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1models~1{full_name}~1versions~1{version}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_versions_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1models~1{full_name}~1versions~1{version}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_versions_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1models~1{full_name}~1versions~1{version}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_versions_get_by_alias:
+        get_by_alias:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1models~1{full_name}~1aliases~1{alias}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_versions_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1models~1{full_name}~1versions/get
@@ -15095,64 +15097,60 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
+          - $ref: '#/components/x-stackQL-resources/model_versions/methods/get'
           - $ref: >-
-              #/components/x-stackQL-resources/model_versions/methods/model_versions_get
-          - $ref: >-
-              #/components/x-stackQL-resources/model_versions/methods/model_versions_get_by_alias
-          - $ref: >-
-              #/components/x-stackQL-resources/model_versions/methods/model_versions_list
+              #/components/x-stackQL-resources/model_versions/methods/get_by_alias
+          - $ref: '#/components/x-stackQL-resources/model_versions/methods/list'
         insert: []
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/model_versions/methods/model_versions_update
+          - $ref: '#/components/x-stackQL-resources/model_versions/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/model_versions/methods/model_versions_delete
+          - $ref: '#/components/x-stackQL-resources/model_versions/methods/delete'
         replace: []
     registered_models:
       id: databricks_workspace.catalog.registered_models
       name: registered_models
       title: Registered Models
       methods:
-        registered_models_delete_alias:
+        delete_alias:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1models~1{full_name}~1aliases~1{alias}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        registered_models_set_alias:
+        set_alias:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1models~1{full_name}~1aliases~1{alias}/put
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        registered_models_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1models/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        registered_models_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1models/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        registered_models_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1models~1{full_name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        registered_models_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1models~1{full_name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        registered_models_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1models~1{full_name}/patch'
           response:
@@ -15160,42 +15158,37 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/registered_models/methods/registered_models_get
-          - $ref: >-
-              #/components/x-stackQL-resources/registered_models/methods/registered_models_list
+          - $ref: '#/components/x-stackQL-resources/registered_models/methods/get'
+          - $ref: '#/components/x-stackQL-resources/registered_models/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/registered_models/methods/registered_models_create
+          - $ref: '#/components/x-stackQL-resources/registered_models/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/registered_models/methods/registered_models_update
+          - $ref: '#/components/x-stackQL-resources/registered_models/methods/update'
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/registered_models/methods/registered_models_delete_alias
-          - $ref: >-
-              #/components/x-stackQL-resources/registered_models/methods/registered_models_delete
+              #/components/x-stackQL-resources/registered_models/methods/delete_alias
+          - $ref: '#/components/x-stackQL-resources/registered_models/methods/delete'
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/registered_models/methods/registered_models_set_alias
+              #/components/x-stackQL-resources/registered_models/methods/set_alias
     online_tables:
       id: databricks_workspace.catalog.online_tables
       name: online_tables
       title: Online Tables
       methods:
-        online_tables_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1online-tables/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        online_tables_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1online-tables~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        online_tables_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1online-tables~1{name}/get'
           response:
@@ -15203,49 +15196,46 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/online_tables/methods/online_tables_get
+          - $ref: '#/components/x-stackQL-resources/online_tables/methods/get'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/online_tables/methods/online_tables_create
+          - $ref: '#/components/x-stackQL-resources/online_tables/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/online_tables/methods/online_tables_delete
+          - $ref: '#/components/x-stackQL-resources/online_tables/methods/delete'
         replace: []
     policies:
       id: databricks_workspace.catalog.policies
       name: policies
       title: Policies
       methods:
-        policies_create_policy:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1policies/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        policies_delete_policy:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1policies~1{on_securable_type}~1{on_securable_fullname}~1{name}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        policies_get_policy:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1policies~1{on_securable_type}~1{on_securable_fullname}~1{name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        policies_update_policy:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1policies~1{on_securable_type}~1{on_securable_fullname}~1{name}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        policies_list_policies:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1policies~1{on_securable_type}~1{on_securable_fullname}/get
@@ -15254,82 +15244,56 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/policies/methods/policies_get_policy
-          - $ref: >-
-              #/components/x-stackQL-resources/policies/methods/policies_list_policies
+          - $ref: '#/components/x-stackQL-resources/policies/methods/get'
+          - $ref: '#/components/x-stackQL-resources/policies/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/policies/methods/policies_create_policy
+          - $ref: '#/components/x-stackQL-resources/policies/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/policies/methods/policies_update_policy
+          - $ref: '#/components/x-stackQL-resources/policies/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/policies/methods/policies_delete_policy
+          - $ref: '#/components/x-stackQL-resources/policies/methods/delete'
         replace: []
     quality_monitors:
       id: databricks_workspace.catalog.quality_monitors
       name: quality_monitors
       title: Quality Monitors
       methods:
-        quality_monitors_cancel_refresh:
+        cancel_refresh:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor~1refreshes~1{refresh_id}~1cancel/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        quality_monitors_create:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        quality_monitors_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        quality_monitors_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        quality_monitors_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor/put
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        quality_monitors_get_refresh:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor~1refreshes~1{refresh_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        quality_monitors_list_refreshes:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor~1refreshes/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        quality_monitors_run_refresh:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor~1refreshes/post
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        quality_monitors_regenerate_dashboard:
+        regenerate_dashboard:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1quality-monitoring~1tables~1{table_name}~1monitor~1dashboard/post
@@ -15338,41 +15302,63 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitors/methods/quality_monitors_get_refresh
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitors/methods/quality_monitors_get
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitors/methods/quality_monitors_list_refreshes
+          - $ref: '#/components/x-stackQL-resources/quality_monitors/methods/get'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitors/methods/quality_monitors_cancel_refresh
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitors/methods/quality_monitors_create
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitors/methods/quality_monitors_run_refresh
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitors/methods/quality_monitors_regenerate_dashboard
+          - $ref: '#/components/x-stackQL-resources/quality_monitors/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitors/methods/quality_monitors_delete
+          - $ref: '#/components/x-stackQL-resources/quality_monitors/methods/delete'
         replace:
+          - $ref: '#/components/x-stackQL-resources/quality_monitors/methods/update'
+    quality_monitor_refreshes:
+      id: databricks_workspace.catalog.quality_monitor_refreshes
+      name: quality_monitor_refreshes
+      title: Quality Monitor Refreshes
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor~1refreshes~1{refresh_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor~1refreshes/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        run:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor~1refreshes/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/quality_monitors/methods/quality_monitors_update
+              #/components/x-stackQL-resources/quality_monitor_refreshes/methods/get
+          - $ref: >-
+              #/components/x-stackQL-resources/quality_monitor_refreshes/methods/list
+        insert: []
+        update: []
+        delete: []
+        replace: []
     resource_quotas:
       id: databricks_workspace.catalog.resource_quotas
       name: resource_quotas
       title: Resource Quotas
       methods:
-        resource_quotas_get_quota:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1resource-quotas~1{parent_securable_type}~1{parent_full_name}~1{quota_name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        resource_quotas_list_quotas:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1resource-quotas~1all-resource-quotas/get
@@ -15381,10 +15367,8 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/resource_quotas/methods/resource_quotas_get_quota
-          - $ref: >-
-              #/components/x-stackQL-resources/resource_quotas/methods/resource_quotas_list_quotas
+          - $ref: '#/components/x-stackQL-resources/resource_quotas/methods/get'
+          - $ref: '#/components/x-stackQL-resources/resource_quotas/methods/list'
         insert: []
         update: []
         delete: []
@@ -15394,20 +15378,20 @@ components:
       name: rfa
       title: Rfa
       methods:
-        rfa_batch_create_access_requests:
+        batch_create:
           operation:
             $ref: '#/paths/~1api~13.0~1rfa~1requests/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        rfa_get_access_request_destinations:
+        get_destinations:
           operation:
             $ref: >-
               #/paths/~1api~13.0~1rfa~1destinations~1{securable_type}~1{full_name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        rfa_update_access_request_destinations:
+        update_destinations:
           operation:
             $ref: '#/paths/~1api~13.0~1rfa~1destinations/patch'
           response:
@@ -15415,14 +15399,11 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/rfa/methods/rfa_get_access_request_destinations
+          - $ref: '#/components/x-stackQL-resources/rfa/methods/get_destinations'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/rfa/methods/rfa_batch_create_access_requests
+          - $ref: '#/components/x-stackQL-resources/rfa/methods/batch_create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/rfa/methods/rfa_update_access_request_destinations
+          - $ref: '#/components/x-stackQL-resources/rfa/methods/update_destinations'
         delete: []
         replace: []
     schemas:
@@ -15430,31 +15411,31 @@ components:
       name: schemas
       title: Schemas
       methods:
-        schemas_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1schemas/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        schemas_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1schemas/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        schemas_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1schemas~1{full_name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        schemas_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1schemas~1{full_name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        schemas_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1schemas~1{full_name}/patch'
           response:
@@ -15462,53 +15443,53 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/schemas/methods/schemas_get'
-          - $ref: '#/components/x-stackQL-resources/schemas/methods/schemas_list'
+          - $ref: '#/components/x-stackQL-resources/schemas/methods/get'
+          - $ref: '#/components/x-stackQL-resources/schemas/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/schemas/methods/schemas_create'
+          - $ref: '#/components/x-stackQL-resources/schemas/methods/create'
         update:
-          - $ref: '#/components/x-stackQL-resources/schemas/methods/schemas_update'
+          - $ref: '#/components/x-stackQL-resources/schemas/methods/update'
         delete:
-          - $ref: '#/components/x-stackQL-resources/schemas/methods/schemas_delete'
+          - $ref: '#/components/x-stackQL-resources/schemas/methods/delete'
         replace: []
     storage_credentials:
       id: databricks_workspace.catalog.storage_credentials
       name: storage_credentials
       title: Storage Credentials
       methods:
-        storage_credentials_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1storage-credentials/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        storage_credentials_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1storage-credentials/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        storage_credentials_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1storage-credentials~1{name}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        storage_credentials_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1storage-credentials~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        storage_credentials_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1storage-credentials~1{name}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        storage_credentials_validate:
+        validate:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1validate-storage-credentials/post
@@ -15517,42 +15498,38 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/storage_credentials/methods/storage_credentials_get
-          - $ref: >-
-              #/components/x-stackQL-resources/storage_credentials/methods/storage_credentials_list
+          - $ref: '#/components/x-stackQL-resources/storage_credentials/methods/get'
+          - $ref: '#/components/x-stackQL-resources/storage_credentials/methods/list'
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/storage_credentials/methods/storage_credentials_create
-          - $ref: >-
-              #/components/x-stackQL-resources/storage_credentials/methods/storage_credentials_validate
+              #/components/x-stackQL-resources/storage_credentials/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/storage_credentials/methods/storage_credentials_update
+              #/components/x-stackQL-resources/storage_credentials/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/storage_credentials/methods/storage_credentials_delete
+              #/components/x-stackQL-resources/storage_credentials/methods/delete
         replace: []
     system_schemas:
       id: databricks_workspace.catalog.system_schemas
       name: system_schemas
       title: System Schemas
       methods:
-        system_schemas_disable:
+        disable:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1metastores~1{metastore_id}~1systemschemas~1{schema_name}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        system_schemas_enable:
+        enable:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1metastores~1{metastore_id}~1systemschemas~1{schema_name}/put
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        system_schemas_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1metastores~1{metastore_id}~1systemschemas/get
@@ -15561,28 +15538,25 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/system_schemas/methods/system_schemas_list
+          - $ref: '#/components/x-stackQL-resources/system_schemas/methods/list'
         insert: []
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/system_schemas/methods/system_schemas_disable
+          - $ref: '#/components/x-stackQL-resources/system_schemas/methods/disable'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/system_schemas/methods/system_schemas_enable
+          - $ref: '#/components/x-stackQL-resources/system_schemas/methods/enable'
     table_constraints:
       id: databricks_workspace.catalog.table_constraints
       name: table_constraints
       title: Table Constraints
       methods:
-        table_constraints_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1constraints/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        table_constraints_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1constraints~1{full_name}/delete'
           response:
@@ -15591,55 +15565,69 @@ components:
       sqlVerbs:
         select: []
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/table_constraints/methods/table_constraints_create
+          - $ref: '#/components/x-stackQL-resources/table_constraints/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/table_constraints/methods/table_constraints_delete
+          - $ref: '#/components/x-stackQL-resources/table_constraints/methods/delete'
         replace: []
     tables:
       id: databricks_workspace.catalog.tables
       name: tables
       title: Tables
       methods:
-        tables_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1tables/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        tables_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1tables/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        tables_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1tables~1{full_name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        tables_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1tables~1{full_name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        tables_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1tables~1{full_name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        tables_exists:
+        exists:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1tables~1{full_name}~1exists/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        tables_list_summaries:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/tables/methods/get'
+          - $ref: '#/components/x-stackQL-resources/tables/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/tables/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/tables/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/tables/methods/delete'
+        replace: []
+    table_summaries:
+      id: databricks_workspace.catalog.table_summaries
+      name: table_summaries
+      title: Table Summaries
+      methods:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1table-summaries/get'
           response:
@@ -15647,24 +15635,17 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/tables/methods/tables_get'
-          - $ref: '#/components/x-stackQL-resources/tables/methods/tables_exists'
-          - $ref: '#/components/x-stackQL-resources/tables/methods/tables_list'
-          - $ref: >-
-              #/components/x-stackQL-resources/tables/methods/tables_list_summaries
-        insert:
-          - $ref: '#/components/x-stackQL-resources/tables/methods/tables_create'
-        update:
-          - $ref: '#/components/x-stackQL-resources/tables/methods/tables_update'
-        delete:
-          - $ref: '#/components/x-stackQL-resources/tables/methods/tables_delete'
+          - $ref: '#/components/x-stackQL-resources/table_summaries/methods/list'
+        insert: []
+        update: []
+        delete: []
         replace: []
     temporary_path_credentials:
       id: databricks_workspace.catalog.temporary_path_credentials
       name: temporary_path_credentials
       title: Temporary Path Credentials
       methods:
-        temporary_path_credentials_generate_temporary_path_credentials:
+        generate:
           operation:
             $ref: '#/paths/~1api~12.0~1unity-catalog~1temporary-path-credentials/post'
           response:
@@ -15674,7 +15655,7 @@ components:
         select: []
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/temporary_path_credentials/methods/temporary_path_credentials_generate_temporary_path_credentials
+              #/components/x-stackQL-resources/temporary_path_credentials/methods/generate
         update: []
         delete: []
         replace: []
@@ -15683,7 +15664,7 @@ components:
       name: temporary_table_credentials
       title: Temporary Table Credentials
       methods:
-        temporary_table_credentials_generate_temporary_table_credentials:
+        generate:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1unity-catalog~1temporary-table-credentials/post
@@ -15694,7 +15675,7 @@ components:
         select: []
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/temporary_table_credentials/methods/temporary_table_credentials_generate_temporary_table_credentials
+              #/components/x-stackQL-resources/temporary_table_credentials/methods/generate
         update: []
         delete: []
         replace: []
@@ -15703,31 +15684,31 @@ components:
       name: volumes
       title: Volumes
       methods:
-        volumes_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1volumes/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        volumes_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1volumes/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        volumes_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1volumes~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        volumes_read:
+        read:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1volumes~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        volumes_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1volumes~1{name}/patch'
           response:
@@ -15735,42 +15716,42 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/volumes/methods/volumes_read'
-          - $ref: '#/components/x-stackQL-resources/volumes/methods/volumes_list'
+          - $ref: '#/components/x-stackQL-resources/volumes/methods/read'
+          - $ref: '#/components/x-stackQL-resources/volumes/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/volumes/methods/volumes_create'
+          - $ref: '#/components/x-stackQL-resources/volumes/methods/create'
         update:
-          - $ref: '#/components/x-stackQL-resources/volumes/methods/volumes_update'
+          - $ref: '#/components/x-stackQL-resources/volumes/methods/update'
         delete:
-          - $ref: '#/components/x-stackQL-resources/volumes/methods/volumes_delete'
+          - $ref: '#/components/x-stackQL-resources/volumes/methods/delete'
         replace: []
     workspace_bindings:
       id: databricks_workspace.catalog.workspace_bindings
       name: workspace_bindings
       title: Workspace Bindings
       methods:
-        workspace_bindings_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1workspace-bindings~1catalogs~1{name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_bindings_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1workspace-bindings~1catalogs~1{name}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_bindings_get_bindings:
+        get_bindings:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1bindings~1{securable_type}~1{securable_name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_bindings_update_bindings:
+        update_bindings:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1bindings~1{securable_type}~1{securable_name}/patch
@@ -15780,14 +15761,12 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace_bindings/methods/workspace_bindings_get_bindings
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_bindings/methods/workspace_bindings_get
+              #/components/x-stackQL-resources/workspace_bindings/methods/get_bindings
+          - $ref: '#/components/x-stackQL-resources/workspace_bindings/methods/get'
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace_bindings/methods/workspace_bindings_update_bindings
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_bindings/methods/workspace_bindings_update
+              #/components/x-stackQL-resources/workspace_bindings/methods/update_bindings
+          - $ref: '#/components/x-stackQL-resources/workspace_bindings/methods/update'
         delete: []
         replace: []

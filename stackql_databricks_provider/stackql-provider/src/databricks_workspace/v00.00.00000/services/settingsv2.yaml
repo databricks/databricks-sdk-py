@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.1/settings/{name}:
     get:
@@ -182,7 +182,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SettingsMetadata]'
+                $ref: '#/components/schemas/SettingsMetadata'
         default:
           description: Error response
           content:
@@ -669,19 +669,19 @@ components:
       name: workspace_settings_v2
       title: Workspace Settings V2
       methods:
-        workspace_settings_v2_get_public_workspace_setting:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1settings~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_settings_v2_patch_public_workspace_setting:
+        patch:
           operation:
             $ref: '#/paths/~1api~12.1~1settings~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_settings_v2_list_workspace_settings_metadata:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1settings-metadata/get'
           response:
@@ -689,13 +689,12 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
+          - $ref: '#/components/x-stackQL-resources/workspace_settings_v2/methods/get'
           - $ref: >-
-              #/components/x-stackQL-resources/workspace_settings_v2/methods/workspace_settings_v2_get_public_workspace_setting
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_settings_v2/methods/workspace_settings_v2_list_workspace_settings_metadata
+              #/components/x-stackQL-resources/workspace_settings_v2/methods/list
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace_settings_v2/methods/workspace_settings_v2_patch_public_workspace_setting
+              #/components/x-stackQL-resources/workspace_settings_v2/methods/patch
         delete: []
         replace: []

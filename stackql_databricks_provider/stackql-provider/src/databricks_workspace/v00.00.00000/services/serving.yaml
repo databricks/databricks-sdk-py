@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/build-logs:
     get:
@@ -153,7 +153,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ServingEndpointDetailed]'
+                $ref: '#/components/schemas/ServingEndpointDetailed'
         default:
           description: Error response
           content:
@@ -182,7 +182,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ServingEndpoint]'
+                $ref: '#/components/schemas/ServingEndpoint'
         default:
           description: Error response
           content:
@@ -260,7 +260,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ServingEndpointDetailed]'
+                $ref: '#/components/schemas/ServingEndpointDetailed'
         default:
           description: Error response
           content:
@@ -1231,7 +1231,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ServingEndpointDetailed]'
+                $ref: '#/components/schemas/ServingEndpointDetailed'
         default:
           description: Error response
           content:
@@ -1354,7 +1354,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ServingEndpointDetailed]'
+                $ref: '#/components/schemas/ServingEndpointDetailed'
         default:
           description: Error response
           content:
@@ -1733,11 +1733,11 @@ components:
         columns:
           type: array
           items:
-            $ref: '#/components/schemas/Any'
+            type: object
         data:
           type: array
           items:
-            $ref: '#/components/schemas/Any'
+            type: object
           description: Data array for the dataframe
         index:
           type: array
@@ -1907,7 +1907,8 @@ components:
       type: object
       properties:
         contents:
-          $ref: '#/components/schemas/BinaryIO'
+          type: string
+          format: binary
     ExternalModel:
       type: object
       properties:
@@ -1993,7 +1994,8 @@ components:
       type: object
       properties:
         contents:
-          $ref: '#/components/schemas/BinaryIO'
+          type: string
+          format: binary
     GetServingEndpointPermissionLevelsResponse:
       type: object
       properties:
@@ -2042,7 +2044,8 @@ components:
       type: object
       properties:
         contents:
-          $ref: '#/components/schemas/BinaryIO'
+          type: string
+          format: binary
     ListEndpointsResponse:
       type: object
       properties:
@@ -2276,12 +2279,12 @@ components:
         outputs:
           type: array
           items:
-            $ref: '#/components/schemas/any'
+            type: object
           description: The outputs of the feature serving endpoint.
         predictions:
           type: array
           items:
-            $ref: '#/components/schemas/Any'
+            type: object
           description: The predictions returned by the serving endpoint.
         served_model_name:
           type: string
@@ -3510,188 +3513,288 @@ components:
         Please keep this in sync with with workload types in
         InferenceEndpointEntities.scala
   x-stackQL-resources:
-    serving_endpoints:
-      id: databricks_workspace.serving.serving_endpoints
-      name: serving_endpoints
-      title: Serving Endpoints
+    serving_endpoint_build_logs:
+      id: databricks_workspace.serving.serving_endpoint_build_logs
+      name: serving_endpoint_build_logs
+      title: Serving Endpoint Build Logs
       methods:
-        serving_endpoints_build_logs:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1serving-endpoints~1{name}~1served-models~1{served_model_name}~1build-logs/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        serving_endpoints_create:
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/serving_endpoint_build_logs/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    serving_endpoints:
+      id: databricks_workspace.serving.serving_endpoints
+      name: serving_endpoints
+      title: Serving Endpoints
+      methods:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        serving_endpoints_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        serving_endpoints_create_provisioned_throughput_endpoint:
-          operation:
-            $ref: '#/paths/~1api~12.0~1serving-endpoints~1pt/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        serving_endpoints_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        serving_endpoints_export_metrics:
-          operation:
-            $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1metrics/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_get_open_api:
-          operation:
-            $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1openapi/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_get_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_set_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}/put
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_update_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}/patch
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_http_request:
-          operation:
-            $ref: '#/paths/~1api~12.0~1external-function/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_logs:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1serving-endpoints~1{name}~1served-models~1{served_model_name}~1logs/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_patch:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1tags/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        serving_endpoints_put:
-          operation:
-            $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1rate-limits/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_put_ai_gateway:
-          operation:
-            $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1ai-gateway/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        serving_endpoints_query:
+        query:
           operation:
             $ref: '#/paths/~1serving-endpoints~1{name}~1invocations/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        serving_endpoints_update_config:
+        update_config:
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1config/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        serving_endpoints_update_notifications:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/serving_endpoints/methods/get'
+          - $ref: '#/components/x-stackQL-resources/serving_endpoints/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/serving_endpoints/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/serving_endpoints/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/serving_endpoints/methods/delete'
+        replace:
+          - $ref: >-
+              #/components/x-stackQL-resources/serving_endpoints/methods/update_config
+    serving_endpoints_pt:
+      id: databricks_workspace.serving.serving_endpoints_pt
+      name: serving_endpoints_pt
+      title: Serving Endpoints Pt
+      methods:
+        create:
           operation:
-            $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1notifications/patch'
+            $ref: '#/paths/~1api~12.0~1serving-endpoints~1pt/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        serving_endpoints_update_provisioned_throughput_endpoint_config:
+        update_config:
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1pt~1{name}~1config/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
-        select:
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_build_logs
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_logs
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_get
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_export_metrics
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_get_open_api
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_get_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_list
+        select: []
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_query
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_create
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_create_provisioned_throughput_endpoint
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_http_request
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_update_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_patch
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_update_notifications
-        delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_delete
+              #/components/x-stackQL-resources/serving_endpoints_pt/methods/create
+        update: []
+        delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_set_permissions
+              #/components/x-stackQL-resources/serving_endpoints_pt/methods/update_config
+    serving_endpoint_metrics:
+      id: databricks_workspace.serving.serving_endpoint_metrics
+      name: serving_endpoint_metrics
+      title: Serving Endpoint Metrics
+      methods:
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1metrics/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_put
+              #/components/x-stackQL-resources/serving_endpoint_metrics/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    serving_endpoint_openapi:
+      id: databricks_workspace.serving.serving_endpoint_openapi
+      name: serving_endpoint_openapi
+      title: Serving Endpoint Openapi
+      methods:
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1openapi/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_put_ai_gateway
+              #/components/x-stackQL-resources/serving_endpoint_openapi/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    serving_endpoint_permissions:
+      id: databricks_workspace.serving.serving_endpoint_permissions
+      name: serving_endpoint_permissions
+      title: Serving Endpoint Permissions
+      methods:
+        get_permission_levels:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}/put
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_update_config
+              #/components/x-stackQL-resources/serving_endpoint_permissions/methods/get_permission_levels
           - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoints/methods/serving_endpoints_update_provisioned_throughput_endpoint_config
+              #/components/x-stackQL-resources/serving_endpoint_permissions/methods/get
+        insert: []
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/serving_endpoint_permissions/methods/update
+        delete: []
+        replace:
+          - $ref: >-
+              #/components/x-stackQL-resources/serving_endpoint_permissions/methods/set
+    external_functions:
+      id: databricks_workspace.serving.external_functions
+      name: external_functions
+      title: External Functions
+      methods:
+        http_request:
+          operation:
+            $ref: '#/paths/~1api~12.0~1external-function/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select: []
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    serving_endpoint_logs:
+      id: databricks_workspace.serving.serving_endpoint_logs
+      name: serving_endpoint_logs
+      title: Serving Endpoint Logs
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1serving-endpoints~1{name}~1served-models~1{served_model_name}~1logs/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/serving_endpoint_logs/methods/get'
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    serving_endpoint_rate_limits:
+      id: databricks_workspace.serving.serving_endpoint_rate_limits
+      name: serving_endpoint_rate_limits
+      title: Serving Endpoint Rate Limits
+      methods:
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1rate-limits/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select: []
+        insert: []
+        update: []
+        delete: []
+        replace:
+          - $ref: >-
+              #/components/x-stackQL-resources/serving_endpoint_rate_limits/methods/update
+    serving_endpoint_ai_gateway:
+      id: databricks_workspace.serving.serving_endpoint_ai_gateway
+      name: serving_endpoint_ai_gateway
+      title: Serving Endpoint Ai Gateway
+      methods:
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1ai-gateway/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select: []
+        insert: []
+        update: []
+        delete: []
+        replace:
+          - $ref: >-
+              #/components/x-stackQL-resources/serving_endpoint_ai_gateway/methods/update
+    serving_endpoint_notifications:
+      id: databricks_workspace.serving.serving_endpoint_notifications
+      name: serving_endpoint_notifications
+      title: Serving Endpoint Notifications
+      methods:
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1notifications/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select: []
+        insert: []
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/serving_endpoint_notifications/methods/update
+        delete: []
+        replace: []

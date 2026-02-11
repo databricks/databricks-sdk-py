@@ -6,11 +6,11 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.1/marketplace-consumer/listings/{listing_id}/content:
     get:
@@ -51,7 +51,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SharedDataObject]'
+                $ref: '#/components/schemas/SharedDataObject'
         default:
           description: Error response
           content:
@@ -117,7 +117,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ListingFulfillment]'
+                $ref: '#/components/schemas/ListingFulfillment'
         default:
           description: Error response
           content:
@@ -232,7 +232,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[InstallationDetail]'
+                $ref: '#/components/schemas/InstallationDetail'
         default:
           description: Error response
           content:
@@ -393,7 +393,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[InstallationDetail]'
+                $ref: '#/components/schemas/InstallationDetail'
         default:
           description: Error response
           content:
@@ -585,7 +585,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Listing]'
+                $ref: '#/components/schemas/Listing'
         default:
           description: Error response
           content:
@@ -685,7 +685,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Listing]'
+                $ref: '#/components/schemas/Listing'
         default:
           description: Error response
           content:
@@ -848,7 +848,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[PersonalizationRequest]'
+                $ref: '#/components/schemas/PersonalizationRequest'
         default:
           description: Error response
           content:
@@ -992,7 +992,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ProviderInfo]'
+                $ref: '#/components/schemas/ProviderInfo'
         default:
           description: Error response
           content:
@@ -1084,7 +1084,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ExchangeFilter]'
+                $ref: '#/components/schemas/ExchangeFilter'
         default:
           description: Error response
           content:
@@ -1260,7 +1260,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ExchangeListing]'
+                $ref: '#/components/schemas/ExchangeListing'
         default:
           description: Error response
           content:
@@ -1345,7 +1345,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Exchange]'
+                $ref: '#/components/schemas/Exchange'
         default:
           description: Error response
           content:
@@ -1545,7 +1545,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ExchangeListing]'
+                $ref: '#/components/schemas/ExchangeListing'
         default:
           description: Error response
           content:
@@ -1657,7 +1657,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[FileInfo]'
+                $ref: '#/components/schemas/FileInfo'
         default:
           description: Error response
           content:
@@ -1929,7 +1929,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Listing]'
+                $ref: '#/components/schemas/Listing'
         default:
           description: Error response
           content:
@@ -1981,7 +1981,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[PersonalizationRequest]'
+                $ref: '#/components/schemas/PersonalizationRequest'
         default:
           description: Error response
           content:
@@ -2406,7 +2406,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ProviderInfo]'
+                $ref: '#/components/schemas/ProviderInfo'
         default:
           description: Error response
           content:
@@ -3939,19 +3939,32 @@ components:
         Methods can be added to enumerations, and members can have their own
         attributes -- see the documentation for details.
   x-stackQL-resources:
-    consumer_fulfillments:
-      id: databricks_workspace.marketplace.consumer_fulfillments
-      name: consumer_fulfillments
-      title: Consumer Fulfillments
+    consumer_listing_content:
+      id: databricks_workspace.marketplace.consumer_listing_content
+      name: consumer_listing_content
+      title: Consumer Listing Content
       methods:
-        consumer_fulfillments_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1content/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_fulfillments_list:
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/consumer_listing_content/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    consumer_fulfillments:
+      id: databricks_workspace.marketplace.consumer_fulfillments
+      name: consumer_fulfillments
+      title: Consumer Fulfillments
+      methods:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1fulfillments/get
@@ -3961,9 +3974,7 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/consumer_fulfillments/methods/consumer_fulfillments_get
-          - $ref: >-
-              #/components/x-stackQL-resources/consumer_fulfillments/methods/consumer_fulfillments_list
+              #/components/x-stackQL-resources/consumer_fulfillments/methods/list
         insert: []
         update: []
         delete: []
@@ -3973,35 +3984,35 @@ components:
       name: consumer_installations
       title: Consumer Installations
       methods:
-        consumer_installations_create:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1installations/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_installations_list_listing_installations:
+        list_for_listing:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1installations/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_installations_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1installations~1{installation_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_installations_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1installations~1{installation_id}/put
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_installations_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1marketplace-consumer~1installations/get'
           response:
@@ -4010,43 +4021,43 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/consumer_installations/methods/consumer_installations_list_listing_installations
+              #/components/x-stackQL-resources/consumer_installations/methods/list_for_listing
           - $ref: >-
-              #/components/x-stackQL-resources/consumer_installations/methods/consumer_installations_list
+              #/components/x-stackQL-resources/consumer_installations/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/consumer_installations/methods/consumer_installations_create
+              #/components/x-stackQL-resources/consumer_installations/methods/create
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/consumer_installations/methods/consumer_installations_delete
+              #/components/x-stackQL-resources/consumer_installations/methods/delete
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/consumer_installations/methods/consumer_installations_update
+              #/components/x-stackQL-resources/consumer_installations/methods/update
     consumer_listings:
       id: databricks_workspace.marketplace.consumer_listings
       name: consumer_listings
       title: Consumer Listings
       methods:
-        consumer_listings_batch_get:
+        batch_get:
           operation:
             $ref: '#/paths/~1api~12.1~1marketplace-consumer~1listings:batchGet/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_listings_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1marketplace-consumer~1listings~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_listings_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1marketplace-consumer~1listings/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_listings_search:
+        search:
           operation:
             $ref: '#/paths/~1api~12.1~1marketplace-consumer~1search-listings/get'
           response:
@@ -4054,14 +4065,8 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/consumer_listings/methods/consumer_listings_get
-          - $ref: >-
-              #/components/x-stackQL-resources/consumer_listings/methods/consumer_listings_batch_get
-          - $ref: >-
-              #/components/x-stackQL-resources/consumer_listings/methods/consumer_listings_list
-          - $ref: >-
-              #/components/x-stackQL-resources/consumer_listings/methods/consumer_listings_search
+          - $ref: '#/components/x-stackQL-resources/consumer_listings/methods/get'
+          - $ref: '#/components/x-stackQL-resources/consumer_listings/methods/list'
         insert: []
         update: []
         delete: []
@@ -4071,21 +4076,21 @@ components:
       name: consumer_personalization_requests
       title: Consumer Personalization Requests
       methods:
-        consumer_personalization_requests_create:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1personalization-requests/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_personalization_requests_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1personalization-requests/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_personalization_requests_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1personalization-requests/get
@@ -4095,12 +4100,12 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/consumer_personalization_requests/methods/consumer_personalization_requests_get
+              #/components/x-stackQL-resources/consumer_personalization_requests/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/consumer_personalization_requests/methods/consumer_personalization_requests_list
+              #/components/x-stackQL-resources/consumer_personalization_requests/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/consumer_personalization_requests/methods/consumer_personalization_requests_create
+              #/components/x-stackQL-resources/consumer_personalization_requests/methods/create
         update: []
         delete: []
         replace: []
@@ -4109,19 +4114,19 @@ components:
       name: consumer_providers
       title: Consumer Providers
       methods:
-        consumer_providers_batch_get:
+        batch_get:
           operation:
             $ref: '#/paths/~1api~12.1~1marketplace-consumer~1providers:batchGet/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_providers_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1marketplace-consumer~1providers~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        consumer_providers_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1marketplace-consumer~1providers/get'
           response:
@@ -4129,12 +4134,8 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/consumer_providers/methods/consumer_providers_get
-          - $ref: >-
-              #/components/x-stackQL-resources/consumer_providers/methods/consumer_providers_batch_get
-          - $ref: >-
-              #/components/x-stackQL-resources/consumer_providers/methods/consumer_providers_list
+          - $ref: '#/components/x-stackQL-resources/consumer_providers/methods/get'
+          - $ref: '#/components/x-stackQL-resources/consumer_providers/methods/list'
         insert: []
         update: []
         delete: []
@@ -4144,25 +4145,25 @@ components:
       name: provider_exchange_filters
       title: Provider Exchange Filters
       methods:
-        provider_exchange_filters_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-exchange~1filters/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_exchange_filters_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-exchange~1filters/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_exchange_filters_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-exchange~1filters~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_exchange_filters_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-exchange~1filters~1{id}/put'
           response:
@@ -4171,74 +4172,44 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_exchange_filters/methods/provider_exchange_filters_list
+              #/components/x-stackQL-resources/provider_exchange_filters/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_exchange_filters/methods/provider_exchange_filters_create
+              #/components/x-stackQL-resources/provider_exchange_filters/methods/create
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_exchange_filters/methods/provider_exchange_filters_delete
+              #/components/x-stackQL-resources/provider_exchange_filters/methods/delete
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_exchange_filters/methods/provider_exchange_filters_update
-    provider_exchanges:
-      id: databricks_workspace.marketplace.provider_exchanges
-      name: provider_exchanges
-      title: Provider Exchanges
+              #/components/x-stackQL-resources/provider_exchange_filters/methods/update
+    provider_exchange_listings:
+      id: databricks_workspace.marketplace.provider_exchange_listings
+      name: provider_exchange_listings
+      title: Provider Exchange Listings
       methods:
-        provider_exchanges_add_listing_to_exchange:
+        add:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-exchange~1exchanges-for-listing/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_exchanges_list_exchanges_for_listing:
+        list_for_listing:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-exchange~1exchanges-for-listing/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_exchanges_create:
-          operation:
-            $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        provider_exchanges_list:
-          operation:
-            $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        provider_exchanges_delete:
-          operation:
-            $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges~1{id}/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        provider_exchanges_get:
-          operation:
-            $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges~1{id}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        provider_exchanges_update:
-          operation:
-            $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges~1{id}/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        provider_exchanges_delete_listing_from_exchange:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-exchange~1exchanges-for-listing~1{id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_exchanges_list_listings_for_exchange:
+        list_for_exchange:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-exchange~1listings-for-exchange/get
@@ -4248,51 +4219,87 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_exchanges/methods/provider_exchanges_get
+              #/components/x-stackQL-resources/provider_exchange_listings/methods/list_for_listing
           - $ref: >-
-              #/components/x-stackQL-resources/provider_exchanges/methods/provider_exchanges_list_exchanges_for_listing
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_exchanges/methods/provider_exchanges_list
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_exchanges/methods/provider_exchanges_list_listings_for_exchange
+              #/components/x-stackQL-resources/provider_exchange_listings/methods/list_for_exchange
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_exchanges/methods/provider_exchanges_add_listing_to_exchange
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_exchanges/methods/provider_exchanges_create
+              #/components/x-stackQL-resources/provider_exchange_listings/methods/add
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_exchanges/methods/provider_exchanges_delete
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_exchanges/methods/provider_exchanges_delete_listing_from_exchange
+              #/components/x-stackQL-resources/provider_exchange_listings/methods/delete
+        replace: []
+    provider_exchanges:
+      id: databricks_workspace.marketplace.provider_exchanges
+      name: provider_exchanges
+      title: Provider Exchanges
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges~1{id}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges~1{id}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges~1{id}/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/provider_exchanges/methods/get'
+          - $ref: '#/components/x-stackQL-resources/provider_exchanges/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/provider_exchanges/methods/create'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/provider_exchanges/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_exchanges/methods/provider_exchanges_update
+          - $ref: '#/components/x-stackQL-resources/provider_exchanges/methods/update'
     provider_files:
       id: databricks_workspace.marketplace.provider_files
       name: provider_files
       title: Provider Files
       methods:
-        provider_files_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1files/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_files_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1files/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_files_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1files~1{file_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_files_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1files~1{file_id}/get'
           response:
@@ -4300,48 +4307,44 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_files/methods/provider_files_get
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_files/methods/provider_files_list
+          - $ref: '#/components/x-stackQL-resources/provider_files/methods/get'
+          - $ref: '#/components/x-stackQL-resources/provider_files/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_files/methods/provider_files_create
+          - $ref: '#/components/x-stackQL-resources/provider_files/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_files/methods/provider_files_delete
+          - $ref: '#/components/x-stackQL-resources/provider_files/methods/delete'
         replace: []
     provider_listings:
       id: databricks_workspace.marketplace.provider_listings
       name: provider_listings
       title: Provider Listings
       methods:
-        provider_listings_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1listing/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_listings_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1listings~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_listings_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1listings~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_listings_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1listings~1{id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_listings_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1listings/get'
           response:
@@ -4349,33 +4352,28 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_listings/methods/provider_listings_get
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_listings/methods/provider_listings_list
+          - $ref: '#/components/x-stackQL-resources/provider_listings/methods/get'
+          - $ref: '#/components/x-stackQL-resources/provider_listings/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_listings/methods/provider_listings_create
+          - $ref: '#/components/x-stackQL-resources/provider_listings/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_listings/methods/provider_listings_delete
+          - $ref: '#/components/x-stackQL-resources/provider_listings/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_listings/methods/provider_listings_update
+          - $ref: '#/components/x-stackQL-resources/provider_listings/methods/update'
     provider_personalization_requests:
       id: databricks_workspace.marketplace.provider_personalization_requests
       name: provider_personalization_requests
       title: Provider Personalization Requests
       methods:
-        provider_personalization_requests_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-provider~1personalization-requests/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_personalization_requests_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-provider~1listings~1{listing_id}~1personalization-requests~1{request_id}~1request-status/put
@@ -4385,38 +4383,38 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_personalization_requests/methods/provider_personalization_requests_list
+              #/components/x-stackQL-resources/provider_personalization_requests/methods/list
         insert: []
         update: []
         delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_personalization_requests/methods/provider_personalization_requests_update
+              #/components/x-stackQL-resources/provider_personalization_requests/methods/update
     provider_provider_analytics_dashboards:
       id: databricks_workspace.marketplace.provider_provider_analytics_dashboards
       name: provider_provider_analytics_dashboards
       title: Provider Provider Analytics Dashboards
       methods:
-        provider_provider_analytics_dashboards_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1analytics_dashboard/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_provider_analytics_dashboards_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1analytics_dashboard/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_provider_analytics_dashboards_get_latest_version:
+        get_latest_version:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-provider~1analytics_dashboard~1latest/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_provider_analytics_dashboards_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-provider~1analytics_dashboard~1{id}/put
@@ -4426,47 +4424,45 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_provider_analytics_dashboards/methods/provider_provider_analytics_dashboards_get
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_provider_analytics_dashboards/methods/provider_provider_analytics_dashboards_get_latest_version
+              #/components/x-stackQL-resources/provider_provider_analytics_dashboards/methods/get
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_provider_analytics_dashboards/methods/provider_provider_analytics_dashboards_create
+              #/components/x-stackQL-resources/provider_provider_analytics_dashboards/methods/create
         update: []
         delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/provider_provider_analytics_dashboards/methods/provider_provider_analytics_dashboards_update
+              #/components/x-stackQL-resources/provider_provider_analytics_dashboards/methods/update
     provider_providers:
       id: databricks_workspace.marketplace.provider_providers
       name: provider_providers
       title: Provider Providers
       methods:
-        provider_providers_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1provider/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_providers_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1providers~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_providers_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1providers~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_providers_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1providers~1{id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        provider_providers_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1providers/get'
           response:
@@ -4474,17 +4470,12 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_providers/methods/provider_providers_get
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_providers/methods/provider_providers_list
+          - $ref: '#/components/x-stackQL-resources/provider_providers/methods/get'
+          - $ref: '#/components/x-stackQL-resources/provider_providers/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_providers/methods/provider_providers_create
+          - $ref: '#/components/x-stackQL-resources/provider_providers/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_providers/methods/provider_providers_delete
+          - $ref: '#/components/x-stackQL-resources/provider_providers/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/provider_providers/methods/provider_providers_update
+          - $ref: '#/components/x-stackQL-resources/provider_providers/methods/update'

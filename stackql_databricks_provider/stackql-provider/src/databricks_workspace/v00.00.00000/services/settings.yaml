@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/settings/types/aibi_dash_embed_ws_acc_policy/names/default:
     delete:
@@ -2832,7 +2832,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[IpAccessListInfo]'
+                $ref: '#/components/schemas/IpAccessListInfo'
         default:
           description: Error response
           content:
@@ -3611,8 +3611,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: >-
-                  #/components/schemas/Iterator[ListNotificationDestinationsResult]
+                $ref: '#/components/schemas/ListNotificationDestinationsResult'
         default:
           description: Error response
           content:
@@ -4627,7 +4626,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[TokenInfo]'
+                $ref: '#/components/schemas/TokenInfo'
         default:
           description: Error response
           content:
@@ -4758,7 +4757,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[PublicTokenInfo]'
+                $ref: '#/components/schemas/PublicTokenInfo'
         default:
           description: Error response
           content:
@@ -4796,7 +4795,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WorkspaceConf'
+                type: object
         default:
           description: Error response
           content:
@@ -7629,21 +7628,21 @@ components:
       name: aibi_dashboard_embedding_access_policy
       title: Aibi Dashboard Embedding Access Policy
       methods:
-        aibi_dashboard_embedding_access_policy_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1aibi_dash_embed_ws_acc_policy~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        aibi_dashboard_embedding_access_policy_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1aibi_dash_embed_ws_acc_policy~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        aibi_dashboard_embedding_access_policy_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1aibi_dash_embed_ws_acc_policy~1names~1default/patch
@@ -7653,35 +7652,35 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/aibi_dashboard_embedding_access_policy/methods/aibi_dashboard_embedding_access_policy_get
+              #/components/x-stackQL-resources/aibi_dashboard_embedding_access_policy/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/aibi_dashboard_embedding_access_policy/methods/aibi_dashboard_embedding_access_policy_update
+              #/components/x-stackQL-resources/aibi_dashboard_embedding_access_policy/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/aibi_dashboard_embedding_access_policy/methods/aibi_dashboard_embedding_access_policy_delete
+              #/components/x-stackQL-resources/aibi_dashboard_embedding_access_policy/methods/delete
         replace: []
     aibi_dashboard_embedding_approved_domains:
       id: databricks_workspace.settings.aibi_dashboard_embedding_approved_domains
       name: aibi_dashboard_embedding_approved_domains
       title: Aibi Dashboard Embedding Approved Domains
       methods:
-        aibi_dashboard_embedding_approved_domains_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1aibi_dash_embed_ws_apprvd_domains~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        aibi_dashboard_embedding_approved_domains_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1aibi_dash_embed_ws_apprvd_domains~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        aibi_dashboard_embedding_approved_domains_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1aibi_dash_embed_ws_apprvd_domains~1names~1default/patch
@@ -7691,28 +7690,28 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/aibi_dashboard_embedding_approved_domains/methods/aibi_dashboard_embedding_approved_domains_get
+              #/components/x-stackQL-resources/aibi_dashboard_embedding_approved_domains/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/aibi_dashboard_embedding_approved_domains/methods/aibi_dashboard_embedding_approved_domains_update
+              #/components/x-stackQL-resources/aibi_dashboard_embedding_approved_domains/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/aibi_dashboard_embedding_approved_domains/methods/aibi_dashboard_embedding_approved_domains_delete
+              #/components/x-stackQL-resources/aibi_dashboard_embedding_approved_domains/methods/delete
         replace: []
     automatic_cluster_update:
       id: databricks_workspace.settings.automatic_cluster_update
       name: automatic_cluster_update
       title: Automatic Cluster Update
       methods:
-        automatic_cluster_update_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1automatic_cluster_update~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        automatic_cluster_update_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1automatic_cluster_update~1names~1default/patch
@@ -7722,11 +7721,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/automatic_cluster_update/methods/automatic_cluster_update_get
+              #/components/x-stackQL-resources/automatic_cluster_update/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/automatic_cluster_update/methods/automatic_cluster_update_update
+              #/components/x-stackQL-resources/automatic_cluster_update/methods/update
         delete: []
         replace: []
     compliance_security_profile:
@@ -7734,14 +7733,14 @@ components:
       name: compliance_security_profile
       title: Compliance Security Profile
       methods:
-        compliance_security_profile_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1shield_csp_enablement_ws_db~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        compliance_security_profile_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1shield_csp_enablement_ws_db~1names~1default/patch
@@ -7751,11 +7750,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/compliance_security_profile/methods/compliance_security_profile_get
+              #/components/x-stackQL-resources/compliance_security_profile/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/compliance_security_profile/methods/compliance_security_profile_update
+              #/components/x-stackQL-resources/compliance_security_profile/methods/update
         delete: []
         replace: []
     credentials_manager:
@@ -7763,7 +7762,7 @@ components:
       name: credentials_manager
       title: Credentials Manager
       methods:
-        credentials_manager_exchange_token:
+        exchange_token:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1credentials-manager~1exchange-tokens~1token/post
@@ -7774,7 +7773,7 @@ components:
         select: []
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/credentials_manager/methods/credentials_manager_exchange_token
+              #/components/x-stackQL-resources/credentials_manager/methods/exchange_token
         update: []
         delete: []
         replace: []
@@ -7783,14 +7782,14 @@ components:
       name: csp_enablement_account
       title: Csp Enablement Account
       methods:
-        csp_enablement_account_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1shield_csp_enablement_ac~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        csp_enablement_account_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1shield_csp_enablement_ac~1names~1default/patch
@@ -7800,11 +7799,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/csp_enablement_account/methods/csp_enablement_account_get
+              #/components/x-stackQL-resources/csp_enablement_account/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/csp_enablement_account/methods/csp_enablement_account_update
+              #/components/x-stackQL-resources/csp_enablement_account/methods/update
         delete: []
         replace: []
     dashboard_email_subscriptions:
@@ -7812,21 +7811,21 @@ components:
       name: dashboard_email_subscriptions
       title: Dashboard Email Subscriptions
       methods:
-        dashboard_email_subscriptions_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1dashboard_email_subscriptions~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dashboard_email_subscriptions_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1dashboard_email_subscriptions~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dashboard_email_subscriptions_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1dashboard_email_subscriptions~1names~1default/patch
@@ -7836,35 +7835,35 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/dashboard_email_subscriptions/methods/dashboard_email_subscriptions_get
+              #/components/x-stackQL-resources/dashboard_email_subscriptions/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/dashboard_email_subscriptions/methods/dashboard_email_subscriptions_update
+              #/components/x-stackQL-resources/dashboard_email_subscriptions/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/dashboard_email_subscriptions/methods/dashboard_email_subscriptions_delete
+              #/components/x-stackQL-resources/dashboard_email_subscriptions/methods/delete
         replace: []
     default_namespace:
       id: databricks_workspace.settings.default_namespace
       name: default_namespace
       title: Default Namespace
       methods:
-        default_namespace_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1default_namespace_ws~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        default_namespace_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1default_namespace_ws~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        default_namespace_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1default_namespace_ws~1names~1default/patch
@@ -7873,36 +7872,33 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/default_namespace/methods/default_namespace_get
+          - $ref: '#/components/x-stackQL-resources/default_namespace/methods/get'
         insert: []
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/default_namespace/methods/default_namespace_update
+          - $ref: '#/components/x-stackQL-resources/default_namespace/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/default_namespace/methods/default_namespace_delete
+          - $ref: '#/components/x-stackQL-resources/default_namespace/methods/delete'
         replace: []
     default_warehouse_id:
       id: databricks_workspace.settings.default_warehouse_id
       name: default_warehouse_id
       title: Default Warehouse Id
       methods:
-        default_warehouse_id_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1default_warehouse_id~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        default_warehouse_id_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1default_warehouse_id~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        default_warehouse_id_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1default_warehouse_id~1names~1default/patch
@@ -7911,36 +7907,35 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/default_warehouse_id/methods/default_warehouse_id_get
+          - $ref: '#/components/x-stackQL-resources/default_warehouse_id/methods/get'
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/default_warehouse_id/methods/default_warehouse_id_update
+              #/components/x-stackQL-resources/default_warehouse_id/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/default_warehouse_id/methods/default_warehouse_id_delete
+              #/components/x-stackQL-resources/default_warehouse_id/methods/delete
         replace: []
     disable_legacy_access:
       id: databricks_workspace.settings.disable_legacy_access
       name: disable_legacy_access
       title: Disable Legacy Access
       methods:
-        disable_legacy_access_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1disable_legacy_access~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        disable_legacy_access_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1disable_legacy_access~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        disable_legacy_access_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1disable_legacy_access~1names~1default/patch
@@ -7949,36 +7944,35 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/disable_legacy_access/methods/disable_legacy_access_get
+          - $ref: '#/components/x-stackQL-resources/disable_legacy_access/methods/get'
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/disable_legacy_access/methods/disable_legacy_access_update
+              #/components/x-stackQL-resources/disable_legacy_access/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/disable_legacy_access/methods/disable_legacy_access_delete
+              #/components/x-stackQL-resources/disable_legacy_access/methods/delete
         replace: []
     disable_legacy_dbfs:
       id: databricks_workspace.settings.disable_legacy_dbfs
       name: disable_legacy_dbfs
       title: Disable Legacy Dbfs
       methods:
-        disable_legacy_dbfs_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1disable_legacy_dbfs~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        disable_legacy_dbfs_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1disable_legacy_dbfs~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        disable_legacy_dbfs_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1disable_legacy_dbfs~1names~1default/patch
@@ -7987,36 +7981,35 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/disable_legacy_dbfs/methods/disable_legacy_dbfs_get
+          - $ref: '#/components/x-stackQL-resources/disable_legacy_dbfs/methods/get'
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/disable_legacy_dbfs/methods/disable_legacy_dbfs_update
+              #/components/x-stackQL-resources/disable_legacy_dbfs/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/disable_legacy_dbfs/methods/disable_legacy_dbfs_delete
+              #/components/x-stackQL-resources/disable_legacy_dbfs/methods/delete
         replace: []
     disable_legacy_features:
       id: databricks_workspace.settings.disable_legacy_features
       name: disable_legacy_features
       title: Disable Legacy Features
       methods:
-        disable_legacy_features_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1disable_legacy_features~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        disable_legacy_features_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1disable_legacy_features~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        disable_legacy_features_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1disable_legacy_features~1names~1default/patch
@@ -8026,28 +8019,28 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/disable_legacy_features/methods/disable_legacy_features_get
+              #/components/x-stackQL-resources/disable_legacy_features/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/disable_legacy_features/methods/disable_legacy_features_update
+              #/components/x-stackQL-resources/disable_legacy_features/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/disable_legacy_features/methods/disable_legacy_features_delete
+              #/components/x-stackQL-resources/disable_legacy_features/methods/delete
         replace: []
     enable_export_notebook:
       id: databricks_workspace.settings.enable_export_notebook
       name: enable_export_notebook
       title: Enable Export Notebook
       methods:
-        enable_export_notebook_get_enable_export_notebook:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1enable-export-notebook~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        enable_export_notebook_patch_enable_export_notebook:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1enable-export-notebook~1names~1default/patch
@@ -8057,11 +8050,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/enable_export_notebook/methods/enable_export_notebook_get_enable_export_notebook
+              #/components/x-stackQL-resources/enable_export_notebook/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/enable_export_notebook/methods/enable_export_notebook_patch_enable_export_notebook
+              #/components/x-stackQL-resources/enable_export_notebook/methods/update
         delete: []
         replace: []
     enable_ip_access_lists:
@@ -8069,21 +8062,21 @@ components:
       name: enable_ip_access_lists
       title: Enable Ip Access Lists
       methods:
-        enable_ip_access_lists_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1acct_ip_acl_enable~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        enable_ip_access_lists_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1acct_ip_acl_enable~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        enable_ip_access_lists_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1acct_ip_acl_enable~1names~1default/patch
@@ -8093,28 +8086,28 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/enable_ip_access_lists/methods/enable_ip_access_lists_get
+              #/components/x-stackQL-resources/enable_ip_access_lists/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/enable_ip_access_lists/methods/enable_ip_access_lists_update
+              #/components/x-stackQL-resources/enable_ip_access_lists/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/enable_ip_access_lists/methods/enable_ip_access_lists_delete
+              #/components/x-stackQL-resources/enable_ip_access_lists/methods/delete
         replace: []
     enable_notebook_table_clipboard:
       id: databricks_workspace.settings.enable_notebook_table_clipboard
       name: enable_notebook_table_clipboard
       title: Enable Notebook Table Clipboard
       methods:
-        enable_notebook_table_clipboard_get_enable_notebook_table_clipboard:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1enable-notebook-table-clipboard~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        enable_notebook_table_clipboard_patch_enable_notebook_table_clipboard:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1enable-notebook-table-clipboard~1names~1default/patch
@@ -8124,11 +8117,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/enable_notebook_table_clipboard/methods/enable_notebook_table_clipboard_get_enable_notebook_table_clipboard
+              #/components/x-stackQL-resources/enable_notebook_table_clipboard/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/enable_notebook_table_clipboard/methods/enable_notebook_table_clipboard_patch_enable_notebook_table_clipboard
+              #/components/x-stackQL-resources/enable_notebook_table_clipboard/methods/update
         delete: []
         replace: []
     enable_results_downloading:
@@ -8136,14 +8129,14 @@ components:
       name: enable_results_downloading
       title: Enable Results Downloading
       methods:
-        enable_results_downloading_get_enable_results_downloading:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1enable-results-downloading~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        enable_results_downloading_patch_enable_results_downloading:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1enable-results-downloading~1names~1default/patch
@@ -8153,11 +8146,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/enable_results_downloading/methods/enable_results_downloading_get_enable_results_downloading
+              #/components/x-stackQL-resources/enable_results_downloading/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/enable_results_downloading/methods/enable_results_downloading_patch_enable_results_downloading
+              #/components/x-stackQL-resources/enable_results_downloading/methods/update
         delete: []
         replace: []
     enhanced_security_monitoring:
@@ -8165,14 +8158,14 @@ components:
       name: enhanced_security_monitoring
       title: Enhanced Security Monitoring
       methods:
-        enhanced_security_monitoring_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1shield_esm_enablement_ws_db~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        enhanced_security_monitoring_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1shield_esm_enablement_ws_db~1names~1default/patch
@@ -8182,11 +8175,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/enhanced_security_monitoring/methods/enhanced_security_monitoring_get
+              #/components/x-stackQL-resources/enhanced_security_monitoring/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/enhanced_security_monitoring/methods/enhanced_security_monitoring_update
+              #/components/x-stackQL-resources/enhanced_security_monitoring/methods/update
         delete: []
         replace: []
     esm_enablement_account:
@@ -8194,14 +8187,14 @@ components:
       name: esm_enablement_account
       title: Esm Enablement Account
       methods:
-        esm_enablement_account_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1shield_esm_enablement_ac~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        esm_enablement_account_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1shield_esm_enablement_ac~1names~1default/patch
@@ -8211,11 +8204,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/esm_enablement_account/methods/esm_enablement_account_get
+              #/components/x-stackQL-resources/esm_enablement_account/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/esm_enablement_account/methods/esm_enablement_account_update
+              #/components/x-stackQL-resources/esm_enablement_account/methods/update
         delete: []
         replace: []
     ip_access_lists:
@@ -8223,37 +8216,37 @@ components:
       name: ip_access_lists
       title: Ip Access Lists
       methods:
-        ip_access_lists_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1ip-access-lists/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        ip_access_lists_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1ip-access-lists/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        ip_access_lists_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1ip-access-lists~1{ip_access_list_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        ip_access_lists_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1ip-access-lists~1{ip_access_list_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        ip_access_lists_replace:
+        replace:
           operation:
             $ref: '#/paths/~1api~12.0~1ip-access-lists~1{ip_access_list_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        ip_access_lists_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1ip-access-lists~1{ip_access_list_id}/patch'
           response:
@@ -8261,35 +8254,29 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/ip_access_lists/methods/ip_access_lists_get
-          - $ref: >-
-              #/components/x-stackQL-resources/ip_access_lists/methods/ip_access_lists_list
+          - $ref: '#/components/x-stackQL-resources/ip_access_lists/methods/get'
+          - $ref: '#/components/x-stackQL-resources/ip_access_lists/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/ip_access_lists/methods/ip_access_lists_create
+          - $ref: '#/components/x-stackQL-resources/ip_access_lists/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/ip_access_lists/methods/ip_access_lists_update
+          - $ref: '#/components/x-stackQL-resources/ip_access_lists/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/ip_access_lists/methods/ip_access_lists_delete
+          - $ref: '#/components/x-stackQL-resources/ip_access_lists/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/ip_access_lists/methods/ip_access_lists_replace
+          - $ref: '#/components/x-stackQL-resources/ip_access_lists/methods/replace'
     llm_proxy_partner_powered_account:
       id: databricks_workspace.settings.llm_proxy_partner_powered_account
       name: llm_proxy_partner_powered_account
       title: Llm Proxy Partner Powered Account
       methods:
-        llm_proxy_partner_powered_account_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1llm_proxy_partner_powered~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        llm_proxy_partner_powered_account_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1llm_proxy_partner_powered~1names~1default/patch
@@ -8299,11 +8286,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/llm_proxy_partner_powered_account/methods/llm_proxy_partner_powered_account_get
+              #/components/x-stackQL-resources/llm_proxy_partner_powered_account/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/llm_proxy_partner_powered_account/methods/llm_proxy_partner_powered_account_update
+              #/components/x-stackQL-resources/llm_proxy_partner_powered_account/methods/update
         delete: []
         replace: []
     llm_proxy_partner_powered_enforce:
@@ -8311,14 +8298,14 @@ components:
       name: llm_proxy_partner_powered_enforce
       title: Llm Proxy Partner Powered Enforce
       methods:
-        llm_proxy_partner_powered_enforce_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1llm_proxy_partner_powered_enforce~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        llm_proxy_partner_powered_enforce_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1llm_proxy_partner_powered_enforce~1names~1default/patch
@@ -8328,11 +8315,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/llm_proxy_partner_powered_enforce/methods/llm_proxy_partner_powered_enforce_get
+              #/components/x-stackQL-resources/llm_proxy_partner_powered_enforce/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/llm_proxy_partner_powered_enforce/methods/llm_proxy_partner_powered_enforce_update
+              #/components/x-stackQL-resources/llm_proxy_partner_powered_enforce/methods/update
         delete: []
         replace: []
     llm_proxy_partner_powered_workspace:
@@ -8340,21 +8327,21 @@ components:
       name: llm_proxy_partner_powered_workspace
       title: Llm Proxy Partner Powered Workspace
       methods:
-        llm_proxy_partner_powered_workspace_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1llm_proxy_partner_powered~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        llm_proxy_partner_powered_workspace_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1llm_proxy_partner_powered~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        llm_proxy_partner_powered_workspace_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1llm_proxy_partner_powered~1names~1default/patch
@@ -8364,45 +8351,45 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/llm_proxy_partner_powered_workspace/methods/llm_proxy_partner_powered_workspace_get
+              #/components/x-stackQL-resources/llm_proxy_partner_powered_workspace/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/llm_proxy_partner_powered_workspace/methods/llm_proxy_partner_powered_workspace_update
+              #/components/x-stackQL-resources/llm_proxy_partner_powered_workspace/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/llm_proxy_partner_powered_workspace/methods/llm_proxy_partner_powered_workspace_delete
+              #/components/x-stackQL-resources/llm_proxy_partner_powered_workspace/methods/delete
         replace: []
     notification_destinations:
       id: databricks_workspace.settings.notification_destinations
       name: notification_destinations
       title: Notification Destinations
       methods:
-        notification_destinations_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1notification-destinations/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        notification_destinations_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1notification-destinations/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        notification_destinations_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1notification-destinations~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        notification_destinations_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1notification-destinations~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        notification_destinations_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1notification-destinations~1{id}/patch'
           response:
@@ -8411,39 +8398,39 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/notification_destinations/methods/notification_destinations_get
+              #/components/x-stackQL-resources/notification_destinations/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/notification_destinations/methods/notification_destinations_list
+              #/components/x-stackQL-resources/notification_destinations/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/notification_destinations/methods/notification_destinations_create
+              #/components/x-stackQL-resources/notification_destinations/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/notification_destinations/methods/notification_destinations_update
+              #/components/x-stackQL-resources/notification_destinations/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/notification_destinations/methods/notification_destinations_delete
+              #/components/x-stackQL-resources/notification_destinations/methods/delete
         replace: []
     personal_compute:
       id: databricks_workspace.settings.personal_compute
       name: personal_compute
       title: Personal Compute
       methods:
-        personal_compute_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1dcp_acct_enable~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        personal_compute_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1dcp_acct_enable~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        personal_compute_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1settings~1types~1dcp_acct_enable~1names~1default/patch
@@ -8452,36 +8439,33 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/personal_compute/methods/personal_compute_get
+          - $ref: '#/components/x-stackQL-resources/personal_compute/methods/get'
         insert: []
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/personal_compute/methods/personal_compute_update
+          - $ref: '#/components/x-stackQL-resources/personal_compute/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/personal_compute/methods/personal_compute_delete
+          - $ref: '#/components/x-stackQL-resources/personal_compute/methods/delete'
         replace: []
     restrict_workspace_admins:
       id: databricks_workspace.settings.restrict_workspace_admins
       name: restrict_workspace_admins
       title: Restrict Workspace Admins
       methods:
-        restrict_workspace_admins_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1restrict_workspace_admins~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        restrict_workspace_admins_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1restrict_workspace_admins~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        restrict_workspace_admins_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1restrict_workspace_admins~1names~1default/patch
@@ -8491,35 +8475,35 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/restrict_workspace_admins/methods/restrict_workspace_admins_get
+              #/components/x-stackQL-resources/restrict_workspace_admins/methods/get
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/restrict_workspace_admins/methods/restrict_workspace_admins_update
+              #/components/x-stackQL-resources/restrict_workspace_admins/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/restrict_workspace_admins/methods/restrict_workspace_admins_delete
+              #/components/x-stackQL-resources/restrict_workspace_admins/methods/delete
         replace: []
     sql_results_download:
       id: databricks_workspace.settings.sql_results_download
       name: sql_results_download
       title: Sql Results Download
       methods:
-        sql_results_download_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1sql_results_download~1names~1default/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        sql_results_download_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1sql_results_download~1names~1default/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        sql_results_download_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1settings~1types~1sql_results_download~1names~1default/patch
@@ -8528,65 +8512,39 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/sql_results_download/methods/sql_results_download_get
+          - $ref: '#/components/x-stackQL-resources/sql_results_download/methods/get'
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/sql_results_download/methods/sql_results_download_update
+              #/components/x-stackQL-resources/sql_results_download/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/sql_results_download/methods/sql_results_download_delete
+              #/components/x-stackQL-resources/sql_results_download/methods/delete
         replace: []
     token_management:
       id: databricks_workspace.settings.token_management
       name: token_management
       title: Token Management
       methods:
-        token_management_create_obo_token:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1token-management~1on-behalf-of~1tokens/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        token_management_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1token-management~1tokens~1{token_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        token_management_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1token-management~1tokens~1{token_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        token_management_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1authorization~1tokens~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        token_management_get_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1authorization~1tokens/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        token_management_set_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1authorization~1tokens/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        token_management_update_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1authorization~1tokens/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        token_management_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1token-management~1tokens/get'
           response:
@@ -8594,44 +8552,73 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/token_management/methods/token_management_get
-          - $ref: >-
-              #/components/x-stackQL-resources/token_management/methods/token_management_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/token_management/methods/token_management_get_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/token_management/methods/token_management_list
+          - $ref: '#/components/x-stackQL-resources/token_management/methods/get'
+          - $ref: '#/components/x-stackQL-resources/token_management/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/token_management/methods/token_management_create_obo_token
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/token_management/methods/token_management_update_permissions
+          - $ref: '#/components/x-stackQL-resources/token_management/methods/create'
+        update: []
         delete:
+          - $ref: '#/components/x-stackQL-resources/token_management/methods/delete'
+        replace: []
+    token_permissions:
+      id: databricks_workspace.settings.token_permissions
+      name: token_permissions
+      title: Token Permissions
+      methods:
+        get_permission_levels:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1authorization~1tokens~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1authorization~1tokens/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1authorization~1tokens/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1authorization~1tokens/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/token_management/methods/token_management_delete
+              #/components/x-stackQL-resources/token_permissions/methods/get_permission_levels
+          - $ref: '#/components/x-stackQL-resources/token_permissions/methods/get'
+        insert: []
+        update:
+          - $ref: '#/components/x-stackQL-resources/token_permissions/methods/update'
+        delete: []
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/token_management/methods/token_management_set_permissions
+          - $ref: '#/components/x-stackQL-resources/token_permissions/methods/set'
     tokens:
       id: databricks_workspace.settings.tokens
       name: tokens
       title: Tokens
       methods:
-        tokens_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1token~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        tokens_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1token~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        tokens_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1token~1list/get'
           response:
@@ -8639,10 +8626,9 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/tokens/methods/tokens_list'
+          - $ref: '#/components/x-stackQL-resources/tokens/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/tokens/methods/tokens_create'
-          - $ref: '#/components/x-stackQL-resources/tokens/methods/tokens_delete'
+          - $ref: '#/components/x-stackQL-resources/tokens/methods/create'
         update: []
         delete: []
         replace: []
@@ -8651,13 +8637,13 @@ components:
       name: workspace_conf
       title: Workspace Conf
       methods:
-        workspace_conf_get_status:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace-conf/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_conf_set_status:
+        set:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace-conf/patch'
           response:
@@ -8665,11 +8651,9 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_conf/methods/workspace_conf_get_status
+          - $ref: '#/components/x-stackQL-resources/workspace_conf/methods/get'
         insert: []
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_conf/methods/workspace_conf_set_status
+          - $ref: '#/components/x-stackQL-resources/workspace_conf/methods/set'
         delete: []
         replace: []

@@ -398,28 +398,28 @@ components:
       name: account_iam_v2
       title: Account Iam V2
       methods:
-        account_iam_v2_get_workspace_access_detail:
+        get_workspace_access_detail:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1identity~1accounts~1{account_id}~1workspaces~1{workspace_id}~1workspaceAccessDetails~1{principal_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_iam_v2_resolve_group:
+        resolve_group:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1identity~1accounts~1{account_id}~1groups~1resolveByExternalId/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_iam_v2_resolve_service_principal:
+        resolve_service_principal:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1identity~1accounts~1{account_id}~1servicePrincipals~1resolveByExternalId/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_iam_v2_resolve_user:
+        resolve_user:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1identity~1accounts~1{account_id}~1users~1resolveByExternalId/post
@@ -429,14 +429,8 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/account_iam_v2/methods/account_iam_v2_get_workspace_access_detail
-        insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_iam_v2/methods/account_iam_v2_resolve_group
-          - $ref: >-
-              #/components/x-stackQL-resources/account_iam_v2/methods/account_iam_v2_resolve_service_principal
-          - $ref: >-
-              #/components/x-stackQL-resources/account_iam_v2/methods/account_iam_v2_resolve_user
+              #/components/x-stackQL-resources/account_iam_v2/methods/get_workspace_access_detail
+        insert: []
         update: []
         delete: []
         replace: []

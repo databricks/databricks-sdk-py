@@ -6,11 +6,11 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}/cancel:
     post:
@@ -222,7 +222,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Monitor]'
+                $ref: '#/components/schemas/Monitor'
         default:
           description: Error response
           content:
@@ -436,7 +436,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Refresh]'
+                $ref: '#/components/schemas/Refresh'
         default:
           description: Error response
           content:
@@ -1452,80 +1452,47 @@ components:
         - MONITOR_REFRESH_TRIGGER_UNKNOWN
       description: The trigger of the refresh.
   x-stackQL-resources:
-    data_quality:
-      id: databricks_workspace.dataquality.data_quality
-      name: data_quality
-      title: Data Quality
+    data_quality_refreshes:
+      id: databricks_workspace.dataquality.data_quality_refreshes
+      name: data_quality_refreshes
+      title: Data Quality Refreshes
       methods:
-        data_quality_cancel_refresh:
+        cancel:
           operation:
             $ref: >-
               #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes~1{refresh_id}~1cancel/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        data_quality_create_monitor:
-          operation:
-            $ref: '#/paths/~1api~1data-quality~1v1~1monitors/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        data_quality_list_monitor:
-          operation:
-            $ref: '#/paths/~1api~1data-quality~1v1~1monitors/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        data_quality_create_refresh:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        data_quality_list_refresh:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        data_quality_delete_monitor:
-          operation:
-            $ref: >-
-              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}/delete
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        data_quality_get_monitor:
-          operation:
-            $ref: >-
-              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        data_quality_update_monitor:
-          operation:
-            $ref: >-
-              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}/patch
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        data_quality_delete_refresh:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes~1{refresh_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        data_quality_get_refresh:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes~1{refresh_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        data_quality_update_refresh:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes~1{refresh_id}/patch
@@ -1535,28 +1502,65 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_get_refresh
+              #/components/x-stackQL-resources/data_quality_refreshes/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_list_refresh
-          - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_get_monitor
-          - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_list_monitor
+              #/components/x-stackQL-resources/data_quality_refreshes/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_cancel_refresh
-          - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_create_refresh
-          - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_create_monitor
+              #/components/x-stackQL-resources/data_quality_refreshes/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_update_refresh
-          - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_update_monitor
+              #/components/x-stackQL-resources/data_quality_refreshes/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_delete_refresh
-          - $ref: >-
-              #/components/x-stackQL-resources/data_quality/methods/data_quality_delete_monitor
+              #/components/x-stackQL-resources/data_quality_refreshes/methods/delete
+        replace: []
+    data_quality:
+      id: databricks_workspace.dataquality.data_quality
+      name: data_quality
+      title: Data Quality
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~1data-quality~1v1~1monitors/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~1data-quality~1v1~1monitors/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/data_quality/methods/get'
+          - $ref: '#/components/x-stackQL-resources/data_quality/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/data_quality/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/data_quality/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/data_quality/methods/delete'
         replace: []

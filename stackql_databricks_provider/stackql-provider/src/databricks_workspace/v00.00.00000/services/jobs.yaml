@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.2/jobs/runs/cancel-all:
     post:
@@ -99,7 +99,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[Run]'
+                $ref: '#/components/schemas/Run'
         default:
           description: Error response
           content:
@@ -1023,7 +1023,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[BaseJob]'
+                $ref: '#/components/schemas/BaseJob'
         default:
           description: Error response
           content:
@@ -1172,7 +1172,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[BaseRun]'
+                $ref: '#/components/schemas/BaseRun'
         default:
           description: Error response
           content:
@@ -1444,7 +1444,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[Run]'
+                $ref: '#/components/schemas/Run'
         default:
           description: Error response
           content:
@@ -1775,7 +1775,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[Run]'
+                $ref: '#/components/schemas/Run'
         default:
           description: Error response
           content:
@@ -1978,7 +1978,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[Run]'
+                $ref: '#/components/schemas/Run'
         default:
           description: Error response
           content:
@@ -2232,7 +2232,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[JobCompliance]'
+                $ref: '#/components/schemas/JobCompliance'
         default:
           description: Error response
           content:
@@ -6767,127 +6767,118 @@ components:
 
         `ALL`: All views of the notebook.
   x-stackQL-resources:
-    jobs:
-      id: databricks_workspace.jobs.jobs
-      name: jobs
-      title: Jobs
+    job_runs:
+      id: databricks_workspace.jobs.job_runs
+      name: job_runs
+      title: Job Runs
       methods:
-        jobs_cancel_all_runs:
+        cancel_all:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1cancel-all/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        jobs_cancel_run:
+        cancel:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1cancel/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        jobs_create:
-          operation:
-            $ref: '#/paths/~1api~12.2~1jobs~1create/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        jobs_delete:
-          operation:
-            $ref: '#/paths/~1api~12.2~1jobs~1delete/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        jobs_delete_run:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        jobs_export_run:
+        export:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1export/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        jobs_get:
-          operation:
-            $ref: '#/paths/~1api~12.2~1jobs~1get/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        jobs_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1jobs~1{job_id}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        jobs_get_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1jobs~1{job_id}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        jobs_set_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1jobs~1{job_id}/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        jobs_update_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1jobs~1{job_id}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        jobs_get_run:
+        get:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1get/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        jobs_get_run_output:
+        get_output:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1get-output/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        jobs_list:
-          operation:
-            $ref: '#/paths/~1api~12.2~1jobs~1list/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        jobs_list_runs:
+        list:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1list/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        jobs_repair_run:
+        repair:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1repair/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        jobs_reset:
-          operation:
-            $ref: '#/paths/~1api~12.2~1jobs~1reset/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        jobs_run_now:
-          operation:
-            $ref: '#/paths/~1api~12.2~1jobs~1run-now/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        jobs_submit:
+        submit:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1submit/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        jobs_update:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/job_runs/methods/get'
+          - $ref: '#/components/x-stackQL-resources/job_runs/methods/get_output'
+          - $ref: '#/components/x-stackQL-resources/job_runs/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/job_runs/methods/submit'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/job_runs/methods/delete'
+        replace: []
+    jobs:
+      id: databricks_workspace.jobs.jobs
+      name: jobs
+      title: Jobs
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.2~1jobs~1create/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.2~1jobs~1delete/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.2~1jobs~1get/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.2~1jobs~1list/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        reset:
+          operation:
+            $ref: '#/paths/~1api~12.2~1jobs~1reset/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        run_now:
+          operation:
+            $ref: '#/paths/~1api~12.2~1jobs~1run-now/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1update/post'
           response:
@@ -6895,50 +6886,85 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/jobs/methods/jobs_get_permission_levels
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_get_permissions'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_export_run'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_get'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_get_run'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_get_run_output'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_list'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_list_runs'
+          - $ref: '#/components/x-stackQL-resources/jobs/methods/get'
+          - $ref: '#/components/x-stackQL-resources/jobs/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_cancel_all_runs'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_cancel_run'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_create'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_delete'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_delete_run'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_repair_run'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_reset'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_run_now'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_submit'
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_update'
+          - $ref: '#/components/x-stackQL-resources/jobs/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/jobs/methods/jobs_update_permissions
+          - $ref: '#/components/x-stackQL-resources/jobs/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/jobs/methods/delete'
+        replace:
+          - $ref: '#/components/x-stackQL-resources/jobs/methods/reset'
+    job_permission_levels:
+      id: databricks_workspace.jobs.job_permission_levels
+      name: job_permission_levels
+      title: Job Permission Levels
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1jobs~1{job_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/job_permission_levels/methods/get'
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    job_permissions:
+      id: databricks_workspace.jobs.job_permissions
+      name: job_permissions
+      title: Job Permissions
+      methods:
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1jobs~1{job_id}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1jobs~1{job_id}/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1jobs~1{job_id}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/job_permissions/methods/get'
+        insert: []
+        update:
+          - $ref: '#/components/x-stackQL-resources/job_permissions/methods/update'
         delete: []
         replace:
-          - $ref: '#/components/x-stackQL-resources/jobs/methods/jobs_set_permissions'
+          - $ref: '#/components/x-stackQL-resources/job_permissions/methods/set'
     policy_compliance_for_jobs:
       id: databricks_workspace.jobs.policy_compliance_for_jobs
       name: policy_compliance_for_jobs
       title: Policy Compliance For Jobs
       methods:
-        policy_compliance_for_jobs_enforce_compliance:
+        enforce:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1jobs~1enforce-compliance/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        policy_compliance_for_jobs_get_compliance:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1jobs~1get-compliance/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        policy_compliance_for_jobs_list_compliance:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1jobs~1list-compliance/get'
           response:
@@ -6947,12 +6973,12 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/policy_compliance_for_jobs/methods/policy_compliance_for_jobs_get_compliance
+              #/components/x-stackQL-resources/policy_compliance_for_jobs/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/policy_compliance_for_jobs/methods/policy_compliance_for_jobs_list_compliance
+              #/components/x-stackQL-resources/policy_compliance_for_jobs/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/policy_compliance_for_jobs/methods/policy_compliance_for_jobs_enforce_compliance
+              #/components/x-stackQL-resources/policy_compliance_for_jobs/methods/enforce
         update: []
         delete: []
         replace: []

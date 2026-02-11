@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.1/unity-catalog/providers:
     post:
@@ -155,7 +155,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ProviderInfo]'
+                $ref: '#/components/schemas/ProviderInfo'
         default:
           description: Error response
           content:
@@ -476,7 +476,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ProviderShare]'
+                $ref: '#/components/schemas/ProviderShare'
         default:
           description: Error response
           content:
@@ -723,7 +723,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[FederationPolicy]'
+                $ref: '#/components/schemas/FederationPolicy'
         default:
           description: Error response
           content:
@@ -1024,7 +1024,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[RecipientInfo]'
+                $ref: '#/components/schemas/RecipientInfo'
         default:
           description: Error response
           content:
@@ -1473,7 +1473,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ShareInfo]'
+                $ref: '#/components/schemas/ShareInfo'
         default:
           description: Error response
           content:
@@ -3215,44 +3215,37 @@ components:
       name: providers
       title: Providers
       methods:
-        providers_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1providers/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        providers_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1providers/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        providers_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1providers~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        providers_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1providers~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        providers_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1providers~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        providers_list_provider_share_assets:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.1~1data-sharing~1providers~1{provider_name}~1shares~1{share_name}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        providers_list_shares:
+        list_shares:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1providers~1{name}~1shares/get'
           response:
@@ -3260,35 +3253,49 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/providers/methods/providers_list_provider_share_assets
-          - $ref: '#/components/x-stackQL-resources/providers/methods/providers_get'
-          - $ref: >-
-              #/components/x-stackQL-resources/providers/methods/providers_list_shares
-          - $ref: '#/components/x-stackQL-resources/providers/methods/providers_list'
+          - $ref: '#/components/x-stackQL-resources/providers/methods/get'
+          - $ref: '#/components/x-stackQL-resources/providers/methods/list_shares'
+          - $ref: '#/components/x-stackQL-resources/providers/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/providers/methods/providers_create
+          - $ref: '#/components/x-stackQL-resources/providers/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/providers/methods/providers_update
+          - $ref: '#/components/x-stackQL-resources/providers/methods/update'
         delete:
+          - $ref: '#/components/x-stackQL-resources/providers/methods/delete'
+        replace: []
+    provider_share_assets:
+      id: databricks_workspace.sharing.provider_share_assets
+      name: provider_share_assets
+      title: Provider Share Assets
+      methods:
+        list:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.1~1data-sharing~1providers~1{provider_name}~1shares~1{share_name}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/providers/methods/providers_delete
+              #/components/x-stackQL-resources/provider_share_assets/methods/list
+        insert: []
+        update: []
+        delete: []
         replace: []
     recipient_activation:
       id: databricks_workspace.sharing.recipient_activation
       name: recipient_activation
       title: Recipient Activation
       methods:
-        recipient_activation_get_activation_url_info:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1public~1data_sharing_activation_info~1{activation_url}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        recipient_activation_retrieve_token:
+        retrieve_token:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1public~1data_sharing_activation~1{activation_url}/get
@@ -3297,10 +3304,7 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/recipient_activation/methods/recipient_activation_get_activation_url_info
-          - $ref: >-
-              #/components/x-stackQL-resources/recipient_activation/methods/recipient_activation_retrieve_token
+          - $ref: '#/components/x-stackQL-resources/recipient_activation/methods/get'
         insert: []
         update: []
         delete: []
@@ -3310,28 +3314,28 @@ components:
       name: recipient_federation_policies
       title: Recipient Federation Policies
       methods:
-        recipient_federation_policies_create:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1data-sharing~1recipients~1{recipient_name}~1federation-policies/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        recipient_federation_policies_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1data-sharing~1recipients~1{recipient_name}~1federation-policies/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        recipient_federation_policies_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1data-sharing~1recipients~1{recipient_name}~1federation-policies~1{name}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        recipient_federation_policies_get_federation_policy:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1data-sharing~1recipients~1{recipient_name}~1federation-policies~1{name}/get
@@ -3341,60 +3345,77 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/recipient_federation_policies/methods/recipient_federation_policies_get_federation_policy
+              #/components/x-stackQL-resources/recipient_federation_policies/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/recipient_federation_policies/methods/recipient_federation_policies_list
+              #/components/x-stackQL-resources/recipient_federation_policies/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/recipient_federation_policies/methods/recipient_federation_policies_create
+              #/components/x-stackQL-resources/recipient_federation_policies/methods/create
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/recipient_federation_policies/methods/recipient_federation_policies_delete
+              #/components/x-stackQL-resources/recipient_federation_policies/methods/delete
         replace: []
     recipients:
       id: databricks_workspace.sharing.recipients
       name: recipients
       title: Recipients
       methods:
-        recipients_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1recipients/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        recipients_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1recipients/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        recipients_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1recipients~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        recipients_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1recipients~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        recipients_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1recipients~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        recipients_rotate_token:
+        rotate_token:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1recipients~1{name}~1rotate-token/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        recipients_share_permissions:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/recipients/methods/get'
+          - $ref: '#/components/x-stackQL-resources/recipients/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/recipients/methods/rotate_token'
+          - $ref: '#/components/x-stackQL-resources/recipients/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/recipients/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/recipients/methods/delete'
+        replace: []
+    recipient_share_permissions:
+      id: databricks_workspace.sharing.recipient_share_permissions
+      name: recipient_share_permissions
+      title: Recipient Share Permissions
+      methods:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1recipients~1{name}~1share-permissions/get
@@ -3403,65 +3424,70 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/recipients/methods/recipients_get'
           - $ref: >-
-              #/components/x-stackQL-resources/recipients/methods/recipients_share_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/recipients/methods/recipients_list
-        insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/recipients/methods/recipients_rotate_token
-          - $ref: >-
-              #/components/x-stackQL-resources/recipients/methods/recipients_create
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/recipients/methods/recipients_update
-        delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/recipients/methods/recipients_delete
+              #/components/x-stackQL-resources/recipient_share_permissions/methods/list
+        insert: []
+        update: []
+        delete: []
         replace: []
     shares:
       id: databricks_workspace.sharing.shares
       name: shares
       title: Shares
       methods:
-        shares_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1shares/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        shares_list_shares:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1shares/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        shares_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1shares~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        shares_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1shares~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        shares_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1shares~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        shares_share_permissions:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/shares/methods/get'
+          - $ref: '#/components/x-stackQL-resources/shares/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/shares/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/shares/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/shares/methods/delete'
+        replace: []
+    share_permissions:
+      id: databricks_workspace.sharing.share_permissions
+      name: share_permissions
+      title: Share Permissions
+      methods:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1shares~1{name}~1permissions/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        shares_update_permissions:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1shares~1{name}~1permissions/patch
@@ -3470,16 +3496,9 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/shares/methods/shares_get'
-          - $ref: >-
-              #/components/x-stackQL-resources/shares/methods/shares_share_permissions
-          - $ref: '#/components/x-stackQL-resources/shares/methods/shares_list_shares'
-        insert:
-          - $ref: '#/components/x-stackQL-resources/shares/methods/shares_create'
+          - $ref: '#/components/x-stackQL-resources/share_permissions/methods/list'
+        insert: []
         update:
-          - $ref: '#/components/x-stackQL-resources/shares/methods/shares_update'
-          - $ref: >-
-              #/components/x-stackQL-resources/shares/methods/shares_update_permissions
-        delete:
-          - $ref: '#/components/x-stackQL-resources/shares/methods/shares_delete'
+          - $ref: '#/components/x-stackQL-resources/share_permissions/methods/update'
+        delete: []
         replace: []

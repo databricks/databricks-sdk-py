@@ -6,11 +6,11 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/quality-monitors:
     post:
@@ -96,7 +96,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[QualityMonitor]'
+                $ref: '#/components/schemas/QualityMonitor'
         default:
           description: Error response
           content:
@@ -375,33 +375,33 @@ components:
       name: quality_monitor_v2
       title: Quality Monitor V2
       methods:
-        quality_monitor_v2_create_quality_monitor:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1quality-monitors/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        quality_monitor_v2_list_quality_monitor:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1quality-monitors/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        quality_monitor_v2_delete_quality_monitor:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1quality-monitors~1{object_type}~1{object_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        quality_monitor_v2_get_quality_monitor:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1quality-monitors~1{object_type}~1{object_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        quality_monitor_v2_update_quality_monitor:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1quality-monitors~1{object_type}~1{object_id}/put
@@ -410,17 +410,12 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitor_v2/methods/quality_monitor_v2_get_quality_monitor
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitor_v2/methods/quality_monitor_v2_list_quality_monitor
+          - $ref: '#/components/x-stackQL-resources/quality_monitor_v2/methods/get'
+          - $ref: '#/components/x-stackQL-resources/quality_monitor_v2/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitor_v2/methods/quality_monitor_v2_create_quality_monitor
+          - $ref: '#/components/x-stackQL-resources/quality_monitor_v2/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitor_v2/methods/quality_monitor_v2_delete_quality_monitor
+          - $ref: '#/components/x-stackQL-resources/quality_monitor_v2/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/quality_monitor_v2/methods/quality_monitor_v2_update_quality_monitor
+          - $ref: '#/components/x-stackQL-resources/quality_monitor_v2/methods/update'

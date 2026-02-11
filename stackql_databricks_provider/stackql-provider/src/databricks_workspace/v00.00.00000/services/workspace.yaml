@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/git-credentials:
     post:
@@ -163,7 +163,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[CredentialInfo]'
+                $ref: '#/components/schemas/CredentialInfo'
         default:
           description: Error response
           content:
@@ -514,7 +514,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[RepoInfo]'
+                $ref: '#/components/schemas/RepoInfo'
         default:
           description: Error response
           content:
@@ -1401,7 +1401,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[AclItem]'
+                $ref: '#/components/schemas/AclItem'
         default:
           description: Error response
           content:
@@ -1448,7 +1448,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SecretScope]'
+                $ref: '#/components/schemas/SecretScope'
         default:
           description: Error response
           content:
@@ -1515,7 +1515,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SecretMetadata]'
+                $ref: '#/components/schemas/SecretMetadata'
         default:
           description: Error response
           content:
@@ -2337,7 +2337,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ObjectInfo]'
+                $ref: '#/components/schemas/ObjectInfo'
         default:
           description: Error response
           content:
@@ -3017,31 +3017,31 @@ components:
       name: git_credentials
       title: Git Credentials
       methods:
-        git_credentials_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1git-credentials/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        git_credentials_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1git-credentials/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        git_credentials_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1git-credentials~1{credential_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        git_credentials_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1git-credentials~1{credential_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        git_credentials_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1git-credentials~1{credential_id}/patch'
           response:
@@ -3049,75 +3049,86 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/git_credentials/methods/git_credentials_get
-          - $ref: >-
-              #/components/x-stackQL-resources/git_credentials/methods/git_credentials_list
+          - $ref: '#/components/x-stackQL-resources/git_credentials/methods/get'
+          - $ref: '#/components/x-stackQL-resources/git_credentials/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/git_credentials/methods/git_credentials_create
+          - $ref: '#/components/x-stackQL-resources/git_credentials/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/git_credentials/methods/git_credentials_update
+          - $ref: '#/components/x-stackQL-resources/git_credentials/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/git_credentials/methods/git_credentials_delete
+          - $ref: '#/components/x-stackQL-resources/git_credentials/methods/delete'
         replace: []
     repos:
       id: databricks_workspace.workspace.repos
       name: repos
       title: Repos
       methods:
-        repos_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1repos/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        repos_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1repos/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        repos_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1repos~1{repo_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        repos_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1repos~1{repo_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        repos_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1repos~1{repo_id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        repos_get_permission_levels:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/repos/methods/get'
+          - $ref: '#/components/x-stackQL-resources/repos/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/repos/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/repos/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/repos/methods/delete'
+        replace: []
+    repo_permissions:
+      id: databricks_workspace.workspace.repo_permissions
+      name: repo_permissions
+      title: Repo Permissions
+      methods:
+        get_permission_levels:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1repos~1{repo_id}~1permissionLevels/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        repos_get_permissions:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1repos~1{repo_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        repos_set_permissions:
+        set:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1repos~1{repo_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        repos_update_permissions:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1repos~1{repo_id}/patch'
           response:
@@ -3125,89 +3136,108 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/repos/methods/repos_get'
           - $ref: >-
-              #/components/x-stackQL-resources/repos/methods/repos_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/repos/methods/repos_get_permissions
-          - $ref: '#/components/x-stackQL-resources/repos/methods/repos_list'
-        insert:
-          - $ref: '#/components/x-stackQL-resources/repos/methods/repos_create'
+              #/components/x-stackQL-resources/repo_permissions/methods/get_permission_levels
+          - $ref: '#/components/x-stackQL-resources/repo_permissions/methods/get'
+        insert: []
         update:
-          - $ref: '#/components/x-stackQL-resources/repos/methods/repos_update'
-          - $ref: >-
-              #/components/x-stackQL-resources/repos/methods/repos_update_permissions
-        delete:
-          - $ref: '#/components/x-stackQL-resources/repos/methods/repos_delete'
+          - $ref: '#/components/x-stackQL-resources/repo_permissions/methods/update'
+        delete: []
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/repos/methods/repos_set_permissions
-    secrets:
-      id: databricks_workspace.workspace.secrets
-      name: secrets
-      title: Secrets
+          - $ref: '#/components/x-stackQL-resources/repo_permissions/methods/set'
+    secret_scopes:
+      id: databricks_workspace.workspace.secret_scopes
+      name: secret_scopes
+      title: Secret Scopes
       methods:
-        secrets_create_scope:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1scopes~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        secrets_delete_acl:
-          operation:
-            $ref: '#/paths/~1api~12.0~1secrets~1acls~1delete/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        secrets_delete_scope:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1scopes~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        secrets_delete_secret:
-          operation:
-            $ref: '#/paths/~1api~12.0~1secrets~1delete/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        secrets_get_acl:
-          operation:
-            $ref: '#/paths/~1api~12.0~1secrets~1acls~1get/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        secrets_get_secret:
-          operation:
-            $ref: '#/paths/~1api~12.0~1secrets~1get/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        secrets_list_acls:
-          operation:
-            $ref: '#/paths/~1api~12.0~1secrets~1acls~1list/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        secrets_list_scopes:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1scopes~1list/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        secrets_list_secrets:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/secret_scopes/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/secret_scopes/methods/create'
+        update: []
+        delete: []
+        replace: []
+    secret_acls:
+      id: databricks_workspace.workspace.secret_acls
+      name: secret_acls
+      title: Secret Acls
+      methods:
+        delete:
           operation:
-            $ref: '#/paths/~1api~12.0~1secrets~1list/get'
+            $ref: '#/paths/~1api~12.0~1secrets~1acls~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        secrets_put_acl:
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1secrets~1acls~1get/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1secrets~1acls~1list/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        put:
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1acls~1put/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        secrets_put_secret:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/secret_acls/methods/get'
+          - $ref: '#/components/x-stackQL-resources/secret_acls/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/secret_acls/methods/put'
+        update: []
+        delete: []
+        replace: []
+    secrets:
+      id: databricks_workspace.workspace.secrets
+      name: secrets
+      title: Secrets
+      methods:
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1secrets~1delete/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1secrets~1get/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1secrets~1list/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        put:
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1put/post'
           response:
@@ -3215,26 +3245,10 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/secrets/methods/secrets_get_acl'
-          - $ref: >-
-              #/components/x-stackQL-resources/secrets/methods/secrets_get_secret
-          - $ref: '#/components/x-stackQL-resources/secrets/methods/secrets_list_acls'
-          - $ref: >-
-              #/components/x-stackQL-resources/secrets/methods/secrets_list_scopes
-          - $ref: >-
-              #/components/x-stackQL-resources/secrets/methods/secrets_list_secrets
+          - $ref: '#/components/x-stackQL-resources/secrets/methods/get'
+          - $ref: '#/components/x-stackQL-resources/secrets/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/secrets/methods/secrets_create_scope
-          - $ref: >-
-              #/components/x-stackQL-resources/secrets/methods/secrets_delete_acl
-          - $ref: >-
-              #/components/x-stackQL-resources/secrets/methods/secrets_delete_scope
-          - $ref: >-
-              #/components/x-stackQL-resources/secrets/methods/secrets_delete_secret
-          - $ref: '#/components/x-stackQL-resources/secrets/methods/secrets_put_acl'
-          - $ref: >-
-              #/components/x-stackQL-resources/secrets/methods/secrets_put_secret
+          - $ref: '#/components/x-stackQL-resources/secrets/methods/put'
         update: []
         delete: []
         replace: []
@@ -3243,65 +3257,37 @@ components:
       name: workspace
       title: Workspace
       methods:
-        workspace_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_export:
+        export:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace~1export/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        workspace_get_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        workspace_set_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}/put
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        workspace_update_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}/patch
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        workspace_get_status:
+        get_status:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace~1get-status/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_import_:
+        import:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace~1import/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace~1list/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_mkdirs:
+        mkdirs:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace~1mkdirs/post'
           response:
@@ -3309,26 +3295,58 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace/methods/workspace_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace/methods/workspace_get_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace/methods/workspace_export
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace/methods/workspace_get_status
-          - $ref: '#/components/x-stackQL-resources/workspace/methods/workspace_list'
+          - $ref: '#/components/x-stackQL-resources/workspace/methods/export'
+          - $ref: '#/components/x-stackQL-resources/workspace/methods/get_status'
+          - $ref: '#/components/x-stackQL-resources/workspace/methods/list'
         insert:
+          - $ref: '#/components/x-stackQL-resources/workspace/methods/import'
+        update: []
+        delete: []
+        replace: []
+    workspace_object_permissions:
+      id: databricks_workspace.workspace.workspace_object_permissions
+      name: workspace_object_permissions
+      title: Workspace Object Permissions
+      methods:
+        get_permission_levels:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}/put
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace/methods/workspace_delete
+              #/components/x-stackQL-resources/workspace_object_permissions/methods/get_permission_levels
           - $ref: >-
-              #/components/x-stackQL-resources/workspace/methods/workspace_import_
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace/methods/workspace_mkdirs
+              #/components/x-stackQL-resources/workspace_object_permissions/methods/get
+        insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace/methods/workspace_update_permissions
+              #/components/x-stackQL-resources/workspace_object_permissions/methods/update
         delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace/methods/workspace_set_permissions
+              #/components/x-stackQL-resources/workspace_object_permissions/methods/set

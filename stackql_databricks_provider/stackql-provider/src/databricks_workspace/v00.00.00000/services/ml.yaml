@@ -6,11 +6,11 @@ info:
     generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/mlflow/experiments/create:
     post:
@@ -772,7 +772,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Metric]'
+                $ref: '#/components/schemas/Metric'
         default:
           description: Error response
           content:
@@ -1118,7 +1118,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[FileInfo]'
+                $ref: '#/components/schemas/FileInfo'
         default:
           description: Error response
           content:
@@ -1182,7 +1182,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Experiment]'
+                $ref: '#/components/schemas/Experiment'
         default:
           description: Error response
           content:
@@ -1926,7 +1926,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Experiment]'
+                $ref: '#/components/schemas/Experiment'
         default:
           description: Error response
           content:
@@ -2118,7 +2118,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Run]'
+                $ref: '#/components/schemas/Run'
         default:
           description: Error response
           content:
@@ -2522,7 +2522,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Feature]'
+                $ref: '#/components/schemas/Feature'
         default:
           description: Error response
           content:
@@ -2624,7 +2624,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[KafkaConfig]'
+                $ref: '#/components/schemas/KafkaConfig'
         default:
           description: Error response
           content:
@@ -2727,7 +2727,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[MaterializedFeature]'
+                $ref: '#/components/schemas/MaterializedFeature'
         default:
           description: Error response
           content:
@@ -3237,7 +3237,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[OnlineStore]'
+                $ref: '#/components/schemas/OnlineStore'
         default:
           description: Error response
           content:
@@ -3651,7 +3651,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ForecastingExperiment]'
+                $ref: '#/components/schemas/ForecastingExperiment'
         default:
           description: Error response
           content:
@@ -3805,7 +3805,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[FeatureTag]'
+                $ref: '#/components/schemas/FeatureTag'
         default:
           description: Error response
           content:
@@ -4885,7 +4885,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ModelVersion]'
+                $ref: '#/components/schemas/ModelVersion'
         default:
           description: Error response
           content:
@@ -5280,7 +5280,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Model]'
+                $ref: '#/components/schemas/Model'
         default:
           description: Error response
           content:
@@ -5327,7 +5327,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Activity]'
+                $ref: '#/components/schemas/Activity'
         default:
           description: Error response
           content:
@@ -5451,7 +5451,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[RegistryWebhook]'
+                $ref: '#/components/schemas/RegistryWebhook'
         default:
           description: Error response
           content:
@@ -5644,7 +5644,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ModelVersion]'
+                $ref: '#/components/schemas/ModelVersion'
         default:
           description: Error response
           content:
@@ -5723,7 +5723,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Model]'
+                $ref: '#/components/schemas/Model'
         default:
           description: Error response
           content:
@@ -8697,238 +8697,230 @@ components:
       name: experiments
       title: Experiments
       methods:
-        experiments_create_experiment:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        experiments_create_logged_model:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1logged-models/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_create_run:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1create/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_delete_experiment:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        experiments_delete_logged_model:
+        get_by_name:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1get-by-name/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1get/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1list/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        restore:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1restore/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        search:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1search/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set_tag:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1set-experiment-tag/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1update/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/experiments/methods/get_by_name'
+          - $ref: '#/components/x-stackQL-resources/experiments/methods/get'
+          - $ref: '#/components/x-stackQL-resources/experiments/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/experiments/methods/create'
+        update: []
+        delete: []
+        replace: []
+    logged_models:
+      id: databricks_workspace.ml.logged_models
+      name: logged_models
+      title: Logged Models
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1logged-models/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models~1{model_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        experiments_finalize_logged_model:
+        finalize:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models~1{model_id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        experiments_get_logged_model:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models~1{model_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        experiments_delete_logged_model_tag:
+        delete_tag:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1mlflow~1logged-models~1{model_id}~1tags~1{tag_key}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        experiments_delete_run:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1delete/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_delete_runs:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1databricks~1runs~1delete-runs/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_delete_tag:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1delete-tag/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_get_by_name:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1get-by-name/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_get_experiment:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1get/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_get_history:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1metrics~1get-history/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_get_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_set_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_update_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}/patch
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_get_run:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1get/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_list_artifacts:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1artifacts~1list/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_list_experiments:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1list/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_log_batch:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-batch/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_log_inputs:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-inputs/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_log_logged_model_params:
+        log_params:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models~1{model_id}~1params/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        experiments_log_metric:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-metric/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_log_model:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-model/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_log_outputs:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1outputs/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_log_param:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-parameter/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_restore_experiment:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1restore/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_restore_run:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1restore/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_restore_runs:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1databricks~1runs~1restore-runs/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_search_experiments:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1search/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_search_logged_models:
+        search:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models~1search/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        experiments_search_runs:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1search/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_set_experiment_tag:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1set-experiment-tag/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_set_logged_model_tags:
+        set_tags:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models~1{model_id}~1tags/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        experiments_set_tag:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/logged_models/methods/get'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/logged_models/methods/create'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/logged_models/methods/delete_tag'
+          - $ref: '#/components/x-stackQL-resources/logged_models/methods/delete'
+        replace: []
+    experiment_runs:
+      id: databricks_workspace.ml.experiment_runs
+      name: experiment_runs
+      title: Experiment Runs
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1create/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1delete/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete_bulk:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1databricks~1runs~1delete-runs/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete_tag:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1delete-tag/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1get/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        log_batch:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-batch/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        log_inputs:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-inputs/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        log_metric:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-metric/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        log_model:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-model/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        log_outputs:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1outputs/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        log_param:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-parameter/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        restore:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1restore/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        restore_bulk:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1databricks~1runs~1restore-runs/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        search:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1runs~1search/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set_tag:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1set-tag/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        experiments_update_experiment:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1update/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        experiments_update_run:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1update/post'
           response:
@@ -8936,195 +8928,135 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_get_logged_model
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_get_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_get_by_name
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_get_experiment
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_get_history
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_get_run
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_list_artifacts
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_list_experiments
+          - $ref: '#/components/x-stackQL-resources/experiment_runs/methods/get'
         insert:
+          - $ref: '#/components/x-stackQL-resources/experiment_runs/methods/create'
+        update: []
+        delete: []
+        replace: []
+    experiment_run_metrics:
+      id: databricks_workspace.ml.experiment_run_metrics
+      name: experiment_run_metrics
+      title: Experiment Run Metrics
+      methods:
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1metrics~1get-history/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_log_logged_model_params
+              #/components/x-stackQL-resources/experiment_run_metrics/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    experiment_permissions:
+      id: databricks_workspace.ml.experiment_permissions
+      name: experiment_permissions
+      title: Experiment Permissions
+      methods:
+        get_permission_levels:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_create_experiment
+              #/components/x-stackQL-resources/experiment_permissions/methods/get_permission_levels
           - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_create_logged_model
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_create_run
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_delete_experiment
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_delete_run
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_delete_runs
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_delete_tag
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_log_batch
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_log_inputs
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_log_metric
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_log_model
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_log_outputs
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_log_param
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_restore_experiment
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_restore_run
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_restore_runs
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_search_experiments
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_search_logged_models
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_search_runs
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_set_experiment_tag
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_set_tag
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_update_experiment
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_update_run
+              #/components/x-stackQL-resources/experiment_permissions/methods/get
+        insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_finalize_logged_model
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_update_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_set_logged_model_tags
-        delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_delete_logged_model_tag
-          - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_delete_logged_model
+              #/components/x-stackQL-resources/experiment_permissions/methods/update
+        delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/experiments/methods/experiments_set_permissions
-    feature_engineering:
-      id: databricks_workspace.ml.feature_engineering
-      name: feature_engineering
-      title: Feature Engineering
+              #/components/x-stackQL-resources/experiment_permissions/methods/set
+    experiment_run_artifacts:
+      id: databricks_workspace.ml.experiment_run_artifacts
+      name: experiment_run_artifacts
+      title: Experiment Run Artifacts
       methods:
-        feature_engineering_batch_create_materialized_features:
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1artifacts~1list/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/experiment_run_artifacts/methods/list
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    feature_materialized:
+      id: databricks_workspace.ml.feature_materialized
+      name: feature_materialized
+      title: Feature Materialized
+      methods:
+        batch_create:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1materialized-features:batchCreate/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_engineering_create_feature:
-          operation:
-            $ref: '#/paths/~1api~12.0~1feature-engineering~1features/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        feature_engineering_list_features:
-          operation:
-            $ref: '#/paths/~1api~12.0~1feature-engineering~1features/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        feature_engineering_create_kafka_config:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs/post
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        feature_engineering_list_kafka_configs:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        feature_engineering_create_materialized_feature:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1materialized-features/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_engineering_list_materialized_features:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1feature-engineering~1materialized-features/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_engineering_delete_feature:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1feature-engineering~1features~1{full_name}/delete
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        feature_engineering_get_feature:
-          operation:
-            $ref: '#/paths/~1api~12.0~1feature-engineering~1features~1{full_name}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        feature_engineering_update_feature:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1feature-engineering~1features~1{full_name}/patch
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        feature_engineering_delete_kafka_config:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs~1{name}/delete
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        feature_engineering_get_kafka_config:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs~1{name}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        feature_engineering_update_kafka_config:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs~1{name}/patch
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        feature_engineering_delete_materialized_feature:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1materialized-features~1{materialized_feature_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_engineering_get_materialized_feature:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1materialized-features~1{materialized_feature_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_engineering_update_materialized_feature:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1materialized-features~1{materialized_feature_id}/patch
@@ -9133,85 +9065,167 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_get_feature
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_get_kafka_config
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_get_materialized_feature
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_list_features
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_list_kafka_configs
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_list_materialized_features
+          - $ref: '#/components/x-stackQL-resources/feature_materialized/methods/get'
+          - $ref: '#/components/x-stackQL-resources/feature_materialized/methods/list'
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_batch_create_materialized_features
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_create_feature
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_create_kafka_config
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_create_materialized_feature
+              #/components/x-stackQL-resources/feature_materialized/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_update_feature
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_update_kafka_config
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_update_materialized_feature
+              #/components/x-stackQL-resources/feature_materialized/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_delete_feature
+              #/components/x-stackQL-resources/feature_materialized/methods/delete
+        replace: []
+    feature_engineering:
+      id: databricks_workspace.ml.feature_engineering
+      name: feature_engineering
+      title: Feature Engineering
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1feature-engineering~1features/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1feature-engineering~1features/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1feature-engineering~1features~1{full_name}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1feature-engineering~1features~1{full_name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1feature-engineering~1features~1{full_name}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/feature_engineering/methods/get'
+          - $ref: '#/components/x-stackQL-resources/feature_engineering/methods/list'
+        insert:
           - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_delete_kafka_config
+              #/components/x-stackQL-resources/feature_engineering/methods/create
+        update:
           - $ref: >-
-              #/components/x-stackQL-resources/feature_engineering/methods/feature_engineering_delete_materialized_feature
+              #/components/x-stackQL-resources/feature_engineering/methods/update
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/feature_engineering/methods/delete
+        replace: []
+    feature_kafka_configs:
+      id: databricks_workspace.ml.feature_kafka_configs
+      name: feature_kafka_configs
+      title: Feature Kafka Configs
+      methods:
+        create:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs~1{name}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs~1{name}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs~1{name}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/feature_kafka_configs/methods/get'
+          - $ref: >-
+              #/components/x-stackQL-resources/feature_kafka_configs/methods/list
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/feature_kafka_configs/methods/create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/feature_kafka_configs/methods/update
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/feature_kafka_configs/methods/delete
         replace: []
     feature_store:
       id: databricks_workspace.ml.feature_store
       name: feature_store
       title: Feature Store
       methods:
-        feature_store_create_online_store:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1feature-store~1online-stores/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_store_list_online_stores:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1feature-store~1online-stores/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_store_delete_online_store:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1feature-store~1online-stores~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_store_get_online_store:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1feature-store~1online-stores~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_store_update_online_store:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1feature-store~1online-stores~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_store_delete_online_table:
+        delete_table:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1online-tables~1{online_table_name}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        feature_store_publish_table:
+        publish_table:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1tables~1{source_table_name}~1publish/post
@@ -9220,36 +9234,31 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_store/methods/feature_store_get_online_store
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_store/methods/feature_store_list_online_stores
+          - $ref: '#/components/x-stackQL-resources/feature_store/methods/get'
+          - $ref: '#/components/x-stackQL-resources/feature_store/methods/list'
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/feature_store/methods/feature_store_publish_table
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_store/methods/feature_store_create_online_store
+              #/components/x-stackQL-resources/feature_store/methods/publish_table
+          - $ref: '#/components/x-stackQL-resources/feature_store/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_store/methods/feature_store_update_online_store
+          - $ref: '#/components/x-stackQL-resources/feature_store/methods/update'
         delete:
+          - $ref: '#/components/x-stackQL-resources/feature_store/methods/delete'
           - $ref: >-
-              #/components/x-stackQL-resources/feature_store/methods/feature_store_delete_online_store
-          - $ref: >-
-              #/components/x-stackQL-resources/feature_store/methods/feature_store_delete_online_table
+              #/components/x-stackQL-resources/feature_store/methods/delete_table
         replace: []
     forecasting:
       id: databricks_workspace.ml.forecasting
       name: forecasting
       title: Forecasting
       methods:
-        forecasting_create_experiment:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1automl~1create-forecasting-experiment/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        forecasting_get_experiment:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1automl~1get-forecasting-experiment~1{experiment_id}/get
@@ -9258,11 +9267,9 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/forecasting/methods/forecasting_get_experiment
+          - $ref: '#/components/x-stackQL-resources/forecasting/methods/get'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/forecasting/methods/forecasting_create_experiment
+          - $ref: '#/components/x-stackQL-resources/forecasting/methods/create'
         update: []
         delete: []
         replace: []
@@ -9271,42 +9278,62 @@ components:
       name: materialized_features
       title: Materialized Features
       methods:
-        materialized_features_create_feature_tag:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1feature-tables~1{table_name}~1features~1{feature_name}~1tags/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        materialized_features_list_feature_tags:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1feature-tables~1{table_name}~1features~1{feature_name}~1tags/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        materialized_features_delete_feature_tag:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1feature-tables~1{table_name}~1features~1{feature_name}~1tags~1{key}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        materialized_features_get_feature_tag:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1feature-tables~1{table_name}~1features~1{feature_name}~1tags~1{key}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        materialized_features_update_feature_tag:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1feature-tables~1{table_name}~1features~1{feature_name}~1tags~1{key}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        materialized_features_get_feature_lineage:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/materialized_features/methods/get'
+          - $ref: >-
+              #/components/x-stackQL-resources/materialized_features/methods/list
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/materialized_features/methods/create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/materialized_features/methods/update
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/materialized_features/methods/delete
+        replace: []
+    feature_lineage:
+      id: databricks_workspace.ml.feature_lineage
+      name: feature_lineage
+      title: Feature Lineage
+      methods:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1feature-tables~1{table_name}~1features~1{feature_name}~1lineage/get
@@ -9315,244 +9342,273 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/materialized_features/methods/materialized_features_get_feature_tag
-          - $ref: >-
-              #/components/x-stackQL-resources/materialized_features/methods/materialized_features_list_feature_tags
-          - $ref: >-
-              #/components/x-stackQL-resources/materialized_features/methods/materialized_features_get_feature_lineage
-        insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/materialized_features/methods/materialized_features_create_feature_tag
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/materialized_features/methods/materialized_features_update_feature_tag
-        delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/materialized_features/methods/materialized_features_delete_feature_tag
+          - $ref: '#/components/x-stackQL-resources/feature_lineage/methods/get'
+        insert: []
+        update: []
+        delete: []
         replace: []
-    model_registry:
-      id: databricks_workspace.ml.model_registry
-      name: model_registry
-      title: Model Registry
+    model_registry_transitions:
+      id: databricks_workspace.ml.model_registry_transitions
+      name: model_registry_transitions
+      title: Model Registry Transitions
       methods:
-        model_registry_approve_transition_request:
+        approve:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1transition-requests~1approve/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_registry_create_comment:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1comments~1create/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_create_model:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1create/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_create_model_version:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1create/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_create_transition_request:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1transition-requests~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_registry_create_webhook:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1create/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_delete_comment:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1comments~1delete/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_delete_model:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1delete/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_delete_model_tag:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1delete-tag/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_delete_model_version:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1delete/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_delete_model_version_tag:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1delete-tag/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_delete_transition_request:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1transition-requests~1delete/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_registry_delete_webhook:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1delete/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_get_latest_versions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1mlflow~1registered-models~1get-latest-versions/post
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_get_model:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1databricks~1registered-models~1get/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_get_model_version:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1get/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_get_model_version_download_uri:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1get-download-uri/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_get_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_set_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}/put
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_update_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}/patch
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_list_models:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1list/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_list_transition_requests:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1transition-requests~1list/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_registry_list_webhooks:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1list/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_reject_transition_request:
+        reject:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1transition-requests~1reject/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_registry_rename_model:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1rename/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_search_model_versions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1search/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_search_models:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1search/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_set_model_tag:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1set-tag/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_set_model_version_tag:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1set-tag/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_test_registry_webhook:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1test/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        model_registry_transition_stage:
+        transition:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1mlflow~1databricks~1model-versions~1transition-stage/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_registry_update_comment:
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_transitions/methods/list
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_transitions/methods/create
+        update: []
+        delete: []
+        replace: []
+    model_registry_comments:
+      id: databricks_workspace.ml.model_registry_comments
+      name: model_registry_comments
+      title: Model Registry Comments
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1comments~1create/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1comments~1delete/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1comments~1update/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_registry_update_model:
+      sqlVerbs:
+        select: []
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_comments/methods/create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_comments/methods/update
+        delete: []
+        replace: []
+    model_registry:
+      id: databricks_workspace.ml.model_registry
+      name: model_registry
+      title: Model Registry
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1create/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1delete/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete_tag:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1delete-tag/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1databricks~1registered-models~1get/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1list/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        rename:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1rename/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        search:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1search/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set_tag:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1set-tag/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1update/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_registry_update_model_version:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/model_registry/methods/get'
+          - $ref: '#/components/x-stackQL-resources/model_registry/methods/list'
+          - $ref: '#/components/x-stackQL-resources/model_registry/methods/search'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/model_registry/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/model_registry/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/model_registry/methods/delete'
+        replace: []
+    model_registry_model_versions:
+      id: databricks_workspace.ml.model_registry_model_versions
+      name: model_registry_model_versions
+      title: Model Registry Model Versions
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1create/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1delete/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete_tag:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1delete-tag/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get_latest:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1mlflow~1registered-models~1get-latest-versions/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1get/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get_download_uri:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1get-download-uri/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        search:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1search/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set_tag:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1set-tag/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1update/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        model_registry_update_webhook:
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_model_versions/methods/get
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_model_versions/methods/get_download_uri
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_model_versions/methods/search
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_model_versions/methods/create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_model_versions/methods/update
+        delete: []
+        replace: []
+    model_registry_webhooks:
+      id: databricks_workspace.ml.model_registry_webhooks
+      name: model_registry_webhooks
+      title: Model Registry Webhooks
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1create/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1delete/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1list/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        test:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1test/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1update/patch'
           response:
@@ -9561,78 +9617,59 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_get_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_get_model
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_get_model_version
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_get_model_version_download_uri
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_list_models
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_list_transition_requests
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_list_webhooks
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_search_model_versions
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_search_models
+              #/components/x-stackQL-resources/model_registry_webhooks/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_approve_transition_request
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_create_comment
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_create_model
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_create_model_version
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_create_transition_request
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_create_webhook
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_get_latest_versions
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_reject_transition_request
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_rename_model
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_set_model_tag
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_set_model_version_tag
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_test_registry_webhook
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_transition_stage
+              #/components/x-stackQL-resources/model_registry_webhooks/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_update_permissions
+              #/components/x-stackQL-resources/model_registry_webhooks/methods/update
+        delete: []
+        replace: []
+    model_registry_permissions:
+      id: databricks_workspace.ml.model_registry_permissions
+      name: model_registry_permissions
+      title: Model Registry Permissions
+      methods:
+        get_permission_levels:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}/put
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_update_comment
+              #/components/x-stackQL-resources/model_registry_permissions/methods/get_permission_levels
           - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_update_model
+              #/components/x-stackQL-resources/model_registry_permissions/methods/get
+        insert: []
+        update:
           - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_update_model_version
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_update_webhook
-        delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_delete_comment
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_delete_model
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_delete_model_tag
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_delete_model_version
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_delete_model_version_tag
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_delete_transition_request
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_delete_webhook
+              #/components/x-stackQL-resources/model_registry_permissions/methods/update
+        delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/model_registry/methods/model_registry_set_permissions
+              #/components/x-stackQL-resources/model_registry_permissions/methods/set

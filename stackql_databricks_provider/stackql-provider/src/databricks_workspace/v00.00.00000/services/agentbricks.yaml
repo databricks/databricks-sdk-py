@@ -6,11 +6,11 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/custom-llms/{id}/optimize/cancel:
     post:
@@ -384,42 +384,42 @@ components:
         - RUNNING
       description: States of Custom LLM optimization lifecycle.
   x-stackQL-resources:
-    agent_bricks:
-      id: databricks_workspace.agentbricks.agent_bricks
-      name: agent_bricks
-      title: Agent Bricks
+    custom_llms:
+      id: databricks_workspace.agentbricks.custom_llms
+      name: custom_llms
+      title: Custom Llms
       methods:
-        agent_bricks_cancel_optimize:
+        cancel_optimize:
           operation:
             $ref: '#/paths/~1api~12.0~1custom-llms~1{id}~1optimize~1cancel/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        agent_bricks_create_custom_llm:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1custom-llms/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        agent_bricks_delete_custom_llm:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1custom-llms~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        agent_bricks_get_custom_llm:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1custom-llms~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        agent_bricks_update_custom_llm:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1custom-llms~1{id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        agent_bricks_start_optimize:
+        start_optimize:
           operation:
             $ref: '#/paths/~1api~12.0~1custom-llms~1{id}~1optimize/post'
           response:
@@ -427,19 +427,11 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/agent_bricks/methods/agent_bricks_get_custom_llm
+          - $ref: '#/components/x-stackQL-resources/custom_llms/methods/get'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/agent_bricks/methods/agent_bricks_cancel_optimize
-          - $ref: >-
-              #/components/x-stackQL-resources/agent_bricks/methods/agent_bricks_start_optimize
-          - $ref: >-
-              #/components/x-stackQL-resources/agent_bricks/methods/agent_bricks_create_custom_llm
+          - $ref: '#/components/x-stackQL-resources/custom_llms/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/agent_bricks/methods/agent_bricks_update_custom_llm
+          - $ref: '#/components/x-stackQL-resources/custom_llms/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/agent_bricks/methods/agent_bricks_delete_custom_llm
+          - $ref: '#/components/x-stackQL-resources/custom_llms/methods/delete'
         replace: []

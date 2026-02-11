@@ -383,7 +383,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[AccountGroup]'
+                $ref: '#/components/schemas/AccountGroup'
         default:
           description: Error response
           content:
@@ -728,7 +728,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[AccountServicePrincipal]'
+                $ref: '#/components/schemas/AccountServicePrincipal'
         default:
           description: Error response
           content:
@@ -1111,7 +1111,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[AccountUser]'
+                $ref: '#/components/schemas/AccountUser'
         default:
           description: Error response
           content:
@@ -1596,7 +1596,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[PermissionAssignment]'
+                $ref: '#/components/schemas/PermissionAssignment'
         default:
           description: Error response
           content:
@@ -2067,7 +2067,7 @@ components:
           type: string
           description: Selection of patch operation
         value:
-          $ref: '#/components/schemas/Any'
+          type: object
           description: Value to modify
     Permission:
       type: object
@@ -2698,26 +2698,39 @@ components:
         Methods can be added to enumerations, and members can have their own
         attributes -- see the documentation for details.
   x-stackQL-resources:
-    account_access_control:
-      id: databricks_account.iam.account_access_control
-      name: account_access_control
-      title: Account Access Control
+    account_assignable_roles:
+      id: databricks_account.iam.account_assignable_roles
+      name: account_assignable_roles
+      title: Account Assignable Roles
       methods:
-        account_access_control_get_assignable_roles_for_resource:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1accounts~1{account_id}~1access-control~1assignable-roles/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_access_control_get_rule_set:
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/account_assignable_roles/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    account_rule_sets:
+      id: databricks_account.iam.account_rule_sets
+      name: account_rule_sets
+      title: Account Rule Sets
+      methods:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1accounts~1{account_id}~1access-control~1rule-sets/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_access_control_update_rule_set:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1accounts~1{account_id}~1access-control~1rule-sets/put
@@ -2726,55 +2739,51 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_access_control/methods/account_access_control_get_assignable_roles_for_resource
-          - $ref: >-
-              #/components/x-stackQL-resources/account_access_control/methods/account_access_control_get_rule_set
+          - $ref: '#/components/x-stackQL-resources/account_rule_sets/methods/get'
         insert: []
         update: []
         delete: []
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_access_control/methods/account_access_control_update_rule_set
+          - $ref: '#/components/x-stackQL-resources/account_rule_sets/methods/update'
     account_groups_v2:
       id: databricks_account.iam.account_groups_v2
       name: account_groups_v2
       title: Account Groups V2
       methods:
-        account_groups_v2_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Groups/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_groups_v2_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Groups/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_groups_v2_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Groups~1{id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_groups_v2_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Groups~1{id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_groups_v2_patch:
+        patch:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Groups~1{id}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_groups_v2_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Groups~1{id}/put
@@ -2783,63 +2792,57 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_groups_v2/methods/account_groups_v2_get
-          - $ref: >-
-              #/components/x-stackQL-resources/account_groups_v2/methods/account_groups_v2_list
+          - $ref: '#/components/x-stackQL-resources/account_groups_v2/methods/get'
+          - $ref: '#/components/x-stackQL-resources/account_groups_v2/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_groups_v2/methods/account_groups_v2_create
+          - $ref: '#/components/x-stackQL-resources/account_groups_v2/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_groups_v2/methods/account_groups_v2_patch
+          - $ref: '#/components/x-stackQL-resources/account_groups_v2/methods/patch'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_groups_v2/methods/account_groups_v2_delete
+          - $ref: '#/components/x-stackQL-resources/account_groups_v2/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_groups_v2/methods/account_groups_v2_update
+          - $ref: '#/components/x-stackQL-resources/account_groups_v2/methods/update'
     account_service_principals_v2:
       id: databricks_account.iam.account_service_principals_v2
       name: account_service_principals_v2
       title: Account Service Principals V2
       methods:
-        account_service_principals_v2_create:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1ServicePrincipals/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_service_principals_v2_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1ServicePrincipals/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_service_principals_v2_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1ServicePrincipals~1{id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_service_principals_v2_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1ServicePrincipals~1{id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_service_principals_v2_patch:
+        patch:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1ServicePrincipals~1{id}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_service_principals_v2_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1ServicePrincipals~1{id}/put
@@ -2849,60 +2852,60 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/account_service_principals_v2/methods/account_service_principals_v2_get
+              #/components/x-stackQL-resources/account_service_principals_v2/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/account_service_principals_v2/methods/account_service_principals_v2_list
+              #/components/x-stackQL-resources/account_service_principals_v2/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/account_service_principals_v2/methods/account_service_principals_v2_create
+              #/components/x-stackQL-resources/account_service_principals_v2/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/account_service_principals_v2/methods/account_service_principals_v2_patch
+              #/components/x-stackQL-resources/account_service_principals_v2/methods/patch
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/account_service_principals_v2/methods/account_service_principals_v2_delete
+              #/components/x-stackQL-resources/account_service_principals_v2/methods/delete
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/account_service_principals_v2/methods/account_service_principals_v2_update
+              #/components/x-stackQL-resources/account_service_principals_v2/methods/update
     account_users_v2:
       id: databricks_account.iam.account_users_v2
       name: account_users_v2
       title: Account Users V2
       methods:
-        account_users_v2_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Users/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_users_v2_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Users/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_users_v2_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Users~1{id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_users_v2_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Users~1{id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_users_v2_patch:
+        patch:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Users~1{id}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_users_v2_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1scim~1v2~1Users~1{id}/put
@@ -2911,49 +2914,36 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_users_v2/methods/account_users_v2_get
-          - $ref: >-
-              #/components/x-stackQL-resources/account_users_v2/methods/account_users_v2_list
+          - $ref: '#/components/x-stackQL-resources/account_users_v2/methods/get'
+          - $ref: '#/components/x-stackQL-resources/account_users_v2/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_users_v2/methods/account_users_v2_create
+          - $ref: '#/components/x-stackQL-resources/account_users_v2/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_users_v2/methods/account_users_v2_patch
+          - $ref: '#/components/x-stackQL-resources/account_users_v2/methods/patch'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_users_v2/methods/account_users_v2_delete
+          - $ref: '#/components/x-stackQL-resources/account_users_v2/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_users_v2/methods/account_users_v2_update
+          - $ref: '#/components/x-stackQL-resources/account_users_v2/methods/update'
     workspace_assignment:
       id: databricks_account.iam.workspace_assignment
       name: workspace_assignment
       title: Workspace Assignment
       methods:
-        workspace_assignment_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1permissionassignments~1principals~1{principal_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_assignment_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1permissionassignments~1principals~1{principal_id}/put
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_assignment_get:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1permissionassignments~1permissions/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        workspace_assignment_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1permissionassignments/get
@@ -2962,15 +2952,31 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_assignment/methods/workspace_assignment_get
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_assignment/methods/workspace_assignment_list
+          - $ref: '#/components/x-stackQL-resources/workspace_assignment/methods/list'
         insert: []
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace_assignment/methods/workspace_assignment_delete
+              #/components/x-stackQL-resources/workspace_assignment/methods/delete
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace_assignment/methods/workspace_assignment_update
+              #/components/x-stackQL-resources/workspace_assignment/methods/update
+    workspace_permissions:
+      id: databricks_account.iam.workspace_permissions
+      name: workspace_permissions
+      title: Workspace Permissions
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1permissionassignments~1permissions/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/workspace_permissions/methods/get'
+        insert: []
+        update: []
+        delete: []
+        replace: []

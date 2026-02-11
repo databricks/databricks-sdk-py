@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/dbfs/add-block:
     post:
@@ -366,7 +366,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[FileInfo]'
+                $ref: '#/components/schemas/FileInfo'
         default:
           description: Error response
           content:
@@ -845,7 +845,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[DirectoryEntry]'
+                $ref: '#/components/schemas/DirectoryEntry'
         default:
           description: Error response
           content:
@@ -1085,7 +1085,8 @@ components:
         content_type:
           type: string
         contents:
-          $ref: '#/components/schemas/BinaryIO'
+          type: string
+          format: binary
         last_modified:
           type: string
           description: The last modified time of the file in HTTP-date (RFC 7231) format.
@@ -1155,61 +1156,61 @@ components:
       name: dbfs
       title: Dbfs
       methods:
-        dbfs_add_block:
+        add_block:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1add-block/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbfs_close:
+        close:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1close/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbfs_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbfs_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbfs_get_status:
+        get_status:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1get-status/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbfs_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1list/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbfs_mkdirs:
+        mkdirs:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1mkdirs/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbfs_move:
+        move:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1move/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbfs_put:
+        put:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1put/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbfs_read:
+        read:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1read/get'
           response:
@@ -1217,56 +1218,49 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/dbfs/methods/dbfs_get_status'
-          - $ref: '#/components/x-stackQL-resources/dbfs/methods/dbfs_list'
-          - $ref: '#/components/x-stackQL-resources/dbfs/methods/dbfs_read'
+          - $ref: '#/components/x-stackQL-resources/dbfs/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/dbfs/methods/dbfs_add_block'
-          - $ref: '#/components/x-stackQL-resources/dbfs/methods/dbfs_close'
-          - $ref: '#/components/x-stackQL-resources/dbfs/methods/dbfs_create'
-          - $ref: '#/components/x-stackQL-resources/dbfs/methods/dbfs_delete'
-          - $ref: '#/components/x-stackQL-resources/dbfs/methods/dbfs_mkdirs'
-          - $ref: '#/components/x-stackQL-resources/dbfs/methods/dbfs_move'
-          - $ref: '#/components/x-stackQL-resources/dbfs/methods/dbfs_put'
+          - $ref: '#/components/x-stackQL-resources/dbfs/methods/create'
         update: []
-        delete: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/dbfs/methods/delete'
         replace: []
     files:
       id: databricks_workspace.files.files
       name: files
       title: Files
       methods:
-        files_create_directory:
+        create_directory:
           operation:
             $ref: '#/paths/~1api~12.0~1fs~1directories{directory_path}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        files_delete_directory:
+        delete_directory:
           operation:
             $ref: '#/paths/~1api~12.0~1fs~1directories{directory_path}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        files_list_directory_contents:
+        list_directory_contents:
           operation:
             $ref: '#/paths/~1api~12.0~1fs~1directories{directory_path}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        files_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1fs~1files{file_path}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        files_download:
+        download:
           operation:
             $ref: '#/paths/~1api~12.0~1fs~1files{file_path}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        files_upload:
+        upload:
           operation:
             $ref: '#/paths/~1api~12.0~1fs~1files{file_path}/put'
           response:
@@ -1275,15 +1269,13 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/files/methods/files_list_directory_contents
-          - $ref: '#/components/x-stackQL-resources/files/methods/files_download'
+              #/components/x-stackQL-resources/files/methods/list_directory_contents
+          - $ref: '#/components/x-stackQL-resources/files/methods/download'
         insert: []
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/files/methods/files_delete_directory
-          - $ref: '#/components/x-stackQL-resources/files/methods/files_delete'
+          - $ref: '#/components/x-stackQL-resources/files/methods/delete_directory'
+          - $ref: '#/components/x-stackQL-resources/files/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/files/methods/files_create_directory
-          - $ref: '#/components/x-stackQL-resources/files/methods/files_upload'
+          - $ref: '#/components/x-stackQL-resources/files/methods/create_directory'
+          - $ref: '#/components/x-stackQL-resources/files/methods/upload'

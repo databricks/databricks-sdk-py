@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/pipelines/{pipeline_id}/clone:
     post:
@@ -587,7 +587,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[PipelineStateInfo]'
+                $ref: '#/components/schemas/PipelineStateInfo'
         default:
           description: Error response
           content:
@@ -1248,7 +1248,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[PipelineEvent]'
+                $ref: '#/components/schemas/PipelineEvent'
         default:
           description: Error response
           content:
@@ -1455,7 +1455,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[GetPipelineResponse]'
+                $ref: '#/components/schemas/GetPipelineResponse'
         default:
           description: Error response
           content:
@@ -3029,93 +3029,43 @@ components:
       name: pipelines
       title: Pipelines
       methods:
-        pipelines_clone:
+        clone:
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1clone/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        pipelines_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        pipelines_list_pipelines:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        pipelines_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        pipelines_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        pipelines_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        pipelines_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        pipelines_get_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        pipelines_set_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        pipelines_update_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        pipelines_get_update:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1pipelines~1{pipeline_id}~1updates~1{update_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        pipelines_list_pipeline_events:
-          operation:
-            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1events/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        pipelines_list_updates:
-          operation:
-            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1updates/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        pipelines_start_update:
-          operation:
-            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1updates/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        pipelines_stop:
+        stop:
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1stop/post'
           response:
@@ -3123,34 +3073,104 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_get_update
-          - $ref: '#/components/x-stackQL-resources/pipelines/methods/pipelines_get'
-          - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_get_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_list_pipeline_events
-          - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_list_updates
-          - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_list_pipelines
+          - $ref: '#/components/x-stackQL-resources/pipelines/methods/get'
+          - $ref: '#/components/x-stackQL-resources/pipelines/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/pipelines/methods/pipelines_clone'
+          - $ref: '#/components/x-stackQL-resources/pipelines/methods/create'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/pipelines/methods/delete'
+        replace:
+          - $ref: '#/components/x-stackQL-resources/pipelines/methods/update'
+    pipeline_permissions:
+      id: databricks_workspace.pipelines.pipeline_permissions
+      name: pipeline_permissions
+      title: Pipeline Permissions
+      methods:
+        get_permission_levels:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_start_update
-          - $ref: '#/components/x-stackQL-resources/pipelines/methods/pipelines_stop'
-          - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_create
+              #/components/x-stackQL-resources/pipeline_permissions/methods/get_permission_levels
+          - $ref: '#/components/x-stackQL-resources/pipeline_permissions/methods/get'
+        insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_update_permissions
-        delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_delete
+              #/components/x-stackQL-resources/pipeline_permissions/methods/update
+        delete: []
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_update
-          - $ref: >-
-              #/components/x-stackQL-resources/pipelines/methods/pipelines_set_permissions
+          - $ref: '#/components/x-stackQL-resources/pipeline_permissions/methods/set'
+    pipeline_updates:
+      id: databricks_workspace.pipelines.pipeline_updates
+      name: pipeline_updates
+      title: Pipeline Updates
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1pipelines~1{pipeline_id}~1updates~1{update_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1updates/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        start:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1updates/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/pipeline_updates/methods/get'
+          - $ref: '#/components/x-stackQL-resources/pipeline_updates/methods/list'
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    pipeline_events:
+      id: databricks_workspace.pipelines.pipeline_events
+      name: pipeline_events
+      title: Pipeline Events
+      methods:
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1events/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/pipeline_events/methods/list'
+        insert: []
+        update: []
+        delete: []
+        replace: []

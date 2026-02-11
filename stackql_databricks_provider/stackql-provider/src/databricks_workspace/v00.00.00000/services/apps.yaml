@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/apps:
     post:
@@ -53,7 +53,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[App]'
+                $ref: '#/components/schemas/App'
         default:
           description: Error response
           content:
@@ -100,7 +100,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[App]'
+                $ref: '#/components/schemas/App'
         default:
           description: Error response
           content:
@@ -184,7 +184,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[AppUpdate]'
+                $ref: '#/components/schemas/AppUpdate'
         default:
           description: Error response
           content:
@@ -402,7 +402,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[AppDeployment]'
+                $ref: '#/components/schemas/AppDeployment'
         default:
           description: Error response
           content:
@@ -457,7 +457,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[AppDeployment]'
+                $ref: '#/components/schemas/AppDeployment'
         default:
           description: Error response
           content:
@@ -736,7 +736,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[App]'
+                $ref: '#/components/schemas/App'
         default:
           description: Error response
           content:
@@ -776,7 +776,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[App]'
+                $ref: '#/components/schemas/App'
         default:
           description: Error response
           content:
@@ -866,7 +866,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[CustomTemplate]'
+                $ref: '#/components/schemas/CustomTemplate'
         default:
           description: Error response
           content:
@@ -2540,99 +2540,43 @@ components:
       name: apps
       title: Apps
       methods:
-        apps_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1apps/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        apps_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1apps/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        apps_create_update:
-          operation:
-            $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1update/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        apps_get_update:
-          operation:
-            $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1update/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        apps_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1apps~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        apps_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1apps~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        apps_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1apps~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        apps_deploy:
-          operation:
-            $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1deployments/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        apps_list_deployments:
-          operation:
-            $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1deployments/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        apps_get_deployment:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1apps~1{app_name}~1deployments~1{deployment_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        apps_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1apps~1{app_name}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        apps_get_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1apps~1{app_name}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        apps_set_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1apps~1{app_name}/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        apps_update_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1apps~1{app_name}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        apps_start:
+        start:
           operation:
             $ref: '#/paths/~1api~12.0~1apps~1{name}~1start/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        apps_stop:
+        stop:
           operation:
             $ref: '#/paths/~1api~12.0~1apps~1{name}~1stop/post'
           response:
@@ -2640,59 +2584,154 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_get_deployment'
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_get_update'
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_get'
-          - $ref: >-
-              #/components/x-stackQL-resources/apps/methods/apps_list_deployments
-          - $ref: >-
-              #/components/x-stackQL-resources/apps/methods/apps_get_permission_levels
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_get_permissions'
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_list'
+          - $ref: '#/components/x-stackQL-resources/apps/methods/get'
+          - $ref: '#/components/x-stackQL-resources/apps/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_create_update'
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_deploy'
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_start'
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_stop'
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_create'
+          - $ref: '#/components/x-stackQL-resources/apps/methods/create'
         update:
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_update'
-          - $ref: >-
-              #/components/x-stackQL-resources/apps/methods/apps_update_permissions
+          - $ref: '#/components/x-stackQL-resources/apps/methods/update'
         delete:
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_delete'
+          - $ref: '#/components/x-stackQL-resources/apps/methods/delete'
+        replace: []
+    app_updates:
+      id: databricks_workspace.apps.app_updates
+      name: app_updates
+      title: App Updates
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1update/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1update/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/app_updates/methods/get'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/app_updates/methods/create'
+        update: []
+        delete: []
+        replace: []
+    app_deployments:
+      id: databricks_workspace.apps.app_deployments
+      name: app_deployments
+      title: App Deployments
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1deployments/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1deployments/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1apps~1{app_name}~1deployments~1{deployment_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/app_deployments/methods/get'
+          - $ref: '#/components/x-stackQL-resources/app_deployments/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/app_deployments/methods/create'
+        update: []
+        delete: []
+        replace: []
+    app_permission_levels:
+      id: databricks_workspace.apps.app_permission_levels
+      name: app_permission_levels
+      title: App Permission Levels
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1apps~1{app_name}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/app_permission_levels/methods/get'
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    app_permissions:
+      id: databricks_workspace.apps.app_permissions
+      name: app_permissions
+      title: App Permissions
+      methods:
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1apps~1{app_name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1apps~1{app_name}/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1apps~1{app_name}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/app_permissions/methods/get'
+        insert: []
+        update:
+          - $ref: '#/components/x-stackQL-resources/app_permissions/methods/update'
+        delete: []
         replace:
-          - $ref: '#/components/x-stackQL-resources/apps/methods/apps_set_permissions'
+          - $ref: '#/components/x-stackQL-resources/app_permissions/methods/set'
     apps_settings:
       id: databricks_workspace.apps.apps_settings
       name: apps_settings
       title: Apps Settings
       methods:
-        apps_settings_create_custom_template:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1apps-settings~1templates/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        apps_settings_list_custom_templates:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1apps-settings~1templates/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        apps_settings_delete_custom_template:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1apps-settings~1templates~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        apps_settings_get_custom_template:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1apps-settings~1templates~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        apps_settings_update_custom_template:
+        replace:
           operation:
             $ref: '#/paths/~1api~12.0~1apps-settings~1templates~1{name}/put'
           response:
@@ -2700,17 +2739,12 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/apps_settings/methods/apps_settings_get_custom_template
-          - $ref: >-
-              #/components/x-stackQL-resources/apps_settings/methods/apps_settings_list_custom_templates
+          - $ref: '#/components/x-stackQL-resources/apps_settings/methods/get'
+          - $ref: '#/components/x-stackQL-resources/apps_settings/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/apps_settings/methods/apps_settings_create_custom_template
+          - $ref: '#/components/x-stackQL-resources/apps_settings/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/apps_settings/methods/apps_settings_delete_custom_template
+          - $ref: '#/components/x-stackQL-resources/apps_settings/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/apps_settings/methods/apps_settings_update_custom_template
+          - $ref: '#/components/x-stackQL-resources/apps_settings/methods/replace'

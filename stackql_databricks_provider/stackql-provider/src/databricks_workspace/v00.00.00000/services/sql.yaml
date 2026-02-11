@@ -6,11 +6,11 @@ info:
     generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/sql/alerts:
     post:
@@ -101,7 +101,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ListAlertsResponseAlert]'
+                $ref: '#/components/schemas/ListAlertsResponseAlert'
         default:
           description: Error response
           content:
@@ -381,7 +381,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[LegacyAlert]'
+                $ref: '#/components/schemas/LegacyAlert'
         default:
           description: Error response
           content:
@@ -630,7 +630,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[AlertV2]'
+                $ref: '#/components/schemas/AlertV2'
         default:
           description: Error response
           content:
@@ -1197,7 +1197,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Dashboard]'
+                $ref: '#/components/schemas/Dashboard'
         default:
           description: Error response
           content:
@@ -1279,7 +1279,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[DataSource]'
+                $ref: '#/components/schemas/DataSource'
         default:
           description: Error response
           content:
@@ -1596,7 +1596,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ListQueryObjectsResponseQuery]'
+                $ref: '#/components/schemas/ListQueryObjectsResponseQuery'
         default:
           description: Error response
           content:
@@ -1805,7 +1805,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Visualization]'
+                $ref: '#/components/schemas/Visualization'
         default:
           description: Error response
           content:
@@ -2028,7 +2028,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[LegacyQuery]'
+                $ref: '#/components/schemas/LegacyQuery'
         default:
           description: Error response
           content:
@@ -3566,7 +3566,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[GetWarehouseResponse]'
+                $ref: '#/components/schemas/GetWarehouseResponse'
         default:
           description: Error response
           content:
@@ -3632,7 +3632,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[EndpointInfo]'
+                $ref: '#/components/schemas/EndpointInfo'
         default:
           description: Error response
           content:
@@ -3761,7 +3761,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[DefaultWarehouseOverride]'
+                $ref: '#/components/schemas/DefaultWarehouseOverride'
         default:
           description: Error response
           content:
@@ -4206,7 +4206,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[GetWarehouseResponse]'
+                $ref: '#/components/schemas/GetWarehouseResponse'
         default:
           description: Error response
           content:
@@ -4583,7 +4583,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[GetWarehouseResponse]'
+                $ref: '#/components/schemas/GetWarehouseResponse'
         default:
           description: Error response
           content:
@@ -4624,7 +4624,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[GetWarehouseResponse]'
+                $ref: '#/components/schemas/GetWarehouseResponse'
         default:
           description: Error response
           content:
@@ -4768,7 +4768,7 @@ components:
             Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`,
             `==`, `!=`
         value:
-          $ref: '#/components/schemas/Any'
+          type: object
           description: >-
             Value used to compare in alert evaluation. Supported types include
             strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true).
@@ -5992,7 +5992,7 @@ components:
             The name of the visualization that appears on dashboards and the
             query screen.
         options:
-          $ref: '#/components/schemas/Any'
+          type: object
           description: >-
             The options object varies widely from one visualization type to the
             next and is unsupported. Databricks does not recommend modifying
@@ -6275,7 +6275,7 @@ components:
           $ref: '#/components/schemas/ParameterType'
           description: Parameters can have several different types.
         value:
-          $ref: '#/components/schemas/Any'
+          type: object
           description: The default value for this parameter.
     Query:
       type: object
@@ -7198,7 +7198,7 @@ components:
           type: boolean
           description: Whether this widget is hidden on the dashboard.
         parameter_mappings:
-          $ref: '#/components/schemas/Any'
+          type: object
           description: >-
             How parameters used by the visualization in this widget relate to
             other widgets on the dashboard. Databricks does not recommend
@@ -8939,31 +8939,31 @@ components:
       name: alerts
       title: Alerts
       methods:
-        alerts_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1alerts/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1alerts/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1alerts~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1alerts~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1alerts~1{id}/patch'
           response:
@@ -8971,45 +8971,45 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/alerts/methods/alerts_get'
-          - $ref: '#/components/x-stackQL-resources/alerts/methods/alerts_list'
+          - $ref: '#/components/x-stackQL-resources/alerts/methods/get'
+          - $ref: '#/components/x-stackQL-resources/alerts/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/alerts/methods/alerts_create'
+          - $ref: '#/components/x-stackQL-resources/alerts/methods/create'
         update:
-          - $ref: '#/components/x-stackQL-resources/alerts/methods/alerts_update'
+          - $ref: '#/components/x-stackQL-resources/alerts/methods/update'
         delete:
-          - $ref: '#/components/x-stackQL-resources/alerts/methods/alerts_delete'
+          - $ref: '#/components/x-stackQL-resources/alerts/methods/delete'
         replace: []
     alerts_legacy:
       id: databricks_workspace.sql.alerts_legacy
       name: alerts_legacy
       title: Alerts Legacy
       methods:
-        alerts_legacy_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1alerts/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_legacy_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1alerts/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_legacy_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1alerts~1{alert_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_legacy_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1alerts~1{alert_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_legacy_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1alerts~1{alert_id}/put'
           response:
@@ -9017,50 +9017,45 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/alerts_legacy/methods/alerts_legacy_get
-          - $ref: >-
-              #/components/x-stackQL-resources/alerts_legacy/methods/alerts_legacy_list
+          - $ref: '#/components/x-stackQL-resources/alerts_legacy/methods/get'
+          - $ref: '#/components/x-stackQL-resources/alerts_legacy/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/alerts_legacy/methods/alerts_legacy_create
+          - $ref: '#/components/x-stackQL-resources/alerts_legacy/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/alerts_legacy/methods/alerts_legacy_delete
+          - $ref: '#/components/x-stackQL-resources/alerts_legacy/methods/delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/alerts_legacy/methods/alerts_legacy_update
+          - $ref: '#/components/x-stackQL-resources/alerts_legacy/methods/update'
     alerts_v2:
       id: databricks_workspace.sql.alerts_v2
       name: alerts_v2
       title: Alerts V2
       methods:
-        alerts_v2_create_alert:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1alerts/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_v2_list_alerts:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1alerts/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_v2_get_alert:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1alerts~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_v2_trash_alert:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1alerts~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        alerts_v2_update_alert:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1alerts~1{id}/patch'
           response:
@@ -9068,38 +9063,33 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/alerts_v2/methods/alerts_v2_get_alert
-          - $ref: >-
-              #/components/x-stackQL-resources/alerts_v2/methods/alerts_v2_list_alerts
+          - $ref: '#/components/x-stackQL-resources/alerts_v2/methods/get'
+          - $ref: '#/components/x-stackQL-resources/alerts_v2/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/alerts_v2/methods/alerts_v2_create_alert
+          - $ref: '#/components/x-stackQL-resources/alerts_v2/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/alerts_v2/methods/alerts_v2_update_alert
+          - $ref: '#/components/x-stackQL-resources/alerts_v2/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/alerts_v2/methods/alerts_v2_trash_alert
+          - $ref: '#/components/x-stackQL-resources/alerts_v2/methods/delete'
         replace: []
     dashboard_widgets:
       id: databricks_workspace.sql.dashboard_widgets
       name: dashboard_widgets
       title: Dashboard Widgets
       methods:
-        dashboard_widgets_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1widgets/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dashboard_widgets_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1widgets~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dashboard_widgets_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1widgets~1{id}/post'
           response:
@@ -9108,46 +9098,43 @@ components:
       sqlVerbs:
         select: []
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/dashboard_widgets/methods/dashboard_widgets_update
-          - $ref: >-
-              #/components/x-stackQL-resources/dashboard_widgets/methods/dashboard_widgets_create
+          - $ref: '#/components/x-stackQL-resources/dashboard_widgets/methods/update'
+          - $ref: '#/components/x-stackQL-resources/dashboard_widgets/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/dashboard_widgets/methods/dashboard_widgets_delete
+          - $ref: '#/components/x-stackQL-resources/dashboard_widgets/methods/delete'
         replace: []
     dashboards:
       id: databricks_workspace.sql.dashboards
       name: dashboards
       title: Dashboards
       methods:
-        dashboards_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1sql~1dashboards~1{dashboard_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dashboards_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1dashboards~1{dashboard_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dashboards_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1dashboards~1{dashboard_id}/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dashboards_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1dashboards/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dashboards_restore:
+        restore:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1sql~1dashboards~1trash~1{dashboard_id}/post
@@ -9156,25 +9143,20 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/dashboards/methods/dashboards_get'
-          - $ref: >-
-              #/components/x-stackQL-resources/dashboards/methods/dashboards_list
+          - $ref: '#/components/x-stackQL-resources/dashboards/methods/get'
+          - $ref: '#/components/x-stackQL-resources/dashboards/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/dashboards/methods/dashboards_update
-          - $ref: >-
-              #/components/x-stackQL-resources/dashboards/methods/dashboards_restore
+          - $ref: '#/components/x-stackQL-resources/dashboards/methods/update'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/dashboards/methods/dashboards_delete
+          - $ref: '#/components/x-stackQL-resources/dashboards/methods/delete'
         replace: []
     data_sources:
       id: databricks_workspace.sql.data_sources
       name: data_sources
       title: Data Sources
       methods:
-        data_sources_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1data_sources/get'
           response:
@@ -9182,8 +9164,7 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/data_sources/methods/data_sources_list
+          - $ref: '#/components/x-stackQL-resources/data_sources/methods/list'
         insert: []
         update: []
         delete: []
@@ -9193,21 +9174,21 @@ components:
       name: dbsql_permissions
       title: Dbsql Permissions
       methods:
-        dbsql_permissions_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1sql~1permissions~1{object_type.value}~1{object_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbsql_permissions_set:
+        set:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1sql~1permissions~1{object_type.value}~1{object_id}/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        dbsql_permissions_transfer_ownership:
+        transfer_ownership:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1sql~1permissions~1{object_type.value}~1{object_id}~1transfer/post
@@ -9216,13 +9197,9 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/dbsql_permissions/methods/dbsql_permissions_get
+          - $ref: '#/components/x-stackQL-resources/dbsql_permissions/methods/get'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/dbsql_permissions/methods/dbsql_permissions_set
-          - $ref: >-
-              #/components/x-stackQL-resources/dbsql_permissions/methods/dbsql_permissions_transfer_ownership
+          - $ref: '#/components/x-stackQL-resources/dbsql_permissions/methods/set'
         update: []
         delete: []
         replace: []
@@ -9231,91 +9208,125 @@ components:
       name: queries
       title: Queries
       methods:
-        queries_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1queries/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        queries_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1queries/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        queries_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1queries~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        queries_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1queries~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        queries_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1queries~1{id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        queries_list_visualizations:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/queries/methods/get'
+          - $ref: '#/components/x-stackQL-resources/queries/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/queries/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/queries/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/queries/methods/delete'
+        replace: []
+    query_visualizations:
+      id: databricks_workspace.sql.query_visualizations
+      name: query_visualizations
+      title: Query Visualizations
+      methods:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1queries~1{id}~1visualizations/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1sql~1visualizations/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1sql~1visualizations~1{id}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1sql~1visualizations~1{id}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/queries/methods/queries_get'
-          - $ref: >-
-              #/components/x-stackQL-resources/queries/methods/queries_list_visualizations
-          - $ref: '#/components/x-stackQL-resources/queries/methods/queries_list'
+          - $ref: '#/components/x-stackQL-resources/query_visualizations/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/queries/methods/queries_create'
+          - $ref: >-
+              #/components/x-stackQL-resources/query_visualizations/methods/create
         update:
-          - $ref: '#/components/x-stackQL-resources/queries/methods/queries_update'
+          - $ref: >-
+              #/components/x-stackQL-resources/query_visualizations/methods/update
         delete:
-          - $ref: '#/components/x-stackQL-resources/queries/methods/queries_delete'
+          - $ref: >-
+              #/components/x-stackQL-resources/query_visualizations/methods/delete
         replace: []
     queries_legacy:
       id: databricks_workspace.sql.queries_legacy
       name: queries_legacy
       title: Queries Legacy
       methods:
-        queries_legacy_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1queries/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        queries_legacy_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1queries/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        queries_legacy_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1queries~1{query_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        queries_legacy_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1queries~1{query_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        queries_legacy_update:
+        replace:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1queries~1{query_id}/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        queries_legacy_restore:
+        restore:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1queries~1trash~1{query_id}/post'
           response:
@@ -9323,28 +9334,21 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/queries_legacy/methods/queries_legacy_get
-          - $ref: >-
-              #/components/x-stackQL-resources/queries_legacy/methods/queries_legacy_list
+          - $ref: '#/components/x-stackQL-resources/queries_legacy/methods/get'
+          - $ref: '#/components/x-stackQL-resources/queries_legacy/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/queries_legacy/methods/queries_legacy_update
-          - $ref: >-
-              #/components/x-stackQL-resources/queries_legacy/methods/queries_legacy_restore
-          - $ref: >-
-              #/components/x-stackQL-resources/queries_legacy/methods/queries_legacy_create
+          - $ref: '#/components/x-stackQL-resources/queries_legacy/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/queries_legacy/methods/queries_legacy_delete
-        replace: []
+          - $ref: '#/components/x-stackQL-resources/queries_legacy/methods/delete'
+        replace:
+          - $ref: '#/components/x-stackQL-resources/queries_legacy/methods/replace'
     query_history:
       id: databricks_workspace.sql.query_history
       name: query_history
       title: Query History
       methods:
-        query_history_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1history~1queries/get'
           response:
@@ -9352,65 +9356,29 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/query_history/methods/query_history_list
+          - $ref: '#/components/x-stackQL-resources/query_history/methods/list'
         insert: []
         update: []
         delete: []
-        replace: []
-    query_visualizations:
-      id: databricks_workspace.sql.query_visualizations
-      name: query_visualizations
-      title: Query Visualizations
-      methods:
-        query_visualizations_create:
-          operation:
-            $ref: '#/paths/~1api~12.0~1sql~1visualizations/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        query_visualizations_delete:
-          operation:
-            $ref: '#/paths/~1api~12.0~1sql~1visualizations~1{id}/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        query_visualizations_update:
-          operation:
-            $ref: '#/paths/~1api~12.0~1sql~1visualizations~1{id}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-      sqlVerbs:
-        select: []
-        insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/query_visualizations/methods/query_visualizations_create
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/query_visualizations/methods/query_visualizations_update
-        delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/query_visualizations/methods/query_visualizations_delete
         replace: []
     query_visualizations_legacy:
       id: databricks_workspace.sql.query_visualizations_legacy
       name: query_visualizations_legacy
       title: Query Visualizations Legacy
       methods:
-        query_visualizations_legacy_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1visualizations/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        query_visualizations_legacy_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1visualizations~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        query_visualizations_legacy_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1visualizations~1{id}/post'
           response:
@@ -9420,20 +9388,20 @@ components:
         select: []
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/query_visualizations_legacy/methods/query_visualizations_legacy_update
+              #/components/x-stackQL-resources/query_visualizations_legacy/methods/update
           - $ref: >-
-              #/components/x-stackQL-resources/query_visualizations_legacy/methods/query_visualizations_legacy_create
+              #/components/x-stackQL-resources/query_visualizations_legacy/methods/create
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/query_visualizations_legacy/methods/query_visualizations_legacy_delete
+              #/components/x-stackQL-resources/query_visualizations_legacy/methods/delete
         replace: []
     redash_config:
       id: databricks_workspace.sql.redash_config
       name: redash_config
       title: Redash Config
       methods:
-        redash_config_get_config:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1redash-v2~1config/get'
           response:
@@ -9441,8 +9409,7 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/redash_config/methods/redash_config_get_config
+          - $ref: '#/components/x-stackQL-resources/redash_config/methods/get'
         insert: []
         update: []
         delete: []
@@ -9452,25 +9419,25 @@ components:
       name: statement_execution
       title: Statement Execution
       methods:
-        statement_execution_cancel_execution:
+        cancel:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1statements~1{statement_id}~1cancel/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        statement_execution_execute_statement:
+        execute:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1statements/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        statement_execution_get_statement:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1statements~1{statement_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        statement_execution_get_statement_result_chunk_n:
+        get_result_chunk:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1sql~1statements~1{statement_id}~1result~1chunks~1{chunk_index}/get
@@ -9480,14 +9447,13 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/statement_execution/methods/statement_execution_get_statement_result_chunk_n
-          - $ref: >-
-              #/components/x-stackQL-resources/statement_execution/methods/statement_execution_get_statement
+              #/components/x-stackQL-resources/statement_execution/methods/get_result_chunk
+          - $ref: '#/components/x-stackQL-resources/statement_execution/methods/get'
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/statement_execution/methods/statement_execution_cancel_execution
+              #/components/x-stackQL-resources/statement_execution/methods/cancel
           - $ref: >-
-              #/components/x-stackQL-resources/statement_execution/methods/statement_execution_execute_statement
+              #/components/x-stackQL-resources/statement_execution/methods/execute
         update: []
         delete: []
         replace: []
@@ -9496,110 +9462,43 @@ components:
       name: warehouses
       title: Warehouses
       methods:
-        warehouses_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1warehouses/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        warehouses_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1warehouses/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        warehouses_create_default_warehouse_override:
-          operation:
-            $ref: '#/paths/~1api~1warehouses~1v1~1default-warehouse-overrides/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_list_default_warehouse_overrides:
-          operation:
-            $ref: '#/paths/~1api~1warehouses~1v1~1default-warehouse-overrides/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1warehouses~1{id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        warehouses_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1warehouses~1{id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        warehouses_delete_default_warehouse_override:
-          operation:
-            $ref: '#/paths/~1api~1warehouses~1v1~1{name}/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_get_default_warehouse_override:
-          operation:
-            $ref: '#/paths/~1api~1warehouses~1v1~1{name}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_update_default_warehouse_override:
-          operation:
-            $ref: '#/paths/~1api~1warehouses~1v1~1{name}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_edit:
+        edit:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1warehouses~1{id}~1edit/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        warehouses_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_get_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_set_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_update_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_get_workspace_warehouse_config:
-          operation:
-            $ref: '#/paths/~1api~12.0~1sql~1config~1warehouses/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_set_workspace_warehouse_config:
-          operation:
-            $ref: '#/paths/~1api~12.0~1sql~1config~1warehouses/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        warehouses_start:
+        start:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1warehouses~1{id}~1start/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        warehouses_stop:
+        stop:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1warehouses~1{id}~1stop/post'
           response:
@@ -9607,42 +9506,132 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/warehouses/methods/warehouses_get'
+          - $ref: '#/components/x-stackQL-resources/warehouses/methods/get'
+          - $ref: '#/components/x-stackQL-resources/warehouses/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/warehouses/methods/create'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/warehouses/methods/delete'
+        replace:
+          - $ref: '#/components/x-stackQL-resources/warehouses/methods/edit'
+    default_warehouse_overrides:
+      id: databricks_workspace.sql.default_warehouse_overrides
+      name: default_warehouse_overrides
+      title: Default Warehouse Overrides
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~1warehouses~1v1~1default-warehouse-overrides/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~1warehouses~1v1~1default-warehouse-overrides/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~1warehouses~1v1~1{name}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~1warehouses~1v1~1{name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~1warehouses~1v1~1{name}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_get_default_warehouse_override
+              #/components/x-stackQL-resources/default_warehouse_overrides/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_get_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_list
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_list_default_warehouse_overrides
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_get_workspace_warehouse_config
+              #/components/x-stackQL-resources/default_warehouse_overrides/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_edit
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_start
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_stop
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_create
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_create_default_warehouse_override
+              #/components/x-stackQL-resources/default_warehouse_overrides/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_update_default_warehouse_override
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_update_permissions
+              #/components/x-stackQL-resources/default_warehouse_overrides/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_delete
+              #/components/x-stackQL-resources/default_warehouse_overrides/methods/delete
+        replace: []
+    warehouse_permissions:
+      id: databricks_workspace.sql.warehouse_permissions
+      name: warehouse_permissions
+      title: Warehouse Permissions
+      methods:
+        get_permission_levels:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_delete_default_warehouse_override
+              #/components/x-stackQL-resources/warehouse_permissions/methods/get_permission_levels
+          - $ref: '#/components/x-stackQL-resources/warehouse_permissions/methods/get'
+        insert: []
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/warehouse_permissions/methods/update
+        delete: []
+        replace:
+          - $ref: '#/components/x-stackQL-resources/warehouse_permissions/methods/set'
+    workspace_warehouse_config:
+      id: databricks_workspace.sql.workspace_warehouse_config
+      name: workspace_warehouse_config
+      title: Workspace Warehouse Config
+      methods:
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1sql~1config~1warehouses/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: '#/paths/~1api~12.0~1sql~1config~1warehouses/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/workspace_warehouse_config/methods/get
+        insert: []
+        update: []
+        delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_set_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouses/methods/warehouses_set_workspace_warehouse_config
+              #/components/x-stackQL-resources/workspace_warehouse_config/methods/set

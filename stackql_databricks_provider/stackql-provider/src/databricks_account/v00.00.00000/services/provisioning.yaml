@@ -109,7 +109,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Credential]'
+                $ref: '#/components/schemas/Credential'
         default:
           description: Error response
           content:
@@ -311,7 +311,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[CustomerManagedKey]'
+                $ref: '#/components/schemas/CustomerManagedKey'
         default:
           description: Error response
           content:
@@ -539,7 +539,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Network]'
+                $ref: '#/components/schemas/Network'
         default:
           description: Error response
           content:
@@ -770,7 +770,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[PrivateAccessSettings]'
+                $ref: '#/components/schemas/PrivateAccessSettings'
         default:
           description: Error response
           content:
@@ -1033,7 +1033,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[StorageConfiguration]'
+                $ref: '#/components/schemas/StorageConfiguration'
         default:
           description: Error response
           content:
@@ -1233,7 +1233,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[VpcEndpoint]'
+                $ref: '#/components/schemas/VpcEndpoint'
         default:
           description: Error response
           content:
@@ -1633,7 +1633,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[Workspace]'
+                $ref: '#/components/schemas/Workspace'
         default:
           description: Error response
           content:
@@ -1662,7 +1662,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Workspace]'
+                $ref: '#/components/schemas/Workspace'
         default:
           description: Error response
           content:
@@ -1839,7 +1839,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[Workspace]'
+                $ref: '#/components/schemas/Workspace'
         default:
           description: Error response
           content:

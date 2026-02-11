@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/identity/workspaceAccessDetails/{principal_id}:
     get:
@@ -392,27 +392,27 @@ components:
       name: workspace_iam_v2
       title: Workspace Iam V2
       methods:
-        workspace_iam_v2_get_workspace_access_detail_local:
+        get_workspace_access_detail_local:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1identity~1workspaceAccessDetails~1{principal_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_iam_v2_resolve_group_proxy:
+        resolve_group_proxy:
           operation:
             $ref: '#/paths/~1api~12.0~1identity~1groups~1resolveByExternalId/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_iam_v2_resolve_service_principal_proxy:
+        resolve_service_principal_proxy:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1identity~1servicePrincipals~1resolveByExternalId/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        workspace_iam_v2_resolve_user_proxy:
+        resolve_user_proxy:
           operation:
             $ref: '#/paths/~1api~12.0~1identity~1users~1resolveByExternalId/post'
           response:
@@ -421,14 +421,8 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace_iam_v2/methods/workspace_iam_v2_get_workspace_access_detail_local
-        insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_iam_v2/methods/workspace_iam_v2_resolve_group_proxy
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_iam_v2/methods/workspace_iam_v2_resolve_service_principal_proxy
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_iam_v2/methods/workspace_iam_v2_resolve_user_proxy
+              #/components/x-stackQL-resources/workspace_iam_v2/methods/get_workspace_access_detail_local
+        insert: []
         update: []
         delete: []
         replace: []

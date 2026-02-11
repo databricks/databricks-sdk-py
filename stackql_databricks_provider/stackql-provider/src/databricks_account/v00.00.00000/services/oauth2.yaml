@@ -95,7 +95,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[FederationPolicy]'
+                $ref: '#/components/schemas/FederationPolicy'
         default:
           description: Error response
           content:
@@ -373,7 +373,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[GetCustomAppIntegrationOutput]'
+                $ref: '#/components/schemas/GetCustomAppIntegrationOutput'
         default:
           description: Error response
           content:
@@ -571,7 +571,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[PublishedAppOutput]'
+                $ref: '#/components/schemas/PublishedAppOutput'
         default:
           description: Error response
           content:
@@ -673,8 +673,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: >-
-                  #/components/schemas/Iterator[GetPublishedAppIntegrationOutput]
+                $ref: '#/components/schemas/GetPublishedAppIntegrationOutput'
         default:
           description: Error response
           content:
@@ -915,7 +914,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[FederationPolicy]'
+                $ref: '#/components/schemas/FederationPolicy'
         default:
           description: Error response
           content:
@@ -1208,7 +1207,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SecretInfo]'
+                $ref: '#/components/schemas/SecretInfo'
         default:
           description: Error response
           content:

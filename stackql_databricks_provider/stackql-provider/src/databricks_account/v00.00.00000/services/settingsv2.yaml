@@ -304,7 +304,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SettingsMetadata]'
+                $ref: '#/components/schemas/SettingsMetadata'
         default:
           description: Error response
           content:
@@ -386,7 +386,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SettingsMetadata]'
+                $ref: '#/components/schemas/SettingsMetadata'
         default:
           description: Error response
           content:
@@ -873,39 +873,68 @@ components:
       name: account_settings_v2
       title: Account Settings V2
       methods:
-        account_settings_v2_get_public_account_setting:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1settings~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_settings_v2_patch_public_account_setting:
+        patch:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1settings~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_settings_v2_get_public_account_user_preference:
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1settings-metadata/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/account_settings_v2/methods/get'
+          - $ref: '#/components/x-stackQL-resources/account_settings_v2/methods/list'
+        insert: []
+        update:
+          - $ref: '#/components/x-stackQL-resources/account_settings_v2/methods/patch'
+        delete: []
+        replace: []
+    account_user_preferences:
+      id: databricks_account.settingsv2.account_user_preferences
+      name: account_user_preferences
+      title: Account User Preferences
+      methods:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1users~1{user_id}~1settings~1{name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_settings_v2_patch_public_account_user_preference:
+        patch:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1users~1{user_id}~1settings~1{name}/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        account_settings_v2_list_account_settings_metadata:
-          operation:
-            $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1settings-metadata/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        account_settings_v2_list_account_user_preferences_metadata:
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/account_user_preferences/methods/get
+        insert: []
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/account_user_preferences/methods/patch
+        delete: []
+        replace: []
+    account_user_preferences_metadata:
+      id: databricks_account.settingsv2.account_user_preferences_metadata
+      name: account_user_preferences_metadata
+      title: Account User Preferences Metadata
+      methods:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1users~1{user_id}~1settings-metadata/get
@@ -915,18 +944,8 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/account_settings_v2/methods/account_settings_v2_get_public_account_user_preference
-          - $ref: >-
-              #/components/x-stackQL-resources/account_settings_v2/methods/account_settings_v2_get_public_account_setting
-          - $ref: >-
-              #/components/x-stackQL-resources/account_settings_v2/methods/account_settings_v2_list_account_user_preferences_metadata
-          - $ref: >-
-              #/components/x-stackQL-resources/account_settings_v2/methods/account_settings_v2_list_account_settings_metadata
+              #/components/x-stackQL-resources/account_user_preferences_metadata/methods/list
         insert: []
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_settings_v2/methods/account_settings_v2_patch_public_account_user_preference
-          - $ref: >-
-              #/components/x-stackQL-resources/account_settings_v2/methods/account_settings_v2_patch_public_account_setting
+        update: []
         delete: []
         replace: []

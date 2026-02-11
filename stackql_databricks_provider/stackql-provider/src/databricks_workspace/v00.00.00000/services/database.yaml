@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/database/catalogs:
     post:
@@ -85,7 +85,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[DatabaseInstance]'
+                $ref: '#/components/schemas/DatabaseInstance'
         default:
           description: Error response
           content:
@@ -132,7 +132,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[DatabaseInstance]'
+                $ref: '#/components/schemas/DatabaseInstance'
         default:
           description: Error response
           content:
@@ -251,7 +251,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[DatabaseInstanceRole]'
+                $ref: '#/components/schemas/DatabaseInstanceRole'
         default:
           description: Error response
           content:
@@ -953,7 +953,7 @@ paths:
       parameters:
         - name: uid
           in: query
-          required: false
+          required: true
           schema:
             type: string
           description: UID of the cluster to get.
@@ -1072,7 +1072,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[DatabaseCatalog]'
+                $ref: '#/components/schemas/DatabaseCatalog'
         default:
           description: Error response
           content:
@@ -1128,7 +1128,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SyncedDatabaseTable]'
+                $ref: '#/components/schemas/SyncedDatabaseTable'
         default:
           description: Error response
           content:
@@ -2047,155 +2047,216 @@ components:
         - SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES
       description: The state of a synced table.
   x-stackQL-resources:
-    database:
-      id: databricks_workspace.database.database
-      name: database
-      title: Database
+    database_catalogs:
+      id: databricks_workspace.database.database_catalogs
+      name: database_catalogs
+      title: Database Catalogs
       methods:
-        database_create_database_catalog:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1database~1catalogs/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        database_create_database_instance:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1instances/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_list_database_instances:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1instances/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_create_database_instance_role:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1database~1instances~1{instance_name}~1roles/post
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_list_database_instance_roles:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1database~1instances~1{instance_name}~1roles/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_create_database_table:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1tables/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_create_synced_database_table:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1synced_tables/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_delete_database_catalog:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1database~1catalogs~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        database_get_database_catalog:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1database~1catalogs~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        database_update_database_catalog:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1database~1catalogs~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        database_delete_database_instance:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1instances~1{name}/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_get_database_instance:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1instances~1{name}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_update_database_instance:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1instances~1{name}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_delete_database_instance_role:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1database~1instances~1{instance_name}~1roles~1{name}/delete
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_get_database_instance_role:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1database~1instances~1{instance_name}~1roles~1{name}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_delete_database_table:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1tables~1{name}/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_get_database_table:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1tables~1{name}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_delete_synced_database_table:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1synced_tables~1{name}/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_get_synced_database_table:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1synced_tables~1{name}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_update_synced_database_table:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1synced_tables~1{name}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_find_database_instance_by_uid:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1instances:findByUid/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_generate_database_credential:
-          operation:
-            $ref: '#/paths/~1api~12.0~1database~1credentials/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        database_list_database_catalogs:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1database~1instances~1{instance_name}~1catalogs/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        database_list_synced_database_tables:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/database_catalogs/methods/get'
+          - $ref: '#/components/x-stackQL-resources/database_catalogs/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/database_catalogs/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/database_catalogs/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/database_catalogs/methods/delete'
+        replace: []
+    database_instances:
+      id: databricks_workspace.database.database_instances
+      name: database_instances
+      title: Database Instances
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1instances/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1instances/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1instances~1{name}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1instances~1{name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1instances~1{name}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        find_by_uid:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1instances:findByUid/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/database_instances/methods/get'
+          - $ref: '#/components/x-stackQL-resources/database_instances/methods/list'
+          - $ref: >-
+              #/components/x-stackQL-resources/database_instances/methods/find_by_uid
+        insert:
+          - $ref: '#/components/x-stackQL-resources/database_instances/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/database_instances/methods/update'
+        delete:
+          - $ref: '#/components/x-stackQL-resources/database_instances/methods/delete'
+        replace: []
+    database_instance_roles:
+      id: databricks_workspace.database.database_instance_roles
+      name: database_instance_roles
+      title: Database Instance Roles
+      methods:
+        create:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1database~1instances~1{instance_name}~1roles/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1database~1instances~1{instance_name}~1roles/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1database~1instances~1{instance_name}~1roles~1{name}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1database~1instances~1{instance_name}~1roles~1{name}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/database_instance_roles/methods/get
+          - $ref: >-
+              #/components/x-stackQL-resources/database_instance_roles/methods/list
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/database_instance_roles/methods/create
+        update: []
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/database_instance_roles/methods/delete
+        replace: []
+    database_tables:
+      id: databricks_workspace.database.database_tables
+      name: database_tables
+      title: Database Tables
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1tables/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1tables~1{name}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1tables~1{name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/database_tables/methods/get'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/database_tables/methods/create'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/database_tables/methods/delete'
+        replace: []
+    synced_database_tables:
+      id: databricks_workspace.database.synced_database_tables
+      name: synced_database_tables
+      title: Synced Database Tables
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1synced_tables/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1synced_tables~1{name}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1synced_tables~1{name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1synced_tables~1{name}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1database~1instances~1{instance_name}~1synced_tables/get
@@ -2205,54 +2266,33 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_get_database_instance_role
+              #/components/x-stackQL-resources/synced_database_tables/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_list_database_instance_roles
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_get_database_catalog
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_get_database_instance
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_get_database_table
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_get_synced_database_table
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_list_database_catalogs
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_list_synced_database_tables
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_list_database_instances
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_find_database_instance_by_uid
+              #/components/x-stackQL-resources/synced_database_tables/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_create_database_instance_role
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_create_database_catalog
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_create_database_instance
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_create_database_table
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_create_synced_database_table
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_generate_database_credential
+              #/components/x-stackQL-resources/synced_database_tables/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_update_database_catalog
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_update_database_instance
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_update_synced_database_table
+              #/components/x-stackQL-resources/synced_database_tables/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_delete_database_instance_role
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_delete_database_catalog
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_delete_database_instance
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_delete_database_table
-          - $ref: >-
-              #/components/x-stackQL-resources/database/methods/database_delete_synced_database_table
+              #/components/x-stackQL-resources/synced_database_tables/methods/delete
+        replace: []
+    database_credentials:
+      id: databricks_workspace.database.database_credentials
+      name: database_credentials
+      title: Database Credentials
+      methods:
+        generate:
+          operation:
+            $ref: '#/paths/~1api~12.0~1database~1credentials/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select: []
+        insert: []
+        update: []
+        delete: []
         replace: []

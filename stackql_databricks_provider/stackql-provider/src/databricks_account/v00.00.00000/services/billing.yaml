@@ -225,7 +225,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[BudgetPolicy]'
+                $ref: '#/components/schemas/BudgetPolicy'
         default:
           description: Error response
           content:
@@ -450,7 +450,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[BudgetConfiguration]'
+                $ref: '#/components/schemas/BudgetConfiguration'
         default:
           description: Error response
           content:
@@ -754,7 +754,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[LogDeliveryConfiguration]'
+                $ref: '#/components/schemas/LogDeliveryConfiguration'
         default:
           description: Error response
           content:
@@ -1305,7 +1305,8 @@ components:
       type: object
       properties:
         contents:
-          $ref: '#/components/schemas/BinaryIO'
+          type: string
+          format: binary
     Filter:
       type: object
       properties:

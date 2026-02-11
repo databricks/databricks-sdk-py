@@ -1,0 +1,3 @@
+show providers;
+SHOW RESOURCES IN databricks_account.billing;
+SHOW RESOURCES IN databricks_workspace.agentbricks;

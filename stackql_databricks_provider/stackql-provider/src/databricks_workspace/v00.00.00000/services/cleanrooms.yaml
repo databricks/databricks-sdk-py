@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/revisions/{etag}:
     get:
@@ -148,7 +148,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[CleanRoomAsset]'
+                $ref: '#/components/schemas/CleanRoomAsset'
         default:
           description: Error response
           content:
@@ -263,7 +263,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[CleanRoomAsset]'
+                $ref: '#/components/schemas/CleanRoomAsset'
         default:
           description: Error response
           content:
@@ -646,7 +646,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[CleanRoomAutoApprovalRule]'
+                $ref: '#/components/schemas/CleanRoomAutoApprovalRule'
         default:
           description: Error response
           content:
@@ -853,7 +853,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[CleanRoomNotebookTaskRun]'
+                $ref: '#/components/schemas/CleanRoomNotebookTaskRun'
         default:
           description: Error response
           content:
@@ -920,7 +920,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[CleanRoom]'
+                $ref: '#/components/schemas/CleanRoom'
         default:
           description: Error response
           content:
@@ -974,7 +974,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[CleanRoom]'
+                $ref: '#/components/schemas/CleanRoom'
         default:
           description: Error response
           content:
@@ -1996,19 +1996,19 @@ components:
         Methods can be added to enumerations, and members can have their own
         attributes -- see the documentation for details.
   x-stackQL-resources:
-    clean_room_asset_revisions:
-      id: databricks_workspace.cleanrooms.clean_room_asset_revisions
-      name: clean_room_asset_revisions
-      title: Clean Room Asset Revisions
+    asset_revisions:
+      id: databricks_workspace.cleanrooms.asset_revisions
+      name: asset_revisions
+      title: Asset Revisions
       methods:
-        clean_room_asset_revisions_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}~1revisions~1{etag}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_room_asset_revisions_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}~1revisions/get
@@ -2017,53 +2017,51 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_asset_revisions/methods/clean_room_asset_revisions_get
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_asset_revisions/methods/clean_room_asset_revisions_list
+          - $ref: '#/components/x-stackQL-resources/asset_revisions/methods/get'
+          - $ref: '#/components/x-stackQL-resources/asset_revisions/methods/list'
         insert: []
         update: []
         delete: []
         replace: []
-    clean_room_assets:
-      id: databricks_workspace.cleanrooms.clean_room_assets
-      name: clean_room_assets
-      title: Clean Room Assets
+    assets:
+      id: databricks_workspace.cleanrooms.assets
+      name: assets
+      title: Assets
       methods:
-        clean_room_assets_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_room_assets_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_room_assets_create_clean_room_asset_review:
+        review:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}~1reviews/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_room_assets_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_room_assets_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_room_assets_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}/patch
@@ -2072,56 +2070,49 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_get
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_list
+          - $ref: '#/components/x-stackQL-resources/assets/methods/get'
+          - $ref: '#/components/x-stackQL-resources/assets/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_create_clean_room_asset_review
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_create
+          - $ref: '#/components/x-stackQL-resources/assets/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_update
+          - $ref: '#/components/x-stackQL-resources/assets/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_delete
+          - $ref: '#/components/x-stackQL-resources/assets/methods/delete'
         replace: []
-    clean_room_auto_approval_rules:
-      id: databricks_workspace.cleanrooms.clean_room_auto_approval_rules
-      name: clean_room_auto_approval_rules
-      title: Clean Room Auto Approval Rules
+    auto_approval_rules:
+      id: databricks_workspace.cleanrooms.auto_approval_rules
+      name: auto_approval_rules
+      title: Auto Approval Rules
       methods:
-        clean_room_auto_approval_rules_create:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_room_auto_approval_rules_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_room_auto_approval_rules_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules~1{rule_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_room_auto_approval_rules_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules~1{rule_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_room_auto_approval_rules_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules~1{rule_id}/patch
@@ -2130,26 +2121,24 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_auto_approval_rules/methods/clean_room_auto_approval_rules_get
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_auto_approval_rules/methods/clean_room_auto_approval_rules_list
+          - $ref: '#/components/x-stackQL-resources/auto_approval_rules/methods/get'
+          - $ref: '#/components/x-stackQL-resources/auto_approval_rules/methods/list'
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/clean_room_auto_approval_rules/methods/clean_room_auto_approval_rules_create
+              #/components/x-stackQL-resources/auto_approval_rules/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/clean_room_auto_approval_rules/methods/clean_room_auto_approval_rules_update
+              #/components/x-stackQL-resources/auto_approval_rules/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/clean_room_auto_approval_rules/methods/clean_room_auto_approval_rules_delete
+              #/components/x-stackQL-resources/auto_approval_rules/methods/delete
         replace: []
-    clean_room_task_runs:
-      id: databricks_workspace.cleanrooms.clean_room_task_runs
-      name: clean_room_task_runs
-      title: Clean Room Task Runs
+    task_runs:
+      id: databricks_workspace.cleanrooms.task_runs
+      name: task_runs
+      title: Task Runs
       methods:
-        clean_room_task_runs_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1runs/get'
           response:
@@ -2157,8 +2146,7 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_room_task_runs/methods/clean_room_task_runs_list
+          - $ref: '#/components/x-stackQL-resources/task_runs/methods/list'
         insert: []
         update: []
         delete: []
@@ -2168,38 +2156,38 @@ components:
       name: clean_rooms
       title: Clean Rooms
       methods:
-        clean_rooms_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_rooms_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_rooms_create_output_catalog:
+        create_output_catalog:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1output-catalogs/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_rooms_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms~1{name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_rooms_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clean_rooms_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms~1{name}/patch'
           response:
@@ -2207,19 +2195,12 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_get
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_list
+          - $ref: '#/components/x-stackQL-resources/clean_rooms/methods/get'
+          - $ref: '#/components/x-stackQL-resources/clean_rooms/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_create_output_catalog
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_create
+          - $ref: '#/components/x-stackQL-resources/clean_rooms/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_update
+          - $ref: '#/components/x-stackQL-resources/clean_rooms/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_delete
+          - $ref: '#/components/x-stackQL-resources/clean_rooms/methods/delete'
         replace: []

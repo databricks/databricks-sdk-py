@@ -6,11 +6,11 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/vector-search/endpoints:
     post:
@@ -56,7 +56,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[EndpointInfo]'
+                $ref: '#/components/schemas/EndpointInfo'
         default:
           description: Error response
           content:
@@ -94,7 +94,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[EndpointInfo]'
+                $ref: '#/components/schemas/EndpointInfo'
         default:
           description: Error response
           content:
@@ -464,7 +464,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[MiniVectorIndex]'
+                $ref: '#/components/schemas/MiniVectorIndex'
         default:
           description: Error response
           content:
@@ -1565,50 +1565,50 @@ components:
 
         updates.
   x-stackQL-resources:
-    vector_search_endpoints:
-      id: databricks_workspace.vectorsearch.vector_search_endpoints
-      name: vector_search_endpoints
-      title: Vector Search Endpoints
+    endpoints:
+      id: databricks_workspace.vectorsearch.endpoints
+      name: endpoints
+      title: Endpoints
       methods:
-        vector_search_endpoints_create_endpoint:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1endpoints/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_endpoints_list_endpoints:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1endpoints/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_endpoints_delete_endpoint:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1endpoints~1{endpoint_name}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_endpoints_get_endpoint:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1endpoints~1{endpoint_name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_endpoints_retrieve_user_visible_metrics:
+        retrieve_user_visible_metrics:
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1endpoints~1{name}~1metrics/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_endpoints_update_endpoint_budget_policy:
+        update_endpoint_budget_policy:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1endpoints~1{endpoint_name}~1budget-policy/patch
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_endpoints_update_endpoint_custom_tags:
+        update_endpoint_custom_tags:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1endpoints~1{endpoint_name}~1tags/patch
@@ -1617,89 +1617,79 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_get_endpoint
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_list_endpoints
+          - $ref: '#/components/x-stackQL-resources/endpoints/methods/get'
+          - $ref: '#/components/x-stackQL-resources/endpoints/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_retrieve_user_visible_metrics
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_create_endpoint
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_update_endpoint_budget_policy
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_update_endpoint_custom_tags
+          - $ref: '#/components/x-stackQL-resources/endpoints/methods/create'
+        update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_delete_endpoint
+          - $ref: '#/components/x-stackQL-resources/endpoints/methods/delete'
         replace: []
-    vector_search_indexes:
-      id: databricks_workspace.vectorsearch.vector_search_indexes
-      name: vector_search_indexes
-      title: Vector Search Indexes
+    indexes:
+      id: databricks_workspace.vectorsearch.indexes
+      name: indexes
+      title: Indexes
       methods:
-        vector_search_indexes_create_index:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1indexes/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_indexes_list_indexes:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1indexes/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_indexes_delete_data_vector_index:
+        delete_data_vector_index:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1delete-data/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_indexes_delete_index:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1indexes~1{index_name}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_indexes_get_index:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1indexes~1{index_name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_indexes_query_index:
+        query_index:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1query/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_indexes_query_next_page:
+        query_next_page:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1query-next-page/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_indexes_scan_index:
+        scan_index:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1scan/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_indexes_sync_index:
+        sync_index:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1sync/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        vector_search_indexes_upsert_data_vector_index:
+        upsert_data_vector_index:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1upsert-data/post
@@ -1708,27 +1698,11 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_get_index
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_list_indexes
+          - $ref: '#/components/x-stackQL-resources/indexes/methods/get'
+          - $ref: '#/components/x-stackQL-resources/indexes/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_query_index
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_query_next_page
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_scan_index
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_sync_index
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_upsert_data_vector_index
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_create_index
+          - $ref: '#/components/x-stackQL-resources/indexes/methods/create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_delete_data_vector_index
-          - $ref: >-
-              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_delete_index
+          - $ref: '#/components/x-stackQL-resources/indexes/methods/delete'
         replace: []

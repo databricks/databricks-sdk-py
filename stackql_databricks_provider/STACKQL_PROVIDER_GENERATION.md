@@ -62,6 +62,12 @@ Edit the CSV files to customize resource/method mappings before generating the p
 | `stackql_verb` | SQL verb: `select`, `insert`, `replace`, `update`, `delete`, `exec` |
 | `stackql_object_key` | JSON path to response data array (e.g. `$.items`) |
 
+after making any updates to the service scoped csv files (masters), run the following:
+
+```bash
+python3 -m inventory_gen
+```
+
 ### 4. Generate Provider
 
 This step transforms the OpenAPI specs into a fully-functional StackQL provider using the CSV mappings. Run this **separately for each scope**:
@@ -87,7 +93,7 @@ npm run generate-provider -- \
   --input-dir openapi_generated/workspace \
   --output-dir stackql-provider/src/databricks_workspace \
   --config-path inventory/workspace/all_services.csv \
-  --servers '{"url":"https://{deployment_name}.cloud.databricks.com","variables":{"deployment_name":{"description":"The Databricks Workspace Deployment Name","default":"dbc-abcd0123-a1bc"}}}' \
+  --servers '[{"url":"https://{deployment_name}.cloud.databricks.com","variables":{"deployment_name":{"description":"The Databricks Workspace Deployment Name","default":"dbc-abcd0123-a1bc"}}}]' \
   --provider-config '{"auth":{"type":"oauth2","client_id_env_var":"DATABRICKS_CLIENT_ID","client_secret_env_var":"DATABRICKS_CLIENT_SECRET","grant_type":"client_credentials","token_url":"https://accounts.cloud.databricks.com/oidc/accounts/{{ .__env__DATABRICKS_ACCOUNT_ID }}/v1/token","scopes":["all-apis"]}}' \
   --overwrite
 ```
@@ -108,16 +114,17 @@ npm run generate-provider -- \
 
 Test all metadata routes (services, resources, methods) in the provider:
 
+```bash
+# start server
+PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/stackql-provider"
+npm run start-server -- --registry $PROVIDER_REGISTRY_ROOT_DIR
+```
+
 **Account scope:**
 
 ```bash
-PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/stackql-provider"
-npm run start-server -- --provider databricks_account --registry $PROVIDER_REGISTRY_ROOT_DIR
-
 # Test account provider
 npm run test-meta-routes -- databricks_account --verbose
-
-npm run stop-server
 ```
 
 **Workspace scope:**
@@ -125,14 +132,14 @@ npm run stop-server
 ```bash
 # Test workspace provider
 npm run test-meta-routes -- databricks_workspace --verbose
-
-npm run stop-server
 ```
 
-Check server status:
+Manage server:
 
 ```bash
 npm run server-status
+
+npm run stop-server
 ```
 
 #### Run Test Queries

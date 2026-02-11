@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/accounts/servicePrincipals/{service_principal_id}/credentials/secrets:
     post:
@@ -128,7 +128,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[SecretInfo]'
+                $ref: '#/components/schemas/SecretInfo'
         default:
           description: Error response
           content:
@@ -512,26 +512,26 @@ components:
       type: object
       properties: {}
   x-stackQL-resources:
-    service_principal_secrets_proxy:
-      id: databricks_workspace.oauth2.service_principal_secrets_proxy
-      name: service_principal_secrets_proxy
-      title: Service Principal Secrets Proxy
+    service_principal_secrets:
+      id: databricks_workspace.oauth2.service_principal_secrets
+      name: service_principal_secrets
+      title: Service Principal Secrets
       methods:
-        service_principal_secrets_proxy_create:
+        create:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1servicePrincipals~1{service_principal_id}~1credentials~1secrets/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        service_principal_secrets_proxy_list:
+        list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1servicePrincipals~1{service_principal_id}~1credentials~1secrets/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        service_principal_secrets_proxy_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1servicePrincipals~1{service_principal_id}~1credentials~1secrets~1{secret_id}/delete
@@ -541,12 +541,12 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/service_principal_secrets_proxy/methods/service_principal_secrets_proxy_list
+              #/components/x-stackQL-resources/service_principal_secrets/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/service_principal_secrets_proxy/methods/service_principal_secrets_proxy_create
+              #/components/x-stackQL-resources/service_principal_secrets/methods/create
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/service_principal_secrets_proxy/methods/service_principal_secrets_proxy_delete
+              #/components/x-stackQL-resources/service_principal_secrets/methods/delete
         replace: []

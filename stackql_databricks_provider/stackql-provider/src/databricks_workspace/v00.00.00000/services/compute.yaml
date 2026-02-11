@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/policies/clusters/create:
     post:
@@ -563,7 +563,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Policy]'
+                $ref: '#/components/schemas/Policy'
         default:
           description: Error response
           content:
@@ -1061,7 +1061,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ClusterDetails]'
+                $ref: '#/components/schemas/ClusterDetails'
         default:
           description: Error response
           content:
@@ -1115,7 +1115,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ClusterDetails]'
+                $ref: '#/components/schemas/ClusterDetails'
         default:
           description: Error response
           content:
@@ -1550,7 +1550,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ClusterDetails]'
+                $ref: '#/components/schemas/ClusterDetails'
         default:
           description: Error response
           content:
@@ -1676,7 +1676,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ClusterEvent]'
+                $ref: '#/components/schemas/ClusterEvent'
         default:
           description: Error response
           content:
@@ -1990,7 +1990,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ClusterDetails]'
+                $ref: '#/components/schemas/ClusterDetails'
         default:
           description: Error response
           content:
@@ -2234,7 +2234,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ClusterDetails]'
+                $ref: '#/components/schemas/ClusterDetails'
         default:
           description: Error response
           content:
@@ -2293,7 +2293,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ClusterDetails]'
+                $ref: '#/components/schemas/ClusterDetails'
         default:
           description: Error response
           content:
@@ -2387,7 +2387,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ClusterDetails]'
+                $ref: '#/components/schemas/ClusterDetails'
         default:
           description: Error response
           content:
@@ -2536,7 +2536,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ClusterDetails]'
+                $ref: '#/components/schemas/ClusterDetails'
         default:
           description: Error response
           content:
@@ -2591,7 +2591,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[CommandStatusResponse]'
+                $ref: '#/components/schemas/CommandStatusResponse'
         default:
           description: Error response
           content:
@@ -2749,7 +2749,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[ContextStatusResponse]'
+                $ref: '#/components/schemas/ContextStatusResponse'
         default:
           description: Error response
           content:
@@ -2859,7 +2859,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Wait[CommandStatusResponse]'
+                $ref: '#/components/schemas/CommandStatusResponse'
         default:
           description: Error response
           content:
@@ -2978,7 +2978,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[GlobalInitScriptDetails]'
+                $ref: '#/components/schemas/GlobalInitScriptDetails'
         default:
           description: Error response
           content:
@@ -3770,7 +3770,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[InstancePoolAndStats]'
+                $ref: '#/components/schemas/InstancePoolAndStats'
         default:
           description: Error response
           content:
@@ -4003,7 +4003,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[InstanceProfile]'
+                $ref: '#/components/schemas/InstanceProfile'
         default:
           description: Error response
           content:
@@ -4087,7 +4087,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ClusterLibraryStatuses]'
+                $ref: '#/components/schemas/ClusterLibraryStatuses'
         default:
           description: Error response
           content:
@@ -4141,7 +4141,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[LibraryFullStatus]'
+                $ref: '#/components/schemas/LibraryFullStatus'
         default:
           description: Error response
           content:
@@ -4436,7 +4436,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[ClusterCompliance]'
+                $ref: '#/components/schemas/ClusterCompliance'
         default:
           description: Error response
           content:
@@ -4542,7 +4542,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[PolicyFamily]'
+                $ref: '#/components/schemas/PolicyFamily'
         default:
           description: Error response
           content:
@@ -7331,7 +7331,7 @@ components:
         cause:
           type: string
         data:
-          $ref: '#/components/schemas/Any'
+          type: object
         file_name:
           type: string
           description: >-
@@ -8836,59 +8836,31 @@ components:
       name: cluster_policies
       title: Cluster Policies
       methods:
-        cluster_policies_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        cluster_policies_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        cluster_policies_edit:
+        replace:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1edit/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        cluster_policies_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1get/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        cluster_policies_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1cluster-policies~1{cluster_policy_id}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        cluster_policies_get_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1cluster-policies~1{cluster_policy_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        cluster_policies_set_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1cluster-policies~1{cluster_policy_id}/put
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        cluster_policies_update_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1cluster-policies~1{cluster_policy_id}/patch
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        cluster_policies_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1list/get'
           response:
@@ -8896,155 +8868,157 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/cluster_policies/methods/cluster_policies_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/cluster_policies/methods/cluster_policies_get_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/cluster_policies/methods/cluster_policies_get
-          - $ref: >-
-              #/components/x-stackQL-resources/cluster_policies/methods/cluster_policies_list
+          - $ref: '#/components/x-stackQL-resources/cluster_policies/methods/get'
+          - $ref: '#/components/x-stackQL-resources/cluster_policies/methods/list'
         insert:
+          - $ref: '#/components/x-stackQL-resources/cluster_policies/methods/create'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/cluster_policies/methods/delete'
+        replace:
+          - $ref: '#/components/x-stackQL-resources/cluster_policies/methods/replace'
+    cluster_policy_permission_levels:
+      id: databricks_workspace.compute.cluster_policy_permission_levels
+      name: cluster_policy_permission_levels
+      title: Cluster Policy Permission Levels
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1cluster-policies~1{cluster_policy_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/cluster_policies/methods/cluster_policies_create
+              #/components/x-stackQL-resources/cluster_policy_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    cluster_policy_permissions:
+      id: databricks_workspace.compute.cluster_policy_permissions
+      name: cluster_policy_permissions
+      title: Cluster Policy Permissions
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1cluster-policies~1{cluster_policy_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1cluster-policies~1{cluster_policy_id}/put
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1cluster-policies~1{cluster_policy_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/cluster_policies/methods/cluster_policies_delete
-          - $ref: >-
-              #/components/x-stackQL-resources/cluster_policies/methods/cluster_policies_edit
+              #/components/x-stackQL-resources/cluster_policy_permissions/methods/get
+        insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/cluster_policies/methods/cluster_policies_update_permissions
+              #/components/x-stackQL-resources/cluster_policy_permissions/methods/update
         delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/cluster_policies/methods/cluster_policies_set_permissions
+              #/components/x-stackQL-resources/cluster_policy_permissions/methods/set
     clusters:
       id: databricks_workspace.compute.clusters
       name: clusters
       title: Clusters
       methods:
-        clusters_change_owner:
+        change_owner:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1change-owner/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_edit:
+        edit:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1edit/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_events:
+        events:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1events/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1get/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1clusters~1{cluster_id}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        clusters_get_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1clusters~1{cluster_id}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        clusters_set_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1clusters~1{cluster_id}/put'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        clusters_update_permissions:
-          operation:
-            $ref: '#/paths/~1api~12.0~1permissions~1clusters~1{cluster_id}/patch'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        clusters_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1list/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_list_node_types:
-          operation:
-            $ref: '#/paths/~1api~12.1~1clusters~1list-node-types/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        clusters_list_zones:
-          operation:
-            $ref: '#/paths/~1api~12.1~1clusters~1list-zones/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        clusters_permanent_delete:
+        permanent_delete:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1permanent-delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_pin:
+        pin:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1pin/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_resize:
+        resize:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1resize/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_restart:
+        restart:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1restart/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_spark_versions:
-          operation:
-            $ref: '#/paths/~1api~12.1~1clusters~1spark-versions/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        clusters_start:
+        start:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1start/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_unpin:
+        unpin:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1unpin/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        clusters_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1update/post'
           response:
@@ -9052,76 +9026,150 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/clusters/methods/clusters_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/clusters/methods/clusters_get_permissions
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_get'
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_list'
-          - $ref: >-
-              #/components/x-stackQL-resources/clusters/methods/clusters_list_node_types
-          - $ref: >-
-              #/components/x-stackQL-resources/clusters/methods/clusters_list_zones
-          - $ref: >-
-              #/components/x-stackQL-resources/clusters/methods/clusters_spark_versions
+          - $ref: '#/components/x-stackQL-resources/clusters/methods/get'
+          - $ref: '#/components/x-stackQL-resources/clusters/methods/list'
         insert:
+          - $ref: '#/components/x-stackQL-resources/clusters/methods/create'
+        update: []
+        delete: []
+        replace: []
+    cluster_permission_levels:
+      id: databricks_workspace.compute.cluster_permission_levels
+      name: cluster_permission_levels
+      title: Cluster Permission Levels
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1clusters~1{cluster_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/clusters/methods/clusters_change_owner
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_create'
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_delete'
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_edit'
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_events'
-          - $ref: >-
-              #/components/x-stackQL-resources/clusters/methods/clusters_permanent_delete
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_pin'
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_resize'
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_restart'
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_start'
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_unpin'
-          - $ref: '#/components/x-stackQL-resources/clusters/methods/clusters_update'
+              #/components/x-stackQL-resources/cluster_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    cluster_permissions:
+      id: databricks_workspace.compute.cluster_permissions
+      name: cluster_permissions
+      title: Cluster Permissions
+      methods:
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1clusters~1{cluster_id}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1clusters~1{cluster_id}/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1clusters~1{cluster_id}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/cluster_permissions/methods/get'
+        insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/clusters/methods/clusters_update_permissions
+              #/components/x-stackQL-resources/cluster_permissions/methods/update
         delete: []
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/clusters/methods/clusters_set_permissions
+          - $ref: '#/components/x-stackQL-resources/cluster_permissions/methods/set'
+    cluster_node_types:
+      id: databricks_workspace.compute.cluster_node_types
+      name: cluster_node_types
+      title: Cluster Node Types
+      methods:
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.1~1clusters~1list-node-types/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/cluster_node_types/methods/list'
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    cluster_zones:
+      id: databricks_workspace.compute.cluster_zones
+      name: cluster_zones
+      title: Cluster Zones
+      methods:
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.1~1clusters~1list-zones/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/cluster_zones/methods/list'
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    spark_versions:
+      id: databricks_workspace.compute.spark_versions
+      name: spark_versions
+      title: Spark Versions
+      methods:
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.1~1clusters~1spark-versions/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/spark_versions/methods/list'
+        insert: []
+        update: []
+        delete: []
+        replace: []
     command_execution:
       id: databricks_workspace.compute.command_execution
       name: command_execution
       title: Command Execution
       methods:
-        command_execution_cancel:
+        cancel:
           operation:
             $ref: '#/paths/~1api~11.2~1commands~1cancel/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        command_execution_command_status:
+        command_status:
           operation:
             $ref: '#/paths/~1api~11.2~1commands~1status/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        command_execution_context_status:
-          operation:
-            $ref: '#/paths/~1api~11.2~1contexts~1status/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        command_execution_create:
+        create:
           operation:
             $ref: '#/paths/~1api~11.2~1contexts~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        command_execution_destroy:
+        destroy:
           operation:
             $ref: '#/paths/~1api~11.2~1contexts~1destroy/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        command_execution_execute:
+        execute:
           operation:
             $ref: '#/paths/~1api~11.2~1commands~1execute/post'
           response:
@@ -9130,18 +9178,27 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/command_execution/methods/command_execution_command_status
-          - $ref: >-
-              #/components/x-stackQL-resources/command_execution/methods/command_execution_context_status
+              #/components/x-stackQL-resources/command_execution/methods/command_status
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/command_execution/methods/command_execution_cancel
-          - $ref: >-
-              #/components/x-stackQL-resources/command_execution/methods/command_execution_create
-          - $ref: >-
-              #/components/x-stackQL-resources/command_execution/methods/command_execution_destroy
-          - $ref: >-
-              #/components/x-stackQL-resources/command_execution/methods/command_execution_execute
+          - $ref: '#/components/x-stackQL-resources/command_execution/methods/create'
+        update: []
+        delete: []
+        replace: []
+    execution_contexts:
+      id: databricks_workspace.compute.execution_contexts
+      name: execution_contexts
+      title: Execution Contexts
+      methods:
+        get:
+          operation:
+            $ref: '#/paths/~1api~11.2~1contexts~1status/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/execution_contexts/methods/get'
+        insert: []
         update: []
         delete: []
         replace: []
@@ -9150,31 +9207,31 @@ components:
       name: global_init_scripts
       title: Global Init Scripts
       methods:
-        global_init_scripts_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1global-init-scripts/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        global_init_scripts_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1global-init-scripts/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        global_init_scripts_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1global-init-scripts~1{script_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        global_init_scripts_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1global-init-scripts~1{script_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        global_init_scripts_update:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1global-init-scripts~1{script_id}/patch'
           response:
@@ -9182,78 +9239,48 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/global_init_scripts/methods/global_init_scripts_get
-          - $ref: >-
-              #/components/x-stackQL-resources/global_init_scripts/methods/global_init_scripts_list
+          - $ref: '#/components/x-stackQL-resources/global_init_scripts/methods/get'
+          - $ref: '#/components/x-stackQL-resources/global_init_scripts/methods/list'
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/global_init_scripts/methods/global_init_scripts_create
+              #/components/x-stackQL-resources/global_init_scripts/methods/create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/global_init_scripts/methods/global_init_scripts_update
+              #/components/x-stackQL-resources/global_init_scripts/methods/update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/global_init_scripts/methods/global_init_scripts_delete
+              #/components/x-stackQL-resources/global_init_scripts/methods/delete
         replace: []
     instance_pools:
       id: databricks_workspace.compute.instance_pools
       name: instance_pools
       title: Instance Pools
       methods:
-        instance_pools_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1instance-pools~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        instance_pools_delete:
+        delete:
           operation:
             $ref: '#/paths/~1api~12.0~1instance-pools~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        instance_pools_edit:
+        replace:
           operation:
             $ref: '#/paths/~1api~12.0~1instance-pools~1edit/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        instance_pools_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1instance-pools~1get/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        instance_pools_get_permission_levels:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1instance-pools~1{instance_pool_id}~1permissionLevels/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        instance_pools_get_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1instance-pools~1{instance_pool_id}/get
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        instance_pools_set_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1instance-pools~1{instance_pool_id}/put
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        instance_pools_update_permissions:
-          operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1instance-pools~1{instance_pool_id}/patch
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        instance_pools_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1instance-pools~1list/get'
           response:
@@ -9261,52 +9288,97 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/instance_pools/methods/instance_pools_get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/instance_pools/methods/instance_pools_get_permissions
-          - $ref: >-
-              #/components/x-stackQL-resources/instance_pools/methods/instance_pools_get
-          - $ref: >-
-              #/components/x-stackQL-resources/instance_pools/methods/instance_pools_list
+          - $ref: '#/components/x-stackQL-resources/instance_pools/methods/get'
+          - $ref: '#/components/x-stackQL-resources/instance_pools/methods/list'
         insert:
+          - $ref: '#/components/x-stackQL-resources/instance_pools/methods/create'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/instance_pools/methods/delete'
+        replace:
+          - $ref: '#/components/x-stackQL-resources/instance_pools/methods/replace'
+    instance_pool_permission_levels:
+      id: databricks_workspace.compute.instance_pool_permission_levels
+      name: instance_pool_permission_levels
+      title: Instance Pool Permission Levels
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1instance-pools~1{instance_pool_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/instance_pools/methods/instance_pools_create
+              #/components/x-stackQL-resources/instance_pool_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    instance_pool_permissions:
+      id: databricks_workspace.compute.instance_pool_permissions
+      name: instance_pool_permissions
+      title: Instance Pool Permissions
+      methods:
+        get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1instance-pools~1{instance_pool_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        set:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1instance-pools~1{instance_pool_id}/put
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1instance-pools~1{instance_pool_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/instance_pools/methods/instance_pools_delete
-          - $ref: >-
-              #/components/x-stackQL-resources/instance_pools/methods/instance_pools_edit
+              #/components/x-stackQL-resources/instance_pool_permissions/methods/get
+        insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/instance_pools/methods/instance_pools_update_permissions
+              #/components/x-stackQL-resources/instance_pool_permissions/methods/update
         delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/instance_pools/methods/instance_pools_set_permissions
+              #/components/x-stackQL-resources/instance_pool_permissions/methods/set
     instance_profiles:
       id: databricks_workspace.compute.instance_profiles
       name: instance_profiles
       title: Instance Profiles
       methods:
-        instance_profiles_add:
+        add:
           operation:
             $ref: '#/paths/~1api~12.0~1instance-profiles~1add/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        instance_profiles_edit:
+        edit:
           operation:
             $ref: '#/paths/~1api~12.0~1instance-profiles~1edit/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        instance_profiles_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1instance-profiles~1list/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        instance_profiles_remove:
+        remove:
           operation:
             $ref: '#/paths/~1api~12.0~1instance-profiles~1remove/post'
           response:
@@ -9314,15 +9386,30 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/instance_profiles/methods/instance_profiles_list
+          - $ref: '#/components/x-stackQL-resources/instance_profiles/methods/list'
         insert:
+          - $ref: '#/components/x-stackQL-resources/instance_profiles/methods/add'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/instance_profiles/methods/remove'
+        replace:
+          - $ref: '#/components/x-stackQL-resources/instance_profiles/methods/edit'
+    all_cluster_library_statuses:
+      id: databricks_workspace.compute.all_cluster_library_statuses
+      name: all_cluster_library_statuses
+      title: All Cluster Library Statuses
+      methods:
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1libraries~1all-cluster-statuses/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
           - $ref: >-
-              #/components/x-stackQL-resources/instance_profiles/methods/instance_profiles_add
-          - $ref: >-
-              #/components/x-stackQL-resources/instance_profiles/methods/instance_profiles_edit
-          - $ref: >-
-              #/components/x-stackQL-resources/instance_profiles/methods/instance_profiles_remove
+              #/components/x-stackQL-resources/all_cluster_library_statuses/methods/list
+        insert: []
         update: []
         delete: []
         replace: []
@@ -9331,25 +9418,19 @@ components:
       name: libraries
       title: Libraries
       methods:
-        libraries_all_cluster_statuses:
-          operation:
-            $ref: '#/paths/~1api~12.0~1libraries~1all-cluster-statuses/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        libraries_cluster_status:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1libraries~1cluster-status/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        libraries_install:
+        install:
           operation:
             $ref: '#/paths/~1api~12.0~1libraries~1install/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        libraries_uninstall:
+        uninstall:
           operation:
             $ref: '#/paths/~1api~12.0~1libraries~1uninstall/post'
           response:
@@ -9357,15 +9438,9 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/libraries/methods/libraries_all_cluster_statuses
-          - $ref: >-
-              #/components/x-stackQL-resources/libraries/methods/libraries_cluster_status
+          - $ref: '#/components/x-stackQL-resources/libraries/methods/get'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/libraries/methods/libraries_install
-          - $ref: >-
-              #/components/x-stackQL-resources/libraries/methods/libraries_uninstall
+          - $ref: '#/components/x-stackQL-resources/libraries/methods/install'
         update: []
         delete: []
         replace: []
@@ -9374,19 +9449,19 @@ components:
       name: policy_compliance_for_clusters
       title: Policy Compliance For Clusters
       methods:
-        policy_compliance_for_clusters_enforce_compliance:
+        enforce:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1enforce-compliance/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        policy_compliance_for_clusters_get_compliance:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1get-compliance/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        policy_compliance_for_clusters_list_compliance:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1list-compliance/get'
           response:
@@ -9395,12 +9470,12 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/policy_compliance_for_clusters/methods/policy_compliance_for_clusters_get_compliance
+              #/components/x-stackQL-resources/policy_compliance_for_clusters/methods/get
           - $ref: >-
-              #/components/x-stackQL-resources/policy_compliance_for_clusters/methods/policy_compliance_for_clusters_list_compliance
+              #/components/x-stackQL-resources/policy_compliance_for_clusters/methods/list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/policy_compliance_for_clusters/methods/policy_compliance_for_clusters_enforce_compliance
+              #/components/x-stackQL-resources/policy_compliance_for_clusters/methods/enforce
         update: []
         delete: []
         replace: []
@@ -9409,13 +9484,13 @@ components:
       name: policy_families
       title: Policy Families
       methods:
-        policy_families_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1policy-families~1{policy_family_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        policy_families_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1policy-families/get'
           response:
@@ -9423,10 +9498,8 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/policy_families/methods/policy_families_get
-          - $ref: >-
-              #/components/x-stackQL-resources/policy_families/methods/policy_families_list
+          - $ref: '#/components/x-stackQL-resources/policy_families/methods/get'
+          - $ref: '#/components/x-stackQL-resources/policy_families/methods/list'
         insert: []
         update: []
         delete: []

@@ -6,11 +6,11 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
 servers:
-  url: https://{deployment_name}.cloud.databricks.com
-  variables:
-    deployment_name:
-      description: The Databricks Workspace Deployment Name
-      default: dbc-abcd0123-a1bc
+  - url: https://{deployment_name}.cloud.databricks.com
+    variables:
+      deployment_name:
+        description: The Databricks Workspace Deployment Name
+        default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/postgres/{parent}/branches:
     post:
@@ -69,7 +69,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateBranchOperation'
+                type: object
         default:
           description: Error response
           content:
@@ -126,7 +126,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Branch]'
+                $ref: '#/components/schemas/Branch'
         default:
           description: Error response
           content:
@@ -195,7 +195,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateEndpointOperation'
+                type: object
         default:
           description: Error response
           content:
@@ -253,7 +253,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Endpoint]'
+                $ref: '#/components/schemas/Endpoint'
         default:
           description: Error response
           content:
@@ -317,7 +317,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateProjectOperation'
+                type: object
         default:
           description: Error response
           content:
@@ -368,7 +368,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Project]'
+                $ref: '#/components/schemas/Project'
         default:
           description: Error response
           content:
@@ -440,7 +440,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CreateRoleOperation'
+                type: object
         default:
           description: Error response
           content:
@@ -497,7 +497,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Iterator[Role]'
+                $ref: '#/components/schemas/Role'
         default:
           description: Error response
           content:
@@ -558,7 +558,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DeleteRoleOperation'
+                type: object
         default:
           description: Error response
           content:
@@ -671,7 +671,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/UpdateProjectOperation'
+                type: object
         default:
           description: Error response
           content:
@@ -742,7 +742,8 @@ components:
       type: object
       properties:
         create_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
         name:
           type: string
           description: >-
@@ -765,7 +766,8 @@ components:
           type: string
           description: System-generated unique ID for the branch.
         update_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
           description: A timestamp indicating when the branch was last updated.
     BranchOperationMetadata:
       type: object
@@ -774,7 +776,8 @@ components:
       type: object
       properties:
         expire_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
         is_protected:
           type: boolean
           description: >-
@@ -800,12 +803,13 @@ components:
             The Log Sequence Number (LSN) on the source branch from which this
             branch was created.
         source_branch_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
           description: >-
             The point in time on the source branch from which this branch was
             created.
         ttl:
-          $ref: '#/components/schemas/Duration'
+          type: string
           description: >-
             Relative time-to-live duration. When set, the branch will expire at
             creation_time + ttl.
@@ -818,7 +822,8 @@ components:
           type: boolean
           description: Whether the branch is the project's default branch.
         expire_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
           description: >-
             Absolute expiration time for the branch. Empty if expiration is
             disabled.
@@ -844,18 +849,21 @@ components:
             The Log Sequence Number (LSN) on the source branch from which this
             branch was created.
         source_branch_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
           description: >-
             The point in time on the source branch from which this branch was
             created.
         state_change_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
           description: A timestamp indicating when the `current_state` began.
     DatabaseCredential:
       type: object
       properties:
         expire_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
         token:
           type: string
           description: >-
@@ -867,7 +875,7 @@ components:
         details:
           type: array
           items:
-            $ref: '#/components/schemas/dict'
+            type: object
         error_code:
           $ref: '#/components/schemas/ErrorCode'
         message:
@@ -879,7 +887,8 @@ components:
       type: object
       properties:
         create_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
         name:
           type: string
           description: >-
@@ -902,7 +911,8 @@ components:
           type: string
           description: System-generated unique ID for the endpoint.
         update_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
           description: A timestamp indicating when the compute endpoint was last updated.
     EndpointHosts:
       type: object
@@ -953,7 +963,7 @@ components:
         settings:
           $ref: '#/components/schemas/EndpointSettings'
         suspend_timeout_duration:
-          $ref: '#/components/schemas/Duration'
+          type: string
           description: >-
             Duration of inactivity after which the compute endpoint is
             automatically suspended. If specified should be between 60s and
@@ -988,7 +998,7 @@ components:
         settings:
           $ref: '#/components/schemas/EndpointSettings'
         suspend_timeout_duration:
-          $ref: '#/components/schemas/Duration'
+          type: string
           description: >-
             Duration of inactivity after which the compute endpoint is
             automatically suspended.
@@ -1049,7 +1059,7 @@ components:
             The error result of the operation in case of failure or
             cancellation.
         metadata:
-          $ref: '#/components/schemas/dict'
+          type: object
           description: >-
             Service-specific metadata associated with the operation. It
             typically contains progress information and common metadata such as
@@ -1062,7 +1072,7 @@ components:
             mapping, the `name` should be a resource name ending with
             `operations/{unique_id}`.
         response:
-          $ref: '#/components/schemas/dict'
+          type: object
           description: The normal, successful response of the operation.
       description: >-
         This resource represents a long-running operation that is the result of
@@ -1071,7 +1081,8 @@ components:
       type: object
       properties:
         create_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
         name:
           type: string
           description: >-
@@ -1090,7 +1101,8 @@ components:
           type: string
           description: System-generated unique ID for the project.
         update_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
           description: A timestamp indicating when the project was last updated.
     ProjectDefaultEndpointSettings:
       type: object
@@ -1110,7 +1122,7 @@ components:
           type: object
           description: A raw representation of Postgres settings.
         suspend_timeout_duration:
-          $ref: '#/components/schemas/Duration'
+          type: string
           description: >-
             Duration of inactivity after which the compute endpoint is
             automatically suspended. If specified should be between 60s and
@@ -1130,7 +1142,7 @@ components:
             Human-readable project name. Length should be between 1 and 256
             characters.
         history_retention_duration:
-          $ref: '#/components/schemas/Duration'
+          type: string
           description: >-
             The number of seconds to retain the shared history for point in time
             recovery for all branches in this project. Value should be between
@@ -1150,7 +1162,7 @@ components:
           type: string
           description: The effective human-readable project name.
         history_retention_duration:
-          $ref: '#/components/schemas/Duration'
+          type: string
           description: >-
             The effective number of seconds to retain the shared history for
             point in time recovery.
@@ -1183,7 +1195,8 @@ components:
       type: object
       properties:
         create_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
         name:
           type: string
           description: >-
@@ -1205,7 +1218,8 @@ components:
             Current status of the role, including its identity type,
             authentication method, and role attributes.
         update_time:
-          $ref: '#/components/schemas/Timestamp'
+          type: string
+          format: date-time
       description: Role represents a Postgres role within a Branch.
     RoleOperationMetadata:
       type: object
@@ -1413,110 +1427,141 @@ components:
         to create a regular Postgres role not associated with a Databricks
         identity.
   x-stackQL-resources:
-    postgres:
-      id: databricks_workspace.postgres.postgres
-      name: postgres
-      title: Postgres
+    postgres_branches:
+      id: databricks_workspace.postgres.postgres_branches
+      name: postgres_branches
+      title: Postgres Branches
       methods:
-        postgres_create_branch:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1branches/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        postgres_list_branches:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1branches/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        postgres_create_endpoint:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/postgres_branches/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/postgres_branches/methods/create'
+        update: []
+        delete: []
+        replace: []
+    postgres_endpoints:
+      id: databricks_workspace.postgres.postgres_endpoints
+      name: postgres_endpoints
+      title: Postgres Endpoints
+      methods:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1endpoints/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        postgres_list_endpoints:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1endpoints/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        postgres_create_project:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/postgres_endpoints/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/postgres_endpoints/methods/create'
+        update: []
+        delete: []
+        replace: []
+    postgres_projects:
+      id: databricks_workspace.postgres.postgres_projects
+      name: postgres_projects
+      title: Postgres Projects
+      methods:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1projects/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        postgres_list_projects:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1projects/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        postgres_create_role:
-          operation:
-            $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1roles/post'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        postgres_list_roles:
-          operation:
-            $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1roles/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        postgres_delete_role:
-          operation:
-            $ref: '#/paths/~1api~12.0~1postgres~1{name}/delete'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        postgres_get_role:
-          operation:
-            $ref: '#/paths/~1api~12.0~1postgres~1{name}/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
-        postgres_update_project:
+        update:
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        postgres_generate_database_credential:
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/postgres_projects/methods/list'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/postgres_projects/methods/create'
+        update:
+          - $ref: '#/components/x-stackQL-resources/postgres_projects/methods/update'
+        delete: []
+        replace: []
+    postgres_roles:
+      id: databricks_workspace.postgres.postgres_roles
+      name: postgres_roles
+      title: Postgres Roles
+      methods:
+        create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1roles/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1roles/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{name}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/postgres_roles/methods/list'
+          - $ref: '#/components/x-stackQL-resources/postgres_roles/methods/get'
+        insert:
+          - $ref: '#/components/x-stackQL-resources/postgres_roles/methods/create'
+        update: []
+        delete:
+          - $ref: '#/components/x-stackQL-resources/postgres_roles/methods/delete'
+        replace: []
+    postgres_credentials:
+      id: databricks_workspace.postgres.postgres_credentials
+      name: postgres_credentials
+      title: Postgres Credentials
+      methods:
+        generate:
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1credentials/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
-        select:
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_list_branches
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_list_endpoints
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_list_roles
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_get_role
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_list_projects
-        insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_create_branch
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_create_endpoint
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_create_role
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_create_project
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_generate_database_credential
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_update_project
-        delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/postgres/methods/postgres_delete_role
+        select: []
+        insert: []
+        update: []
+        delete: []
         replace: []
