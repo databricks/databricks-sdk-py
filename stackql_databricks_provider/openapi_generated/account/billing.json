@@ -219,7 +219,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BudgetPolicy"
+                  "$ref": "#/components/schemas/ListBudgetPoliciesResponse"
                 }
               }
             }
@@ -542,7 +542,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BudgetConfiguration"
+                  "$ref": "#/components/schemas/ListBudgetConfigurationsResponse"
                 }
               }
             }
@@ -883,7 +883,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/LogDeliveryConfiguration"
+                  "$ref": "#/components/schemas/WrappedLogDeliveryConfigurations"
                 }
               }
             }

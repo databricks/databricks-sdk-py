@@ -131,7 +131,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProviderInfo"
+                  "$ref": "#/components/schemas/ListProvidersResponse"
                 }
               }
             }
@@ -470,7 +470,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProviderShare"
+                  "$ref": "#/components/schemas/ListProviderSharesResponse"
                 }
               }
             }
@@ -704,7 +704,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FederationPolicy"
+                  "$ref": "#/components/schemas/ListFederationPoliciesResponse"
                 }
               }
             }
@@ -980,7 +980,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RecipientInfo"
+                  "$ref": "#/components/schemas/ListRecipientsResponse"
                 }
               }
             }
@@ -1430,7 +1430,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ShareInfo"
+                  "$ref": "#/components/schemas/ListSharesResponse"
                 }
               }
             }
@@ -2496,18 +2496,18 @@
       "RetrieveTokenResponse": {
         "type": "object",
         "properties": {
-          "bearer_token": {
+          "bearerToken": {
             "type": "string"
           },
           "endpoint": {
             "type": "string",
             "description": "The endpoint for the share to be used by the recipient."
           },
-          "expiration_time": {
+          "expirationTime": {
             "type": "string",
             "description": "Expiration timestamp of the token in epoch milliseconds."
           },
-          "share_credentials_version": {
+          "shareCredentialsVersion": {
             "type": "integer",
             "description": "These field names must follow the delta sharing protocol."
           }

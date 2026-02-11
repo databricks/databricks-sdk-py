@@ -924,7 +924,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BaseJob"
+                  "$ref": "#/components/schemas/ListJobsResponse"
                 }
               }
             }
@@ -1056,7 +1056,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/BaseRun"
+                  "$ref": "#/components/schemas/ListRunsResponse"
                 }
               }
             }
@@ -1687,7 +1687,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/JobCompliance"
+                  "$ref": "#/components/schemas/ListJobComplianceForPolicyResponse"
                 }
               }
             }

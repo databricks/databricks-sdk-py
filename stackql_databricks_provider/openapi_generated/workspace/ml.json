@@ -848,7 +848,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Metric"
+                  "$ref": "#/components/schemas/GetMetricHistoryResponse"
                 }
               }
             }
@@ -1222,7 +1222,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileInfo"
+                  "$ref": "#/components/schemas/ListArtifactsResponse"
                 }
               }
             }
@@ -1292,7 +1292,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Experiment"
+                  "$ref": "#/components/schemas/ListExperimentsResponse"
                 }
               }
             }
@@ -1977,7 +1977,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Experiment"
+                  "$ref": "#/components/schemas/ListExperimentsResponse"
                 }
               }
             }
@@ -2129,7 +2129,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Run"
+                  "$ref": "#/components/schemas/SearchRunsResponse"
                 }
               }
             }
@@ -2621,7 +2621,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Feature"
+                  "$ref": "#/components/schemas/ListFeaturesResponse"
                 }
               }
             }
@@ -2739,7 +2739,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/KafkaConfig"
+                  "$ref": "#/components/schemas/ListKafkaConfigsResponse"
                 }
               }
             }
@@ -2866,7 +2866,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/MaterializedFeature"
+                  "$ref": "#/components/schemas/BatchCreateMaterializedFeaturesResponse"
                 }
               }
             }
@@ -3500,7 +3500,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/OnlineStore"
+                  "$ref": "#/components/schemas/ListOnlineStoresResponse"
                 }
               }
             }
@@ -4120,7 +4120,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FeatureTag"
+                  "$ref": "#/components/schemas/ListFeatureTagsResponse"
                 }
               }
             }
@@ -5307,7 +5307,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ModelVersion"
+                  "$ref": "#/components/schemas/GetLatestVersionsResponse"
                 }
               }
             }
@@ -5776,7 +5776,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Model"
+                  "$ref": "#/components/schemas/ListModelsResponse"
                 }
               }
             }
@@ -5837,7 +5837,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Activity"
+                  "$ref": "#/components/schemas/ListTransitionRequestsResponse"
                 }
               }
             }
@@ -5915,7 +5915,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/RegistryWebhook"
+                  "$ref": "#/components/schemas/ListRegistryWebhooks"
                 }
               }
             }
@@ -6130,7 +6130,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ModelVersion"
+                  "$ref": "#/components/schemas/GetLatestVersionsResponse"
                 }
               }
             }
@@ -6209,7 +6209,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Model"
+                  "$ref": "#/components/schemas/ListModelsResponse"
                 }
               }
             }

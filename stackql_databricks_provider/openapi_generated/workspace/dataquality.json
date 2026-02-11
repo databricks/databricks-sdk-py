@@ -179,7 +179,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Monitor"
+                  "$ref": "#/components/schemas/ListMonitorResponse"
                 }
               }
             }
@@ -334,7 +334,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Refresh"
+                  "$ref": "#/components/schemas/ListRefreshResponse"
                 }
               }
             }

@@ -175,7 +175,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CleanRoomAsset"
+                  "$ref": "#/components/schemas/ListCleanRoomAssetRevisionsResponse"
                 }
               }
             }
@@ -304,7 +304,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CleanRoomAsset"
+                  "$ref": "#/components/schemas/ListCleanRoomAssetRevisionsResponse"
                 }
               }
             }
@@ -769,7 +769,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CleanRoomAutoApprovalRule"
+                  "$ref": "#/components/schemas/ListCleanRoomAutoApprovalRulesResponse"
                 }
               }
             }
@@ -1036,7 +1036,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CleanRoomNotebookTaskRun"
+                  "$ref": "#/components/schemas/ListCleanRoomNotebookTaskRunsResponse"
                 }
               }
             }
@@ -1154,7 +1154,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/CleanRoom"
+                  "$ref": "#/components/schemas/ListCleanRoomsResponse"
                 }
               }
             }

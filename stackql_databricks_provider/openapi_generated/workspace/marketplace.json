@@ -61,7 +61,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SharedDataObject"
+                  "$ref": "#/components/schemas/GetListingContentMetadataResponse"
                 }
               }
             }
@@ -130,7 +130,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ListingFulfillment"
+                  "$ref": "#/components/schemas/ListFulfillmentsResponse"
                 }
               }
             }
@@ -278,7 +278,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InstallationDetail"
+                  "$ref": "#/components/schemas/ListAllInstallationsResponse"
                 }
               }
             }
@@ -470,7 +470,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/InstallationDetail"
+                  "$ref": "#/components/schemas/ListAllInstallationsResponse"
                 }
               }
             }
@@ -697,7 +697,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Listing"
+                  "$ref": "#/components/schemas/BatchGetListingsResponse"
                 }
               }
             }
@@ -810,7 +810,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Listing"
+                  "$ref": "#/components/schemas/BatchGetListingsResponse"
                 }
               }
             }
@@ -1015,7 +1015,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PersonalizationRequest"
+                  "$ref": "#/components/schemas/GetPersonalizationRequestResponse"
                 }
               }
             }
@@ -1188,7 +1188,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProviderInfo"
+                  "$ref": "#/components/schemas/BatchGetProvidersResponse"
                 }
               }
             }
@@ -1314,7 +1314,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExchangeFilter"
+                  "$ref": "#/components/schemas/ListExchangeFiltersResponse"
                 }
               }
             }
@@ -1556,7 +1556,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExchangeListing"
+                  "$ref": "#/components/schemas/ListExchangesForListingResponse"
                 }
               }
             }
@@ -1673,7 +1673,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Exchange"
+                  "$ref": "#/components/schemas/ListExchangesResponse"
                 }
               }
             }
@@ -1949,7 +1949,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ExchangeListing"
+                  "$ref": "#/components/schemas/ListExchangesForListingResponse"
                 }
               }
             }
@@ -2087,7 +2087,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FileInfo"
+                  "$ref": "#/components/schemas/ListFilesResponse"
                 }
               }
             }
@@ -2463,7 +2463,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Listing"
+                  "$ref": "#/components/schemas/BatchGetListingsResponse"
                 }
               }
             }
@@ -2523,7 +2523,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PersonalizationRequest"
+                  "$ref": "#/components/schemas/GetPersonalizationRequestResponse"
                 }
               }
             }
@@ -3077,7 +3077,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ProviderInfo"
+                  "$ref": "#/components/schemas/BatchGetProvidersResponse"
                 }
               }
             }
@@ -3855,7 +3855,7 @@
           "name": {
             "type": "string"
           },
-          "listing_type": {
+          "listingType": {
             "$ref": "#/components/schemas/ListingType"
           },
           "categories": {
@@ -3919,7 +3919,7 @@
         },
         "required": [
           "name",
-          "listing_type"
+          "listingType"
         ]
       },
       "ListingTag": {
@@ -4146,16 +4146,16 @@
       "TokenDetail": {
         "type": "object",
         "properties": {
-          "bearer_token": {
+          "bearerToken": {
             "type": "string"
           },
           "endpoint": {
             "type": "string"
           },
-          "expiration_time": {
+          "expirationTime": {
             "type": "string"
           },
-          "share_credentials_version": {
+          "shareCredentialsVersion": {
             "type": "integer",
             "description": "These field names must follow the delta sharing protocol. Original message: RetrieveToken.Response in managed-catalog/api/messages/recipient.proto"
           }

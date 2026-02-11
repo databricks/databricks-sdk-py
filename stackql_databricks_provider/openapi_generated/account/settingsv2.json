@@ -343,7 +343,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SettingsMetadata"
+                  "$ref": "#/components/schemas/ListAccountSettingsMetadataResponse"
                 }
               }
             }
@@ -421,7 +421,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SettingsMetadata"
+                  "$ref": "#/components/schemas/ListAccountSettingsMetadataResponse"
                 }
               }
             }

@@ -493,7 +493,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Group"
+                  "$ref": "#/components/schemas/ListGroupsResponse"
                 }
               }
             }
@@ -1267,7 +1267,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/ServicePrincipal"
+                  "$ref": "#/components/schemas/ListServicePrincipalResponse"
                 }
               }
             }
@@ -1706,7 +1706,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/User"
+                  "$ref": "#/components/schemas/ListUsersResponse"
                 }
               }
             }
@@ -2289,11 +2289,11 @@
           "account_id": {
             "type": "string"
           },
-          "display_name": {
+          "displayName": {
             "type": "string",
             "description": "String that represents a human-readable group name"
           },
-          "external_id": {
+          "externalId": {
             "type": "string",
             "description": "external_id should be unique for identifying groups"
           },
@@ -2330,15 +2330,15 @@
             "type": "boolean",
             "description": "If this user is active"
           },
-          "application_id": {
+          "applicationId": {
             "type": "string",
             "description": "UUID relating to the service principal"
           },
-          "display_name": {
+          "displayName": {
             "type": "string",
             "description": "String that represents a concatenation of given and family names."
           },
-          "external_id": {
+          "externalId": {
             "type": "string"
           },
           "id": {
@@ -2364,7 +2364,7 @@
             "type": "boolean",
             "description": "If this user is active"
           },
-          "display_name": {
+          "displayName": {
             "type": "string",
             "description": "String that represents a concatenation of given and family names. For example `John Smith`."
           },
@@ -2375,7 +2375,7 @@
             },
             "description": "All the emails associated with the Databricks user."
           },
-          "external_id": {
+          "externalId": {
             "type": "string",
             "description": "External ID is not currently supported. It is reserved for future use."
           },
@@ -2393,7 +2393,7 @@
             },
             "description": "Indicates if the group has the admin role."
           },
-          "user_name": {
+          "userName": {
             "type": "string",
             "description": "Email address of the Databricks user."
           }
@@ -2431,7 +2431,7 @@
           "primary": {
             "type": "boolean"
           },
-          "ref": {
+          "$ref": {
             "type": "string"
           },
           "type": {
@@ -2511,7 +2511,7 @@
       "Group": {
         "type": "object",
         "properties": {
-          "display_name": {
+          "displayName": {
             "type": "string"
           },
           "entitlements": {
@@ -2521,7 +2521,7 @@
             },
             "description": "Entitlements assigned to the group. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
           },
-          "external_id": {
+          "externalId": {
             "type": "string",
             "description": "external_id should be unique for identifying groups"
           },
@@ -2564,21 +2564,21 @@
       "ListAccountGroupsResponse": {
         "type": "object",
         "properties": {
-          "items_per_page": {
+          "itemsPerPage": {
             "type": "integer"
           },
-          "resources": {
+          "Resources": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AccountGroup"
             },
             "description": "User objects returned in the response."
           },
-          "start_index": {
+          "startIndex": {
             "type": "integer",
             "description": "Starting index of all the results that matched the request filters. First item is number 1."
           },
-          "total_results": {
+          "totalResults": {
             "type": "integer",
             "description": "Total results that match the request filters."
           }
@@ -2587,21 +2587,21 @@
       "ListAccountServicePrincipalsResponse": {
         "type": "object",
         "properties": {
-          "items_per_page": {
+          "itemsPerPage": {
             "type": "integer"
           },
-          "resources": {
+          "Resources": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AccountServicePrincipal"
             },
             "description": "User objects returned in the response."
           },
-          "start_index": {
+          "startIndex": {
             "type": "integer",
             "description": "Starting index of all the results that matched the request filters. First item is number 1."
           },
-          "total_results": {
+          "totalResults": {
             "type": "integer",
             "description": "Total results that match the request filters."
           }
@@ -2610,21 +2610,21 @@
       "ListAccountUsersResponse": {
         "type": "object",
         "properties": {
-          "items_per_page": {
+          "itemsPerPage": {
             "type": "integer"
           },
-          "resources": {
+          "Resources": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/AccountUser"
             },
             "description": "User objects returned in the response."
           },
-          "start_index": {
+          "startIndex": {
             "type": "integer",
             "description": "Starting index of all the results that matched the request filters. First item is number 1."
           },
-          "total_results": {
+          "totalResults": {
             "type": "integer",
             "description": "Total results that match the request filters."
           }
@@ -2633,10 +2633,10 @@
       "ListGroupsResponse": {
         "type": "object",
         "properties": {
-          "items_per_page": {
+          "itemsPerPage": {
             "type": "integer"
           },
-          "resources": {
+          "Resources": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/Group"
@@ -2650,11 +2650,11 @@
             },
             "description": "The schema of the service principal."
           },
-          "start_index": {
+          "startIndex": {
             "type": "integer",
             "description": "Starting index of all the results that matched the request filters. First item is number 1."
           },
-          "total_results": {
+          "totalResults": {
             "type": "integer",
             "description": "Total results that match the request filters."
           }
@@ -2663,10 +2663,10 @@
       "ListServicePrincipalResponse": {
         "type": "object",
         "properties": {
-          "items_per_page": {
+          "itemsPerPage": {
             "type": "integer"
           },
-          "resources": {
+          "Resources": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/ServicePrincipal"
@@ -2680,11 +2680,11 @@
             },
             "description": "The schema of the List response."
           },
-          "start_index": {
+          "startIndex": {
             "type": "integer",
             "description": "Starting index of all the results that matched the request filters. First item is number 1."
           },
-          "total_results": {
+          "totalResults": {
             "type": "integer",
             "description": "Total results that match the request filters."
           }
@@ -2693,10 +2693,10 @@
       "ListUsersResponse": {
         "type": "object",
         "properties": {
-          "items_per_page": {
+          "itemsPerPage": {
             "type": "integer"
           },
-          "resources": {
+          "Resources": {
             "type": "array",
             "items": {
               "$ref": "#/components/schemas/User"
@@ -2710,11 +2710,11 @@
             },
             "description": "The schema of the List response."
           },
-          "start_index": {
+          "startIndex": {
             "type": "integer",
             "description": "Starting index of all the results that matched the request filters. First item is number 1."
           },
-          "total_results": {
+          "totalResults": {
             "type": "integer",
             "description": "Total results that match the request filters."
           }
@@ -2731,10 +2731,10 @@
       "Name": {
         "type": "object",
         "properties": {
-          "family_name": {
+          "familyName": {
             "type": "string"
           },
-          "given_name": {
+          "givenName": {
             "type": "string",
             "description": "Given name of the Databricks user."
           }
@@ -2986,7 +2986,7 @@
       "ResourceMeta": {
         "type": "object",
         "properties": {
-          "resource_type": {
+          "resourceType": {
             "type": "string"
           }
         }
@@ -3052,11 +3052,11 @@
           "active": {
             "type": "boolean"
           },
-          "application_id": {
+          "applicationId": {
             "type": "string",
             "description": "UUID relating to the service principal"
           },
-          "display_name": {
+          "displayName": {
             "type": "string",
             "description": "String that represents a concatenation of given and family names."
           },
@@ -3067,7 +3067,7 @@
             },
             "description": "Entitlements assigned to the service principal. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
           },
-          "external_id": {
+          "externalId": {
             "type": "string"
           },
           "groups": {
@@ -3102,7 +3102,7 @@
           "active": {
             "type": "boolean"
           },
-          "display_name": {
+          "displayName": {
             "type": "string",
             "description": "String that represents a concatenation of given and family names. For example `John Smith`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"
           },
@@ -3120,7 +3120,7 @@
             },
             "description": "Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values. [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements"
           },
-          "external_id": {
+          "externalId": {
             "type": "string",
             "description": "External ID is not currently supported. It is reserved for future use."
           },
@@ -3151,7 +3151,7 @@
             },
             "description": "The schema of the user."
           },
-          "user_name": {
+          "userName": {
             "type": "string",
             "description": "Email address of the Databricks user."
           }

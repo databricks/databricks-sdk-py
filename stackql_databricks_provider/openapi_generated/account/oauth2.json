@@ -129,7 +129,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FederationPolicy"
+                  "$ref": "#/components/schemas/ListFederationPoliciesResponse"
                 }
               }
             }
@@ -485,7 +485,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetCustomAppIntegrationOutput"
+                  "$ref": "#/components/schemas/GetCustomAppIntegrationsOutput"
                 }
               }
             }
@@ -742,7 +742,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/PublishedAppOutput"
+                  "$ref": "#/components/schemas/GetPublishedAppsOutput"
                 }
               }
             }
@@ -878,7 +878,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/GetPublishedAppIntegrationOutput"
+                  "$ref": "#/components/schemas/GetPublishedAppIntegrationsOutput"
                 }
               }
             }
@@ -1215,7 +1215,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/FederationPolicy"
+                  "$ref": "#/components/schemas/ListFederationPoliciesResponse"
                 }
               }
             }
@@ -1587,7 +1587,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/SecretInfo"
+                  "$ref": "#/components/schemas/ListServicePrincipalSecretsResponse"
                 }
               }
             }
