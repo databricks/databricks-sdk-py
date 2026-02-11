@@ -115,24 +115,31 @@ python -m stackql_databricks_provider.inventory_gen
 
 This produces one CSV per service under `stackql_databricks_provider/inventory/{account,workspace}/`.
 
-**Important:** The inventory generator respects existing CSV files. If a CSV already exists for a service, only *new* operations (by `operation_id`) are appended. Existing rows are preserved as-is, so any manual edits to `stackql_resource_name`, `stackql_method_name`, or `stackql_verb` are not overwritten.
+**Important:** The inventory generator respects existing CSV files. If a CSV already exists for a service, only *new* operations (by `filename::path::verb` key) are appended. Existing rows are preserved as-is, so any manual edits to `stackql_resource_name`, `stackql_method_name`, `stackql_verb`, or `stackql_object_key` are not overwritten.
+
+A consolidated `all_services.csv` is also generated per scope, which is the file used as input to `@stackql/provider-utils` for provider generation.
 
 ### CSV columns
 
 | Column | Description |
 |--------|-------------|
-| `service` | Spec file name (without `.json`) |
-| `operation_id` | Unique operation identifier (e.g. `clusters_create`) |
-| `http_path` | REST API path |
-| `http_verb` | HTTP method (`get`, `post`, `put`, `patch`, `delete`) |
+| `filename` | Spec file name (e.g. `compute.json`) |
+| `path` | REST API path |
+| `operationId` | Unique operation identifier (e.g. `clusters_create`) |
+| `verb` | HTTP method (`get`, `post`, `put`, `patch`, `delete`) |
+| `response_object` | Response schema name from `$ref` (without `#/components/schemas/`) |
 | `tags` | Comma-delimited list of OpenAPI tags |
 | `params` | Comma-delimited list of all parameter names |
-| `success_response_object` | Response schema name from `$ref` (without `#/components/schemas/`) |
 | `summary` | Operation summary |
 | `description` | Full operation description |
 | `stackql_resource_name` | StackQL resource name (defaults to last tag) |
-| `stackql_method_name` | StackQL method name (defaults to `operation_id`) |
-| `stackql_verb` | StackQL verb: `SELECT`, `INSERT`, `REPLACE`, `UPDATE`, `DELETE` |
+| `stackql_method_name` | StackQL method name (defaults to operationId) |
+| `stackql_verb` | StackQL verb: `select`, `insert`, `replace`, `update`, `delete` |
+| `stackql_object_key` | JSON path to response data array (e.g. `$.items`) |
+
+### Generate StackQL Provider
+
+After generating specs and inventories, use `@stackql/provider-utils` to generate the full StackQL provider. See [STACKQL_PROVIDER_GENERATION.md](STACKQL_PROVIDER_GENERATION.md) for the complete workflow.
 
 ## How to Test
 
