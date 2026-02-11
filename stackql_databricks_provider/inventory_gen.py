@@ -480,6 +480,97 @@ def populate_object_keys(
     return summary
 
 
+def refresh_response_objects(
+    spec_dir: Optional[str] = None,
+    inventory_dir: Optional[str] = None,
+) -> Dict[str, int]:
+    """Sync the response_object column in per-service CSVs with the current specs.
+
+    Reads the actual 200 response ``$ref`` from each spec and updates the
+    ``response_object`` column for every matching ``operationId``.
+    Reconstitutes ``all_services.csv`` afterward.
+
+    Args:
+        spec_dir: Root spec directory. Defaults to ``openapi_generated/``.
+        inventory_dir: Root inventory directory. Defaults to ``inventory/``.
+
+    Returns:
+        Summary dict with counts of updated rows per scope.
+    """
+    if spec_dir is None:
+        spec_dir = SPEC_DIR
+    if inventory_dir is None:
+        inventory_dir = INVENTORY_DIR
+
+    summary: Dict[str, int] = {"account": 0, "workspace": 0}
+
+    for scope in ("account", "workspace"):
+        scope_spec_dir = os.path.join(spec_dir, scope)
+        scope_inv_dir = os.path.join(inventory_dir, scope)
+        if not os.path.isdir(scope_spec_dir) or not os.path.isdir(scope_inv_dir):
+            continue
+
+        all_rows: List[Dict[str, str]] = []
+
+        for fname in sorted(os.listdir(scope_inv_dir)):
+            if not fname.endswith(".csv") or fname == "all_services.csv":
+                continue
+
+            service_name = fname.replace(".csv", "")
+            spec_path = os.path.join(scope_spec_dir, f"{service_name}.json")
+            if not os.path.exists(spec_path):
+                # No matching spec, keep CSV as-is
+                csv_path = os.path.join(scope_inv_dir, fname)
+                with open(csv_path, "r", newline="") as f:
+                    all_rows.extend(list(csv.DictReader(f)))
+                continue
+
+            # Build operationId -> response_object from spec
+            with open(spec_path) as f:
+                spec = json.load(f)
+            spec_resp_map: Dict[str, str] = {}
+            for path_str, methods in spec.get("paths", {}).items():
+                for http_verb, operation in methods.items():
+                    op_id = operation.get("operationId", "")
+                    resp_obj = _get_success_response_object(operation)
+                    spec_resp_map[op_id] = resp_obj
+
+            # Update CSV rows
+            csv_path = os.path.join(scope_inv_dir, fname)
+            rows: List[Dict[str, str]] = []
+            updated = 0
+            with open(csv_path, "r", newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    op_id = row.get("operationId", "")
+                    if op_id in spec_resp_map:
+                        spec_val = spec_resp_map[op_id]
+                        if row.get("response_object", "") != spec_val:
+                            row["response_object"] = spec_val
+                            updated += 1
+                    rows.append(row)
+
+            if updated > 0:
+                with open(csv_path, "w", newline="") as f:
+                    writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS, extrasaction="ignore")
+                    writer.writeheader()
+                    writer.writerows(rows)
+                logger.info("%s/%s: updated %d response_object values", scope, fname, updated)
+                summary[scope] += updated
+
+            all_rows.extend(rows)
+
+        # Reconstitute all_services.csv
+        if all_rows:
+            consolidated_path = os.path.join(scope_inv_dir, "all_services.csv")
+            with open(consolidated_path, "w", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS, extrasaction="ignore")
+                writer.writeheader()
+                writer.writerows(all_rows)
+
+    return summary
+
+
 def main():
     """CLI entry point for generating CSV inventories."""
     logging.basicConfig(
@@ -512,10 +603,27 @@ def main():
         action="store_true",
         help="Auto-populate stackql_object_key for Iterator endpoints (only fills empty values)",
     )
+    parser.add_argument(
+        "--refresh-response-objects",
+        action="store_true",
+        help="Sync response_object column with current spec schemas",
+    )
     args = parser.parse_args()
 
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
+
+    if args.refresh_response_objects:
+        print("Syncing response_object with current specs...")
+        summary = refresh_response_objects(args.spec_dir, args.output_dir)
+        print()
+        print("=" * 60)
+        print("Response Object Refresh Summary")
+        print("=" * 60)
+        print(f"  Account rows updated:   {summary['account']}")
+        print(f"  Workspace rows updated: {summary['workspace']}")
+        print()
+        return
 
     if args.populate_object_keys:
         print("Populating stackql_object_key for Iterator endpoints...")
