@@ -12,3 +12,4 @@ databricks-sdk-py.iml
 .coverage
 htmlcov
 node_modules
+.env

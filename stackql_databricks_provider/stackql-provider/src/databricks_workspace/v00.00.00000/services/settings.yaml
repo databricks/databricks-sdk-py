@@ -756,6 +756,11 @@ paths:
 
         :returns: :class:`CspEnablementAccountSetting`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: etag
           in: query
           required: false
@@ -817,6 +822,12 @@ paths:
           changes in the future.
 
         :returns: :class:`CspEnablementAccountSetting`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1796,6 +1807,11 @@ paths:
 
         :returns: :class:`DeleteDisableLegacyFeaturesResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: etag
           in: query
           required: false
@@ -1846,6 +1862,11 @@ paths:
 
         :returns: :class:`DisableLegacyFeatures`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: etag
           in: query
           required: false
@@ -1902,6 +1923,12 @@ paths:
           changes in the future.
 
         :returns: :class:`DisableLegacyFeatures`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -2087,6 +2114,11 @@ paths:
 
         :returns: :class:`DeleteAccountIpAccessEnableResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: etag
           in: query
           required: false
@@ -2137,6 +2169,11 @@ paths:
 
         :returns: :class:`AccountIpAccessEnable`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: etag
           in: query
           required: false
@@ -2193,6 +2230,12 @@ paths:
           changes in the future.
 
         :returns: :class:`AccountIpAccessEnable`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -2623,6 +2666,11 @@ paths:
 
         :returns: :class:`EsmEnablementAccountSetting`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: etag
           in: query
           required: false
@@ -2684,6 +2732,12 @@ paths:
           changes in the future.
 
         :returns: :class:`EsmEnablementAccountSetting`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -3108,6 +3162,11 @@ paths:
 
         :returns: :class:`LlmProxyPartnerPoweredAccount`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: etag
           in: query
           required: false
@@ -3164,6 +3223,12 @@ paths:
           changes in the future.
 
         :returns: :class:`LlmProxyPartnerPoweredAccount`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -3237,6 +3302,11 @@ paths:
 
         :returns: :class:`LlmProxyPartnerPoweredEnforce`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: etag
           in: query
           required: false
@@ -3298,6 +3368,12 @@ paths:
           changes in the future.
 
         :returns: :class:`LlmProxyPartnerPoweredEnforce`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -3777,6 +3853,11 @@ paths:
 
         :returns: :class:`DeletePersonalComputeSettingResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: etag
           in: query
           required: false
@@ -3827,6 +3908,11 @@ paths:
 
         :returns: :class:`PersonalComputeSetting`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: etag
           in: query
           required: false
@@ -3883,6 +3969,12 @@ paths:
           changes in the future.
 
         :returns: :class:`PersonalComputeSetting`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -6869,20 +6961,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6916,20 +7008,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -6963,20 +7055,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7033,20 +7125,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7078,20 +7170,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7134,20 +7226,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7176,20 +7268,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7248,20 +7340,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7289,20 +7381,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7339,20 +7431,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7398,20 +7490,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7473,20 +7565,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7520,20 +7612,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -7581,20 +7673,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

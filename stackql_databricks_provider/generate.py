@@ -8,6 +8,7 @@ and workspace/ subdirectories under ``openapi_generated/``.
 import json
 import logging
 import os
+import shutil
 import sys
 from typing import Any, Dict, List, Optional, Set, Tuple
 
@@ -168,6 +169,9 @@ def generate_all(output_dir: Optional[str] = None) -> Dict[str, Any]:
 
     account_dir = os.path.join(output_dir, "account")
     workspace_dir = os.path.join(output_dir, "workspace")
+    for d in (account_dir, workspace_dir):
+        if os.path.exists(d):
+            shutil.rmtree(d)
     os.makedirs(account_dir, exist_ok=True)
     os.makedirs(workspace_dir, exist_ok=True)
 

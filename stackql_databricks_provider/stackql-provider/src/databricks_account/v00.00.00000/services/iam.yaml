@@ -35,6 +35,11 @@ paths:
 
         :returns: :class:`GetAssignableRolesForResourceResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: resource
           in: query
           required: true
@@ -109,6 +114,11 @@ paths:
 
         :returns: :class:`RuleSetResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: name
           in: query
           required: true
@@ -183,6 +193,12 @@ paths:
 
 
         :returns: :class:`RuleSetResponse`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -244,6 +260,12 @@ paths:
           Indicates if the group has the admin role.
 
         :returns: :class:`AccountGroup`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -329,6 +351,11 @@ paths:
 
         :returns: Iterator over :class:`AccountGroup`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: attributes
           in: query
           required: false
@@ -408,6 +435,11 @@ paths:
         :param id: str
           Unique ID for a group in the Databricks account.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -442,6 +474,11 @@ paths:
 
         :returns: :class:`AccountGroup`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -481,6 +518,11 @@ paths:
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -535,6 +577,11 @@ paths:
         :param roles: List[:class:`ComplexValue`] (optional)
           Indicates if the group has the admin role.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -600,6 +647,12 @@ paths:
           Indicates if the group has the admin role.
 
         :returns: :class:`AccountServicePrincipal`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -674,6 +727,11 @@ paths:
 
         :returns: Iterator over :class:`AccountServicePrincipal`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: attributes
           in: query
           required: false
@@ -753,6 +811,11 @@ paths:
         :param id: str
           Unique ID for a service principal in the Databricks account.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -791,6 +854,11 @@ paths:
 
         :returns: :class:`AccountServicePrincipal`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -835,6 +903,11 @@ paths:
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -892,6 +965,11 @@ paths:
         :param roles: List[:class:`ComplexValue`] (optional)
           Indicates if the group has the admin role.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -970,6 +1048,12 @@ paths:
           Email address of the Databricks user.
 
         :returns: :class:`AccountUser`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1055,6 +1139,11 @@ paths:
 
         :returns: Iterator over :class:`AccountUser`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: attributes
           in: query
           required: false
@@ -1142,6 +1231,11 @@ paths:
         :param id: str
           Unique ID for a user in the Databricks account.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -1196,6 +1290,11 @@ paths:
 
         :returns: :class:`AccountUser`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -1290,6 +1389,11 @@ paths:
         :param schemas: List[:class:`PatchSchema`] (optional)
           The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -1349,6 +1453,11 @@ paths:
         :param user_name: str (optional)
           Email address of the Databricks user.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: id
           in: path
           required: true
@@ -1422,6 +1531,11 @@ paths:
         :param principal_id: int
           The ID of the user, service principal, or group.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: workspace_id
           in: path
           required: true
@@ -1476,6 +1590,11 @@ paths:
 
         :returns: :class:`PermissionAssignment`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: workspace_id
           in: path
           required: true
@@ -1541,6 +1660,11 @@ paths:
 
         :returns: :class:`WorkspacePermissions`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: workspace_id
           in: path
           required: true
@@ -1584,6 +1708,11 @@ paths:
 
         :returns: Iterator over :class:`PermissionAssignment`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: workspace_id
           in: path
           required: true
@@ -2336,20 +2465,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2377,20 +2506,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2418,20 +2547,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2460,20 +2589,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2513,20 +2642,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2587,20 +2716,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2629,20 +2758,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2672,20 +2801,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

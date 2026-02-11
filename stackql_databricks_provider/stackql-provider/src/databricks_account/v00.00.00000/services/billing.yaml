@@ -57,6 +57,11 @@ paths:
 
         :returns: :class:`DownloadResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: start_month
           in: query
           required: true
@@ -121,6 +126,12 @@ paths:
           recommended. This request is only idempotent if a `request_id` is provided.
 
         :returns: :class:`BudgetPolicy`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -187,6 +198,11 @@ paths:
 
         :returns: Iterator over :class:`BudgetPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: filter_by
           in: query
           required: false
@@ -250,6 +266,11 @@ paths:
         :param policy_id: str
           The Id of the policy.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: policy_id
           in: path
           required: true
@@ -284,6 +305,11 @@ paths:
 
         :returns: :class:`BudgetPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: policy_id
           in: path
           required: true
@@ -327,6 +353,11 @@ paths:
 
         :returns: :class:`BudgetPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: policy_id
           in: path
           required: true
@@ -391,6 +422,12 @@ paths:
           Properties of the new budget configuration.
 
         :returns: :class:`CreateBudgetConfigurationResponse`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -435,6 +472,11 @@ paths:
 
         :returns: Iterator over :class:`BudgetConfiguration`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: page_token
           in: query
           required: false
@@ -481,6 +523,11 @@ paths:
         :param budget_id: str
           The Databricks budget configuration ID.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: budget_id
           in: path
           required: true
@@ -519,6 +566,11 @@ paths:
 
         :returns: :class:`GetBudgetConfigurationResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: budget_id
           in: path
           required: true
@@ -565,6 +617,11 @@ paths:
 
         :returns: :class:`UpdateBudgetConfigurationResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: budget_id
           in: path
           required: true
@@ -667,6 +724,12 @@ paths:
 
 
         :returns: :class:`WrappedLogDeliveryConfiguration`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -721,6 +784,11 @@ paths:
 
         :returns: Iterator over :class:`LogDeliveryConfiguration`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: credentials_id
           in: query
           required: false
@@ -785,6 +853,11 @@ paths:
 
         :returns: :class:`GetLogDeliveryConfigurationResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: log_delivery_configuration_id
           in: path
           required: true
@@ -838,6 +911,11 @@ paths:
           configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is
           not supported, so disable a log delivery configuration that is no longer needed.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: log_delivery_configuration_id
           in: path
           required: true
@@ -899,6 +977,12 @@ paths:
           The workspace ID of the workspace in which the usage dashboard is created.
 
         :returns: :class:`CreateBillingUsageDashboardResponse`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -960,6 +1044,11 @@ paths:
 
         :returns: :class:`GetBillingUsageDashboardResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: dashboard_type
           in: query
           required: false
@@ -1595,20 +1684,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1636,20 +1725,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1677,20 +1766,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1718,20 +1807,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1759,20 +1848,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1854,20 +1943,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1896,20 +1985,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1938,20 +2027,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -1969,16 +2058,14 @@ components:
       name: billable_usage
       title: Billable Usage
       methods:
-        billable_usage_download:
+        download:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1usage~1download/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
-        select:
-          - $ref: >-
-              #/components/x-stackQL-resources/billable_usage/methods/billable_usage_download
+        select: []
         insert: []
         update: []
         delete: []
@@ -1988,33 +2075,33 @@ components:
       name: budget_policy
       title: Budget Policy
       methods:
-        budget_policy_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1budget-policies/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        budget_policy_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1budget-policies/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        budget_policy_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budget-policies~1{policy_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        budget_policy_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budget-policies~1{policy_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        budget_policy_update:
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budget-policies~1{policy_id}/patch
@@ -2023,52 +2110,48 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/budget_policy/methods/budget_policy_get
-          - $ref: >-
-              #/components/x-stackQL-resources/budget_policy/methods/budget_policy_list
+          - $ref: '#/components/x-stackQL-resources/budget_policy/methods/get'
+          - $ref: '#/components/x-stackQL-resources/budget_policy/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/budget_policy/methods/budget_policy_create
+          - $ref: '#/components/x-stackQL-resources/budget_policy/methods/create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/budget_policy/methods/budget_policy_update
+          - $ref: '#/components/x-stackQL-resources/budget_policy/methods/update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/budget_policy/methods/budget_policy_delete
+          - $ref: '#/components/x-stackQL-resources/budget_policy/methods/delete'
         replace: []
     budgets:
       id: databricks_account.billing.budgets
       name: budgets
       title: Budgets
       methods:
-        budgets_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1budgets/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        budgets_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1budgets/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        budgets_delete:
+        delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budgets~1{budget_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        budgets_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budgets~1{budget_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        budgets_update:
+            objectKey: $.budget
+        update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budgets~1{budget_id}/put
@@ -2077,40 +2160,41 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/budgets/methods/budgets_get'
-          - $ref: '#/components/x-stackQL-resources/budgets/methods/budgets_list'
+          - $ref: '#/components/x-stackQL-resources/budgets/methods/get'
+          - $ref: '#/components/x-stackQL-resources/budgets/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/budgets/methods/budgets_create'
+          - $ref: '#/components/x-stackQL-resources/budgets/methods/create'
         update: []
         delete:
-          - $ref: '#/components/x-stackQL-resources/budgets/methods/budgets_delete'
+          - $ref: '#/components/x-stackQL-resources/budgets/methods/delete'
         replace:
-          - $ref: '#/components/x-stackQL-resources/budgets/methods/budgets_update'
+          - $ref: '#/components/x-stackQL-resources/budgets/methods/update'
     log_delivery:
       id: databricks_account.billing.log_delivery
       name: log_delivery
       title: Log Delivery
       methods:
-        log_delivery_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1log-delivery/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        log_delivery_list:
+        list:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1log-delivery/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        log_delivery_get:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1log-delivery~1{log_delivery_configuration_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        log_delivery_patch_status:
+            objectKey: $.log_delivery_configuration
+        patch_status:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1log-delivery~1{log_delivery_configuration_id}/patch
@@ -2119,16 +2203,11 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/log_delivery/methods/log_delivery_get
-          - $ref: >-
-              #/components/x-stackQL-resources/log_delivery/methods/log_delivery_list
+          - $ref: '#/components/x-stackQL-resources/log_delivery/methods/get'
+          - $ref: '#/components/x-stackQL-resources/log_delivery/methods/list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/log_delivery/methods/log_delivery_create
-        update:
-          - $ref: >-
-              #/components/x-stackQL-resources/log_delivery/methods/log_delivery_patch_status
+          - $ref: '#/components/x-stackQL-resources/log_delivery/methods/create'
+        update: []
         delete: []
         replace: []
     usage_dashboards:
@@ -2136,13 +2215,13 @@ components:
       name: usage_dashboards
       title: Usage Dashboards
       methods:
-        usage_dashboards_create:
+        create:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1dashboard/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        usage_dashboards_get:
+        get:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1dashboard/get'
           response:
@@ -2150,11 +2229,9 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/usage_dashboards/methods/usage_dashboards_get
+          - $ref: '#/components/x-stackQL-resources/usage_dashboards/methods/get'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/usage_dashboards/methods/usage_dashboards_create
+          - $ref: '#/components/x-stackQL-resources/usage_dashboards/methods/create'
         update: []
         delete: []
         replace: []

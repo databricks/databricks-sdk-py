@@ -1,3 +1,18 @@
 show providers;
 SHOW RESOURCES IN databricks_account.billing;
 SHOW RESOURCES IN databricks_workspace.agentbricks;
+SELECT contents FROM databricks_account.billing.billable_usage WHERE start_month = '2025-12' AND end_month = '2026-01' ;
+SELECT contents FROM databricks_account.billing.billable_usage WHERE start_month = '2025-12' AND end_month = '2026-01' AND account_id = '12345678-1234-1234-1234-123456789012';;
+SELECT contents FROM databricks_account.billing.billable_usage WHERE start_month = '2025-12' AND end_month = '2026-01' AND account_id = '12345678-1234-1234-1234-123456789012';
+SELECT u.id, displayName, userName, active FROM databricks_account.iam.users u, JSON_EACH(roles) WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce' AND JSON_EXTRACT(json_each.value, '$.value') = 'account_admin';
+SELECT u.id, displayName, userName, active FROM databricks_account.iam.account_users_v2 u, JSON_EACH(roles) WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce' AND JSON_EXTRACT(json_each.value, '$.value') = 'account_admin';
+registry pull databricks_account;
+SELECT u.id, displayName, userName, active FROM databricks_account.iam.users u, JSON_EACH(roles) WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce' AND JSON_EXTRACT(json_each.value, '$.value') = 'account_admin';
+SELECT u.id, displayName, userName, active FROM databricks_account.iam.account_users_v2 u, JSON_EACH(roles) WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce' AND JSON_EXTRACT(json_each.value, '$.value') = 'account_admin';
+SELECT id, name, account_id, external_id, display_name, user_name, active, emails, roles FROM databricks_account.iam.account_users_v2 WHERE id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
+registry pull databricks_account;
+SELECT u.id, displayName, userName, active FROM databricks_account.iam.account_users_v2 u, JSON_EACH(roles) WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce' AND JSON_EXTRACT(json_each.value, '$.value') = 'account_admin';
+SELECT u.id, displayName, userName, active FROM databricks_account.iam.users u, JSON_EACH(roles) WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce' AND JSON_EXTRACT(json_each.value, '$.value') = 'account_admin';
+SELECT id, name, account_id, external_id, display_name, user_name, active, emails, roles FROM databricks_account.iam.account_users_v2 WHERE id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
+SELECT id, name, account_id, external_id, display_name, user_name, active, emails, roles FROM databricks_account.iam.account_users_v2 WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
+SELECT * FROM databricks_account.iam.account_users_v2 WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';

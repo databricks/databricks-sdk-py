@@ -1,0 +1,250 @@
+---
+title: policy_compliance_for_clusters
+hide_title: false
+hide_table_of_contents: false
+keywords:
+  - policy_compliance_for_clusters
+  - compute
+  - databricks_workspace
+  - infrastructure-as-code
+  - configuration-as-data
+  - cloud inventory
+description: Query, deploy and manage databricks_workspace resources using SQL
+custom_edit_url: null
+image: /img/stackql-databricks_workspace-provider-featured-image.png
+---
+
+import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
+
+Creates, updates, deletes, gets or lists a <code>policy_compliance_for_clusters</code> resource.
+
+## Overview
+<table><tbody>
+<tr><td><b>Name</b></td><td><code>policy_compliance_for_clusters</code></td></tr>
+<tr><td><b>Type</b></td><td>Resource</td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.policy_compliance_for_clusters" /></td></tr>
+</tbody></table>
+
+## Fields
+
+The following fields are returned by `SELECT` queries:
+
+<Tabs
+    defaultValue="get"
+    values={[
+        { label: 'get', value: 'get' },
+        { label: 'list', value: 'list' }
+    ]}
+>
+<TabItem value="get">
+
+<SchemaTable fields={[
+  {
+    "name": "is_compliant",
+    "type": "boolean",
+    "description": ""
+  },
+  {
+    "name": "violations",
+    "type": "object",
+    "description": "An object containing key-value mappings representing the first 200 policy validation errors. The keys indicate the path where the policy validation error is occurring. The values indicate an error message describing the policy validation error."
+  }
+]} />
+</TabItem>
+<TabItem value="list">
+
+<SchemaTable fields={[
+  {
+    "name": "cluster_id",
+    "type": "string",
+    "description": ""
+  },
+  {
+    "name": "is_compliant",
+    "type": "boolean",
+    "description": "Whether this cluster is in compliance with the latest version of its policy."
+  },
+  {
+    "name": "violations",
+    "type": "object",
+    "description": "An object containing key-value mappings representing the first 200 policy validation errors. The keys indicate the path where the policy validation error is occurring. The values indicate an error message describing the policy validation error."
+  }
+]} />
+</TabItem>
+</Tabs>
+
+## Methods
+
+The following methods are available for this resource:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Accessible by</th>
+    <th>Required Params</th>
+    <th>Optional Params</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><CopyableCode code="select" /></td>
+    <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td></td>
+    <td>Returns the policy compliance status of a cluster. Clusters could be out of compliance if their policy<br />was updated after the cluster was last edited.<br /><br />:param cluster_id: str<br />  The ID of the cluster to get the compliance status<br /><br />:returns: :class:`GetClusterComplianceResponse`</td>
+</tr>
+<tr>
+    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><CopyableCode code="select" /></td>
+    <td><a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
+    <td>Returns the policy compliance status of all clusters that use a given policy. Clusters could be out of<br />compliance if their policy was updated after the cluster was last edited.<br /><br />:param policy_id: str<br />  Canonical unique identifier for the cluster policy.<br />:param page_size: int (optional)<br />  Use this field to specify the maximum number of results to be returned by the server. The server may<br />  further constrain the maximum number of results returned in a single page.<br />:param page_token: str (optional)<br />  A page token that can be used to navigate to the next page or previous page as returned by<br />  `next_page_token` or `prev_page_token`.<br /><br />:returns: Iterator over :class:`ClusterCompliance`</td>
+</tr>
+<tr>
+    <td><a href="#enforce"><CopyableCode code="enforce" /></a></td>
+    <td><CopyableCode code="insert" /></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__cluster_id"><code>data__cluster_id</code></a></td>
+    <td></td>
+    <td>Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if<br />it is in a `RUNNING` or `TERMINATED` state.<br /><br />If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes<br />can take effect.<br /><br />If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the<br />cluster is started, the new attributes will take effect.<br /><br />Clusters created by the Databricks Jobs, DLT, or Models services cannot be enforced by this API.<br />Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.<br /><br />:param cluster_id: str<br />  The ID of the cluster you want to enforce policy compliance on.<br />:param validate_only: bool (optional)<br />  If set, previews the changes that would be made to a cluster to enforce compliance but does not<br />  update the cluster.<br /><br />:returns: :class:`EnforceClusterComplianceResponse`</td>
+</tr>
+</tbody>
+</table>
+
+## Parameters
+
+Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#methods) section to see which parameters are required or optional for each operation.
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr id="parameter-cluster_id">
+    <td><CopyableCode code="cluster_id" /></td>
+    <td><code>string</code></td>
+    <td>The ID of the cluster to get the compliance status</td>
+</tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
+<tr id="parameter-policy_id">
+    <td><CopyableCode code="policy_id" /></td>
+    <td><code>string</code></td>
+    <td>Canonical unique identifier for the cluster policy.</td>
+</tr>
+<tr id="parameter-page_size">
+    <td><CopyableCode code="page_size" /></td>
+    <td><code>string</code></td>
+    <td>Use this field to specify the maximum number of results to be returned by the server. The server may further constrain the maximum number of results returned in a single page.</td>
+</tr>
+<tr id="parameter-page_token">
+    <td><CopyableCode code="page_token" /></td>
+    <td><code>string</code></td>
+    <td>A page token that can be used to navigate to the next page or previous page as returned by `next_page_token` or `prev_page_token`.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` examples
+
+<Tabs
+    defaultValue="get"
+    values={[
+        { label: 'get', value: 'get' },
+        { label: 'list', value: 'list' }
+    ]}
+>
+<TabItem value="get">
+
+Returns the policy compliance status of a cluster. Clusters could be out of compliance if their policy<br />was updated after the cluster was last edited.<br /><br />:param cluster_id: str<br />  The ID of the cluster to get the compliance status<br /><br />:returns: :class:`GetClusterComplianceResponse`
+
+```sql
+SELECT
+is_compliant,
+violations
+FROM databricks_workspace.compute.policy_compliance_for_clusters
+WHERE cluster_id = '{{ cluster_id }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
+;
+```
+</TabItem>
+<TabItem value="list">
+
+Returns the policy compliance status of all clusters that use a given policy. Clusters could be out of<br />compliance if their policy was updated after the cluster was last edited.<br /><br />:param policy_id: str<br />  Canonical unique identifier for the cluster policy.<br />:param page_size: int (optional)<br />  Use this field to specify the maximum number of results to be returned by the server. The server may<br />  further constrain the maximum number of results returned in a single page.<br />:param page_token: str (optional)<br />  A page token that can be used to navigate to the next page or previous page as returned by<br />  `next_page_token` or `prev_page_token`.<br /><br />:returns: Iterator over :class:`ClusterCompliance`
+
+```sql
+SELECT
+cluster_id,
+is_compliant,
+violations
+FROM databricks_workspace.compute.policy_compliance_for_clusters
+WHERE policy_id = '{{ policy_id }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
+AND page_size = '{{ page_size }}'
+AND page_token = '{{ page_token }}'
+;
+```
+</TabItem>
+</Tabs>
+
+
+## `INSERT` examples
+
+<Tabs
+    defaultValue="enforce"
+    values={[
+        { label: 'enforce', value: 'enforce' },
+        { label: 'Manifest', value: 'manifest' }
+    ]}
+>
+<TabItem value="enforce">
+
+Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if<br />it is in a `RUNNING` or `TERMINATED` state.<br /><br />If a cluster is updated while in a `RUNNING` state, it will be restarted so that the new attributes<br />can take effect.<br /><br />If a cluster is updated while in a `TERMINATED` state, it will remain `TERMINATED`. The next time the<br />cluster is started, the new attributes will take effect.<br /><br />Clusters created by the Databricks Jobs, DLT, or Models services cannot be enforced by this API.<br />Instead, use the "Enforce job policy compliance" API to enforce policy compliance on jobs.<br /><br />:param cluster_id: str<br />  The ID of the cluster you want to enforce policy compliance on.<br />:param validate_only: bool (optional)<br />  If set, previews the changes that would be made to a cluster to enforce compliance but does not<br />  update the cluster.<br /><br />:returns: :class:`EnforceClusterComplianceResponse`
+
+```sql
+INSERT INTO databricks_workspace.compute.policy_compliance_for_clusters (
+data__cluster_id,
+data__validate_only,
+deployment_name
+)
+SELECT 
+'{{ cluster_id }}' /* required */,
+'{{ validate_only }}',
+'{{ deployment_name }}'
+RETURNING
+changes,
+has_changes
+;
+```
+</TabItem>
+<TabItem value="manifest">
+
+```yaml
+# Description fields are for documentation purposes
+- name: policy_compliance_for_clusters
+  props:
+    - name: deployment_name
+      value: string
+      description: Required parameter for the policy_compliance_for_clusters resource.
+    - name: cluster_id
+      value: string
+      description: |
+        The ID of the cluster you want to enforce policy compliance on.
+    - name: validate_only
+      value: string
+      description: |
+        If set, previews the changes that would be made to a cluster to enforce compliance but does not update the cluster.
+```
+</TabItem>
+</Tabs>

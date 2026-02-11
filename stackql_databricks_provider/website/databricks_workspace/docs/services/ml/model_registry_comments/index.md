@@ -1,0 +1,206 @@
+---
+title: model_registry_comments
+hide_title: false
+hide_table_of_contents: false
+keywords:
+  - model_registry_comments
+  - ml
+  - databricks_workspace
+  - infrastructure-as-code
+  - configuration-as-data
+  - cloud inventory
+description: Query, deploy and manage databricks_workspace resources using SQL
+custom_edit_url: null
+image: /img/stackql-databricks_workspace-provider-featured-image.png
+---
+
+import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
+
+Creates, updates, deletes, gets or lists a <code>model_registry_comments</code> resource.
+
+## Overview
+<table><tbody>
+<tr><td><b>Name</b></td><td><code>model_registry_comments</code></td></tr>
+<tr><td><b>Type</b></td><td>Resource</td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.model_registry_comments" /></td></tr>
+</tbody></table>
+
+## Fields
+
+The following fields are returned by `SELECT` queries:
+
+`SELECT` not supported for this resource, use `SHOW METHODS` to view available operations for the resource.
+
+
+## Methods
+
+The following methods are available for this resource:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Accessible by</th>
+    <th>Required Params</th>
+    <th>Optional Params</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><CopyableCode code="insert" /></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__version"><code>data__version</code></a>, <a href="#parameter-data__comment"><code>data__comment</code></a></td>
+    <td></td>
+    <td>Posts a comment on a model version. A comment can be submitted either by a user or programmatically to<br />display relevant information about the model. For example, test results or deployment errors.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param comment: str<br />  User-provided comment on the action.<br /><br />:returns: :class:`CreateCommentResponse`</td>
+</tr>
+<tr>
+    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><CopyableCode code="update" /></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__id"><code>data__id</code></a>, <a href="#parameter-data__comment"><code>data__comment</code></a></td>
+    <td></td>
+    <td>Post an edit to a comment on a model version.<br /><br />:param id: str<br />  Unique identifier of an activity<br />:param comment: str<br />  User-provided comment on the action.<br /><br />:returns: :class:`UpdateCommentResponse`</td>
+</tr>
+<tr>
+    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><CopyableCode code="exec" /></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td></td>
+    <td>Deletes a comment on a model version.<br /><br />:param id: str<br />  Unique identifier of an activity</td>
+</tr>
+</tbody>
+</table>
+
+## Parameters
+
+Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#methods) section to see which parameters are required or optional for each operation.
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
+<tr id="parameter-id">
+    <td><CopyableCode code="id" /></td>
+    <td><code>string</code></td>
+    <td>Unique identifier of an activity</td>
+</tr>
+</tbody>
+</table>
+
+## `INSERT` examples
+
+<Tabs
+    defaultValue="create"
+    values={[
+        { label: 'create', value: 'create' },
+        { label: 'Manifest', value: 'manifest' }
+    ]}
+>
+<TabItem value="create">
+
+Posts a comment on a model version. A comment can be submitted either by a user or programmatically to<br />display relevant information about the model. For example, test results or deployment errors.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param comment: str<br />  User-provided comment on the action.<br /><br />:returns: :class:`CreateCommentResponse`
+
+```sql
+INSERT INTO databricks_workspace.ml.model_registry_comments (
+data__name,
+data__version,
+data__comment,
+deployment_name
+)
+SELECT 
+'{{ name }}' /* required */,
+'{{ version }}' /* required */,
+'{{ comment }}' /* required */,
+'{{ deployment_name }}'
+RETURNING
+comment
+;
+```
+</TabItem>
+<TabItem value="manifest">
+
+```yaml
+# Description fields are for documentation purposes
+- name: model_registry_comments
+  props:
+    - name: deployment_name
+      value: string
+      description: Required parameter for the model_registry_comments resource.
+    - name: name
+      value: string
+      description: |
+        Name of the model.
+    - name: version
+      value: string
+      description: |
+        Version of the model.
+    - name: comment
+      value: string
+      description: |
+        User-provided comment on the action.
+```
+</TabItem>
+</Tabs>
+
+
+## `UPDATE` examples
+
+<Tabs
+    defaultValue="update"
+    values={[
+        { label: 'update', value: 'update' }
+    ]}
+>
+<TabItem value="update">
+
+Post an edit to a comment on a model version.<br /><br />:param id: str<br />  Unique identifier of an activity<br />:param comment: str<br />  User-provided comment on the action.<br /><br />:returns: :class:`UpdateCommentResponse`
+
+```sql
+UPDATE databricks_workspace.ml.model_registry_comments
+SET 
+data__id = '{{ id }}',
+data__comment = '{{ comment }}'
+WHERE 
+deployment_name = '{{ deployment_name }}' --required
+AND data__id = '{{ id }}' --required
+AND data__comment = '{{ comment }}' --required
+RETURNING
+comment;
+```
+</TabItem>
+</Tabs>
+
+
+## Lifecycle Methods
+
+<Tabs
+    defaultValue="delete"
+    values={[
+        { label: 'delete', value: 'delete' }
+    ]}
+>
+<TabItem value="delete">
+
+Deletes a comment on a model version.<br /><br />:param id: str<br />  Unique identifier of an activity
+
+```sql
+EXEC databricks_workspace.ml.model_registry_comments.delete 
+@id='{{ id }}' --required, 
+@deployment_name='{{ deployment_name }}' --required
+;
+```
+</TabItem>
+</Tabs>

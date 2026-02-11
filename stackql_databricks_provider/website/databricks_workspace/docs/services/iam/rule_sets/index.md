@@ -1,0 +1,192 @@
+---
+title: rule_sets
+hide_title: false
+hide_table_of_contents: false
+keywords:
+  - rule_sets
+  - iam
+  - databricks_workspace
+  - infrastructure-as-code
+  - configuration-as-data
+  - cloud inventory
+description: Query, deploy and manage databricks_workspace resources using SQL
+custom_edit_url: null
+image: /img/stackql-databricks_workspace-provider-featured-image.png
+---
+
+import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
+
+Creates, updates, deletes, gets or lists a <code>rule_sets</code> resource.
+
+## Overview
+<table><tbody>
+<tr><td><b>Name</b></td><td><code>rule_sets</code></td></tr>
+<tr><td><b>Type</b></td><td>Resource</td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.rule_sets" /></td></tr>
+</tbody></table>
+
+## Fields
+
+The following fields are returned by `SELECT` queries:
+
+<Tabs
+    defaultValue="get"
+    values={[
+        { label: 'get', value: 'get' }
+    ]}
+>
+<TabItem value="get">
+
+<SchemaTable fields={[
+  {
+    "name": "name",
+    "type": "string",
+    "description": ""
+  },
+  {
+    "name": "etag",
+    "type": "string",
+    "description": "Identifies the version of the rule set returned. Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from overwriting each other. It is strongly suggested that systems make use of the etag in the read -&gt; modify -&gt; write pattern to perform rule set updates in order to avoid race conditions that is get an etag from a GET rule set request, and pass it with the PUT update request to identify the rule set version you are updating."
+  },
+  {
+    "name": "grant_rules",
+    "type": "array",
+    "description": "",
+    "children": [
+      {
+        "name": "role",
+        "type": "string",
+        "description": ""
+      },
+      {
+        "name": "principals",
+        "type": "array",
+        "description": "Principals this grant rule applies to. A principal can be a user (for end users), a service principal (for applications and compute workloads), or an account group. Each principal has its own identifier format: * users/&lt;USERNAME&gt; * groups/&lt;GROUP_NAME&gt; * servicePrincipals/&lt;SERVICE_PRINCIPAL_APPLICATION_ID&gt;"
+      }
+    ]
+  }
+]} />
+</TabItem>
+</Tabs>
+
+## Methods
+
+The following methods are available for this resource:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Accessible by</th>
+    <th>Required Params</th>
+    <th>Optional Params</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><CopyableCode code="select" /></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-etag"><code>etag</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td></td>
+    <td>Get a rule set by its name. A rule set is always attached to a resource and contains a list of access<br />rules on the said resource. Currently only a default rule set for each resource is supported.<br /><br />:param name: str<br />  The ruleset name associated with the request.<br /><br />  Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set<br />  on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule<br />  set on the group.<br />  `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` |<br />  A name for a rule set on the service principal.<br />  `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default` | A name for a rule set on<br />  the tag policy.<br />:param etag: str<br />  Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for<br />  optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from<br />  overwriting each other. It is strongly suggested that systems make use of the etag in the read -&gt;<br />  modify -&gt; write pattern to perform rule set updates in order to avoid race conditions that is get an<br />  etag from a GET rule set request, and pass it with the PUT update request to identify the rule set<br />  version you are updating.<br /><br />  Examples | Summary :--- | :--- `etag=` | An empty etag can only be used in GET to indicate no<br />  freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An<br />  etag encoded a specific version of the rule set to get or to be updated.<br /><br />:returns: :class:`RuleSetResponse`</td>
+</tr>
+<tr>
+    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><CopyableCode code="replace" /></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__rule_set"><code>data__rule_set</code></a></td>
+    <td></td>
+    <td>Replace the rules of a rule set. First, use get to read the current version of the rule set before<br />modifying it. This pattern helps prevent conflicts between concurrent updates.<br /><br />:param name: str<br />  Name of the rule set.<br />:param rule_set: :class:`RuleSetUpdateRequest`<br /><br />:returns: :class:`RuleSetResponse`</td>
+</tr>
+</tbody>
+</table>
+
+## Parameters
+
+Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#methods) section to see which parameters are required or optional for each operation.
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
+<tr id="parameter-etag">
+    <td><CopyableCode code="etag" /></td>
+    <td><code>string</code></td>
+    <td>Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from overwriting each other. It is strongly suggested that systems make use of the etag in the read -&gt; modify -&gt; write pattern to perform rule set updates in order to avoid race conditions that is get an etag from a GET rule set request, and pass it with the PUT update request to identify the rule set version you are updating. Examples | Summary :--- | :--- `etag=` | An empty etag can only be used in GET to indicate no freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An etag encoded a specific version of the rule set to get or to be updated.</td>
+</tr>
+<tr id="parameter-name">
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>The ruleset name associated with the request. Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule set on the group. `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` | A name for a rule set on the service principal. `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default` | A name for a rule set on the tag policy.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` examples
+
+<Tabs
+    defaultValue="get"
+    values={[
+        { label: 'get', value: 'get' }
+    ]}
+>
+<TabItem value="get">
+
+Get a rule set by its name. A rule set is always attached to a resource and contains a list of access<br />rules on the said resource. Currently only a default rule set for each resource is supported.<br /><br />:param name: str<br />  The ruleset name associated with the request.<br /><br />  Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set<br />  on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule<br />  set on the group.<br />  `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` |<br />  A name for a rule set on the service principal.<br />  `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default` | A name for a rule set on<br />  the tag policy.<br />:param etag: str<br />  Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for<br />  optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from<br />  overwriting each other. It is strongly suggested that systems make use of the etag in the read -&gt;<br />  modify -&gt; write pattern to perform rule set updates in order to avoid race conditions that is get an<br />  etag from a GET rule set request, and pass it with the PUT update request to identify the rule set<br />  version you are updating.<br /><br />  Examples | Summary :--- | :--- `etag=` | An empty etag can only be used in GET to indicate no<br />  freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An<br />  etag encoded a specific version of the rule set to get or to be updated.<br /><br />:returns: :class:`RuleSetResponse`
+
+```sql
+SELECT
+name,
+etag,
+grant_rules
+FROM databricks_workspace.iam.rule_sets
+WHERE name = '{{ name }}' -- required
+AND etag = '{{ etag }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
+;
+```
+</TabItem>
+</Tabs>
+
+
+## `REPLACE` examples
+
+<Tabs
+    defaultValue="update"
+    values={[
+        { label: 'update', value: 'update' }
+    ]}
+>
+<TabItem value="update">
+
+Replace the rules of a rule set. First, use get to read the current version of the rule set before<br />modifying it. This pattern helps prevent conflicts between concurrent updates.<br /><br />:param name: str<br />  Name of the rule set.<br />:param rule_set: :class:`RuleSetUpdateRequest`<br /><br />:returns: :class:`RuleSetResponse`
+
+```sql
+REPLACE databricks_workspace.iam.rule_sets
+SET 
+data__name = '{{ name }}',
+data__rule_set = '{{ rule_set }}'
+WHERE 
+deployment_name = '{{ deployment_name }}' --required
+AND data__name = '{{ name }}' --required
+AND data__rule_set = '{{ rule_set }}' --required
+RETURNING
+name,
+etag,
+grant_rules;
+```
+</TabItem>
+</Tabs>

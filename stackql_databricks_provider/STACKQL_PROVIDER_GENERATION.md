@@ -21,12 +21,20 @@ Each scope has its own set of OpenAPI specs, CSV mappings, and generated provide
 
 ## Workflow
 
+From the repo root:
+
+```bash
+python3 -m venv .venv
+source .venv/bin/activate
+pip install -e ".[dev]"
+```
+
 ### 1. Generate OpenAPI Specs
 
 Extract OpenAPI 3.0 specs from the Databricks Python SDK:
 
 ```bash
-python -m stackql_databricks_provider.generate
+python3 -m stackql_databricks_provider.generate
 ```
 
 This produces JSON specs under `stackql_databricks_provider/openapi_generated/{account,workspace}/`.
@@ -65,7 +73,7 @@ Edit the CSV files to customize resource/method mappings before generating the p
 after making any updates to the service scoped csv files (masters), run the following:
 
 ```bash
-python3 -m inventory_gen
+python3 -m stackql_databricks_provider.inventory_gen
 ```
 
 ### 4. Generate Provider
@@ -75,6 +83,7 @@ This step transforms the OpenAPI specs into a fully-functional StackQL provider 
 #### Account scope
 
 ```bash
+cd stackql_databricks_provider
 npm run generate-provider -- \
   --provider-name databricks_account \
   --input-dir openapi_generated/account \
@@ -190,16 +199,16 @@ REGISTRY PULL databricks_account;
 # Account docs
 npm run generate-docs -- \
   --provider-name databricks_account \
-  --provider-dir ./provider-dev/openapi/src/databricks_account/v00.00.00000 \
-  --output-dir ./website \
-  --provider-data-dir ./provider-dev/docgen/provider-data
+  --provider-dir ./stackql-provider/src/databricks_account/v00.00.00000 \
+  --output-dir ./website/databricks_account \
+  --provider-data-dir ./docgen/provider-data/databricks_account
 
 # Workspace docs
 npm run generate-docs -- \
   --provider-name databricks_workspace \
-  --provider-dir ./provider-dev/openapi/src/databricks_workspace/v00.00.00000 \
-  --output-dir ./website \
-  --provider-data-dir ./provider-dev/docgen/provider-data
+  --provider-dir ./stackql-provider/src/databricks_workspace/v00.00.00000 \
+  --output-dir ./website/databricks_workspace \
+  --provider-data-dir ./docgen/provider-data/databricks_workspace
 ```
 
 ### 8. Authentication

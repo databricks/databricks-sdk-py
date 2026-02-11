@@ -1,0 +1,259 @@
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;700&display=swap');
+
+/* 
+* Brand Colour 
+*/
+:root {
+  --gamma-blue: #0f4c81;
+  --gamma-medium-blue: #6c83aa;
+ /* Blues */
+  --gamma-dark-blue: #004165;
+  --gamma-light-blue: #b5bfd4;
+  --code-blue: #00f;
+ /* Grey scale */
+  --default-text: #2e3940;
+  --secondary-text: #718096;
+  --black: #000;
+  --white: #fff;
+  --grey-1: #f5f6f7;
+  --grey-2: #ebedef;
+ /* Dark Mode Blacks */
+  --dark-1: #606264;
+  --dark-2: #404244;
+  --black-2: #090909;
+  --light-black: #111;
+ /* Colours */
+  --default-green: #00af91;
+  --secondary-green: #43af43;
+  --default-red: #e94560;
+  --default-red-2: #fc91a2;
+  --default-blue: #2e3940;
+  --default-light-blue: #bfc2ff;
+  --default-blue-2: #1a1a2e;
+  --secondary-blue: #16213e;
+  --gamma-dark: #030760;
+}
+
+:root {
+  /* infima styling */
+  --ifm-font-family-base: 'Montserrat', sans-serif;
+  --ifm-font-size-base: 16px;
+  --ifm-code-font-size: 95%;
+  --ifm-background-color: var(--white);
+  --ifm-color-primary: var(--gamma-dark-blue);
+  --ifm-code-color: var(--code-blue);
+  --ifm-color-content: #2d3748;
+  --ifm-dropdown-link-color: var(--ifm-menu-color);
+  --ifm-navbar-link-color: var(--ifm-menu-color);
+  --ifm-menu-color-background-active: var(--ifm-color-emphasis-200);
+}
+
+[data-theme='dark'] {
+  --ifm-font-base-color: #dee0f2;
+  --ifm-color-content: var(--ifm-font-base-color);
+  --ifm-navbar-link-hover-color: var(--gamma-light-blue);
+  --ifm-link-color: var(--gamma-light-blue);
+  --ifm-menu-color-active: var(--gamma-light-blue);
+  --ifm-color-primary: var(--white);
+  --ifm-background-color: var(--black);
+  --ifm-footer-background-color: var(--black-2);
+  --ifm-navbar-background-color: var(--black);
+  --ifm-menu-color-background-active: #21243d;
+  --ifm-code-color: var(--white);
+}
+
+/* 
+* copyable code
+*/
+.copyable-code-container code {
+  cursor: pointer;
+  position: relative;
+}
+
+/* 
+* github
+*/
+ .header-github-link:before {
+  content: '';  
+  width: 140px;
+  height: 28px;
+  display: flex;
+  background-image: url("https://img.shields.io/github/stars/stackql/stackql?logo=github&style=social");
+  background-repeat: no-repeat;
+  background-position: center;
+  background-size: contain;  
+}
+
+.header-github-link:hover {
+  opacity: 0.6;
+}
+
+/* 
+* footer
+*/
+:root .footer--dark {
+  background-color: transparent;
+  --ifm-footer-color: var(--secondary-text);
+  --ifm-footer-link-color: var(--secondary-text);
+  --ifm-footer-title-color: var(--black-2);
+}
+:root .footer .footerLogoLink_src-theme-Footer- {
+  opacity: 1;
+}
+:root .footer .divider {
+  background-color: rgba(0, 0, 0, 0.12);
+}
+:root .footer .container {
+  background-color: var(--grey-1);
+}
+:root a code {
+  color: var(--ifm-code-color);
+}
+
+html[data-theme='dark'] .footer--dark {
+  --ifm-footer-background-color: transparent;
+  --ifm-footer-color: #bdbdbd;
+  --ifm-footer-link-color: #bdbdbd;
+  --ifm-footer-title-color: var(--white);
+}
+html[data-theme='dark'] .footer .divider {
+  background-color: var(--secondary-blue);
+}
+html[data-theme='dark'] .footer .container {
+  background-color: var(--black-2);
+}
+
+.footer__items {
+  font-weight: 400;
+  line-height: 1.43;
+  font-size: 0.875rem;
+}
+.footer__items .footer__link-item:hover {
+  text-decoration: none;
+}
+.footer__title {
+  font-weight: 700;
+  margin-bottom: 0;
+  line-height: 1.43;
+  font-size: 0.875rem;
+}
+.footer {
+  padding-bottom: 0;
+}
+.footer .container {
+  margin: 0 auto;
+  padding: 56px 80px;
+  max-width: 850px;
+  border-radius: 17px;
+}
+.divider {
+  width: 100%;
+  margin: 40px 0px;
+  border: none;
+  height: 1px;
+  flex-shrink: 0;
+}
+.footer__subtitle {
+  font-weight: 500;
+  line-height: 1.57;
+  font-size: 0.875rem;
+}
+.footer__logo {
+  margin-top: 0;
+}
+
+.footerSocialIcon {
+  font-size: 24px;
+  margin: 0 12px;
+}
+
+ .footerSocialIconButton {
+ padding: 0;
+ color: 'rgba(255,255,255,.6)';
+ }
+ 
+ .footerSocialIconButton:hover {
+ background: 'transparent';
+ color: 'rgba(255,255,255,.6)';
+ }
+ 
+ .footer__items {
+   list-style-type: none;
+   margin: 0;
+   padding: 0;
+ }
+
+/* 
+* custom styles
+*/
+code {
+  font-weight: bold;
+}
+table {
+  display: block;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  margin: 0 auto;
+  overflow-x: auto;
+  white-space: nowrap;
+}
+
+/* 
+* nav bar
+*/
+
+.navbar__item {
+  font-weight: 700;
+}
+.navbar__link {
+ font-weight: 700;
+}
+
+/* 
+* doc field headings
+*/
+
+:root .docFieldHeading {
+  color: #0000FF;
+}
+
+html[data-theme='dark'] .docFieldHeading {
+  color: #FFFFFF;
+}
+
+/* 
+* vhs image
+*/
+
+.vhsImage {
+  max-width: 60%; /* Reduce width to 80% of container */
+  display: block; /* Ensure it's a block element for margin auto to work */
+  margin: 40px auto; /* Add 40px space above/below and center horizontally */
+  transform: scale(0.9); /* Make it 90% of original size */
+  transform-origin: center; /* Scale from center */
+}
+
+/* Add more space before and after the image container */
+img[class="vhsImage"] {
+  margin-top: 40px;
+  margin-bottom: 40px;
+}
+
+/* If the image is inside a container, you might need this */
+.vhsImage-container,
+div:has(> .vhsImage) {
+  margin: 40px 0;
+}
+
+/* provider doc column */
+.providerDocColumn {
+	width: calc(50% - var(--ifm-spacing-horizontal));
+	float: left;
+	padding-left: var(--ifm-list-margin);
+}
+
+@media screen and (max-width: 600px) {
+	.providerDocColumn {
+	  width: 100%;
+	}
+  }

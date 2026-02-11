@@ -1,0 +1,26 @@
+---
+title: databricks_account
+hide_title: false
+hide_table_of_contents: false
+keywords:
+  - databricks
+  - databricks_account
+  - stackql
+  - infrastructure-as-code
+  - configuration-as-data
+  - cloud inventory
+description: Query, deploy and manage Databricks resources using SQL
+custom_edit_url: null
+image: /img/stackql-databricks-provider-featured-image.png
+id: 'provider-intro'
+---
+
+import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+
+Account-level features, identity and provisioning for Databricks.
+
+:::info
+
+For Databricks workspace operations use the [__`databricks_workspace`__](https://databricks-workspace-provider.stackql.io/) provider.
+
+:::

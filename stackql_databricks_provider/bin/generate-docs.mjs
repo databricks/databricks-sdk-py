@@ -27,7 +27,7 @@ async function generateDocs() {
     console.log(`Output directory: ${outputDir}`);
     console.log(`Provider data directory: ${providerDataDir}`);
 
-    const result = await docgen.generateDocs({
+    const result = await docgen.generateDocsv2({
       providerName,
       providerDir,
       outputDir,

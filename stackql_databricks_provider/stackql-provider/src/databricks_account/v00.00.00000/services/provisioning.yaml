@@ -53,6 +53,12 @@ paths:
 
 
         :returns: :class:`Credential`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -103,6 +109,12 @@ paths:
 
 
         :returns: Iterator over :class:`Credential`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -142,6 +154,11 @@ paths:
 
         :returns: :class:`Credential`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: credentials_id
           in: path
           required: true
@@ -184,6 +201,11 @@ paths:
 
         :returns: :class:`Credential`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: credentials_id
           in: path
           required: true
@@ -260,6 +282,12 @@ paths:
 
 
         :returns: :class:`CustomerManagedKey`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -305,6 +333,12 @@ paths:
 
 
         :returns: Iterator over :class:`CustomerManagedKey`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -344,6 +378,11 @@ paths:
 
         :returns: :class:`CustomerManagedKey`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: customer_managed_key_id
           in: path
           required: true
@@ -413,6 +452,11 @@ paths:
 
         :returns: :class:`CustomerManagedKey`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: customer_managed_key_id
           in: path
           required: true
@@ -471,6 +515,12 @@ paths:
           networks.
 
         :returns: :class:`Network`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -533,6 +583,12 @@ paths:
 
 
         :returns: Iterator over :class:`Network`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -576,6 +632,11 @@ paths:
 
         :returns: :class:`Network`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: network_id
           in: path
           required: true
@@ -618,6 +679,11 @@ paths:
 
         :returns: :class:`Network`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: network_id
           in: path
           required: true
@@ -685,6 +751,12 @@ paths:
           The AWS region for workspaces attached to this private access settings object.
 
         :returns: :class:`PrivateAccessSettings`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -764,6 +836,12 @@ paths:
 
 
         :returns: Iterator over :class:`PrivateAccessSettings`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -801,6 +879,11 @@ paths:
 
         :returns: :class:`PrivateAccessSettings`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: private_access_settings_id
           in: path
           required: true
@@ -843,6 +926,11 @@ paths:
 
         :returns: :class:`PrivateAccessSettings`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: private_access_settings_id
           in: path
           required: true
@@ -915,6 +1003,11 @@ paths:
 
         :returns: :class:`PrivateAccessSettings`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: private_access_settings_id
           in: path
           required: true
@@ -972,6 +1065,12 @@ paths:
           bucket path prefix.
 
         :returns: :class:`StorageConfiguration`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1027,6 +1126,12 @@ paths:
 
 
         :returns: Iterator over :class:`StorageConfiguration`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -1066,6 +1171,11 @@ paths:
 
         :returns: :class:`StorageConfiguration`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: storage_configuration_id
           in: path
           required: true
@@ -1108,6 +1218,11 @@ paths:
 
         :returns: :class:`StorageConfiguration`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: storage_configuration_id
           in: path
           required: true
@@ -1180,6 +1295,12 @@ paths:
           The human-readable name of the storage configuration.
 
         :returns: :class:`VpcEndpoint`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1227,6 +1348,12 @@ paths:
 
 
         :returns: Iterator over :class:`VpcEndpoint`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -1266,6 +1393,11 @@ paths:
 
         :returns: :class:`VpcEndpoint`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: vpc_endpoint_id
           in: path
           required: true
@@ -1316,6 +1448,11 @@ paths:
 
         :returns: :class:`VpcEndpoint`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: vpc_endpoint_id
           in: path
           required: true
@@ -1498,6 +1635,12 @@ paths:
         :returns:
           Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -1656,6 +1799,12 @@ paths:
 
 
         :returns: Iterator over :class:`Workspace`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       responses:
         '200':
           description: Success
@@ -1688,6 +1837,11 @@ paths:
 
         :returns: :class:`Workspace`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: workspace_id
           in: path
           required: true
@@ -1748,6 +1902,11 @@ paths:
 
         :returns: :class:`Workspace`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: workspace_id
           in: path
           required: true
@@ -1799,6 +1958,11 @@ paths:
           Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: workspace_id
           in: path
           required: true
@@ -2499,20 +2663,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2541,20 +2705,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2616,20 +2780,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2662,20 +2826,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2704,20 +2868,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2748,20 +2912,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 
@@ -2790,20 +2954,20 @@ components:
 
         Access them by:
 
-        - attribute access::
+        - attribute access:
 
-        >>> Color.RED
-        <Color.RED: 1>
+          >>> Color.RED
+          <Color.RED: 1>
 
         - value lookup:
 
-        >>> Color(1)
-        <Color.RED: 1>
+          >>> Color(1)
+          <Color.RED: 1>
 
         - name lookup:
 
-        >>> Color['RED']
-        <Color.RED: 1>
+          >>> Color['RED']
+          <Color.RED: 1>
 
         Enumerations can be iterated over, and know how many members they have:
 

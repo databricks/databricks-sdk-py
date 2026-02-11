@@ -1,0 +1,27 @@
+.schemaTable {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.schemaTable th,
+.schemaTable td {
+  border: 1px solid var(--ifm-table-border-color);
+  padding: 8px 12px;
+  text-align: left;
+}
+
+.schemaTable th {
+  background: var(--ifm-table-head-background);
+}
+
+.row:hover {
+  background: var(--ifm-table-stripe-background);
+}
+
+.expander {
+  cursor: pointer;
+  margin-right: 8px;
+  user-select: none;
+  color: var(--ifm-color-primary);
+  font-size: 10px;
+}

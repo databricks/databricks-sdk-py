@@ -43,6 +43,11 @@ paths:
 
         :returns: :class:`WorkspaceAccessDetail`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: workspace_id
           in: path
           required: true
@@ -106,6 +111,12 @@ paths:
           Required. The external ID of the group in the customer's IdP.
 
         :returns: :class:`ResolveGroupResponse`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -160,6 +171,12 @@ paths:
           Required. The external ID of the service principal in the customer's IdP.
 
         :returns: :class:`ResolveServicePrincipalResponse`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -214,6 +231,12 @@ paths:
           Required. The external ID of the user in the customer's IdP.
 
         :returns: :class:`ResolveUserResponse`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:

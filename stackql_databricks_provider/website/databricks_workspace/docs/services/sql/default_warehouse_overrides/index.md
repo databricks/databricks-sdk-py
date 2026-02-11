@@ -1,0 +1,346 @@
+---
+title: default_warehouse_overrides
+hide_title: false
+hide_table_of_contents: false
+keywords:
+  - default_warehouse_overrides
+  - sql
+  - databricks_workspace
+  - infrastructure-as-code
+  - configuration-as-data
+  - cloud inventory
+description: Query, deploy and manage databricks_workspace resources using SQL
+custom_edit_url: null
+image: /img/stackql-databricks_workspace-provider-featured-image.png
+---
+
+import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
+import Tabs from '@theme/Tabs';
+import TabItem from '@theme/TabItem';
+import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
+
+Creates, updates, deletes, gets or lists a <code>default_warehouse_overrides</code> resource.
+
+## Overview
+<table><tbody>
+<tr><td><b>Name</b></td><td><code>default_warehouse_overrides</code></td></tr>
+<tr><td><b>Type</b></td><td>Resource</td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.default_warehouse_overrides" /></td></tr>
+</tbody></table>
+
+## Fields
+
+The following fields are returned by `SELECT` queries:
+
+<Tabs
+    defaultValue="get"
+    values={[
+        { label: 'get', value: 'get' },
+        { label: 'list', value: 'list' }
+    ]}
+>
+<TabItem value="get">
+
+<SchemaTable fields={[
+  {
+    "name": "name",
+    "type": "string",
+    "description": "The resource name of the default warehouse override. Format: default-warehouse-overrides/&#123;default_warehouse_override_id&#125;"
+  },
+  {
+    "name": "default_warehouse_override_id",
+    "type": "string",
+    "description": "The ID component of the resource name (user ID)."
+  },
+  {
+    "name": "warehouse_id",
+    "type": "string",
+    "description": "The specific warehouse ID when type is CUSTOM. Not set for LAST_SELECTED type."
+  },
+  {
+    "name": "type",
+    "type": "string",
+    "description": "The type of override behavior."
+  }
+]} />
+</TabItem>
+<TabItem value="list">
+
+<SchemaTable fields={[
+  {
+    "name": "name",
+    "type": "string",
+    "description": "The resource name of the default warehouse override. Format: default-warehouse-overrides/&#123;default_warehouse_override_id&#125;"
+  },
+  {
+    "name": "default_warehouse_override_id",
+    "type": "string",
+    "description": "The ID component of the resource name (user ID)."
+  },
+  {
+    "name": "warehouse_id",
+    "type": "string",
+    "description": "The specific warehouse ID when type is CUSTOM. Not set for LAST_SELECTED type."
+  },
+  {
+    "name": "type",
+    "type": "string",
+    "description": "The type of override behavior."
+  }
+]} />
+</TabItem>
+</Tabs>
+
+## Methods
+
+The following methods are available for this resource:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Accessible by</th>
+    <th>Required Params</th>
+    <th>Optional Params</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><CopyableCode code="select" /></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td></td>
+    <td>Returns the default warehouse override for a user. Users can fetch their own override. Admins can<br />fetch overrides for any user. If no override exists, the UI will fallback to the workspace default<br />warehouse.<br /><br />:param name: str<br />  Required. The resource name of the default warehouse override to retrieve. Format:<br />  default-warehouse-overrides/&#123;default_warehouse_override_id&#125; The default_warehouse_override_id can be<br />  a numeric user ID or the literal string "me" for the current user.<br /><br />:returns: :class:`DefaultWarehouseOverride`</td>
+</tr>
+<tr>
+    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><CopyableCode code="select" /></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
+    <td>Lists all default warehouse overrides in the workspace. Only workspace administrators can list all<br />overrides.<br /><br />:param page_size: int (optional)<br />  The maximum number of overrides to return. The service may return fewer than this value. If<br />  unspecified, at most 100 overrides will be returned. The maximum value is 1000; values above 1000<br />  will be coerced to 1000.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListDefaultWarehouseOverrides` call. Provide this to<br />  retrieve the subsequent page.<br /><br />  When paginating, all other parameters provided to `ListDefaultWarehouseOverrides` must match the<br />  call that provided the page token.<br /><br />:returns: Iterator over :class:`DefaultWarehouseOverride`</td>
+</tr>
+<tr>
+    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><CopyableCode code="insert" /></td>
+    <td><a href="#parameter-default_warehouse_override_id"><code>default_warehouse_override_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__default_warehouse_override"><code>data__default_warehouse_override</code></a></td>
+    <td></td>
+    <td>Creates a new default warehouse override for a user. Users can create their own override. Admins can<br />create overrides for any user.<br /><br />:param default_warehouse_override: :class:`DefaultWarehouseOverride`<br />  Required. The default warehouse override to create.<br />:param default_warehouse_override_id: str<br />  Required. The ID to use for the override, which will become the final component of the override's<br />  resource name. Can be a numeric user ID or the literal string "me" for the current user.<br /><br />:returns: :class:`DefaultWarehouseOverride`</td>
+</tr>
+<tr>
+    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><CopyableCode code="update" /></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__default_warehouse_override"><code>data__default_warehouse_override</code></a></td>
+    <td><a href="#parameter-allow_missing"><code>allow_missing</code></a></td>
+    <td>Updates an existing default warehouse override for a user. Users can update their own override. Admins<br />can update overrides for any user.<br /><br />:param name: str<br />  The resource name of the default warehouse override. Format:<br />  default-warehouse-overrides/&#123;default_warehouse_override_id&#125;<br />:param default_warehouse_override: :class:`DefaultWarehouseOverride`<br />  Required. The default warehouse override to update. The name field must be set in the format:<br />  default-warehouse-overrides/&#123;default_warehouse_override_id&#125; The default_warehouse_override_id can be<br />  a numeric user ID or the literal string "me" for the current user.<br />:param update_mask: FieldMask<br />  Required. Field mask specifying which fields to update. Only the fields specified in the mask will<br />  be updated. Use "*" to update all fields. When allow_missing is true, this field is ignored and all<br />  fields are applied.<br />:param allow_missing: bool (optional)<br />  If set to true, and the override is not found, a new override will be created. In this situation,<br />  `update_mask` is ignored and all fields are applied. Defaults to false.<br /><br />:returns: :class:`DefaultWarehouseOverride`</td>
+</tr>
+<tr>
+    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><CopyableCode code="delete" /></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td></td>
+    <td>Deletes the default warehouse override for a user. Users can delete their own override. Admins can<br />delete overrides for any user. After deletion, the workspace default warehouse will be used.<br /><br />:param name: str<br />  Required. The resource name of the default warehouse override to delete. Format:<br />  default-warehouse-overrides/&#123;default_warehouse_override_id&#125; The default_warehouse_override_id can be<br />  a numeric user ID or the literal string "me" for the current user.</td>
+</tr>
+</tbody>
+</table>
+
+## Parameters
+
+Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#methods) section to see which parameters are required or optional for each operation.
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr id="parameter-default_warehouse_override_id">
+    <td><CopyableCode code="default_warehouse_override_id" /></td>
+    <td><code>string</code></td>
+    <td>Required. The ID to use for the override, which will become the final component of the override's resource name. Can be a numeric user ID or the literal string "me" for the current user.</td>
+</tr>
+<tr id="parameter-deployment_name">
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><code>string</code></td>
+    <td>The Databricks Workspace Deployment Name (default: dbc-abcd0123-a1bc)</td>
+</tr>
+<tr id="parameter-name">
+    <td><CopyableCode code="name" /></td>
+    <td><code>string</code></td>
+    <td>Required. The resource name of the default warehouse override to delete. Format: default-warehouse-overrides/&#123;default_warehouse_override_id&#125; The default_warehouse_override_id can be a numeric user ID or the literal string "me" for the current user.</td>
+</tr>
+<tr id="parameter-update_mask">
+    <td><CopyableCode code="update_mask" /></td>
+    <td><code>string</code></td>
+    <td>Required. Field mask specifying which fields to update. Only the fields specified in the mask will be updated. Use "*" to update all fields. When allow_missing is true, this field is ignored and all fields are applied.</td>
+</tr>
+<tr id="parameter-allow_missing">
+    <td><CopyableCode code="allow_missing" /></td>
+    <td><code>string</code></td>
+    <td>If set to true, and the override is not found, a new override will be created. In this situation, `update_mask` is ignored and all fields are applied. Defaults to false.</td>
+</tr>
+<tr id="parameter-page_size">
+    <td><CopyableCode code="page_size" /></td>
+    <td><code>string</code></td>
+    <td>The maximum number of overrides to return. The service may return fewer than this value. If unspecified, at most 100 overrides will be returned. The maximum value is 1000; values above 1000 will be coerced to 1000.</td>
+</tr>
+<tr id="parameter-page_token">
+    <td><CopyableCode code="page_token" /></td>
+    <td><code>string</code></td>
+    <td>A page token, received from a previous `ListDefaultWarehouseOverrides` call. Provide this to retrieve the subsequent page. When paginating, all other parameters provided to `ListDefaultWarehouseOverrides` must match the call that provided the page token.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` examples
+
+<Tabs
+    defaultValue="get"
+    values={[
+        { label: 'get', value: 'get' },
+        { label: 'list', value: 'list' }
+    ]}
+>
+<TabItem value="get">
+
+Returns the default warehouse override for a user. Users can fetch their own override. Admins can<br />fetch overrides for any user. If no override exists, the UI will fallback to the workspace default<br />warehouse.<br /><br />:param name: str<br />  Required. The resource name of the default warehouse override to retrieve. Format:<br />  default-warehouse-overrides/&#123;default_warehouse_override_id&#125; The default_warehouse_override_id can be<br />  a numeric user ID or the literal string "me" for the current user.<br /><br />:returns: :class:`DefaultWarehouseOverride`
+
+```sql
+SELECT
+name,
+default_warehouse_override_id,
+warehouse_id,
+type
+FROM databricks_workspace.sql.default_warehouse_overrides
+WHERE name = '{{ name }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
+;
+```
+</TabItem>
+<TabItem value="list">
+
+Lists all default warehouse overrides in the workspace. Only workspace administrators can list all<br />overrides.<br /><br />:param page_size: int (optional)<br />  The maximum number of overrides to return. The service may return fewer than this value. If<br />  unspecified, at most 100 overrides will be returned. The maximum value is 1000; values above 1000<br />  will be coerced to 1000.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListDefaultWarehouseOverrides` call. Provide this to<br />  retrieve the subsequent page.<br /><br />  When paginating, all other parameters provided to `ListDefaultWarehouseOverrides` must match the<br />  call that provided the page token.<br /><br />:returns: Iterator over :class:`DefaultWarehouseOverride`
+
+```sql
+SELECT
+name,
+default_warehouse_override_id,
+warehouse_id,
+type
+FROM databricks_workspace.sql.default_warehouse_overrides
+WHERE deployment_name = '{{ deployment_name }}' -- required
+AND page_size = '{{ page_size }}'
+AND page_token = '{{ page_token }}'
+;
+```
+</TabItem>
+</Tabs>
+
+
+## `INSERT` examples
+
+<Tabs
+    defaultValue="create"
+    values={[
+        { label: 'create', value: 'create' },
+        { label: 'Manifest', value: 'manifest' }
+    ]}
+>
+<TabItem value="create">
+
+Creates a new default warehouse override for a user. Users can create their own override. Admins can<br />create overrides for any user.<br /><br />:param default_warehouse_override: :class:`DefaultWarehouseOverride`<br />  Required. The default warehouse override to create.<br />:param default_warehouse_override_id: str<br />  Required. The ID to use for the override, which will become the final component of the override's<br />  resource name. Can be a numeric user ID or the literal string "me" for the current user.<br /><br />:returns: :class:`DefaultWarehouseOverride`
+
+```sql
+INSERT INTO databricks_workspace.sql.default_warehouse_overrides (
+data__default_warehouse_override,
+default_warehouse_override_id,
+deployment_name
+)
+SELECT 
+'{{ default_warehouse_override }}' /* required */,
+'{{ default_warehouse_override_id }}',
+'{{ deployment_name }}'
+RETURNING
+name,
+default_warehouse_override_id,
+warehouse_id,
+type
+;
+```
+</TabItem>
+<TabItem value="manifest">
+
+```yaml
+# Description fields are for documentation purposes
+- name: default_warehouse_overrides
+  props:
+    - name: default_warehouse_override_id
+      value: string
+      description: Required parameter for the default_warehouse_overrides resource.
+    - name: deployment_name
+      value: string
+      description: Required parameter for the default_warehouse_overrides resource.
+    - name: default_warehouse_override
+      value: string
+      description: |
+        Required. The default warehouse override to create.
+```
+</TabItem>
+</Tabs>
+
+
+## `UPDATE` examples
+
+<Tabs
+    defaultValue="update"
+    values={[
+        { label: 'update', value: 'update' }
+    ]}
+>
+<TabItem value="update">
+
+Updates an existing default warehouse override for a user. Users can update their own override. Admins<br />can update overrides for any user.<br /><br />:param name: str<br />  The resource name of the default warehouse override. Format:<br />  default-warehouse-overrides/&#123;default_warehouse_override_id&#125;<br />:param default_warehouse_override: :class:`DefaultWarehouseOverride`<br />  Required. The default warehouse override to update. The name field must be set in the format:<br />  default-warehouse-overrides/&#123;default_warehouse_override_id&#125; The default_warehouse_override_id can be<br />  a numeric user ID or the literal string "me" for the current user.<br />:param update_mask: FieldMask<br />  Required. Field mask specifying which fields to update. Only the fields specified in the mask will<br />  be updated. Use "*" to update all fields. When allow_missing is true, this field is ignored and all<br />  fields are applied.<br />:param allow_missing: bool (optional)<br />  If set to true, and the override is not found, a new override will be created. In this situation,<br />  `update_mask` is ignored and all fields are applied. Defaults to false.<br /><br />:returns: :class:`DefaultWarehouseOverride`
+
+```sql
+UPDATE databricks_workspace.sql.default_warehouse_overrides
+SET 
+data__default_warehouse_override = '{{ default_warehouse_override }}'
+WHERE 
+name = '{{ name }}' --required
+AND update_mask = '{{ update_mask }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
+AND data__default_warehouse_override = '{{ default_warehouse_override }}' --required
+AND allow_missing = '{{ allow_missing}}'
+RETURNING
+name,
+default_warehouse_override_id,
+warehouse_id,
+type;
+```
+</TabItem>
+</Tabs>
+
+
+## `DELETE` examples
+
+<Tabs
+    defaultValue="delete"
+    values={[
+        { label: 'delete', value: 'delete' }
+    ]}
+>
+<TabItem value="delete">
+
+Deletes the default warehouse override for a user. Users can delete their own override. Admins can<br />delete overrides for any user. After deletion, the workspace default warehouse will be used.<br /><br />:param name: str<br />  Required. The resource name of the default warehouse override to delete. Format:<br />  default-warehouse-overrides/&#123;default_warehouse_override_id&#125; The default_warehouse_override_id can be<br />  a numeric user ID or the literal string "me" for the current user.
+
+```sql
+DELETE FROM databricks_workspace.sql.default_warehouse_overrides
+WHERE name = '{{ name }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
+;
+```
+</TabItem>
+</Tabs>

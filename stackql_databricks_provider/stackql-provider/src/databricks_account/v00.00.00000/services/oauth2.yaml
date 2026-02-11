@@ -25,6 +25,11 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: policy_id
           in: query
           required: false
@@ -78,6 +83,11 @@ paths:
 
         :returns: Iterator over :class:`FederationPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: page_size
           in: query
           required: false
@@ -120,6 +130,11 @@ paths:
         :param policy_id: str
           The identifier for the federation policy.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: policy_id
           in: path
           required: true
@@ -154,6 +169,11 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: policy_id
           in: path
           required: true
@@ -199,6 +219,11 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: policy_id
           in: path
           required: true
@@ -279,6 +304,12 @@ paths:
           authorize the access token will not be minted. Must be a subset of scopes.
 
         :returns: :class:`CreateCustomAppIntegrationOutput`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -350,6 +381,11 @@ paths:
 
         :returns: Iterator over :class:`GetCustomAppIntegrationOutput`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: include_creator_username
           in: query
           required: false
@@ -403,6 +439,11 @@ paths:
 
         :param integration_id: str
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: integration_id
           in: path
           required: true
@@ -437,6 +478,11 @@ paths:
 
         :returns: :class:`GetCustomAppIntegrationOutput`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: integration_id
           in: path
           required: true
@@ -489,6 +535,11 @@ paths:
           Scopes that will need to be consented by end user to mint the access token. If the user does not
           authorize the access token will not be minted. Must be a subset of scopes.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: integration_id
           in: path
           required: true
@@ -553,6 +604,11 @@ paths:
 
         :returns: Iterator over :class:`PublishedAppOutput`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: page_size
           in: query
           required: false
@@ -604,6 +660,12 @@ paths:
           Token access policy
 
         :returns: :class:`CreatePublishedAppIntegrationOutput`
+      parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
       requestBody:
         content:
           application/json:
@@ -656,6 +718,11 @@ paths:
 
         :returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: page_size
           in: query
           required: false
@@ -703,6 +770,11 @@ paths:
 
         :param integration_id: str
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: integration_id
           in: path
           required: true
@@ -736,6 +808,11 @@ paths:
 
         :returns: :class:`GetPublishedAppIntegrationOutput`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: integration_id
           in: path
           required: true
@@ -780,6 +857,11 @@ paths:
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the published OAuth app integration
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: integration_id
           in: path
           required: true
@@ -830,6 +912,11 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: service_principal_id
           in: path
           required: true
@@ -891,6 +978,11 @@ paths:
 
         :returns: Iterator over :class:`FederationPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: service_principal_id
           in: path
           required: true
@@ -941,6 +1033,11 @@ paths:
         :param policy_id: str
           The identifier for the federation policy.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: service_principal_id
           in: path
           required: true
@@ -983,6 +1080,11 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: service_principal_id
           in: path
           required: true
@@ -1036,6 +1138,11 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: service_principal_id
           in: path
           required: true
@@ -1109,6 +1216,11 @@ paths:
 
         :returns: :class:`CreateServicePrincipalSecretResponse`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: service_principal_id
           in: path
           required: true
@@ -1174,6 +1286,11 @@ paths:
 
         :returns: Iterator over :class:`SecretInfo`
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: service_principal_id
           in: path
           required: true
@@ -1234,6 +1351,11 @@ paths:
         :param secret_id: str
           The secret ID.
       parameters:
+        - name: account_id
+          in: path
+          required: true
+          schema:
+            type: string
         - name: service_principal_id
           in: path
           required: true
