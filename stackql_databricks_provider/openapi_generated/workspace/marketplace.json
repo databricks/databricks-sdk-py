@@ -61,7 +61,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[SharedDataObject]"
+                  "$ref": "#/components/schemas/SharedDataObject"
                 }
               }
             }
@@ -130,7 +130,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ListingFulfillment]"
+                  "$ref": "#/components/schemas/ListingFulfillment"
                 }
               }
             }
@@ -278,7 +278,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[InstallationDetail]"
+                  "$ref": "#/components/schemas/InstallationDetail"
                 }
               }
             }
@@ -470,7 +470,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[InstallationDetail]"
+                  "$ref": "#/components/schemas/InstallationDetail"
                 }
               }
             }
@@ -697,7 +697,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Listing]"
+                  "$ref": "#/components/schemas/Listing"
                 }
               }
             }
@@ -810,7 +810,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Listing]"
+                  "$ref": "#/components/schemas/Listing"
                 }
               }
             }
@@ -1015,7 +1015,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[PersonalizationRequest]"
+                  "$ref": "#/components/schemas/PersonalizationRequest"
                 }
               }
             }
@@ -1188,7 +1188,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ProviderInfo]"
+                  "$ref": "#/components/schemas/ProviderInfo"
                 }
               }
             }
@@ -1314,7 +1314,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ExchangeFilter]"
+                  "$ref": "#/components/schemas/ExchangeFilter"
                 }
               }
             }
@@ -1556,7 +1556,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ExchangeListing]"
+                  "$ref": "#/components/schemas/ExchangeListing"
                 }
               }
             }
@@ -1673,7 +1673,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Exchange]"
+                  "$ref": "#/components/schemas/Exchange"
                 }
               }
             }
@@ -1949,7 +1949,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ExchangeListing]"
+                  "$ref": "#/components/schemas/ExchangeListing"
                 }
               }
             }
@@ -2087,7 +2087,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[FileInfo]"
+                  "$ref": "#/components/schemas/FileInfo"
                 }
               }
             }
@@ -2463,7 +2463,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Listing]"
+                  "$ref": "#/components/schemas/Listing"
                 }
               }
             }
@@ -2523,7 +2523,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[PersonalizationRequest]"
+                  "$ref": "#/components/schemas/PersonalizationRequest"
                 }
               }
             }
@@ -3077,7 +3077,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ProviderInfo]"
+                  "$ref": "#/components/schemas/ProviderInfo"
                 }
               }
             }

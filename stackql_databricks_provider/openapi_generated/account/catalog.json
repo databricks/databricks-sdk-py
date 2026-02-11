@@ -299,7 +299,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[int]"
+                  "type": "object"
                 }
               }
             }
@@ -394,7 +394,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[MetastoreInfo]"
+                  "$ref": "#/components/schemas/MetastoreInfo"
                 }
               }
             }
@@ -690,7 +690,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[StorageCredentialInfo]"
+                  "$ref": "#/components/schemas/StorageCredentialInfo"
                 }
               }
             }
@@ -1064,7 +1064,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[CredentialInfo]"
+                  "$ref": "#/components/schemas/CredentialInfo"
                 }
               }
             }

@@ -89,7 +89,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Credential]"
+                  "$ref": "#/components/schemas/Credential"
                 }
               }
             }
@@ -296,7 +296,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[CustomerManagedKey]"
+                  "$ref": "#/components/schemas/CustomerManagedKey"
                 }
               }
             }
@@ -511,7 +511,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Network]"
+                  "$ref": "#/components/schemas/Network"
                 }
               }
             }
@@ -724,7 +724,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[PrivateAccessSettings]"
+                  "$ref": "#/components/schemas/PrivateAccessSettings"
                 }
               }
             }
@@ -1001,7 +1001,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[StorageConfiguration]"
+                  "$ref": "#/components/schemas/StorageConfiguration"
                 }
               }
             }
@@ -1210,7 +1210,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[VpcEndpoint]"
+                  "$ref": "#/components/schemas/VpcEndpoint"
                 }
               }
             }
@@ -1432,7 +1432,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[Workspace]"
+                  "$ref": "#/components/schemas/Workspace"
                 }
               }
             }
@@ -1471,7 +1471,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Workspace]"
+                  "$ref": "#/components/schemas/Workspace"
                 }
               }
             }
@@ -1649,7 +1649,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[Workspace]"
+                  "$ref": "#/components/schemas/Workspace"
                 }
               }
             }

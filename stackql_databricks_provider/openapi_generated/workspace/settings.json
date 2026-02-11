@@ -2590,7 +2590,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[IpAccessListInfo]"
+                  "$ref": "#/components/schemas/IpAccessListInfo"
                 }
               }
             }
@@ -3350,7 +3350,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ListNotificationDestinationsResult]"
+                  "$ref": "#/components/schemas/ListNotificationDestinationsResult"
                 }
               }
             }
@@ -4431,7 +4431,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[TokenInfo]"
+                  "$ref": "#/components/schemas/TokenInfo"
                 }
               }
             }
@@ -4584,7 +4584,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[PublicTokenInfo]"
+                  "$ref": "#/components/schemas/PublicTokenInfo"
                 }
               }
             }
@@ -4636,7 +4636,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/WorkspaceConf"
+                  "type": "object"
                 }
               }
             }

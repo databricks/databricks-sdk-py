@@ -324,7 +324,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[FileInfo]"
+                  "$ref": "#/components/schemas/FileInfo"
                 }
               }
             }
@@ -758,7 +758,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[DirectoryEntry]"
+                  "$ref": "#/components/schemas/DirectoryEntry"
                 }
               }
             }
@@ -1051,7 +1051,8 @@
             "type": "string"
           },
           "contents": {
-            "$ref": "#/components/schemas/BinaryIO"
+            "type": "string",
+            "format": "binary"
           },
           "last_modified": {
             "type": "string",

@@ -848,7 +848,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Metric]"
+                  "$ref": "#/components/schemas/Metric"
                 }
               }
             }
@@ -1222,7 +1222,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[FileInfo]"
+                  "$ref": "#/components/schemas/FileInfo"
                 }
               }
             }
@@ -1292,7 +1292,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Experiment]"
+                  "$ref": "#/components/schemas/Experiment"
                 }
               }
             }
@@ -1977,7 +1977,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Experiment]"
+                  "$ref": "#/components/schemas/Experiment"
                 }
               }
             }
@@ -2129,7 +2129,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Run]"
+                  "$ref": "#/components/schemas/Run"
                 }
               }
             }
@@ -2621,7 +2621,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Feature]"
+                  "$ref": "#/components/schemas/Feature"
                 }
               }
             }
@@ -2739,7 +2739,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[KafkaConfig]"
+                  "$ref": "#/components/schemas/KafkaConfig"
                 }
               }
             }
@@ -2866,7 +2866,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[MaterializedFeature]"
+                  "$ref": "#/components/schemas/MaterializedFeature"
                 }
               }
             }
@@ -3500,7 +3500,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[OnlineStore]"
+                  "$ref": "#/components/schemas/OnlineStore"
                 }
               }
             }
@@ -3914,7 +3914,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ForecastingExperiment]"
+                  "$ref": "#/components/schemas/ForecastingExperiment"
                 }
               }
             }
@@ -4120,7 +4120,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[FeatureTag]"
+                  "$ref": "#/components/schemas/FeatureTag"
                 }
               }
             }
@@ -5307,7 +5307,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ModelVersion]"
+                  "$ref": "#/components/schemas/ModelVersion"
                 }
               }
             }
@@ -5776,7 +5776,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Model]"
+                  "$ref": "#/components/schemas/Model"
                 }
               }
             }
@@ -5837,7 +5837,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Activity]"
+                  "$ref": "#/components/schemas/Activity"
                 }
               }
             }
@@ -5915,7 +5915,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[RegistryWebhook]"
+                  "$ref": "#/components/schemas/RegistryWebhook"
                 }
               }
             }
@@ -6130,7 +6130,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ModelVersion]"
+                  "$ref": "#/components/schemas/ModelVersion"
                 }
               }
             }
@@ -6209,7 +6209,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Model]"
+                  "$ref": "#/components/schemas/Model"
                 }
               }
             }

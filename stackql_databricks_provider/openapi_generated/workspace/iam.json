@@ -493,7 +493,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Group]"
+                  "$ref": "#/components/schemas/Group"
                 }
               }
             }
@@ -1267,7 +1267,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ServicePrincipal]"
+                  "$ref": "#/components/schemas/ServicePrincipal"
                 }
               }
             }
@@ -1706,7 +1706,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[User]"
+                  "$ref": "#/components/schemas/User"
                 }
               }
             }
@@ -2862,7 +2862,7 @@
             "description": "Selection of patch operation"
           },
           "value": {
-            "$ref": "#/components/schemas/Any",
+            "type": "object",
             "description": "Value to modify"
           }
         }

@@ -103,6 +103,9 @@ def generate_spec_for_service(
         server_url = "https://{workspace}.cloud.databricks.com"
         server_desc = "Databricks workspace"
 
+    # Sanitize: replace any $ref pointing to undefined schemas with inline object
+    _sanitize_orphaned_refs(paths, schemas)
+
     spec: Dict[str, Any] = {
         "openapi": "3.0.0",
         "info": {
@@ -197,6 +200,35 @@ def generate_all(output_dir: Optional[str] = None) -> Dict[str, Any]:
             logger.error("Failed to generate spec for %s: %s", svc_name, e)
 
     return summary
+
+
+def _sanitize_orphaned_refs(paths: Dict[str, Any], schemas: Dict[str, Any]) -> None:
+    """Replace $ref entries that point to undefined schemas with inline types.
+
+    Walks the entire paths tree looking for ``{"$ref": "#/components/schemas/X"}``
+    where ``X`` is not present in *schemas*.  Replaces those with
+    ``{"type": "object"}`` so the spec remains valid.
+    """
+    schema_prefix = "#/components/schemas/"
+
+    def _walk(obj):
+        if isinstance(obj, dict):
+            if "$ref" in obj:
+                ref = obj["$ref"]
+                if isinstance(ref, str) and ref.startswith(schema_prefix):
+                    schema_name = ref[len(schema_prefix):]
+                    if schema_name not in schemas:
+                        logger.debug("Replacing orphaned $ref %s with inline object", ref)
+                        del obj["$ref"]
+                        obj["type"] = "object"
+                        return
+            for v in obj.values():
+                _walk(v)
+        elif isinstance(obj, list):
+            for item in obj:
+                _walk(item)
+
+    _walk(paths)
 
 
 def _write_spec(spec: Dict[str, Any], directory: str, service_name: str) -> str:

@@ -300,7 +300,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[CatalogInfo]"
+                  "$ref": "#/components/schemas/CatalogInfo"
                 }
               }
             }
@@ -642,7 +642,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ConnectionInfo]"
+                  "$ref": "#/components/schemas/ConnectionInfo"
                 }
               }
             }
@@ -1176,7 +1176,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[EntityTagAssignment]"
+                  "$ref": "#/components/schemas/EntityTagAssignment"
                 }
               }
             }
@@ -1355,7 +1355,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ExternalLineageInfo]"
+                  "$ref": "#/components/schemas/ExternalLineageInfo"
                 }
               }
             }
@@ -1595,7 +1595,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ExternalLocationInfo]"
+                  "$ref": "#/components/schemas/ExternalLocationInfo"
                 }
               }
             }
@@ -1937,7 +1937,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ExternalMetadata]"
+                  "$ref": "#/components/schemas/ExternalMetadata"
                 }
               }
             }
@@ -2253,7 +2253,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[FunctionInfo]"
+                  "$ref": "#/components/schemas/FunctionInfo"
                 }
               }
             }
@@ -2993,7 +2993,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[MetastoreInfo]"
+                  "$ref": "#/components/schemas/MetastoreInfo"
                 }
               }
             }
@@ -3817,7 +3817,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ModelVersionInfo]"
+                  "$ref": "#/components/schemas/ModelVersionInfo"
                 }
               }
             }
@@ -3876,7 +3876,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[OnlineTable]"
+                  "$ref": "#/components/schemas/OnlineTable"
                 }
               }
             }
@@ -4351,7 +4351,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[PolicyInfo]"
+                  "$ref": "#/components/schemas/PolicyInfo"
                 }
               }
             }
@@ -5162,7 +5162,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[RegisteredModelInfo]"
+                  "$ref": "#/components/schemas/RegisteredModelInfo"
                 }
               }
             }
@@ -5523,7 +5523,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[QuotaInfo]"
+                  "$ref": "#/components/schemas/QuotaInfo"
                 }
               }
             }
@@ -5863,7 +5863,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[SchemaInfo]"
+                  "$ref": "#/components/schemas/SchemaInfo"
                 }
               }
             }
@@ -6216,7 +6216,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[StorageCredentialInfo]"
+                  "$ref": "#/components/schemas/StorageCredentialInfo"
                 }
               }
             }
@@ -6708,7 +6708,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[SystemSchemaInfo]"
+                  "$ref": "#/components/schemas/SystemSchemaInfo"
                 }
               }
             }
@@ -7048,7 +7048,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[TableInfo]"
+                  "$ref": "#/components/schemas/TableInfo"
                 }
               }
             }
@@ -7377,7 +7377,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[TableSummary]"
+                  "$ref": "#/components/schemas/TableSummary"
                 }
               }
             }
@@ -7673,7 +7673,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[VolumeInfo]"
+                  "$ref": "#/components/schemas/VolumeInfo"
                 }
               }
             }
@@ -8050,7 +8050,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[WorkspaceBinding]"
+                  "$ref": "#/components/schemas/WorkspaceBinding"
                 }
               }
             }

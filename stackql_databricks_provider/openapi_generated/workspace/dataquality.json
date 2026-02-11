@@ -179,7 +179,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Monitor]"
+                  "$ref": "#/components/schemas/Monitor"
                 }
               }
             }
@@ -334,7 +334,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Refresh]"
+                  "$ref": "#/components/schemas/Refresh"
                 }
               }
             }

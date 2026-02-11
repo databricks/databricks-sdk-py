@@ -126,7 +126,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[SecretInfo]"
+                  "$ref": "#/components/schemas/SecretInfo"
                 }
               }
             }

@@ -92,7 +92,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[IpAccessListInfo]"
+                  "$ref": "#/components/schemas/IpAccessListInfo"
                 }
               }
             }
@@ -439,7 +439,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[NetworkConnectivityConfiguration]"
+                  "$ref": "#/components/schemas/NetworkConnectivityConfiguration"
                 }
               }
             }
@@ -568,7 +568,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[NccPrivateEndpointRule]"
+                  "$ref": "#/components/schemas/NccPrivateEndpointRule"
                 }
               }
             }
@@ -977,7 +977,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[AccountNetworkPolicy]"
+                  "$ref": "#/components/schemas/AccountNetworkPolicy"
                 }
               }
             }

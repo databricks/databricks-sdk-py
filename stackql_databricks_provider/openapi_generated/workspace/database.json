@@ -108,7 +108,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[DatabaseInstance]"
+                  "$ref": "#/components/schemas/DatabaseInstance"
                 }
               }
             }
@@ -166,7 +166,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[DatabaseInstance]"
+                  "$ref": "#/components/schemas/DatabaseInstance"
                 }
               }
             }
@@ -309,7 +309,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[DatabaseInstanceRole]"
+                  "$ref": "#/components/schemas/DatabaseInstanceRole"
                 }
               }
             }
@@ -1360,7 +1360,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[DatabaseCatalog]"
+                  "$ref": "#/components/schemas/DatabaseCatalog"
                 }
               }
             }
@@ -1429,7 +1429,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[SyncedDatabaseTable]"
+                  "$ref": "#/components/schemas/SyncedDatabaseTable"
                 }
               }
             }
