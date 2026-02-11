@@ -5683,7 +5683,7 @@ paths:
       parameters:
         - name: filter
           in: query
-          required: false
+          required: true
           schema:
             type: string
           description: >-
@@ -8953,18 +8953,31 @@ components:
         update: []
         delete: []
         replace: []
-    experiment_permissions:
-      id: databricks_workspace.ml.experiment_permissions
-      name: experiment_permissions
-      title: Experiment Permissions
+    experiment_permission_levels:
+      id: databricks_workspace.ml.experiment_permission_levels
+      name: experiment_permission_levels
+      title: Experiment Permission Levels
       methods:
-        get_permission_levels:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}~1permissionLevels/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/experiment_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    experiment_permissions:
+      id: databricks_workspace.ml.experiment_permissions
+      name: experiment_permissions
+      title: Experiment Permissions
+      methods:
         get:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}/get'
@@ -8986,8 +8999,6 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/experiment_permissions/methods/get_permission_levels
           - $ref: >-
               #/components/x-stackQL-resources/experiment_permissions/methods/get
         insert: []
@@ -9539,12 +9550,6 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get_download_uri:
-          operation:
-            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1get-download-uri/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
         search:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1search/get'
@@ -9567,8 +9572,6 @@ components:
         select:
           - $ref: >-
               #/components/x-stackQL-resources/model_registry_model_versions/methods/get
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry_model_versions/methods/get_download_uri
           - $ref: >-
               #/components/x-stackQL-resources/model_registry_model_versions/methods/search
         insert:
@@ -9626,18 +9629,50 @@ components:
               #/components/x-stackQL-resources/model_registry_webhooks/methods/update
         delete: []
         replace: []
-    model_registry_permissions:
-      id: databricks_workspace.ml.model_registry_permissions
-      name: model_registry_permissions
-      title: Model Registry Permissions
+    model_registry_model_version_uri:
+      id: databricks_workspace.ml.model_registry_model_version_uri
+      name: model_registry_model_version_uri
+      title: Model Registry Model Version Uri
       methods:
-        get_permission_levels:
+        get_download_uri:
+          operation:
+            $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1get-download-uri/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_model_version_uri/methods/get_download_uri
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    model_registry_permission_levels:
+      id: databricks_workspace.ml.model_registry_permission_levels
+      name: model_registry_permission_levels
+      title: Model Registry Permission Levels
+      methods:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}~1permissionLevels/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/model_registry_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    model_registry_permissions:
+      id: databricks_workspace.ml.model_registry_permissions
+      name: model_registry_permissions
+      title: Model Registry Permissions
+      methods:
         get:
           operation:
             $ref: >-
@@ -9661,8 +9696,6 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/model_registry_permissions/methods/get_permission_levels
           - $ref: >-
               #/components/x-stackQL-resources/model_registry_permissions/methods/get
         insert: []

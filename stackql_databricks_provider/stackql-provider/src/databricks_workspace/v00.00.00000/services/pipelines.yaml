@@ -3082,18 +3082,31 @@ components:
           - $ref: '#/components/x-stackQL-resources/pipelines/methods/delete'
         replace:
           - $ref: '#/components/x-stackQL-resources/pipelines/methods/update'
-    pipeline_permissions:
-      id: databricks_workspace.pipelines.pipeline_permissions
-      name: pipeline_permissions
-      title: Pipeline Permissions
+    pipeline_permission_levels:
+      id: databricks_workspace.pipelines.pipeline_permission_levels
+      name: pipeline_permission_levels
+      title: Pipeline Permission Levels
       methods:
-        get_permission_levels:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}~1permissionLevels/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/pipeline_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    pipeline_permissions:
+      id: databricks_workspace.pipelines.pipeline_permissions
+      name: pipeline_permissions
+      title: Pipeline Permissions
+      methods:
         get:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/get'
@@ -3114,8 +3127,6 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/pipeline_permissions/methods/get_permission_levels
           - $ref: '#/components/x-stackQL-resources/pipeline_permissions/methods/get'
         insert: []
         update:

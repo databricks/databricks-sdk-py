@@ -3104,18 +3104,31 @@ components:
         delete:
           - $ref: '#/components/x-stackQL-resources/repos/methods/delete'
         replace: []
-    repo_permissions:
-      id: databricks_workspace.workspace.repo_permissions
-      name: repo_permissions
-      title: Repo Permissions
+    repo_permission_levels:
+      id: databricks_workspace.workspace.repo_permission_levels
+      name: repo_permission_levels
+      title: Repo Permission Levels
       methods:
-        get_permission_levels:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1repos~1{repo_id}~1permissionLevels/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/repo_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    repo_permissions:
+      id: databricks_workspace.workspace.repo_permissions
+      name: repo_permissions
+      title: Repo Permissions
+      methods:
         get:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1repos~1{repo_id}/get'
@@ -3136,8 +3149,6 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/repo_permissions/methods/get_permission_levels
           - $ref: '#/components/x-stackQL-resources/repo_permissions/methods/get'
         insert: []
         update:
@@ -3269,12 +3280,6 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get_status:
-          operation:
-            $ref: '#/paths/~1api~12.0~1workspace~1get-status/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
         import:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace~1import/post'
@@ -3295,26 +3300,36 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/workspace/methods/export'
-          - $ref: '#/components/x-stackQL-resources/workspace/methods/get_status'
           - $ref: '#/components/x-stackQL-resources/workspace/methods/list'
-        insert:
-          - $ref: '#/components/x-stackQL-resources/workspace/methods/import'
+        insert: []
         update: []
         delete: []
         replace: []
-    workspace_object_permissions:
-      id: databricks_workspace.workspace.workspace_object_permissions
-      name: workspace_object_permissions
-      title: Workspace Object Permissions
+    object_permission_levels:
+      id: databricks_workspace.workspace.object_permission_levels
+      name: object_permission_levels
+      title: Object Permission Levels
       methods:
-        get_permission_levels:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}~1permissionLevels/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/object_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    object_permissions:
+      id: databricks_workspace.workspace.object_permissions
+      name: object_permissions
+      title: Object Permissions
+      methods:
         get:
           operation:
             $ref: >-
@@ -3338,15 +3353,28 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_object_permissions/methods/get_permission_levels
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_object_permissions/methods/get
+          - $ref: '#/components/x-stackQL-resources/object_permissions/methods/get'
         insert: []
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_object_permissions/methods/update
+          - $ref: '#/components/x-stackQL-resources/object_permissions/methods/update'
         delete: []
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_object_permissions/methods/set
+          - $ref: '#/components/x-stackQL-resources/object_permissions/methods/set'
+    workspace_status:
+      id: databricks_workspace.workspace.workspace_status
+      name: workspace_status
+      title: Workspace Status
+      methods:
+        get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1workspace~1get-status/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/workspace_status/methods/get'
+        insert: []
+        update: []
+        delete: []
+        replace: []

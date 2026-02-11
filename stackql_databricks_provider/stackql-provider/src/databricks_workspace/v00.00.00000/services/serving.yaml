@@ -3658,18 +3658,31 @@ components:
         update: []
         delete: []
         replace: []
-    serving_endpoint_permissions:
-      id: databricks_workspace.serving.serving_endpoint_permissions
-      name: serving_endpoint_permissions
-      title: Serving Endpoint Permissions
+    serving_endpoint_permission_levels:
+      id: databricks_workspace.serving.serving_endpoint_permission_levels
+      name: serving_endpoint_permission_levels
+      title: Serving Endpoint Permission Levels
       methods:
-        get_permission_levels:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}~1permissionLevels/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/serving_endpoint_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    serving_endpoint_permissions:
+      id: databricks_workspace.serving.serving_endpoint_permissions
+      name: serving_endpoint_permissions
+      title: Serving Endpoint Permissions
+      methods:
         get:
           operation:
             $ref: >-
@@ -3693,8 +3706,6 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/serving_endpoint_permissions/methods/get_permission_levels
           - $ref: >-
               #/components/x-stackQL-resources/serving_endpoint_permissions/methods/get
         insert: []

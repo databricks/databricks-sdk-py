@@ -9566,18 +9566,31 @@ components:
           - $ref: >-
               #/components/x-stackQL-resources/default_warehouse_overrides/methods/delete
         replace: []
-    warehouse_permissions:
-      id: databricks_workspace.sql.warehouse_permissions
-      name: warehouse_permissions
-      title: Warehouse Permissions
+    warehouse_permission_levels:
+      id: databricks_workspace.sql.warehouse_permission_levels
+      name: warehouse_permission_levels
+      title: Warehouse Permission Levels
       methods:
-        get_permission_levels:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}~1permissionLevels/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/warehouse_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    warehouse_permissions:
+      id: databricks_workspace.sql.warehouse_permissions
+      name: warehouse_permissions
+      title: Warehouse Permissions
+      methods:
         get:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}/get'
@@ -9598,8 +9611,6 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/warehouse_permissions/methods/get_permission_levels
           - $ref: '#/components/x-stackQL-resources/warehouse_permissions/methods/get'
         insert: []
         update:

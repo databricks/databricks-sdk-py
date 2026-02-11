@@ -6802,12 +6802,6 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get_output:
-          operation:
-            $ref: '#/paths/~1api~12.2~1jobs~1runs~1get-output/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
         list:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1list/get'
@@ -6829,7 +6823,6 @@ components:
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/job_runs/methods/get'
-          - $ref: '#/components/x-stackQL-resources/job_runs/methods/get_output'
           - $ref: '#/components/x-stackQL-resources/job_runs/methods/list'
         insert:
           - $ref: '#/components/x-stackQL-resources/job_runs/methods/submit'
@@ -6947,6 +6940,24 @@ components:
         delete: []
         replace:
           - $ref: '#/components/x-stackQL-resources/job_permissions/methods/set'
+    job_run_output:
+      id: databricks_workspace.jobs.job_run_output
+      name: job_run_output
+      title: Job Run Output
+      methods:
+        get_output:
+          operation:
+            $ref: '#/paths/~1api~12.2~1jobs~1runs~1get-output/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: '#/components/x-stackQL-resources/job_run_output/methods/get_output'
+        insert: []
+        update: []
+        delete: []
+        replace: []
     policy_compliance_for_jobs:
       id: databricks_workspace.jobs.policy_compliance_for_jobs
       name: policy_compliance_for_jobs

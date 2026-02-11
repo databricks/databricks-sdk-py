@@ -3245,16 +3245,9 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list_shares:
-          operation:
-            $ref: '#/paths/~1api~12.1~1unity-catalog~1providers~1{name}~1shares/get'
-          response:
-            mediaType: application/json
-            openAPIDocKey: '200'
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/providers/methods/get'
-          - $ref: '#/components/x-stackQL-resources/providers/methods/list_shares'
           - $ref: '#/components/x-stackQL-resources/providers/methods/list'
         insert:
           - $ref: '#/components/x-stackQL-resources/providers/methods/create'
@@ -3283,12 +3276,31 @@ components:
         update: []
         delete: []
         replace: []
+    provider_shares:
+      id: databricks_workspace.sharing.provider_shares
+      name: provider_shares
+      title: Provider Shares
+      methods:
+        list_shares:
+          operation:
+            $ref: '#/paths/~1api~12.1~1unity-catalog~1providers~1{name}~1shares/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/provider_shares/methods/list_shares
+        insert: []
+        update: []
+        delete: []
+        replace: []
     recipient_activation:
       id: databricks_workspace.sharing.recipient_activation
       name: recipient_activation
       title: Recipient Activation
       methods:
-        get:
+        get_url:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1public~1data_sharing_activation_info~1{activation_url}/get
@@ -3303,8 +3315,7 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
-        select:
-          - $ref: '#/components/x-stackQL-resources/recipient_activation/methods/get'
+        select: []
         insert: []
         update: []
         delete: []

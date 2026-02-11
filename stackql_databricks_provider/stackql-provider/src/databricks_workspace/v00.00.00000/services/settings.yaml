@@ -8560,18 +8560,31 @@ components:
         delete:
           - $ref: '#/components/x-stackQL-resources/token_management/methods/delete'
         replace: []
-    token_permissions:
-      id: databricks_workspace.settings.token_permissions
-      name: token_permissions
-      title: Token Permissions
+    token_permission_levels:
+      id: databricks_workspace.settings.token_permission_levels
+      name: token_permission_levels
+      title: Token Permission Levels
       methods:
-        get_permission_levels:
+        get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1authorization~1tokens~1permissionLevels/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/token_permission_levels/methods/get
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    token_permissions:
+      id: databricks_workspace.settings.token_permissions
+      name: token_permissions
+      title: Token Permissions
+      methods:
         get:
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1authorization~1tokens/get'
@@ -8592,8 +8605,6 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/token_permissions/methods/get_permission_levels
           - $ref: '#/components/x-stackQL-resources/token_permissions/methods/get'
         insert: []
         update:
@@ -8632,28 +8643,26 @@ components:
         update: []
         delete: []
         replace: []
-    workspace_conf:
-      id: databricks_workspace.settings.workspace_conf
-      name: workspace_conf
-      title: Workspace Conf
+    workspace_config:
+      id: databricks_workspace.settings.workspace_config
+      name: workspace_config
+      title: Workspace Config
       methods:
-        get:
+        get_workspace_config:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace-conf/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        set:
+        set_workspace_config:
           operation:
             $ref: '#/paths/~1api~12.0~1workspace-conf/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
-        select:
-          - $ref: '#/components/x-stackQL-resources/workspace_conf/methods/get'
+        select: []
         insert: []
-        update:
-          - $ref: '#/components/x-stackQL-resources/workspace_conf/methods/set'
+        update: []
         delete: []
         replace: []
