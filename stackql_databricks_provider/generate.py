@@ -33,6 +33,10 @@ OUTPUT_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "openapi_generated"
 )
 
+OVERRIDES_PATH = os.path.join(
+    os.path.dirname(os.path.abspath(__file__)), "spec_overrides.json"
+)
+
 
 def generate_spec_for_service(
     service_name: str,
@@ -129,14 +133,19 @@ def generate_spec_for_service(
             }
         }
 
+    # Apply post-extraction overrides from spec_overrides.json
+    overrides = _load_overrides()
+    overrides_applied = _apply_overrides(spec, scope, service_name, overrides)
+
     logger.info(
-        "Generated %s/%s: %d paths, %d operations, %d schemas (%d skipped)",
+        "Generated %s/%s: %d paths, %d operations, %d schemas (%d skipped, %d overrides)",
         scope,
         service_name,
         len(paths),
         operation_count,
         len(schemas),
         len(errors),
+        overrides_applied,
     )
     return spec
 
@@ -200,6 +209,150 @@ def generate_all(output_dir: Optional[str] = None) -> Dict[str, Any]:
             logger.error("Failed to generate spec for %s: %s", svc_name, e)
 
     return summary
+
+
+def _load_overrides(overrides_path: Optional[str] = None) -> Dict[str, Any]:
+    """Load spec overrides from a JSON file.
+
+    Returns:
+        Dict keyed by ``scope/service`` with lists of override rules.
+    """
+    path = overrides_path or OVERRIDES_PATH
+    if not os.path.exists(path):
+        return {}
+    with open(path) as f:
+        data = json.load(f)
+    # Strip comment keys
+    return {k: v for k, v in data.items() if not k.startswith("_")}
+
+
+def _resolve_json_path(obj: Any, segments: List[str]) -> Tuple[Any, str]:
+    """Walk *obj* following dot-delimited path segments.
+
+    Supports:
+    - dict keys: ``paths``, ``/api/2.0/foo``
+    - array match: ``parameters[name=uid]`` finds the first element in
+      a list where ``element["name"] == "uid"``
+
+    Returns:
+        ``(parent_object, final_key)`` so the caller can do
+        ``parent[key] = value``.
+    """
+    import re as _re
+
+    current = obj
+    for i, seg in enumerate(segments[:-1]):
+        # Array predicate match: key[field=value]
+        m = _re.match(r"^(.+)\[(\w+)=([^\]]+)\]$", seg)
+        if m:
+            key, match_field, match_val = m.group(1), m.group(2), m.group(3)
+            arr = current[key]
+            found = False
+            for item in arr:
+                if isinstance(item, dict) and str(item.get(match_field)) == match_val:
+                    current = item
+                    found = True
+                    break
+            if not found:
+                raise KeyError(
+                    f"No element with {match_field}={match_val} in {key}"
+                )
+        else:
+            current = current[seg]
+
+    # Handle predicate on the last segment too
+    last = segments[-1]
+    m = _re.match(r"^(.+)\[(\w+)=([^\]]+)\]$", last)
+    if m:
+        key, match_field, match_val = m.group(1), m.group(2), m.group(3)
+        arr = current[key]
+        for item in arr:
+            if isinstance(item, dict) and str(item.get(match_field)) == match_val:
+                return item, None  # type: ignore[return-value]
+        raise KeyError(f"No element with {match_field}={match_val} in {key}")
+
+    return current, last
+
+
+def _apply_overrides(spec: Dict[str, Any], scope: str, service_name: str,
+                     overrides: Dict[str, Any]) -> int:
+    """Apply post-extraction overrides to a spec.
+
+    Args:
+        spec: The generated OpenAPI spec (mutated in place).
+        scope: ``"account"`` or ``"workspace"``.
+        service_name: Service name (e.g. ``"database"``).
+        overrides: Full overrides dict loaded from ``spec_overrides.json``.
+
+    Returns:
+        Number of overrides applied.
+    """
+    key = f"{scope}/{service_name}"
+    rules = overrides.get(key, [])
+    applied = 0
+
+    for rule in rules:
+        json_path = rule["json_path"]
+        value = rule["value"]
+        desc = rule.get("description", json_path)
+
+        segments = _parse_json_path(json_path)
+        try:
+            parent, final_key = _resolve_json_path(spec, segments)
+            if final_key is None:
+                # Predicate matched an array element; replace the whole element
+                # This shouldn't normally happen for set-value use cases
+                logger.warning("Override %s: predicate on final segment, skipping", desc)
+                continue
+            parent[final_key] = value
+            applied += 1
+            logger.info("Override applied: %s -> %s = %s", key, json_path, value)
+        except (KeyError, IndexError, TypeError) as e:
+            logger.error("Override failed: %s -> %s: %s", key, json_path, e)
+
+    return applied
+
+
+def _parse_json_path(json_path: str) -> List[str]:
+    """Split a dot-delimited JSON path, respecting dots inside path segments.
+
+    Paths like ``paths./api/2.0/foo.get.parameters[name=uid].required``
+    need to keep ``/api/2.0/foo`` as one segment.  We split on dots that
+    are NOT preceded by a path-like character sequence.
+    """
+    segments: List[str] = []
+    current = ""
+    i = 0
+    chars = json_path
+
+    while i < len(chars):
+        ch = chars[i]
+        if ch == "." and current and not current.startswith("/"):
+            # Normal dot separator
+            segments.append(current)
+            current = ""
+        elif ch == "." and current.startswith("/"):
+            # Dot inside a path segment like /api/2.0/foo - check if next
+            # char continues a path or starts a new segment
+            # Heuristic: if next segment starts with a letter or [, it's a
+            # new segment; otherwise it's part of the path
+            rest = chars[i + 1:] if i + 1 < len(chars) else ""
+            if rest and (rest[0].isalpha() or rest[0] == "["):
+                segments.append(current)
+                current = ""
+            else:
+                current += ch
+        elif ch == "." and not current:
+            # Leading dot or consecutive dots - skip
+            pass
+        else:
+            current += ch
+        i += 1
+
+    if current:
+        segments.append(current)
+
+    return segments
 
 
 def _sanitize_orphaned_refs(paths: Dict[str, Any], schemas: Dict[str, Any]) -> None:

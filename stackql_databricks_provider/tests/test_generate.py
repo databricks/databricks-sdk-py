@@ -7,6 +7,9 @@ import tempfile
 import pytest
 
 from stackql_databricks_provider.generate import (
+    _apply_overrides,
+    _parse_json_path,
+    _resolve_json_path,
     generate_all,
     generate_spec_for_service,
 )
@@ -122,3 +125,78 @@ class TestGenerateAll:
                             if name not in schemas:
                                 orphaned.append(f"{scope}/{fname}: {ref}")
             assert orphaned == [], f"Orphaned $refs found:\n" + "\n".join(orphaned[:20])
+
+
+class TestSpecOverrides:
+    def test_parse_json_path_simple(self):
+        segments = _parse_json_path("paths./api/test.get.summary")
+        assert segments == ["paths", "/api/test", "get", "summary"]
+
+    def test_parse_json_path_with_predicate(self):
+        segments = _parse_json_path(
+            "paths./api/2.0/database/instances:findByUid.get.parameters[name=uid].required"
+        )
+        assert segments == [
+            "paths",
+            "/api/2.0/database/instances:findByUid",
+            "get",
+            "parameters[name=uid]",
+            "required",
+        ]
+
+    def test_resolve_json_path_dict_key(self):
+        obj = {"a": {"b": {"c": 42}}}
+        parent, key = _resolve_json_path(obj, ["a", "b", "c"])
+        assert parent == {"c": 42}
+        assert key == "c"
+        assert parent[key] == 42
+
+    def test_resolve_json_path_array_predicate(self):
+        obj = {
+            "params": [
+                {"name": "foo", "required": False},
+                {"name": "bar", "required": False},
+            ]
+        }
+        parent, key = _resolve_json_path(obj, ["params[name=bar]", "required"])
+        assert parent["name"] == "bar"
+        assert key == "required"
+
+    def test_apply_overrides_sets_value(self):
+        spec = {
+            "paths": {
+                "/api/test": {
+                    "get": {
+                        "parameters": [
+                            {"name": "uid", "in": "query", "required": False}
+                        ]
+                    }
+                }
+            }
+        }
+        overrides = {
+            "workspace/test_svc": [
+                {
+                    "json_path": "paths./api/test.get.parameters[name=uid].required",
+                    "value": True,
+                }
+            ]
+        }
+        count = _apply_overrides(spec, "workspace", "test_svc", overrides)
+        assert count == 1
+        assert spec["paths"]["/api/test"]["get"]["parameters"][0]["required"] is True
+
+    def test_apply_overrides_no_match_returns_zero(self):
+        spec = {"paths": {}}
+        overrides = {"account/other": [{"json_path": "paths.x", "value": 1}]}
+        count = _apply_overrides(spec, "workspace", "test_svc", overrides)
+        assert count == 0
+
+    def test_database_uid_override_applied(self):
+        """Verify the real database spec gets the uid override."""
+        spec = generate_spec_for_service("database", "workspace")
+        path_data = spec["paths"].get("/api/2.0/database/instances:findByUid", {})
+        params = path_data.get("get", {}).get("parameters", [])
+        uid_param = next((p for p in params if p["name"] == "uid"), None)
+        assert uid_param is not None
+        assert uid_param["required"] is True
