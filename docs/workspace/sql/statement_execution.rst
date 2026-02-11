@@ -101,7 +101,7 @@
 
         
 
-    .. py:method:: execute_statement(statement: str, warehouse_id: str [, byte_limit: Optional[int], catalog: Optional[str], disposition: Optional[Disposition], format: Optional[Format], on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout], parameters: Optional[List[StatementParameterListItem]], row_limit: Optional[int], schema: Optional[str], wait_timeout: Optional[str]]) -> StatementResponse
+    .. py:method:: execute_statement(statement: str, warehouse_id: str [, byte_limit: Optional[int], catalog: Optional[str], disposition: Optional[Disposition], format: Optional[Format], on_wait_timeout: Optional[ExecuteStatementRequestOnWaitTimeout], parameters: Optional[List[StatementParameterListItem]], query_tags: Optional[List[QueryTag]], row_limit: Optional[int], schema: Optional[str], wait_timeout: Optional[str]]) -> StatementResponse
 
         Execute a SQL statement and optionally await its results for a specified time.
 
@@ -253,6 +253,14 @@
 
           [Parameter markers]: https://docs.databricks.com/sql/language-manual/sql-ref-parameter-marker.html
           [`cast` function]: https://docs.databricks.com/sql/language-manual/functions/cast.html
+        :param query_tags: List[:class:`QueryTag`] (optional)
+          An array of query tags to annotate a SQL statement. A query tag consists of a non-empty key and,
+          optionally, a value. To represent a NULL value, either omit the `value` field or manually set it to
+          `null` or white space. Refer to the SQL language reference for the format specification of query
+          tags. There's no significance to the order of tags. Only one value per key will be recorded. A
+          sequence in excess of 20 query tags will be coerced to 20. Example:
+
+          { ..., "query_tags": [ { "key": "team", "value": "eng" }, { "key": "some key only tag" } ] }
         :param row_limit: int (optional)
           Applies the given row limit to the statement's result set, but unlike the `LIMIT` clause in SQL, it
           also sets the `truncated` field in the response to indicate whether the result was trimmed due to

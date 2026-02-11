@@ -8,7 +8,6 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, BinaryIO, Dict, Iterator, List, Optional
 
-from databricks.sdk.client_types import HostType
 from databricks.sdk.service import compute
 from databricks.sdk.service._internal import _enum, _from_dict, _repeated_dict
 
@@ -1548,10 +1547,6 @@ class BillableUsageAPI:
             "Accept": "text/plain",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/usage/download", query=query, headers=headers, raw=True
         )
@@ -1590,10 +1585,6 @@ class BudgetPolicyAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST", f"/api/2.1/accounts/{self._api.account_id}/budget-policies", body=body, headers=headers
         )
@@ -1612,10 +1603,6 @@ class BudgetPolicyAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         self._api.do("DELETE", f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}", headers=headers)
 
     def get(self, policy_id: str) -> BudgetPolicy:
@@ -1630,10 +1617,6 @@ class BudgetPolicyAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/accounts/{self._api.account_id}/budget-policies/{policy_id}", headers=headers
@@ -1680,10 +1663,6 @@ class BudgetPolicyAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         while True:
             json = self._api.do(
                 "GET", f"/api/2.1/accounts/{self._api.account_id}/budget-policies", query=query, headers=headers
@@ -1719,10 +1698,6 @@ class BudgetPolicyAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -1760,10 +1735,6 @@ class BudgetsAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do("POST", f"/api/2.1/accounts/{self._api.account_id}/budgets", body=body, headers=headers)
         return CreateBudgetConfigurationResponse.from_dict(res)
 
@@ -1781,10 +1752,6 @@ class BudgetsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         self._api.do("DELETE", f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}", headers=headers)
 
     def get(self, budget_id: str) -> GetBudgetConfigurationResponse:
@@ -1799,10 +1766,6 @@ class BudgetsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}", headers=headers)
         return GetBudgetConfigurationResponse.from_dict(res)
@@ -1823,10 +1786,6 @@ class BudgetsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -1858,10 +1817,6 @@ class BudgetsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.1/accounts/{self._api.account_id}/budgets/{budget_id}", body=body, headers=headers
@@ -1962,10 +1917,6 @@ class LogDeliveryAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/log-delivery", body=body, headers=headers)
         return WrappedLogDeliveryConfiguration.from_dict(res)
 
@@ -1981,10 +1932,6 @@ class LogDeliveryAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -2029,10 +1976,6 @@ class LogDeliveryAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         while True:
             json = self._api.do(
                 "GET", f"/api/2.0/accounts/{self._api.account_id}/log-delivery", query=query, headers=headers
@@ -2068,10 +2011,6 @@ class LogDeliveryAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "PATCH",
@@ -2121,10 +2060,6 @@ class UsageDashboardsAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/dashboard", body=body, headers=headers)
         return CreateBillingUsageDashboardResponse.from_dict(res)
 
@@ -2150,10 +2085,6 @@ class UsageDashboardsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/dashboard", query=query, headers=headers)
         return GetBillingUsageDashboardResponse.from_dict(res)

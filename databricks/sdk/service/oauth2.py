@@ -1006,10 +1006,6 @@ class AccountFederationPolicyAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/federationPolicies",
@@ -1032,10 +1028,6 @@ class AccountFederationPolicyAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         self._api.do(
             "DELETE", f"/api/2.0/accounts/{self._api.account_id}/federationPolicies/{policy_id}", headers=headers
         )
@@ -1052,10 +1044,6 @@ class AccountFederationPolicyAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/federationPolicies/{policy_id}", headers=headers
@@ -1079,10 +1067,6 @@ class AccountFederationPolicyAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -1121,10 +1105,6 @@ class AccountFederationPolicyAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -1193,10 +1173,6 @@ class CustomAppIntegrationAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations",
@@ -1218,10 +1194,6 @@ class CustomAppIntegrationAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}",
@@ -1240,10 +1212,6 @@ class CustomAppIntegrationAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -1278,10 +1246,6 @@ class CustomAppIntegrationAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -1338,10 +1302,6 @@ class CustomAppIntegrationAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         self._api.do(
             "PATCH",
             f"/api/2.0/accounts/{self._api.account_id}/oauth2/custom-app-integrations/{integration_id}",
@@ -1379,10 +1339,6 @@ class OAuthPublishedAppsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -1428,10 +1384,6 @@ class PublishedAppIntegrationAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations",
@@ -1453,10 +1405,6 @@ class PublishedAppIntegrationAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/oauth2/published-app-integrations/{integration_id}",
@@ -1474,10 +1422,6 @@ class PublishedAppIntegrationAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -1505,10 +1449,6 @@ class PublishedAppIntegrationAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -1542,10 +1482,6 @@ class PublishedAppIntegrationAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "PATCH",
@@ -1624,10 +1560,6 @@ class ServicePrincipalFederationPolicyAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/federationPolicies",
@@ -1652,10 +1584,6 @@ class ServicePrincipalFederationPolicyAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/federationPolicies/{policy_id}",
@@ -1676,10 +1604,6 @@ class ServicePrincipalFederationPolicyAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
@@ -1709,10 +1633,6 @@ class ServicePrincipalFederationPolicyAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -1756,10 +1676,6 @@ class ServicePrincipalFederationPolicyAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PATCH",
@@ -1810,10 +1726,6 @@ class ServicePrincipalSecretsAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/servicePrincipals/{service_principal_id}/credentials/secrets",
@@ -1834,10 +1746,6 @@ class ServicePrincipalSecretsAPI:
         """
 
         headers = {}
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do(
             "DELETE",
@@ -1873,10 +1781,6 @@ class ServicePrincipalSecretsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(

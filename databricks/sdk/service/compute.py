@@ -3169,6 +3169,14 @@ class Environment:
     non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
     environment spec, only pip dependencies are supported."""
 
+    base_environment: Optional[str] = None
+    """The `base_environment` key refers to an `env.yaml` file that specifies an environment version
+    and a collection of dependencies required for the environment setup. This `env.yaml` file may
+    itself include a `base_environment` reference pointing to another `env_1.yaml` file. However,
+    when used as a base environment, `env_1.yaml` (or further nested references) will not be
+    processed or included in the final environment, meaning that the resolution of
+    `base_environment` references is not recursive."""
+
     client: Optional[str] = None
     """Use `environment_version` instead."""
 
@@ -3190,6 +3198,8 @@ class Environment:
     def as_dict(self) -> dict:
         """Serializes the Environment into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.base_environment is not None:
+            body["base_environment"] = self.base_environment
         if self.client is not None:
             body["client"] = self.client
         if self.dependencies:
@@ -3203,6 +3213,8 @@ class Environment:
     def as_shallow_dict(self) -> dict:
         """Serializes the Environment into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.base_environment is not None:
+            body["base_environment"] = self.base_environment
         if self.client is not None:
             body["client"] = self.client
         if self.dependencies:
@@ -3217,6 +3229,7 @@ class Environment:
     def from_dict(cls, d: Dict[str, Any]) -> Environment:
         """Deserializes the Environment from a dictionary."""
         return cls(
+            base_environment=d.get("base_environment", None),
             client=d.get("client", None),
             dependencies=d.get("dependencies", None),
             environment_version=d.get("environment_version", None),
@@ -3446,6 +3459,7 @@ class EventType(Enum):
     SPARK_EXCEPTION = "SPARK_EXCEPTION"
     STARTING = "STARTING"
     TERMINATING = "TERMINATING"
+    UC_VOLUME_MISCONFIGURED = "UC_VOLUME_MISCONFIGURED"
     UNPINNED = "UNPINNED"
     UPSIZE_COMPLETED = "UPSIZE_COMPLETED"
 

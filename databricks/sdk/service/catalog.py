@@ -688,8 +688,8 @@ class AwsSqsQueue:
     """Unique identifier included in the name of file events managed cloud resources."""
 
     queue_url: Optional[str] = None
-    """The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}
-    Required for provided_sqs."""
+    """The AQS queue url in the format https://sqs.{region}.amazonaws.com/{account id}/{queue name}.
+    Only required for provided_sqs."""
 
     def as_dict(self) -> dict:
         """Serializes the AwsSqsQueue into a dictionary suitable for use as a JSON request body."""
@@ -894,10 +894,10 @@ class AzureQueueStorage:
 
     queue_url: Optional[str] = None
     """The AQS queue url in the format https://{storage account}.queue.core.windows.net/{queue name}
-    Required for provided_aqs."""
+    Only required for provided_aqs."""
 
     resource_group: Optional[str] = None
-    """The resource group for the queue, event grid subscription, and external location storage
+    """Optional resource group for the queue, event grid subscription, and external location storage
     account. Only required for locations with a service principal storage credential"""
 
     subscription_id: Optional[str] = None
@@ -2582,7 +2582,7 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 14"""
+    """Next Id: 15"""
 
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
@@ -2596,6 +2596,7 @@ class CredentialType(Enum):
     OIDC_TOKEN = "OIDC_TOKEN"
     PEM_PRIVATE_KEY = "PEM_PRIVATE_KEY"
     SERVICE_CREDENTIAL = "SERVICE_CREDENTIAL"
+    SSWS_TOKEN = "SSWS_TOKEN"
     UNKNOWN_CREDENTIAL_TYPE = "UNKNOWN_CREDENTIAL_TYPE"
     USERNAME_PASSWORD = "USERNAME_PASSWORD"
 
@@ -3867,7 +3868,8 @@ class ExternalLocationInfo:
     """Name of the storage credential used with this location."""
 
     enable_file_events: Optional[bool] = None
-    """Whether to enable file events on this external location."""
+    """Whether to enable file events on this external location. Default to `true`. Set to `false` to
+    disable file events."""
 
     encryption_details: Optional[EncryptionDetails] = None
 
@@ -3877,8 +3879,8 @@ class ExternalLocationInfo:
     sufficient."""
 
     file_event_queue: Optional[FileEventQueue] = None
-    """File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly
-    one of the documented properties."""
+    """File event queue settings. If `enable_file_events` is not `false`, must be defined and have
+    exactly one of the documented properties."""
 
     isolation_mode: Optional[IsolationMode] = None
 
@@ -4831,8 +4833,8 @@ class GcpPubsub:
     """Unique identifier included in the name of file events managed cloud resources."""
 
     subscription_name: Optional[str] = None
-    """The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription name}
-    Required for provided_pubsub."""
+    """The Pub/Sub subscription name in the format projects/{project}/subscriptions/{subscription
+    name}. Only required for provided_pubsub."""
 
     def as_dict(self) -> dict:
         """Serializes the GcpPubsub into a dictionary suitable for use as a JSON request body."""
@@ -7788,7 +7790,7 @@ class PolicyInfo:
     moment. Required on create and optional on update."""
 
     policy_type: PolicyType
-    """Type of the policy. Required on create and ignored on update."""
+    """Type of the policy. Required on create."""
 
     column_mask: Optional[ColumnMaskOptions] = None
     """Options for column mask policies. Valid only if `policy_type` is `POLICY_TYPE_COLUMN_MASK`.
@@ -7820,12 +7822,11 @@ class PolicyInfo:
     to a different value on update."""
 
     on_securable_fullname: Optional[str] = None
-    """Full name of the securable on which the policy is defined. Required on create and ignored on
-    update."""
+    """Full name of the securable on which the policy is defined. Required on create."""
 
     on_securable_type: Optional[SecurableType] = None
     """Type of the securable on which the policy is defined. Only `CATALOG`, `SCHEMA` and `TABLE` are
-    supported at this moment. Required on create and ignored on update."""
+    supported at this moment. Required on create."""
 
     row_filter: Optional[RowFilterOptions] = None
     """Options for row filter policies. Valid only if `policy_type` is `POLICY_TYPE_ROW_FILTER`.
@@ -8785,7 +8786,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_WORKDAY_HCM_USERNAME_PASSWORD = 293; Next id: 294"""
+    """Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -10641,10 +10642,6 @@ class AccountMetastoreAssignmentsAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}",
@@ -10668,10 +10665,6 @@ class AccountMetastoreAssignmentsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}",
@@ -10694,10 +10687,6 @@ class AccountMetastoreAssignmentsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore", headers=headers
         )
@@ -10715,10 +10704,6 @@ class AccountMetastoreAssignmentsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces", headers=headers
@@ -10748,10 +10733,6 @@ class AccountMetastoreAssignmentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",
@@ -10785,10 +10766,6 @@ class AccountMetastoresAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/metastores", body=body, headers=headers)
         return AccountsCreateMetastoreResponse.from_dict(res)
 
@@ -10809,10 +10786,6 @@ class AccountMetastoresAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "DELETE",
@@ -10835,10 +10808,6 @@ class AccountMetastoresAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", headers=headers
         )
@@ -10854,10 +10823,6 @@ class AccountMetastoresAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/metastores", headers=headers)
         parsed = AccountsListMetastoresResponse.from_dict(json).metastores
@@ -10883,10 +10848,6 @@ class AccountMetastoresAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", body=body, headers=headers
@@ -10934,10 +10895,6 @@ class AccountStorageCredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials",
@@ -10969,10 +10926,6 @@ class AccountStorageCredentialsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}",
@@ -10997,10 +10950,6 @@ class AccountStorageCredentialsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}",
@@ -11020,10 +10969,6 @@ class AccountStorageCredentialsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do(
             "GET",
@@ -11064,10 +11009,6 @@ class AccountStorageCredentialsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",
@@ -12402,15 +12343,16 @@ class ExternalLocationsAPI:
         :param comment: str (optional)
           User-provided free-form text description.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location.
+          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          disable file events.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
-          of the documented properties.
+          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
+          one of the documented properties.
         :param read_only: bool (optional)
           Indicates whether the external location is read-only.
         :param skip_validation: bool (optional)
@@ -12597,15 +12539,16 @@ class ExternalLocationsAPI:
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
         :param enable_file_events: bool (optional)
-          Whether to enable file events on this external location.
+          Whether to enable file events on this external location. Default to `true`. Set to `false` to
+          disable file events.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
           enabled, the access to the location falls back to cluster credentials if UC credentials are not
           sufficient.
         :param file_event_queue: :class:`FileEventQueue` (optional)
-          File event queue settings. If `enable_file_events` is `true`, must be defined and have exactly one
-          of the documented properties.
+          File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly
+          one of the documented properties.
         :param force: bool (optional)
           Force update even if changing url invalidates dependent external tables or mounts.
         :param isolation_mode: :class:`IsolationMode` (optional)

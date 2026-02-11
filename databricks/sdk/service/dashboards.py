@@ -269,7 +269,8 @@ class GenieAttachment:
     """Follow-up questions suggested by Genie"""
 
     text: Optional[TextAttachment] = None
-    """Text Attachment if Genie responds with text"""
+    """Text Attachment if Genie responds with text. This also contains the final summary when
+    available."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieAttachment into a dictionary suitable for use as a JSON request body."""
@@ -893,11 +894,7 @@ class GenieSpace:
     """The contents of the Genie Space in serialized string form. This field is excluded in List Genie
     spaces responses. Use the [Get Genie Space](:method:genie/getspace) API to retrieve an example
     response, which includes the `serialized_space` field. This field provides the structure of the
-    JSON string that represents the space's layout and components. NOTE: Keep example in sync with:
-    - docs/web/docs/genie/conversation-api.md -
-    data-rooms/data-rooms/test/unit/entities/testdata/documentation_example_serialized_space.json
-    NOTE: The proto example below is a simplified subset of the full JSON testdata file. See the
-    testdata file for a comprehensive example with all fields."""
+    JSON string that represents the space's layout and components."""
 
     warehouse_id: Optional[str] = None
     """Warehouse associated with the Genie Space"""
@@ -2045,11 +2042,26 @@ class GenieAPI:
     def generate_download_full_query_result(
         self, space_id: str, conversation_id: str, message_id: str, attachment_id: str
     ) -> GenieGenerateDownloadFullQueryResultResponse:
-        """Initiates a new SQL execution and returns a `download_id` that you can use to track the progress of
-        the download. The query result is stored in an external link and can be retrieved using the [Get
-        Download Full Query Result](:method:genie/getdownloadfullqueryresult) API. Warning: Databricks
-        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
+        """Initiates a new SQL execution and returns a `download_id` and `download_id_signature` that you can use
+        to track the progress of the download. The query result is stored in an external link and can be
+        retrieved using the [Get Download Full Query Result](:method:genie/getdownloadfullqueryresult) API.
+        Both `download_id` and `download_id_signature` must be provided when calling the Get endpoint.
+
+        ----
+
+        ### **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
+        `EXTERNAL_LINKS` disposition.**
+
+        When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is generated, which can be used to
+        download the results directly from . As a short-lived is embedded in this URL, you should protect the
+        URL.
+
+        Because URLs are already generated with embedded temporary s, you must not set an `Authorization`
+        header in the download requests.
+
         See [Execute Statement](:method:statementexecution/executestatement) for more details.
+
+        ----
 
         :param space_id: str
           Genie space ID
@@ -2066,6 +2078,10 @@ class GenieAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST",
@@ -2084,13 +2100,27 @@ class GenieAPI:
         *,
         download_id_signature: Optional[str] = None,
     ) -> GenieGetDownloadFullQueryResultResponse:
-        """After [Generating a Full Query Result Download](:method:genie/getdownloadfullqueryresult) and
-        successfully receiving a `download_id`, use this API to poll the download progress. When the download
-        is complete, the API returns one or more external links to the query result files. Warning: Databricks
-        strongly recommends that you protect the URLs that are returned by the `EXTERNAL_LINKS` disposition.
-        You must not set an Authorization header in download requests. When using the `EXTERNAL_LINKS`
-        disposition, Databricks returns presigned URLs that grant temporary access to data. See [Execute
-        Statement](:method:statementexecution/executestatement) for more details.
+        """After [Generating a Full Query Result Download](:method:genie/generatedownloadfullqueryresult) and
+        successfully receiving a `download_id` and `download_id_signature`, use this API to poll the download
+        progress. Both `download_id` and `download_id_signature` are required to call this endpoint. When the
+        download is complete, the API returns the result in the `EXTERNAL_LINKS` disposition, containing one
+        or more external links to the query result files.
+
+        ----
+
+        ### **Warning: Databricks strongly recommends that you protect the URLs that are returned by the
+        `EXTERNAL_LINKS` disposition.**
+
+        When you use the `EXTERNAL_LINKS` disposition, a short-lived, URL is generated, which can be used to
+        download the results directly from . As a short-lived is embedded in this URL, you should protect the
+        URL.
+
+        Because URLs are already generated with embedded temporary s, you must not set an `Authorization`
+        header in the download requests.
+
+        See [Execute Statement](:method:statementexecution/executestatement) for more details.
+
+        ----
 
         :param space_id: str
           Genie space ID
@@ -2115,6 +2145,10 @@ class GenieAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET",
