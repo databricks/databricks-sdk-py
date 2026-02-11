@@ -23,6 +23,14 @@
         "description": "Create account federation policy.\n\n:param policy: :class:`FederationPolicy`\n:param policy_id: str (optional)\n  The identifier for the federation policy. The identifier must contain only lowercase alphanumeric\n  characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.\n\n:returns: :class:`FederationPolicy`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "policy_id",
             "in": "query",
             "required": false,
@@ -90,6 +98,14 @@
         "description": "List account federation policies.\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`FederationPolicy`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page_size",
             "in": "query",
             "required": false,
@@ -150,6 +166,14 @@
         "description": "Delete account federation policy.\n\n:param policy_id: str\n  The identifier for the federation policy.",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "policy_id",
             "in": "path",
             "required": true,
@@ -192,6 +216,14 @@
         ],
         "description": "Get account federation policy.\n\n:param policy_id: str\n  The identifier for the federation policy.\n\n:returns: :class:`FederationPolicy`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "policy_id",
             "in": "path",
@@ -242,6 +274,14 @@
         ],
         "description": "Update account federation policy.\n\n:param policy_id: str\n  The identifier for the federation policy.\n:param policy: :class:`FederationPolicy`\n:param update_mask: str (optional)\n  The field mask specifies which fields of the policy to update. To specify multiple fields in the\n  field mask, use comma as the separator (no space). The special value '*' indicates that all fields\n  should be updated (full replacement). If unspecified, all fields that are set in the policy provided\n  in the update request will overwrite the corresponding fields in the existing policy. Example value:\n  'description,oidc_policy.audiences'.\n\n:returns: :class:`FederationPolicy`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "policy_id",
             "in": "path",
@@ -319,6 +359,16 @@
           "custom_app_integration"
         ],
         "description": "Create Custom OAuth App Integration.\n\nYou can retrieve the custom OAuth app integration via :method:CustomAppIntegration/get.\n\n:param confidential: bool (optional)\n  This field indicates whether an OAuth client secret is required to authenticate this client.\n:param name: str (optional)\n  Name of the custom OAuth app\n:param redirect_urls: List[str] (optional)\n  List of OAuth redirect urls\n:param scopes: List[str] (optional)\n  OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access, openid,\n  profile, email.\n:param token_access_policy: :class:`TokenAccessPolicy` (optional)\n  Token access policy\n:param user_authorized_scopes: List[str] (optional)\n  Scopes that will need to be consented by end user to mint the access token. If the user does not\n  authorize the access token will not be minted. Must be a subset of scopes.\n\n:returns: :class:`CreateCustomAppIntegrationOutput`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -395,6 +445,14 @@
         "description": "Get the list of custom OAuth app integrations for the specified Databricks account\n\n:param include_creator_username: bool (optional)\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`GetCustomAppIntegrationOutput`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "include_creator_username",
             "in": "query",
             "required": false,
@@ -464,6 +522,14 @@
         "description": "Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via\n:method:CustomAppIntegration/get.\n\n:param integration_id: str",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "integration_id",
             "in": "path",
             "required": true,
@@ -506,6 +572,14 @@
         ],
         "description": "Gets the Custom OAuth App Integration for the given integration id.\n\n:param integration_id: str\n  The OAuth app integration ID.\n\n:returns: :class:`GetCustomAppIntegrationOutput`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "integration_id",
             "in": "path",
@@ -556,6 +630,14 @@
         ],
         "description": "Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration\nvia :method:CustomAppIntegration/get.\n\n:param integration_id: str\n:param redirect_urls: List[str] (optional)\n  List of OAuth redirect urls to be updated in the custom OAuth app integration\n:param scopes: List[str] (optional)\n  List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect URIs\n  this will fully replace the existing values instead of appending\n:param token_access_policy: :class:`TokenAccessPolicy` (optional)\n  Token access policy to be updated in the custom OAuth app integration\n:param user_authorized_scopes: List[str] (optional)\n  Scopes that will need to be consented by end user to mint the access token. If the user does not\n  authorize the access token will not be minted. Must be a subset of scopes.",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "integration_id",
             "in": "path",
@@ -628,6 +710,14 @@
         "description": "Get all the available published OAuth apps in Databricks.\n\n:param page_size: int (optional)\n  The max number of OAuth published apps to return in one page.\n:param page_token: str (optional)\n  A token that can be used to get the next page of results.\n\n:returns: Iterator over :class:`PublishedAppOutput`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "page_size",
             "in": "query",
             "required": false,
@@ -687,6 +777,16 @@
           "published_app_integration"
         ],
         "description": "Create Published OAuth App Integration.\n\nYou can retrieve the published OAuth app integration via :method:PublishedAppIntegration/get.\n\n:param app_id: str (optional)\n  App id of the OAuth published app integration. For example power-bi, tableau-deskop\n:param token_access_policy: :class:`TokenAccessPolicy` (optional)\n  Token access policy\n\n:returns: :class:`CreatePublishedAppIntegrationOutput`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -746,6 +846,14 @@
         ],
         "description": "Get the list of published OAuth app integrations for the specified Databricks account\n\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`GetPublishedAppIntegrationOutput`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "page_size",
             "in": "query",
@@ -807,6 +915,14 @@
         "description": "Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app\nintegration via :method:PublishedAppIntegration/get.\n\n:param integration_id: str",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "integration_id",
             "in": "path",
             "required": true,
@@ -849,6 +965,14 @@
         ],
         "description": "Gets the Published OAuth App Integration for the given integration id.\n\n:param integration_id: str\n\n:returns: :class:`GetPublishedAppIntegrationOutput`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "integration_id",
             "in": "path",
@@ -899,6 +1023,14 @@
         ],
         "description": "Updates an existing published OAuth App Integration. You can retrieve the published OAuth app\nintegration via :method:PublishedAppIntegration/get.\n\n:param integration_id: str\n:param token_access_policy: :class:`TokenAccessPolicy` (optional)\n  Token access policy to be updated in the published OAuth app integration",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "integration_id",
             "in": "path",
@@ -958,6 +1090,14 @@
         ],
         "description": "Create account federation policy.\n\n:param service_principal_id: int\n  The service principal id for the federation policy.\n:param policy: :class:`FederationPolicy`\n:param policy_id: str (optional)\n  The identifier for the federation policy. The identifier must contain only lowercase alphanumeric\n  characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.\n\n:returns: :class:`FederationPolicy`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "service_principal_id",
             "in": "path",
@@ -1035,6 +1175,14 @@
         "description": "List account federation policies.\n\n:param service_principal_id: int\n  The service principal id for the federation policy.\n:param page_size: int (optional)\n:param page_token: str (optional)\n\n:returns: Iterator over :class:`FederationPolicy`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "service_principal_id",
             "in": "path",
             "required": true,
@@ -1104,6 +1252,14 @@
         "description": "Delete account federation policy.\n\n:param service_principal_id: int\n  The service principal id for the federation policy.\n:param policy_id: str\n  The identifier for the federation policy.",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "service_principal_id",
             "in": "path",
             "required": true,
@@ -1155,6 +1311,14 @@
         ],
         "description": "Get account federation policy.\n\n:param service_principal_id: int\n  The service principal id for the federation policy.\n:param policy_id: str\n  The identifier for the federation policy.\n\n:returns: :class:`FederationPolicy`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "service_principal_id",
             "in": "path",
@@ -1214,6 +1378,14 @@
         ],
         "description": "Update account federation policy.\n\n:param service_principal_id: int\n  The service principal id for the federation policy.\n:param policy_id: str\n  The identifier for the federation policy.\n:param policy: :class:`FederationPolicy`\n:param update_mask: str (optional)\n  The field mask specifies which fields of the policy to update. To specify multiple fields in the\n  field mask, use comma as the separator (no space). The special value '*' indicates that all fields\n  should be updated (full replacement). If unspecified, all fields that are set in the policy provided\n  in the update request will overwrite the corresponding fields in the existing policy. Example value:\n  'description,oidc_policy.audiences'.\n\n:returns: :class:`FederationPolicy`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "service_principal_id",
             "in": "path",
@@ -1302,6 +1474,14 @@
         "description": "Create a secret for the given service principal.\n\n:param service_principal_id: str\n  The service principal ID.\n:param lifetime: str (optional)\n  The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a\n  default lifetime of 730 days (63072000s).\n\n:returns: :class:`CreateServicePrincipalSecretResponse`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "service_principal_id",
             "in": "path",
             "required": true,
@@ -1366,6 +1546,14 @@
         ],
         "description": "List all secrets associated with the given service principal. This operation only returns information\nabout the secrets themselves and does not include the secret values.\n\n:param service_principal_id: str\n  The service principal ID.\n:param page_size: int (optional)\n:param page_token: str (optional)\n  An opaque page token which was the `next_page_token` in the response of the previous request to list\n  the secrets for this service principal. Provide this token to retrieve the next page of secret\n  entries. When providing a `page_token`, all other parameters provided to the request must match the\n  previous request. To list all of the secrets for a service principal, it is necessary to continue\n  requesting pages of entries until the response contains no `next_page_token`. Note that the number\n  of entries returned must not be used to determine when the listing is complete.\n\n:returns: Iterator over :class:`SecretInfo`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "service_principal_id",
             "in": "path",
@@ -1435,6 +1623,14 @@
         ],
         "description": "Delete a secret from the given service principal.\n\n:param service_principal_id: str\n  The service principal ID.\n:param secret_id: str\n  The secret ID.",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "service_principal_id",
             "in": "path",

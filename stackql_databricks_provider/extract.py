@@ -295,14 +295,10 @@ def _extract_path_params(url_path: str) -> List[str]:
     raw = re.findall(r"\{([^}]+)\}", url_path)
     params = []
     for r in raw:
-        # Skip account_id references (these are injected by the SDK)
-        if "account_id" in r:
-            continue
         # Clean f-string expressions like {_escape_multi_segment_path_parameter(file_path)}
         clean = re.sub(r"_escape_multi_segment_path_parameter\((\w+)\)", r"\1", r)
-        # For f-string variable expressions like {self._api.account_id}, skip
-        if "self." in clean:
-            continue
+        # Clean self._api.X expressions like {self._api.account_id} -> account_id
+        clean = re.sub(r"self\._api\.(\w+)", r"\1", clean)
         params.append(clean)
     return params
 

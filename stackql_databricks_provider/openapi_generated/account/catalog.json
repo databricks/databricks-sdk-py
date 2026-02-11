@@ -23,6 +23,14 @@
         "description": "Creates an assignment to a metastore for a workspace\n\n:param workspace_id: int\n  Workspace ID.\n:param metastore_id: str\n  Unity Catalog metastore ID\n:param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)\n\n:returns: :class:`AccountsCreateMetastoreAssignmentResponse`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "workspace_id",
             "in": "path",
             "required": true,
@@ -97,6 +105,14 @@
         "description": "Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.\n\n:param workspace_id: int\n  Workspace ID.\n:param metastore_id: str\n  Unity Catalog metastore ID\n\n:returns: :class:`AccountsDeleteMetastoreAssignmentResponse`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "workspace_id",
             "in": "path",
             "required": true,
@@ -155,6 +171,14 @@
         ],
         "description": "Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be\nupdated.\n\n:param workspace_id: int\n  Workspace ID.\n:param metastore_id: str\n  Unity Catalog metastore ID\n:param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)\n\n:returns: :class:`AccountsUpdateMetastoreAssignmentResponse`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "workspace_id",
             "in": "path",
@@ -232,6 +256,14 @@
         "description": "Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned\na metastore, the mapping will be returned. If no metastore is assigned to the workspace, the\nassignment will not be found and a 404 returned.\n\n:param workspace_id: int\n  Workspace ID.\n\n:returns: :class:`AccountsMetastoreAssignment`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "workspace_id",
             "in": "path",
             "required": true,
@@ -284,6 +316,14 @@
         "description": "Gets a list of all Databricks workspace IDs that have been assigned to given metastore.\n\n:param metastore_id: str\n  Unity Catalog metastore ID\n\n:returns: Iterator over int",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "metastore_id",
             "in": "path",
             "required": true,
@@ -334,6 +374,16 @@
           "account_metastores"
         ],
         "description": "Creates a Unity Catalog metastore.\n\n:param metastore_info: :class:`CreateAccountsMetastore` (optional)\n\n:returns: :class:`AccountsCreateMetastoreResponse`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "requestBody": {
           "content": {
             "application/json": {
@@ -388,6 +438,16 @@
           "account_metastores"
         ],
         "description": "Gets all Unity Catalog metastores associated with an account specified by ID.\n\n\n:returns: Iterator over :class:`MetastoreInfo`",
+        "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Success",
@@ -430,6 +490,14 @@
         ],
         "description": "Deletes a Unity Catalog metastore for an account, both specified by ID.\n\n:param metastore_id: str\n  Unity Catalog metastore ID\n:param force: bool (optional)\n  Force deletion even if the metastore is not empty. Default is false.\n\n:returns: :class:`AccountsDeleteMetastoreResponse`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "metastore_id",
             "in": "path",
@@ -490,6 +558,14 @@
         "description": "Gets a Unity Catalog metastore from an account, both specified by ID.\n\n:param metastore_id: str\n  Unity Catalog metastore ID\n\n:returns: :class:`AccountsGetMetastoreResponse`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "metastore_id",
             "in": "path",
             "required": true,
@@ -539,6 +615,14 @@
         ],
         "description": "Updates an existing Unity Catalog metastore.\n\n:param metastore_id: str\n  Unity Catalog metastore ID\n:param metastore_info: :class:`UpdateAccountsMetastore` (optional)\n  Properties of the metastore to change.\n\n:returns: :class:`AccountsUpdateMetastoreResponse`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "metastore_id",
             "in": "path",
@@ -606,6 +690,14 @@
         ],
         "description": "Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for\nAWS credentials - **AzureServicePrincipal** for Azure credentials - **GcpServiceAccountKey** for GCP\ncredentials\n\nThe caller must be a metastore admin and have the `CREATE_STORAGE_CREDENTIAL` privilege on the\nmetastore.\n\n:param metastore_id: str\n  Unity Catalog metastore ID\n:param credential_info: :class:`CreateAccountsStorageCredential` (optional)\n:param skip_validation: bool (optional)\n  Optional, default false. Supplying true to this argument skips validation of the created set of\n  credentials.\n\n:returns: :class:`AccountsCreateStorageCredentialInfo`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "metastore_id",
             "in": "path",
@@ -675,6 +767,14 @@
         "description": "Gets a list of all storage credentials that have been assigned to given metastore.\n\n:param metastore_id: str\n  Unity Catalog metastore ID\n\n:returns: Iterator over :class:`StorageCredentialInfo`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "metastore_id",
             "in": "path",
             "required": true,
@@ -726,6 +826,14 @@
         ],
         "description": "Deletes a storage credential from the metastore. The caller must be an owner of the storage\ncredential.\n\n:param metastore_id: str\n  Unity Catalog metastore ID\n:param storage_credential_name: str\n  Name of the storage credential.\n:param force: bool (optional)\n  Force deletion even if the Storage Credential is not empty. Default is false.\n\n:returns: :class:`AccountsDeleteStorageCredentialResponse`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "metastore_id",
             "in": "path",
@@ -795,6 +903,14 @@
         "description": "Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the\nstorage credential, or have a level of privilege on the storage credential.\n\n:param metastore_id: str\n  Unity Catalog metastore ID\n:param storage_credential_name: str\n  Required. Name of the storage credential.\n\n:returns: :class:`AccountsStorageCredentialInfo`",
         "parameters": [
           {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
             "name": "metastore_id",
             "in": "path",
             "required": true,
@@ -853,6 +969,14 @@
         ],
         "description": "Updates a storage credential on the metastore. The caller must be the owner of the storage credential.\nIf the caller is a metastore admin, only the **owner** credential can be changed.\n\n:param metastore_id: str\n  Unity Catalog metastore ID\n:param storage_credential_name: str\n  Name of the storage credential.\n:param credential_info: :class:`UpdateAccountsStorageCredential` (optional)\n:param skip_validation: bool (optional)\n  Optional. Supplying true to this argument skips validation of the updated set of credentials.\n\n:returns: :class:`AccountsUpdateStorageCredentialResponse`",
         "parameters": [
+          {
+            "name": "account_id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
           {
             "name": "metastore_id",
             "in": "path",
