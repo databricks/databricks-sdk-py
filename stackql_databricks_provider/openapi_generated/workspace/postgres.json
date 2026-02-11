@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Postgres API (workspace)",
     "description": "OpenAPI specification for the Databricks postgres service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.postgres"
   },
   "servers": [
     {
@@ -93,7 +96,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       },
       "get": {
         "operationId": "postgres_list_branches",
@@ -160,7 +164,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       }
     },
     "/api/2.0/postgres/{parent}/endpoints": {
@@ -238,7 +243,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       },
       "get": {
         "operationId": "postgres_list_endpoints",
@@ -305,7 +311,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       }
     },
     "/api/2.0/postgres/projects": {
@@ -374,7 +381,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       },
       "get": {
         "operationId": "postgres_list_projects",
@@ -432,7 +440,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       }
     },
     "/api/2.0/postgres/{parent}/roles": {
@@ -510,7 +519,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       },
       "get": {
         "operationId": "postgres_list_roles",
@@ -577,7 +587,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       }
     },
     "/api/2.0/postgres/{name}": {
@@ -637,7 +648,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       },
       "get": {
         "operationId": "postgres_get_role",
@@ -686,7 +698,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       },
       "patch": {
         "operationId": "postgres_update_project",
@@ -762,7 +775,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       }
     },
     "/api/2.0/postgres/credentials": {
@@ -824,7 +838,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PostgresAPI"
       }
     }
   },

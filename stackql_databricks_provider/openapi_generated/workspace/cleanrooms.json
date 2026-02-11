@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Cleanrooms API (workspace)",
     "description": "OpenAPI specification for the Databricks cleanrooms service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.cleanrooms"
   },
   "servers": [
     {
@@ -102,7 +105,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAssetRevisionsAPI"
       }
     },
     "/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/revisions": {
@@ -198,7 +202,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAssetRevisionsAPI"
       }
     },
     "/api/2.0/clean-rooms/{clean_room_name}/assets": {
@@ -268,7 +273,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAssetsAPI"
       },
       "get": {
         "operationId": "clean_room_assets_list",
@@ -327,7 +333,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAssetsAPI"
       }
     },
     "/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/reviews": {
@@ -418,7 +425,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAssetsAPI"
       }
     },
     "/api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}": {
@@ -489,7 +497,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAssetsAPI"
       },
       "get": {
         "operationId": "clean_room_assets_get",
@@ -565,7 +574,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAssetsAPI"
       },
       "patch": {
         "operationId": "clean_room_assets_update",
@@ -655,7 +665,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAssetsAPI"
       }
     },
     "/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules": {
@@ -725,7 +736,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAutoApprovalRulesAPI"
       },
       "get": {
         "operationId": "clean_room_auto_approval_rules_list",
@@ -792,7 +804,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAutoApprovalRulesAPI"
       }
     },
     "/api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}": {
@@ -845,7 +858,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAutoApprovalRulesAPI"
       },
       "get": {
         "operationId": "clean_room_auto_approval_rules_get",
@@ -903,7 +917,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAutoApprovalRulesAPI"
       },
       "patch": {
         "operationId": "clean_room_auto_approval_rules_update",
@@ -980,7 +995,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomAutoApprovalRulesAPI"
       }
     },
     "/api/2.0/clean-rooms/{clean_room_name}/runs": {
@@ -1059,7 +1075,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomTaskRunsAPI"
       }
     },
     "/api/2.0/clean-rooms": {
@@ -1118,7 +1135,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomsAPI"
       },
       "get": {
         "operationId": "clean_rooms_list",
@@ -1177,7 +1195,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomsAPI"
       }
     },
     "/api/2.0/clean-rooms/{clean_room_name}/output-catalogs": {
@@ -1247,7 +1266,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomsAPI"
       }
     },
     "/api/2.0/clean-rooms/{name}": {
@@ -1292,7 +1312,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomsAPI"
       },
       "get": {
         "operationId": "clean_rooms_get",
@@ -1342,7 +1363,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomsAPI"
       },
       "patch": {
         "operationId": "clean_rooms_update",
@@ -1407,7 +1429,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CleanRoomsAPI"
       }
     }
   },

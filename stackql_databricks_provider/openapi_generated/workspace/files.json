@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Files API (workspace)",
     "description": "OpenAPI specification for the Databricks files service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.files"
   },
   "servers": [
     {
@@ -72,7 +75,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbfsAPI"
       }
     },
     "/api/2.0/dbfs/close": {
@@ -124,7 +128,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbfsAPI"
       }
     },
     "/api/2.0/dbfs/create": {
@@ -187,7 +192,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbfsAPI"
       }
     },
     "/api/2.0/dbfs/delete": {
@@ -243,7 +249,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbfsAPI"
       }
     },
     "/api/2.0/dbfs/get-status": {
@@ -295,7 +302,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbfsAPI"
       }
     },
     "/api/2.0/dbfs/list": {
@@ -347,7 +355,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbfsAPI"
       }
     },
     "/api/2.0/dbfs/mkdirs": {
@@ -399,7 +408,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbfsAPI"
       }
     },
     "/api/2.0/dbfs/move": {
@@ -456,7 +466,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbfsAPI"
       }
     },
     "/api/2.0/dbfs/put": {
@@ -516,7 +527,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbfsAPI"
       }
     },
     "/api/2.0/dbfs/read": {
@@ -586,7 +598,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbfsAPI"
       }
     },
     "/api/2.0/fs/directories{directory_path}": {
@@ -630,7 +643,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FilesAPI"
       },
       "delete": {
         "operationId": "files_delete_directory",
@@ -672,7 +686,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FilesAPI"
       },
       "head": {
         "operationId": "files_get_directory_metadata",
@@ -714,7 +729,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FilesAPI"
       },
       "get": {
         "operationId": "files_list_directory_contents",
@@ -781,7 +797,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FilesAPI"
       }
     },
     "/api/2.0/fs/files{file_path}": {
@@ -825,7 +842,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FilesAPI"
       },
       "get": {
         "operationId": "files_download",
@@ -874,7 +892,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FilesAPI"
       },
       "head": {
         "operationId": "files_get_metadata",
@@ -923,7 +942,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FilesAPI"
       },
       "put": {
         "operationId": "files_upload",
@@ -991,7 +1011,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FilesAPI"
       }
     }
   },

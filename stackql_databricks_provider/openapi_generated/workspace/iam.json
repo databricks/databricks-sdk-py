@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Iam API (workspace)",
     "description": "OpenAPI specification for the Databricks iam service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.iam"
   },
   "servers": [
     {
@@ -110,7 +113,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccessControlAPI"
       }
     },
     "/api/2.0/preview/accounts/access-control/assignable-roles": {
@@ -162,7 +166,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountAccessControlProxyAPI"
       }
     },
     "/api/2.0/preview/accounts/access-control/rule-sets": {
@@ -223,7 +228,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountAccessControlProxyAPI"
       },
       "put": {
         "operationId": "account_access_control_proxy_update_rule_set",
@@ -285,7 +291,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountAccessControlProxyAPI"
       }
     },
     "/api/2.0/preview/scim/v2/Me": {
@@ -326,7 +333,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CurrentUserAPI"
       }
     },
     "/api/2.0/preview/scim/v2/Groups": {
@@ -412,7 +420,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GroupsV2API"
       },
       "get": {
         "operationId": "groups_v2_list",
@@ -516,7 +525,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GroupsV2API"
       }
     },
     "/api/2.0/preview/scim/v2/Groups/{id}": {
@@ -561,7 +571,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GroupsV2API"
       },
       "get": {
         "operationId": "groups_v2_get",
@@ -611,7 +622,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GroupsV2API"
       },
       "patch": {
         "operationId": "groups_v2_patch",
@@ -672,7 +684,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GroupsV2API"
       },
       "put": {
         "operationId": "groups_v2_update",
@@ -756,7 +769,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GroupsV2API"
       }
     },
     "/api/2.0/permissionmigration": {
@@ -829,7 +843,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PermissionMigrationAPI"
       }
     },
     "/api/2.0/permissions/{request_object_type}/{request_object_id}": {
@@ -890,7 +905,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PermissionsAPI"
       },
       "put": {
         "operationId": "permissions_set",
@@ -964,7 +980,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PermissionsAPI"
       },
       "patch": {
         "operationId": "permissions_update",
@@ -1038,7 +1055,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PermissionsAPI"
       }
     },
     "/api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels": {
@@ -1099,7 +1117,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PermissionsAPI"
       }
     },
     "/api/2.0/preview/scim/v2/ServicePrincipals": {
@@ -1186,7 +1205,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalsV2API"
       },
       "get": {
         "operationId": "service_principals_v2_list",
@@ -1290,7 +1310,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalsV2API"
       }
     },
     "/api/2.0/preview/scim/v2/ServicePrincipals/{id}": {
@@ -1335,7 +1356,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalsV2API"
       },
       "get": {
         "operationId": "service_principals_v2_get",
@@ -1385,7 +1407,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalsV2API"
       },
       "patch": {
         "operationId": "service_principals_v2_patch",
@@ -1446,7 +1469,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalsV2API"
       },
       "put": {
         "operationId": "service_principals_v2_update",
@@ -1531,7 +1555,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalsV2API"
       }
     },
     "/api/2.0/preview/scim/v2/Users": {
@@ -1625,7 +1650,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsersV2API"
       },
       "get": {
         "operationId": "users_v2_list",
@@ -1729,7 +1755,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsersV2API"
       }
     },
     "/api/2.0/preview/scim/v2/Users/{id}": {
@@ -1774,7 +1801,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsersV2API"
       },
       "get": {
         "operationId": "users_v2_get",
@@ -1887,7 +1915,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsersV2API"
       },
       "patch": {
         "operationId": "users_v2_patch",
@@ -1948,7 +1977,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsersV2API"
       },
       "put": {
         "operationId": "users_v2_update",
@@ -2041,7 +2071,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsersV2API"
       }
     },
     "/api/2.0/permissions/authorization/passwords/permissionLevels": {
@@ -2082,7 +2113,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsersV2API"
       }
     },
     "/api/2.0/permissions/authorization/passwords": {
@@ -2123,7 +2155,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsersV2API"
       },
       "put": {
         "operationId": "users_v2_set_permissions",
@@ -2177,7 +2210,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsersV2API"
       },
       "patch": {
         "operationId": "users_v2_update_permissions",
@@ -2231,7 +2265,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsersV2API"
       }
     }
   },

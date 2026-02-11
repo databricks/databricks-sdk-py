@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Settingsv2 API (workspace)",
     "description": "OpenAPI specification for the Databricks settingsv2 service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.settingsv2"
   },
   "servers": [
     {
@@ -67,7 +70,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceSettingsV2API"
       },
       "patch": {
         "operationId": "workspace_settings_v2_patch_public_workspace_setting",
@@ -135,7 +139,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceSettingsV2API"
       }
     },
     "/api/2.1/settings-metadata": {
@@ -196,7 +201,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceSettingsV2API"
       }
     }
   },

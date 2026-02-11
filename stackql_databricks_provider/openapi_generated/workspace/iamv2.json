@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Iamv2 API (workspace)",
     "description": "OpenAPI specification for the Databricks iamv2 service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.iamv2"
   },
   "servers": [
     {
@@ -76,7 +79,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceIamV2API"
       }
     },
     "/api/2.0/identity/groups/resolveByExternalId": {
@@ -135,7 +139,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceIamV2API"
       }
     },
     "/api/2.0/identity/servicePrincipals/resolveByExternalId": {
@@ -194,7 +199,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceIamV2API"
       }
     },
     "/api/2.0/identity/users/resolveByExternalId": {
@@ -253,7 +259,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceIamV2API"
       }
     }
   },

@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Billing API (account)",
     "description": "OpenAPI specification for the Databricks billing service (account-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.billing"
   },
   "servers": [
     {
@@ -87,7 +90,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BillableUsageAPI"
       }
     },
     "/api/2.1/accounts/{account_id}/budget-policies": {
@@ -157,7 +161,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BudgetPolicyAPI"
       },
       "get": {
         "operationId": "budget_policy_list",
@@ -242,7 +247,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BudgetPolicyAPI"
       }
     },
     "/api/2.1/accounts/{account_id}/budget-policies/{policy_id}": {
@@ -295,7 +301,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BudgetPolicyAPI"
       },
       "get": {
         "operationId": "budget_policy_get",
@@ -353,7 +360,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BudgetPolicyAPI"
       },
       "patch": {
         "operationId": "budget_policy_update",
@@ -438,7 +446,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BudgetPolicyAPI"
       }
     },
     "/api/2.1/accounts/{account_id}/budgets": {
@@ -507,7 +516,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BudgetsAPI"
       },
       "get": {
         "operationId": "budgets_list",
@@ -565,7 +575,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BudgetsAPI"
       }
     },
     "/api/2.1/accounts/{account_id}/budgets/{budget_id}": {
@@ -618,7 +629,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BudgetsAPI"
       },
       "get": {
         "operationId": "budgets_get",
@@ -676,7 +688,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BudgetsAPI"
       },
       "put": {
         "operationId": "budgets_update",
@@ -752,7 +765,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "BudgetsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/log-delivery": {
@@ -821,7 +835,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LogDeliveryAPI"
       },
       "get": {
         "operationId": "log_delivery_list",
@@ -906,7 +921,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LogDeliveryAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/log-delivery/{log_delivery_configuration_id}": {
@@ -966,7 +982,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LogDeliveryAPI"
       },
       "patch": {
         "operationId": "log_delivery_patch_status",
@@ -1035,7 +1052,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LogDeliveryAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/dashboard": {
@@ -1109,7 +1127,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsageDashboardsAPI"
       },
       "get": {
         "operationId": "usage_dashboards_get",
@@ -1176,7 +1195,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "UsageDashboardsAPI"
       }
     }
   },

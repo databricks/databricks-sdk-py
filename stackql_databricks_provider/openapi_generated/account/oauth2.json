@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Oauth2 API (account)",
     "description": "OpenAPI specification for the Databricks oauth2 service (account-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.oauth2"
   },
   "servers": [
     {
@@ -86,7 +89,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountFederationPolicyAPI"
       },
       "get": {
         "operationId": "account_federation_policy_list",
@@ -152,7 +156,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountFederationPolicyAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/federationPolicies/{policy_id}": {
@@ -205,7 +210,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountFederationPolicyAPI"
       },
       "get": {
         "operationId": "account_federation_policy_get",
@@ -263,7 +269,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountFederationPolicyAPI"
       },
       "patch": {
         "operationId": "account_federation_policy_update",
@@ -347,7 +354,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountFederationPolicyAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/oauth2/custom-app-integrations": {
@@ -433,7 +441,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CustomAppIntegrationAPI"
       },
       "get": {
         "operationId": "custom_app_integration_list",
@@ -508,7 +517,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CustomAppIntegrationAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/oauth2/custom-app-integrations/{integration_id}": {
@@ -561,7 +571,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CustomAppIntegrationAPI"
       },
       "get": {
         "operationId": "custom_app_integration_get",
@@ -619,7 +630,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CustomAppIntegrationAPI"
       },
       "patch": {
         "operationId": "custom_app_integration_update",
@@ -696,7 +708,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CustomAppIntegrationAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/oauth2/published-apps": {
@@ -765,7 +778,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "OAuthPublishedAppsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/oauth2/published-app-integrations": {
@@ -835,7 +849,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PublishedAppIntegrationAPI"
       },
       "get": {
         "operationId": "published_app_integration_list",
@@ -901,7 +916,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PublishedAppIntegrationAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/oauth2/published-app-integrations/{integration_id}": {
@@ -954,7 +970,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PublishedAppIntegrationAPI"
       },
       "get": {
         "operationId": "published_app_integration_get",
@@ -1012,7 +1029,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PublishedAppIntegrationAPI"
       },
       "patch": {
         "operationId": "published_app_integration_update",
@@ -1077,7 +1095,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PublishedAppIntegrationAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/federationPolicies": {
@@ -1163,7 +1182,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalFederationPolicyAPI"
       },
       "get": {
         "operationId": "service_principal_federation_policy_list",
@@ -1238,7 +1258,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalFederationPolicyAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/federationPolicies/{policy_id}": {
@@ -1300,7 +1321,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalFederationPolicyAPI"
       },
       "get": {
         "operationId": "service_principal_federation_policy_get",
@@ -1367,7 +1389,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalFederationPolicyAPI"
       },
       "patch": {
         "operationId": "service_principal_federation_policy_update",
@@ -1460,7 +1483,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalFederationPolicyAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/credentials/secrets": {
@@ -1535,7 +1559,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalSecretsAPI"
       },
       "get": {
         "operationId": "service_principal_secrets_list",
@@ -1610,7 +1635,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalSecretsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}": {
@@ -1672,7 +1698,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalSecretsAPI"
       }
     }
   },

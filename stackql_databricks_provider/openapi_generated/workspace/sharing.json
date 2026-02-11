@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Sharing API (workspace)",
     "description": "OpenAPI specification for the Databricks sharing service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.sharing"
   },
   "servers": [
     {
@@ -86,7 +89,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProvidersAPI"
       },
       "get": {
         "operationId": "providers_list",
@@ -154,7 +158,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProvidersAPI"
       }
     },
     "/api/2.1/unity-catalog/providers/{name}": {
@@ -199,7 +204,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProvidersAPI"
       },
       "get": {
         "operationId": "providers_get",
@@ -249,7 +255,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProvidersAPI"
       },
       "patch": {
         "operationId": "providers_update",
@@ -326,7 +333,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProvidersAPI"
       }
     },
     "/api/2.1/data-sharing/providers/{provider_name}/shares/{share_name}": {
@@ -423,7 +431,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProvidersAPI"
       }
     },
     "/api/2.1/unity-catalog/providers/{name}/shares": {
@@ -493,7 +502,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProvidersAPI"
       }
     },
     "/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}": {
@@ -538,7 +548,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientActivationAPI"
       }
     },
     "/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}": {
@@ -590,7 +601,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientActivationAPI"
       }
     },
     "/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies": {
@@ -660,7 +672,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientFederationPoliciesAPI"
       },
       "get": {
         "operationId": "recipient_federation_policies_list",
@@ -727,7 +740,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientFederationPoliciesAPI"
       }
     },
     "/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}": {
@@ -781,7 +795,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientFederationPoliciesAPI"
       },
       "get": {
         "operationId": "recipient_federation_policies_get_federation_policy",
@@ -840,7 +855,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientFederationPoliciesAPI"
       }
     },
     "/api/2.1/unity-catalog/recipients": {
@@ -935,7 +951,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientsAPI"
       },
       "get": {
         "operationId": "recipients_list",
@@ -1003,7 +1020,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientsAPI"
       }
     },
     "/api/2.1/unity-catalog/recipients/{name}": {
@@ -1048,7 +1066,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientsAPI"
       },
       "get": {
         "operationId": "recipients_get",
@@ -1098,7 +1117,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientsAPI"
       },
       "patch": {
         "operationId": "recipients_update",
@@ -1187,7 +1207,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientsAPI"
       }
     },
     "/api/2.1/unity-catalog/recipients/{name}/rotate-token": {
@@ -1257,7 +1278,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientsAPI"
       }
     },
     "/api/2.1/unity-catalog/recipients/{name}/share-permissions": {
@@ -1327,7 +1349,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RecipientsAPI"
       }
     },
     "/api/2.1/unity-catalog/shares": {
@@ -1394,7 +1417,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SharesAPI"
       },
       "get": {
         "operationId": "shares_list_shares",
@@ -1453,7 +1477,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SharesAPI"
       }
     },
     "/api/2.1/unity-catalog/shares/{name}": {
@@ -1498,7 +1523,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SharesAPI"
       },
       "get": {
         "operationId": "shares_get",
@@ -1557,7 +1583,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SharesAPI"
       },
       "patch": {
         "operationId": "shares_update",
@@ -1638,7 +1665,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SharesAPI"
       }
     },
     "/api/2.1/unity-catalog/shares/{name}/permissions": {
@@ -1708,7 +1736,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SharesAPI"
       },
       "patch": {
         "operationId": "shares_update_permissions",
@@ -1777,7 +1806,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SharesAPI"
       }
     }
   },

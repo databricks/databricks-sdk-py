@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Marketplace API (workspace)",
     "description": "OpenAPI specification for the Databricks marketplace service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.marketplace"
   },
   "servers": [
     {
@@ -84,7 +87,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerFulfillmentsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/listings/{listing_id}/fulfillments": {
@@ -153,7 +157,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerFulfillmentsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/listings/{listing_id}/installations": {
@@ -234,7 +239,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerInstallationsAPI"
       },
       "get": {
         "operationId": "consumer_installations_list_listing_installations",
@@ -301,7 +307,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerInstallationsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/listings/{listing_id}/installations/{installation_id}": {
@@ -354,7 +361,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerInstallationsAPI"
       },
       "put": {
         "operationId": "consumer_installations_update",
@@ -433,7 +441,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerInstallationsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/installations": {
@@ -493,7 +502,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerInstallationsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/listings:batchGet": {
@@ -545,7 +555,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerListingsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/listings/{id}": {
@@ -597,7 +608,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerListingsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/listings": {
@@ -720,7 +732,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerListingsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/search-listings": {
@@ -833,7 +846,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerListingsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/listings/{listing_id}/personalization-requests": {
@@ -928,7 +942,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerPersonalizationRequestsAPI"
       },
       "get": {
         "operationId": "consumer_personalization_requests_get",
@@ -978,7 +993,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerPersonalizationRequestsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/personalization-requests": {
@@ -1038,7 +1054,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerPersonalizationRequestsAPI"
       }
     },
     "/api/2.1/marketplace-consumer/providers:batchGet": {
@@ -1090,7 +1107,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerProvidersAPI"
       }
     },
     "/api/2.1/marketplace-consumer/providers/{id}": {
@@ -1142,7 +1160,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerProvidersAPI"
       }
     },
     "/api/2.1/marketplace-consumer/providers": {
@@ -1211,7 +1230,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConsumerProvidersAPI"
       }
     },
     "/api/2.0/marketplace-exchange/filters": {
@@ -1270,7 +1290,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangeFiltersAPI"
       },
       "get": {
         "operationId": "provider_exchange_filters_list",
@@ -1337,7 +1358,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangeFiltersAPI"
       }
     },
     "/api/2.0/marketplace-exchange/filters/{id}": {
@@ -1382,7 +1404,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangeFiltersAPI"
       },
       "put": {
         "operationId": "provider_exchange_filters_update",
@@ -1449,7 +1472,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangeFiltersAPI"
       }
     },
     "/api/2.0/marketplace-exchange/exchanges-for-listing": {
@@ -1512,7 +1536,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangesAPI"
       },
       "get": {
         "operationId": "provider_exchanges_list_exchanges_for_listing",
@@ -1579,7 +1604,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangesAPI"
       }
     },
     "/api/2.0/marketplace-exchange/exchanges": {
@@ -1638,7 +1664,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangesAPI"
       },
       "get": {
         "operationId": "provider_exchanges_list",
@@ -1696,7 +1723,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangesAPI"
       }
     },
     "/api/2.0/marketplace-exchange/exchanges/{id}": {
@@ -1741,7 +1769,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangesAPI"
       },
       "get": {
         "operationId": "provider_exchanges_get",
@@ -1791,7 +1820,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangesAPI"
       },
       "put": {
         "operationId": "provider_exchanges_update",
@@ -1858,7 +1888,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangesAPI"
       }
     },
     "/api/2.0/marketplace-exchange/exchanges-for-listing/{id}": {
@@ -1903,7 +1934,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangesAPI"
       }
     },
     "/api/2.0/marketplace-exchange/listings-for-exchange": {
@@ -1972,7 +2004,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderExchangesAPI"
       }
     },
     "/api/2.0/marketplace-provider/files": {
@@ -2043,7 +2076,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderFilesAPI"
       },
       "get": {
         "operationId": "provider_files_list",
@@ -2110,7 +2144,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderFilesAPI"
       }
     },
     "/api/2.0/marketplace-provider/files/{file_id}": {
@@ -2155,7 +2190,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderFilesAPI"
       },
       "get": {
         "operationId": "provider_files_get",
@@ -2205,7 +2241,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderFilesAPI"
       }
     },
     "/api/2.0/marketplace-provider/listing": {
@@ -2264,7 +2301,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderListingsAPI"
       }
     },
     "/api/2.0/marketplace-provider/listings/{id}": {
@@ -2309,7 +2347,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderListingsAPI"
       },
       "get": {
         "operationId": "provider_listings_get",
@@ -2359,7 +2398,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderListingsAPI"
       },
       "put": {
         "operationId": "provider_listings_update",
@@ -2426,7 +2466,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderListingsAPI"
       }
     },
     "/api/2.0/marketplace-provider/listings": {
@@ -2486,7 +2527,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderListingsAPI"
       }
     },
     "/api/2.0/marketplace-provider/personalization-requests": {
@@ -2546,7 +2588,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderPersonalizationRequestsAPI"
       }
     },
     "/api/2.0/marketplace-provider/listings/{listing_id}/personalization-requests/{request_id}/request-status": {
@@ -2631,7 +2674,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderPersonalizationRequestsAPI"
       }
     },
     "/api/2.0/marketplace-provider/analytics_dashboard": {
@@ -2672,7 +2716,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderProviderAnalyticsDashboardsAPI"
       },
       "get": {
         "operationId": "provider_provider_analytics_dashboards_get",
@@ -2711,7 +2756,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderProviderAnalyticsDashboardsAPI"
       }
     },
     "/api/2.0/marketplace-provider/analytics_dashboard/latest": {
@@ -2752,7 +2798,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderProviderAnalyticsDashboardsAPI"
       }
     },
     "/api/2.0/marketplace-provider/analytics_dashboard/{id}": {
@@ -2819,7 +2866,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderProviderAnalyticsDashboardsAPI"
       }
     },
     "/api/2.0/marketplace-provider/provider": {
@@ -2878,7 +2926,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderProvidersAPI"
       }
     },
     "/api/2.0/marketplace-provider/providers/{id}": {
@@ -2923,7 +2972,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderProvidersAPI"
       },
       "get": {
         "operationId": "provider_providers_get",
@@ -2973,7 +3023,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderProvidersAPI"
       },
       "put": {
         "operationId": "provider_providers_update",
@@ -3040,7 +3091,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderProvidersAPI"
       }
     },
     "/api/2.0/marketplace-provider/providers": {
@@ -3100,7 +3152,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ProviderProvidersAPI"
       }
     }
   },

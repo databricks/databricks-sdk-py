@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Compute API (workspace)",
     "description": "OpenAPI specification for the Databricks compute service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.compute"
   },
   "servers": [
     {
@@ -95,7 +98,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClusterPoliciesAPI"
       }
     },
     "/api/2.0/policies/clusters/delete": {
@@ -147,7 +151,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClusterPoliciesAPI"
       }
     },
     "/api/2.0/policies/clusters/edit": {
@@ -227,7 +232,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClusterPoliciesAPI"
       }
     },
     "/api/2.0/policies/clusters/get": {
@@ -279,7 +285,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClusterPoliciesAPI"
       }
     },
     "/api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels": {
@@ -331,7 +338,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClusterPoliciesAPI"
       }
     },
     "/api/2.0/permissions/cluster-policies/{cluster_policy_id}": {
@@ -383,7 +391,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClusterPoliciesAPI"
       },
       "put": {
         "operationId": "cluster_policies_set_permissions",
@@ -448,7 +457,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClusterPoliciesAPI"
       },
       "patch": {
         "operationId": "cluster_policies_update_permissions",
@@ -513,7 +523,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClusterPoliciesAPI"
       }
     },
     "/api/2.0/policies/clusters/list": {
@@ -574,7 +585,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClusterPoliciesAPI"
       }
     },
     "/api/2.1/clusters/change-owner": {
@@ -630,7 +642,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/create": {
@@ -823,7 +836,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/delete": {
@@ -882,7 +896,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/edit": {
@@ -1076,7 +1091,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/events": {
@@ -1167,7 +1183,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/get": {
@@ -1219,7 +1236,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.0/permissions/clusters/{cluster_id}/permissionLevels": {
@@ -1271,7 +1289,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.0/permissions/clusters/{cluster_id}": {
@@ -1323,7 +1342,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       },
       "put": {
         "operationId": "clusters_set_permissions",
@@ -1388,7 +1408,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       },
       "patch": {
         "operationId": "clusters_update_permissions",
@@ -1453,7 +1474,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/list": {
@@ -1532,7 +1554,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/list-node-types": {
@@ -1573,7 +1596,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/list-zones": {
@@ -1614,7 +1638,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/permanent-delete": {
@@ -1666,7 +1691,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/pin": {
@@ -1718,7 +1744,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/resize": {
@@ -1785,7 +1812,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/restart": {
@@ -1848,7 +1876,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/spark-versions": {
@@ -1889,7 +1918,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/start": {
@@ -1948,7 +1978,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/unpin": {
@@ -2000,7 +2031,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/2.1/clusters/update": {
@@ -2068,7 +2100,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ClustersAPI"
       }
     },
     "/api/1.2/commands/cancel": {
@@ -2131,7 +2164,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CommandExecutionAPI"
       }
     },
     "/api/1.2/commands/status": {
@@ -2200,7 +2234,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CommandExecutionAPI"
       }
     },
     "/api/1.2/contexts/status": {
@@ -2260,7 +2295,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CommandExecutionAPI"
       }
     },
     "/api/1.2/contexts/create": {
@@ -2320,7 +2356,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CommandExecutionAPI"
       }
     },
     "/api/1.2/contexts/destroy": {
@@ -2376,7 +2413,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CommandExecutionAPI"
       }
     },
     "/api/1.2/commands/execute": {
@@ -2444,7 +2482,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CommandExecutionAPI"
       }
     },
     "/api/2.0/global-init-scripts": {
@@ -2516,7 +2555,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GlobalInitScriptsAPI"
       },
       "get": {
         "operationId": "global_init_scripts_list",
@@ -2555,7 +2595,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GlobalInitScriptsAPI"
       }
     },
     "/api/2.0/global-init-scripts/{script_id}": {
@@ -2600,7 +2641,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GlobalInitScriptsAPI"
       },
       "get": {
         "operationId": "global_init_scripts_get",
@@ -2650,7 +2692,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GlobalInitScriptsAPI"
       },
       "patch": {
         "operationId": "global_init_scripts_update",
@@ -2724,7 +2767,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GlobalInitScriptsAPI"
       }
     },
     "/api/2.0/instance-pools/create": {
@@ -2844,7 +2888,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstancePoolsAPI"
       }
     },
     "/api/2.0/instance-pools/delete": {
@@ -2896,7 +2941,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstancePoolsAPI"
       }
     },
     "/api/2.0/instance-pools/edit": {
@@ -2986,7 +3032,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstancePoolsAPI"
       }
     },
     "/api/2.0/instance-pools/get": {
@@ -3038,7 +3085,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstancePoolsAPI"
       }
     },
     "/api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels": {
@@ -3090,7 +3138,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstancePoolsAPI"
       }
     },
     "/api/2.0/permissions/instance-pools/{instance_pool_id}": {
@@ -3142,7 +3191,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstancePoolsAPI"
       },
       "put": {
         "operationId": "instance_pools_set_permissions",
@@ -3207,7 +3257,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstancePoolsAPI"
       },
       "patch": {
         "operationId": "instance_pools_update_permissions",
@@ -3272,7 +3323,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstancePoolsAPI"
       }
     },
     "/api/2.0/instance-pools/list": {
@@ -3313,7 +3365,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstancePoolsAPI"
       }
     },
     "/api/2.0/instance-profiles/add": {
@@ -3377,7 +3430,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstanceProfilesAPI"
       }
     },
     "/api/2.0/instance-profiles/edit": {
@@ -3437,7 +3491,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstanceProfilesAPI"
       }
     },
     "/api/2.0/instance-profiles/list": {
@@ -3478,7 +3533,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstanceProfilesAPI"
       }
     },
     "/api/2.0/instance-profiles/remove": {
@@ -3530,7 +3586,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "InstanceProfilesAPI"
       }
     },
     "/api/2.0/libraries/all-cluster-statuses": {
@@ -3571,7 +3628,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LibrariesAPI"
       }
     },
     "/api/2.0/libraries/cluster-status": {
@@ -3623,7 +3681,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LibrariesAPI"
       }
     },
     "/api/2.0/libraries/install": {
@@ -3680,7 +3739,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LibrariesAPI"
       }
     },
     "/api/2.0/libraries/uninstall": {
@@ -3737,7 +3797,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LibrariesAPI"
       }
     },
     "/api/2.0/policies/clusters/enforce-compliance": {
@@ -3800,7 +3861,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PolicyComplianceForClustersAPI"
       }
     },
     "/api/2.0/policies/clusters/get-compliance": {
@@ -3852,7 +3914,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PolicyComplianceForClustersAPI"
       }
     },
     "/api/2.0/policies/clusters/list-compliance": {
@@ -3922,7 +3985,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PolicyComplianceForClustersAPI"
       }
     },
     "/api/2.0/policy-families/{policy_family_id}": {
@@ -3983,7 +4047,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PolicyFamiliesAPI"
       }
     },
     "/api/2.0/policy-families": {
@@ -4044,7 +4109,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PolicyFamiliesAPI"
       }
     }
   },

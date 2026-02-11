@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Dashboards API (workspace)",
     "description": "OpenAPI specification for the Databricks dashboards service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.dashboards"
   },
   "servers": [
     {
@@ -94,7 +97,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       },
       "get": {
         "operationId": "genie_list_conversation_messages",
@@ -171,7 +175,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces": {
@@ -247,7 +252,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       },
       "get": {
         "operationId": "genie_list_spaces",
@@ -306,7 +312,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}": {
@@ -360,7 +367,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}": {
@@ -423,7 +431,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       },
       "get": {
         "operationId": "genie_get_message",
@@ -491,7 +500,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/execute-query": {
@@ -570,7 +580,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/execute-query": {
@@ -640,7 +651,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads": {
@@ -719,7 +731,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads/{download_id}": {
@@ -816,7 +829,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/query-result": {
@@ -895,7 +909,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/query-result": {
@@ -965,7 +980,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/query-result/{attachment_id}": {
@@ -1044,7 +1060,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}": {
@@ -1105,7 +1122,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       },
       "delete": {
         "operationId": "genie_trash_space",
@@ -1148,7 +1166,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       },
       "patch": {
         "operationId": "genie_update_space",
@@ -1225,7 +1244,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations": {
@@ -1304,7 +1324,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/feedback": {
@@ -1385,7 +1406,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/genie/spaces/{space_id}/start-conversation": {
@@ -1455,7 +1477,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GenieAPI"
       }
     },
     "/api/2.0/lakeview/dashboards": {
@@ -1533,7 +1556,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       },
       "get": {
         "operationId": "lakeview_list",
@@ -1610,7 +1634,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       }
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/schedules": {
@@ -1680,7 +1705,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       },
       "get": {
         "operationId": "lakeview_list_schedules",
@@ -1748,7 +1774,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       }
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}/subscriptions": {
@@ -1827,7 +1854,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       },
       "get": {
         "operationId": "lakeview_list_subscriptions",
@@ -1904,7 +1932,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       }
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}": {
@@ -1967,7 +1996,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       },
       "get": {
         "operationId": "lakeview_get_schedule",
@@ -2026,7 +2056,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       },
       "put": {
         "operationId": "lakeview_update_schedule",
@@ -2103,7 +2134,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       }
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}/subscriptions/{subscription_id}": {
@@ -2175,7 +2207,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       },
       "get": {
         "operationId": "lakeview_get_subscription",
@@ -2243,7 +2276,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       }
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}": {
@@ -2295,7 +2329,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       },
       "delete": {
         "operationId": "lakeview_trash",
@@ -2338,7 +2373,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       },
       "patch": {
         "operationId": "lakeview_update",
@@ -2423,7 +2459,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       }
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/published": {
@@ -2475,7 +2512,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       },
       "post": {
         "operationId": "lakeview_publish",
@@ -2544,7 +2582,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       },
       "delete": {
         "operationId": "lakeview_unpublish",
@@ -2587,7 +2626,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       }
     },
     "/api/2.0/lakeview/dashboards/migrate": {
@@ -2658,7 +2698,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewAPI"
       }
     },
     "/api/2.0/lakeview/dashboards/{dashboard_id}/published/tokeninfo": {
@@ -2728,7 +2769,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LakeviewEmbeddedAPI"
       }
     }
   },

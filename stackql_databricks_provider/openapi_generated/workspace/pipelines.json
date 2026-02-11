@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Pipelines API (workspace)",
     "description": "OpenAPI specification for the Databricks pipelines service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.pipelines"
   },
   "servers": [
     {
@@ -201,7 +204,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       }
     },
     "/api/2.0/pipelines": {
@@ -374,7 +378,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       },
       "get": {
         "operationId": "pipelines_list_pipelines",
@@ -450,7 +455,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       }
     },
     "/api/2.0/pipelines/{pipeline_id}": {
@@ -502,7 +508,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       },
       "get": {
         "operationId": "pipelines_get",
@@ -551,7 +558,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       },
       "put": {
         "operationId": "pipelines_update",
@@ -727,7 +735,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       }
     },
     "/api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels": {
@@ -778,7 +787,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       }
     },
     "/api/2.0/permissions/pipelines/{pipeline_id}": {
@@ -829,7 +839,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       },
       "put": {
         "operationId": "pipelines_set_permissions",
@@ -893,7 +904,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       },
       "patch": {
         "operationId": "pipelines_update_permissions",
@@ -957,7 +969,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       }
     },
     "/api/2.0/pipelines/{pipeline_id}/updates/{update_id}": {
@@ -1017,7 +1030,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       }
     },
     "/api/2.0/pipelines/{pipeline_id}/events": {
@@ -1104,7 +1118,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       }
     },
     "/api/2.0/pipelines/{pipeline_id}/updates": {
@@ -1182,7 +1197,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       },
       "post": {
         "operationId": "pipelines_start_update",
@@ -1265,7 +1281,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       }
     },
     "/api/2.0/pipelines/{pipeline_id}/stop": {
@@ -1316,7 +1333,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PipelinesAPI"
       }
     }
   },

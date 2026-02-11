@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Iam API (account)",
     "description": "OpenAPI specification for the Databricks iam service (account-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.iam"
   },
   "servers": [
     {
@@ -69,7 +72,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountAccessControlAPI"
       }
     },
     "/api/2.0/preview/accounts/{account_id}/access-control/rule-sets": {
@@ -138,7 +142,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountAccessControlAPI"
       },
       "put": {
         "operationId": "account_access_control_update_rule_set",
@@ -210,7 +215,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountAccessControlAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/scim/v2/Groups": {
@@ -294,7 +300,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountGroupsV2API"
       },
       "get": {
         "operationId": "account_groups_v2_list",
@@ -406,7 +413,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountGroupsV2API"
       }
     },
     "/api/2.0/accounts/{account_id}/scim/v2/Groups/{id}": {
@@ -459,7 +467,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountGroupsV2API"
       },
       "get": {
         "operationId": "account_groups_v2_get",
@@ -517,7 +526,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountGroupsV2API"
       },
       "patch": {
         "operationId": "account_groups_v2_patch",
@@ -586,7 +596,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountGroupsV2API"
       },
       "put": {
         "operationId": "account_groups_v2_update",
@@ -667,7 +678,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountGroupsV2API"
       }
     },
     "/api/2.0/accounts/{account_id}/scim/v2/ServicePrincipals": {
@@ -752,7 +764,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountServicePrincipalsV2API"
       },
       "get": {
         "operationId": "account_service_principals_v2_list",
@@ -864,7 +877,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountServicePrincipalsV2API"
       }
     },
     "/api/2.0/accounts/{account_id}/scim/v2/ServicePrincipals/{id}": {
@@ -917,7 +931,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountServicePrincipalsV2API"
       },
       "get": {
         "operationId": "account_service_principals_v2_get",
@@ -975,7 +990,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountServicePrincipalsV2API"
       },
       "patch": {
         "operationId": "account_service_principals_v2_patch",
@@ -1044,7 +1060,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountServicePrincipalsV2API"
       },
       "put": {
         "operationId": "account_service_principals_v2_update",
@@ -1125,7 +1142,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountServicePrincipalsV2API"
       }
     },
     "/api/2.0/accounts/{account_id}/scim/v2/Users": {
@@ -1218,7 +1236,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountUsersV2API"
       },
       "get": {
         "operationId": "account_users_v2_list",
@@ -1330,7 +1349,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountUsersV2API"
       }
     },
     "/api/2.0/accounts/{account_id}/scim/v2/Users/{id}": {
@@ -1383,7 +1403,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountUsersV2API"
       },
       "get": {
         "operationId": "account_users_v2_get",
@@ -1504,7 +1525,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountUsersV2API"
       },
       "patch": {
         "operationId": "account_users_v2_patch",
@@ -1573,7 +1595,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountUsersV2API"
       },
       "put": {
         "operationId": "account_users_v2_update",
@@ -1662,7 +1685,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountUsersV2API"
       }
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}/permissionassignments/principals/{principal_id}": {
@@ -1724,7 +1748,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAssignmentAPI"
       },
       "put": {
         "operationId": "workspace_assignment_update",
@@ -1806,7 +1831,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAssignmentAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}/permissionassignments/permissions": {
@@ -1866,7 +1892,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAssignmentAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}/permissionassignments": {
@@ -1926,7 +1953,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAssignmentAPI"
       }
     }
   },

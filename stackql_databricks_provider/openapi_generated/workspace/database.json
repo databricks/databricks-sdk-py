@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Database API (workspace)",
     "description": "OpenAPI specification for the Databricks database service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.database"
   },
   "servers": [
     {
@@ -73,7 +76,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/instances": {
@@ -131,7 +135,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       },
       "get": {
         "operationId": "database_list_database_instances",
@@ -189,7 +194,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/instances/{instance_name}/roles": {
@@ -266,7 +272,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       },
       "get": {
         "operationId": "database_list_database_instance_roles",
@@ -332,7 +339,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/tables": {
@@ -390,7 +398,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/synced_tables": {
@@ -448,7 +457,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/catalogs/{name}": {
@@ -492,7 +502,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       },
       "get": {
         "operationId": "database_get_database_catalog",
@@ -541,7 +552,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       },
       "patch": {
         "operationId": "database_update_database_catalog",
@@ -617,7 +629,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/instances/{name}": {
@@ -679,7 +692,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       },
       "get": {
         "operationId": "database_get_database_instance",
@@ -728,7 +742,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       },
       "patch": {
         "operationId": "database_update_database_instance",
@@ -803,7 +818,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/instances/{instance_name}/roles/{name}": {
@@ -873,7 +889,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       },
       "get": {
         "operationId": "database_get_database_instance_role",
@@ -930,7 +947,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/tables/{name}": {
@@ -974,7 +992,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       },
       "get": {
         "operationId": "database_get_database_table",
@@ -1023,7 +1042,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/synced_tables/{name}": {
@@ -1075,7 +1095,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       },
       "get": {
         "operationId": "database_get_synced_database_table",
@@ -1124,7 +1145,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       },
       "patch": {
         "operationId": "database_update_synced_database_table",
@@ -1200,7 +1222,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/instances:findByUid": {
@@ -1251,7 +1274,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/credentials": {
@@ -1314,7 +1338,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/instances/{instance_name}/catalogs": {
@@ -1383,7 +1408,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     },
     "/api/2.0/database/instances/{instance_name}/synced_tables": {
@@ -1452,7 +1478,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DatabaseAPI"
       }
     }
   },

@@ -9,10 +9,12 @@ import pytest
 
 from stackql_databricks_provider.inventory_gen import (
     CSV_COLUMNS,
+    _build_object_key_map,
     extract_operations_from_spec,
     generate_all_inventories,
     generate_inventory_for_spec,
     load_existing_csv,
+    populate_object_keys,
 )
 
 
@@ -435,3 +437,44 @@ class TestGenerateAllInventories:
             with open(all_csv) as f:
                 reader = csv.DictReader(f)
                 assert list(reader.fieldnames) == CSV_COLUMNS
+
+
+class TestObjectKeyPopulation:
+    def test_build_object_key_map_has_entries(self):
+        key_map = _build_object_key_map()
+        assert len(key_map) > 100
+        # Check known SCIM endpoint
+        assert key_map.get("account_users_v2_list") == "$.Resources"
+        # Check known non-SCIM endpoint
+        assert key_map.get("clusters_list") == "$.clusters"
+        assert key_map.get("jobs_list") == "$.jobs"
+
+    def test_populate_updates_empty_keys_only(self):
+        with tempfile.TemporaryDirectory() as tmpdir:
+            # First generate fresh inventories
+            generate_all_inventories(output_dir=tmpdir)
+
+            # Manually set one objectKey so we can verify it's preserved
+            csv_path = os.path.join(tmpdir, "workspace", "compute.csv")
+            rows = []
+            with open(csv_path) as f:
+                for row in csv.DictReader(f):
+                    if row["operationId"] == "clusters_list":
+                        row["stackql_object_key"] = "$.custom_key"
+                    rows.append(row)
+            with open(csv_path, "w", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS, extrasaction="ignore")
+                writer.writeheader()
+                writer.writerows(rows)
+
+            # Now populate
+            summary = populate_object_keys(tmpdir)
+            assert summary["workspace"] > 0
+
+            # Verify the manual key was preserved
+            with open(csv_path) as f:
+                for row in csv.DictReader(f):
+                    if row["operationId"] == "clusters_list":
+                        assert row["stackql_object_key"] == "$.custom_key"
+                    elif row["operationId"] == "cluster_policies_list":
+                        assert row["stackql_object_key"] == "$.policies"

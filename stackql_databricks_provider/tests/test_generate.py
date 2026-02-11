@@ -127,6 +127,32 @@ class TestGenerateAll:
             assert orphaned == [], f"Orphaned $refs found:\n" + "\n".join(orphaned[:20])
 
 
+class TestProvenance:
+    def test_info_has_sdk_version(self):
+        spec = generate_spec_for_service("agentbricks", "workspace")
+        assert "x-stackql-sdk-version" in spec["info"]
+        assert spec["info"]["x-stackql-sdk-version"]  # non-empty
+
+    def test_info_has_date_generated(self):
+        spec = generate_spec_for_service("agentbricks", "workspace")
+        assert "x-stackql-date-generated" in spec["info"]
+        # ISO format: YYYY-MM-DD
+        assert len(spec["info"]["x-stackql-date-generated"]) == 10
+
+    def test_info_has_sdk_namespace(self):
+        spec = generate_spec_for_service("agentbricks", "workspace")
+        assert spec["info"]["x-stackql-sdk-namespace"] == "databricks.sdk.service.agentbricks"
+
+    def test_operations_have_sdk_source(self):
+        spec = generate_spec_for_service("agentbricks", "workspace")
+        for path, methods in spec["paths"].items():
+            for verb, operation in methods.items():
+                assert "x-stackql-sdk-source" in operation, (
+                    f"{verb.upper()} {path} missing x-stackql-sdk-source"
+                )
+                assert operation["x-stackql-sdk-source"].endswith("API")
+
+
 class TestSpecOverrides:
     def test_parse_json_path_simple(self):
         segments = _parse_json_path("paths./api/test.get.summary")
