@@ -60,7 +60,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[App]"
+                  "$ref": "#/components/schemas/App"
                 }
               }
             }
@@ -118,7 +118,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[App]"
+                  "$ref": "#/components/schemas/App"
                 }
               }
             }
@@ -190,7 +190,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[AppUpdate]"
+                  "$ref": "#/components/schemas/AppUpdate"
                 }
               }
             }
@@ -475,7 +475,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[AppDeployment]"
+                  "$ref": "#/components/schemas/AppDeployment"
                 }
               }
             }
@@ -542,7 +542,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[AppDeployment]"
+                  "$ref": "#/components/schemas/AppDeployment"
                 }
               }
             }
@@ -883,7 +883,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[App]"
+                  "$ref": "#/components/schemas/App"
                 }
               }
             }
@@ -934,7 +934,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[App]"
+                  "$ref": "#/components/schemas/App"
                 }
               }
             }
@@ -1052,7 +1052,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[CustomTemplate]"
+                  "$ref": "#/components/schemas/CustomTemplate"
                 }
               }
             }

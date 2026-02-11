@@ -498,17 +498,40 @@ def _get_return_type(method) -> Optional[str]:
     ret = hints.get("return")
     if ret is None:
         return None
-    # Handle string annotations
+
+    # Handle string annotations (from __future__ import annotations)
     if isinstance(ret, str):
-        name = ret
-    else:
-        name = getattr(ret, "__name__", None) or getattr(ret, "_name", None)
+        name = ret.strip()
+        # Skip built-in and non-schema types
+        if name in ("str", "int", "float", "bool", "dict", "list", "None",
+                     "NoneType", "Any", "BinaryIO", "bytes"):
+            return None
+        # Extract inner type from Iterator[X] -> X
+        m = re.match(r"Iterator\[(\w+)\]", name)
+        if m:
+            return m.group(1)
+        if name == "Iterator":
+            return None
+        # Extract inner type from Wait[X] -> X
+        m = re.match(r"Wait\[(\w+)\]", name)
+        if m:
+            return m.group(1)
+        if name == "Wait":
+            return None
+        # Skip other generic patterns like Optional[X] that weren't resolved
+        if "[" in name:
+            return None
+        return name
+
+    # Handle resolved type objects
+    name = getattr(ret, "__name__", None) or getattr(ret, "_name", None)
     if name is None:
         return None
-    # Filter out built-in types and Iterator
-    if name in ("str", "int", "float", "bool", "dict", "list", "None", "NoneType", "Iterator"):
+    # Filter out built-in types
+    if name in ("str", "int", "float", "bool", "dict", "list", "None",
+                 "NoneType", "Iterator", "Any", "BinaryIO", "bytes"):
         return None
-    # Also skip generic types like Iterator[X]
+    # Skip generic types like Iterator[X], Wait[X]
     origin = getattr(ret, "__origin__", None)
     if origin is not None:
         return None
@@ -584,6 +607,21 @@ def _annotation_to_schema(annotation) -> Dict[str, Any]:
     if annotation is bool:
         return {"type": "boolean"}
 
+    # Check for well-known non-schema types before processing generics
+    import typing
+    if annotation is typing.BinaryIO:
+        return {"type": "string", "format": "binary"}
+    if annotation is typing.Any:
+        return {"type": "object"}
+
+    # Handle protobuf types (Timestamp, Duration)
+    type_name = getattr(annotation, "__name__", None) or getattr(annotation, "DESCRIPTOR", None) and ""
+    full_name = getattr(annotation, "__module__", "") + "." + (getattr(annotation, "__name__", "") or "")
+    if "timestamp_pb2" in full_name or (isinstance(type_name, str) and type_name == "Timestamp"):
+        return {"type": "string", "format": "date-time"}
+    if "duration_pb2" in full_name or (isinstance(type_name, str) and type_name == "Duration"):
+        return {"type": "string"}
+
     # Optional[X]
     origin = getattr(annotation, "__origin__", None)
     args = getattr(annotation, "__args__", None)
@@ -617,12 +655,14 @@ def _annotation_to_schema(annotation) -> Dict[str, Any]:
     if isinstance(annotation, type) and dataclasses.is_dataclass(annotation):
         return {"$ref": f"#/components/schemas/{annotation.__name__}"}
 
-    # Fallback
+    # Only create $ref for types that are known to be dataclasses or enums.
+    # Do NOT create $ref for arbitrary Python types (BinaryIO, Any, dict, etc.)
+    # as they won't have corresponding entries in components/schemas.
     name = getattr(annotation, "__name__", None)
-    if name and name not in ("str", "int", "float", "bool"):
-        return {"$ref": f"#/components/schemas/{name}"}
+    if name:
+        logger.debug("Unmapped type annotation %s (%s), falling back to object", name, type(annotation))
 
-    return {"type": "string"}
+    return {"type": "object"}
 
 
 def _field_to_property(field: dataclasses.Field, service_module) -> Dict[str, Any]:

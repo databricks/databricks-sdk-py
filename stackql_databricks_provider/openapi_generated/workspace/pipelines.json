@@ -427,7 +427,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[PipelineStateInfo]"
+                  "$ref": "#/components/schemas/PipelineStateInfo"
                 }
               }
             }
@@ -1081,7 +1081,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[PipelineEvent]"
+                  "$ref": "#/components/schemas/PipelineEvent"
                 }
               }
             }
@@ -1293,7 +1293,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[GetPipelineResponse]"
+                  "$ref": "#/components/schemas/GetPipelineResponse"
                 }
               }
             }

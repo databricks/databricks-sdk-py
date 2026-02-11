@@ -143,7 +143,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ServingEndpointDetailed]"
+                  "$ref": "#/components/schemas/ServingEndpointDetailed"
                 }
               }
             }
@@ -182,7 +182,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ServingEndpoint]"
+                  "$ref": "#/components/schemas/ServingEndpoint"
                 }
               }
             }
@@ -262,7 +262,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ServingEndpointDetailed]"
+                  "$ref": "#/components/schemas/ServingEndpointDetailed"
                 }
               }
             }
@@ -1256,7 +1256,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ServingEndpointDetailed]"
+                  "$ref": "#/components/schemas/ServingEndpointDetailed"
                 }
               }
             }
@@ -1393,7 +1393,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ServingEndpointDetailed]"
+                  "$ref": "#/components/schemas/ServingEndpointDetailed"
                 }
               }
             }
@@ -1791,13 +1791,13 @@
           "columns": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Any"
+              "type": "object"
             }
           },
           "data": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Any"
+              "type": "object"
             },
             "description": "Data array for the dataframe"
           },
@@ -2004,7 +2004,8 @@
         "type": "object",
         "properties": {
           "contents": {
-            "$ref": "#/components/schemas/BinaryIO"
+            "type": "string",
+            "format": "binary"
           }
         }
       },
@@ -2114,7 +2115,8 @@
         "type": "object",
         "properties": {
           "contents": {
-            "$ref": "#/components/schemas/BinaryIO"
+            "type": "string",
+            "format": "binary"
           }
         }
       },
@@ -2157,7 +2159,8 @@
         "type": "object",
         "properties": {
           "contents": {
-            "$ref": "#/components/schemas/BinaryIO"
+            "type": "string",
+            "format": "binary"
           }
         }
       },
@@ -2372,14 +2375,14 @@
           "outputs": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/any"
+              "type": "object"
             },
             "description": "The outputs of the feature serving endpoint."
           },
           "predictions": {
             "type": "array",
             "items": {
-              "$ref": "#/components/schemas/Any"
+              "type": "object"
             },
             "description": "The predictions returned by the serving endpoint."
           },

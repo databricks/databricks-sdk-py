@@ -339,7 +339,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[AccountGroup]"
+                  "$ref": "#/components/schemas/AccountGroup"
                 }
               }
             }
@@ -747,7 +747,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[AccountServicePrincipal]"
+                  "$ref": "#/components/schemas/AccountServicePrincipal"
                 }
               }
             }
@@ -1163,7 +1163,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[AccountUser]"
+                  "$ref": "#/components/schemas/AccountUser"
                 }
               }
             }
@@ -1695,7 +1695,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[PermissionAssignment]"
+                  "$ref": "#/components/schemas/PermissionAssignment"
                 }
               }
             }
@@ -2349,7 +2349,7 @@
             "description": "Selection of patch operation"
           },
           "value": {
-            "$ref": "#/components/schemas/Any",
+            "type": "object",
             "description": "Value to modify"
           }
         }

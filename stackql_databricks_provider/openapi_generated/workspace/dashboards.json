@@ -71,7 +71,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[GenieMessage]"
+                  "$ref": "#/components/schemas/GenieMessage"
                 }
               }
             }
@@ -1432,7 +1432,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[GenieMessage]"
+                  "$ref": "#/components/schemas/GenieMessage"
                 }
               }
             }
@@ -1587,7 +1587,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Dashboard]"
+                  "$ref": "#/components/schemas/Dashboard"
                 }
               }
             }
@@ -1725,7 +1725,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Schedule]"
+                  "$ref": "#/components/schemas/Schedule"
                 }
               }
             }
@@ -1881,7 +1881,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Subscription]"
+                  "$ref": "#/components/schemas/Subscription"
                 }
               }
             }

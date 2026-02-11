@@ -193,7 +193,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[BudgetPolicy]"
+                  "$ref": "#/components/schemas/BudgetPolicy"
                 }
               }
             }
@@ -474,7 +474,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[BudgetConfiguration]"
+                  "$ref": "#/components/schemas/BudgetConfiguration"
                 }
               }
             }
@@ -773,7 +773,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[LogDeliveryConfiguration]"
+                  "$ref": "#/components/schemas/LogDeliveryConfiguration"
                 }
               }
             }
@@ -1336,7 +1336,8 @@
         "type": "object",
         "properties": {
           "contents": {
-            "$ref": "#/components/schemas/BinaryIO"
+            "type": "string",
+            "format": "binary"
           }
         }
       },

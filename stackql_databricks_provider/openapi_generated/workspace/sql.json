@@ -109,7 +109,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ListAlertsResponseAlert]"
+                  "$ref": "#/components/schemas/ListAlertsResponseAlert"
                 }
               }
             }
@@ -394,7 +394,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[LegacyAlert]"
+                  "$ref": "#/components/schemas/LegacyAlert"
                 }
               }
             }
@@ -680,7 +680,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[AlertV2]"
+                  "$ref": "#/components/schemas/AlertV2"
                 }
               }
             }
@@ -1311,7 +1311,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Dashboard]"
+                  "$ref": "#/components/schemas/Dashboard"
                 }
               }
             }
@@ -1397,7 +1397,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[DataSource]"
+                  "$ref": "#/components/schemas/DataSource"
                 }
               }
             }
@@ -1746,7 +1746,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ListQueryObjectsResponseQuery]"
+                  "$ref": "#/components/schemas/ListQueryObjectsResponseQuery"
                 }
               }
             }
@@ -1985,7 +1985,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Visualization]"
+                  "$ref": "#/components/schemas/Visualization"
                 }
               }
             }
@@ -2146,7 +2146,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[LegacyQuery]"
+                  "$ref": "#/components/schemas/LegacyQuery"
                 }
               }
             }
@@ -3241,7 +3241,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[GetWarehouseResponse]"
+                  "$ref": "#/components/schemas/GetWarehouseResponse"
                 }
               }
             }
@@ -3309,7 +3309,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[EndpointInfo]"
+                  "$ref": "#/components/schemas/EndpointInfo"
                 }
               }
             }
@@ -3438,7 +3438,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[DefaultWarehouseOverride]"
+                  "$ref": "#/components/schemas/DefaultWarehouseOverride"
                 }
               }
             }
@@ -3829,7 +3829,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[GetWarehouseResponse]"
+                  "$ref": "#/components/schemas/GetWarehouseResponse"
                 }
               }
             }
@@ -4239,7 +4239,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[GetWarehouseResponse]"
+                  "$ref": "#/components/schemas/GetWarehouseResponse"
                 }
               }
             }
@@ -4291,7 +4291,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[GetWarehouseResponse]"
+                  "$ref": "#/components/schemas/GetWarehouseResponse"
                 }
               }
             }
@@ -4469,7 +4469,7 @@
             "description": "Operator used to compare in alert evaluation: `>`, `>=`, `<`, `<=`, `==`, `!=`"
           },
           "value": {
-            "$ref": "#/components/schemas/Any",
+            "type": "object",
             "description": "Value used to compare in alert evaluation. Supported types include strings (eg. 'foobar'), floats (eg. 123.4), and booleans (true)."
           },
           "custom_body": {
@@ -5795,7 +5795,7 @@
             "description": "The name of the visualization that appears on dashboards and the query screen."
           },
           "options": {
-            "$ref": "#/components/schemas/Any",
+            "type": "object",
             "description": "The options object varies widely from one visualization type to the next and is unsupported. Databricks does not recommend modifying visualization settings in JSON."
           },
           "query": {
@@ -6141,7 +6141,7 @@
             "description": "Parameters can have several different types."
           },
           "value": {
-            "$ref": "#/components/schemas/Any",
+            "type": "object",
             "description": "The default value for this parameter."
           }
         }
@@ -7197,7 +7197,7 @@
             "description": "Whether this widget is hidden on the dashboard."
           },
           "parameter_mappings": {
-            "$ref": "#/components/schemas/Any",
+            "type": "object",
             "description": "How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does not recommend modifying this definition in JSON."
           },
           "position": {

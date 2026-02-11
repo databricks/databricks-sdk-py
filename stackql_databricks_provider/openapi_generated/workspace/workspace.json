@@ -125,7 +125,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[CredentialInfo]"
+                  "$ref": "#/components/schemas/CredentialInfo"
                 }
               }
             }
@@ -454,7 +454,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[RepoInfo]"
+                  "$ref": "#/components/schemas/RepoInfo"
                 }
               }
             }
@@ -1253,7 +1253,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[AclItem]"
+                  "$ref": "#/components/schemas/AclItem"
                 }
               }
             }
@@ -1294,7 +1294,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[SecretScope]"
+                  "$ref": "#/components/schemas/SecretScope"
                 }
               }
             }
@@ -1346,7 +1346,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[SecretMetadata]"
+                  "$ref": "#/components/schemas/SecretMetadata"
                 }
               }
             }
@@ -2032,7 +2032,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ObjectInfo]"
+                  "$ref": "#/components/schemas/ObjectInfo"
                 }
               }
             }

@@ -131,7 +131,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ProviderInfo]"
+                  "$ref": "#/components/schemas/ProviderInfo"
                 }
               }
             }
@@ -470,7 +470,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ProviderShare]"
+                  "$ref": "#/components/schemas/ProviderShare"
                 }
               }
             }
@@ -704,7 +704,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[FederationPolicy]"
+                  "$ref": "#/components/schemas/FederationPolicy"
                 }
               }
             }
@@ -980,7 +980,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[RecipientInfo]"
+                  "$ref": "#/components/schemas/RecipientInfo"
                 }
               }
             }
@@ -1430,7 +1430,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ShareInfo]"
+                  "$ref": "#/components/schemas/ShareInfo"
                 }
               }
             }

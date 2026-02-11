@@ -60,7 +60,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[EndpointInfo]"
+                  "$ref": "#/components/schemas/EndpointInfo"
                 }
               }
             }
@@ -110,7 +110,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[EndpointInfo]"
+                  "$ref": "#/components/schemas/EndpointInfo"
                 }
               }
             }
@@ -568,7 +568,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[MiniVectorIndex]"
+                  "$ref": "#/components/schemas/MiniVectorIndex"
                 }
               }
             }

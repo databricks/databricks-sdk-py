@@ -551,7 +551,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[Policy]"
+                  "$ref": "#/components/schemas/Policy"
                 }
               }
             }
@@ -800,7 +800,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ClusterDetails]"
+                  "$ref": "#/components/schemas/ClusterDetails"
                 }
               }
             }
@@ -859,7 +859,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ClusterDetails]"
+                  "$ref": "#/components/schemas/ClusterDetails"
                 }
               }
             }
@@ -1053,7 +1053,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ClusterDetails]"
+                  "$ref": "#/components/schemas/ClusterDetails"
                 }
               }
             }
@@ -1144,7 +1144,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ClusterEvent]"
+                  "$ref": "#/components/schemas/ClusterEvent"
                 }
               }
             }
@@ -1509,7 +1509,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ClusterDetails]"
+                  "$ref": "#/components/schemas/ClusterDetails"
                 }
               }
             }
@@ -1762,7 +1762,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ClusterDetails]"
+                  "$ref": "#/components/schemas/ClusterDetails"
                 }
               }
             }
@@ -1825,7 +1825,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ClusterDetails]"
+                  "$ref": "#/components/schemas/ClusterDetails"
                 }
               }
             }
@@ -1925,7 +1925,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ClusterDetails]"
+                  "$ref": "#/components/schemas/ClusterDetails"
                 }
               }
             }
@@ -2045,7 +2045,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ClusterDetails]"
+                  "$ref": "#/components/schemas/ClusterDetails"
                 }
               }
             }
@@ -2108,7 +2108,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[CommandStatusResponse]"
+                  "$ref": "#/components/schemas/CommandStatusResponse"
                 }
               }
             }
@@ -2297,7 +2297,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[ContextStatusResponse]"
+                  "$ref": "#/components/schemas/ContextStatusResponse"
                 }
               }
             }
@@ -2421,7 +2421,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[CommandStatusResponse]"
+                  "$ref": "#/components/schemas/CommandStatusResponse"
                 }
               }
             }
@@ -2532,7 +2532,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[GlobalInitScriptDetails]"
+                  "$ref": "#/components/schemas/GlobalInitScriptDetails"
                 }
               }
             }
@@ -3290,7 +3290,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[InstancePoolAndStats]"
+                  "$ref": "#/components/schemas/InstancePoolAndStats"
                 }
               }
             }
@@ -3455,7 +3455,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[InstanceProfile]"
+                  "$ref": "#/components/schemas/InstanceProfile"
                 }
               }
             }
@@ -3548,7 +3548,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ClusterLibraryStatuses]"
+                  "$ref": "#/components/schemas/ClusterLibraryStatuses"
                 }
               }
             }
@@ -3600,7 +3600,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[LibraryFullStatus]"
+                  "$ref": "#/components/schemas/LibraryFullStatus"
                 }
               }
             }
@@ -3899,7 +3899,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[ClusterCompliance]"
+                  "$ref": "#/components/schemas/ClusterCompliance"
                 }
               }
             }
@@ -4021,7 +4021,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[PolicyFamily]"
+                  "$ref": "#/components/schemas/PolicyFamily"
                 }
               }
             }
@@ -6620,7 +6620,7 @@
             "type": "string"
           },
           "data": {
-            "$ref": "#/components/schemas/Any"
+            "type": "object"
           },
           "file_name": {
             "type": "string",

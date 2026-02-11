@@ -102,7 +102,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[Run]"
+                  "$ref": "#/components/schemas/Run"
                 }
               }
             }
@@ -924,7 +924,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[BaseJob]"
+                  "$ref": "#/components/schemas/BaseJob"
                 }
               }
             }
@@ -1056,7 +1056,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[BaseRun]"
+                  "$ref": "#/components/schemas/BaseRun"
                 }
               }
             }
@@ -1169,7 +1169,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[Run]"
+                  "$ref": "#/components/schemas/Run"
                 }
               }
             }
@@ -1334,7 +1334,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[Run]"
+                  "$ref": "#/components/schemas/Run"
                 }
               }
             }
@@ -1443,7 +1443,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Wait[Run]"
+                  "$ref": "#/components/schemas/Run"
                 }
               }
             }
@@ -1687,7 +1687,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[JobCompliance]"
+                  "$ref": "#/components/schemas/JobCompliance"
                 }
               }
             }

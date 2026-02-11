@@ -109,7 +109,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[QualityMonitor]"
+                  "$ref": "#/components/schemas/QualityMonitor"
                 }
               }
             }

@@ -303,7 +303,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[SettingsMetadata]"
+                  "$ref": "#/components/schemas/SettingsMetadata"
                 }
               }
             }
@@ -373,7 +373,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Iterator[SettingsMetadata]"
+                  "$ref": "#/components/schemas/SettingsMetadata"
                 }
               }
             }

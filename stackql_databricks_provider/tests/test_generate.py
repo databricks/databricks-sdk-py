@@ -87,3 +87,38 @@ class TestGenerateAll:
             summary = generate_all(tmpdir)
             assert summary["total_paths"] > 100
             assert summary["total_schemas"] > 100
+
+    def test_no_orphaned_refs(self):
+        """Verify every $ref in the specs points to a defined schema."""
+
+        def collect_refs(obj, refs=None):
+            if refs is None:
+                refs = set()
+            if isinstance(obj, dict):
+                if "$ref" in obj:
+                    refs.add(obj["$ref"])
+                for v in obj.values():
+                    collect_refs(v, refs)
+            elif isinstance(obj, list):
+                for item in obj:
+                    collect_refs(item, refs)
+            return refs
+
+        with tempfile.TemporaryDirectory() as tmpdir:
+            generate_all(tmpdir)
+            orphaned = []
+            for scope in ("account", "workspace"):
+                scope_dir = os.path.join(tmpdir, scope)
+                for fname in os.listdir(scope_dir):
+                    path = os.path.join(scope_dir, fname)
+                    with open(path) as f:
+                        data = json.load(f)
+                    schemas = set(data.get("components", {}).get("schemas", {}).keys())
+                    refs = collect_refs(data.get("paths", {}))
+                    prefix = "#/components/schemas/"
+                    for ref in refs:
+                        if ref.startswith(prefix):
+                            name = ref[len(prefix):]
+                            if name not in schemas:
+                                orphaned.append(f"{scope}/{fname}: {ref}")
+            assert orphaned == [], f"Orphaned $refs found:\n" + "\n".join(orphaned[:20])
