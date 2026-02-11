@@ -486,12 +486,23 @@ class Config:
         return self
 
     @property
-    def oidc_endpoints(self) -> Optional[OidcEndpoints]:
+    def databricks_oidc_endpoints(self) -> Optional[OidcEndpoints]:
+        """Get OIDC endpoints for Databricks OAuth.
+
+        This method returns the appropriate Databricks OIDC endpoints based on the host type:
+        - Unified hosts: Returns unified account-scoped endpoints
+        - Account hosts: Returns traditional account endpoints
+        - Workspace hosts: Returns workspace endpoints
+
+        Note: This method does NOT return Azure Entra ID endpoints. For Azure authentication,
+        use get_azure_entra_id_workspace_endpoints() directly.
+
+        Returns:
+            OidcEndpoints for Databricks OAuth, or None if host is not configured.
+        """
         self._fix_host_if_needed()
         if not self.host:
             return None
-        if self.is_azure and self.azure_client_id:
-            return get_azure_entra_id_workspace_endpoints(self.host)
 
         # Handle unified hosts
         if self.host_type == HostType.UNIFIED:
@@ -505,6 +516,28 @@ class Config:
 
         # Default to workspace endpoints
         return get_workspace_endpoints(self.host)
+
+    @property
+    def oidc_endpoints(self) -> Optional[OidcEndpoints]:
+        """[DEPRECATED] Get OIDC endpoints with automatic Azure detection (deprecated).
+
+        This method incorrectly returns Azure OIDC endpoints when azure_client_id
+        is set, even for Databricks OAuth flows that don't use Azure authentication. This caused
+        bugs where Databricks M2M OAuth would fail when ARM_CLIENT_ID was set for other purposes.
+
+        Use instead:
+        - databricks_oidc_endpoints: For Databricks OAuth (oauth-m2m, external-browser, etc.)
+        - get_azure_entra_id_workspace_endpoints(): For Azure Entra ID authentication
+
+        Returns:
+            OidcEndpoints (Azure or Databricks depending on config), or None if host is not configured.
+        """
+        self._fix_host_if_needed()
+        if not self.host:
+            return None
+        if self.is_azure and self.azure_client_id:
+            return get_azure_entra_id_workspace_endpoints(self.host)
+        return self.databricks_oidc_endpoints
 
     def debug_string(self) -> str:
         """Returns log-friendly representation of configured attributes"""

@@ -16,7 +16,7 @@ def test_external_browser_refresh_success(mocker):
     mock_cfg = Mock()
     mock_cfg.auth_type = "external-browser"
     mock_cfg.host = "test-host"
-    mock_cfg.oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
+    mock_cfg.databricks_oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
     mock_cfg.client_id = "test-client-id"  # Or use azure_client_id
     mock_cfg.client_secret = "test-client-secret"  # Or use azure_client_secret
 
@@ -52,7 +52,7 @@ def test_external_browser_refresh_failure_new_oauth_flow(mocker):
     mock_cfg = Mock()
     mock_cfg.auth_type = "external-browser"
     mock_cfg.host = "test-host"
-    mock_cfg.oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
+    mock_cfg.databricks_oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
     mock_cfg.client_id = "test-client-id"
     mock_cfg.client_secret = "test-client-secret"
 
@@ -101,7 +101,7 @@ def test_external_browser_no_cached_credentials(mocker):
     mock_cfg = Mock()
     mock_cfg.auth_type = "external-browser"
     mock_cfg.host = "test-host"
-    mock_cfg.oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
+    mock_cfg.databricks_oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
     mock_cfg.client_id = "test-client-id"
     mock_cfg.client_secret = "test-client-secret"
 
@@ -149,7 +149,7 @@ def test_external_browser_consent_fails(mocker):
     mock_cfg = Mock()
     mock_cfg.auth_type = "external-browser"
     mock_cfg.host = "test-host"
-    mock_cfg.oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
+    mock_cfg.databricks_oidc_endpoints = {"token_endpoint": "test-token-endpoint"}
     mock_cfg.client_id = "test-client-id"
     mock_cfg.client_secret = "test-client-secret"
 
@@ -182,7 +182,9 @@ def _setup_external_browser_mocks(mocker, cfg):
     """Set up mocks for external_browser scope tests. Returns (TokenCache mock, OAuthClient mock)."""
     mock_oidc_endpoints = Mock()
     mock_oidc_endpoints.token_endpoint = "https://test.databricks.com/oidc/v1/token"
-    mocker.patch.object(type(cfg), "oidc_endpoints", new_callable=lambda: property(lambda self: mock_oidc_endpoints))
+    mocker.patch.object(
+        type(cfg), "databricks_oidc_endpoints", new_callable=lambda: property(lambda self: mock_oidc_endpoints)
+    )
 
     mock_token_cache_class = mocker.patch("databricks.sdk.credentials_provider.oauth.TokenCache")
     mock_token_cache = Mock()
@@ -230,8 +232,8 @@ def test_oidc_credentials_provider_invalid_id_token_source():
     # Use a mock config object to avoid initializing the auth initialization.
     mock_cfg = Mock()
     mock_cfg.host = "https://test-workspace.cloud.databricks.com"
-    mock_cfg.oidc_endpoints = Mock()
-    mock_cfg.oidc_endpoints.token_endpoint = "https://test-workspace.cloud.databricks.com/oidc/v1/token"
+    mock_cfg.databricks_oidc_endpoints = Mock()
+    mock_cfg.databricks_oidc_endpoints.token_endpoint = "https://test-workspace.cloud.databricks.com/oidc/v1/token"
     mock_cfg.client_id = "test-client-id"
     mock_cfg.account_id = "test-account-id"
     mock_cfg.disable_async_token_refresh = True
@@ -248,8 +250,8 @@ def test_oidc_credentials_provider_valid_id_token_source(mocker):
     # Use a mock config object to avoid initializing the auth initialization.
     mock_cfg = Mock()
     mock_cfg.host = "https://test-workspace.cloud.databricks.com"
-    mock_cfg.oidc_endpoints = Mock()
-    mock_cfg.oidc_endpoints.token_endpoint = "https://test-workspace.cloud.databricks.com/oidc/v1/token"
+    mock_cfg.databricks_oidc_endpoints = Mock()
+    mock_cfg.databricks_oidc_endpoints.token_endpoint = "https://test-workspace.cloud.databricks.com/oidc/v1/token"
     mock_cfg.client_id = "test-client-id"
     mock_cfg.account_id = "test-account-id"
     mock_cfg.disable_async_token_refresh = True

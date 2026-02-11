@@ -20,6 +20,8 @@ from google.auth import impersonated_credentials  # type: ignore
 from google.auth.transport.requests import Request  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
+from databricks.sdk.oauth import get_azure_entra_id_workspace_endpoints
+
 from . import azure, oauth, oidc, oidc_token_supplier
 from .client_types import ClientType
 
@@ -218,7 +220,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
     """Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
     if /oidc/.well-known/oauth-authorization-server is available on the given host.
     """
-    oidc = cfg.oidc_endpoints
+    oidc = cfg.databricks_oidc_endpoints
     if oidc is None:
         return None
 
@@ -248,14 +250,21 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         return None
 
     client_id, client_secret = None, None
+    oidc_endpoints = None
     if cfg.client_id:
         client_id = cfg.client_id
         client_secret = cfg.client_secret
+        oidc_endpoints = cfg.databricks_oidc_endpoints
     elif cfg.azure_client_id:
-        client_id = cfg.azure_client
+        client_id = cfg.azure_client_id
         client_secret = cfg.azure_client_secret
+        oidc_endpoints = get_azure_entra_id_workspace_endpoints(cfg.host)
     if not client_id:
         client_id = "databricks-cli"
+        oidc_endpoints = cfg.databricks_oidc_endpoints
+
+    if not oidc_endpoints:
+        return None
 
     scopes = cfg.get_scopes()
     if not cfg.disable_oauth_refresh_token:
@@ -264,7 +273,6 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
 
     # Load cached credentials from disk if they exist. Note that these are
     # local to the Python SDK and not reused by other SDKs.
-    oidc_endpoints = cfg.oidc_endpoints
     redirect_url = "http://localhost:8020"
     token_cache = oauth.TokenCache(
         host=cfg.host,
@@ -390,7 +398,7 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
 
     token_source = oidc.DatabricksOidcTokenSource(
         host=cfg.host,
-        token_endpoint=cfg.oidc_endpoints.token_endpoint,
+        token_endpoint=cfg.databricks_oidc_endpoints.token_endpoint,
         client_id=cfg.client_id,
         account_id=cfg.account_id,
         id_token_source=id_token_source,
@@ -434,7 +442,7 @@ def _oidc_credentials_provider(
     if audience is None and cfg.client_type == ClientType.ACCOUNT:
         audience = cfg.account_id
     if audience is None and cfg.client_type != ClientType.ACCOUNT:
-        audience = cfg.oidc_endpoints.token_endpoint
+        audience = cfg.databricks_oidc_endpoints.token_endpoint
 
     # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
     id_token = supplier.get_oidc_token(audience)
@@ -453,7 +461,7 @@ def _oidc_credentials_provider(
         return oauth.ClientCredentials(
             client_id=cfg.client_id,
             client_secret="",  # we have no (rotatable) secrets in OIDC flow
-            token_url=cfg.oidc_endpoints.token_endpoint,
+            token_url=cfg.databricks_oidc_endpoints.token_endpoint,
             endpoint_params={
                 "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
                 "subject_token": id_token,
@@ -528,7 +536,7 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
     aad_endpoint = cfg.arm_environment.active_directory_endpoint
     if not cfg.azure_tenant_id:
         # detect Azure AD Tenant ID if it's not specified directly
-        token_endpoint = cfg.oidc_endpoints.token_endpoint
+        token_endpoint = get_azure_entra_id_workspace_endpoints(cfg.host).token_endpoint
         cfg.azure_tenant_id = token_endpoint.replace(aad_endpoint, "").split("/")[0]
 
     inner = oauth.ClientCredentials(
