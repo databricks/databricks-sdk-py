@@ -1,0 +1,3156 @@
+openapi: 3.0.0
+info:
+  title: Databricks Pipelines API (workspace)
+  description: >-
+    OpenAPI specification for the Databricks pipelines service (workspace-level
+    APIs), generated from the Databricks Python SDK.
+  version: 0.1.0
+servers:
+  url: https://{deployment_name}.cloud.databricks.com
+  variables:
+    deployment_name:
+      description: The Databricks Workspace Deployment Name
+      default: dbc-abcd0123-a1bc
+paths:
+  /api/2.0/pipelines/{pipeline_id}/clone:
+    post:
+      operationId: pipelines_clone
+      summary: >-
+        Creates a new pipeline using Unity Catalog from a pipeline using Hive
+        Metastore. This method returns
+      tags:
+        - pipelines
+      description: >-
+        Creates a new pipeline using Unity Catalog from a pipeline using Hive
+        Metastore. This method returns
+
+        the ID of the newly created clone. Additionally, this method starts an
+        update for the newly created
+
+        pipeline.
+
+
+        :param pipeline_id: str
+          Source pipeline to clone from
+        :param allow_duplicate_names: bool (optional)
+          If false, deployment will fail if name conflicts with that of another pipeline.
+        :param budget_policy_id: str (optional)
+          Budget policy of this pipeline.
+        :param catalog: str (optional)
+          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
+          in this pipeline are published to a `target` schema inside `catalog` (for example,
+          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+        :param channel: str (optional)
+          DLT Release Channel that specifies which version to use.
+        :param clone_mode: :class:`CloneMode` (optional)
+          The type of clone to perform. Currently, only deep copies are supported
+        :param clusters: List[:class:`PipelineCluster`] (optional)
+          Cluster settings for this pipeline deployment.
+        :param configuration: Dict[str,str] (optional)
+          String-String configuration for this pipeline execution.
+        :param continuous: bool (optional)
+          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param deployment: :class:`PipelineDeployment` (optional)
+          Deployment type of this pipeline.
+        :param development: bool (optional)
+          Whether the pipeline is in Development mode. Defaults to false.
+        :param edition: str (optional)
+          Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
+        :param expected_last_modified: int (optional)
+          If present, the last-modified time of the pipeline settings before the clone. If the settings were
+          modified after that time, then the request will fail with a conflict.
+        :param filters: :class:`Filters` (optional)
+          Filters on which Pipeline packages to include in the deployed graph.
+        :param gateway_definition: :class:`IngestionGatewayPipelineDefinition`
+        (optional)
+          The definition of a gateway pipeline to support change data capture.
+        :param id: str (optional)
+          Unique identifier for this pipeline.
+        :param ingestion_definition: :class:`IngestionPipelineDefinition`
+        (optional)
+          The configuration for a managed ingestion pipeline. These settings cannot be used with the
+          'libraries', 'schema', 'target', or 'catalog' settings.
+        :param libraries: List[:class:`PipelineLibrary`] (optional)
+          Libraries or code needed by this deployment.
+        :param name: str (optional)
+          Friendly identifier for this pipeline.
+        :param notifications: List[:class:`Notifications`] (optional)
+          List of notification settings for this pipeline.
+        :param photon: bool (optional)
+          Whether Photon is enabled for this pipeline.
+        :param restart_window: :class:`RestartWindow` (optional)
+          Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
+        :param schema: str (optional)
+          The default schema (database) where tables are read from or published to.
+        :param serverless: bool (optional)
+          Whether serverless compute is enabled for this pipeline.
+        :param storage: str (optional)
+          DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
+        :param target: str (optional)
+          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
+          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
+          for pipeline creation in favor of the `schema` field.
+        :param trigger: :class:`PipelineTrigger` (optional)
+          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+        :param usage_policy_id: str (optional)
+          Usage policy of this pipeline.
+
+        :returns: :class:`ClonePipelineResponse`
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Source pipeline to clone from
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                allow_duplicate_names:
+                  type: string
+                  description: >-
+                    If false, deployment will fail if name conflicts with that
+                    of another pipeline.
+                budget_policy_id:
+                  type: string
+                  description: Budget policy of this pipeline.
+                catalog:
+                  type: string
+                  description: >-
+                    A catalog in Unity Catalog to publish data from this
+                    pipeline to. If `target` is specified, tables in this
+                    pipeline are published to a `target` schema inside `catalog`
+                    (for example, `catalog`.`target`.`table`). If `target` is
+                    not specified, no data is published to Unity Catalog.
+                channel:
+                  type: string
+                  description: DLT Release Channel that specifies which version to use.
+                clone_mode:
+                  type: string
+                  description: >-
+                    The type of clone to perform. Currently, only deep copies
+                    are supported
+                clusters:
+                  type: string
+                  description: Cluster settings for this pipeline deployment.
+                configuration:
+                  type: string
+                  description: String-String configuration for this pipeline execution.
+                continuous:
+                  type: string
+                  description: >-
+                    Whether the pipeline is continuous or triggered. This
+                    replaces `trigger`.
+                deployment:
+                  type: string
+                  description: Deployment type of this pipeline.
+                development:
+                  type: string
+                  description: >-
+                    Whether the pipeline is in Development mode. Defaults to
+                    false.
+                edition:
+                  type: string
+                  description: Pipeline product edition.
+                environment:
+                  type: string
+                  description: >-
+                    Environment specification for this pipeline used to install
+                    dependencies.
+                event_log:
+                  type: string
+                  description: Event log configuration for this pipeline
+                expected_last_modified:
+                  type: string
+                  description: >-
+                    If present, the last-modified time of the pipeline settings
+                    before the clone. If the settings were modified after that
+                    time, then the request will fail with a conflict.
+                filters:
+                  type: string
+                  description: >-
+                    Filters on which Pipeline packages to include in the
+                    deployed graph.
+                gateway_definition:
+                  type: string
+                  description: >-
+                    The definition of a gateway pipeline to support change data
+                    capture.
+                id:
+                  type: string
+                  description: Unique identifier for this pipeline.
+                ingestion_definition:
+                  type: string
+                  description: >-
+                    The configuration for a managed ingestion pipeline. These
+                    settings cannot be used with the 'libraries', 'schema',
+                    'target', or 'catalog' settings.
+                libraries:
+                  type: string
+                  description: Libraries or code needed by this deployment.
+                name:
+                  type: string
+                  description: Friendly identifier for this pipeline.
+                notifications:
+                  type: string
+                  description: List of notification settings for this pipeline.
+                photon:
+                  type: string
+                  description: Whether Photon is enabled for this pipeline.
+                restart_window:
+                  type: string
+                  description: Restart window of this pipeline.
+                root_path:
+                  type: string
+                  description: >-
+                    Root path for this pipeline. This is used as the root
+                    directory when editing the pipeline in the Databricks user
+                    interface and it is added to sys.path when executing Python
+                    sources during pipeline execution.
+                schema:
+                  type: string
+                  description: >-
+                    The default schema (database) where tables are read from or
+                    published to.
+                serverless:
+                  type: string
+                  description: Whether serverless compute is enabled for this pipeline.
+                storage:
+                  type: string
+                  description: DBFS root directory for storing checkpoints and tables.
+                tags:
+                  type: string
+                  description: >-
+                    A map of tags associated with the pipeline. These are
+                    forwarded to the cluster as cluster tags, and are therefore
+                    subject to the same limitations. A maximum of 25 tags can be
+                    added to the pipeline.
+                target:
+                  type: string
+                  description: >-
+                    Target schema (database) to add tables in this pipeline to.
+                    Exactly one of `schema` or `target` must be specified. To
+                    publish to Unity Catalog, also specify `catalog`. This
+                    legacy field is deprecated for pipeline creation in favor of
+                    the `schema` field.
+                trigger:
+                  type: string
+                  description: >-
+                    Which pipeline trigger to use. Deprecated: Use `continuous`
+                    instead.
+                usage_policy_id:
+                  type: string
+                  description: Usage policy of this pipeline.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ClonePipelineResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/pipelines:
+    post:
+      operationId: pipelines_create
+      summary: >-
+        Creates a new data processing pipeline based on the requested
+        configuration. If successful, this
+      tags:
+        - pipelines
+      description: >-
+        Creates a new data processing pipeline based on the requested
+        configuration. If successful, this
+
+        method returns the ID of the new pipeline.
+
+
+        :param allow_duplicate_names: bool (optional)
+          If false, deployment will fail if name conflicts with that of another pipeline.
+        :param budget_policy_id: str (optional)
+          Budget policy of this pipeline.
+        :param catalog: str (optional)
+          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
+          in this pipeline are published to a `target` schema inside `catalog` (for example,
+          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+        :param channel: str (optional)
+          DLT Release Channel that specifies which version to use.
+        :param clusters: List[:class:`PipelineCluster`] (optional)
+          Cluster settings for this pipeline deployment.
+        :param configuration: Dict[str,str] (optional)
+          String-String configuration for this pipeline execution.
+        :param continuous: bool (optional)
+          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param deployment: :class:`PipelineDeployment` (optional)
+          Deployment type of this pipeline.
+        :param development: bool (optional)
+          Whether the pipeline is in Development mode. Defaults to false.
+        :param dry_run: bool (optional)
+
+        :param edition: str (optional)
+          Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
+        :param filters: :class:`Filters` (optional)
+          Filters on which Pipeline packages to include in the deployed graph.
+        :param gateway_definition: :class:`IngestionGatewayPipelineDefinition`
+        (optional)
+          The definition of a gateway pipeline to support change data capture.
+        :param id: str (optional)
+          Unique identifier for this pipeline.
+        :param ingestion_definition: :class:`IngestionPipelineDefinition`
+        (optional)
+          The configuration for a managed ingestion pipeline. These settings cannot be used with the
+          'libraries', 'schema', 'target', or 'catalog' settings.
+        :param libraries: List[:class:`PipelineLibrary`] (optional)
+          Libraries or code needed by this deployment.
+        :param name: str (optional)
+          Friendly identifier for this pipeline.
+        :param notifications: List[:class:`Notifications`] (optional)
+          List of notification settings for this pipeline.
+        :param photon: bool (optional)
+          Whether Photon is enabled for this pipeline.
+        :param restart_window: :class:`RestartWindow` (optional)
+          Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
+        :param run_as: :class:`RunAs` (optional)
+
+        :param schema: str (optional)
+          The default schema (database) where tables are read from or published to.
+        :param serverless: bool (optional)
+          Whether serverless compute is enabled for this pipeline.
+        :param storage: str (optional)
+          DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
+        :param target: str (optional)
+          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
+          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
+          for pipeline creation in favor of the `schema` field.
+        :param trigger: :class:`PipelineTrigger` (optional)
+          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+        :param usage_policy_id: str (optional)
+          Usage policy of this pipeline.
+
+        :returns: :class:`CreatePipelineResponse`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                allow_duplicate_names:
+                  type: string
+                  description: >-
+                    If false, deployment will fail if name conflicts with that
+                    of another pipeline.
+                budget_policy_id:
+                  type: string
+                  description: Budget policy of this pipeline.
+                catalog:
+                  type: string
+                  description: >-
+                    A catalog in Unity Catalog to publish data from this
+                    pipeline to. If `target` is specified, tables in this
+                    pipeline are published to a `target` schema inside `catalog`
+                    (for example, `catalog`.`target`.`table`). If `target` is
+                    not specified, no data is published to Unity Catalog.
+                channel:
+                  type: string
+                  description: DLT Release Channel that specifies which version to use.
+                clusters:
+                  type: string
+                  description: Cluster settings for this pipeline deployment.
+                configuration:
+                  type: string
+                  description: String-String configuration for this pipeline execution.
+                continuous:
+                  type: string
+                  description: >-
+                    Whether the pipeline is continuous or triggered. This
+                    replaces `trigger`.
+                deployment:
+                  type: string
+                  description: Deployment type of this pipeline.
+                development:
+                  type: string
+                  description: >-
+                    Whether the pipeline is in Development mode. Defaults to
+                    false.
+                dry_run:
+                  type: string
+                  description: ':param edition: str (optional) Pipeline product edition.'
+                edition:
+                  type: string
+                environment:
+                  type: string
+                  description: >-
+                    Environment specification for this pipeline used to install
+                    dependencies.
+                event_log:
+                  type: string
+                  description: Event log configuration for this pipeline
+                filters:
+                  type: string
+                  description: >-
+                    Filters on which Pipeline packages to include in the
+                    deployed graph.
+                gateway_definition:
+                  type: string
+                  description: >-
+                    The definition of a gateway pipeline to support change data
+                    capture.
+                id:
+                  type: string
+                  description: Unique identifier for this pipeline.
+                ingestion_definition:
+                  type: string
+                  description: >-
+                    The configuration for a managed ingestion pipeline. These
+                    settings cannot be used with the 'libraries', 'schema',
+                    'target', or 'catalog' settings.
+                libraries:
+                  type: string
+                  description: Libraries or code needed by this deployment.
+                name:
+                  type: string
+                  description: Friendly identifier for this pipeline.
+                notifications:
+                  type: string
+                  description: List of notification settings for this pipeline.
+                photon:
+                  type: string
+                  description: Whether Photon is enabled for this pipeline.
+                restart_window:
+                  type: string
+                  description: Restart window of this pipeline.
+                root_path:
+                  type: string
+                  description: >-
+                    Root path for this pipeline. This is used as the root
+                    directory when editing the pipeline in the Databricks user
+                    interface and it is added to sys.path when executing Python
+                    sources during pipeline execution.
+                run_as:
+                  type: string
+                  description: >-
+                    :param schema: str (optional) The default schema (database)
+                    where tables are read from or published to.
+                schema:
+                  type: string
+                serverless:
+                  type: string
+                  description: Whether serverless compute is enabled for this pipeline.
+                storage:
+                  type: string
+                  description: DBFS root directory for storing checkpoints and tables.
+                tags:
+                  type: string
+                  description: >-
+                    A map of tags associated with the pipeline. These are
+                    forwarded to the cluster as cluster tags, and are therefore
+                    subject to the same limitations. A maximum of 25 tags can be
+                    added to the pipeline.
+                target:
+                  type: string
+                  description: >-
+                    Target schema (database) to add tables in this pipeline to.
+                    Exactly one of `schema` or `target` must be specified. To
+                    publish to Unity Catalog, also specify `catalog`. This
+                    legacy field is deprecated for pipeline creation in favor of
+                    the `schema` field.
+                trigger:
+                  type: string
+                  description: >-
+                    Which pipeline trigger to use. Deprecated: Use `continuous`
+                    instead.
+                usage_policy_id:
+                  type: string
+                  description: Usage policy of this pipeline.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreatePipelineResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: pipelines_list_pipelines
+      summary: Lists pipelines defined in the Spark Declarative Pipelines system.
+      tags:
+        - pipelines
+      description: |-
+        Lists pipelines defined in the Spark Declarative Pipelines system.
+
+        :param filter: str (optional)
+          Select a subset of results based on the specified criteria. The supported filters are:
+
+          * `notebook='<path>'` to select pipelines that reference the provided notebook path. * `name LIKE
+          '[pattern]'` to select pipelines with a name that matches pattern. Wildcards are supported, for
+          example: `name LIKE '%shopping%'`
+
+          Composite filters are not supported. This field is optional.
+        :param max_results: int (optional)
+          The maximum number of entries to return in a single page. The system may return fewer than
+          max_results events in a response, even if there are more events available. This field is optional.
+          The default value is 25. The maximum value is 100. An error is returned if the value of max_results
+          is greater than 100.
+        :param order_by: List[str] (optional)
+          A list of strings specifying the order of results. Supported order_by fields are id and name. The
+          default is id asc. This field is optional.
+        :param page_token: str (optional)
+          Page token returned by previous call
+
+        :returns: Iterator over :class:`PipelineStateInfo`
+      parameters:
+        - name: filter
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Select a subset of results based on the specified criteria. The
+            supported filters are: * `notebook='<path>'` to select pipelines
+            that reference the provided notebook path. * `name LIKE '[pattern]'`
+            to select pipelines with a name that matches pattern. Wildcards are
+            supported, for example: `name LIKE '%shopping%'` Composite filters
+            are not supported. This field is optional.
+        - name: max_results
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            The maximum number of entries to return in a single page. The system
+            may return fewer than max_results events in a response, even if
+            there are more events available. This field is optional. The default
+            value is 25. The maximum value is 100. An error is returned if the
+            value of max_results is greater than 100.
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            A list of strings specifying the order of results. Supported
+            order_by fields are id and name. The default is id asc. This field
+            is optional.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Page token returned by previous call
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[PipelineStateInfo]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/pipelines/{pipeline_id}:
+    delete:
+      operationId: pipelines_delete
+      summary: >-
+        Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline
+        deletion will cascade to all
+      tags:
+        - pipelines
+      description: >-
+        Deletes a pipeline. If the pipeline publishes to Unity Catalog, pipeline
+        deletion will cascade to all
+
+        pipeline tables. Please reach out to Databricks support for assistance
+        to undo this action.
+
+
+        :param pipeline_id: str
+
+        :param force: bool (optional)
+          If true, deletion will proceed even if resource cleanup fails. By default, deletion will fail if
+          resources cleanup is required but fails.
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            :param force: bool (optional) If true, deletion will proceed even if
+            resource cleanup fails. By default, deletion will fail if resources
+            cleanup is required but fails.
+        - name: force
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: pipelines_get
+      summary: Get a pipeline.
+      tags:
+        - pipelines
+      description: |-
+        Get a pipeline.
+
+        :param pipeline_id: str
+
+        :returns: :class:`GetPipelineResponse`
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ':returns: :class:`GetPipelineResponse`'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPipelineResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    put:
+      operationId: pipelines_update
+      summary: Updates a pipeline with the supplied configuration.
+      tags:
+        - pipelines
+      description: >-
+        Updates a pipeline with the supplied configuration.
+
+
+        :param pipeline_id: str
+          Unique identifier for this pipeline.
+        :param allow_duplicate_names: bool (optional)
+          If false, deployment will fail if name has changed and conflicts the name of another pipeline.
+        :param budget_policy_id: str (optional)
+          Budget policy of this pipeline.
+        :param catalog: str (optional)
+          A catalog in Unity Catalog to publish data from this pipeline to. If `target` is specified, tables
+          in this pipeline are published to a `target` schema inside `catalog` (for example,
+          `catalog`.`target`.`table`). If `target` is not specified, no data is published to Unity Catalog.
+        :param channel: str (optional)
+          DLT Release Channel that specifies which version to use.
+        :param clusters: List[:class:`PipelineCluster`] (optional)
+          Cluster settings for this pipeline deployment.
+        :param configuration: Dict[str,str] (optional)
+          String-String configuration for this pipeline execution.
+        :param continuous: bool (optional)
+          Whether the pipeline is continuous or triggered. This replaces `trigger`.
+        :param deployment: :class:`PipelineDeployment` (optional)
+          Deployment type of this pipeline.
+        :param development: bool (optional)
+          Whether the pipeline is in Development mode. Defaults to false.
+        :param edition: str (optional)
+          Pipeline product edition.
+        :param environment: :class:`PipelinesEnvironment` (optional)
+          Environment specification for this pipeline used to install dependencies.
+        :param event_log: :class:`EventLogSpec` (optional)
+          Event log configuration for this pipeline
+        :param expected_last_modified: int (optional)
+          If present, the last-modified time of the pipeline settings before the edit. If the settings were
+          modified after that time, then the request will fail with a conflict.
+        :param filters: :class:`Filters` (optional)
+          Filters on which Pipeline packages to include in the deployed graph.
+        :param gateway_definition: :class:`IngestionGatewayPipelineDefinition`
+        (optional)
+          The definition of a gateway pipeline to support change data capture.
+        :param id: str (optional)
+          Unique identifier for this pipeline.
+        :param ingestion_definition: :class:`IngestionPipelineDefinition`
+        (optional)
+          The configuration for a managed ingestion pipeline. These settings cannot be used with the
+          'libraries', 'schema', 'target', or 'catalog' settings.
+        :param libraries: List[:class:`PipelineLibrary`] (optional)
+          Libraries or code needed by this deployment.
+        :param name: str (optional)
+          Friendly identifier for this pipeline.
+        :param notifications: List[:class:`Notifications`] (optional)
+          List of notification settings for this pipeline.
+        :param photon: bool (optional)
+          Whether Photon is enabled for this pipeline.
+        :param restart_window: :class:`RestartWindow` (optional)
+          Restart window of this pipeline.
+        :param root_path: str (optional)
+          Root path for this pipeline. This is used as the root directory when editing the pipeline in the
+          Databricks user interface and it is added to sys.path when executing Python sources during pipeline
+          execution.
+        :param run_as: :class:`RunAs` (optional)
+
+        :param schema: str (optional)
+          The default schema (database) where tables are read from or published to.
+        :param serverless: bool (optional)
+          Whether serverless compute is enabled for this pipeline.
+        :param storage: str (optional)
+          DBFS root directory for storing checkpoints and tables.
+        :param tags: Dict[str,str] (optional)
+          A map of tags associated with the pipeline. These are forwarded to the cluster as cluster tags, and
+          are therefore subject to the same limitations. A maximum of 25 tags can be added to the pipeline.
+        :param target: str (optional)
+          Target schema (database) to add tables in this pipeline to. Exactly one of `schema` or `target` must
+          be specified. To publish to Unity Catalog, also specify `catalog`. This legacy field is deprecated
+          for pipeline creation in favor of the `schema` field.
+        :param trigger: :class:`PipelineTrigger` (optional)
+          Which pipeline trigger to use. Deprecated: Use `continuous` instead.
+        :param usage_policy_id: str (optional)
+          Usage policy of this pipeline.
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Unique identifier for this pipeline.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                allow_duplicate_names:
+                  type: string
+                  description: >-
+                    If false, deployment will fail if name has changed and
+                    conflicts the name of another pipeline.
+                budget_policy_id:
+                  type: string
+                  description: Budget policy of this pipeline.
+                catalog:
+                  type: string
+                  description: >-
+                    A catalog in Unity Catalog to publish data from this
+                    pipeline to. If `target` is specified, tables in this
+                    pipeline are published to a `target` schema inside `catalog`
+                    (for example, `catalog`.`target`.`table`). If `target` is
+                    not specified, no data is published to Unity Catalog.
+                channel:
+                  type: string
+                  description: DLT Release Channel that specifies which version to use.
+                clusters:
+                  type: string
+                  description: Cluster settings for this pipeline deployment.
+                configuration:
+                  type: string
+                  description: String-String configuration for this pipeline execution.
+                continuous:
+                  type: string
+                  description: >-
+                    Whether the pipeline is continuous or triggered. This
+                    replaces `trigger`.
+                deployment:
+                  type: string
+                  description: Deployment type of this pipeline.
+                development:
+                  type: string
+                  description: >-
+                    Whether the pipeline is in Development mode. Defaults to
+                    false.
+                edition:
+                  type: string
+                  description: Pipeline product edition.
+                environment:
+                  type: string
+                  description: >-
+                    Environment specification for this pipeline used to install
+                    dependencies.
+                event_log:
+                  type: string
+                  description: Event log configuration for this pipeline
+                expected_last_modified:
+                  type: string
+                  description: >-
+                    If present, the last-modified time of the pipeline settings
+                    before the edit. If the settings were modified after that
+                    time, then the request will fail with a conflict.
+                filters:
+                  type: string
+                  description: >-
+                    Filters on which Pipeline packages to include in the
+                    deployed graph.
+                gateway_definition:
+                  type: string
+                  description: >-
+                    The definition of a gateway pipeline to support change data
+                    capture.
+                id:
+                  type: string
+                  description: Unique identifier for this pipeline.
+                ingestion_definition:
+                  type: string
+                  description: >-
+                    The configuration for a managed ingestion pipeline. These
+                    settings cannot be used with the 'libraries', 'schema',
+                    'target', or 'catalog' settings.
+                libraries:
+                  type: string
+                  description: Libraries or code needed by this deployment.
+                name:
+                  type: string
+                  description: Friendly identifier for this pipeline.
+                notifications:
+                  type: string
+                  description: List of notification settings for this pipeline.
+                photon:
+                  type: string
+                  description: Whether Photon is enabled for this pipeline.
+                restart_window:
+                  type: string
+                  description: Restart window of this pipeline.
+                root_path:
+                  type: string
+                  description: >-
+                    Root path for this pipeline. This is used as the root
+                    directory when editing the pipeline in the Databricks user
+                    interface and it is added to sys.path when executing Python
+                    sources during pipeline execution.
+                run_as:
+                  type: string
+                  description: >-
+                    :param schema: str (optional) The default schema (database)
+                    where tables are read from or published to.
+                schema:
+                  type: string
+                serverless:
+                  type: string
+                  description: Whether serverless compute is enabled for this pipeline.
+                storage:
+                  type: string
+                  description: DBFS root directory for storing checkpoints and tables.
+                tags:
+                  type: string
+                  description: >-
+                    A map of tags associated with the pipeline. These are
+                    forwarded to the cluster as cluster tags, and are therefore
+                    subject to the same limitations. A maximum of 25 tags can be
+                    added to the pipeline.
+                target:
+                  type: string
+                  description: >-
+                    Target schema (database) to add tables in this pipeline to.
+                    Exactly one of `schema` or `target` must be specified. To
+                    publish to Unity Catalog, also specify `catalog`. This
+                    legacy field is deprecated for pipeline creation in favor of
+                    the `schema` field.
+                trigger:
+                  type: string
+                  description: >-
+                    Which pipeline trigger to use. Deprecated: Use `continuous`
+                    instead.
+                usage_policy_id:
+                  type: string
+                  description: Usage policy of this pipeline.
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels:
+    get:
+      operationId: pipelines_get_permission_levels
+      summary: Gets the permission levels that a user can have on an object.
+      tags:
+        - pipelines
+      description: |-
+        Gets the permission levels that a user can have on an object.
+
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+
+        :returns: :class:`GetPipelinePermissionLevelsResponse`
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The pipeline for which to get or manage permissions.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetPipelinePermissionLevelsResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/permissions/pipelines/{pipeline_id}:
+    get:
+      operationId: pipelines_get_permissions
+      summary: >-
+        Gets the permissions of a pipeline. Pipelines can inherit permissions
+        from their root object.
+      tags:
+        - pipelines
+      description: >-
+        Gets the permissions of a pipeline. Pipelines can inherit permissions
+        from their root object.
+
+
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+
+        :returns: :class:`PipelinePermissions`
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The pipeline for which to get or manage permissions.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelinePermissions'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    put:
+      operationId: pipelines_set_permissions
+      summary: >-
+        Sets permissions on an object, replacing existing permissions if they
+        exist. Deletes all direct
+      tags:
+        - pipelines
+      description: >-
+        Sets permissions on an object, replacing existing permissions if they
+        exist. Deletes all direct
+
+        permissions if none are specified. Objects can inherit permissions from
+        their root object.
+
+
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+        :param access_control_list: List[:class:`PipelineAccessControlRequest`]
+        (optional)
+
+
+        :returns: :class:`PipelinePermissions`
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The pipeline for which to get or manage permissions.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_control_list:
+                  type: string
+                  description: ':returns: :class:`PipelinePermissions`'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelinePermissions'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    patch:
+      operationId: pipelines_update_permissions
+      summary: >-
+        Updates the permissions on a pipeline. Pipelines can inherit permissions
+        from their root object.
+      tags:
+        - pipelines
+      description: >-
+        Updates the permissions on a pipeline. Pipelines can inherit permissions
+        from their root object.
+
+
+        :param pipeline_id: str
+          The pipeline for which to get or manage permissions.
+        :param access_control_list: List[:class:`PipelineAccessControlRequest`]
+        (optional)
+
+
+        :returns: :class:`PipelinePermissions`
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The pipeline for which to get or manage permissions.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                access_control_list:
+                  type: string
+                  description: ':returns: :class:`PipelinePermissions`'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PipelinePermissions'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/pipelines/{pipeline_id}/updates/{update_id}:
+    get:
+      operationId: pipelines_get_update
+      summary: Gets an update from an active pipeline.
+      tags:
+        - pipelines
+      description: |-
+        Gets an update from an active pipeline.
+
+        :param pipeline_id: str
+          The ID of the pipeline.
+        :param update_id: str
+          The ID of the update.
+
+        :returns: :class:`GetUpdateResponse`
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the pipeline.
+        - name: update_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID of the update.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetUpdateResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/pipelines/{pipeline_id}/events:
+    get:
+      operationId: pipelines_list_pipeline_events
+      summary: Retrieves events for a pipeline.
+      tags:
+        - pipelines
+      description: |-
+        Retrieves events for a pipeline.
+
+        :param pipeline_id: str
+          The pipeline to return events for.
+        :param filter: str (optional)
+          Criteria to select a subset of results, expressed using a SQL-like syntax. The supported filters
+          are: 1. level='INFO' (or WARN or ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp
+          > 'TIMESTAMP' (or >=,<,<=,=)
+
+          Composite expressions are supported, for example: level in ('ERROR', 'WARN') AND timestamp>
+          '2021-07-22T06:37:33.083Z'
+        :param max_results: int (optional)
+          Max number of entries to return in a single page. The system may return fewer than max_results
+          events in a response, even if there are more events available.
+        :param order_by: List[str] (optional)
+          A string indicating a sort order by timestamp for the results, for example, ["timestamp asc"]. The
+          sort order can be ascending or descending. By default, events are returned in descending order by
+          timestamp.
+        :param page_token: str (optional)
+          Page token returned by previous call. This field is mutually exclusive with all fields in this
+          request except max_results. An error is returned if any fields other than max_results are set when
+          this field is set.
+
+        :returns: Iterator over :class:`PipelineEvent`
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The pipeline to return events for.
+        - name: filter
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Criteria to select a subset of results, expressed using a SQL-like
+            syntax. The supported filters are: 1. level='INFO' (or WARN or
+            ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp
+            > 'TIMESTAMP' (or >=,<,<=,=) Composite expressions are supported,
+            for example: level in ('ERROR', 'WARN') AND timestamp>
+            '2021-07-22T06:37:33.083Z'
+        - name: max_results
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Max number of entries to return in a single page. The system may
+            return fewer than max_results events in a response, even if there
+            are more events available.
+        - name: order_by
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            A string indicating a sort order by timestamp for the results, for
+            example, ["timestamp asc"]. The sort order can be ascending or
+            descending. By default, events are returned in descending order by
+            timestamp.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Page token returned by previous call. This field is mutually
+            exclusive with all fields in this request except max_results. An
+            error is returned if any fields other than max_results are set when
+            this field is set.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[PipelineEvent]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/pipelines/{pipeline_id}/updates:
+    get:
+      operationId: pipelines_list_updates
+      summary: List updates for an active pipeline.
+      tags:
+        - pipelines
+      description: |-
+        List updates for an active pipeline.
+
+        :param pipeline_id: str
+          The pipeline to return updates for.
+        :param max_results: int (optional)
+          Max number of entries to return in a single page.
+        :param page_token: str (optional)
+          Page token returned by previous call
+        :param until_update_id: str (optional)
+          If present, returns updates until and including this update_id.
+
+        :returns: :class:`ListUpdatesResponse`
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The pipeline to return updates for.
+        - name: max_results
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Max number of entries to return in a single page.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Page token returned by previous call
+        - name: until_update_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: If present, returns updates until and including this update_id.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ListUpdatesResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    post:
+      operationId: pipelines_start_update
+      summary: >-
+        Starts a new update for the pipeline. If there is already an active
+        update for the pipeline, the
+      tags:
+        - pipelines
+      description: >-
+        Starts a new update for the pipeline. If there is already an active
+        update for the pipeline, the
+
+        request will fail and the active update will remain running.
+
+
+        :param pipeline_id: str
+
+        :param cause: :class:`StartUpdateCause` (optional)
+
+        :param full_refresh: bool (optional)
+          If true, this update will reset all tables before running.
+        :param full_refresh_selection: List[str] (optional)
+          A list of tables to update with fullRefresh. If both refresh_selection and full_refresh_selection
+          are empty, this is a full graph update. Full Refresh on a table means that the states of the table
+          will be reset before the refresh.
+        :param refresh_selection: List[str] (optional)
+          A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
+          are empty, this is a full graph update. Full Refresh on a table means that the states of the table
+          will be reset before the refresh.
+        :param rewind_spec: :class:`RewindSpec` (optional)
+          The information about the requested rewind operation. If specified this is a rewind mode update.
+        :param validate_only: bool (optional)
+          If true, this update only validates the correctness of pipeline source code but does not materialize
+          or publish any datasets.
+
+        :returns: :class:`StartUpdateResponse`
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ':param cause: :class:`StartUpdateCause` (optional)'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                cause:
+                  type: string
+                full_refresh:
+                  type: string
+                  description: If true, this update will reset all tables before running.
+                full_refresh_selection:
+                  type: string
+                  description: >-
+                    A list of tables to update with fullRefresh. If both
+                    refresh_selection and full_refresh_selection are empty, this
+                    is a full graph update. Full Refresh on a table means that
+                    the states of the table will be reset before the refresh.
+                refresh_selection:
+                  type: string
+                  description: >-
+                    A list of tables to update without fullRefresh. If both
+                    refresh_selection and full_refresh_selection are empty, this
+                    is a full graph update. Full Refresh on a table means that
+                    the states of the table will be reset before the refresh.
+                rewind_spec:
+                  type: string
+                  description: >-
+                    The information about the requested rewind operation. If
+                    specified this is a rewind mode update.
+                validate_only:
+                  type: string
+                  description: >-
+                    If true, this update only validates the correctness of
+                    pipeline source code but does not materialize or publish any
+                    datasets.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/StartUpdateResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/pipelines/{pipeline_id}/stop:
+    post:
+      operationId: pipelines_stop
+      summary: >-
+        Stops the pipeline by canceling the active update. If there is no active
+        update for the pipeline, this
+      tags:
+        - pipelines
+      description: >-
+        Stops the pipeline by canceling the active update. If there is no active
+        update for the pipeline, this
+
+        request is a no-op.
+
+
+        :param pipeline_id: str
+
+
+        :returns:
+          Long-running operation waiter for :class:`GetPipelineResponse`.
+          See :method:wait_get_pipeline_idle for more details.
+      parameters:
+        - name: pipeline_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            :returns: Long-running operation waiter for
+            :class:`GetPipelineResponse`. See :method:wait_get_pipeline_idle for
+            more details.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wait[GetPipelineResponse]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+components:
+  schemas:
+    AutoFullRefreshPolicy:
+      type: object
+      properties:
+        enabled:
+          type: boolean
+          description: (Required, Mutable) Whether to enable auto full refresh or not.
+        min_interval_hours:
+          type: integer
+          description: >-
+            (Optional, Mutable) Specify the minimum interval in hours between
+            the timestamp at which a table was last full refreshed and the
+            current timestamp for triggering auto full If unspecified and
+            autoFullRefresh is enabled then by default min_interval_hours is 24
+            hours.
+      required:
+        - enabled
+      description: Policy for auto full refresh.
+    ClonePipelineResponse:
+      type: object
+      properties:
+        pipeline_id:
+          type: string
+    ConnectionParameters:
+      type: object
+      properties:
+        source_catalog:
+          type: string
+    CreatePipelineResponse:
+      type: object
+      properties:
+        effective_settings:
+          $ref: '#/components/schemas/PipelineSpec'
+        pipeline_id:
+          type: string
+          description: >-
+            The unique identifier for the newly created pipeline. Only returned
+            when dry_run is false.
+    CronTrigger:
+      type: object
+      properties:
+        quartz_cron_schedule:
+          type: string
+        timezone_id:
+          type: string
+    DataPlaneId:
+      type: object
+      properties:
+        instance:
+          type: string
+        seq_no:
+          type: integer
+          description: >-
+            A sequence number, unique and increasing within the data plane
+            instance.
+    DeletePipelineResponse:
+      type: object
+      properties: {}
+    EditPipelineResponse:
+      type: object
+      properties: {}
+    ErrorDetail:
+      type: object
+      properties:
+        exceptions:
+          type: array
+          items:
+            $ref: '#/components/schemas/SerializedException'
+        fatal:
+          type: boolean
+          description: Whether this error is considered fatal, that is, unrecoverable.
+    EventLogSpec:
+      type: object
+      properties:
+        catalog:
+          type: string
+          description: The UC catalog the event log is published under.
+        name:
+          type: string
+          description: The name the event log is published to in UC.
+        schema:
+          type: string
+          description: The UC schema the event log is published under.
+      description: Configurable event log parameters.
+    FileLibrary:
+      type: object
+      properties:
+        path:
+          type: string
+    Filters:
+      type: object
+      properties:
+        exclude:
+          type: array
+          items:
+            type: string
+        include:
+          type: array
+          items:
+            type: string
+          description: Paths to include.
+    GetPipelinePermissionLevelsResponse:
+      type: object
+      properties:
+        permission_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/PipelinePermissionsDescription'
+    GetPipelineResponse:
+      type: object
+      properties:
+        cause:
+          type: string
+        cluster_id:
+          type: string
+          description: The ID of the cluster that the pipeline is running on.
+        creator_user_name:
+          type: string
+          description: The username of the pipeline creator.
+        effective_budget_policy_id:
+          type: string
+          description: Serverless budget policy ID of this pipeline.
+        health:
+          $ref: '#/components/schemas/GetPipelineResponseHealth'
+          description: The health of a pipeline.
+        last_modified:
+          type: integer
+          description: The last time the pipeline settings were modified or created.
+        latest_updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateStateInfo'
+          description: >-
+            Status of the latest updates for the pipeline. Ordered with the
+            newest update first.
+        name:
+          type: string
+          description: A human friendly identifier for the pipeline, taken from the `spec`.
+        pipeline_id:
+          type: string
+          description: The ID of the pipeline.
+        run_as:
+          $ref: '#/components/schemas/RunAs'
+          description: >-
+            The user or service principal that the pipeline runs as, if
+            specified in the request. This field indicates the explicit
+            configuration of `run_as` for the pipeline. To find the value in all
+            cases, explicit or implicit, use `run_as_user_name`.
+        run_as_user_name:
+          type: string
+          description: Username of the user that the pipeline will run on behalf of.
+        spec:
+          $ref: '#/components/schemas/PipelineSpec'
+          description: >-
+            The pipeline specification. This field is not returned when called
+            by `ListPipelines`.
+        state:
+          $ref: '#/components/schemas/PipelineState'
+          description: The pipeline state.
+    GetUpdateResponse:
+      type: object
+      properties:
+        update:
+          $ref: '#/components/schemas/UpdateInfo'
+    IngestionConfig:
+      type: object
+      properties:
+        report:
+          $ref: '#/components/schemas/ReportSpec'
+        schema:
+          $ref: '#/components/schemas/SchemaSpec'
+          description: Select all tables from a specific source schema.
+        table:
+          $ref: '#/components/schemas/TableSpec'
+          description: Select a specific source table.
+    IngestionGatewayPipelineDefinition:
+      type: object
+      properties:
+        connection_name:
+          type: string
+        gateway_storage_catalog:
+          type: string
+          description: >-
+            Required, Immutable. The name of the catalog for the gateway
+            pipeline's storage location.
+        gateway_storage_schema:
+          type: string
+          description: >-
+            Required, Immutable. The name of the schema for the gateway
+            pipelines's storage location.
+        connection_id:
+          type: string
+          description: >-
+            [Deprecated, use connection_name instead] Immutable. The Unity
+            Catalog connection that this gateway pipeline uses to communicate
+            with the source.
+        connection_parameters:
+          $ref: '#/components/schemas/ConnectionParameters'
+          description: >-
+            Optional, Internal. Parameters required to establish an initial
+            connection with the source.
+        gateway_storage_name:
+          type: string
+          description: >-
+            Optional. The Unity Catalog-compatible name for the gateway storage
+            location. This is the destination to use for the data that is
+            extracted by the gateway. Spark Declarative Pipelines system will
+            automatically create the storage location under the catalog and
+            schema.
+      required:
+        - connection_name
+        - gateway_storage_catalog
+        - gateway_storage_schema
+    IngestionPipelineDefinition:
+      type: object
+      properties:
+        connection_name:
+          type: string
+        full_refresh_window:
+          $ref: '#/components/schemas/OperationTimeWindow'
+          description: >-
+            (Optional) A window that specifies a set of time ranges for snapshot
+            queries in CDC.
+        ingest_from_uc_foreign_catalog:
+          type: boolean
+          description: >-
+            Immutable. If set to true, the pipeline will ingest tables from the
+            UC foreign catalogs directly without the need to specify a UC
+            connection or ingestion gateway. The `source_catalog` fields in
+            objects of IngestionConfig are interpreted as the UC foreign
+            catalogs to ingest from.
+        ingestion_gateway_id:
+          type: string
+          description: >-
+            Identifier for the gateway that is used by this ingestion pipeline
+            to communicate with the source database. This is used with CDC
+            connectors to databases like SQL Server using a gateway pipeline
+            (connector_type = CDC). Under certain conditions, this can be
+            replaced with connection_name to change the connector to Combined
+            Cdc Managed Ingestion Pipeline.
+        netsuite_jar_path:
+          type: string
+          description: >-
+            Netsuite only configuration. When the field is set for a netsuite
+            connector, the jar stored in the field will be validated and added
+            to the classpath of pipeline's cluster.
+        objects:
+          type: array
+          items:
+            $ref: '#/components/schemas/IngestionConfig'
+          description: >-
+            Required. Settings specifying tables to replicate and the
+            destination for the replicated tables.
+        source_configurations:
+          type: array
+          items:
+            $ref: '#/components/schemas/SourceConfig'
+          description: Top-level source configurations
+        source_type:
+          $ref: '#/components/schemas/IngestionSourceType'
+          description: >-
+            The type of the foreign source. The source type will be inferred
+            from the source connection or ingestion gateway. This field is
+            output only and will be ignored if provided.
+        table_configuration:
+          $ref: '#/components/schemas/TableSpecificConfig'
+          description: >-
+            Configuration settings to control the ingestion of tables. These
+            settings are applied to all tables in the pipeline.
+    IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig:
+      type: object
+      properties:
+        cursor_columns:
+          type: array
+          items:
+            type: string
+          description: >-
+            The names of the monotonically increasing columns in the source
+            table that are used to enable the table to be read and ingested
+            incrementally through structured streaming. The columns are allowed
+            to have repeated values but have to be non-decreasing. If the source
+            data is merged into the destination (e.g., using SCD Type 1 or Type
+            2), these columns will implicitly define the `sequence_by` behavior.
+            You can still explicitly set `sequence_by` to override this default.
+        deletion_condition:
+          type: string
+          description: >-
+            Specifies a SQL WHERE condition that specifies that the source row
+            has been deleted. This is sometimes referred to as "soft-deletes".
+            For example: "Operation = 'DELETE'" or "is_deleted = true". This
+            field is orthogonal to `hard_deletion_sync_interval_in_seconds`, one
+            for soft-deletes and the other for hard-deletes. See also the
+            hard_deletion_sync_min_interval_in_seconds field for handling of
+            "hard deletes" where the source rows are physically removed from the
+            table.
+        hard_deletion_sync_min_interval_in_seconds:
+          type: integer
+          description: >-
+            Specifies the minimum interval (in seconds) between snapshots on
+            primary keys for detecting and synchronizing hard deletions—i.e.,
+            rows that have been physically removed from the source table. This
+            interval acts as a lower bound. If ingestion runs less frequently
+            than this value, hard deletion synchronization will align with the
+            actual ingestion frequency instead of happening more often. If not
+            set, hard deletion synchronization via snapshots is disabled. This
+            field is mutable and can be updated without triggering a full
+            snapshot.
+      description: >-
+        Configurations that are only applicable for query-based ingestion
+        connectors.
+    IngestionPipelineDefinitionWorkdayReportParameters:
+      type: object
+      properties:
+        incremental:
+          type: boolean
+        parameters:
+          type: object
+          description: >-
+            Parameters for the Workday report. Each key represents the parameter
+            name (e.g., "start_date", "end_date"), and the corresponding value
+            is a SQL-like expression used to compute the parameter value at
+            runtime. Example: { "start_date": "{ coalesce(current_offset(),
+            date(\"2025-02-01\")) }", "end_date": "{ current_date() - INTERVAL 1
+            DAY }" }
+        report_parameters:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue
+          description: >-
+            (Optional) Additional custom parameters for Workday Report This
+            field is deprecated and should not be used. Use `parameters`
+            instead.
+    IngestionPipelineDefinitionWorkdayReportParametersQueryKeyValue:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+          description: >-
+            Value for the report parameter. Possible values it can take are
+            these sql functions: 1. coalesce(current_offset(),
+            date("YYYY-MM-DD")) -> if current_offset() is null, then the passed
+            date, else current_offset() 2. current_date() 3.
+            date_sub(current_date(), x) -> subtract x (some non-negative
+            integer) days from current date
+    ListPipelineEventsResponse:
+      type: object
+      properties:
+        events:
+          type: array
+          items:
+            $ref: '#/components/schemas/PipelineEvent'
+        next_page_token:
+          type: string
+          description: If present, a token to fetch the next page of events.
+        prev_page_token:
+          type: string
+          description: If present, a token to fetch the previous page of events.
+    ListPipelinesResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        statuses:
+          type: array
+          items:
+            $ref: '#/components/schemas/PipelineStateInfo'
+          description: The list of events matching the request criteria.
+    ListUpdatesResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        prev_page_token:
+          type: string
+          description: >-
+            If present, then this token can be used in a subsequent request to
+            fetch the previous page.
+        updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateInfo'
+    ManualTrigger:
+      type: object
+      properties: {}
+    NotebookLibrary:
+      type: object
+      properties:
+        path:
+          type: string
+    Notifications:
+      type: object
+      properties:
+        alerts:
+          type: array
+          items:
+            type: string
+        email_recipients:
+          type: array
+          items:
+            type: string
+          description: >-
+            A list of email addresses notified when a configured alert is
+            triggered.
+    OperationTimeWindow:
+      type: object
+      properties:
+        start_hour:
+          type: integer
+          description: >-
+            An integer between 0 and 23 denoting the start hour for the window
+            in the 24-hour day.
+        days_of_week:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayOfWeek'
+          description: >-
+            Days of week in which the window is allowed to happen If not
+            specified all days of the week will be used.
+        time_zone_id:
+          type: string
+          description: >-
+            Time zone id of window. See
+            https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
+            for details. If not specified, UTC will be used.
+      required:
+        - start_hour
+      description: Proto representing a window
+    Origin:
+      type: object
+      properties:
+        batch_id:
+          type: integer
+        cloud:
+          type: string
+          description: The cloud provider, e.g., AWS or Azure.
+        cluster_id:
+          type: string
+          description: >-
+            The id of the cluster where an execution happens. Unique within a
+            region.
+        dataset_name:
+          type: string
+          description: The name of a dataset. Unique within a pipeline.
+        flow_id:
+          type: string
+          description: >-
+            The id of the flow. Globally unique. Incremental queries will
+            generally reuse the same id while complete queries will have a new
+            id per update.
+        flow_name:
+          type: string
+          description: The name of the flow. Not unique.
+        host:
+          type: string
+          description: The optional host name where the event was triggered
+        maintenance_id:
+          type: string
+          description: The id of a maintenance run. Globally unique.
+        materialization_name:
+          type: string
+          description: Materialization name.
+        org_id:
+          type: integer
+          description: The org id of the user. Unique within a cloud.
+        pipeline_id:
+          type: string
+          description: The id of the pipeline. Globally unique.
+        pipeline_name:
+          type: string
+          description: The name of the pipeline. Not unique.
+        region:
+          type: string
+          description: The cloud region.
+        request_id:
+          type: string
+          description: The id of the request that caused an update.
+        table_id:
+          type: string
+          description: The id of a (delta) table. Globally unique.
+        uc_resource_id:
+          type: string
+          description: The Unity Catalog id of the MV or ST being updated.
+        update_id:
+          type: string
+          description: The id of an execution. Globally unique.
+    PathPattern:
+      type: object
+      properties:
+        include:
+          type: string
+    PipelineAccessControlRequest:
+      type: object
+      properties:
+        group_name:
+          type: string
+        permission_level:
+          $ref: '#/components/schemas/PipelinePermissionLevel'
+        service_principal_name:
+          type: string
+          description: application ID of a service principal
+        user_name:
+          type: string
+          description: name of the user
+    PipelineAccessControlResponse:
+      type: object
+      properties:
+        all_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/PipelinePermission'
+        display_name:
+          type: string
+          description: Display name of the user or service principal.
+        group_name:
+          type: string
+          description: name of the group
+        service_principal_name:
+          type: string
+          description: Name of the service principal.
+        user_name:
+          type: string
+          description: name of the user
+    PipelineCluster:
+      type: object
+      properties:
+        apply_policy_default_values:
+          type: boolean
+        autoscale:
+          $ref: '#/components/schemas/PipelineClusterAutoscale'
+          description: >-
+            Parameters needed in order to automatically scale clusters up and
+            down based on load. Note: autoscaling works best with DB runtime
+            versions 3.0 or later.
+        aws_attributes:
+          type: string
+          description: >-
+            Attributes related to clusters running on Amazon Web Services. If
+            not specified at cluster creation, a set of default values will be
+            used.
+        azure_attributes:
+          type: string
+          description: >-
+            Attributes related to clusters running on Microsoft Azure. If not
+            specified at cluster creation, a set of default values will be used.
+        cluster_log_conf:
+          type: string
+          description: >-
+            The configuration for delivering spark logs to a long-term storage
+            destination. Only dbfs destinations are supported. Only one
+            destination can be specified for one cluster. If the conf is given,
+            the logs will be delivered to the destination every `5 mins`. The
+            destination of driver logs is `$destination/$clusterId/driver`,
+            while the destination of executor logs is
+            `$destination/$clusterId/executor`.
+        custom_tags:
+          type: object
+          description: >-
+            Additional tags for cluster resources. Databricks will tag all
+            cluster resources (e.g., AWS instances and EBS volumes) with these
+            tags in addition to `default_tags`. Notes: - Currently, Databricks
+            allows at most 45 custom tags - Clusters can only reuse cloud
+            resources if the resources' tags are a subset of the cluster tags
+        driver_instance_pool_id:
+          type: string
+          description: >-
+            The optional ID of the instance pool for the driver of the cluster
+            belongs. The pool cluster uses the instance pool with id
+            (instance_pool_id) if the driver pool is not assigned.
+        driver_node_type_id:
+          type: string
+          description: >-
+            The node type of the Spark driver. Note that this field is optional;
+            if unset, the driver node type will be set as the same value as
+            `node_type_id` defined above.
+        enable_local_disk_encryption:
+          type: boolean
+          description: Whether to enable local disk encryption for the cluster.
+        gcp_attributes:
+          type: string
+          description: >-
+            Attributes related to clusters running on Google Cloud Platform. If
+            not specified at cluster creation, a set of default values will be
+            used.
+        init_scripts:
+          type: string
+          description: >-
+            The configuration for storing init scripts. Any number of
+            destinations can be specified. The scripts are executed sequentially
+            in the order provided. If `cluster_log_conf` is specified, init
+            script logs are sent to `<destination>/<cluster-ID>/init_scripts`.
+        instance_pool_id:
+          type: string
+          description: The optional ID of the instance pool to which the cluster belongs.
+        label:
+          type: string
+          description: >-
+            A label for the cluster specification, either `default` to configure
+            the default cluster, or `maintenance` to configure the maintenance
+            cluster. This field is optional. The default value is `default`.
+        node_type_id:
+          type: string
+          description: >-
+            This field encodes, through a single value, the resources available
+            to each of the Spark nodes in this cluster. For example, the Spark
+            nodes can be provisioned and optimized for memory or compute
+            intensive workloads. A list of available node types can be retrieved
+            by using the :method:clusters/listNodeTypes API call.
+        num_workers:
+          type: integer
+          description: >-
+            Number of worker nodes that this cluster should have. A cluster has
+            one Spark Driver and `num_workers` Executors for a total of
+            `num_workers` + 1 Spark nodes. Note: When reading the properties of
+            a cluster, this field reflects the desired number of workers rather
+            than the actual current number of workers. For instance, if a
+            cluster is resized from 5 to 10 workers, this field will immediately
+            be updated to reflect the target size of 10 workers, whereas the
+            workers listed in `spark_info` will gradually increase from 5 to 10
+            as the new nodes are provisioned.
+        policy_id:
+          type: string
+          description: >-
+            The ID of the cluster policy used to create the cluster if
+            applicable.
+        spark_conf:
+          type: object
+          description: >-
+            An object containing a set of optional, user-specified Spark
+            configuration key-value pairs. See :method:clusters/create for more
+            details.
+        spark_env_vars:
+          type: object
+          description: >-
+            An object containing a set of optional, user-specified environment
+            variable key-value pairs. Please note that key-value pair of the
+            form (X,Y) will be exported as is (i.e., `export X='Y'`) while
+            launching the driver and workers. In order to specify an additional
+            set of `SPARK_DAEMON_JAVA_OPTS`, we recommend appending them to
+            `$SPARK_DAEMON_JAVA_OPTS` as shown in the example below. This
+            ensures that all default databricks managed environmental variables
+            are included as well. Example Spark environment variables:
+            `{"SPARK_WORKER_MEMORY": "28000m", "SPARK_LOCAL_DIRS":
+            "/local_disk0"}` or `{"SPARK_DAEMON_JAVA_OPTS":
+            "$SPARK_DAEMON_JAVA_OPTS -Dspark.shuffle.service.enabled=true"}`
+        ssh_public_keys:
+          type: array
+          items:
+            type: string
+          description: >-
+            SSH public key contents that will be added to each Spark node in
+            this cluster. The corresponding private keys can be used to login
+            with the user name `ubuntu` on port `2200`. Up to 10 keys can be
+            specified.
+    PipelineClusterAutoscale:
+      type: object
+      properties:
+        min_workers:
+          type: integer
+        max_workers:
+          type: integer
+          description: >-
+            The maximum number of workers to which the cluster can scale up when
+            overloaded. `max_workers` must be strictly greater than
+            `min_workers`.
+        mode:
+          $ref: '#/components/schemas/PipelineClusterAutoscaleMode'
+          description: >-
+            Databricks Enhanced Autoscaling optimizes cluster utilization by
+            automatically allocating cluster resources based on workload volume,
+            with minimal impact to the data processing latency of your
+            pipelines. Enhanced Autoscaling is available for `updates` clusters
+            only. The legacy autoscaling feature is used for `maintenance`
+            clusters.
+      required:
+        - min_workers
+        - max_workers
+    PipelineDeployment:
+      type: object
+      properties:
+        kind:
+          $ref: '#/components/schemas/DeploymentKind'
+        metadata_file_path:
+          type: string
+          description: The path to the file containing metadata about the deployment.
+      required:
+        - kind
+    PipelineEvent:
+      type: object
+      properties:
+        error:
+          $ref: '#/components/schemas/ErrorDetail'
+        event_type:
+          type: string
+          description: The event type. Should always correspond to the details
+        id:
+          type: string
+          description: A time-based, globally unique id.
+        level:
+          $ref: '#/components/schemas/EventLevel'
+          description: The severity level of the event.
+        maturity_level:
+          $ref: '#/components/schemas/MaturityLevel'
+          description: Maturity level for event_type.
+        message:
+          type: string
+          description: The display message associated with the event.
+        origin:
+          $ref: '#/components/schemas/Origin'
+          description: Describes where the event originates from.
+        sequence:
+          $ref: '#/components/schemas/Sequencing'
+          description: A sequencing object to identify and order events.
+        timestamp:
+          type: string
+          description: The time of the event.
+        truncation:
+          $ref: '#/components/schemas/Truncation'
+          description: >-
+            Information about which fields were truncated from this event due to
+            size constraints. If empty or absent, no truncation occurred. See
+            https://docs.databricks.com/en/ldp/monitor-event-logs for
+            information on retrieving complete event data.
+    PipelineLibrary:
+      type: object
+      properties:
+        file:
+          $ref: '#/components/schemas/FileLibrary'
+        glob:
+          $ref: '#/components/schemas/PathPattern'
+          description: >-
+            The unified field to include source codes. Each entry can be a
+            notebook path, a file path, or a folder path that ends `/**`. This
+            field cannot be used together with `notebook` or `file`.
+        jar:
+          type: string
+          description: URI of the jar to be installed. Currently only DBFS is supported.
+        maven:
+          type: string
+          description: Specification of a maven library to be installed.
+        notebook:
+          $ref: '#/components/schemas/NotebookLibrary'
+          description: >-
+            The path to a notebook that defines a pipeline and is stored in the
+            Databricks workspace.
+        whl:
+          type: string
+          description: URI of the whl to be installed.
+    PipelinePermission:
+      type: object
+      properties:
+        inherited:
+          type: boolean
+        inherited_from_object:
+          type: array
+          items:
+            type: string
+        permission_level:
+          $ref: '#/components/schemas/PipelinePermissionLevel'
+    PipelinePermissions:
+      type: object
+      properties:
+        access_control_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/PipelineAccessControlResponse'
+        object_id:
+          type: string
+        object_type:
+          type: string
+    PipelinePermissionsDescription:
+      type: object
+      properties:
+        description:
+          type: string
+        permission_level:
+          $ref: '#/components/schemas/PipelinePermissionLevel'
+    PipelineSpec:
+      type: object
+      properties:
+        budget_policy_id:
+          type: string
+        catalog:
+          type: string
+          description: >-
+            A catalog in Unity Catalog to publish data from this pipeline to. If
+            `target` is specified, tables in this pipeline are published to a
+            `target` schema inside `catalog` (for example,
+            `catalog`.`target`.`table`). If `target` is not specified, no data
+            is published to Unity Catalog.
+        channel:
+          type: string
+          description: DLT Release Channel that specifies which version to use.
+        clusters:
+          type: array
+          items:
+            $ref: '#/components/schemas/PipelineCluster'
+          description: Cluster settings for this pipeline deployment.
+        configuration:
+          type: object
+          description: String-String configuration for this pipeline execution.
+        continuous:
+          type: boolean
+          description: >-
+            Whether the pipeline is continuous or triggered. This replaces
+            `trigger`.
+        deployment:
+          $ref: '#/components/schemas/PipelineDeployment'
+          description: Deployment type of this pipeline.
+        development:
+          type: boolean
+          description: Whether the pipeline is in Development mode. Defaults to false.
+        edition:
+          type: string
+          description: Pipeline product edition.
+        environment:
+          $ref: '#/components/schemas/PipelinesEnvironment'
+          description: >-
+            Environment specification for this pipeline used to install
+            dependencies.
+        event_log:
+          $ref: '#/components/schemas/EventLogSpec'
+          description: Event log configuration for this pipeline
+        filters:
+          $ref: '#/components/schemas/Filters'
+          description: Filters on which Pipeline packages to include in the deployed graph.
+        gateway_definition:
+          $ref: '#/components/schemas/IngestionGatewayPipelineDefinition'
+          description: The definition of a gateway pipeline to support change data capture.
+        id:
+          type: string
+          description: Unique identifier for this pipeline.
+        ingestion_definition:
+          $ref: '#/components/schemas/IngestionPipelineDefinition'
+          description: >-
+            The configuration for a managed ingestion pipeline. These settings
+            cannot be used with the 'libraries', 'schema', 'target', or
+            'catalog' settings.
+        libraries:
+          type: array
+          items:
+            $ref: '#/components/schemas/PipelineLibrary'
+          description: Libraries or code needed by this deployment.
+        name:
+          type: string
+          description: Friendly identifier for this pipeline.
+        notifications:
+          type: array
+          items:
+            $ref: '#/components/schemas/Notifications'
+          description: List of notification settings for this pipeline.
+        photon:
+          type: boolean
+          description: Whether Photon is enabled for this pipeline.
+        restart_window:
+          $ref: '#/components/schemas/RestartWindow'
+          description: Restart window of this pipeline.
+        root_path:
+          type: string
+          description: >-
+            Root path for this pipeline. This is used as the root directory when
+            editing the pipeline in the Databricks user interface and it is
+            added to sys.path when executing Python sources during pipeline
+            execution.
+        schema:
+          type: string
+          description: >-
+            The default schema (database) where tables are read from or
+            published to.
+        serverless:
+          type: boolean
+          description: Whether serverless compute is enabled for this pipeline.
+        storage:
+          type: string
+          description: DBFS root directory for storing checkpoints and tables.
+        tags:
+          type: object
+          description: >-
+            A map of tags associated with the pipeline. These are forwarded to
+            the cluster as cluster tags, and are therefore subject to the same
+            limitations. A maximum of 25 tags can be added to the pipeline.
+        target:
+          type: string
+          description: >-
+            Target schema (database) to add tables in this pipeline to. Exactly
+            one of `schema` or `target` must be specified. To publish to Unity
+            Catalog, also specify `catalog`. This legacy field is deprecated for
+            pipeline creation in favor of the `schema` field.
+        trigger:
+          $ref: '#/components/schemas/PipelineTrigger'
+          description: 'Which pipeline trigger to use. Deprecated: Use `continuous` instead.'
+        usage_policy_id:
+          type: string
+          description: Usage policy of this pipeline.
+    PipelineStateInfo:
+      type: object
+      properties:
+        cluster_id:
+          type: string
+        creator_user_name:
+          type: string
+          description: The username of the pipeline creator.
+        health:
+          $ref: '#/components/schemas/PipelineStateInfoHealth'
+          description: The health of a pipeline.
+        latest_updates:
+          type: array
+          items:
+            $ref: '#/components/schemas/UpdateStateInfo'
+          description: >-
+            Status of the latest updates for the pipeline. Ordered with the
+            newest update first.
+        name:
+          type: string
+          description: The user-friendly name of the pipeline.
+        pipeline_id:
+          type: string
+          description: The unique identifier of the pipeline.
+        run_as_user_name:
+          type: string
+          description: >-
+            The username that the pipeline runs as. This is a read only value
+            derived from the pipeline owner.
+        state:
+          $ref: '#/components/schemas/PipelineState'
+    PipelineTrigger:
+      type: object
+      properties:
+        cron:
+          $ref: '#/components/schemas/CronTrigger'
+        manual:
+          $ref: '#/components/schemas/ManualTrigger'
+    PipelinesEnvironment:
+      type: object
+      properties:
+        dependencies:
+          type: array
+          items:
+            type: string
+          description: >-
+            List of pip dependencies, as supported by the version of pip in this
+            environment. Each dependency is a pip requirement file line
+            https://pip.pypa.io/en/stable/reference/requirements-file-format/
+            Allowed dependency could be <requirement specifier>, <archive
+            url/path>, <local project path>(WSFS or Volumes in Databricks), <vcs
+            project url>
+      description: >-
+        The environment entity used to preserve serverless environment side
+        panel, jobs' environment for
+            non-notebook task, and DLT's environment for classic and serverless pipelines. In this minimal
+            environment spec, only pip dependencies are supported.
+    PostgresCatalogConfig:
+      type: object
+      properties:
+        slot_config:
+          $ref: '#/components/schemas/PostgresSlotConfig'
+          description: >-
+            Optional. The Postgres slot configuration to use for logical
+            replication
+      description: PG-specific catalog-level configuration parameters
+    PostgresSlotConfig:
+      type: object
+      properties:
+        publication_name:
+          type: string
+          description: The name of the publication to use for the Postgres source
+        slot_name:
+          type: string
+          description: >-
+            The name of the logical replication slot to use for the Postgres
+            source
+      description: >-
+        PostgresSlotConfig contains the configuration for a Postgres logical
+        replication slot
+    ReportSpec:
+      type: object
+      properties:
+        source_url:
+          type: string
+        destination_catalog:
+          type: string
+          description: Required. Destination catalog to store table.
+        destination_schema:
+          type: string
+          description: Required. Destination schema to store table.
+        destination_table:
+          type: string
+          description: >-
+            Required. Destination table name. The pipeline fails if a table with
+            that name already exists.
+        table_configuration:
+          $ref: '#/components/schemas/TableSpecificConfig'
+          description: >-
+            Configuration settings to control the ingestion of tables. These
+            settings override the table_configuration defined in the
+            IngestionPipelineDefinition object.
+      required:
+        - source_url
+        - destination_catalog
+        - destination_schema
+    RestartWindow:
+      type: object
+      properties:
+        start_hour:
+          type: integer
+        days_of_week:
+          type: array
+          items:
+            $ref: '#/components/schemas/DayOfWeek'
+          description: >-
+            Days of week in which the restart is allowed to happen (within a
+            five-hour window starting at start_hour). If not specified all days
+            of the week will be used.
+        time_zone_id:
+          type: string
+          description: >-
+            Time zone id of restart window. See
+            https://docs.databricks.com/sql/language-manual/sql-ref-syntax-aux-conf-mgmt-set-timezone.html
+            for details. If not specified, UTC will be used.
+      required:
+        - start_hour
+    RewindDatasetSpec:
+      type: object
+      properties:
+        cascade:
+          type: boolean
+          description: >-
+            Whether to cascade the rewind to dependent datasets. Must be
+            specified.
+        identifier:
+          type: string
+          description: The identifier of the dataset (e.g., "main.foo.tbl1").
+        reset_checkpoints:
+          type: boolean
+          description: Whether to reset checkpoints for this dataset.
+      description: Configuration for rewinding a specific dataset.
+    RewindSpec:
+      type: object
+      properties:
+        datasets:
+          type: array
+          items:
+            $ref: '#/components/schemas/RewindDatasetSpec'
+          description: >-
+            List of datasets to rewind with specific configuration for each.
+            When not specified, all datasets will be rewound with cascade = true
+            and reset_checkpoints = true.
+        dry_run:
+          type: boolean
+          description: >-
+            If true, this is a dry run and we should emit the RewindSummary but
+            not perform the rewind.
+        rewind_timestamp:
+          type: string
+          description: The base timestamp to rewind to. Must be specified.
+      description: >-
+        Information about a rewind being requested for this pipeline or some of
+        the datasets in it.
+    RunAs:
+      type: object
+      properties:
+        service_principal_name:
+          type: string
+          description: >-
+            Application ID of an active service principal. Setting this field
+            requires the `servicePrincipal/user` role.
+        user_name:
+          type: string
+          description: >-
+            The email of an active workspace user. Users can only set this field
+            to their own email.
+      description: >-
+        Write-only setting, available only in Create/Update calls. Specifies the
+        user or service
+            principal that the pipeline runs as. If not specified, the pipeline runs as the user who created
+            the pipeline.
+
+            Only `user_name` or `service_principal_name` can be specified. If both are specified, an error
+            is thrown.
+    SchemaSpec:
+      type: object
+      properties:
+        source_schema:
+          type: string
+        destination_catalog:
+          type: string
+          description: Required. Destination catalog to store tables.
+        destination_schema:
+          type: string
+          description: >-
+            Required. Destination schema to store tables in. Tables with the
+            same name as the source tables are created in this destination
+            schema. The pipeline fails If a table with the same name already
+            exists.
+        source_catalog:
+          type: string
+          description: >-
+            The source catalog name. Might be optional depending on the type of
+            source.
+        table_configuration:
+          $ref: '#/components/schemas/TableSpecificConfig'
+          description: >-
+            Configuration settings to control the ingestion of tables. These
+            settings are applied to all tables in this schema and override the
+            table_configuration defined in the IngestionPipelineDefinition
+            object.
+      required:
+        - source_schema
+        - destination_catalog
+        - destination_schema
+    Sequencing:
+      type: object
+      properties:
+        control_plane_seq_no:
+          type: integer
+        data_plane_id:
+          $ref: '#/components/schemas/DataPlaneId'
+          description: the ID assigned by the data plane.
+    SerializedException:
+      type: object
+      properties:
+        class_name:
+          type: string
+        message:
+          type: string
+          description: Exception message
+        stack:
+          type: array
+          items:
+            $ref: '#/components/schemas/StackFrame'
+          description: Stack trace consisting of a list of stack frames
+    SourceCatalogConfig:
+      type: object
+      properties:
+        postgres:
+          $ref: '#/components/schemas/PostgresCatalogConfig'
+          description: Postgres-specific catalog-level configuration parameters
+        source_catalog:
+          type: string
+          description: Source catalog name
+      description: >-
+        SourceCatalogConfig contains catalog-level custom configuration
+        parameters for each source
+    SourceConfig:
+      type: object
+      properties:
+        catalog:
+          $ref: '#/components/schemas/SourceCatalogConfig'
+    StackFrame:
+      type: object
+      properties:
+        declaring_class:
+          type: string
+        file_name:
+          type: string
+          description: File where the method is defined
+        line_number:
+          type: integer
+          description: Line from which the method was called
+        method_name:
+          type: string
+          description: Name of the method which was called
+    StartUpdateResponse:
+      type: object
+      properties:
+        update_id:
+          type: string
+    StopPipelineResponse:
+      type: object
+      properties: {}
+    TableSpec:
+      type: object
+      properties:
+        source_table:
+          type: string
+        destination_catalog:
+          type: string
+          description: Required. Destination catalog to store table.
+        destination_schema:
+          type: string
+          description: Required. Destination schema to store table.
+        destination_table:
+          type: string
+          description: >-
+            Optional. Destination table name. The pipeline fails if a table with
+            that name already exists. If not set, the source table name is used.
+        source_catalog:
+          type: string
+          description: >-
+            Source catalog name. Might be optional depending on the type of
+            source.
+        source_schema:
+          type: string
+          description: >-
+            Schema name in the source database. Might be optional depending on
+            the type of source.
+        table_configuration:
+          $ref: '#/components/schemas/TableSpecificConfig'
+          description: >-
+            Configuration settings to control the ingestion of tables. These
+            settings override the table_configuration defined in the
+            IngestionPipelineDefinition object and the SchemaSpec.
+      required:
+        - source_table
+        - destination_catalog
+        - destination_schema
+    TableSpecificConfig:
+      type: object
+      properties:
+        auto_full_refresh_policy:
+          $ref: '#/components/schemas/AutoFullRefreshPolicy'
+        exclude_columns:
+          type: array
+          items:
+            type: string
+          description: >-
+            A list of column names to be excluded for the ingestion. When not
+            specified, include_columns fully controls what columns to be
+            ingested. When specified, all other columns including future ones
+            will be automatically included for ingestion. This field in mutually
+            exclusive with `include_columns`.
+        include_columns:
+          type: array
+          items:
+            type: string
+          description: >-
+            A list of column names to be included for the ingestion. When not
+            specified, all columns except ones in exclude_columns will be
+            included. Future columns will be automatically included. When
+            specified, all other future columns will be automatically excluded
+            from ingestion. This field in mutually exclusive with
+            `exclude_columns`.
+        primary_keys:
+          type: array
+          items:
+            type: string
+          description: The primary key of the table used to apply changes.
+        query_based_connector_config:
+          $ref: >-
+            #/components/schemas/IngestionPipelineDefinitionTableSpecificConfigQueryBasedConnectorConfig
+        row_filter:
+          type: string
+          description: >-
+            (Optional, Immutable) The row filter condition to be applied to the
+            table. It must not contain the WHERE keyword, only the actual filter
+            condition. It must be in DBSQL format.
+        salesforce_include_formula_fields:
+          type: boolean
+          description: >-
+            If true, formula fields defined in the table are included in the
+            ingestion. This setting is only valid for the Salesforce connector
+        scd_type:
+          $ref: '#/components/schemas/TableSpecificConfigScdType'
+          description: The SCD type to use to ingest the table.
+        sequence_by:
+          type: array
+          items:
+            type: string
+          description: >-
+            The column names specifying the logical order of events in the
+            source data. Spark Declarative Pipelines uses this sequencing to
+            handle change events that arrive out of order.
+        workday_report_parameters:
+          $ref: >-
+            #/components/schemas/IngestionPipelineDefinitionWorkdayReportParameters
+          description: (Optional) Additional custom parameters for Workday Report
+    Truncation:
+      type: object
+      properties:
+        truncated_fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/TruncationTruncationDetail'
+          description: >-
+            List of fields that were truncated from this event. If empty or
+            absent, no truncation occurred.
+      description: Information about truncations applied to this event.
+    TruncationTruncationDetail:
+      type: object
+      properties:
+        field_name:
+          type: string
+          description: >-
+            The name of the truncated field (e.g., "error"). Corresponds to
+            field names in PipelineEvent.
+      description: Details about a specific field that was truncated.
+    UpdateInfo:
+      type: object
+      properties:
+        cause:
+          $ref: '#/components/schemas/UpdateInfoCause'
+        cluster_id:
+          type: string
+          description: The ID of the cluster that the update is running on.
+        config:
+          $ref: '#/components/schemas/PipelineSpec'
+          description: >-
+            The pipeline configuration with system defaults applied where
+            unspecified by the user. Not returned by ListUpdates.
+        creation_time:
+          type: integer
+          description: The time when this update was created.
+        full_refresh:
+          type: boolean
+          description: If true, this update will reset all tables before running.
+        full_refresh_selection:
+          type: array
+          items:
+            type: string
+          description: >-
+            A list of tables to update with fullRefresh. If both
+            refresh_selection and full_refresh_selection are empty, this is a
+            full graph update. Full Refresh on a table means that the states of
+            the table will be reset before the refresh.
+        pipeline_id:
+          type: string
+          description: The ID of the pipeline.
+        refresh_selection:
+          type: array
+          items:
+            type: string
+          description: >-
+            A list of tables to update without fullRefresh. If both
+            refresh_selection and full_refresh_selection are empty, this is a
+            full graph update. Full Refresh on a table means that the states of
+            the table will be reset before the refresh.
+        state:
+          $ref: '#/components/schemas/UpdateInfoState'
+          description: The update state.
+        update_id:
+          type: string
+          description: The ID of this update.
+        validate_only:
+          type: boolean
+          description: >-
+            If true, this update only validates the correctness of pipeline
+            source code but does not materialize or publish any datasets.
+    UpdateStateInfo:
+      type: object
+      properties:
+        creation_time:
+          type: string
+        state:
+          $ref: '#/components/schemas/UpdateStateInfoState'
+        update_id:
+          type: string
+    CloneMode:
+      type: string
+      enum:
+        - MIGRATE_TO_UC
+      description: Enum to specify which mode of clone to execute
+    DayOfWeek:
+      type: string
+      enum:
+        - FRIDAY
+        - MONDAY
+        - SATURDAY
+        - SUNDAY
+        - THURSDAY
+        - TUESDAY
+        - WEDNESDAY
+      description: >-
+        Days of week in which the window is allowed to happen. If not specified
+        all days of the week
+
+        will be used.
+    DeploymentKind:
+      type: string
+      enum:
+        - BUNDLE
+      description: >-
+        The deployment method that manages the pipeline: - BUNDLE: The pipeline
+        is managed by a
+
+        Databricks Asset Bundle.
+    EventLevel:
+      type: string
+      enum:
+        - ERROR
+        - INFO
+        - METRICS
+        - WARN
+      description: The severity level of the event.
+    GetPipelineResponseHealth:
+      type: string
+      enum:
+        - HEALTHY
+        - UNHEALTHY
+      description: The health of a pipeline.
+    IngestionSourceType:
+      type: string
+      enum:
+        - BIGQUERY
+        - DYNAMICS365
+        - FOREIGN_CATALOG
+        - GA4_RAW_DATA
+        - MANAGED_POSTGRESQL
+        - MYSQL
+        - NETSUITE
+        - ORACLE
+        - POSTGRESQL
+        - SALESFORCE
+        - SERVICENOW
+        - SHAREPOINT
+        - SQLSERVER
+        - TERADATA
+        - WORKDAY_RAAS
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    MaturityLevel:
+      type: string
+      enum:
+        - DEPRECATED
+        - EVOLVING
+        - STABLE
+      description: Maturity level for EventDetails.
+    PipelineClusterAutoscaleMode:
+      type: string
+      enum:
+        - ENHANCED
+        - LEGACY
+      description: >-
+        Databricks Enhanced Autoscaling optimizes cluster utilization by
+        automatically allocating
+
+        cluster resources based on workload volume, with minimal impact to the
+        data processing latency
+
+        of your pipelines. Enhanced Autoscaling is available for `updates`
+        clusters only. The legacy
+
+        autoscaling feature is used for `maintenance` clusters.
+    PipelinePermissionLevel:
+      type: string
+      enum:
+        - CAN_MANAGE
+        - CAN_RUN
+        - CAN_VIEW
+        - IS_OWNER
+      description: Permission level
+    PipelineState:
+      type: string
+      enum:
+        - DELETED
+        - DEPLOYING
+        - FAILED
+        - IDLE
+        - RECOVERING
+        - RESETTING
+        - RUNNING
+        - STARTING
+        - STOPPING
+      description: The pipeline state.
+    PipelineStateInfoHealth:
+      type: string
+      enum:
+        - HEALTHY
+        - UNHEALTHY
+      description: The health of a pipeline.
+    StartUpdateCause:
+      type: string
+      enum:
+        - API_CALL
+        - INFRASTRUCTURE_MAINTENANCE
+        - JOB_TASK
+        - RETRY_ON_FAILURE
+        - SCHEMA_CHANGE
+        - SERVICE_UPGRADE
+        - USER_ACTION
+      description: What triggered this update.
+    TableSpecificConfigScdType:
+      type: string
+      enum:
+        - APPEND_ONLY
+        - SCD_TYPE_1
+        - SCD_TYPE_2
+      description: The SCD type to use to ingest the table.
+    UpdateInfoCause:
+      type: string
+      enum:
+        - API_CALL
+        - INFRASTRUCTURE_MAINTENANCE
+        - JOB_TASK
+        - RETRY_ON_FAILURE
+        - SCHEMA_CHANGE
+        - SERVICE_UPGRADE
+        - USER_ACTION
+      description: What triggered this update.
+    UpdateInfoState:
+      type: string
+      enum:
+        - CANCELED
+        - COMPLETED
+        - CREATED
+        - FAILED
+        - INITIALIZING
+        - QUEUED
+        - RESETTING
+        - RUNNING
+        - SETTING_UP_TABLES
+        - STOPPING
+        - WAITING_FOR_RESOURCES
+      description: The update state.
+    UpdateStateInfoState:
+      type: string
+      enum:
+        - CANCELED
+        - COMPLETED
+        - CREATED
+        - FAILED
+        - INITIALIZING
+        - QUEUED
+        - RESETTING
+        - RUNNING
+        - SETTING_UP_TABLES
+        - STOPPING
+        - WAITING_FOR_RESOURCES
+      description: The update state.
+  x-stackQL-resources:
+    pipelines:
+      id: databricks_workspace.pipelines.pipelines
+      name: pipelines
+      title: Pipelines
+      methods:
+        pipelines_clone:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1clone/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_list_pipelines:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_get_permission_levels:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}~1permissionLevels/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_get_permissions:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_set_permissions:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/put'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_update_permissions:
+          operation:
+            $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_get_update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1pipelines~1{pipeline_id}~1updates~1{update_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_list_pipeline_events:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1events/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_list_updates:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1updates/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_start_update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1updates/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        pipelines_stop:
+          operation:
+            $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1stop/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_get_update
+          - $ref: '#/components/x-stackQL-resources/pipelines/methods/pipelines_get'
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_get_permission_levels
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_get_permissions
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_list_pipeline_events
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_list_updates
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_list_pipelines
+        insert:
+          - $ref: '#/components/x-stackQL-resources/pipelines/methods/pipelines_clone'
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_start_update
+          - $ref: '#/components/x-stackQL-resources/pipelines/methods/pipelines_stop'
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_update_permissions
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_delete
+        replace:
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_update
+          - $ref: >-
+              #/components/x-stackQL-resources/pipelines/methods/pipelines_set_permissions

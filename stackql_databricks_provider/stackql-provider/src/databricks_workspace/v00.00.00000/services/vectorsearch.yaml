@@ -1,0 +1,1734 @@
+openapi: 3.0.0
+info:
+  title: Databricks Vectorsearch API (workspace)
+  description: >-
+    OpenAPI specification for the Databricks vectorsearch service
+    (workspace-level APIs), generated from the Databricks Python SDK.
+  version: 0.1.0
+servers:
+  url: https://{deployment_name}.cloud.databricks.com
+  variables:
+    deployment_name:
+      description: The Databricks Workspace Deployment Name
+      default: dbc-abcd0123-a1bc
+paths:
+  /api/2.0/vector-search/endpoints:
+    post:
+      operationId: vector_search_endpoints_create_endpoint
+      summary: Create a new endpoint.
+      tags:
+        - vectorsearch
+        - vector_search_endpoints
+      description: |-
+        Create a new endpoint.
+
+        :param name: str
+          Name of the vector search endpoint
+        :param endpoint_type: :class:`EndpointType`
+          Type of endpoint
+        :param budget_policy_id: str (optional)
+          The budget policy id to be applied
+
+        :returns:
+          Long-running operation waiter for :class:`EndpointInfo`.
+          See :method:wait_get_endpoint_vector_search_endpoint_online for more details.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the vector search endpoint
+                endpoint_type:
+                  type: string
+                  description: Type of endpoint
+                budget_policy_id:
+                  type: string
+                  description: The budget policy id to be applied
+              required:
+                - name
+                - endpoint_type
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wait[EndpointInfo]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: vector_search_endpoints_list_endpoints
+      summary: List all vector search endpoints in the workspace.
+      tags:
+        - vectorsearch
+        - vector_search_endpoints
+      description: |-
+        List all vector search endpoints in the workspace.
+
+        :param page_token: str (optional)
+          Token for pagination
+
+        :returns: Iterator over :class:`EndpointInfo`
+      parameters:
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Token for pagination
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[EndpointInfo]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/endpoints/{endpoint_name}:
+    delete:
+      operationId: vector_search_endpoints_delete_endpoint
+      summary: Delete a vector search endpoint.
+      tags:
+        - vectorsearch
+        - vector_search_endpoints
+      description: |-
+        Delete a vector search endpoint.
+
+        :param endpoint_name: str
+          Name of the vector search endpoint
+      parameters:
+        - name: endpoint_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the vector search endpoint
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: vector_search_endpoints_get_endpoint
+      summary: Get details for a single vector search endpoint.
+      tags:
+        - vectorsearch
+        - vector_search_endpoints
+      description: |-
+        Get details for a single vector search endpoint.
+
+        :param endpoint_name: str
+          Name of the endpoint
+
+        :returns: :class:`EndpointInfo`
+      parameters:
+        - name: endpoint_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the endpoint
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/EndpointInfo'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/endpoints/{name}/metrics:
+    post:
+      operationId: vector_search_endpoints_retrieve_user_visible_metrics
+      summary: Retrieve user-visible metrics for an endpoint
+      tags:
+        - vectorsearch
+        - vector_search_endpoints
+      description: |-
+        Retrieve user-visible metrics for an endpoint
+
+        :param name: str
+          Vector search endpoint name
+        :param end_time: str (optional)
+          End time for metrics query
+        :param granularity_in_seconds: int (optional)
+          Granularity in seconds
+        :param metrics: List[:class:`Metric`] (optional)
+          List of metrics to retrieve
+        :param page_token: str (optional)
+          Token for pagination
+        :param start_time: str (optional)
+          Start time for metrics query
+
+        :returns: :class:`RetrieveUserVisibleMetricsResponse`
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Vector search endpoint name
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                end_time:
+                  type: string
+                  description: End time for metrics query
+                granularity_in_seconds:
+                  type: string
+                  description: Granularity in seconds
+                metrics:
+                  type: string
+                  description: List of metrics to retrieve
+                page_token:
+                  type: string
+                  description: Token for pagination
+                start_time:
+                  type: string
+                  description: Start time for metrics query
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RetrieveUserVisibleMetricsResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/endpoints/{endpoint_name}/budget-policy:
+    patch:
+      operationId: vector_search_endpoints_update_endpoint_budget_policy
+      summary: Update the budget policy of an endpoint
+      tags:
+        - vectorsearch
+        - vector_search_endpoints
+      description: |-
+        Update the budget policy of an endpoint
+
+        :param endpoint_name: str
+          Name of the vector search endpoint
+        :param budget_policy_id: str
+          The budget policy id to be applied
+
+        :returns: :class:`PatchEndpointBudgetPolicyResponse`
+      parameters:
+        - name: endpoint_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the vector search endpoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                budget_policy_id:
+                  type: string
+                  description: The budget policy id to be applied
+              required:
+                - budget_policy_id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PatchEndpointBudgetPolicyResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/endpoints/{endpoint_name}/tags:
+    patch:
+      operationId: vector_search_endpoints_update_endpoint_custom_tags
+      summary: Update the custom tags of an endpoint.
+      tags:
+        - vectorsearch
+        - vector_search_endpoints
+      description: |-
+        Update the custom tags of an endpoint.
+
+        :param endpoint_name: str
+          Name of the vector search endpoint
+        :param custom_tags: List[:class:`CustomTag`]
+          The new custom tags for the vector search endpoint
+
+        :returns: :class:`UpdateEndpointCustomTagsResponse`
+      parameters:
+        - name: endpoint_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the vector search endpoint
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                custom_tags:
+                  type: string
+                  description: The new custom tags for the vector search endpoint
+              required:
+                - custom_tags
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateEndpointCustomTagsResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/indexes:
+    post:
+      operationId: vector_search_indexes_create_index
+      summary: Create a new index.
+      tags:
+        - vectorsearch
+        - vector_search_indexes
+      description: >-
+        Create a new index.
+
+
+        :param name: str
+          Name of the index
+        :param endpoint_name: str
+          Name of the endpoint to be used for serving the index
+        :param primary_key: str
+          Primary key of the index
+        :param index_type: :class:`VectorIndexType`
+
+        :param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest`
+        (optional)
+          Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.
+        :param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec`
+        (optional)
+          Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.
+
+        :returns: :class:`VectorIndex`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                name:
+                  type: string
+                  description: Name of the index
+                endpoint_name:
+                  type: string
+                  description: Name of the endpoint to be used for serving the index
+                primary_key:
+                  type: string
+                  description: Primary key of the index
+                index_type:
+                  type: string
+                  description: >-
+                    :param delta_sync_index_spec:
+                    :class:`DeltaSyncVectorIndexSpecRequest` (optional)
+                    Specification for Delta Sync Index. Required if `index_type`
+                    is `DELTA_SYNC`.
+                delta_sync_index_spec:
+                  type: string
+                direct_access_index_spec:
+                  type: string
+                  description: >-
+                    Specification for Direct Vector Access Index. Required if
+                    `index_type` is `DIRECT_ACCESS`.
+              required:
+                - name
+                - endpoint_name
+                - primary_key
+                - index_type
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VectorIndex'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: vector_search_indexes_list_indexes
+      summary: List all indexes in the given endpoint.
+      tags:
+        - vectorsearch
+        - vector_search_indexes
+      description: |-
+        List all indexes in the given endpoint.
+
+        :param endpoint_name: str
+          Name of the endpoint
+        :param page_token: str (optional)
+          Token for pagination
+
+        :returns: Iterator over :class:`MiniVectorIndex`
+      parameters:
+        - name: endpoint_name
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Name of the endpoint
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Token for pagination
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[MiniVectorIndex]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/indexes/{index_name}/delete-data:
+    delete:
+      operationId: vector_search_indexes_delete_data_vector_index
+      summary: Handles the deletion of data from a specified vector index.
+      tags:
+        - vectorsearch
+        - vector_search_indexes
+      description: |-
+        Handles the deletion of data from a specified vector index.
+
+        :param index_name: str
+          Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index.
+        :param primary_keys: List[str]
+          List of primary keys for the data to be deleted.
+
+        :returns: :class:`DeleteDataVectorIndexResponse`
+      parameters:
+        - name: index_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            Name of the vector index where data is to be deleted. Must be a
+            Direct Vector Access Index.
+        - name: primary_keys
+          in: query
+          required: true
+          schema:
+            type: string
+          description: List of primary keys for the data to be deleted.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteDataVectorIndexResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/indexes/{index_name}:
+    delete:
+      operationId: vector_search_indexes_delete_index
+      summary: Delete an index.
+      tags:
+        - vectorsearch
+        - vector_search_indexes
+      description: |-
+        Delete an index.
+
+        :param index_name: str
+          Name of the index
+      parameters:
+        - name: index_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the index
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: vector_search_indexes_get_index
+      summary: Get an index.
+      tags:
+        - vectorsearch
+        - vector_search_indexes
+      description: |-
+        Get an index.
+
+        :param index_name: str
+          Name of the index
+        :param ensure_reranker_compatible: bool (optional)
+          If true, the URL returned for the index is guaranteed to be compatible with the reranker. Currently
+          this means we return the CP URL regardless of how the index is being accessed. If not set or set to
+          false, the URL may still be compatible with the reranker depending on what URL we return.
+
+        :returns: :class:`VectorIndex`
+      parameters:
+        - name: index_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the index
+        - name: ensure_reranker_compatible
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            If true, the URL returned for the index is guaranteed to be
+            compatible with the reranker. Currently this means we return the CP
+            URL regardless of how the index is being accessed. If not set or set
+            to false, the URL may still be compatible with the reranker
+            depending on what URL we return.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/VectorIndex'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/indexes/{index_name}/query:
+    post:
+      operationId: vector_search_indexes_query_index
+      summary: Query the specified vector index.
+      tags:
+        - vectorsearch
+        - vector_search_indexes
+      description: |-
+        Query the specified vector index.
+
+        :param index_name: str
+          Name of the vector index to query.
+        :param columns: List[str]
+          List of column names to include in the response.
+        :param columns_to_rerank: List[str] (optional)
+          Column names used to retrieve data to send to the reranker.
+        :param filters_json: str (optional)
+          JSON string representing query filters.
+
+          Example filters:
+
+          - `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`: Filter for id greater than 5. - `{"id
+          <=": 5}`: Filter for id less than equal to 5. - `{"id >=": 5}`: Filter for id greater than equal to
+          5. - `{"id": 5}`: Filter for id equal to 5.
+        :param num_results: int (optional)
+          Number of results to return. Defaults to 10.
+        :param query_text: str (optional)
+          Query text. Required for Delta Sync Index using model endpoint.
+        :param query_type: str (optional)
+          The query type to use. Choices are `ANN` and `HYBRID` and `FULL_TEXT`. Defaults to `ANN`.
+        :param query_vector: List[float] (optional)
+          Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed
+          vectors.
+        :param reranker: :class:`RerankerConfig` (optional)
+          If set, the top 50 results are reranked with the Databricks Reranker model before returning the
+          `num_results` results to the user. The setting `columns_to_rerank` selects which columns are used
+          for reranking. For each datapoint, the columns selected are concatenated before being sent to the
+          reranking model. See https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank for
+          more information.
+        :param score_threshold: float (optional)
+          Threshold for the approximate nearest neighbor search. Defaults to 0.0.
+
+        :returns: :class:`QueryVectorIndexResponse`
+      parameters:
+        - name: index_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the vector index to query.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                columns:
+                  type: string
+                  description: List of column names to include in the response.
+                columns_to_rerank:
+                  type: string
+                  description: Column names used to retrieve data to send to the reranker.
+                filters_json:
+                  type: string
+                  description: >-
+                    JSON string representing query filters. Example filters: -
+                    `{"id <": 5}`: Filter for id less than 5. - `{"id >": 5}`:
+                    Filter for id greater than 5. - `{"id <=": 5}`: Filter for
+                    id less than equal to 5. - `{"id >=": 5}`: Filter for id
+                    greater than equal to 5. - `{"id": 5}`: Filter for id equal
+                    to 5.
+                num_results:
+                  type: string
+                  description: Number of results to return. Defaults to 10.
+                query_text:
+                  type: string
+                  description: >-
+                    Query text. Required for Delta Sync Index using model
+                    endpoint.
+                query_type:
+                  type: string
+                  description: >-
+                    The query type to use. Choices are `ANN` and `HYBRID` and
+                    `FULL_TEXT`. Defaults to `ANN`.
+                query_vector:
+                  type: string
+                  description: >-
+                    Query vector. Required for Direct Vector Access Index and
+                    Delta Sync Index using self-managed vectors.
+                reranker:
+                  type: string
+                  description: >-
+                    If set, the top 50 results are reranked with the Databricks
+                    Reranker model before returning the `num_results` results to
+                    the user. The setting `columns_to_rerank` selects which
+                    columns are used for reranking. For each datapoint, the
+                    columns selected are concatenated before being sent to the
+                    reranking model. See
+                    https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank
+                    for more information.
+                score_threshold:
+                  type: string
+                  description: >-
+                    Threshold for the approximate nearest neighbor search.
+                    Defaults to 0.0.
+              required:
+                - columns
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryVectorIndexResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/indexes/{index_name}/query-next-page:
+    post:
+      operationId: vector_search_indexes_query_next_page
+      summary: >-
+        Use `next_page_token` returned from previous `QueryVectorIndex` or
+        `QueryVectorIndexNextPage` request
+      tags:
+        - vectorsearch
+        - vector_search_indexes
+      description: >-
+        Use `next_page_token` returned from previous `QueryVectorIndex` or
+        `QueryVectorIndexNextPage` request
+
+        to fetch next page of results.
+
+
+        :param index_name: str
+          Name of the vector index to query.
+        :param endpoint_name: str (optional)
+          Name of the endpoint.
+        :param page_token: str (optional)
+          Page token returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` API.
+
+        :returns: :class:`QueryVectorIndexResponse`
+      parameters:
+        - name: index_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the vector index to query.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endpoint_name:
+                  type: string
+                  description: Name of the endpoint.
+                page_token:
+                  type: string
+                  description: >-
+                    Page token returned from previous `QueryVectorIndex` or
+                    `QueryVectorIndexNextPage` API.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QueryVectorIndexResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/indexes/{index_name}/scan:
+    post:
+      operationId: vector_search_indexes_scan_index
+      summary: >-
+        Scan the specified vector index and return the first `num_results`
+        entries after the exclusive
+      tags:
+        - vectorsearch
+        - vector_search_indexes
+      description: >-
+        Scan the specified vector index and return the first `num_results`
+        entries after the exclusive
+
+        `primary_key`.
+
+
+        :param index_name: str
+          Name of the vector index to scan.
+        :param last_primary_key: str (optional)
+          Primary key of the last entry returned in the previous scan.
+        :param num_results: int (optional)
+          Number of results to return. Defaults to 10.
+
+        :returns: :class:`ScanVectorIndexResponse`
+      parameters:
+        - name: index_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the vector index to scan.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                last_primary_key:
+                  type: string
+                  description: Primary key of the last entry returned in the previous scan.
+                num_results:
+                  type: string
+                  description: Number of results to return. Defaults to 10.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ScanVectorIndexResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/indexes/{index_name}/sync:
+    post:
+      operationId: vector_search_indexes_sync_index
+      summary: Triggers a synchronization process for a specified vector index.
+      tags:
+        - vectorsearch
+        - vector_search_indexes
+      description: |-
+        Triggers a synchronization process for a specified vector index.
+
+        :param index_name: str
+          Name of the vector index to synchronize. Must be a Delta Sync Index.
+      parameters:
+        - name: index_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the vector index to synchronize. Must be a Delta Sync Index.
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/vector-search/indexes/{index_name}/upsert-data:
+    post:
+      operationId: vector_search_indexes_upsert_data_vector_index
+      summary: Handles the upserting of data into a specified vector index.
+      tags:
+        - vectorsearch
+        - vector_search_indexes
+      description: |-
+        Handles the upserting of data into a specified vector index.
+
+        :param index_name: str
+          Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.
+        :param inputs_json: str
+          JSON string representing the data to be upserted.
+
+        :returns: :class:`UpsertDataVectorIndexResponse`
+      parameters:
+        - name: index_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            Name of the vector index where data is to be upserted. Must be a
+            Direct Vector Access Index.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                inputs_json:
+                  type: string
+                  description: JSON string representing the data to be upserted.
+              required:
+                - inputs_json
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpsertDataVectorIndexResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+components:
+  schemas:
+    ColumnInfo:
+      type: object
+      properties:
+        name:
+          type: string
+        type_text:
+          type: string
+          description: Data type of the column (e.g., "string", "int", "array<float>")
+    CustomTag:
+      type: object
+      properties:
+        key:
+          type: string
+        value:
+          type: string
+          description: '[Optional] Value field for a vector search endpoint tag.'
+      required:
+        - key
+    DeleteDataResult:
+      type: object
+      properties:
+        failed_primary_keys:
+          type: array
+          items:
+            type: string
+        success_row_count:
+          type: integer
+          description: Count of successfully processed rows.
+    DeleteDataVectorIndexResponse:
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/DeleteDataResult'
+        status:
+          $ref: '#/components/schemas/DeleteDataStatus'
+          description: Status of the delete operation.
+    DeleteEndpointResponse:
+      type: object
+      properties: {}
+    DeleteIndexResponse:
+      type: object
+      properties: {}
+    DeltaSyncVectorIndexSpecRequest:
+      type: object
+      properties:
+        columns_to_sync:
+          type: array
+          items:
+            type: string
+        embedding_source_columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmbeddingSourceColumn'
+          description: The columns that contain the embedding source.
+        embedding_vector_columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmbeddingVectorColumn'
+          description: The columns that contain the embedding vectors.
+        embedding_writeback_table:
+          type: string
+          description: >-
+            [Optional] Name of the Delta table to sync the vector index contents
+            and computed embeddings to.
+        pipeline_type:
+          $ref: '#/components/schemas/PipelineType'
+          description: >-
+            Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
+            triggered execution mode, the system stops processing after
+            successfully refreshing the source table in the pipeline once,
+            ensuring the table is updated based on the data available when the
+            update started. - `CONTINUOUS`: If the pipeline uses continuous
+            execution, the pipeline processes new data as it arrives in the
+            source table to keep vector index fresh.
+        source_table:
+          type: string
+          description: The name of the source table.
+    DeltaSyncVectorIndexSpecResponse:
+      type: object
+      properties:
+        embedding_source_columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmbeddingSourceColumn'
+        embedding_vector_columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmbeddingVectorColumn'
+          description: The columns that contain the embedding vectors.
+        embedding_writeback_table:
+          type: string
+          description: >-
+            [Optional] Name of the Delta table to sync the vector index contents
+            and computed embeddings to.
+        pipeline_id:
+          type: string
+          description: The ID of the pipeline that is used to sync the index.
+        pipeline_type:
+          $ref: '#/components/schemas/PipelineType'
+          description: >-
+            Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
+            triggered execution mode, the system stops processing after
+            successfully refreshing the source table in the pipeline once,
+            ensuring the table is updated based on the data available when the
+            update started. - `CONTINUOUS`: If the pipeline uses continuous
+            execution, the pipeline processes new data as it arrives in the
+            source table to keep vector index fresh.
+        source_table:
+          type: string
+          description: The name of the source table.
+    DirectAccessVectorIndexSpec:
+      type: object
+      properties:
+        embedding_source_columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmbeddingSourceColumn'
+        embedding_vector_columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/EmbeddingVectorColumn'
+          description: >-
+            The columns that contain the embedding vectors. The format should be
+            array[double].
+        schema_json:
+          type: string
+          description: >-
+            The schema of the index in JSON format. Supported types are
+            `integer`, `long`, `float`, `double`, `boolean`, `string`, `date`,
+            `timestamp`. Supported types for vector column: `array<float>`,
+            `array<double>`,`.
+    EmbeddingSourceColumn:
+      type: object
+      properties:
+        embedding_model_endpoint_name:
+          type: string
+        model_endpoint_name_for_query:
+          type: string
+          description: >-
+            Name of the embedding model endpoint which, if specified, is used
+            for querying (not ingestion).
+        name:
+          type: string
+          description: Name of the column
+    EmbeddingVectorColumn:
+      type: object
+      properties:
+        embedding_dimension:
+          type: integer
+        name:
+          type: string
+          description: Name of the column
+    EndpointInfo:
+      type: object
+      properties:
+        creation_timestamp:
+          type: integer
+        creator:
+          type: string
+          description: Creator of the endpoint
+        custom_tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomTag'
+          description: The custom tags assigned to the endpoint
+        effective_budget_policy_id:
+          type: string
+          description: The budget policy id applied to the endpoint
+        endpoint_status:
+          $ref: '#/components/schemas/EndpointStatus'
+          description: Current status of the endpoint
+        endpoint_type:
+          $ref: '#/components/schemas/EndpointType'
+          description: Type of endpoint
+        id:
+          type: string
+          description: Unique identifier of the endpoint
+        last_updated_timestamp:
+          type: integer
+          description: Timestamp of last update to the endpoint
+        last_updated_user:
+          type: string
+          description: User who last updated the endpoint
+        name:
+          type: string
+          description: Name of the vector search endpoint
+        num_indexes:
+          type: integer
+          description: Number of indexes on the endpoint
+    EndpointStatus:
+      type: object
+      properties:
+        message:
+          type: string
+          description: Additional status message
+        state:
+          $ref: '#/components/schemas/EndpointStatusState'
+          description: Current state of the endpoint
+      description: Status information of an endpoint
+    ListEndpointResponse:
+      type: object
+      properties:
+        endpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/EndpointInfo'
+        next_page_token:
+          type: string
+          description: >-
+            A token that can be used to get the next page of results. If not
+            present, there are no more results to show.
+    ListValue:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/Value'
+    ListVectorIndexesResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        vector_indexes:
+          type: array
+          items:
+            $ref: '#/components/schemas/MiniVectorIndex'
+    MapStringValueEntry:
+      type: object
+      properties:
+        key:
+          type: string
+          description: Column name.
+        value:
+          $ref: '#/components/schemas/Value'
+          description: Column value, nullable.
+      description: Key-value pair.
+    Metric:
+      type: object
+      properties:
+        labels:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricLabel'
+          description: Metric labels
+        name:
+          type: string
+          description: Metric name
+        percentile:
+          type: number
+          description: Percentile for the metric
+      description: Metric specification
+    MetricLabel:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Label name
+        value:
+          type: string
+          description: Label value
+      description: Label for a metric
+    MetricValue:
+      type: object
+      properties:
+        timestamp:
+          type: integer
+          description: Timestamp of the metric value (milliseconds since epoch)
+        value:
+          type: number
+          description: Metric value
+      description: Single metric value at a specific timestamp
+    MetricValues:
+      type: object
+      properties:
+        metric:
+          $ref: '#/components/schemas/Metric'
+          description: Metric specification
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricValue'
+          description: Time series of metric values
+      description: Collection of metric values for a specific metric
+    MiniVectorIndex:
+      type: object
+      properties:
+        creator:
+          type: string
+        endpoint_name:
+          type: string
+          description: Name of the endpoint associated with the index
+        index_type:
+          $ref: '#/components/schemas/VectorIndexType'
+        name:
+          type: string
+          description: Name of the index
+        primary_key:
+          type: string
+          description: Primary key of the index
+    PatchEndpointBudgetPolicyResponse:
+      type: object
+      properties:
+        effective_budget_policy_id:
+          type: string
+    QueryVectorIndexResponse:
+      type: object
+      properties:
+        manifest:
+          $ref: '#/components/schemas/ResultManifest'
+        next_page_token:
+          type: string
+          description: >-
+            [Optional] Token that can be used in `QueryVectorIndexNextPage` API
+            to get next page of results. If more than 1000 results satisfy the
+            query, they are returned in groups of 1000. Empty value means no
+            more results. The maximum number of results that can be returned is
+            10,000.
+        result:
+          $ref: '#/components/schemas/ResultData'
+          description: Data returned in the query result.
+    RerankerConfig:
+      type: object
+      properties:
+        model:
+          type: string
+        parameters:
+          $ref: '#/components/schemas/RerankerConfigRerankerParameters'
+    RerankerConfigRerankerParameters:
+      type: object
+      properties:
+        columns_to_rerank:
+          type: array
+          items:
+            type: string
+    ResultData:
+      type: object
+      properties:
+        data_array:
+          type: array
+          items:
+            type: array
+            items:
+              type: string
+          description: Data rows returned in the query.
+        row_count:
+          type: integer
+          description: Number of rows in the result set.
+      description: Data returned in the query result.
+    ResultManifest:
+      type: object
+      properties:
+        column_count:
+          type: integer
+          description: Number of columns in the result set.
+        columns:
+          type: array
+          items:
+            $ref: '#/components/schemas/ColumnInfo'
+          description: Information about each column in the result set.
+      description: Metadata about the result set.
+    RetrieveUserVisibleMetricsResponse:
+      type: object
+      properties:
+        metric_values:
+          type: array
+          items:
+            $ref: '#/components/schemas/MetricValues'
+          description: Collection of metric values
+        next_page_token:
+          type: string
+          description: >-
+            A token that can be used to get the next page of results. If not
+            present, there are no more results to show.
+      description: Response containing user-visible metrics
+    ScanVectorIndexResponse:
+      type: object
+      properties:
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Struct'
+          description: List of data entries
+        last_primary_key:
+          type: string
+          description: Primary key of the last entry.
+      description: Response to a scan vector index request.
+    Struct:
+      type: object
+      properties:
+        fields:
+          type: array
+          items:
+            $ref: '#/components/schemas/MapStringValueEntry'
+    SyncIndexResponse:
+      type: object
+      properties: {}
+    UpdateEndpointCustomTagsResponse:
+      type: object
+      properties:
+        custom_tags:
+          type: array
+          items:
+            $ref: '#/components/schemas/CustomTag'
+        name:
+          type: string
+          description: >-
+            The name of the vector search endpoint whose custom tags were
+            updated.
+    UpsertDataResult:
+      type: object
+      properties:
+        failed_primary_keys:
+          type: array
+          items:
+            type: string
+        success_row_count:
+          type: integer
+          description: Count of successfully processed rows.
+    UpsertDataVectorIndexResponse:
+      type: object
+      properties:
+        result:
+          $ref: '#/components/schemas/UpsertDataResult'
+        status:
+          $ref: '#/components/schemas/UpsertDataStatus'
+          description: Status of the upsert operation.
+    Value:
+      type: object
+      properties:
+        bool_value:
+          type: boolean
+        list_value:
+          $ref: '#/components/schemas/ListValue'
+        number_value:
+          type: number
+        string_value:
+          type: string
+        struct_value:
+          $ref: '#/components/schemas/Struct'
+    VectorIndex:
+      type: object
+      properties:
+        creator:
+          type: string
+        delta_sync_index_spec:
+          $ref: '#/components/schemas/DeltaSyncVectorIndexSpecResponse'
+        direct_access_index_spec:
+          $ref: '#/components/schemas/DirectAccessVectorIndexSpec'
+        endpoint_name:
+          type: string
+          description: Name of the endpoint associated with the index
+        index_type:
+          $ref: '#/components/schemas/VectorIndexType'
+        name:
+          type: string
+          description: Name of the index
+        primary_key:
+          type: string
+          description: Primary key of the index
+        status:
+          $ref: '#/components/schemas/VectorIndexStatus'
+    VectorIndexStatus:
+      type: object
+      properties:
+        index_url:
+          type: string
+        indexed_row_count:
+          type: integer
+          description: Number of rows indexed
+        message:
+          type: string
+          description: Message associated with the index status
+        ready:
+          type: boolean
+          description: Whether the index is ready for search
+    DeleteDataStatus:
+      type: string
+      enum:
+        - FAILURE
+        - PARTIAL_SUCCESS
+        - SUCCESS
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    EndpointStatusState:
+      type: string
+      enum:
+        - DELETED
+        - OFFLINE
+        - ONLINE
+        - PROVISIONING
+        - RED_STATE
+        - YELLOW_STATE
+      description: Current state of the endpoint
+    EndpointType:
+      type: string
+      enum:
+        - STANDARD
+      description: Type of endpoint.
+    PipelineType:
+      type: string
+      enum:
+        - CONTINUOUS
+        - TRIGGERED
+      description: >-
+        Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the
+        triggered execution mode, the
+
+        system stops processing after successfully refreshing the source table
+        in the pipeline once,
+
+        ensuring the table is updated based on the data available when the
+        update started. -
+
+        `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline
+        processes new data as it
+
+        arrives in the source table to keep vector index fresh.
+    UpsertDataStatus:
+      type: string
+      enum:
+        - FAILURE
+        - PARTIAL_SUCCESS
+        - SUCCESS
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    VectorIndexType:
+      type: string
+      enum:
+        - DELTA_SYNC
+        - DIRECT_ACCESS
+      description: >-
+        There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index
+        that automatically syncs
+
+        with a source Delta Table, automatically and incrementally updating the
+        index as the underlying
+
+        data in the Delta Table changes. - `DIRECT_ACCESS`: An index that
+        supports direct read and write
+
+        of vectors and metadata through our REST and SDK APIs. With this model,
+        the user manages index
+
+        updates.
+  x-stackQL-resources:
+    vector_search_endpoints:
+      id: databricks_workspace.vectorsearch.vector_search_endpoints
+      name: vector_search_endpoints
+      title: Vector Search Endpoints
+      methods:
+        vector_search_endpoints_create_endpoint:
+          operation:
+            $ref: '#/paths/~1api~12.0~1vector-search~1endpoints/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_endpoints_list_endpoints:
+          operation:
+            $ref: '#/paths/~1api~12.0~1vector-search~1endpoints/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_endpoints_delete_endpoint:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1vector-search~1endpoints~1{endpoint_name}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_endpoints_get_endpoint:
+          operation:
+            $ref: '#/paths/~1api~12.0~1vector-search~1endpoints~1{endpoint_name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_endpoints_retrieve_user_visible_metrics:
+          operation:
+            $ref: '#/paths/~1api~12.0~1vector-search~1endpoints~1{name}~1metrics/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_endpoints_update_endpoint_budget_policy:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1vector-search~1endpoints~1{endpoint_name}~1budget-policy/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_endpoints_update_endpoint_custom_tags:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1vector-search~1endpoints~1{endpoint_name}~1tags/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_get_endpoint
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_list_endpoints
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_retrieve_user_visible_metrics
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_create_endpoint
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_update_endpoint_budget_policy
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_update_endpoint_custom_tags
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_endpoints/methods/vector_search_endpoints_delete_endpoint
+        replace: []
+    vector_search_indexes:
+      id: databricks_workspace.vectorsearch.vector_search_indexes
+      name: vector_search_indexes
+      title: Vector Search Indexes
+      methods:
+        vector_search_indexes_create_index:
+          operation:
+            $ref: '#/paths/~1api~12.0~1vector-search~1indexes/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_indexes_list_indexes:
+          operation:
+            $ref: '#/paths/~1api~12.0~1vector-search~1indexes/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_indexes_delete_data_vector_index:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1delete-data/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_indexes_delete_index:
+          operation:
+            $ref: '#/paths/~1api~12.0~1vector-search~1indexes~1{index_name}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_indexes_get_index:
+          operation:
+            $ref: '#/paths/~1api~12.0~1vector-search~1indexes~1{index_name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_indexes_query_index:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1query/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_indexes_query_next_page:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1query-next-page/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_indexes_scan_index:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1scan/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_indexes_sync_index:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1sync/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        vector_search_indexes_upsert_data_vector_index:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1upsert-data/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_get_index
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_list_indexes
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_query_index
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_query_next_page
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_scan_index
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_sync_index
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_upsert_data_vector_index
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_create_index
+        update: []
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_delete_data_vector_index
+          - $ref: >-
+              #/components/x-stackQL-resources/vector_search_indexes/methods/vector_search_indexes_delete_index
+        replace: []

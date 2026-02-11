@@ -1,0 +1,301 @@
+id: databricks_workspace
+name: databricks_workspace
+version: v00.00.00000
+providerServices:
+  agentbricks:
+    id: agentbricks:v00.00.00000
+    name: agentbricks
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/agentbricks.yaml
+    title: Databricks Agentbricks API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks agentbricks service
+      (workspace-level APIs), generated from the Databricks Python SDK.
+  apps:
+    id: apps:v00.00.00000
+    name: apps
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/apps.yaml
+    title: Databricks Apps API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks apps service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  catalog:
+    id: catalog:v00.00.00000
+    name: catalog
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/catalog.yaml
+    title: Databricks Catalog API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks catalog service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  cleanrooms:
+    id: cleanrooms:v00.00.00000
+    name: cleanrooms
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/cleanrooms.yaml
+    title: Databricks Cleanrooms API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks cleanrooms service
+      (workspace-level APIs), generated from the Databricks Python SDK.
+  compute:
+    id: compute:v00.00.00000
+    name: compute
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/compute.yaml
+    title: Databricks Compute API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks compute service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  dashboards:
+    id: dashboards:v00.00.00000
+    name: dashboards
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/dashboards.yaml
+    title: Databricks Dashboards API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks dashboards service
+      (workspace-level APIs), generated from the Databricks Python SDK.
+  database:
+    id: database:v00.00.00000
+    name: database
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/database.yaml
+    title: Databricks Database API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks database service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  dataquality:
+    id: dataquality:v00.00.00000
+    name: dataquality
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/dataquality.yaml
+    title: Databricks Dataquality API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks dataquality service
+      (workspace-level APIs), generated from the Databricks Python SDK.
+  files:
+    id: files:v00.00.00000
+    name: files
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/files.yaml
+    title: Databricks Files API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks files service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  iam:
+    id: iam:v00.00.00000
+    name: iam
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/iam.yaml
+    title: Databricks Iam API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks iam service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  iamv2:
+    id: iamv2:v00.00.00000
+    name: iamv2
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/iamv2.yaml
+    title: Databricks Iamv2 API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks iamv2 service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  jobs:
+    id: jobs:v00.00.00000
+    name: jobs
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/jobs.yaml
+    title: Databricks Jobs API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks jobs service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  marketplace:
+    id: marketplace:v00.00.00000
+    name: marketplace
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/marketplace.yaml
+    title: Databricks Marketplace API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks marketplace service
+      (workspace-level APIs), generated from the Databricks Python SDK.
+  ml:
+    id: ml:v00.00.00000
+    name: ml
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/ml.yaml
+    title: Databricks Ml API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks ml service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  oauth2:
+    id: oauth2:v00.00.00000
+    name: oauth2
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/oauth2.yaml
+    title: Databricks Oauth2 API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks oauth2 service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  pipelines:
+    id: pipelines:v00.00.00000
+    name: pipelines
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/pipelines.yaml
+    title: Databricks Pipelines API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks pipelines service
+      (workspace-level APIs), generated from the Databricks Python SDK.
+  postgres:
+    id: postgres:v00.00.00000
+    name: postgres
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/postgres.yaml
+    title: Databricks Postgres API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks postgres service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  qualitymonitorv2:
+    id: qualitymonitorv2:v00.00.00000
+    name: qualitymonitorv2
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/qualitymonitorv2.yaml
+    title: Databricks Qualitymonitorv2 API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks qualitymonitorv2 service
+      (workspace-level APIs), generated from the Databricks Python SDK.
+  serving:
+    id: serving:v00.00.00000
+    name: serving
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/serving.yaml
+    title: Databricks Serving API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks serving service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  settings:
+    id: settings:v00.00.00000
+    name: settings
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/settings.yaml
+    title: Databricks Settings API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks settings service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  settingsv2:
+    id: settingsv2:v00.00.00000
+    name: settingsv2
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/settingsv2.yaml
+    title: Databricks Settingsv2 API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks settingsv2 service
+      (workspace-level APIs), generated from the Databricks Python SDK.
+  sharing:
+    id: sharing:v00.00.00000
+    name: sharing
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/sharing.yaml
+    title: Databricks Sharing API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks sharing service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  sql:
+    id: sql:v00.00.00000
+    name: sql
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/sql.yaml
+    title: Databricks Sql API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks sql service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  tags:
+    id: tags:v00.00.00000
+    name: tags
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/tags.yaml
+    title: Databricks Tags API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks tags service (workspace-level
+      APIs), generated from the Databricks Python SDK.
+  vectorsearch:
+    id: vectorsearch:v00.00.00000
+    name: vectorsearch
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/vectorsearch.yaml
+    title: Databricks Vectorsearch API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks vectorsearch service
+      (workspace-level APIs), generated from the Databricks Python SDK.
+  workspace:
+    id: workspace:v00.00.00000
+    name: workspace
+    preferred: true
+    service:
+      $ref: databricks_workspace/v00.00.00000/services/workspace.yaml
+    title: Databricks Workspace API (workspace)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks workspace service
+      (workspace-level APIs), generated from the Databricks Python SDK.
+config:
+  auth:
+    type: oauth2
+    client_id_env_var: DATABRICKS_CLIENT_ID
+    client_secret_env_var: DATABRICKS_CLIENT_SECRET
+    grant_type: client_credentials
+    token_url: >-
+      https://accounts.cloud.databricks.com/oidc/accounts/{{
+      .__env__DATABRICKS_ACCOUNT_ID }}/v1/token
+    scopes:
+      - all-apis

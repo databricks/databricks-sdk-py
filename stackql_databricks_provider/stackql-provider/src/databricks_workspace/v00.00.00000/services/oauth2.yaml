@@ -1,0 +1,552 @@
+openapi: 3.0.0
+info:
+  title: Databricks Oauth2 API (workspace)
+  description: >-
+    OpenAPI specification for the Databricks oauth2 service (workspace-level
+    APIs), generated from the Databricks Python SDK.
+  version: 0.1.0
+servers:
+  url: https://{deployment_name}.cloud.databricks.com
+  variables:
+    deployment_name:
+      description: The Databricks Workspace Deployment Name
+      default: dbc-abcd0123-a1bc
+paths:
+  /api/2.0/accounts/servicePrincipals/{service_principal_id}/credentials/secrets:
+    post:
+      operationId: service_principal_secrets_proxy_create
+      summary: Create a secret for the given service principal.
+      tags:
+        - oauth2
+        - service_principal_secrets_proxy
+      description: |-
+        Create a secret for the given service principal.
+
+        :param service_principal_id: str
+          The service principal ID.
+        :param lifetime: str (optional)
+          The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a
+          default lifetime of 730 days (63072000s).
+
+        :returns: :class:`CreateServicePrincipalSecretResponse`
+      parameters:
+        - name: service_principal_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The service principal ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                lifetime:
+                  type: string
+                  description: >-
+                    The lifetime of the secret in seconds. If this parameter is
+                    not provided, the secret will have a default lifetime of 730
+                    days (63072000s).
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateServicePrincipalSecretResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: service_principal_secrets_proxy_list
+      summary: >-
+        List all secrets associated with the given service principal. This
+        operation only returns information
+      tags:
+        - oauth2
+        - service_principal_secrets_proxy
+      description: >-
+        List all secrets associated with the given service principal. This
+        operation only returns information
+
+        about the secrets themselves and does not include the secret values.
+
+
+        :param service_principal_id: str
+          The service principal ID.
+        :param page_size: int (optional)
+
+        :param page_token: str (optional)
+          An opaque page token which was the `next_page_token` in the response of the previous request to list
+          the secrets for this service principal. Provide this token to retrieve the next page of secret
+          entries. When providing a `page_token`, all other parameters provided to the request must match the
+          previous request. To list all of the secrets for a service principal, it is necessary to continue
+          requesting pages of entries until the response contains no `next_page_token`. Note that the number
+          of entries returned must not be used to determine when the listing is complete.
+
+        :returns: Iterator over :class:`SecretInfo`
+      parameters:
+        - name: service_principal_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The service principal ID.
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            :param page_token: str (optional) An opaque page token which was the
+            `next_page_token` in the response of the previous request to list
+            the secrets for this service principal. Provide this token to
+            retrieve the next page of secret entries. When providing a
+            `page_token`, all other parameters provided to the request must
+            match the previous request. To list all of the secrets for a service
+            principal, it is necessary to continue requesting pages of entries
+            until the response contains no `next_page_token`. Note that the
+            number of entries returned must not be used to determine when the
+            listing is complete.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[SecretInfo]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/accounts/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}:
+    delete:
+      operationId: service_principal_secrets_proxy_delete
+      summary: Delete a secret from the given service principal.
+      tags:
+        - oauth2
+        - service_principal_secrets_proxy
+      description: |-
+        Delete a secret from the given service principal.
+
+        :param service_principal_id: str
+          The service principal ID.
+        :param secret_id: str
+          The secret ID.
+      parameters:
+        - name: service_principal_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The service principal ID.
+        - name: secret_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The secret ID.
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+components:
+  schemas:
+    CreateCustomAppIntegrationOutput:
+      type: object
+      properties:
+        client_id:
+          type: string
+        client_secret:
+          type: string
+          description: >-
+            OAuth client-secret generated by the Databricks. If this is a
+            confidential OAuth app client-secret will be generated.
+        integration_id:
+          type: string
+          description: Unique integration id for the custom OAuth app
+    CreatePublishedAppIntegrationOutput:
+      type: object
+      properties:
+        integration_id:
+          type: string
+    CreateServicePrincipalSecretResponse:
+      type: object
+      properties:
+        create_time:
+          type: string
+        expire_time:
+          type: string
+          description: >-
+            UTC time when the secret will expire. If the field is not present,
+            the secret does not expire.
+        id:
+          type: string
+          description: ID of the secret
+        secret:
+          type: string
+          description: Secret Value
+        secret_hash:
+          type: string
+          description: Secret Hash
+        status:
+          type: string
+          description: Status of the secret
+        update_time:
+          type: string
+          description: UTC time when the secret was updated
+    DeleteCustomAppIntegrationOutput:
+      type: object
+      properties: {}
+    DeletePublishedAppIntegrationOutput:
+      type: object
+      properties: {}
+    FederationPolicy:
+      type: object
+      properties:
+        create_time:
+          type: string
+        description:
+          type: string
+          description: Description of the federation policy.
+        name:
+          type: string
+          description: >-
+            Resource name for the federation policy. Example values include
+            `accounts/<account-id>/federationPolicies/my-federation-policy` for
+            Account Federation Policies, and
+            `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy`
+            for Service Principal Federation Policies. Typically an output
+            parameter, which does not need to be specified in create or update
+            requests. If specified in a request, must match the value in the
+            request URL.
+        oidc_policy:
+          $ref: '#/components/schemas/OidcFederationPolicy'
+        policy_id:
+          type: string
+          description: The ID of the federation policy. Output only.
+        service_principal_id:
+          type: integer
+          description: >-
+            The service principal ID that this federation policy applies to.
+            Output only. Only set for service principal federation policies.
+        uid:
+          type: string
+          description: Unique, immutable id of the federation policy.
+        update_time:
+          type: string
+          description: Last update time of the federation policy.
+    GetCustomAppIntegrationOutput:
+      type: object
+      properties:
+        client_id:
+          type: string
+        confidential:
+          type: boolean
+          description: >-
+            This field indicates whether an OAuth client secret is required to
+            authenticate this client.
+        create_time:
+          type: string
+        created_by:
+          type: integer
+        creator_username:
+          type: string
+        integration_id:
+          type: string
+          description: ID of this custom app
+        name:
+          type: string
+          description: The display name of the custom OAuth app
+        redirect_urls:
+          type: array
+          items:
+            type: string
+          description: List of OAuth redirect urls
+        scopes:
+          type: array
+          items:
+            type: string
+        token_access_policy:
+          $ref: '#/components/schemas/TokenAccessPolicy'
+          description: Token access policy
+        user_authorized_scopes:
+          type: array
+          items:
+            type: string
+          description: >-
+            Scopes that will need to be consented by end user to mint the access
+            token. If the user does not authorize the access token will not be
+            minted. Must be a subset of scopes.
+    GetCustomAppIntegrationsOutput:
+      type: object
+      properties:
+        apps:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetCustomAppIntegrationOutput'
+        next_page_token:
+          type: string
+    GetPublishedAppIntegrationOutput:
+      type: object
+      properties:
+        app_id:
+          type: string
+        create_time:
+          type: string
+        created_by:
+          type: integer
+        integration_id:
+          type: string
+          description: Unique integration id for the published OAuth app
+        name:
+          type: string
+          description: Display name of the published OAuth app
+        token_access_policy:
+          $ref: '#/components/schemas/TokenAccessPolicy'
+          description: Token access policy
+    GetPublishedAppIntegrationsOutput:
+      type: object
+      properties:
+        apps:
+          type: array
+          items:
+            $ref: '#/components/schemas/GetPublishedAppIntegrationOutput'
+        next_page_token:
+          type: string
+    GetPublishedAppsOutput:
+      type: object
+      properties:
+        apps:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublishedAppOutput'
+        next_page_token:
+          type: string
+          description: >-
+            A token that can be used to get the next page of results. If not
+            present, there are no more results to show.
+    ListFederationPoliciesResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        policies:
+          type: array
+          items:
+            $ref: '#/components/schemas/FederationPolicy'
+    ListServicePrincipalSecretsResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        secrets:
+          type: array
+          items:
+            $ref: '#/components/schemas/SecretInfo'
+          description: List of the secrets
+    OidcFederationPolicy:
+      type: object
+      properties:
+        audiences:
+          type: array
+          items:
+            type: string
+          description: >-
+            The allowed token audiences, as specified in the 'aud' claim of
+            federated tokens. The audience identifier is intended to represent
+            the recipient of the token. Can be any non-empty string value. As
+            long as the audience in the token matches at least one audience in
+            the policy, the token is considered a match. If audiences is
+            unspecified, defaults to your Databricks account id.
+        issuer:
+          type: string
+          description: >-
+            The required token issuer, as specified in the 'iss' claim of
+            federated tokens.
+        jwks_json:
+          type: string
+          description: >-
+            The public keys used to validate the signature of federated tokens,
+            in JWKS format. Most use cases should not need to specify this
+            field. If jwks_uri and jwks_json are both unspecified (recommended),
+            Databricks automatically fetches the public keys from your issuer’s
+            well known endpoint. Databricks strongly recommends relying on your
+            issuer’s well known endpoint for discovering public keys.
+        jwks_uri:
+          type: string
+          description: >-
+            URL of the public keys used to validate the signature of federated
+            tokens, in JWKS format. Most use cases should not need to specify
+            this field. If jwks_uri and jwks_json are both unspecified
+            (recommended), Databricks automatically fetches the public keys from
+            your issuer’s well known endpoint. Databricks strongly recommends
+            relying on your issuer’s well known endpoint for discovering public
+            keys.
+        subject:
+          type: string
+          description: >-
+            The required token subject, as specified in the subject claim of
+            federated tokens. Must be specified for service principal federation
+            policies. Must not be specified for account federation policies.
+        subject_claim:
+          type: string
+          description: >-
+            The claim that contains the subject of the token. If unspecified,
+            the default value is 'sub'.
+      description: >-
+        Specifies the policy to use for validating OIDC claims in your federated
+        tokens.
+    PublishedAppOutput:
+      type: object
+      properties:
+        app_id:
+          type: string
+        client_id:
+          type: string
+          description: >-
+            Client ID of the published OAuth app. It is the client_id in the
+            OAuth flow
+        description:
+          type: string
+          description: Description of the published OAuth app.
+        is_confidential_client:
+          type: boolean
+          description: >-
+            Whether the published OAuth app is a confidential client. It is
+            always false for published OAuth apps.
+        name:
+          type: string
+          description: The display name of the published OAuth app.
+        redirect_urls:
+          type: array
+          items:
+            type: string
+          description: Redirect URLs of the published OAuth app.
+        scopes:
+          type: array
+          items:
+            type: string
+          description: Required scopes for the published OAuth app.
+    SecretInfo:
+      type: object
+      properties:
+        create_time:
+          type: string
+        expire_time:
+          type: string
+          description: >-
+            UTC time when the secret will expire. If the field is not present,
+            the secret does not expire.
+        id:
+          type: string
+          description: ID of the secret
+        secret_hash:
+          type: string
+          description: Secret Hash
+        status:
+          type: string
+          description: Status of the secret
+        update_time:
+          type: string
+          description: UTC time when the secret was updated
+    TokenAccessPolicy:
+      type: object
+      properties:
+        absolute_session_lifetime_in_minutes:
+          type: integer
+        access_token_ttl_in_minutes:
+          type: integer
+          description: access token time to live in minutes
+        enable_single_use_refresh_tokens:
+          type: boolean
+          description: >-
+            Whether to enable single-use refresh tokens (refresh token
+            rotation). If this feature is enabled, upon successfully getting a
+            new access token using a refresh token, Databricks will issue a new
+            refresh token along with the access token in the response and
+            invalidate the old refresh token. The client should use the new
+            refresh token to get access tokens in future requests.
+        refresh_token_ttl_in_minutes:
+          type: integer
+          description: >-
+            Refresh token time to live in minutes. When single-use refresh
+            tokens are enabled, this represents the TTL of an individual refresh
+            token. If the refresh token is used before it expires, a new one is
+            issued with a renewed individual TTL.
+    UpdateCustomAppIntegrationOutput:
+      type: object
+      properties: {}
+    UpdatePublishedAppIntegrationOutput:
+      type: object
+      properties: {}
+  x-stackQL-resources:
+    service_principal_secrets_proxy:
+      id: databricks_workspace.oauth2.service_principal_secrets_proxy
+      name: service_principal_secrets_proxy
+      title: Service Principal Secrets Proxy
+      methods:
+        service_principal_secrets_proxy_create:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1servicePrincipals~1{service_principal_id}~1credentials~1secrets/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        service_principal_secrets_proxy_list:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1servicePrincipals~1{service_principal_id}~1credentials~1secrets/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        service_principal_secrets_proxy_delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1servicePrincipals~1{service_principal_id}~1credentials~1secrets~1{secret_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/service_principal_secrets_proxy/methods/service_principal_secrets_proxy_list
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/service_principal_secrets_proxy/methods/service_principal_secrets_proxy_create
+        update: []
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/service_principal_secrets_proxy/methods/service_principal_secrets_proxy_delete
+        replace: []

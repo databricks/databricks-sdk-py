@@ -1,0 +1,103 @@
+id: databricks_account
+name: databricks_account
+version: v00.00.00000
+providerServices:
+  billing:
+    id: billing:v00.00.00000
+    name: billing
+    preferred: true
+    service:
+      $ref: databricks_account/v00.00.00000/services/billing.yaml
+    title: Databricks Billing API (account)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks billing service (account-level
+      APIs), generated from the Databricks Python SDK.
+  catalog:
+    id: catalog:v00.00.00000
+    name: catalog
+    preferred: true
+    service:
+      $ref: databricks_account/v00.00.00000/services/catalog.yaml
+    title: Databricks Catalog API (account)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks catalog service (account-level
+      APIs), generated from the Databricks Python SDK.
+  iam:
+    id: iam:v00.00.00000
+    name: iam
+    preferred: true
+    service:
+      $ref: databricks_account/v00.00.00000/services/iam.yaml
+    title: Databricks Iam API (account)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks iam service (account-level APIs),
+      generated from the Databricks Python SDK.
+  iamv2:
+    id: iamv2:v00.00.00000
+    name: iamv2
+    preferred: true
+    service:
+      $ref: databricks_account/v00.00.00000/services/iamv2.yaml
+    title: Databricks Iamv2 API (account)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks iamv2 service (account-level
+      APIs), generated from the Databricks Python SDK.
+  oauth2:
+    id: oauth2:v00.00.00000
+    name: oauth2
+    preferred: true
+    service:
+      $ref: databricks_account/v00.00.00000/services/oauth2.yaml
+    title: Databricks Oauth2 API (account)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks oauth2 service (account-level
+      APIs), generated from the Databricks Python SDK.
+  provisioning:
+    id: provisioning:v00.00.00000
+    name: provisioning
+    preferred: true
+    service:
+      $ref: databricks_account/v00.00.00000/services/provisioning.yaml
+    title: Databricks Provisioning API (account)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks provisioning service
+      (account-level APIs), generated from the Databricks Python SDK.
+  settings:
+    id: settings:v00.00.00000
+    name: settings
+    preferred: true
+    service:
+      $ref: databricks_account/v00.00.00000/services/settings.yaml
+    title: Databricks Settings API (account)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks settings service (account-level
+      APIs), generated from the Databricks Python SDK.
+  settingsv2:
+    id: settingsv2:v00.00.00000
+    name: settingsv2
+    preferred: true
+    service:
+      $ref: databricks_account/v00.00.00000/services/settingsv2.yaml
+    title: Databricks Settingsv2 API (account)
+    version: v00.00.00000
+    description: >-
+      OpenAPI specification for the Databricks settingsv2 service (account-level
+      APIs), generated from the Databricks Python SDK.
+config:
+  auth:
+    type: oauth2
+    client_id_env_var: DATABRICKS_CLIENT_ID
+    client_secret_env_var: DATABRICKS_CLIENT_SECRET
+    grant_type: client_credentials
+    token_url: >-
+      https://accounts.cloud.databricks.com/oidc/accounts/{{
+      .__env__DATABRICKS_ACCOUNT_ID }}/v1/token
+    scopes:
+      - all-apis

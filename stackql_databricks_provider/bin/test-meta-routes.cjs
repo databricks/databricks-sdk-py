@@ -168,7 +168,7 @@ async function testMetaRoutes() {
     
     const providerExists = providers && providers.some(p => p.name === provider);
     if (!providerExists) {
-      console.error(`Error: Provider '${provider}' not found in registry`);
+      console.error(`❌ Error: Provider '${provider}' not found in registry`);
       if (providers && providers.length > 0) {
         console.log("Available providers:");
         providers.forEach(p => console.log(`  - ${p.name}`));
@@ -181,7 +181,7 @@ async function testMetaRoutes() {
     const services = await executeQuery(servicesQuery, "Getting services");
     
     if (!services || services.length === 0) {
-      console.error(`Error: No services found for provider '${provider}'`);
+      console.error(`❌ Error: No services found for provider '${provider}'`);
       process.exit(1);
     }
     
@@ -198,7 +198,7 @@ async function testMetaRoutes() {
       const resources = await executeQuery(resourcesQuery, `Getting resources for ${serviceName}`);
      
       if (!resources || resources.length === 0) {
-        console.error(`Error: No resources found for ${provider}.${serviceName}`);
+        console.error(`❌ Error: No resources found for ${provider}.${serviceName}`);
         process.exit(1);
       }
       
@@ -222,7 +222,7 @@ async function testMetaRoutes() {
         const methodsQuery = `SHOW EXTENDED METHODS IN ${resourceFQRN}`;
         const methods = await executeQuery(methodsQuery, `  Getting methods for ${resourceName}`);
         if (!methods || methods.length === 0) {
-          console.error(`Error: Resource ${resourceName} has no methods`);
+          console.error(`❌ Error: Resource ${resourceName} has no methods`);
           process.exit(1);
         } else {
           console.log(`Found ${methods.length} methods for ${resourceName}`);
@@ -275,7 +275,7 @@ async function testMetaRoutes() {
           for (const method of methods) {
             const signature = JSON.stringify(method.requiredParams);
             if (seenSignatures.has(signature)) {
-              console.error(`Error: Duplicate method signature found for ${verb} in ${resourceData.service}.${resourceName}:`, method);
+              console.error(`❌ Error: Duplicate method signature found for ${verb} in ${resourceData.service}.${resourceName}:`, method);
               process.exit(1);
             }
             seenSignatures.add(signature);
@@ -296,11 +296,11 @@ async function testMetaRoutes() {
             if (extendedColumns !== null && extendedColumns.length > 0) {
               console.log(`Found ${extendedColumns.length} extended columns for ${resourceName}`);
             } else {
-              console.error(`ERROR: No columns found for ${resourceName}`);
+              console.error(`❌ Error: No columns found for ${resourceName}`);
               process.exit(1);
             }
           } catch (error) {
-            console.error(`Error describing extended ${resourceName}:`, error.message);
+            console.error(`❌ Error describing extended ${resourceName}:`, error.message);
             process.exit(1);
           }
         }

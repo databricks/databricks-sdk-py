@@ -1,0 +1,1562 @@
+openapi: 3.0.0
+info:
+  title: Databricks Dataquality API (workspace)
+  description: >-
+    OpenAPI specification for the Databricks dataquality service
+    (workspace-level APIs), generated from the Databricks Python SDK.
+  version: 0.1.0
+servers:
+  url: https://{deployment_name}.cloud.databricks.com
+  variables:
+    deployment_name:
+      description: The Databricks Workspace Deployment Name
+      default: dbc-abcd0123-a1bc
+paths:
+  /api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}/cancel:
+    post:
+      operationId: data_quality_cancel_refresh
+      summary: >-
+        Cancels a data quality monitor refresh. Currently only supported for the
+        `table` `object_type`. The
+      tags:
+        - dataquality
+        - data_quality
+      description: >-
+        Cancels a data quality monitor refresh. Currently only supported for the
+        `table` `object_type`. The
+
+        call must be made in the same workspace as where the monitor was
+        created.
+
+
+        The caller must have either of the following sets of permissions: 1.
+        **MANAGE** and **USE_CATALOG** on
+
+        the table's parent catalog. 2. **USE_CATALOG** on the table's parent
+        catalog, and **MANAGE** and
+
+        **USE_SCHEMA** on the table's parent schema. 3. **USE_CATALOG** on the
+        table's parent catalog,
+
+        **USE_SCHEMA** on the table's parent schema, and **MANAGE** on the
+        table.
+
+
+        :param object_type: str
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
+        :param object_id: str
+          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`.
+
+          Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog
+          Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field.
+
+          Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog
+          Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field.
+
+          [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+          [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+          [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
+        :param refresh_id: int
+          Unique id of the refresh operation.
+
+        :returns: :class:`CancelRefreshResponse`
+      parameters:
+        - name: object_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema` or `table`.
+        - name: object_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+        - name: refresh_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Unique id of the refresh operation.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CancelRefreshResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/data-quality/v1/monitors:
+    post:
+      operationId: data_quality_create_monitor
+      summary: >-
+        Create a data quality monitor on a Unity Catalog object. The caller must
+        provide either
+      tags:
+        - dataquality
+        - data_quality
+      description: >-
+        Create a data quality monitor on a Unity Catalog object. The caller must
+        provide either
+
+        `anomaly_detection_config` for a schema monitor or
+        `data_profiling_config` for a table monitor.
+
+
+        For the `table` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the table's parent catalog,
+        **USE_SCHEMA** on the table's parent
+
+        schema, and **SELECT** on the table 2. **USE_CATALOG** on the table's
+        parent catalog, **MANAGE** and
+
+        **USE_SCHEMA** on the table's parent schema, and **SELECT** on the
+        table. 3. **USE_CATALOG** on the
+
+        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and
+        **MANAGE** and **SELECT** on
+
+        the table.
+
+
+        Workspace assets, such as the dashboard, will be created in the
+        workspace where this call was made.
+
+
+        For the `schema` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the schema's parent catalog. 2.
+        **USE_CATALOG** on the schema's
+
+        parent catalog, and **MANAGE** and **USE_SCHEMA** on the schema.
+
+
+        :param monitor: :class:`Monitor`
+          The monitor to create.
+
+        :returns: :class:`Monitor`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                monitor:
+                  type: string
+                  description: The monitor to create.
+              required:
+                - monitor
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitor'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: data_quality_list_monitor
+      summary: (Unimplemented) List data quality monitors.
+      tags:
+        - dataquality
+        - data_quality
+      description: |-
+        (Unimplemented) List data quality monitors.
+
+        :param page_size: int (optional)
+        :param page_token: str (optional)
+
+        :returns: Iterator over :class:`Monitor`
+      parameters:
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ':param page_token: str (optional)'
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[Monitor]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes:
+    post:
+      operationId: data_quality_create_refresh
+      summary: >-
+        Creates a refresh. Currently only supported for the `table`
+        `object_type`. The call must be made in
+      tags:
+        - dataquality
+        - data_quality
+      description: >-
+        Creates a refresh. Currently only supported for the `table`
+        `object_type`. The call must be made in
+
+        the same workspace as where the monitor was created.
+
+
+        The caller must have either of the following sets of permissions: 1.
+        **MANAGE** and **USE_CATALOG** on
+
+        the table's parent catalog. 2. **USE_CATALOG** on the table's parent
+        catalog, and **MANAGE** and
+
+        **USE_SCHEMA** on the table's parent schema. 3. **USE_CATALOG** on the
+        table's parent catalog,
+
+        **USE_SCHEMA** on the table's parent schema, and **MANAGE** on the
+        table.
+
+
+        :param object_type: str
+          The type of the monitored object. Can be one of the following: `schema`or `table`.
+        :param object_id: str
+          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`.
+
+          Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog
+          Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field.
+
+          Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog
+          Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field.
+
+          [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+          [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+          [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
+        :param refresh: :class:`Refresh`
+          The refresh to create
+
+        :returns: :class:`Refresh`
+      parameters:
+        - name: object_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema`or `table`.
+        - name: object_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh:
+                  type: string
+                  description: The refresh to create
+              required:
+                - refresh
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refresh'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: data_quality_list_refresh
+      summary: >-
+        List data quality monitor refreshes. The call must be made in the same
+        workspace as where the monitor
+      tags:
+        - dataquality
+        - data_quality
+      description: >-
+        List data quality monitor refreshes. The call must be made in the same
+        workspace as where the monitor
+
+        was created.
+
+
+        For the `table` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the table's parent catalog. 2.
+        **USE_CATALOG** on the table's parent
+
+        catalog, and **MANAGE** and **USE_SCHEMA** on the table's parent schema.
+        3. **USE_CATALOG** on the
+
+        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and
+        **SELECT** on the table.
+
+
+        For the `schema` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the schema's parent catalog. 2.
+        **USE_CATALOG** on the schema's
+
+        parent catalog, and **USE_SCHEMA** on the schema.
+
+
+        :param object_type: str
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
+        :param object_id: str
+          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`.
+
+          Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog
+          Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field.
+
+          Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog
+          Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field.
+
+          [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+          [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+          [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
+        :param page_size: int (optional)
+
+        :param page_token: str (optional)
+
+
+        :returns: Iterator over :class:`Refresh`
+      parameters:
+        - name: object_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema` or `table`.
+        - name: object_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: ':param page_token: str (optional)'
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[Refresh]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/data-quality/v1/monitors/{object_type}/{object_id}:
+    delete:
+      operationId: data_quality_delete_monitor
+      summary: Delete a data quality monitor on Unity Catalog object.
+      tags:
+        - dataquality
+        - data_quality
+      description: >-
+        Delete a data quality monitor on Unity Catalog object.
+
+
+        For the `table` `object_type`, the caller must have either of the
+        following sets of permissions:
+
+        **MANAGE** and **USE_CATALOG** on the table's parent catalog.
+        **USE_CATALOG** on the table's parent
+
+        catalog, and **MANAGE** and **USE_SCHEMA** on the table's parent schema.
+        **USE_CATALOG** on the
+
+        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and
+        **MANAGE** on the table.
+
+
+        Note that the metric tables and dashboard will not be deleted as part of
+        this call; those assets must
+
+        be manually cleaned up (if desired).
+
+
+        For the `schema` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the schema's parent catalog. 2.
+        **USE_CATALOG** on the schema's
+
+        parent catalog, and **MANAGE** and **USE_SCHEMA** on the schema.
+
+
+        :param object_type: str
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
+        :param object_id: str
+          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`.
+
+          Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog
+          Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field.
+
+          Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog
+          Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field.
+
+          [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+          [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+          [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
+      parameters:
+        - name: object_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema` or `table`.
+        - name: object_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: data_quality_get_monitor
+      summary: Read a data quality monitor on a Unity Catalog object.
+      tags:
+        - dataquality
+        - data_quality
+      description: >-
+        Read a data quality monitor on a Unity Catalog object.
+
+
+        For the `table` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the table's parent catalog. 2.
+        **USE_CATALOG** on the table's parent
+
+        catalog, and **MANAGE** and **USE_SCHEMA** on the table's parent schema.
+        3. **USE_CATALOG** on the
+
+        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and
+        **SELECT** on the table.
+
+
+        For the `schema` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the schema's parent catalog. 2.
+        **USE_CATALOG** on the schema's
+
+        parent catalog, and **USE_SCHEMA** on the schema.
+
+
+        The returned information includes configuration values on the entity and
+        parent entity as well as
+
+        information on assets created by the monitor. Some information (e.g.
+        dashboard) may be filtered out if
+
+        the caller is in a different workspace than where the monitor was
+        created.
+
+
+        :param object_type: str
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
+        :param object_id: str
+          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`.
+
+          Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog
+          Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field.
+
+          Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog
+          Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field.
+
+          [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+          [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+          [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
+
+        :returns: :class:`Monitor`
+      parameters:
+        - name: object_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema` or `table`.
+        - name: object_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitor'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    patch:
+      operationId: data_quality_update_monitor
+      summary: Update a data quality monitor on Unity Catalog object.
+      tags:
+        - dataquality
+        - data_quality
+      description: >-
+        Update a data quality monitor on Unity Catalog object.
+
+
+        For the `table` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the table's parent catalog. 2.
+        **USE_CATALOG** on the table's parent
+
+        catalog, and **MANAGE** and **USE_SCHEMA** on the table's parent schema.
+        3. **USE_CATALOG** on the
+
+        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and
+        **MANAGE** on the table.
+
+
+        For the `schema` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the schema's parent catalog. 2.
+        **USE_CATALOG** on the schema's
+
+        parent catalog, and **MANAGE** and **USE_SCHEMA** on the schema.
+
+
+        :param object_type: str
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
+        :param object_id: str
+          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`.
+
+          Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog
+          Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field.
+
+          Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog
+          Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field.
+
+          [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+          [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+          [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
+        :param monitor: :class:`Monitor`
+          The monitor to update.
+        :param update_mask: str
+          The field mask to specify which fields to update as a comma-separated list. Example value:
+          `data_profiling_config.custom_metrics,data_profiling_config.schedule.quartz_cron_expression`
+
+        :returns: :class:`Monitor`
+      parameters:
+        - name: object_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema` or `table`.
+        - name: object_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+        - name: update_mask
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >-
+            The field mask to specify which fields to update as a
+            comma-separated list. Example value:
+            `data_profiling_config.custom_metrics,data_profiling_config.schedule.quartz_cron_expression`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                monitor:
+                  type: string
+                  description: The monitor to update.
+              required:
+                - monitor
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Monitor'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}:
+    delete:
+      operationId: data_quality_delete_refresh
+      summary: (Unimplemented) Delete a refresh
+      tags:
+        - dataquality
+        - data_quality
+      description: |-
+        (Unimplemented) Delete a refresh
+
+        :param object_type: str
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
+        :param object_id: str
+          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`.
+
+          Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog
+          Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field.
+
+          Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog
+          Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field.
+
+          [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+          [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+          [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
+        :param refresh_id: int
+          Unique id of the refresh operation.
+      parameters:
+        - name: object_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema` or `table`.
+        - name: object_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+        - name: refresh_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Unique id of the refresh operation.
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: data_quality_get_refresh
+      summary: >-
+        Get data quality monitor refresh. The call must be made in the same
+        workspace as where the monitor was
+      tags:
+        - dataquality
+        - data_quality
+      description: >-
+        Get data quality monitor refresh. The call must be made in the same
+        workspace as where the monitor was
+
+        created.
+
+
+        For the `table` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the table's parent catalog. 2.
+        **USE_CATALOG** on the table's parent
+
+        catalog, and **MANAGE** and **USE_SCHEMA** on the table's parent schema.
+        3. **USE_CATALOG** on the
+
+        table's parent catalog, **USE_SCHEMA** on the table's parent schema, and
+        **SELECT** on the table.
+
+
+        For the `schema` `object_type`, the caller must have either of the
+        following sets of permissions: 1.
+
+        **MANAGE** and **USE_CATALOG** on the schema's parent catalog. 2.
+        **USE_CATALOG** on the schema's
+
+        parent catalog, and **USE_SCHEMA** on the schema.
+
+
+        :param object_type: str
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
+        :param object_id: str
+          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`.
+
+          Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog
+          Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field.
+
+          Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog
+          Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field.
+
+          [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+          [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+          [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
+        :param refresh_id: int
+          Unique id of the refresh operation.
+
+        :returns: :class:`Refresh`
+      parameters:
+        - name: object_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema` or `table`.
+        - name: object_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+        - name: refresh_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Unique id of the refresh operation.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refresh'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    patch:
+      operationId: data_quality_update_refresh
+      summary: (Unimplemented) Update a refresh
+      tags:
+        - dataquality
+        - data_quality
+      description: |-
+        (Unimplemented) Update a refresh
+
+        :param object_type: str
+          The type of the monitored object. Can be one of the following: `schema` or `table`.
+        :param object_id: str
+          The UUID of the request object. It is `schema_id` for `schema`, and `table_id` for `table`.
+
+          Find the `schema_id` from either: 1. The [schema_id] of the `Schemas` resource. 2. In [Catalog
+          Explorer] > select the `schema` > go to the `Details` tab > the `Schema ID` field.
+
+          Find the `table_id` from either: 1. The [table_id] of the `Tables` resource. 2. In [Catalog
+          Explorer] > select the `table` > go to the `Details` tab > the `Table ID` field.
+
+          [Catalog Explorer]: https://docs.databricks.com/aws/en/catalog-explorer/
+          [schema_id]: https://docs.databricks.com/api/workspace/schemas/get#schema_id
+          [table_id]: https://docs.databricks.com/api/workspace/tables/get#table_id
+        :param refresh_id: int
+          Unique id of the refresh operation.
+        :param refresh: :class:`Refresh`
+          The refresh to update.
+        :param update_mask: str
+          The field mask to specify which fields to update.
+
+        :returns: :class:`Refresh`
+      parameters:
+        - name: object_type
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema` or `table`.
+        - name: object_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+        - name: refresh_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: Unique id of the refresh operation.
+        - name: update_mask
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The field mask to specify which fields to update.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                refresh:
+                  type: string
+                  description: The refresh to update.
+              required:
+                - refresh
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Refresh'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+components:
+  schemas:
+    AnomalyDetectionConfig:
+      type: object
+      properties:
+        excluded_table_full_names:
+          type: array
+          items:
+            type: string
+          description: >-
+            List of fully qualified table names to exclude from anomaly
+            detection.
+      description: Anomaly Detection Configurations.
+    CancelRefreshResponse:
+      type: object
+      properties:
+        refresh:
+          $ref: '#/components/schemas/Refresh'
+          description: The refresh to cancel.
+      description: Response to cancelling a refresh.
+    CronSchedule:
+      type: object
+      properties:
+        quartz_cron_expression:
+          type: string
+          description: >-
+            The expression that determines when to run the monitor. See
+            [examples]. [examples]:
+            https://www.quartz-scheduler.org/documentation/quartz-2.3.0/tutorials/crontrigger.html
+        timezone_id:
+          type: string
+          description: >-
+            A Java timezone id. The schedule for a job will be resolved with
+            respect to this timezone. See `Java TimeZone
+            <http://docs.oracle.com/javase/7/docs/api/java/util/TimeZone.html>`_
+            for details. The timezone id (e.g., ``America/Los_Angeles``) in
+            which to evaluate the quartz expression.
+        pause_status:
+          $ref: '#/components/schemas/CronSchedulePauseStatus'
+          description: >-
+            Read only field that indicates whether the schedule is paused or
+            not.
+      required:
+        - quartz_cron_expression
+        - timezone_id
+      description: The data quality monitoring workflow cron schedule.
+    DataProfilingConfig:
+      type: object
+      properties:
+        output_schema_id:
+          type: string
+          description: ID of the schema where output tables are created.
+        assets_dir:
+          type: string
+          description: >-
+            Field for specifying the absolute path to a custom directory to
+            store data-monitoring assets. Normally prepopulated to a default
+            user location via UI and Python APIs.
+        baseline_table_name:
+          type: string
+          description: >-
+            Baseline table name. Baseline data is used to compute drift from the
+            data in the monitored `table_name`. The baseline table and the
+            monitored table shall have the same schema.
+        custom_metrics:
+          type: array
+          items:
+            $ref: '#/components/schemas/DataProfilingCustomMetric'
+          description: Custom metrics.
+        dashboard_id:
+          type: string
+          description: >-
+            Id of dashboard that visualizes the computed metrics. This can be
+            empty if the monitor is in PENDING state.
+        drift_metrics_table_name:
+          type: string
+          description: >-
+            Table that stores drift metrics data. Format:
+            `catalog.schema.table_name`.
+        effective_warehouse_id:
+          type: string
+          description: The warehouse for dashboard creation
+        inference_log:
+          $ref: '#/components/schemas/InferenceLogConfig'
+          description: '`Analysis Configuration` for monitoring inference log tables.'
+        latest_monitor_failure_message:
+          type: string
+          description: The latest error message for a monitor failure.
+        monitor_version:
+          type: integer
+          description: >-
+            Represents the current monitor configuration version in use. The
+            version will be represented in a numeric fashion (1,2,3...). The
+            field has flexibility to take on negative values, which can indicate
+            corrupted monitor_version numbers.
+        monitored_table_name:
+          type: string
+          description: 'Unity Catalog table to monitor. Format: `catalog.schema.table_name`'
+        notification_settings:
+          $ref: '#/components/schemas/NotificationSettings'
+          description: Field for specifying notification settings.
+        profile_metrics_table_name:
+          type: string
+          description: >-
+            Table that stores profile metrics data. Format:
+            `catalog.schema.table_name`.
+        schedule:
+          $ref: '#/components/schemas/CronSchedule'
+          description: The cron schedule.
+        skip_builtin_dashboard:
+          type: boolean
+          description: >-
+            Whether to skip creating a default dashboard summarizing data
+            quality metrics.
+        slicing_exprs:
+          type: array
+          items:
+            type: string
+          description: >-
+            List of column expressions to slice data with for targeted analysis.
+            The data is grouped by each expression independently, resulting in a
+            separate slice for each predicate and its complements. For example
+            `slicing_exprs=[“col_1”, “col_2 > 10”]` will generate the following
+            slices: two slices for `col_2 > 10` (True and False), and one slice
+            per unique value in `col1`. For high-cardinality columns, only the
+            top 100 unique values by frequency will generate slices.
+        snapshot:
+          $ref: '#/components/schemas/SnapshotConfig'
+          description: '`Analysis Configuration` for monitoring snapshot tables.'
+        status:
+          $ref: '#/components/schemas/DataProfilingStatus'
+          description: The data profiling monitor status.
+        time_series:
+          $ref: '#/components/schemas/TimeSeriesConfig'
+          description: '`Analysis Configuration` for monitoring time series tables.'
+        warehouse_id:
+          type: string
+          description: >-
+            Optional argument to specify the warehouse for dashboard creation.
+            If not specified, the first running warehouse will be used.
+      required:
+        - output_schema_id
+      description: Data Profiling Configurations.
+    DataProfilingCustomMetric:
+      type: object
+      properties:
+        name:
+          type: string
+          description: Name of the metric in the output tables.
+        definition:
+          type: string
+          description: >-
+            Jinja template for a SQL expression that specifies how to compute
+            the metric. See [create metric definition]. [create metric
+            definition]:
+            https://docs.databricks.com/en/lakehouse-monitoring/custom-metrics.html#create-definition
+        input_columns:
+          type: array
+          items:
+            type: string
+          description: >-
+            A list of column names in the input table the metric should be
+            computed for. Can use ``":table"`` to indicate that the metric needs
+            information from multiple columns.
+        output_data_type:
+          type: string
+          description: The output type of the custom metric.
+        type:
+          $ref: '#/components/schemas/DataProfilingCustomMetricType'
+          description: The type of the custom metric.
+      required:
+        - name
+        - definition
+        - input_columns
+        - output_data_type
+        - type
+      description: Custom metric definition.
+    InferenceLogConfig:
+      type: object
+      properties:
+        problem_type:
+          $ref: '#/components/schemas/InferenceProblemType'
+          description: Problem type the model aims to solve.
+        timestamp_column:
+          type: string
+          description: Column for the timestamp.
+        granularities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AggregationGranularity'
+          description: >-
+            List of granularities to use when aggregating data into time windows
+            based on their timestamp.
+        prediction_column:
+          type: string
+          description: Column for the prediction.
+        model_id_column:
+          type: string
+          description: Column for the model identifier.
+        label_column:
+          type: string
+          description: Column for the label.
+      required:
+        - problem_type
+        - timestamp_column
+        - granularities
+        - prediction_column
+        - model_id_column
+      description: Inference log configuration.
+    ListMonitorResponse:
+      type: object
+      properties:
+        monitors:
+          type: array
+          items:
+            $ref: '#/components/schemas/Monitor'
+        next_page_token:
+          type: string
+      description: Response for listing Monitors.
+    ListRefreshResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        refreshes:
+          type: array
+          items:
+            $ref: '#/components/schemas/Refresh'
+      description: Response for listing refreshes.
+    Monitor:
+      type: object
+      properties:
+        object_type:
+          type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema` or `table`.
+        object_id:
+          type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+        anomaly_detection_config:
+          $ref: '#/components/schemas/AnomalyDetectionConfig'
+          description: >-
+            Anomaly Detection Configuration, applicable to `schema` object
+            types.
+        data_profiling_config:
+          $ref: '#/components/schemas/DataProfilingConfig'
+          description: >-
+            Data Profiling Configuration, applicable to `table` object types.
+            Exactly one `Analysis Configuration` must be present.
+      required:
+        - object_type
+        - object_id
+      description: >-
+        Monitor for the data quality of unity catalog entities such as schema or
+        table.
+    NotificationDestination:
+      type: object
+      properties:
+        email_addresses:
+          type: array
+          items:
+            type: string
+          description: >-
+            The list of email addresses to send the notification to. A maximum
+            of 5 email addresses is supported.
+      description: Destination of the data quality monitoring notification.
+    NotificationSettings:
+      type: object
+      properties:
+        on_failure:
+          $ref: '#/components/schemas/NotificationDestination'
+          description: Destinations to send notifications on failure/timeout.
+      description: Settings for sending notifications on the data quality monitoring.
+    Refresh:
+      type: object
+      properties:
+        object_type:
+          type: string
+          description: >-
+            The type of the monitored object. Can be one of the following:
+            `schema`or `table`.
+        object_id:
+          type: string
+          description: >-
+            The UUID of the request object. It is `schema_id` for `schema`, and
+            `table_id` for `table`. Find the `schema_id` from either: 1. The
+            [schema_id] of the `Schemas` resource. 2. In [Catalog Explorer] >
+            select the `schema` > go to the `Details` tab > the `Schema ID`
+            field. Find the `table_id` from either: 1. The [table_id] of the
+            `Tables` resource. 2. In [Catalog Explorer] > select the `table` >
+            go to the `Details` tab > the `Table ID` field. [Catalog Explorer]:
+            https://docs.databricks.com/aws/en/catalog-explorer/ [schema_id]:
+            https://docs.databricks.com/api/workspace/schemas/get#schema_id
+            [table_id]:
+            https://docs.databricks.com/api/workspace/tables/get#table_id
+        end_time_ms:
+          type: integer
+          description: Time when the refresh ended (milliseconds since 1/1/1970 UTC).
+        message:
+          type: string
+          description: >-
+            An optional message to give insight into the current state of the
+            refresh (e.g. FAILURE messages).
+        refresh_id:
+          type: integer
+          description: Unique id of the refresh operation.
+        start_time_ms:
+          type: integer
+          description: Time when the refresh started (milliseconds since 1/1/1970 UTC).
+        state:
+          $ref: '#/components/schemas/RefreshState'
+          description: The current state of the refresh.
+        trigger:
+          $ref: '#/components/schemas/RefreshTrigger'
+          description: What triggered the refresh.
+      required:
+        - object_type
+        - object_id
+      description: >-
+        The Refresh object gives information on a refresh of the data quality
+        monitoring pipeline.
+    SnapshotConfig:
+      type: object
+      properties: {}
+      description: Snapshot analysis configuration.
+    TimeSeriesConfig:
+      type: object
+      properties:
+        timestamp_column:
+          type: string
+          description: Column for the timestamp.
+        granularities:
+          type: array
+          items:
+            $ref: '#/components/schemas/AggregationGranularity'
+          description: >-
+            List of granularities to use when aggregating data into time windows
+            based on their timestamp.
+      required:
+        - timestamp_column
+        - granularities
+      description: Time series analysis configuration.
+    AggregationGranularity:
+      type: string
+      enum:
+        - AGGREGATION_GRANULARITY_1_DAY
+        - AGGREGATION_GRANULARITY_1_HOUR
+        - AGGREGATION_GRANULARITY_1_MONTH
+        - AGGREGATION_GRANULARITY_1_WEEK
+        - AGGREGATION_GRANULARITY_1_YEAR
+        - AGGREGATION_GRANULARITY_2_WEEKS
+        - AGGREGATION_GRANULARITY_30_MINUTES
+        - AGGREGATION_GRANULARITY_3_WEEKS
+        - AGGREGATION_GRANULARITY_4_WEEKS
+        - AGGREGATION_GRANULARITY_5_MINUTES
+      description: >-
+        The granularity for aggregating data into time windows based on their
+        timestamp.
+    CronSchedulePauseStatus:
+      type: string
+      enum:
+        - CRON_SCHEDULE_PAUSE_STATUS_PAUSED
+        - CRON_SCHEDULE_PAUSE_STATUS_UNPAUSED
+      description: The data quality monitoring workflow cron schedule pause status.
+    DataProfilingCustomMetricType:
+      type: string
+      enum:
+        - DATA_PROFILING_CUSTOM_METRIC_TYPE_AGGREGATE
+        - DATA_PROFILING_CUSTOM_METRIC_TYPE_DERIVED
+        - DATA_PROFILING_CUSTOM_METRIC_TYPE_DRIFT
+      description: The custom metric type.
+    DataProfilingStatus:
+      type: string
+      enum:
+        - DATA_PROFILING_STATUS_ACTIVE
+        - DATA_PROFILING_STATUS_DELETE_PENDING
+        - DATA_PROFILING_STATUS_ERROR
+        - DATA_PROFILING_STATUS_FAILED
+        - DATA_PROFILING_STATUS_PENDING
+      description: The status of the data profiling monitor.
+    InferenceProblemType:
+      type: string
+      enum:
+        - INFERENCE_PROBLEM_TYPE_CLASSIFICATION
+        - INFERENCE_PROBLEM_TYPE_REGRESSION
+      description: Inference problem type the model aims to solve.
+    RefreshState:
+      type: string
+      enum:
+        - MONITOR_REFRESH_STATE_CANCELED
+        - MONITOR_REFRESH_STATE_FAILED
+        - MONITOR_REFRESH_STATE_PENDING
+        - MONITOR_REFRESH_STATE_RUNNING
+        - MONITOR_REFRESH_STATE_SUCCESS
+        - MONITOR_REFRESH_STATE_UNKNOWN
+      description: The state of the refresh.
+    RefreshTrigger:
+      type: string
+      enum:
+        - MONITOR_REFRESH_TRIGGER_DATA_CHANGE
+        - MONITOR_REFRESH_TRIGGER_MANUAL
+        - MONITOR_REFRESH_TRIGGER_SCHEDULE
+        - MONITOR_REFRESH_TRIGGER_UNKNOWN
+      description: The trigger of the refresh.
+  x-stackQL-resources:
+    data_quality:
+      id: databricks_workspace.dataquality.data_quality
+      name: data_quality
+      title: Data Quality
+      methods:
+        data_quality_cancel_refresh:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes~1{refresh_id}~1cancel/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        data_quality_create_monitor:
+          operation:
+            $ref: '#/paths/~1api~1data-quality~1v1~1monitors/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        data_quality_list_monitor:
+          operation:
+            $ref: '#/paths/~1api~1data-quality~1v1~1monitors/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        data_quality_create_refresh:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        data_quality_list_refresh:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        data_quality_delete_monitor:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        data_quality_get_monitor:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        data_quality_update_monitor:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        data_quality_delete_refresh:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes~1{refresh_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        data_quality_get_refresh:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes~1{refresh_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        data_quality_update_refresh:
+          operation:
+            $ref: >-
+              #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes~1{refresh_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_get_refresh
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_list_refresh
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_get_monitor
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_list_monitor
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_cancel_refresh
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_create_refresh
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_create_monitor
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_update_refresh
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_update_monitor
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_delete_refresh
+          - $ref: >-
+              #/components/x-stackQL-resources/data_quality/methods/data_quality_delete_monitor
+        replace: []

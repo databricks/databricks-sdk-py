@@ -72,10 +72,10 @@ This step transforms the OpenAPI specs into a fully-functional StackQL provider 
 npm run generate-provider -- \
   --provider-name databricks_account \
   --input-dir openapi_generated/account \
-  --output-dir provider-dev/openapi/src/databricks_account \
+  --output-dir stackql-provider/src/databricks_account \
   --config-path inventory/account/all_services.csv \
   --servers '[{"url": "https://accounts.cloud.databricks.com"}]' \
-  --provider-config '{"auth": {"type": "bearer", "credentialsenvvar": "DATABRICKS_TOKEN"}}' \
+  --provider-config '{"auth":{"type":"oauth2","client_id_env_var":"DATABRICKS_CLIENT_ID","client_secret_env_var":"DATABRICKS_CLIENT_SECRET","grant_type":"client_credentials","token_url":"https://accounts.cloud.databricks.com/oidc/accounts/{{ .__env__DATABRICKS_ACCOUNT_ID }}/v1/token","scopes":["all-apis"]}}' \
   --overwrite
 ```
 
@@ -85,10 +85,10 @@ npm run generate-provider -- \
 npm run generate-provider -- \
   --provider-name databricks_workspace \
   --input-dir openapi_generated/workspace \
-  --output-dir provider-dev/openapi/src/databricks_workspace \
+  --output-dir stackql-provider/src/databricks_workspace \
   --config-path inventory/workspace/all_services.csv \
-  --servers '[{"url": "https://{deployment_name}.cloud.databricks.com", "variables": {"deployment_name": {"default": "dbc-abcd1234-1234", "description": "The deployment name of your Databricks workspace (e.g. dbc-abcd1234-1234)."}}}]' \
-  --provider-config '{"auth": {"type": "bearer", "credentialsenvvar": "DATABRICKS_TOKEN"}}' \
+  --servers '{"url":"https://{deployment_name}.cloud.databricks.com","variables":{"deployment_name":{"description":"The Databricks Workspace Deployment Name","default":"dbc-abcd0123-a1bc"}}}' \
+  --provider-config '{"auth":{"type":"oauth2","client_id_env_var":"DATABRICKS_CLIENT_ID","client_secret_env_var":"DATABRICKS_CLIENT_SECRET","grant_type":"client_credentials","token_url":"https://accounts.cloud.databricks.com/oidc/accounts/{{ .__env__DATABRICKS_ACCOUNT_ID }}/v1/token","scopes":["all-apis"]}}' \
   --overwrite
 ```
 
@@ -99,42 +99,35 @@ npm run generate-provider -- \
 - `--output-dir` - Output directory for the generated provider
 - `--config-path` - Path to the consolidated CSV mapping file
 - `--servers` - JSON array defining the base URL pattern for API requests
-- `--provider-config` - Authentication configuration; Databricks uses Bearer token auth via the `DATABRICKS_TOKEN` environment variable
+- `--provider-config` - Authentication configuration
 - `--overwrite` - Overwrite existing generated files
 
 ### 5. Test Provider
-
-#### Starting the StackQL Server
-
-Before running tests, start a StackQL server with your provider. Test each scope separately:
-
-**Account scope:**
-
-```bash
-PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/provider-dev/openapi/src"
-npm run start-server -- --provider databricks_account --registry $PROVIDER_REGISTRY_ROOT_DIR
-```
-
-**Workspace scope:**
-
-```bash
-PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/provider-dev/openapi/src"
-npm run start-server -- --provider databricks_workspace --registry $PROVIDER_REGISTRY_ROOT_DIR
-```
 
 #### Test Meta Routes
 
 Test all metadata routes (services, resources, methods) in the provider:
 
+**Account scope:**
+
 ```bash
+PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/stackql-provider"
+npm run start-server -- --provider databricks_account --registry $PROVIDER_REGISTRY_ROOT_DIR
+
 # Test account provider
 npm run test-meta-routes -- databricks_account --verbose
 
-# Test workspace provider
-npm run test-meta-routes -- databricks_workspace --verbose
+npm run stop-server
 ```
 
-#### Server Management
+**Workspace scope:**
+
+```bash
+# Test workspace provider
+npm run test-meta-routes -- databricks_workspace --verbose
+
+npm run stop-server
+```
 
 Check server status:
 
@@ -142,18 +135,12 @@ Check server status:
 npm run server-status
 ```
 
-Stop the server:
-
-```bash
-npm run stop-server
-```
-
 #### Run Test Queries
 
 Run interactive queries against the provider using the StackQL shell:
 
 ```bash
-PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/provider-dev/openapi/src"
+PROVIDER_REGISTRY_ROOT_DIR="$(pwd)/stackql-provider"
 REG_STR='{"url": "file://'${PROVIDER_REGISTRY_ROOT_DIR}'", "localDocRoot": "'${PROVIDER_REGISTRY_ROOT_DIR}'", "verifyConfig": {"nopVerify": true}}'
 ./stackql shell --registry="${REG_STR}"
 ```

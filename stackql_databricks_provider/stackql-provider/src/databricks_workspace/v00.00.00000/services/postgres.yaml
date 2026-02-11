@@ -1,0 +1,1522 @@
+openapi: 3.0.0
+info:
+  title: Databricks Postgres API (workspace)
+  description: >-
+    OpenAPI specification for the Databricks postgres service (workspace-level
+    APIs), generated from the Databricks Python SDK.
+  version: 0.1.0
+servers:
+  url: https://{deployment_name}.cloud.databricks.com
+  variables:
+    deployment_name:
+      description: The Databricks Workspace Deployment Name
+      default: dbc-abcd0123-a1bc
+paths:
+  /api/2.0/postgres/{parent}/branches:
+    post:
+      operationId: postgres_create_branch
+      summary: Creates a new database branch in the project.
+      tags:
+        - postgres
+      description: |-
+        Creates a new database branch in the project.
+
+        :param parent: str
+          The Project where this Branch will be created. Format: projects/{project_id}
+        :param branch: :class:`Branch`
+          The Branch to create.
+        :param branch_id: str
+          The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID
+          is required and must be 1-63 characters long, start with a lowercase letter, and contain only
+          lowercase letters, numbers, and hyphens. For example, `development` becomes
+          `projects/my-app/branches/development`.
+
+        :returns: :class:`Operation`
+      parameters:
+        - name: parent
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The Project where this Branch will be created. Format:
+            projects/{project_id}
+        - name: branch_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >-
+            The ID to use for the Branch. This becomes the final component of
+            the branch's resource name. The ID is required and must be 1-63
+            characters long, start with a lowercase letter, and contain only
+            lowercase letters, numbers, and hyphens. For example, `development`
+            becomes `projects/my-app/branches/development`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                branch:
+                  type: string
+                  description: The Branch to create.
+              required:
+                - branch
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateBranchOperation'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: postgres_list_branches
+      summary: Returns a paginated list of database branches in the project.
+      tags:
+        - postgres
+      description: |-
+        Returns a paginated list of database branches in the project.
+
+        :param parent: str
+          The Project that owns this collection of branches. Format: projects/{project_id}
+        :param page_size: int (optional)
+          Upper bound for items returned. Cannot be negative.
+        :param page_token: str (optional)
+          Page token from a previous response. If not provided, returns the first page.
+
+        :returns: Iterator over :class:`Branch`
+      parameters:
+        - name: parent
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The Project that owns this collection of branches. Format:
+            projects/{project_id}
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Upper bound for items returned. Cannot be negative.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Page token from a previous response. If not provided, returns the
+            first page.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[Branch]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/postgres/{parent}/endpoints:
+    post:
+      operationId: postgres_create_endpoint
+      summary: Creates a new compute endpoint in the branch.
+      tags:
+        - postgres
+      description: |-
+        Creates a new compute endpoint in the branch.
+
+        :param parent: str
+          The Branch where this Endpoint will be created. Format: projects/{project_id}/branches/{branch_id}
+        :param endpoint: :class:`Endpoint`
+          The Endpoint to create.
+        :param endpoint_id: str
+          The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.
+          The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
+          lowercase letters, numbers, and hyphens. For example, `primary` becomes
+          `projects/my-app/branches/development/endpoints/primary`.
+
+        :returns: :class:`Operation`
+      parameters:
+        - name: parent
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The Branch where this Endpoint will be created. Format:
+            projects/{project_id}/branches/{branch_id}
+        - name: endpoint_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >-
+            The ID to use for the Endpoint. This becomes the final component of
+            the endpoint's resource name. The ID is required and must be 1-63
+            characters long, start with a lowercase letter, and contain only
+            lowercase letters, numbers, and hyphens. For example, `primary`
+            becomes `projects/my-app/branches/development/endpoints/primary`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endpoint:
+                  type: string
+                  description: The Endpoint to create.
+              required:
+                - endpoint
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateEndpointOperation'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: postgres_list_endpoints
+      summary: Returns a paginated list of compute endpoints in the branch.
+      tags:
+        - postgres
+      description: |-
+        Returns a paginated list of compute endpoints in the branch.
+
+        :param parent: str
+          The Branch that owns this collection of endpoints. Format:
+          projects/{project_id}/branches/{branch_id}
+        :param page_size: int (optional)
+          Upper bound for items returned. Cannot be negative.
+        :param page_token: str (optional)
+          Page token from a previous response. If not provided, returns the first page.
+
+        :returns: Iterator over :class:`Endpoint`
+      parameters:
+        - name: parent
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The Branch that owns this collection of endpoints. Format:
+            projects/{project_id}/branches/{branch_id}
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Upper bound for items returned. Cannot be negative.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Page token from a previous response. If not provided, returns the
+            first page.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[Endpoint]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/postgres/projects:
+    post:
+      operationId: postgres_create_project
+      summary: >-
+        Creates a new Lakebase Autoscaling Postgres database project, which
+        contains branches and compute
+      tags:
+        - postgres
+      description: >-
+        Creates a new Lakebase Autoscaling Postgres database project, which
+        contains branches and compute
+
+        endpoints.
+
+
+        :param project: :class:`Project`
+          The Project to create.
+        :param project_id: str
+          The ID to use for the Project. This becomes the final component of the project's resource name. The
+          ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only
+          lowercase letters, numbers, and hyphens. For example, `my-app` becomes `projects/my-app`.
+
+        :returns: :class:`Operation`
+      parameters:
+        - name: project_id
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >-
+            The ID to use for the Project. This becomes the final component of
+            the project's resource name. The ID is required and must be 1-63
+            characters long, start with a lowercase letter, and contain only
+            lowercase letters, numbers, and hyphens. For example, `my-app`
+            becomes `projects/my-app`.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project:
+                  type: string
+                  description: The Project to create.
+              required:
+                - project
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateProjectOperation'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: postgres_list_projects
+      summary: >-
+        Returns a paginated list of database projects in the workspace that the
+        user has permission to access.
+      tags:
+        - postgres
+      description: >-
+        Returns a paginated list of database projects in the workspace that the
+        user has permission to access.
+
+
+        :param page_size: int (optional)
+          Upper bound for items returned. Cannot be negative.
+        :param page_token: str (optional)
+          Page token from a previous response. If not provided, returns the first page.
+
+        :returns: Iterator over :class:`Project`
+      parameters:
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Upper bound for items returned. Cannot be negative.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Page token from a previous response. If not provided, returns the
+            first page.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[Project]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/postgres/{parent}/roles:
+    post:
+      operationId: postgres_create_role
+      summary: Creates a new Postgres role in the branch.
+      tags:
+        - postgres
+      description: |-
+        Creates a new Postgres role in the branch.
+
+        :param parent: str
+          The Branch where this Role is created. Format: projects/{project_id}/branches/{branch_id}
+        :param role: :class:`Role`
+          The desired specification of a Role.
+        :param role_id: str (optional)
+          The ID to use for the Role, which will become the final component of the role's resource name. This
+          ID becomes the role in Postgres.
+
+          This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and
+          hyphens, as defined by RFC 1123.
+
+          If role_id is not specified in the request, it is generated automatically.
+
+        :returns: :class:`Operation`
+      parameters:
+        - name: parent
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The Branch where this Role is created. Format:
+            projects/{project_id}/branches/{branch_id}
+        - name: role_id
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            The ID to use for the Role, which will become the final component of
+            the role's resource name. This ID becomes the role in Postgres. This
+            value should be 4-63 characters, and valid characters are lowercase
+            letters, numbers, and hyphens, as defined by RFC 1123. If role_id is
+            not specified in the request, it is generated automatically.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                role:
+                  type: string
+                  description: The desired specification of a Role.
+              required:
+                - role
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateRoleOperation'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: postgres_list_roles
+      summary: Returns a paginated list of Postgres roles in the branch.
+      tags:
+        - postgres
+      description: |-
+        Returns a paginated list of Postgres roles in the branch.
+
+        :param parent: str
+          The Branch that owns this collection of roles. Format: projects/{project_id}/branches/{branch_id}
+        :param page_size: int (optional)
+          Upper bound for items returned. Cannot be negative.
+        :param page_token: str (optional)
+          Page token from a previous response. If not provided, returns the first page.
+
+        :returns: Iterator over :class:`Role`
+      parameters:
+        - name: parent
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The Branch that owns this collection of roles. Format:
+            projects/{project_id}/branches/{branch_id}
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Upper bound for items returned. Cannot be negative.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Page token from a previous response. If not provided, returns the
+            first page.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[Role]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/postgres/{name}:
+    delete:
+      operationId: postgres_delete_role
+      summary: Deletes the specified Postgres role.
+      tags:
+        - postgres
+      description: |-
+        Deletes the specified Postgres role.
+
+        :param name: str
+          The full resource path of the role to delete. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        :param reassign_owned_to: str (optional)
+          Reassign objects. If this is set, all objects owned by the role are reassigned to the role specified
+          in this parameter.
+
+          NOTE: setting this requires spinning up a compute to succeed, since it involves running SQL queries.
+
+          TODO: #LKB-7187 implement reassign_owned_to on LBM side. This might end-up being a synchronous query
+          when this parameter is used.
+
+        :returns: :class:`Operation`
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The full resource path of the role to delete. Format:
+            projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        - name: reassign_owned_to
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Reassign objects. If this is set, all objects owned by the role are
+            reassigned to the role specified in this parameter. NOTE: setting
+            this requires spinning up a compute to succeed, since it involves
+            running SQL queries. TODO: #LKB-7187 implement reassign_owned_to on
+            LBM side. This might end-up being a synchronous query when this
+            parameter is used.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DeleteRoleOperation'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: postgres_get_role
+      summary: >-
+        Retrieves information about the specified Postgres role, including its
+        authentication method and
+      tags:
+        - postgres
+      description: >-
+        Retrieves information about the specified Postgres role, including its
+        authentication method and
+
+        permissions.
+
+
+        :param name: str
+          The full resource path of the role to retrieve. Format:
+          projects/{project_id}/branches/{branch_id}/roles/{role_id}
+
+        :returns: :class:`Role`
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The full resource path of the role to retrieve. Format:
+            projects/{project_id}/branches/{branch_id}/roles/{role_id}
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Role'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    patch:
+      operationId: postgres_update_project
+      summary: Updates the specified database project.
+      tags:
+        - postgres
+      description: |-
+        Updates the specified database project.
+
+        :param name: str
+          Output only. The full resource path of the project. Format: projects/{project_id}
+        :param project: :class:`Project`
+          The Project to update.
+
+          The project's `name` field is used to identify the project to update. Format: projects/{project_id}
+        :param update_mask: FieldMask
+          The list of fields to update. If unspecified, all fields will be updated when possible.
+
+        :returns: :class:`Operation`
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            Output only. The full resource path of the project. Format:
+            projects/{project_id}
+        - name: update_mask
+          in: query
+          required: true
+          schema:
+            type: string
+          description: >-
+            The list of fields to update. If unspecified, all fields will be
+            updated when possible.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                project:
+                  type: string
+                  description: >-
+                    The Project to update. The project's `name` field is used to
+                    identify the project to update. Format:
+                    projects/{project_id}
+              required:
+                - project
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UpdateProjectOperation'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/postgres/credentials:
+    post:
+      operationId: postgres_generate_database_credential
+      summary: Generate OAuth credentials for a Postgres database.
+      tags:
+        - postgres
+      description: |-
+        Generate OAuth credentials for a Postgres database.
+
+        :param endpoint: str
+          This field is not yet supported. The endpoint for which this credential will be generated. Format:
+          projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+        :param claims: List[:class:`RequestedClaims`] (optional)
+          The returned token will be scoped to UC tables with the specified permissions.
+
+        :returns: :class:`DatabaseCredential`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                endpoint:
+                  type: string
+                  description: >-
+                    This field is not yet supported. The endpoint for which this
+                    credential will be generated. Format:
+                    projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+                claims:
+                  type: string
+                  description: >-
+                    The returned token will be scoped to UC tables with the
+                    specified permissions.
+              required:
+                - endpoint
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DatabaseCredential'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+components:
+  schemas:
+    Branch:
+      type: object
+      properties:
+        create_time:
+          $ref: '#/components/schemas/Timestamp'
+        name:
+          type: string
+          description: >-
+            Output only. The full resource path of the branch. Format:
+            projects/{project_id}/branches/{branch_id}
+        parent:
+          type: string
+          description: >-
+            The project containing this branch (API resource hierarchy). Format:
+            projects/{project_id} Note: This field indicates where the branch
+            exists in the resource hierarchy. For point-in-time branching from
+            another branch, see `status.source_branch`.
+        spec:
+          $ref: '#/components/schemas/BranchSpec'
+          description: The spec contains the branch configuration.
+        status:
+          $ref: '#/components/schemas/BranchStatus'
+          description: The current status of a Branch.
+        uid:
+          type: string
+          description: System-generated unique ID for the branch.
+        update_time:
+          $ref: '#/components/schemas/Timestamp'
+          description: A timestamp indicating when the branch was last updated.
+    BranchOperationMetadata:
+      type: object
+      properties: {}
+    BranchSpec:
+      type: object
+      properties:
+        expire_time:
+          $ref: '#/components/schemas/Timestamp'
+        is_protected:
+          type: boolean
+          description: >-
+            When set to true, protects the branch from deletion and reset.
+            Associated compute endpoints and the project cannot be deleted while
+            the branch is protected.
+        no_expiry:
+          type: boolean
+          description: >-
+            Explicitly disable expiration. When set to true, the branch will not
+            expire. If set to false, the request is invalid; provide either ttl
+            or expire_time instead.
+        source_branch:
+          type: string
+          description: >-
+            The name of the source branch from which this branch was created
+            (data lineage for point-in-time recovery). If not specified,
+            defaults to the project's default branch. Format:
+            projects/{project_id}/branches/{branch_id}
+        source_branch_lsn:
+          type: string
+          description: >-
+            The Log Sequence Number (LSN) on the source branch from which this
+            branch was created.
+        source_branch_time:
+          $ref: '#/components/schemas/Timestamp'
+          description: >-
+            The point in time on the source branch from which this branch was
+            created.
+        ttl:
+          $ref: '#/components/schemas/Duration'
+          description: >-
+            Relative time-to-live duration. When set, the branch will expire at
+            creation_time + ttl.
+    BranchStatus:
+      type: object
+      properties:
+        current_state:
+          $ref: '#/components/schemas/BranchStatusState'
+        default:
+          type: boolean
+          description: Whether the branch is the project's default branch.
+        expire_time:
+          $ref: '#/components/schemas/Timestamp'
+          description: >-
+            Absolute expiration time for the branch. Empty if expiration is
+            disabled.
+        is_protected:
+          type: boolean
+          description: Whether the branch is protected.
+        logical_size_bytes:
+          type: integer
+          description: The logical size of the branch.
+        pending_state:
+          $ref: '#/components/schemas/BranchStatusState'
+          description: >-
+            The pending state of the branch, if a state transition is in
+            progress.
+        source_branch:
+          type: string
+          description: >-
+            The name of the source branch from which this branch was created.
+            Format: projects/{project_id}/branches/{branch_id}
+        source_branch_lsn:
+          type: string
+          description: >-
+            The Log Sequence Number (LSN) on the source branch from which this
+            branch was created.
+        source_branch_time:
+          $ref: '#/components/schemas/Timestamp'
+          description: >-
+            The point in time on the source branch from which this branch was
+            created.
+        state_change_time:
+          $ref: '#/components/schemas/Timestamp'
+          description: A timestamp indicating when the `current_state` began.
+    DatabaseCredential:
+      type: object
+      properties:
+        expire_time:
+          $ref: '#/components/schemas/Timestamp'
+        token:
+          type: string
+          description: >-
+            The OAuth token that can be used as a password when connecting to a
+            database.
+    DatabricksServiceExceptionWithDetailsProto:
+      type: object
+      properties:
+        details:
+          type: array
+          items:
+            $ref: '#/components/schemas/dict'
+        error_code:
+          $ref: '#/components/schemas/ErrorCode'
+        message:
+          type: string
+        stack_trace:
+          type: string
+      description: Databricks Error that is returned by all Databricks APIs.
+    Endpoint:
+      type: object
+      properties:
+        create_time:
+          $ref: '#/components/schemas/Timestamp'
+        name:
+          type: string
+          description: >-
+            Output only. The full resource path of the endpoint. Format:
+            projects/{project_id}/branches/{branch_id}/endpoints/{endpoint_id}
+        parent:
+          type: string
+          description: >-
+            The branch containing this endpoint (API resource hierarchy).
+            Format: projects/{project_id}/branches/{branch_id}
+        spec:
+          $ref: '#/components/schemas/EndpointSpec'
+          description: >-
+            The spec contains the compute endpoint configuration, including
+            autoscaling limits, suspend timeout, and disabled state.
+        status:
+          $ref: '#/components/schemas/EndpointStatus'
+          description: Current operational status of the compute endpoint.
+        uid:
+          type: string
+          description: System-generated unique ID for the endpoint.
+        update_time:
+          $ref: '#/components/schemas/Timestamp'
+          description: A timestamp indicating when the compute endpoint was last updated.
+    EndpointHosts:
+      type: object
+      properties:
+        host:
+          type: string
+          description: >-
+            The hostname to connect to this endpoint. For read-write endpoints,
+            this is a read-write hostname which connects to the primary compute.
+            For read-only endpoints, this is a read-only hostname which allows
+            read-only operations.
+      description: >-
+        Encapsulates various hostnames (r/w or r/o, pooled or not) for an
+        endpoint.
+    EndpointOperationMetadata:
+      type: object
+      properties: {}
+    EndpointSettings:
+      type: object
+      properties:
+        pg_settings:
+          type: object
+          description: A raw representation of Postgres settings.
+      description: A collection of settings for a compute endpoint.
+    EndpointSpec:
+      type: object
+      properties:
+        endpoint_type:
+          $ref: '#/components/schemas/EndpointType'
+        autoscaling_limit_max_cu:
+          type: number
+          description: The maximum number of Compute Units. Minimum value is 0.5.
+        autoscaling_limit_min_cu:
+          type: number
+          description: The minimum number of Compute Units. Minimum value is 0.5.
+        disabled:
+          type: boolean
+          description: >-
+            Whether to restrict connections to the compute endpoint. Enabling
+            this option schedules a suspend compute operation. A disabled
+            compute endpoint cannot be enabled by a connection or console
+            action.
+        no_suspension:
+          type: boolean
+          description: >-
+            When set to true, explicitly disables automatic suspension (never
+            suspend). Should be set to true when provided.
+        settings:
+          $ref: '#/components/schemas/EndpointSettings'
+        suspend_timeout_duration:
+          $ref: '#/components/schemas/Duration'
+          description: >-
+            Duration of inactivity after which the compute endpoint is
+            automatically suspended. If specified should be between 60s and
+            604800s (1 minute to 1 week).
+      required:
+        - endpoint_type
+    EndpointStatus:
+      type: object
+      properties:
+        autoscaling_limit_max_cu:
+          type: number
+        autoscaling_limit_min_cu:
+          type: number
+          description: The minimum number of Compute Units.
+        current_state:
+          $ref: '#/components/schemas/EndpointStatusState'
+        disabled:
+          type: boolean
+          description: >-
+            Whether to restrict connections to the compute endpoint. Enabling
+            this option schedules a suspend compute operation. A disabled
+            compute endpoint cannot be enabled by a connection or console
+            action.
+        endpoint_type:
+          $ref: '#/components/schemas/EndpointType'
+          description: The endpoint type. A branch can only have one READ_WRITE endpoint.
+        hosts:
+          $ref: '#/components/schemas/EndpointHosts'
+          description: Contains host information for connecting to the endpoint.
+        pending_state:
+          $ref: '#/components/schemas/EndpointStatusState'
+        settings:
+          $ref: '#/components/schemas/EndpointSettings'
+        suspend_timeout_duration:
+          $ref: '#/components/schemas/Duration'
+          description: >-
+            Duration of inactivity after which the compute endpoint is
+            automatically suspended.
+    ListBranchesResponse:
+      type: object
+      properties:
+        branches:
+          type: array
+          items:
+            $ref: '#/components/schemas/Branch'
+        next_page_token:
+          type: string
+          description: Token to request the next page of branches.
+    ListEndpointsResponse:
+      type: object
+      properties:
+        endpoints:
+          type: array
+          items:
+            $ref: '#/components/schemas/Endpoint'
+        next_page_token:
+          type: string
+          description: Token to request the next page of compute endpoints.
+    ListProjectsResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        projects:
+          type: array
+          items:
+            $ref: '#/components/schemas/Project'
+          description: >-
+            List of all projects in the workspace that the user has permission
+            to access.
+    ListRolesResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        roles:
+          type: array
+          items:
+            $ref: '#/components/schemas/Role'
+          description: List of Postgres roles in the branch.
+    Operation:
+      type: object
+      properties:
+        done:
+          type: boolean
+          description: >-
+            If the value is `false`, it means the operation is still in
+            progress. If `true`, the operation is completed, and either `error`
+            or `response` is available.
+        error:
+          $ref: '#/components/schemas/DatabricksServiceExceptionWithDetailsProto'
+          description: >-
+            The error result of the operation in case of failure or
+            cancellation.
+        metadata:
+          $ref: '#/components/schemas/dict'
+          description: >-
+            Service-specific metadata associated with the operation. It
+            typically contains progress information and common metadata such as
+            create time. Some services might not provide such metadata.
+        name:
+          type: string
+          description: >-
+            The server-assigned name, which is only unique within the same
+            service that originally returns it. If you use the default HTTP
+            mapping, the `name` should be a resource name ending with
+            `operations/{unique_id}`.
+        response:
+          $ref: '#/components/schemas/dict'
+          description: The normal, successful response of the operation.
+      description: >-
+        This resource represents a long-running operation that is the result of
+        a network API call.
+    Project:
+      type: object
+      properties:
+        create_time:
+          $ref: '#/components/schemas/Timestamp'
+        name:
+          type: string
+          description: >-
+            Output only. The full resource path of the project. Format:
+            projects/{project_id}
+        spec:
+          $ref: '#/components/schemas/ProjectSpec'
+          description: >-
+            The spec contains the project configuration, including display_name,
+            pg_version (Postgres version), history_retention_duration, and
+            default_endpoint_settings.
+        status:
+          $ref: '#/components/schemas/ProjectStatus'
+          description: The current status of a Project.
+        uid:
+          type: string
+          description: System-generated unique ID for the project.
+        update_time:
+          $ref: '#/components/schemas/Timestamp'
+          description: A timestamp indicating when the project was last updated.
+    ProjectDefaultEndpointSettings:
+      type: object
+      properties:
+        autoscaling_limit_max_cu:
+          type: number
+          description: The maximum number of Compute Units. Minimum value is 0.5.
+        autoscaling_limit_min_cu:
+          type: number
+          description: The minimum number of Compute Units. Minimum value is 0.5.
+        no_suspension:
+          type: boolean
+          description: >-
+            When set to true, explicitly disables automatic suspension (never
+            suspend). Should be set to true when provided.
+        pg_settings:
+          type: object
+          description: A raw representation of Postgres settings.
+        suspend_timeout_duration:
+          $ref: '#/components/schemas/Duration'
+          description: >-
+            Duration of inactivity after which the compute endpoint is
+            automatically suspended. If specified should be between 60s and
+            604800s (1 minute to 1 week).
+      description: A collection of settings for a compute endpoint.
+    ProjectOperationMetadata:
+      type: object
+      properties: {}
+    ProjectSpec:
+      type: object
+      properties:
+        default_endpoint_settings:
+          $ref: '#/components/schemas/ProjectDefaultEndpointSettings'
+        display_name:
+          type: string
+          description: >-
+            Human-readable project name. Length should be between 1 and 256
+            characters.
+        history_retention_duration:
+          $ref: '#/components/schemas/Duration'
+          description: >-
+            The number of seconds to retain the shared history for point in time
+            recovery for all branches in this project. Value should be between
+            0s and 2592000s (up to 30 days).
+        pg_version:
+          type: integer
+          description: The major Postgres version number. Supported versions are 16 and 17.
+    ProjectStatus:
+      type: object
+      properties:
+        branch_logical_size_limit_bytes:
+          type: integer
+        default_endpoint_settings:
+          $ref: '#/components/schemas/ProjectDefaultEndpointSettings'
+          description: The effective default endpoint settings.
+        display_name:
+          type: string
+          description: The effective human-readable project name.
+        history_retention_duration:
+          $ref: '#/components/schemas/Duration'
+          description: >-
+            The effective number of seconds to retain the shared history for
+            point in time recovery.
+        owner:
+          type: string
+          description: The email of the project owner.
+        pg_version:
+          type: integer
+          description: The effective major Postgres version number.
+        synthetic_storage_size_bytes:
+          type: integer
+          description: The current space occupied by the project in storage.
+    RequestedClaims:
+      type: object
+      properties:
+        permission_set:
+          $ref: '#/components/schemas/RequestedClaimsPermissionSet'
+        resources:
+          type: array
+          items:
+            $ref: '#/components/schemas/RequestedResource'
+    RequestedResource:
+      type: object
+      properties:
+        table_name:
+          type: string
+        unspecified_resource_name:
+          type: string
+    Role:
+      type: object
+      properties:
+        create_time:
+          $ref: '#/components/schemas/Timestamp'
+        name:
+          type: string
+          description: >-
+            Output only. The full resource path of the role. Format:
+            projects/{project_id}/branches/{branch_id}/roles/{role_id}
+        parent:
+          type: string
+          description: >-
+            The Branch where this Role exists. Format:
+            projects/{project_id}/branches/{branch_id}
+        spec:
+          $ref: '#/components/schemas/RoleRoleSpec'
+          description: >-
+            The spec contains the role configuration, including identity type,
+            authentication method, and role attributes.
+        status:
+          $ref: '#/components/schemas/RoleRoleStatus'
+          description: >-
+            Current status of the role, including its identity type,
+            authentication method, and role attributes.
+        update_time:
+          $ref: '#/components/schemas/Timestamp'
+      description: Role represents a Postgres role within a Branch.
+    RoleOperationMetadata:
+      type: object
+      properties: {}
+    RoleRoleSpec:
+      type: object
+      properties:
+        auth_method:
+          $ref: '#/components/schemas/RoleAuthMethod'
+        identity_type:
+          $ref: '#/components/schemas/RoleIdentityType'
+          description: >-
+            The type of role. When specifying a managed-identity, the chosen
+            role_id must be a valid: * application ID for SERVICE_PRINCIPAL *
+            user email for USER * group name for GROUP
+        postgres_role:
+          type: string
+          description: >-
+            The name of the Postgres role. This expects a valid Postgres
+            identifier as specified in the link below.
+            https://www.postgresql.org/docs/current/sql-syntax-lexical.html#SQL-SYNTAX-IDENTIFIERS
+            Required when creating the Role. If you wish to create a Postgres
+            Role backed by a managed Databricks identity, then postgres_role
+            must be one of the following: 1. user email for IdentityType.USER 2.
+            app ID for IdentityType.SERVICE_PRINCIPAL 2. group name for
+            IdentityType.GROUP
+    RoleRoleStatus:
+      type: object
+      properties:
+        auth_method:
+          $ref: '#/components/schemas/RoleAuthMethod'
+        identity_type:
+          $ref: '#/components/schemas/RoleIdentityType'
+          description: The type of the role.
+        postgres_role:
+          type: string
+          description: The name of the Postgres role.
+    BranchStatusState:
+      type: string
+      enum:
+        - ARCHIVED
+        - IMPORTING
+        - INIT
+        - READY
+        - RESETTING
+      description: The state of the branch.
+    EndpointStatusState:
+      type: string
+      enum:
+        - ACTIVE
+        - IDLE
+        - INIT
+      description: The state of the compute endpoint.
+    EndpointType:
+      type: string
+      enum:
+        - ENDPOINT_TYPE_READ_ONLY
+        - ENDPOINT_TYPE_READ_WRITE
+      description: The compute endpoint type. Either `read_write` or `read_only`.
+    ErrorCode:
+      type: string
+      enum:
+        - ABORTED
+        - ALREADY_EXISTS
+        - BAD_REQUEST
+        - CANCELLED
+        - CATALOG_ALREADY_EXISTS
+        - CATALOG_DOES_NOT_EXIST
+        - CATALOG_NOT_EMPTY
+        - COULD_NOT_ACQUIRE_LOCK
+        - CUSTOMER_UNAUTHORIZED
+        - DAC_ALREADY_EXISTS
+        - DAC_DOES_NOT_EXIST
+        - DATA_LOSS
+        - DEADLINE_EXCEEDED
+        - DEPLOYMENT_TIMEOUT
+        - DIRECTORY_NOT_EMPTY
+        - DIRECTORY_PROTECTED
+        - DRY_RUN_FAILED
+        - ENDPOINT_NOT_FOUND
+        - EXTERNAL_LOCATION_ALREADY_EXISTS
+        - EXTERNAL_LOCATION_DOES_NOT_EXIST
+        - FEATURE_DISABLED
+        - GIT_CONFLICT
+        - GIT_REMOTE_ERROR
+        - GIT_SENSITIVE_TOKEN_DETECTED
+        - GIT_UNKNOWN_REF
+        - GIT_URL_NOT_ON_ALLOW_LIST
+        - INSECURE_PARTNER_RESPONSE
+        - INTERNAL_ERROR
+        - INVALID_PARAMETER_VALUE
+        - INVALID_STATE
+        - INVALID_STATE_TRANSITION
+        - IO_ERROR
+        - IPYNB_FILE_IN_REPO
+        - MALFORMED_PARTNER_RESPONSE
+        - MALFORMED_REQUEST
+        - MANAGED_RESOURCE_GROUP_DOES_NOT_EXIST
+        - MAX_BLOCK_SIZE_EXCEEDED
+        - MAX_CHILD_NODE_SIZE_EXCEEDED
+        - MAX_LIST_SIZE_EXCEEDED
+        - MAX_NOTEBOOK_SIZE_EXCEEDED
+        - MAX_READ_SIZE_EXCEEDED
+        - METASTORE_ALREADY_EXISTS
+        - METASTORE_DOES_NOT_EXIST
+        - METASTORE_NOT_EMPTY
+        - NOT_FOUND
+        - NOT_IMPLEMENTED
+        - PARTIAL_DELETE
+        - PERMISSION_DENIED
+        - PERMISSION_NOT_PROPAGATED
+        - PRINCIPAL_DOES_NOT_EXIST
+        - PROJECTS_OPERATION_TIMEOUT
+        - PROVIDER_ALREADY_EXISTS
+        - PROVIDER_DOES_NOT_EXIST
+        - PROVIDER_SHARE_NOT_ACCESSIBLE
+        - QUOTA_EXCEEDED
+        - RECIPIENT_ALREADY_EXISTS
+        - RECIPIENT_DOES_NOT_EXIST
+        - REQUEST_LIMIT_EXCEEDED
+        - RESOURCE_ALREADY_EXISTS
+        - RESOURCE_CONFLICT
+        - RESOURCE_DOES_NOT_EXIST
+        - RESOURCE_EXHAUSTED
+        - RESOURCE_LIMIT_EXCEEDED
+        - SCHEMA_ALREADY_EXISTS
+        - SCHEMA_DOES_NOT_EXIST
+        - SCHEMA_NOT_EMPTY
+        - SEARCH_QUERY_TOO_LONG
+        - SEARCH_QUERY_TOO_SHORT
+        - SERVICE_UNDER_MAINTENANCE
+        - SHARE_ALREADY_EXISTS
+        - SHARE_DOES_NOT_EXIST
+        - STORAGE_CREDENTIAL_ALREADY_EXISTS
+        - STORAGE_CREDENTIAL_DOES_NOT_EXIST
+        - TABLE_ALREADY_EXISTS
+        - TABLE_DOES_NOT_EXIST
+        - TEMPORARILY_UNAVAILABLE
+        - UNAUTHENTICATED
+        - UNAVAILABLE
+        - UNKNOWN
+        - UNPARSEABLE_HTTP_ERROR
+        - WORKSPACE_TEMPORARILY_UNAVAILABLE
+      description: >-
+        Error codes returned by Databricks APIs to indicate specific failure
+        conditions.
+    RequestedClaimsPermissionSet:
+      type: string
+      enum:
+        - READ_ONLY
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    RoleAuthMethod:
+      type: string
+      enum:
+        - LAKEBASE_OAUTH_V1
+        - NO_LOGIN
+        - PG_PASSWORD_SCRAM_SHA_256
+      description: How the role is authenticated when connecting to Postgres.
+    RoleIdentityType:
+      type: string
+      enum:
+        - GROUP
+        - SERVICE_PRINCIPAL
+        - USER
+      description: >-
+        The type of the Databricks managed identity that this Role represents.
+        Leave empty if you wish
+
+        to create a regular Postgres role not associated with a Databricks
+        identity.
+  x-stackQL-resources:
+    postgres:
+      id: databricks_workspace.postgres.postgres
+      name: postgres
+      title: Postgres
+      methods:
+        postgres_create_branch:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1branches/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_list_branches:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1branches/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_create_endpoint:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1endpoints/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_list_endpoints:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1endpoints/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_create_project:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1projects/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_list_projects:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1projects/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_create_role:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1roles/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_list_roles:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1roles/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_delete_role:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{name}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_get_role:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_update_project:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1{name}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        postgres_generate_database_credential:
+          operation:
+            $ref: '#/paths/~1api~12.0~1postgres~1credentials/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_list_branches
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_list_endpoints
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_list_roles
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_get_role
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_list_projects
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_create_branch
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_create_endpoint
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_create_role
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_create_project
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_generate_database_credential
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_update_project
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/postgres/methods/postgres_delete_role
+        replace: []

@@ -1,0 +1,2225 @@
+openapi: 3.0.0
+info:
+  title: Databricks Cleanrooms API (workspace)
+  description: >-
+    OpenAPI specification for the Databricks cleanrooms service (workspace-level
+    APIs), generated from the Databricks Python SDK.
+  version: 0.1.0
+servers:
+  url: https://{deployment_name}.cloud.databricks.com
+  variables:
+    deployment_name:
+      description: The Databricks Workspace Deployment Name
+      default: dbc-abcd0123-a1bc
+paths:
+  /api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/revisions/{etag}:
+    get:
+      operationId: clean_room_asset_revisions_get
+      summary: Get a specific revision of an asset
+      tags:
+        - cleanrooms
+        - clean_room_asset_revisions
+      description: |-
+        Get a specific revision of an asset
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param asset_type: :class:`CleanRoomAssetAssetType`
+          Asset type. Only NOTEBOOK_FILE is supported.
+        :param name: str
+          Name of the asset.
+        :param etag: str
+          Revision etag to fetch. If not provided, the latest revision will be returned.
+
+        :returns: :class:`CleanRoomAsset`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room.
+        - name: asset_type.value
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the asset.
+        - name: etag
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            Revision etag to fetch. If not provided, the latest revision will be
+            returned.
+        - name: asset_type
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Asset type. Only NOTEBOOK_FILE is supported.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomAsset'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/revisions:
+    get:
+      operationId: clean_room_asset_revisions_list
+      summary: List revisions for an asset
+      tags:
+        - cleanrooms
+        - clean_room_asset_revisions
+      description: |-
+        List revisions for an asset
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param asset_type: :class:`CleanRoomAssetAssetType`
+          Asset type. Only NOTEBOOK_FILE is supported.
+        :param name: str
+          Name of the asset.
+        :param page_size: int (optional)
+          Maximum number of asset revisions to return. Defaults to 10.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on the previous query.
+
+        :returns: Iterator over :class:`CleanRoomAsset`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room.
+        - name: asset_type.value
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the asset.
+        - name: asset_type
+          in: query
+          required: true
+          schema:
+            type: string
+          description: Asset type. Only NOTEBOOK_FILE is supported.
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Maximum number of asset revisions to return. Defaults to 10.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Opaque pagination token to go to next page based on the previous
+            query.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[CleanRoomAsset]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/clean-rooms/{clean_room_name}/assets:
+    post:
+      operationId: clean_room_assets_create
+      summary: >-
+        Create a clean room asset —share an asset like a notebook or table into
+        the clean room. For each UC
+      tags:
+        - cleanrooms
+        - clean_room_assets
+      description: >-
+        Create a clean room asset —share an asset like a notebook or table into
+        the clean room. For each UC
+
+        asset that is added through this method, the clean room owner must also
+        have enough privilege on the
+
+        asset to consume it. The privilege must be maintained indefinitely for
+        the clean room to be able to
+
+        access the asset. Typically, you should use a group as the clean room
+        owner.
+
+
+        :param clean_room_name: str
+          The name of the clean room this asset belongs to. This field is required for create operations and
+          populated by the server for responses.
+        :param asset: :class:`CleanRoomAsset`
+
+
+        :returns: :class:`CleanRoomAsset`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The name of the clean room this asset belongs to. This field is
+            required for create operations and populated by the server for
+            responses.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                asset:
+                  type: string
+                  description: ':returns: :class:`CleanRoomAsset`'
+              required:
+                - asset
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomAsset'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: clean_room_assets_list
+      summary: List assets.
+      tags:
+        - cleanrooms
+        - clean_room_assets
+      description: |-
+        List assets.
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`CleanRoomAsset`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Opaque pagination token to go to next page based on previous query.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[CleanRoomAsset]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/reviews:
+    post:
+      operationId: clean_room_assets_create_clean_room_asset_review
+      summary: Submit an asset review
+      tags:
+        - cleanrooms
+        - clean_room_assets
+      description: |-
+        Submit an asset review
+
+        :param clean_room_name: str
+          Name of the clean room
+        :param asset_type: :class:`CleanRoomAssetAssetType`
+          Asset type. Can either be NOTEBOOK_FILE or JAR_ANALYSIS.
+        :param name: str
+          Name of the asset
+        :param notebook_review: :class:`NotebookVersionReview` (optional)
+
+        :returns: :class:`CreateCleanRoomAssetReviewResponse`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room
+        - name: asset_type.value
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the asset
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                asset_type:
+                  type: string
+                  description: Asset type. Can either be NOTEBOOK_FILE or JAR_ANALYSIS.
+                notebook_review:
+                  type: string
+                  description: ':returns: :class:`CreateCleanRoomAssetReviewResponse`'
+              required:
+                - asset_type
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCleanRoomAssetReviewResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}:
+    delete:
+      operationId: clean_room_assets_delete
+      summary: Delete a clean room asset - unshare/remove the asset from the clean room
+      tags:
+        - cleanrooms
+        - clean_room_assets
+      description: |-
+        Delete a clean room asset - unshare/remove the asset from the clean room
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param asset_type: :class:`CleanRoomAssetAssetType`
+          The type of the asset.
+        :param name: str
+          The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room.
+        - name: asset_type.value
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The fully qualified name of the asset, it is same as the name field
+            in CleanRoomAsset.
+        - name: asset_type
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The type of the asset.
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: clean_room_assets_get
+      summary: Get the details of a clean room asset by its type and full name.
+      tags:
+        - cleanrooms
+        - clean_room_assets
+      description: |-
+        Get the details of a clean room asset by its type and full name.
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param asset_type: :class:`CleanRoomAssetAssetType`
+          The type of the asset.
+        :param name: str
+          The fully qualified name of the asset, it is same as the name field in CleanRoomAsset.
+
+        :returns: :class:`CleanRoomAsset`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room.
+        - name: asset_type.value
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The fully qualified name of the asset, it is same as the name field
+            in CleanRoomAsset.
+        - name: asset_type
+          in: query
+          required: true
+          schema:
+            type: string
+          description: The type of the asset.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomAsset'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    patch:
+      operationId: clean_room_assets_update
+      summary: >-
+        Update a clean room asset. For example, updating the content of a
+        notebook; changing the shared
+      tags:
+        - cleanrooms
+        - clean_room_assets
+      description: >-
+        Update a clean room asset. For example, updating the content of a
+        notebook; changing the shared
+
+        partitions of a table; etc.
+
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param asset_type: :class:`CleanRoomAssetAssetType`
+          The type of the asset.
+        :param name: str
+          A fully qualified name that uniquely identifies the asset within the clean room. This is also the
+          name displayed in the clean room UI.
+
+          For UC securable assets (tables, volumes, etc.), the format is
+          *shared_catalog*.*shared_schema*.*asset_name*
+
+          For notebooks, the name is the notebook file name. For jar analyses, the name is the jar analysis
+          name.
+        :param asset: :class:`CleanRoomAsset`
+          The asset to update. The asset's `name` and `asset_type` fields are used to identify the asset to
+          update.
+
+        :returns: :class:`CleanRoomAsset`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room.
+        - name: asset_type.value
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            A fully qualified name that uniquely identifies the asset within the
+            clean room. This is also the name displayed in the clean room UI.
+            For UC securable assets (tables, volumes, etc.), the format is
+            *shared_catalog*.*shared_schema*.*asset_name* For notebooks, the
+            name is the notebook file name. For jar analyses, the name is the
+            jar analysis name.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                asset_type:
+                  type: string
+                  description: The type of the asset.
+                asset:
+                  type: string
+                  description: >-
+                    The asset to update. The asset's `name` and `asset_type`
+                    fields are used to identify the asset to update.
+              required:
+                - asset_type
+                - asset
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomAsset'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules:
+    post:
+      operationId: clean_room_auto_approval_rules_create
+      summary: Create an auto-approval rule
+      tags:
+        - cleanrooms
+        - clean_room_auto_approval_rules
+      description: |-
+        Create an auto-approval rule
+
+        :param clean_room_name: str
+          The name of the clean room this auto-approval rule belongs to.
+        :param auto_approval_rule: :class:`CleanRoomAutoApprovalRule`
+
+        :returns: :class:`CleanRoomAutoApprovalRule`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The name of the clean room this auto-approval rule belongs to.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                auto_approval_rule:
+                  type: string
+                  description: ':returns: :class:`CleanRoomAutoApprovalRule`'
+              required:
+                - auto_approval_rule
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomAutoApprovalRule'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: clean_room_auto_approval_rules_list
+      summary: List all auto-approval rules for the caller
+      tags:
+        - cleanrooms
+        - clean_room_auto_approval_rules
+      description: |-
+        List all auto-approval rules for the caller
+
+        :param clean_room_name: str
+        :param page_size: int (optional)
+          Maximum number of auto-approval rules to return. Defaults to 100.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`CleanRoomAutoApprovalRule`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            :param page_size: int (optional) Maximum number of auto-approval
+            rules to return. Defaults to 100.
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Opaque pagination token to go to next page based on previous query.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[CleanRoomAutoApprovalRule]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}:
+    delete:
+      operationId: clean_room_auto_approval_rules_delete
+      summary: Delete a auto-approval rule by rule ID
+      tags:
+        - cleanrooms
+        - clean_room_auto_approval_rules
+      description: |-
+        Delete a auto-approval rule by rule ID
+
+        :param clean_room_name: str
+        :param rule_id: str
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ':param rule_id: str'
+        - name: rule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: clean_room_auto_approval_rules_get
+      summary: Get a auto-approval rule by rule ID
+      tags:
+        - cleanrooms
+        - clean_room_auto_approval_rules
+      description: |-
+        Get a auto-approval rule by rule ID
+
+        :param clean_room_name: str
+        :param rule_id: str
+
+        :returns: :class:`CleanRoomAutoApprovalRule`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ':param rule_id: str'
+        - name: rule_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomAutoApprovalRule'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    patch:
+      operationId: clean_room_auto_approval_rules_update
+      summary: Update a auto-approval rule by rule ID
+      tags:
+        - cleanrooms
+        - clean_room_auto_approval_rules
+      description: |-
+        Update a auto-approval rule by rule ID
+
+        :param clean_room_name: str
+          The name of the clean room this auto-approval rule belongs to.
+        :param rule_id: str
+          A generated UUID identifying the rule.
+        :param auto_approval_rule: :class:`CleanRoomAutoApprovalRule`
+          The auto-approval rule to update. The rule_id field is used to identify the rule to update.
+
+        :returns: :class:`CleanRoomAutoApprovalRule`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The name of the clean room this auto-approval rule belongs to.
+        - name: rule_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: A generated UUID identifying the rule.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                auto_approval_rule:
+                  type: string
+                  description: >-
+                    The auto-approval rule to update. The rule_id field is used
+                    to identify the rule to update.
+              required:
+                - auto_approval_rule
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoomAutoApprovalRule'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/clean-rooms/{clean_room_name}/runs:
+    get:
+      operationId: clean_room_task_runs_list
+      summary: List all the historical notebook task runs in a clean room.
+      tags:
+        - cleanrooms
+        - clean_room_task_runs
+      description: |-
+        List all the historical notebook task runs in a clean room.
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param notebook_name: str (optional)
+          Notebook name
+        :param page_size: int (optional)
+          The maximum number of task runs to return. Currently ignored - all runs will be returned.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`CleanRoomNotebookTaskRun`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room.
+        - name: notebook_name
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Notebook name
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            The maximum number of task runs to return. Currently ignored - all
+            runs will be returned.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Opaque pagination token to go to next page based on previous query.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[CleanRoomNotebookTaskRun]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/clean-rooms:
+    post:
+      operationId: clean_rooms_create
+      summary: >-
+        Create a new clean room with the specified collaborators. This method is
+        asynchronous; the returned
+      tags:
+        - cleanrooms
+        - clean_rooms
+      description: >-
+        Create a new clean room with the specified collaborators. This method is
+        asynchronous; the returned
+
+        name field inside the clean_room field can be used to poll the clean
+        room status, using the
+
+        :method:cleanrooms/get method. When this method returns, the clean room
+        will be in a PROVISIONING
+
+        state, with only name, owner, comment, created_at and status populated.
+        The clean room will be usable
+
+        once it enters an ACTIVE state.
+
+
+        The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM**
+        privilege on the metastore.
+
+
+        :param clean_room: :class:`CleanRoom`
+
+
+        :returns:
+          Long-running operation waiter for :class:`CleanRoom`.
+          See :method:wait_get_clean_room_active for more details.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clean_room:
+                  type: string
+                  description: >-
+                    :returns: Long-running operation waiter for
+                    :class:`CleanRoom`. See :method:wait_get_clean_room_active
+                    for more details.
+              required:
+                - clean_room
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Wait[CleanRoom]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: clean_rooms_list
+      summary: >-
+        Get a list of all clean rooms of the metastore. Only clean rooms the
+        caller has access to are
+      tags:
+        - cleanrooms
+        - clean_rooms
+      description: >-
+        Get a list of all clean rooms of the metastore. Only clean rooms the
+        caller has access to are
+
+        returned.
+
+
+        :param page_size: int (optional)
+          Maximum number of clean rooms to return (i.e., the page length). Defaults to 100.
+        :param page_token: str (optional)
+          Opaque pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`CleanRoom`
+      parameters:
+        - name: page_size
+          in: query
+          required: false
+          schema:
+            type: string
+          description: >-
+            Maximum number of clean rooms to return (i.e., the page length).
+            Defaults to 100.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Opaque pagination token to go to next page based on previous query.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[CleanRoom]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/clean-rooms/{clean_room_name}/output-catalogs:
+    post:
+      operationId: clean_rooms_create_output_catalog
+      summary: Create the output catalog of the clean room.
+      tags:
+        - cleanrooms
+        - clean_rooms
+      description: |-
+        Create the output catalog of the clean room.
+
+        :param clean_room_name: str
+          Name of the clean room.
+        :param output_catalog: :class:`CleanRoomOutputCatalog`
+
+        :returns: :class:`CreateCleanRoomOutputCatalogResponse`
+      parameters:
+        - name: clean_room_name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                output_catalog:
+                  type: string
+                  description: ':returns: :class:`CreateCleanRoomOutputCatalogResponse`'
+              required:
+                - output_catalog
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateCleanRoomOutputCatalogResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/clean-rooms/{name}:
+    delete:
+      operationId: clean_rooms_delete
+      summary: >-
+        Delete a clean room. After deletion, the clean room will be removed from
+        the metastore. If the other
+      tags:
+        - cleanrooms
+        - clean_rooms
+      description: >-
+        Delete a clean room. After deletion, the clean room will be removed from
+        the metastore. If the other
+
+        collaborators have not deleted the clean room, they will still have the
+        clean room in their metastore,
+
+        but it will be in a DELETED state and no operations other than deletion
+        can be performed on it.
+
+
+        :param name: str
+          Name of the clean room.
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room.
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: clean_rooms_get
+      summary: Get the details of a clean room given its name.
+      tags:
+        - cleanrooms
+        - clean_rooms
+      description: |-
+        Get the details of a clean room given its name.
+
+        :param name: str
+
+        :returns: :class:`CleanRoom`
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: ':returns: :class:`CleanRoom`'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoom'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    patch:
+      operationId: clean_rooms_update
+      summary: >-
+        Update a clean room. The caller must be the owner of the clean room,
+        have **MODIFY_CLEAN_ROOM**
+      tags:
+        - cleanrooms
+        - clean_rooms
+      description: >-
+        Update a clean room. The caller must be the owner of the clean room,
+        have **MODIFY_CLEAN_ROOM**
+
+        privilege, or be metastore admin.
+
+
+        When the caller is a metastore admin, only the __owner__ field can be
+        updated.
+
+
+        :param name: str
+          Name of the clean room.
+        :param clean_room: :class:`CleanRoom` (optional)
+
+
+        :returns: :class:`CleanRoom`
+      parameters:
+        - name: name
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Name of the clean room.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                clean_room:
+                  type: string
+                  description: ':returns: :class:`CleanRoom`'
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CleanRoom'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+components:
+  schemas:
+    CleanRoom:
+      type: object
+      properties:
+        access_restricted:
+          $ref: '#/components/schemas/CleanRoomAccessRestricted'
+        comment:
+          type: string
+        created_at:
+          type: integer
+          description: When the clean room was created, in epoch milliseconds.
+        local_collaborator_alias:
+          type: string
+          description: The alias of the collaborator tied to the local clean room.
+        name:
+          type: string
+          description: >-
+            The name of the clean room. It should follow [UC securable naming
+            requirements]. [UC securable naming requirements]:
+            https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
+        output_catalog:
+          $ref: '#/components/schemas/CleanRoomOutputCatalog'
+          description: >-
+            Output catalog of the clean room. It is an output only field. Output
+            catalog is manipulated using the separate
+            CreateCleanRoomOutputCatalog API.
+        owner:
+          type: string
+          description: >-
+            This is the Databricks username of the owner of the local clean room
+            securable for permission management.
+        remote_detailed_info:
+          $ref: '#/components/schemas/CleanRoomRemoteDetail'
+          description: >-
+            Central clean room details. During creation, users need to specify
+            cloud_vendor, region, and collaborators.global_metastore_id. This
+            field will not be filled in the ListCleanRooms call.
+        status:
+          $ref: '#/components/schemas/CleanRoomStatusEnum'
+          description: Clean room status.
+        updated_at:
+          type: integer
+          description: When the clean room was last updated, in epoch milliseconds.
+    CleanRoomAsset:
+      type: object
+      properties:
+        name:
+          type: string
+          description: >-
+            A fully qualified name that uniquely identifies the asset within the
+            clean room. This is also the name displayed in the clean room UI.
+            For UC securable assets (tables, volumes, etc.), the format is
+            *shared_catalog*.*shared_schema*.*asset_name* For notebooks, the
+            name is the notebook file name. For jar analyses, the name is the
+            jar analysis name.
+        asset_type:
+          $ref: '#/components/schemas/CleanRoomAssetAssetType'
+          description: The type of the asset.
+        added_at:
+          type: integer
+          description: When the asset is added to the clean room, in epoch milliseconds.
+        clean_room_name:
+          type: string
+          description: >-
+            The name of the clean room this asset belongs to. This field is
+            required for create operations and populated by the server for
+            responses.
+        foreign_table:
+          $ref: '#/components/schemas/CleanRoomAssetForeignTable'
+          description: >-
+            Foreign table details available to all collaborators of the clean
+            room. Present if and only if **asset_type** is **FOREIGN_TABLE**
+        foreign_table_local_details:
+          $ref: '#/components/schemas/CleanRoomAssetForeignTableLocalDetails'
+          description: >-
+            Local details for a foreign that are only available to its owner.
+            Present if and only if **asset_type** is **FOREIGN_TABLE**
+        notebook:
+          $ref: '#/components/schemas/CleanRoomAssetNotebook'
+          description: >-
+            Notebook details available to all collaborators of the clean room.
+            Present if and only if **asset_type** is **NOTEBOOK_FILE**
+        owner_collaborator_alias:
+          type: string
+          description: The alias of the collaborator who owns this asset
+        status:
+          $ref: '#/components/schemas/CleanRoomAssetStatusEnum'
+          description: Status of the asset
+        table:
+          $ref: '#/components/schemas/CleanRoomAssetTable'
+          description: >-
+            Table details available to all collaborators of the clean room.
+            Present if and only if **asset_type** is **TABLE**
+        table_local_details:
+          $ref: '#/components/schemas/CleanRoomAssetTableLocalDetails'
+          description: >-
+            Local details for a table that are only available to its owner.
+            Present if and only if **asset_type** is **TABLE**
+        view:
+          $ref: '#/components/schemas/CleanRoomAssetView'
+          description: >-
+            View details available to all collaborators of the clean room.
+            Present if and only if **asset_type** is **VIEW**
+        view_local_details:
+          $ref: '#/components/schemas/CleanRoomAssetViewLocalDetails'
+          description: >-
+            Local details for a view that are only available to its owner.
+            Present if and only if **asset_type** is **VIEW**
+        volume_local_details:
+          $ref: '#/components/schemas/CleanRoomAssetVolumeLocalDetails'
+          description: >-
+            Local details for a volume that are only available to its owner.
+            Present if and only if **asset_type** is **VOLUME**
+      required:
+        - name
+        - asset_type
+      description: Metadata of the clean room asset
+    CleanRoomAssetForeignTable:
+      type: object
+      properties:
+        columns:
+          type: string
+    CleanRoomAssetForeignTableLocalDetails:
+      type: object
+      properties:
+        local_name:
+          type: string
+      required:
+        - local_name
+    CleanRoomAssetNotebook:
+      type: object
+      properties:
+        notebook_content:
+          type: string
+        etag:
+          type: string
+          description: Server generated etag that represents the notebook version.
+        review_state:
+          $ref: '#/components/schemas/CleanRoomNotebookReviewNotebookReviewState'
+          description: Top-level status derived from all reviews
+        reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomNotebookReview'
+          description: All existing approvals or rejections
+        runner_collaborator_aliases:
+          type: array
+          items:
+            type: string
+          description: Aliases of collaborators that can run the notebook.
+      required:
+        - notebook_content
+    CleanRoomAssetTable:
+      type: object
+      properties:
+        columns:
+          type: string
+    CleanRoomAssetTableLocalDetails:
+      type: object
+      properties:
+        local_name:
+          type: string
+        partitions:
+          type: string
+          description: Partition filtering specification for a shared table.
+      required:
+        - local_name
+    CleanRoomAssetView:
+      type: object
+      properties:
+        columns:
+          type: string
+    CleanRoomAssetViewLocalDetails:
+      type: object
+      properties:
+        local_name:
+          type: string
+      required:
+        - local_name
+    CleanRoomAssetVolumeLocalDetails:
+      type: object
+      properties:
+        local_name:
+          type: string
+      required:
+        - local_name
+    CleanRoomAutoApprovalRule:
+      type: object
+      properties:
+        author_collaborator_alias:
+          type: string
+        author_scope:
+          $ref: '#/components/schemas/CleanRoomAutoApprovalRuleAuthorScope'
+          description: >-
+            Scope of authors covered by the rule. Only one of
+            `author_collaborator_alias` and `author_scope` can be set.
+        clean_room_name:
+          type: string
+          description: The name of the clean room this auto-approval rule belongs to.
+        created_at:
+          type: integer
+          description: Timestamp of when the rule was created, in epoch milliseconds.
+        rule_id:
+          type: string
+          description: A generated UUID identifying the rule.
+        rule_owner_collaborator_alias:
+          type: string
+          description: The owner of the rule to whom the rule applies.
+        runner_collaborator_alias:
+          type: string
+          description: Collaborator alias of the runner covered by the rule.
+    CleanRoomCollaborator:
+      type: object
+      properties:
+        collaborator_alias:
+          type: string
+          description: >-
+            Collaborator alias specified by the clean room creator. It is unique
+            across all collaborators of this clean room, and used to derive
+            multiple values internally such as catalog alias and clean room name
+            for single metastore clean rooms. It should follow [UC securable
+            naming requirements]. [UC securable naming requirements]:
+            https://docs.databricks.com/en/data-governance/unity-catalog/index.html#securable-object-naming-requirements
+        display_name:
+          type: string
+          description: >-
+            Generated display name for the collaborator. In the case of a single
+            metastore clean room, it is the clean room name. For x-metastore
+            clean rooms, it is the organization name of the metastore. It is not
+            restricted to these values and could change in the future
+        global_metastore_id:
+          type: string
+          description: >-
+            The global Unity Catalog metastore ID of the collaborator. The
+            identifier is of format cloud:region:metastore-uuid.
+        invite_recipient_email:
+          type: string
+          description: >-
+            Email of the user who is receiving the clean room "invitation". It
+            should be empty for the creator of the clean room, and non-empty for
+            the invitees of the clean room. It is only returned in the output
+            when clean room creator calls GET
+        invite_recipient_workspace_id:
+          type: integer
+          description: >-
+            Workspace ID of the user who is receiving the clean room
+            "invitation". Must be specified if invite_recipient_email is
+            specified. It should be empty when the collaborator is the creator
+            of the clean room.
+        organization_name:
+          type: string
+          description: >-
+            [Organization
+            name](:method:metastores/list#metastores-delta_sharing_organization_name)
+            configured in the metastore
+      required:
+        - collaborator_alias
+      description: Publicly visible clean room collaborator.
+    CleanRoomNotebookReview:
+      type: object
+      properties:
+        comment:
+          type: string
+        created_at_millis:
+          type: integer
+          description: When the review was submitted, in epoch milliseconds
+        review_state:
+          $ref: '#/components/schemas/CleanRoomNotebookReviewNotebookReviewState'
+          description: Review outcome
+        review_sub_reason:
+          $ref: '#/components/schemas/CleanRoomNotebookReviewNotebookReviewSubReason'
+          description: Specified when the review was not explicitly made by a user
+        reviewer_collaborator_alias:
+          type: string
+          description: Collaborator alias of the reviewer
+    CleanRoomNotebookTaskRun:
+      type: object
+      properties:
+        collaborator_job_run_info:
+          $ref: '#/components/schemas/CollaboratorJobRunInfo'
+          description: >-
+            Job run info of the task in the runner's local workspace. This field
+            is only included in the LIST API. if the task was run within the
+            same workspace the API is being called. If the task run was in a
+            different workspace under the same metastore, only the workspace_id
+            is included.
+        notebook_etag:
+          type: string
+          description: >-
+            Etag of the notebook executed in this task run, used to identify the
+            notebook version.
+        notebook_job_run_state:
+          type: string
+          description: State of the task run.
+        notebook_name:
+          type: string
+          description: Asset name of the notebook executed in this task run.
+        notebook_updated_at:
+          type: integer
+          description: The timestamp of when the notebook was last updated.
+        output_schema_expiration_time:
+          type: integer
+          description: >-
+            Expiration time of the output schema of the task run (if any), in
+            epoch milliseconds.
+        output_schema_name:
+          type: string
+          description: >-
+            Name of the output schema associated with the clean rooms notebook
+            task run.
+        run_duration:
+          type: integer
+          description: Duration of the task run, in milliseconds.
+        start_time:
+          type: integer
+          description: When the task run started, in epoch milliseconds.
+      description: Stores information about a single task run.
+    CleanRoomOutputCatalog:
+      type: object
+      properties:
+        catalog_name:
+          type: string
+        status:
+          $ref: '#/components/schemas/CleanRoomOutputCatalogOutputCatalogStatus'
+    CleanRoomRemoteDetail:
+      type: object
+      properties:
+        central_clean_room_id:
+          type: string
+          description: Central clean room ID.
+        cloud_vendor:
+          type: string
+          description: Cloud vendor (aws,azure,gcp) of the central clean room.
+        collaborators:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomCollaborator'
+          description: >-
+            Collaborators in the central clean room. There should one and only
+            one collaborator in the list that satisfies the owner condition: 1.
+            It has the creator's global_metastore_id (determined by caller of
+            CreateCleanRoom). 2. Its invite_recipient_email is empty.
+        compliance_security_profile:
+          $ref: '#/components/schemas/ComplianceSecurityProfile'
+        creator:
+          $ref: '#/components/schemas/CleanRoomCollaborator'
+          description: Collaborator who creates the clean room.
+        egress_network_policy:
+          type: string
+          description: Egress network policy to apply to the central clean room workspace.
+        region:
+          type: string
+          description: Region of the central clean room.
+      description: Publicly visible central clean room details.
+    CollaboratorJobRunInfo:
+      type: object
+      properties:
+        collaborator_alias:
+          type: string
+        collaborator_job_id:
+          type: integer
+          description: Job ID of the task run in the collaborator's workspace.
+        collaborator_job_run_id:
+          type: integer
+          description: Job run ID of the task run in the collaborator's workspace.
+        collaborator_task_run_id:
+          type: integer
+          description: Task run ID of the task run in the collaborator's workspace.
+        collaborator_workspace_id:
+          type: integer
+          description: ID of the collaborator's workspace that triggered the task run.
+    ComplianceSecurityProfile:
+      type: object
+      properties:
+        compliance_standards:
+          type: string
+          description: >-
+            The list of compliance standards that the compliance security
+            profile is configured to enforce.
+        is_enabled:
+          type: boolean
+          description: Whether the compliance security profile is enabled.
+      description: >-
+        The compliance security profile used to process regulated data following
+        compliance standards.
+    CreateCleanRoomAssetReviewResponse:
+      type: object
+      properties:
+        notebook_review_state:
+          $ref: '#/components/schemas/CleanRoomNotebookReviewNotebookReviewState'
+        notebook_reviews:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomNotebookReview'
+          description: All existing notebook approvals or rejections
+    CreateCleanRoomOutputCatalogResponse:
+      type: object
+      properties:
+        output_catalog:
+          $ref: '#/components/schemas/CleanRoomOutputCatalog'
+    DeleteCleanRoomAssetResponse:
+      type: object
+      properties: {}
+      description: >-
+        Response for delete clean room request. Using an empty message since the
+        generic Empty proto
+            does not externd UnshadedMessageMarker.
+    ListCleanRoomAssetRevisionsResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        revisions:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomAsset'
+    ListCleanRoomAssetsResponse:
+      type: object
+      properties:
+        assets:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomAsset'
+        next_page_token:
+          type: string
+          description: >-
+            Opaque token to retrieve the next page of results. Absent if there
+            are no more pages. page_token should be set to this value for the
+            next request (for the next page of results).
+    ListCleanRoomAutoApprovalRulesResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomAutoApprovalRule'
+    ListCleanRoomNotebookTaskRunsResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        runs:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoomNotebookTaskRun'
+          description: Name of the clean room.
+    ListCleanRoomsResponse:
+      type: object
+      properties:
+        clean_rooms:
+          type: array
+          items:
+            $ref: '#/components/schemas/CleanRoom'
+        next_page_token:
+          type: string
+          description: >-
+            Opaque token to retrieve the next page of results. Absent if there
+            are no more pages. page_token should be set to this value for the
+            next request (for the next page of results).
+    NotebookVersionReview:
+      type: object
+      properties:
+        etag:
+          type: string
+        review_state:
+          $ref: '#/components/schemas/CleanRoomNotebookReviewNotebookReviewState'
+          description: Review outcome
+        comment:
+          type: string
+          description: Review comment
+      required:
+        - etag
+        - review_state
+    CleanRoomAccessRestricted:
+      type: string
+      enum:
+        - CSP_MISMATCH
+        - NO_RESTRICTION
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    CleanRoomAssetAssetType:
+      type: string
+      enum:
+        - FOREIGN_TABLE
+        - NOTEBOOK_FILE
+        - TABLE
+        - VIEW
+        - VOLUME
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    CleanRoomAssetStatusEnum:
+      type: string
+      enum:
+        - ACTIVE
+        - PENDING
+        - PERMISSION_DENIED
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    CleanRoomAutoApprovalRuleAuthorScope:
+      type: string
+      enum:
+        - ANY_AUTHOR
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    CleanRoomNotebookReviewNotebookReviewState:
+      type: string
+      enum:
+        - APPROVED
+        - PENDING
+        - REJECTED
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    CleanRoomNotebookReviewNotebookReviewSubReason:
+      type: string
+      enum:
+        - AUTO_APPROVED
+        - BACKFILLED
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    CleanRoomOutputCatalogOutputCatalogStatus:
+      type: string
+      enum:
+        - CREATED
+        - NOT_CREATED
+        - NOT_ELIGIBLE
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    CleanRoomStatusEnum:
+      type: string
+      enum:
+        - ACTIVE
+        - DELETED
+        - FAILED
+        - PROVISIONING
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+  x-stackQL-resources:
+    clean_room_asset_revisions:
+      id: databricks_workspace.cleanrooms.clean_room_asset_revisions
+      name: clean_room_asset_revisions
+      title: Clean Room Asset Revisions
+      methods:
+        clean_room_asset_revisions_get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}~1revisions~1{etag}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_room_asset_revisions_list:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}~1revisions/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_asset_revisions/methods/clean_room_asset_revisions_get
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_asset_revisions/methods/clean_room_asset_revisions_list
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    clean_room_assets:
+      id: databricks_workspace.cleanrooms.clean_room_assets
+      name: clean_room_assets
+      title: Clean Room Assets
+      methods:
+        clean_room_assets_create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_room_assets_list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_room_assets_create_clean_room_asset_review:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}~1reviews/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_room_assets_delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_room_assets_get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_room_assets_update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_get
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_list
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_create_clean_room_asset_review
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_update
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_assets/methods/clean_room_assets_delete
+        replace: []
+    clean_room_auto_approval_rules:
+      id: databricks_workspace.cleanrooms.clean_room_auto_approval_rules
+      name: clean_room_auto_approval_rules
+      title: Clean Room Auto Approval Rules
+      methods:
+        clean_room_auto_approval_rules_create:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_room_auto_approval_rules_list:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_room_auto_approval_rules_delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules~1{rule_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_room_auto_approval_rules_get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules~1{rule_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_room_auto_approval_rules_update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules~1{rule_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_auto_approval_rules/methods/clean_room_auto_approval_rules_get
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_auto_approval_rules/methods/clean_room_auto_approval_rules_list
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_auto_approval_rules/methods/clean_room_auto_approval_rules_create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_auto_approval_rules/methods/clean_room_auto_approval_rules_update
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_auto_approval_rules/methods/clean_room_auto_approval_rules_delete
+        replace: []
+    clean_room_task_runs:
+      id: databricks_workspace.cleanrooms.clean_room_task_runs
+      name: clean_room_task_runs
+      title: Clean Room Task Runs
+      methods:
+        clean_room_task_runs_list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1runs/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_room_task_runs/methods/clean_room_task_runs_list
+        insert: []
+        update: []
+        delete: []
+        replace: []
+    clean_rooms:
+      id: databricks_workspace.cleanrooms.clean_rooms
+      name: clean_rooms
+      title: Clean Rooms
+      methods:
+        clean_rooms_create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1clean-rooms/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_rooms_list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1clean-rooms/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_rooms_create_output_catalog:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1output-catalogs/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_rooms_delete:
+          operation:
+            $ref: '#/paths/~1api~12.0~1clean-rooms~1{name}/delete'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_rooms_get:
+          operation:
+            $ref: '#/paths/~1api~12.0~1clean-rooms~1{name}/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        clean_rooms_update:
+          operation:
+            $ref: '#/paths/~1api~12.0~1clean-rooms~1{name}/patch'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_get
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_list
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_create_output_catalog
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_update
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/clean_rooms/methods/clean_rooms_delete
+        replace: []

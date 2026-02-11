@@ -1,0 +1,4185 @@
+openapi: 3.0.0
+info:
+  title: Databricks Settings API (account)
+  description: >-
+    OpenAPI specification for the Databricks settings service (account-level
+    APIs), generated from the Databricks Python SDK.
+  version: 0.1.0
+servers:
+  - url: https://accounts.cloud.databricks.com
+paths:
+  /api/2.0/accounts/{account_id}/ip-access-lists:
+    post:
+      operationId: account_ip_access_lists_create
+      summary: Creates an IP access list for the account.
+      tags:
+        - settings
+        - account_ip_access_lists
+      description: >-
+        Creates an IP access list for the account.
+
+
+        A list can be an allow list or a block list. See the top of this file
+        for a description of how the
+
+        server treats allow lists and block lists at runtime.
+
+
+        When creating or updating an IP access list:
+
+
+        * For all allow lists and block lists combined, the API supports a
+        maximum of 1000 IP/CIDR values,
+
+        where one CIDR counts as a single value. Attempts to exceed that number
+        return error 400 with
+
+        `error_code` value `QUOTA_EXCEEDED`. * If the new list would block the
+        calling user's current IP,
+
+        error 400 is returned with `error_code` value `INVALID_STATE`.
+
+
+        It can take a few minutes for the changes to take effect.
+
+
+        :param label: str
+          Label for the IP access list. This **cannot** be empty.
+        :param list_type: :class:`ListType`
+
+        :param ip_addresses: List[str] (optional)
+
+
+        :returns: :class:`CreateIpAccessListResponse`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: Label for the IP access list. This **cannot** be empty.
+                list_type:
+                  type: string
+                  description: ':param ip_addresses: List[str] (optional)'
+                ip_addresses:
+                  type: string
+              required:
+                - label
+                - list_type
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CreateIpAccessListResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: account_ip_access_lists_list
+      summary: Gets all IP access lists for the specified account.
+      tags:
+        - settings
+        - account_ip_access_lists
+      description: |-
+        Gets all IP access lists for the specified account.
+
+
+        :returns: Iterator over :class:`IpAccessListInfo`
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[IpAccessListInfo]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/accounts/{account_id}/ip-access-lists/{ip_access_list_id}:
+    delete:
+      operationId: account_ip_access_lists_delete
+      summary: Deletes an IP access list, specified by its list ID.
+      tags:
+        - settings
+        - account_ip_access_lists
+      description: |-
+        Deletes an IP access list, specified by its list ID.
+
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list
+      parameters:
+        - name: ip_access_list_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID for the corresponding IP access list
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: account_ip_access_lists_get
+      summary: Gets an IP access list, specified by its list ID.
+      tags:
+        - settings
+        - account_ip_access_lists
+      description: |-
+        Gets an IP access list, specified by its list ID.
+
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list
+
+        :returns: :class:`GetIpAccessListResponse`
+      parameters:
+        - name: ip_access_list_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID for the corresponding IP access list
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GetIpAccessListResponse'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    put:
+      operationId: account_ip_access_lists_replace
+      summary: Replaces an IP access list, specified by its ID.
+      tags:
+        - settings
+        - account_ip_access_lists
+      description: >-
+        Replaces an IP access list, specified by its ID.
+
+
+        A list can include allow lists and block lists. See the top of this file
+        for a description of how the
+
+        server treats allow lists and block lists at run time. When replacing an
+        IP access list: * For all
+
+        allow lists and block lists combined, the API supports a maximum of 1000
+        IP/CIDR values, where one
+
+        CIDR counts as a single value. Attempts to exceed that number return
+        error 400 with `error_code` value
+
+        `QUOTA_EXCEEDED`. * If the resulting list would block the calling user's
+        current IP, error 400 is
+
+        returned with `error_code` value `INVALID_STATE`. It can take a few
+        minutes for the changes to take
+
+        effect.
+
+
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list
+        :param label: str
+          Label for the IP access list. This **cannot** be empty.
+        :param list_type: :class:`ListType`
+
+        :param enabled: bool
+          Specifies whether this IP access list is enabled.
+        :param ip_addresses: List[str] (optional)
+      parameters:
+        - name: ip_access_list_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID for the corresponding IP access list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                label:
+                  type: string
+                  description: Label for the IP access list. This **cannot** be empty.
+                list_type:
+                  type: string
+                  description: >-
+                    :param enabled: bool Specifies whether this IP access list
+                    is enabled.
+                enabled:
+                  type: boolean
+                ip_addresses:
+                  type: string
+                  description: List[str] (optional)
+              required:
+                - label
+                - list_type
+                - enabled
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    patch:
+      operationId: account_ip_access_lists_update
+      summary: Updates an existing IP access list, specified by its ID.
+      tags:
+        - settings
+        - account_ip_access_lists
+      description: >-
+        Updates an existing IP access list, specified by its ID.
+
+
+        A list can include allow lists and block lists. See the top of this file
+        for a description of how the
+
+        server treats allow lists and block lists at run time.
+
+
+        When updating an IP access list:
+
+
+        * For all allow lists and block lists combined, the API supports a
+        maximum of 1000 IP/CIDR values,
+
+        where one CIDR counts as a single value. Attempts to exceed that number
+        return error 400 with
+
+        `error_code` value `QUOTA_EXCEEDED`. * If the updated list would block
+        the calling user's current IP,
+
+        error 400 is returned with `error_code` value `INVALID_STATE`.
+
+
+        It can take a few minutes for the changes to take effect.
+
+
+        :param ip_access_list_id: str
+          The ID for the corresponding IP access list
+        :param enabled: bool (optional)
+          Specifies whether this IP access list is enabled.
+        :param ip_addresses: List[str] (optional)
+
+        :param label: str (optional)
+          Label for the IP access list. This **cannot** be empty.
+        :param list_type: :class:`ListType` (optional)
+      parameters:
+        - name: ip_access_list_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The ID for the corresponding IP access list
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                enabled:
+                  type: string
+                  description: Specifies whether this IP access list is enabled.
+                ip_addresses:
+                  type: string
+                  description: >-
+                    :param label: str (optional) Label for the IP access list.
+                    This **cannot** be empty.
+                label:
+                  type: string
+                list_type:
+                  type: string
+                  description: ':class:`ListType` (optional)'
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/accounts/{account_id}/network-connectivity-configs:
+    post:
+      operationId: network_connectivity_create_network_connectivity_configuration
+      summary: >-
+        Creates a network connectivity configuration (NCC), which provides
+        stable Azure service subnets when
+      tags:
+        - settings
+        - network_connectivity
+      description: >-
+        Creates a network connectivity configuration (NCC), which provides
+        stable Azure service subnets when
+
+        accessing your Azure Storage accounts. You can also use a network
+        connectivity configuration to create
+
+        Databricks managed private endpoints so that Databricks serverless
+        compute resources privately access
+
+        your resources.
+
+
+        **IMPORTANT**: After you create the network connectivity configuration,
+        you must assign one or more
+
+        workspaces to the new network connectivity configuration. You can share
+        one network connectivity
+
+        configuration with multiple workspaces from the same Azure region within
+        the same Databricks account.
+
+        See [configure serverless secure connectivity].
+
+
+        [configure serverless secure connectivity]:
+        https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security
+
+
+        :param network_connectivity_config:
+        :class:`CreateNetworkConnectivityConfiguration`
+
+
+        :returns: :class:`NetworkConnectivityConfiguration`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                network_connectivity_config:
+                  type: string
+                  description: ':returns: :class:`NetworkConnectivityConfiguration`'
+              required:
+                - network_connectivity_config
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkConnectivityConfiguration'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: network_connectivity_list_network_connectivity_configurations
+      summary: Gets an array of network connectivity configurations.
+      tags:
+        - settings
+        - network_connectivity
+      description: |-
+        Gets an array of network connectivity configurations.
+
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`NetworkConnectivityConfiguration`
+      parameters:
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Pagination token to go to next page based on previous query.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: >-
+                  #/components/schemas/Iterator[NetworkConnectivityConfiguration]
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/accounts/{account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules:
+    post:
+      operationId: network_connectivity_create_private_endpoint_rule
+      summary: >-
+        Create a private endpoint rule for the specified network connectivity
+        config object. Once the object
+      tags:
+        - settings
+        - network_connectivity
+      description: >-
+        Create a private endpoint rule for the specified network connectivity
+        config object. Once the object
+
+        is created, Databricks asynchronously provisions a new Azure private
+        endpoint to your specified Azure
+
+        resource.
+
+
+        **IMPORTANT**: You must use Azure portal or other Azure tools to approve
+        the private endpoint to
+
+        complete the connection. To get the information of the private endpoint
+        created, make a `GET` request
+
+        on the new private endpoint rule. See [serverless private link].
+
+
+        [serverless private link]:
+        https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link
+
+
+        :param network_connectivity_config_id: str
+          Your Network Connectivity Configuration ID.
+        :param private_endpoint_rule: :class:`CreatePrivateEndpointRule`
+
+
+        :returns: :class:`NccPrivateEndpointRule`
+      parameters:
+        - name: network_connectivity_config_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Your Network Connectivity Configuration ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                private_endpoint_rule:
+                  type: string
+                  description: ':returns: :class:`NccPrivateEndpointRule`'
+              required:
+                - private_endpoint_rule
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NccPrivateEndpointRule'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: network_connectivity_list_private_endpoint_rules
+      summary: Gets an array of private endpoint rules.
+      tags:
+        - settings
+        - network_connectivity
+      description: |-
+        Gets an array of private endpoint rules.
+
+        :param network_connectivity_config_id: str
+          Your Network Connectvity Configuration ID.
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`NccPrivateEndpointRule`
+      parameters:
+        - name: network_connectivity_config_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Your Network Connectvity Configuration ID.
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Pagination token to go to next page based on previous query.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[NccPrivateEndpointRule]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/accounts/{account_id}/network-connectivity-configs/{network_connectivity_config_id}:
+    delete:
+      operationId: network_connectivity_delete_network_connectivity_configuration
+      summary: Deletes a network connectivity configuration.
+      tags:
+        - settings
+        - network_connectivity
+      description: |-
+        Deletes a network connectivity configuration.
+
+        :param network_connectivity_config_id: str
+          Your Network Connectivity Configuration ID.
+      parameters:
+        - name: network_connectivity_config_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Your Network Connectivity Configuration ID.
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: network_connectivity_get_network_connectivity_configuration
+      summary: Gets a network connectivity configuration.
+      tags:
+        - settings
+        - network_connectivity
+      description: |-
+        Gets a network connectivity configuration.
+
+        :param network_connectivity_config_id: str
+          Your Network Connectivity Configuration ID.
+
+        :returns: :class:`NetworkConnectivityConfiguration`
+      parameters:
+        - name: network_connectivity_config_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Your Network Connectivity Configuration ID.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NetworkConnectivityConfiguration'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/accounts/{account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules/{private_endpoint_rule_id}:
+    delete:
+      operationId: network_connectivity_delete_private_endpoint_rule
+      summary: >-
+        Initiates deleting a private endpoint rule. If the connection state is
+        PENDING or EXPIRED, the private
+      tags:
+        - settings
+        - network_connectivity
+      description: >-
+        Initiates deleting a private endpoint rule. If the connection state is
+        PENDING or EXPIRED, the private
+
+        endpoint is immediately deleted. Otherwise, the private endpoint is
+        deactivated and will be deleted
+
+        after seven days of deactivation. When a private endpoint is
+        deactivated, the `deactivated` field is
+
+        set to `true` and the private endpoint is not available to your
+        serverless compute resources.
+
+
+        :param network_connectivity_config_id: str
+          Your Network Connectvity Configuration ID.
+        :param private_endpoint_rule_id: str
+          Your private endpoint rule ID.
+
+        :returns: :class:`NccPrivateEndpointRule`
+      parameters:
+        - name: network_connectivity_config_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Your Network Connectvity Configuration ID.
+        - name: private_endpoint_rule_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Your private endpoint rule ID.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NccPrivateEndpointRule'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: network_connectivity_get_private_endpoint_rule
+      summary: Gets the private endpoint rule.
+      tags:
+        - settings
+        - network_connectivity
+      description: |-
+        Gets the private endpoint rule.
+
+        :param network_connectivity_config_id: str
+          Your Network Connectvity Configuration ID.
+        :param private_endpoint_rule_id: str
+          Your private endpoint rule ID.
+
+        :returns: :class:`NccPrivateEndpointRule`
+      parameters:
+        - name: network_connectivity_config_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Your Network Connectvity Configuration ID.
+        - name: private_endpoint_rule_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Your private endpoint rule ID.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NccPrivateEndpointRule'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    patch:
+      operationId: network_connectivity_update_private_endpoint_rule
+      summary: >-
+        Updates a private endpoint rule. Currently only a private endpoint rule
+        to customer-managed resources
+      tags:
+        - settings
+        - network_connectivity
+      description: >-
+        Updates a private endpoint rule. Currently only a private endpoint rule
+        to customer-managed resources
+
+        is allowed to be updated.
+
+
+        :param network_connectivity_config_id: str
+          The ID of a network connectivity configuration, which is the parent resource of this private
+          endpoint rule object.
+        :param private_endpoint_rule_id: str
+          Your private endpoint rule ID.
+        :param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`
+
+        :param update_mask: str
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+        :returns: :class:`NccPrivateEndpointRule`
+      parameters:
+        - name: network_connectivity_config_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: >-
+            The ID of a network connectivity configuration, which is the parent
+            resource of this private endpoint rule object.
+        - name: private_endpoint_rule_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: Your private endpoint rule ID.
+        - name: update_mask
+          in: query
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                private_endpoint_rule:
+                  type: string
+                  description: >-
+                    :param update_mask: str The field mask must be a single
+                    string, with multiple fields separated by commas (no
+                    spaces). The field path is relative to the resource object,
+                    using a dot (`.`) to navigate sub-fields (e.g.,
+                    `author.given_name`). Specification of elements in sequence
+                    or map fields is not allowed, as only the entire collection
+                    field can be specified. Field names must exactly match the
+                    resource field names.
+              required:
+                - private_endpoint_rule
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NccPrivateEndpointRule'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/accounts/{account_id}/network-policies:
+    post:
+      operationId: network_policies_create_network_policy_rpc
+      summary: >-
+        Creates a new network policy to manage which network destinations can be
+        accessed from the Databricks
+      tags:
+        - settings
+        - network_policies
+      description: >-
+        Creates a new network policy to manage which network destinations can be
+        accessed from the Databricks
+
+        environment.
+
+
+        :param network_policy: :class:`AccountNetworkPolicy`
+          Network policy configuration details.
+
+        :returns: :class:`AccountNetworkPolicy`
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                network_policy:
+                  type: string
+                  description: Network policy configuration details.
+              required:
+                - network_policy
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountNetworkPolicy'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: network_policies_list_network_policies_rpc
+      summary: Gets an array of network policies.
+      tags:
+        - settings
+        - network_policies
+      description: |-
+        Gets an array of network policies.
+
+        :param page_token: str (optional)
+          Pagination token to go to next page based on previous query.
+
+        :returns: Iterator over :class:`AccountNetworkPolicy`
+      parameters:
+        - name: page_token
+          in: query
+          required: false
+          schema:
+            type: string
+          description: Pagination token to go to next page based on previous query.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Iterator[AccountNetworkPolicy]'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/accounts/{account_id}/network-policies/{network_policy_id}:
+    delete:
+      operationId: network_policies_delete_network_policy_rpc
+      summary: Deletes a network policy. Cannot be called on 'default-policy'.
+      tags:
+        - settings
+        - network_policies
+      description: |-
+        Deletes a network policy. Cannot be called on 'default-policy'.
+
+        :param network_policy_id: str
+          The unique identifier of the network policy to delete.
+      parameters:
+        - name: network_policy_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the network policy to delete.
+      responses:
+        '200':
+          description: Success
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    get:
+      operationId: network_policies_get_network_policy_rpc
+      summary: Gets a network policy.
+      tags:
+        - settings
+        - network_policies
+      description: |-
+        Gets a network policy.
+
+        :param network_policy_id: str
+          The unique identifier of the network policy to retrieve.
+
+        :returns: :class:`AccountNetworkPolicy`
+      parameters:
+        - name: network_policy_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier of the network policy to retrieve.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountNetworkPolicy'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    put:
+      operationId: network_policies_update_network_policy_rpc
+      summary: >-
+        Updates a network policy. This allows you to modify the configuration of
+        a network policy.
+      tags:
+        - settings
+        - network_policies
+      description: >-
+        Updates a network policy. This allows you to modify the configuration of
+        a network policy.
+
+
+        :param network_policy_id: str
+          The unique identifier for the network policy.
+        :param network_policy: :class:`AccountNetworkPolicy`
+          Updated network policy configuration details.
+
+        :returns: :class:`AccountNetworkPolicy`
+      parameters:
+        - name: network_policy_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique identifier for the network policy.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                network_policy:
+                  type: string
+                  description: Updated network policy configuration details.
+              required:
+                - network_policy
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AccountNetworkPolicy'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+  /api/2.0/accounts/{account_id}/workspaces/{workspace_id}/network:
+    get:
+      operationId: workspace_network_configuration_get_workspace_network_option_rpc
+      summary: >-
+        Gets the network option for a workspace. Every workspace has exactly one
+        network policy binding, with
+      tags:
+        - settings
+        - workspace_network_configuration
+      description: >-
+        Gets the network option for a workspace. Every workspace has exactly one
+        network policy binding, with
+
+        'default-policy' used if no explicit assignment exists.
+
+
+        :param workspace_id: int
+          The workspace ID.
+
+        :returns: :class:`WorkspaceNetworkOption`
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The workspace ID.
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceNetworkOption'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+    put:
+      operationId: workspace_network_configuration_update_workspace_network_option_rpc
+      summary: >-
+        Updates the network option for a workspace. This operation associates
+        the workspace with the specified
+      tags:
+        - settings
+        - workspace_network_configuration
+      description: >-
+        Updates the network option for a workspace. This operation associates
+        the workspace with the specified
+
+        network policy. To revert to the default policy, specify
+        'default-policy' as the network_policy_id.
+
+
+        :param workspace_id: int
+          The workspace ID.
+        :param workspace_network_option: :class:`WorkspaceNetworkOption`
+          The network option details for the workspace.
+
+        :returns: :class:`WorkspaceNetworkOption`
+      parameters:
+        - name: workspace_id
+          in: path
+          required: true
+          schema:
+            type: integer
+          description: The workspace ID.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                workspace_network_option:
+                  type: string
+                  description: The network option details for the workspace.
+              required:
+                - workspace_network_option
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkspaceNetworkOption'
+        default:
+          description: Error response
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  error:
+                    type: string
+                  message:
+                    type: string
+components:
+  schemas:
+    AccountIpAccessEnable:
+      type: object
+      properties:
+        acct_ip_acl_enable:
+          $ref: '#/components/schemas/BooleanMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - acct_ip_acl_enable
+    AccountNetworkPolicy:
+      type: object
+      properties:
+        account_id:
+          type: string
+        egress:
+          $ref: '#/components/schemas/NetworkPolicyEgress'
+          description: The network policies applying for egress traffic.
+        network_policy_id:
+          type: string
+          description: The unique identifier for the network policy.
+    AibiDashboardEmbeddingAccessPolicy:
+      type: object
+      properties:
+        access_policy_type:
+          $ref: >-
+            #/components/schemas/AibiDashboardEmbeddingAccessPolicyAccessPolicyType
+      required:
+        - access_policy_type
+    AibiDashboardEmbeddingAccessPolicySetting:
+      type: object
+      properties:
+        aibi_dashboard_embedding_access_policy:
+          $ref: '#/components/schemas/AibiDashboardEmbeddingAccessPolicy'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - aibi_dashboard_embedding_access_policy
+    AibiDashboardEmbeddingApprovedDomains:
+      type: object
+      properties:
+        approved_domains:
+          type: array
+          items:
+            type: string
+    AibiDashboardEmbeddingApprovedDomainsSetting:
+      type: object
+      properties:
+        aibi_dashboard_embedding_approved_domains:
+          $ref: '#/components/schemas/AibiDashboardEmbeddingApprovedDomains'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - aibi_dashboard_embedding_approved_domains
+    AutomaticClusterUpdateSetting:
+      type: object
+      properties:
+        automatic_cluster_update_workspace:
+          $ref: '#/components/schemas/ClusterAutoRestartMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - automatic_cluster_update_workspace
+    BooleanMessage:
+      type: object
+      properties:
+        value:
+          type: boolean
+    ClusterAutoRestartMessage:
+      type: object
+      properties:
+        can_toggle:
+          type: boolean
+        enabled:
+          type: boolean
+        enablement_details:
+          $ref: '#/components/schemas/ClusterAutoRestartMessageEnablementDetails'
+        maintenance_window:
+          $ref: '#/components/schemas/ClusterAutoRestartMessageMaintenanceWindow'
+        restart_even_if_no_updates_available:
+          type: boolean
+    ClusterAutoRestartMessageEnablementDetails:
+      type: object
+      properties:
+        forced_for_compliance_mode:
+          type: boolean
+          description: The feature is force enabled if compliance mode is active
+        unavailable_for_disabled_entitlement:
+          type: boolean
+          description: >-
+            The feature is unavailable if the corresponding entitlement disabled
+            (see getShieldEntitlementEnable)
+        unavailable_for_non_enterprise_tier:
+          type: boolean
+          description: >-
+            The feature is unavailable if the customer doesn't have enterprise
+            tier
+      description: >-
+        Contains an information about the enablement status judging (e.g.
+        whether the enterprise tier is
+            enabled) This is only additional information that MUST NOT be used to decide whether the setting
+            is enabled or not. This is intended to use only for purposes like showing an error message to
+            the customer with the additional details. For example, using these details we can check why
+            exactly the feature is disabled for this customer.
+    ClusterAutoRestartMessageMaintenanceWindow:
+      type: object
+      properties:
+        week_day_based_schedule:
+          $ref: >-
+            #/components/schemas/ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule
+    ClusterAutoRestartMessageMaintenanceWindowWeekDayBasedSchedule:
+      type: object
+      properties:
+        day_of_week:
+          $ref: >-
+            #/components/schemas/ClusterAutoRestartMessageMaintenanceWindowDayOfWeek
+        frequency:
+          $ref: >-
+            #/components/schemas/ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency
+        window_start_time:
+          $ref: >-
+            #/components/schemas/ClusterAutoRestartMessageMaintenanceWindowWindowStartTime
+    ClusterAutoRestartMessageMaintenanceWindowWindowStartTime:
+      type: object
+      properties:
+        hours:
+          type: integer
+        minutes:
+          type: integer
+    ComplianceSecurityProfile:
+      type: object
+      properties:
+        compliance_standards:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComplianceStandard'
+          description: Set by customers when they request Compliance Security Profile (CSP)
+        is_enabled:
+          type: boolean
+      description: 'SHIELD feature: CSP'
+    ComplianceSecurityProfileSetting:
+      type: object
+      properties:
+        compliance_security_profile_workspace:
+          $ref: '#/components/schemas/ComplianceSecurityProfile'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - compliance_security_profile_workspace
+    Config:
+      type: object
+      properties:
+        email:
+          $ref: '#/components/schemas/EmailConfig'
+        generic_webhook:
+          $ref: '#/components/schemas/GenericWebhookConfig'
+        microsoft_teams:
+          $ref: '#/components/schemas/MicrosoftTeamsConfig'
+        pagerduty:
+          $ref: '#/components/schemas/PagerdutyConfig'
+        slack:
+          $ref: '#/components/schemas/SlackConfig'
+    CreateIpAccessListResponse:
+      type: object
+      properties:
+        ip_access_list:
+          $ref: '#/components/schemas/IpAccessListInfo'
+      description: An IP access list was successfully created.
+    CreateNetworkConnectivityConfiguration:
+      type: object
+      properties:
+        name:
+          type: string
+          description: >-
+            The name of the network connectivity configuration. The name can
+            contain alphanumeric characters, hyphens, and underscores. The
+            length must be between 3 and 30 characters. The name must match the
+            regular expression ^[0-9a-zA-Z-_]{3,30}$
+        region:
+          type: string
+          description: >-
+            The region for the network connectivity configuration. Only
+            workspaces in the same region can be attached to the network
+            connectivity configuration.
+      required:
+        - name
+        - region
+      description: Properties of the new network connectivity configuration.
+    CreateOboTokenResponse:
+      type: object
+      properties:
+        token_info:
+          $ref: '#/components/schemas/TokenInfo'
+        token_value:
+          type: string
+          description: Value of the token.
+      description: An on-behalf token was successfully created for the service principal.
+    CreatePrivateEndpointRule:
+      type: object
+      properties:
+        domain_names:
+          type: array
+          items:
+            type: string
+          description: >-
+            Only used by private endpoints to customer-managed private endpoint
+            services. Domain names of target private link service. When updating
+            this field, the full list of target domain_names must be specified.
+        endpoint_service:
+          type: string
+          description: >-
+            The full target AWS endpoint service name that connects to the
+            destination resources of the private endpoint.
+        error_message:
+          type: string
+        group_id:
+          type: string
+          description: >-
+            Not used by customer-managed private endpoint services. The
+            sub-resource type (group ID) of the target resource. Note that to
+            connect to workspace root storage (root DBFS), you need two
+            endpoints, one for blob and one for dfs.
+        resource_id:
+          type: string
+          description: The Azure resource ID of the target resource.
+        resource_names:
+          type: array
+          items:
+            type: string
+          description: >-
+            Only used by private endpoints towards AWS S3 service. The globally
+            unique S3 bucket names that will be accessed via the VPC endpoint.
+            The bucket names must be in the same region as the NCC/endpoint
+            service. When updating this field, we perform full update on this
+            field. Please ensure a full list of desired resource_names is
+            provided.
+      description: >-
+        Properties of the new private endpoint rule. Note that you must approve
+        the endpoint in Azure
+            portal after initialization.
+    CreateTokenResponse:
+      type: object
+      properties:
+        token_info:
+          $ref: '#/components/schemas/PublicTokenInfo'
+        token_value:
+          type: string
+          description: The value of the new token.
+    CspEnablementAccount:
+      type: object
+      properties:
+        compliance_standards:
+          type: array
+          items:
+            $ref: '#/components/schemas/ComplianceStandard'
+          description: >-
+            Set by customers when they request Compliance Security Profile (CSP)
+            Invariants are enforced in Settings policy.
+        is_enforced:
+          type: boolean
+          description: Enforced = it cannot be overriden at workspace level.
+      description: Account level policy for CSP
+    CspEnablementAccountSetting:
+      type: object
+      properties:
+        csp_enablement_account:
+          $ref: '#/components/schemas/CspEnablementAccount'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - csp_enablement_account
+    CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule:
+      type: object
+      properties:
+        account_id:
+          type: string
+          description: >-
+            Databricks account ID. You can find your account ID from the
+            Accounts Console.
+        connection_state:
+          $ref: >-
+            #/components/schemas/CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState
+        creation_time:
+          type: integer
+          description: Time in epoch milliseconds when this object was created.
+        deactivated:
+          type: boolean
+          description: Whether this private endpoint is deactivated.
+        deactivated_at:
+          type: integer
+          description: Time in epoch milliseconds when this object was deactivated.
+        domain_names:
+          type: array
+          items:
+            type: string
+          description: >-
+            Only used by private endpoints towards a VPC endpoint service for
+            customer-managed VPC endpoint service. The target AWS resource FQDNs
+            accessible via the VPC endpoint service. When updating this field,
+            we perform full update on this field. Please ensure a full list of
+            desired domain_names is provided.
+        enabled:
+          type: boolean
+          description: >-
+            Only used by private endpoints towards an AWS S3 service. Update
+            this field to activate/deactivate this private endpoint to allow
+            egress access from serverless compute resources.
+        endpoint_service:
+          type: string
+          description: >-
+            The full target AWS endpoint service name that connects to the
+            destination resources of the private endpoint.
+        error_message:
+          type: string
+        network_connectivity_config_id:
+          type: string
+          description: >-
+            The ID of a network connectivity configuration, which is the parent
+            resource of this private endpoint rule object.
+        resource_names:
+          type: array
+          items:
+            type: string
+          description: >-
+            Only used by private endpoints towards AWS S3 service. The globally
+            unique S3 bucket names that will be accessed via the VPC endpoint.
+            The bucket names must be in the same region as the NCC/endpoint
+            service. When updating this field, we perform full update on this
+            field. Please ensure a full list of desired resource_names is
+            provided.
+        rule_id:
+          type: string
+          description: The ID of a private endpoint rule.
+        updated_time:
+          type: integer
+          description: Time in epoch milliseconds when this object was updated.
+        vpc_endpoint_id:
+          type: string
+          description: >-
+            The AWS VPC endpoint ID. You can use this ID to identify VPC
+            endpoint created by Databricks.
+      description: >-
+        Properties of the new private endpoint rule. Note that for private
+        endpoints towards a VPC
+            endpoint service behind a customer-managed NLB, you must approve the endpoint in AWS console
+            after initialization.
+    DashboardEmailSubscriptions:
+      type: object
+      properties:
+        boolean_val:
+          $ref: '#/components/schemas/BooleanMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - boolean_val
+    DefaultNamespaceSetting:
+      type: object
+      properties:
+        namespace:
+          $ref: '#/components/schemas/StringMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - namespace
+      description: >-
+        This represents the setting configuration for the default namespace in
+        the Databricks workspace.
+            Setting the default catalog for the workspace determines the catalog that is used when queries
+            do not reference a fully qualified 3 level name. For example, if the default catalog is set to
+            'retail_prod' then a query 'SELECT * FROM myTable' would reference the object
+            'retail_prod.default.myTable' (the schema 'default' is always assumed). This setting requires a
+            restart of clusters and SQL warehouses to take effect. Additionally, the default namespace only
+            applies when using Unity Catalog-enabled compute.
+    DefaultWarehouseId:
+      type: object
+      properties:
+        string_val:
+          $ref: '#/components/schemas/StringMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - string_val
+    DeleteAccountIpAccessEnableResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteAibiDashboardEmbeddingAccessPolicySettingResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteAibiDashboardEmbeddingApprovedDomainsSettingResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteDashboardEmailSubscriptionsResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteDefaultNamespaceSettingResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteDefaultWarehouseIdResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteDisableLegacyAccessResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteDisableLegacyDbfsResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteDisableLegacyFeaturesResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteLlmProxyPartnerPoweredWorkspaceResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeletePersonalComputeSettingResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteRestrictWorkspaceAdminsSettingResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DeleteSqlResultsDownloadResponse:
+      type: object
+      properties:
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> delete pattern to perform setting deletions in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the DELETE request to identify the rule
+            set version you are deleting.
+      required:
+        - etag
+      description: The etag is returned.
+    DisableLegacyAccess:
+      type: object
+      properties:
+        disable_legacy_access:
+          $ref: '#/components/schemas/BooleanMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - disable_legacy_access
+    DisableLegacyDbfs:
+      type: object
+      properties:
+        disable_legacy_dbfs:
+          $ref: '#/components/schemas/BooleanMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - disable_legacy_dbfs
+    DisableLegacyFeatures:
+      type: object
+      properties:
+        disable_legacy_features:
+          $ref: '#/components/schemas/BooleanMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - disable_legacy_features
+    EgressNetworkPolicy:
+      type: object
+      properties:
+        internet_access:
+          $ref: '#/components/schemas/EgressNetworkPolicyInternetAccessPolicy'
+          description: The access policy enforced for egress traffic to the internet.
+      description: >-
+        The network policies applying for egress traffic. This message is used
+        by the UI/REST API. We
+            translate this message to the format expected by the dataplane in Lakehouse Network Manager (for
+            the format expected by the dataplane, see networkconfig.textproto).
+    EgressNetworkPolicyInternetAccessPolicy:
+      type: object
+      properties:
+        allowed_internet_destinations:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/EgressNetworkPolicyInternetAccessPolicyInternetDestination
+        allowed_storage_destinations:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/EgressNetworkPolicyInternetAccessPolicyStorageDestination
+        log_only_mode:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyInternetAccessPolicyLogOnlyMode
+          description: >-
+            Optional. If not specified, assume the policy is enforced for all
+            workloads.
+        restriction_mode:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyInternetAccessPolicyRestrictionMode
+    EgressNetworkPolicyInternetAccessPolicyInternetDestination:
+      type: object
+      properties:
+        destination:
+          type: string
+        protocol:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol
+        type:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType
+      description: >-
+        Users can specify accessible internet destinations when outbound access
+        is restricted. We only
+            support domain name (FQDN) destinations for the time being, though going forwards we want to
+            support host names and IP addresses.
+    EgressNetworkPolicyInternetAccessPolicyLogOnlyMode:
+      type: object
+      properties:
+        log_only_mode_type:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType
+        workloads:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType
+    EgressNetworkPolicyInternetAccessPolicyStorageDestination:
+      type: object
+      properties:
+        allowed_paths:
+          type: array
+          items:
+            type: string
+        azure_container:
+          type: string
+        azure_dns_zone:
+          type: string
+        azure_storage_account:
+          type: string
+        azure_storage_service:
+          type: string
+        bucket_name:
+          type: string
+        region:
+          type: string
+        type:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType
+      description: Users can specify accessible storage destinations.
+    EgressNetworkPolicyNetworkAccessPolicy:
+      type: object
+      properties:
+        restriction_mode:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyNetworkAccessPolicyRestrictionMode
+        allowed_internet_destinations:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/EgressNetworkPolicyNetworkAccessPolicyInternetDestination
+          description: >-
+            List of internet destinations that serverless workloads are allowed
+            to access when in RESTRICTED_ACCESS mode.
+        allowed_storage_destinations:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/EgressNetworkPolicyNetworkAccessPolicyStorageDestination
+          description: >-
+            List of storage destinations that serverless workloads are allowed
+            to access when in RESTRICTED_ACCESS mode.
+        policy_enforcement:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement
+          description: >-
+            Optional. When policy_enforcement is not provided, we default to
+            ENFORCE_MODE_ALL_SERVICES
+      required:
+        - restriction_mode
+    EgressNetworkPolicyNetworkAccessPolicyInternetDestination:
+      type: object
+      properties:
+        destination:
+          type: string
+          description: >-
+            The internet destination to which access will be allowed. Format
+            dependent on the destination type.
+        internet_destination_type:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType
+      description: >-
+        Users can specify accessible internet destinations when outbound access
+        is restricted. We only
+            support DNS_NAME (FQDN format) destinations for the time being. Going forward we may extend
+            support to host names and IP addresses.
+    EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcement:
+      type: object
+      properties:
+        dry_run_mode_product_filter:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter
+        enforcement_mode:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode
+          description: >-
+            The mode of policy enforcement. ENFORCED blocks traffic that
+            violates policy, while DRY_RUN only logs violations without
+            blocking. When not specified, defaults to ENFORCED.
+    EgressNetworkPolicyNetworkAccessPolicyStorageDestination:
+      type: object
+      properties:
+        azure_storage_account:
+          type: string
+          description: The Azure storage account name.
+        azure_storage_service:
+          type: string
+          description: The Azure storage service type (blob, dfs, etc.).
+        bucket_name:
+          type: string
+        region:
+          type: string
+        storage_destination_type:
+          $ref: >-
+            #/components/schemas/EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType
+      description: Users can specify accessible storage destinations.
+    EmailConfig:
+      type: object
+      properties:
+        addresses:
+          type: array
+          items:
+            type: string
+    Empty:
+      type: object
+      properties: {}
+    EnableExportNotebook:
+      type: object
+      properties:
+        boolean_val:
+          $ref: '#/components/schemas/BooleanMessage'
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+    EnableNotebookTableClipboard:
+      type: object
+      properties:
+        boolean_val:
+          $ref: '#/components/schemas/BooleanMessage'
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+    EnableResultsDownloading:
+      type: object
+      properties:
+        boolean_val:
+          $ref: '#/components/schemas/BooleanMessage'
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+    EnhancedSecurityMonitoring:
+      type: object
+      properties:
+        is_enabled:
+          type: boolean
+      description: 'SHIELD feature: ESM'
+    EnhancedSecurityMonitoringSetting:
+      type: object
+      properties:
+        enhanced_security_monitoring_workspace:
+          $ref: '#/components/schemas/EnhancedSecurityMonitoring'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - enhanced_security_monitoring_workspace
+    EsmEnablementAccount:
+      type: object
+      properties:
+        is_enforced:
+          type: boolean
+      description: Account level policy for ESM
+    EsmEnablementAccountSetting:
+      type: object
+      properties:
+        esm_enablement_account:
+          $ref: '#/components/schemas/EsmEnablementAccount'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - esm_enablement_account
+    ExchangeToken:
+      type: object
+      properties:
+        credential:
+          type: string
+          description: The requested token.
+        credential_eol_time:
+          type: integer
+          description: >-
+            The end-of-life timestamp of the token. The value is in milliseconds
+            since the Unix epoch.
+        owner_id:
+          type: integer
+          description: User ID of the user that owns this token.
+        scopes:
+          type: array
+          items:
+            type: string
+          description: The scopes of access granted in the token.
+        token_type:
+          $ref: '#/components/schemas/TokenType'
+          description: The type of this exchange token
+      description: The exchange token is the result of the token exchange with the IdP
+    ExchangeTokenResponse:
+      type: object
+      properties:
+        values:
+          type: array
+          items:
+            $ref: '#/components/schemas/ExchangeToken'
+      description: Exhanged tokens were successfully returned.
+    FetchIpAccessListResponse:
+      type: object
+      properties:
+        ip_access_list:
+          $ref: '#/components/schemas/IpAccessListInfo'
+      description: An IP access list was successfully returned.
+    GenericWebhookConfig:
+      type: object
+      properties:
+        password:
+          type: string
+        password_set:
+          type: boolean
+          description: '[Output-Only] Whether password is set.'
+        url:
+          type: string
+          description: '[Input-Only] URL for webhook.'
+        url_set:
+          type: boolean
+          description: '[Output-Only] Whether URL is set.'
+        username:
+          type: string
+          description: '[Input-Only][Optional] Username for webhook.'
+        username_set:
+          type: boolean
+          description: '[Output-Only] Whether username is set.'
+    GetIpAccessListResponse:
+      type: object
+      properties:
+        ip_access_list:
+          $ref: '#/components/schemas/IpAccessListInfo'
+    GetIpAccessListsResponse:
+      type: object
+      properties:
+        ip_access_lists:
+          type: array
+          items:
+            $ref: '#/components/schemas/IpAccessListInfo'
+      description: IP access lists were successfully returned.
+    GetTokenPermissionLevelsResponse:
+      type: object
+      properties:
+        permission_levels:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenPermissionsDescription'
+    GetTokenResponse:
+      type: object
+      properties:
+        token_info:
+          $ref: '#/components/schemas/TokenInfo'
+      description: Token with specified Token ID was successfully returned.
+    IpAccessListInfo:
+      type: object
+      properties:
+        address_count:
+          type: integer
+          description: Total number of IP or CIDR values.
+        created_at:
+          type: integer
+          description: Creation timestamp in milliseconds.
+        created_by:
+          type: integer
+          description: User ID of the user who created this list.
+        enabled:
+          type: boolean
+          description: Specifies whether this IP access list is enabled.
+        ip_addresses:
+          type: array
+          items:
+            type: string
+        label:
+          type: string
+          description: Label for the IP access list. This **cannot** be empty.
+        list_id:
+          type: string
+          description: Universally unique identifier (UUID) of the IP access list.
+        list_type:
+          $ref: '#/components/schemas/ListType'
+        updated_at:
+          type: integer
+          description: Update timestamp in milliseconds.
+        updated_by:
+          type: integer
+          description: User ID of the user who updated this list.
+      description: Definition of an IP Access list
+    ListIpAccessListResponse:
+      type: object
+      properties:
+        ip_access_lists:
+          type: array
+          items:
+            $ref: '#/components/schemas/IpAccessListInfo'
+      description: IP access lists were successfully returned.
+    ListNetworkConnectivityConfigurationsResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/NetworkConnectivityConfiguration'
+        next_page_token:
+          type: string
+          description: >-
+            A token that can be used to get the next page of results. If null,
+            there are no more results to show.
+      description: The network connectivity configuration list was successfully retrieved.
+    ListNetworkPoliciesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/AccountNetworkPolicy'
+        next_page_token:
+          type: string
+          description: >-
+            A token that can be used to get the next page of results. If null,
+            there are no more results to show.
+    ListNotificationDestinationsResponse:
+      type: object
+      properties:
+        next_page_token:
+          type: string
+        results:
+          type: array
+          items:
+            $ref: '#/components/schemas/ListNotificationDestinationsResult'
+    ListNotificationDestinationsResult:
+      type: object
+      properties:
+        destination_type:
+          $ref: '#/components/schemas/DestinationType'
+        display_name:
+          type: string
+          description: The display name for the notification destination.
+        id:
+          type: string
+          description: UUID identifying notification destination.
+    ListPrivateEndpointRulesResponse:
+      type: object
+      properties:
+        items:
+          type: array
+          items:
+            $ref: '#/components/schemas/NccPrivateEndpointRule'
+        next_page_token:
+          type: string
+          description: >-
+            A token that can be used to get the next page of results. If null,
+            there are no more results to show.
+      description: The private endpoint rule list was successfully retrieved.
+    ListPublicTokensResponse:
+      type: object
+      properties:
+        token_infos:
+          type: array
+          items:
+            $ref: '#/components/schemas/PublicTokenInfo'
+    ListTokensResponse:
+      type: object
+      properties:
+        token_infos:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenInfo'
+          description: Token metadata of each user-created token in the workspace
+      description: Tokens were successfully returned.
+    LlmProxyPartnerPoweredAccount:
+      type: object
+      properties:
+        boolean_val:
+          $ref: '#/components/schemas/BooleanMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - boolean_val
+    LlmProxyPartnerPoweredEnforce:
+      type: object
+      properties:
+        boolean_val:
+          $ref: '#/components/schemas/BooleanMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - boolean_val
+    LlmProxyPartnerPoweredWorkspace:
+      type: object
+      properties:
+        boolean_val:
+          $ref: '#/components/schemas/BooleanMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - boolean_val
+    MicrosoftTeamsConfig:
+      type: object
+      properties:
+        app_id:
+          type: string
+        app_id_set:
+          type: boolean
+          description: '[Output-Only] Whether App ID is set.'
+        auth_secret:
+          type: string
+          description: '[Input-Only] Secret for Microsoft Teams App authentication.'
+        auth_secret_set:
+          type: boolean
+          description: '[Output-Only] Whether secret is set.'
+        channel_url:
+          type: string
+          description: '[Input-Only] Channel URL for Microsoft Teams App.'
+        channel_url_set:
+          type: boolean
+          description: '[Output-Only] Whether Channel URL is set.'
+        tenant_id:
+          type: string
+          description: '[Input-Only] Tenant ID for Microsoft Teams App.'
+        tenant_id_set:
+          type: boolean
+          description: '[Output-Only] Whether Tenant ID is set.'
+        url:
+          type: string
+          description: '[Input-Only] URL for Microsoft Teams webhook.'
+        url_set:
+          type: boolean
+          description: '[Output-Only] Whether URL is set.'
+    NccAwsStableIpRule:
+      type: object
+      properties:
+        cidr_blocks:
+          type: array
+          items:
+            type: string
+          description: >-
+            The list of stable IP CIDR blocks from which Databricks network
+            traffic originates when accessing your resources.
+      description: >-
+        The stable AWS IP CIDR blocks. You can use these to configure the
+        firewall of your resources to
+            allow traffic from your Databricks workspace.
+    NccAzurePrivateEndpointRule:
+      type: object
+      properties:
+        connection_state:
+          $ref: '#/components/schemas/NccAzurePrivateEndpointRuleConnectionState'
+          description: >-
+            The current status of this private endpoint. The private endpoint
+            rules are effective only if the connection state is ESTABLISHED.
+            Remember that you must approve new endpoints on your resources in
+            the Azure portal before they take effect. The possible values are: -
+            INIT: (deprecated) The endpoint has been created and pending
+            approval. - PENDING: The endpoint has been created and pending
+            approval. - ESTABLISHED: The endpoint has been approved and is ready
+            to use in your serverless compute resources. - REJECTED: Connection
+            was rejected by the private link resource owner. - DISCONNECTED:
+            Connection was removed by the private link resource owner, the
+            private endpoint becomes informative and should be deleted for
+            clean-up. - EXPIRED: If the endpoint was created but not approved in
+            14 days, it will be EXPIRED.
+        creation_time:
+          type: integer
+          description: Time in epoch milliseconds when this object was created.
+        deactivated:
+          type: boolean
+          description: Whether this private endpoint is deactivated.
+        deactivated_at:
+          type: integer
+          description: Time in epoch milliseconds when this object was deactivated.
+        domain_names:
+          type: array
+          items:
+            type: string
+          description: >-
+            Not used by customer-managed private endpoint services. Domain names
+            of target private link service. When updating this field, the full
+            list of target domain_names must be specified.
+        endpoint_name:
+          type: string
+          description: The name of the Azure private endpoint resource.
+        error_message:
+          type: string
+        group_id:
+          type: string
+          description: >-
+            Only used by private endpoints to Azure first-party services. The
+            sub-resource type (group ID) of the target resource. Note that to
+            connect to workspace root storage (root DBFS), you need two
+            endpoints, one for blob and one for dfs.
+        network_connectivity_config_id:
+          type: string
+          description: >-
+            The ID of a network connectivity configuration, which is the parent
+            resource of this private endpoint rule object.
+        resource_id:
+          type: string
+          description: The Azure resource ID of the target resource.
+        rule_id:
+          type: string
+          description: The ID of a private endpoint rule.
+        updated_time:
+          type: integer
+          description: Time in epoch milliseconds when this object was updated.
+      description: >-
+        Properties of the new private endpoint rule. Note that you must approve
+        the endpoint in Azure
+            portal after initialization.
+    NccAzureServiceEndpointRule:
+      type: object
+      properties:
+        subnets:
+          type: array
+          items:
+            type: string
+          description: >-
+            The list of subnets from which Databricks network traffic originates
+            when accessing your Azure resources.
+        target_region:
+          type: string
+          description: The Azure region in which this service endpoint rule applies..
+        target_services:
+          type: array
+          items:
+            $ref: '#/components/schemas/EgressResourceType'
+          description: The Azure services to which this service endpoint rule applies to.
+      description: >-
+        The stable Azure service endpoints. You can configure the firewall of
+        your Azure resources to
+            allow traffic from your Databricks serverless compute resources.
+    NccEgressConfig:
+      type: object
+      properties:
+        default_rules:
+          $ref: '#/components/schemas/NccEgressDefaultRules'
+        target_rules:
+          $ref: '#/components/schemas/NccEgressTargetRules'
+          description: >-
+            The network connectivity rules that configured for each
+            destinations. These rules override default rules.
+    NccEgressDefaultRules:
+      type: object
+      properties:
+        aws_stable_ip_rule:
+          $ref: '#/components/schemas/NccAwsStableIpRule'
+        azure_service_endpoint_rule:
+          $ref: '#/components/schemas/NccAzureServiceEndpointRule'
+      description: Default rules don't have specific targets.
+    NccEgressTargetRules:
+      type: object
+      properties:
+        aws_private_endpoint_rules:
+          type: array
+          items:
+            $ref: >-
+              #/components/schemas/CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRule
+          description: >-
+            AWS private endpoint rule controls the AWS private endpoint based
+            egress rules.
+        azure_private_endpoint_rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/NccAzurePrivateEndpointRule'
+      description: >-
+        Target rule controls the egress rules that are dedicated to specific
+        resources.
+    NccPrivateEndpointRule:
+      type: object
+      properties:
+        account_id:
+          type: string
+          description: >-
+            Databricks account ID. You can find your account ID from the
+            Accounts Console.
+        connection_state:
+          $ref: >-
+            #/components/schemas/NccPrivateEndpointRulePrivateLinkConnectionState
+          description: >-
+            The current status of this private endpoint. The private endpoint
+            rules are effective only if the connection state is ESTABLISHED.
+            Remember that you must approve new endpoints on your resources in
+            the Cloud console before they take effect. The possible values are:
+            - PENDING: The endpoint has been created and pending approval. -
+            ESTABLISHED: The endpoint has been approved and is ready to use in
+            your serverless compute resources. - REJECTED: Connection was
+            rejected by the private link resource owner. - DISCONNECTED:
+            Connection was removed by the private link resource owner, the
+            private endpoint becomes informative and should be deleted for
+            clean-up. - EXPIRED: If the endpoint was created but not approved in
+            14 days, it will be EXPIRED. - CREATING: The endpoint creation is in
+            progress. Once successfully created, the state will transition to
+            PENDING. - CREATE_FAILED: The endpoint creation failed. You can
+            check the error_message field for more details.
+        creation_time:
+          type: integer
+          description: Time in epoch milliseconds when this object was created.
+        deactivated:
+          type: boolean
+          description: Whether this private endpoint is deactivated.
+        deactivated_at:
+          type: integer
+          description: Time in epoch milliseconds when this object was deactivated.
+        domain_names:
+          type: array
+          items:
+            type: string
+          description: >-
+            Only used by private endpoints to customer-managed private endpoint
+            services. Domain names of target private link service. When updating
+            this field, the full list of target domain_names must be specified.
+        enabled:
+          type: boolean
+          description: >-
+            Only used by private endpoints towards an AWS S3 service. Update
+            this field to activate/deactivate this private endpoint to allow
+            egress access from serverless compute resources.
+        endpoint_name:
+          type: string
+          description: The name of the Azure private endpoint resource.
+        endpoint_service:
+          type: string
+          description: >-
+            The full target AWS endpoint service name that connects to the
+            destination resources of the private endpoint.
+        error_message:
+          type: string
+        group_id:
+          type: string
+          description: >-
+            Not used by customer-managed private endpoint services. The
+            sub-resource type (group ID) of the target resource. Note that to
+            connect to workspace root storage (root DBFS), you need two
+            endpoints, one for blob and one for dfs.
+        network_connectivity_config_id:
+          type: string
+          description: >-
+            The ID of a network connectivity configuration, which is the parent
+            resource of this private endpoint rule object.
+        resource_id:
+          type: string
+          description: The Azure resource ID of the target resource.
+        resource_names:
+          type: array
+          items:
+            type: string
+          description: >-
+            Only used by private endpoints towards AWS S3 service. The globally
+            unique S3 bucket names that will be accessed via the VPC endpoint.
+            The bucket names must be in the same region as the NCC/endpoint
+            service. When updating this field, we perform full update on this
+            field. Please ensure a full list of desired resource_names is
+            provided.
+        rule_id:
+          type: string
+          description: The ID of a private endpoint rule.
+        updated_time:
+          type: integer
+          description: Time in epoch milliseconds when this object was updated.
+        vpc_endpoint_id:
+          type: string
+          description: >-
+            The AWS VPC endpoint ID. You can use this ID to identify the VPC
+            endpoint created by Databricks.
+      description: >-
+        Properties of the new private endpoint rule. Note that you must approve
+        the endpoint in Azure
+            portal after initialization.
+    NetworkConnectivityConfiguration:
+      type: object
+      properties:
+        account_id:
+          type: string
+          description: >-
+            Your Databricks account ID. You can find your account ID in your
+            Databricks accounts console.
+        creation_time:
+          type: integer
+          description: Time in epoch milliseconds when this object was created.
+        egress_config:
+          $ref: '#/components/schemas/NccEgressConfig'
+          description: >-
+            The network connectivity rules that apply to network traffic from
+            your serverless compute resources.
+        name:
+          type: string
+          description: >-
+            The name of the network connectivity configuration. The name can
+            contain alphanumeric characters, hyphens, and underscores. The
+            length must be between 3 and 30 characters. The name must match the
+            regular expression ^[0-9a-zA-Z-_]{3,30}$
+        network_connectivity_config_id:
+          type: string
+          description: Databricks network connectivity configuration ID.
+        region:
+          type: string
+          description: >-
+            The region for the network connectivity configuration. Only
+            workspaces in the same region can be attached to the network
+            connectivity configuration.
+        updated_time:
+          type: integer
+          description: Time in epoch milliseconds when this object was updated.
+      description: Properties of the new network connectivity configuration.
+    NetworkPolicyEgress:
+      type: object
+      properties:
+        network_access:
+          $ref: '#/components/schemas/EgressNetworkPolicyNetworkAccessPolicy'
+          description: The access policy enforced for egress traffic to the internet.
+      description: >-
+        The network policies applying for egress traffic. This message is used
+        by the UI/REST API. We
+            translate this message to the format expected by the dataplane in Lakehouse Network Manager (for
+            the format expected by the dataplane, see networkconfig.textproto). This policy should be
+            consistent with [[com.databricks.api.proto.settingspolicy.EgressNetworkPolicy]]. Details see
+            API-design: https://docs.google.com/document/d/1DKWO_FpZMCY4cF2O62LpwII1lx8gsnDGG-qgE3t3TOA/
+    NotificationDestination:
+      type: object
+      properties:
+        config:
+          $ref: '#/components/schemas/Config'
+        destination_type:
+          $ref: '#/components/schemas/DestinationType'
+          description: >-
+            [Output-only] The type of the notification destination. The type can
+            not be changed once set.
+        display_name:
+          type: string
+          description: The display name for the notification destination.
+        id:
+          type: string
+          description: UUID identifying notification destination.
+    PagerdutyConfig:
+      type: object
+      properties:
+        integration_key:
+          type: string
+        integration_key_set:
+          type: boolean
+          description: '[Output-Only] Whether integration key is set.'
+    PartitionId:
+      type: object
+      properties:
+        workspace_id:
+          type: integer
+          description: The ID of the workspace.
+      description: Partition by workspace or account
+    PersonalComputeMessage:
+      type: object
+      properties:
+        value:
+          $ref: '#/components/schemas/PersonalComputeMessageEnum'
+      required:
+        - value
+    PersonalComputeSetting:
+      type: object
+      properties:
+        personal_compute:
+          $ref: '#/components/schemas/PersonalComputeMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - personal_compute
+    PublicTokenInfo:
+      type: object
+      properties:
+        comment:
+          type: string
+        creation_time:
+          type: integer
+          description: Server time (in epoch milliseconds) when the token was created.
+        expiry_time:
+          type: integer
+          description: >-
+            Server time (in epoch milliseconds) when the token will expire, or
+            -1 if not applicable.
+        token_id:
+          type: string
+          description: The ID of this token.
+    RestrictWorkspaceAdminsMessage:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/RestrictWorkspaceAdminsMessageStatus'
+      required:
+        - status
+    RestrictWorkspaceAdminsSetting:
+      type: object
+      properties:
+        restrict_workspace_admins:
+          $ref: '#/components/schemas/RestrictWorkspaceAdminsMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - restrict_workspace_admins
+    RevokeTokenResponse:
+      type: object
+      properties: {}
+    SlackConfig:
+      type: object
+      properties:
+        channel_id:
+          type: string
+        channel_id_set:
+          type: boolean
+          description: '[Output-Only] Whether channel ID is set.'
+        oauth_token:
+          type: string
+          description: '[Input-Only] OAuth token for Slack authentication.'
+        oauth_token_set:
+          type: boolean
+          description: '[Output-Only] Whether OAuth token is set.'
+        url:
+          type: string
+          description: '[Input-Only] URL for Slack destination.'
+        url_set:
+          type: boolean
+          description: '[Output-Only] Whether URL is set.'
+    SqlResultsDownload:
+      type: object
+      properties:
+        boolean_val:
+          $ref: '#/components/schemas/BooleanMessage'
+        etag:
+          type: string
+          description: >-
+            etag used for versioning. The response is at least as fresh as the
+            eTag provided. This is used for optimistic concurrency control as a
+            way to help prevent simultaneous writes of a setting overwriting
+            each other. It is strongly suggested that systems make use of the
+            etag in the read -> update pattern to perform setting updates in
+            order to avoid race conditions. That is, get an etag from a GET
+            request, and pass it with the PATCH request to identify the setting
+            version you are updating.
+        setting_name:
+          type: string
+          description: >-
+            Name of the corresponding setting. This field is populated in the
+            response, but it will not be respected even if it's set in the
+            request body. The setting name in the path parameter will be
+            respected instead. Setting name is required to be 'default' if the
+            setting only has one instance per workspace.
+      required:
+        - boolean_val
+    StringMessage:
+      type: object
+      properties:
+        value:
+          type: string
+    TokenAccessControlRequest:
+      type: object
+      properties:
+        group_name:
+          type: string
+        permission_level:
+          $ref: '#/components/schemas/TokenPermissionLevel'
+        service_principal_name:
+          type: string
+          description: application ID of a service principal
+        user_name:
+          type: string
+          description: name of the user
+    TokenAccessControlResponse:
+      type: object
+      properties:
+        all_permissions:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenPermission'
+        display_name:
+          type: string
+          description: Display name of the user or service principal.
+        group_name:
+          type: string
+          description: name of the group
+        service_principal_name:
+          type: string
+          description: Name of the service principal.
+        user_name:
+          type: string
+          description: name of the user
+    TokenInfo:
+      type: object
+      properties:
+        comment:
+          type: string
+        created_by_id:
+          type: integer
+          description: User ID of the user that created the token.
+        created_by_username:
+          type: string
+          description: Username of the user that created the token.
+        creation_time:
+          type: integer
+          description: Timestamp when the token was created.
+        expiry_time:
+          type: integer
+          description: Timestamp when the token expires.
+        last_used_day:
+          type: integer
+          description: >-
+            Approximate timestamp for the day the token was last used. Accurate
+            up to 1 day.
+        owner_id:
+          type: integer
+          description: User ID of the user that owns the token.
+        token_id:
+          type: string
+          description: ID of the token.
+        workspace_id:
+          type: integer
+          description: >-
+            If applicable, the ID of the workspace that the token was created
+            in.
+    TokenPermission:
+      type: object
+      properties:
+        inherited:
+          type: boolean
+        inherited_from_object:
+          type: array
+          items:
+            type: string
+        permission_level:
+          $ref: '#/components/schemas/TokenPermissionLevel'
+    TokenPermissions:
+      type: object
+      properties:
+        access_control_list:
+          type: array
+          items:
+            $ref: '#/components/schemas/TokenAccessControlResponse'
+        object_id:
+          type: string
+        object_type:
+          type: string
+    TokenPermissionsDescription:
+      type: object
+      properties:
+        description:
+          type: string
+        permission_level:
+          $ref: '#/components/schemas/TokenPermissionLevel'
+    UpdatePrivateEndpointRule:
+      type: object
+      properties:
+        domain_names:
+          type: array
+          items:
+            type: string
+          description: >-
+            Only used by private endpoints to customer-managed private endpoint
+            services. Domain names of target private link service. When updating
+            this field, the full list of target domain_names must be specified.
+        enabled:
+          type: boolean
+          description: >-
+            Only used by private endpoints towards an AWS S3 service. Update
+            this field to activate/deactivate this private endpoint to allow
+            egress access from serverless compute resources.
+        error_message:
+          type: string
+        resource_names:
+          type: array
+          items:
+            type: string
+          description: >-
+            Only used by private endpoints towards AWS S3 service. The globally
+            unique S3 bucket names that will be accessed via the VPC endpoint.
+            The bucket names must be in the same region as the NCC/endpoint
+            service. When updating this field, we perform full update on this
+            field. Please ensure a full list of desired resource_names is
+            provided.
+      description: >-
+        Properties of the new private endpoint rule. Note that you must approve
+        the endpoint in Azure
+            portal after initialization.
+    WorkspaceNetworkOption:
+      type: object
+      properties:
+        network_policy_id:
+          type: string
+        workspace_id:
+          type: integer
+          description: The workspace ID.
+    AibiDashboardEmbeddingAccessPolicyAccessPolicyType:
+      type: string
+      enum:
+        - ALLOW_ALL_DOMAINS
+        - ALLOW_APPROVED_DOMAINS
+        - DENY_ALL_DOMAINS
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    ClusterAutoRestartMessageMaintenanceWindowDayOfWeek:
+      type: string
+      enum:
+        - FRIDAY
+        - MONDAY
+        - SATURDAY
+        - SUNDAY
+        - THURSDAY
+        - TUESDAY
+        - WEDNESDAY
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency:
+      type: string
+      enum:
+        - EVERY_WEEK
+        - FIRST_AND_THIRD_OF_MONTH
+        - FIRST_OF_MONTH
+        - FOURTH_OF_MONTH
+        - SECOND_AND_FOURTH_OF_MONTH
+        - SECOND_OF_MONTH
+        - THIRD_OF_MONTH
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    ComplianceStandard:
+      type: string
+      enum:
+        - CANADA_PROTECTED_B
+        - CYBER_ESSENTIAL_PLUS
+        - FEDRAMP_HIGH
+        - FEDRAMP_IL5
+        - FEDRAMP_MODERATE
+        - GERMANY_C5
+        - GERMANY_TISAX
+        - HIPAA
+        - HITRUST
+        - IRAP_PROTECTED
+        - ISMAP
+        - ITAR_EAR
+        - K_FSI
+        - NONE
+        - PCI_DSS
+      description: >-
+        Compliance standard for SHIELD customers. See README.md for how
+        instructions of how to add new
+
+        standards.
+    CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState:
+      type: string
+      enum:
+        - CREATE_FAILED
+        - CREATING
+        - DISCONNECTED
+        - ESTABLISHED
+        - EXPIRED
+        - PENDING
+        - REJECTED
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    DestinationType:
+      type: string
+      enum:
+        - EMAIL
+        - MICROSOFT_TEAMS
+        - PAGERDUTY
+        - SLACK
+        - WEBHOOK
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol:
+      type: string
+      enum:
+        - TCP
+      description: >-
+        The filtering protocol used by the DP. For private and public preview,
+        SEG will only support TCP
+
+        filtering (i.e. DNS based filtering, filtering by destination IP
+        address), so protocol will be
+
+        set to TCP by default and hidden from the user. In the future, users may
+        be able to select HTTP
+
+        filtering (i.e. SNI based filtering, filtering by FQDN).
+    EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType:
+      type: string
+      enum:
+        - FQDN
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType:
+      type: string
+      enum:
+        - ALL_SERVICES
+        - SELECTED_SERVICES
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType:
+      type: string
+      enum:
+        - DBSQL
+        - ML_SERVING
+      description: >-
+        The values should match the list of workloads used in
+        networkconfig.proto
+    EgressNetworkPolicyInternetAccessPolicyRestrictionMode:
+      type: string
+      enum:
+        - FULL_ACCESS
+        - PRIVATE_ACCESS_ONLY
+        - RESTRICTED_ACCESS
+      description: >-
+        At which level can Databricks and Databricks managed compute access
+        Internet. FULL_ACCESS:
+
+        Databricks can access Internet. No blocking rules will apply.
+        RESTRICTED_ACCESS: Databricks can
+
+        only access explicitly allowed internet and storage destinations, as
+        well as UC connections and
+
+        external locations. PRIVATE_ACCESS_ONLY (not used): Databricks can only
+        access destinations via
+
+        private link.
+    EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType:
+      type: string
+      enum:
+        - AWS_S3
+        - AZURE_STORAGE
+        - CLOUDFLARE_R2
+        - GOOGLE_CLOUD_STORAGE
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType:
+      type: string
+      enum:
+        - DNS_NAME
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter:
+      type: string
+      enum:
+        - DBSQL
+        - ML_SERVING
+      description: >-
+        The values should match the list of workloads used in
+        networkconfig.proto
+    EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode:
+      type: string
+      enum:
+        - DRY_RUN
+        - ENFORCED
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    EgressNetworkPolicyNetworkAccessPolicyRestrictionMode:
+      type: string
+      enum:
+        - FULL_ACCESS
+        - RESTRICTED_ACCESS
+      description: >-
+        At which level can Databricks and Databricks managed compute access
+        Internet. FULL_ACCESS:
+
+        Databricks can access Internet. No blocking rules will apply.
+        RESTRICTED_ACCESS: Databricks can
+
+        only access explicitly allowed internet and storage destinations, as
+        well as UC connections and
+
+        external locations.
+    EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType:
+      type: string
+      enum:
+        - AWS_S3
+        - AZURE_STORAGE
+        - GOOGLE_CLOUD_STORAGE
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    EgressResourceType:
+      type: string
+      enum:
+        - AZURE_BLOB_STORAGE
+      description: >-
+        The target resources that are supported by Network Connectivity Config.
+        Note: some egress types
+
+        can support general types that are not defined in EgressResourceType.
+        E.g.: Azure private
+
+        endpoint supports private link enabled Azure services.
+    ListType:
+      type: string
+      enum:
+        - ALLOW
+        - BLOCK
+      description: >-
+        Type of IP access list. Valid values are as follows and are
+        case-sensitive:
+
+
+        * `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block
+        list. Exclude this IP or
+
+        range. IP addresses in the block list are excluded even if they are
+        included in an allow list.
+    NccAzurePrivateEndpointRuleConnectionState:
+      type: string
+      enum:
+        - CREATE_FAILED
+        - CREATING
+        - DISCONNECTED
+        - ESTABLISHED
+        - EXPIRED
+        - INIT
+        - PENDING
+        - REJECTED
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    NccPrivateEndpointRulePrivateLinkConnectionState:
+      type: string
+      enum:
+        - CREATE_FAILED
+        - CREATING
+        - DISCONNECTED
+        - ESTABLISHED
+        - EXPIRED
+        - PENDING
+        - REJECTED
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    PersonalComputeMessageEnum:
+      type: string
+      enum:
+        - DELEGATE
+        - 'ON'
+      description: >-
+        ON: Grants all users in all workspaces access to the Personal Compute
+        default policy, allowing
+
+        all users to create single-machine compute resources. DELEGATE: Moves
+        access control for the
+
+        Personal Compute default policy to individual workspaces and requires a
+        workspace’s users or
+
+        groups to be added to the ACLs of that workspace’s Personal Compute
+        default policy before they
+
+        will be able to create compute resources through that policy.
+    RestrictWorkspaceAdminsMessageStatus:
+      type: string
+      enum:
+        - ALLOW_ALL
+        - RESTRICT_TOKENS_AND_JOB_RUN_AS
+      description: |-
+        Create a collection of name/value pairs.
+
+        Example enumeration:
+
+        >>> class Color(Enum):
+        ...     RED = 1
+        ...     BLUE = 2
+        ...     GREEN = 3
+
+        Access them by:
+
+        - attribute access::
+
+        >>> Color.RED
+        <Color.RED: 1>
+
+        - value lookup:
+
+        >>> Color(1)
+        <Color.RED: 1>
+
+        - name lookup:
+
+        >>> Color['RED']
+        <Color.RED: 1>
+
+        Enumerations can be iterated over, and know how many members they have:
+
+        >>> len(Color)
+        3
+
+        >>> list(Color)
+        [<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]
+
+        Methods can be added to enumerations, and members can have their own
+        attributes -- see the documentation for details.
+    TokenPermissionLevel:
+      type: string
+      enum:
+        - CAN_USE
+      description: Permission level
+    TokenType:
+      type: string
+      enum:
+        - ARCLIGHT_AZURE_EXCHANGE_TOKEN
+        - ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY
+        - ARCLIGHT_MULTI_TENANT_AZURE_EXCHANGE_TOKEN
+        - ARCLIGHT_MULTI_TENANT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY
+        - AZURE_ACTIVE_DIRECTORY_TOKEN
+      description: >-
+        The type of token request. As of now, only
+        `AZURE_ACTIVE_DIRECTORY_TOKEN` is supported.
+  x-stackQL-resources:
+    account_ip_access_lists:
+      id: databricks_account.settings.account_ip_access_lists
+      name: account_ip_access_lists
+      title: Account Ip Access Lists
+      methods:
+        account_ip_access_lists_create:
+          operation:
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        account_ip_access_lists_list:
+          operation:
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        account_ip_access_lists_delete:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists~1{ip_access_list_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        account_ip_access_lists_get:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists~1{ip_access_list_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        account_ip_access_lists_replace:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists~1{ip_access_list_id}/put
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        account_ip_access_lists_update:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists~1{ip_access_list_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_get
+          - $ref: >-
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_list
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_update
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_delete
+        replace:
+          - $ref: >-
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_replace
+    network_connectivity:
+      id: databricks_account.settings.network_connectivity
+      name: network_connectivity
+      title: Network Connectivity
+      methods:
+        network_connectivity_create_network_connectivity_configuration:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_connectivity_list_network_connectivity_configurations:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_connectivity_create_private_endpoint_rule:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}~1private-endpoint-rules/post
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_connectivity_list_private_endpoint_rules:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}~1private-endpoint-rules/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_connectivity_delete_network_connectivity_configuration:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_connectivity_get_network_connectivity_configuration:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_connectivity_delete_private_endpoint_rule:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}~1private-endpoint-rules~1{private_endpoint_rule_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_connectivity_get_private_endpoint_rule:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}~1private-endpoint-rules~1{private_endpoint_rule_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_connectivity_update_private_endpoint_rule:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}~1private-endpoint-rules~1{private_endpoint_rule_id}/patch
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/network_connectivity_get_private_endpoint_rule
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/network_connectivity_list_private_endpoint_rules
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/network_connectivity_get_network_connectivity_configuration
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/network_connectivity_list_network_connectivity_configurations
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/network_connectivity_create_private_endpoint_rule
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/network_connectivity_create_network_connectivity_configuration
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/network_connectivity_update_private_endpoint_rule
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/network_connectivity_delete_private_endpoint_rule
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/network_connectivity_delete_network_connectivity_configuration
+        replace: []
+    network_policies:
+      id: databricks_account.settings.network_policies
+      name: network_policies
+      title: Network Policies
+      methods:
+        network_policies_create_network_policy_rpc:
+          operation:
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1network-policies/post'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_policies_list_network_policies_rpc:
+          operation:
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1network-policies/get'
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_policies_delete_network_policy_rpc:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-policies~1{network_policy_id}/delete
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_policies_get_network_policy_rpc:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-policies~1{network_policy_id}/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        network_policies_update_network_policy_rpc:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1network-policies~1{network_policy_id}/put
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/network_policies/methods/network_policies_get_network_policy_rpc
+          - $ref: >-
+              #/components/x-stackQL-resources/network_policies/methods/network_policies_list_network_policies_rpc
+        insert:
+          - $ref: >-
+              #/components/x-stackQL-resources/network_policies/methods/network_policies_create_network_policy_rpc
+        update: []
+        delete:
+          - $ref: >-
+              #/components/x-stackQL-resources/network_policies/methods/network_policies_delete_network_policy_rpc
+        replace:
+          - $ref: >-
+              #/components/x-stackQL-resources/network_policies/methods/network_policies_update_network_policy_rpc
+    workspace_network_configuration:
+      id: databricks_account.settings.workspace_network_configuration
+      name: workspace_network_configuration
+      title: Workspace Network Configuration
+      methods:
+        workspace_network_configuration_get_workspace_network_option_rpc:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1network/get
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+        workspace_network_configuration_update_workspace_network_option_rpc:
+          operation:
+            $ref: >-
+              #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1network/put
+          response:
+            mediaType: application/json
+            openAPIDocKey: '200'
+      sqlVerbs:
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/workspace_network_configuration/methods/workspace_network_configuration_get_workspace_network_option_rpc
+        insert: []
+        update: []
+        delete: []
+        replace:
+          - $ref: >-
+              #/components/x-stackQL-resources/workspace_network_configuration/methods/workspace_network_configuration_update_workspace_network_option_rpc
