@@ -5,13 +5,13 @@ from __future__ import annotations
 import logging
 import random
 import time
-from dataclasses import dataclass
 from datetime import timedelta
+from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
 from databricks.sdk.client_types import HostType
-from databricks.sdk.service import compute
+from databricks.sdk.service import compute as service_compute
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
                                               _repeated_dict)
 
@@ -676,11 +676,11 @@ class ClusterSpec:
     """If job_cluster_key, this task is executed reusing the cluster specified in
     `job.settings.job_clusters`."""
 
-    libraries: Optional[List[compute.Library]] = None
+    libraries: Optional[List[service_compute.Library]] = None
     """An optional list of libraries to be installed on the cluster. The default value is an empty
     list."""
 
-    new_cluster: Optional[compute.ClusterSpec] = None
+    new_cluster: Optional[service_compute.ClusterSpec] = None
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     def as_dict(self) -> dict:
@@ -715,14 +715,14 @@ class ClusterSpec:
         return cls(
             existing_cluster_id=d.get("existing_cluster_id", None),
             job_cluster_key=d.get("job_cluster_key", None),
-            libraries=_repeated_dict(d, "libraries", compute.Library),
-            new_cluster=_from_dict(d, "new_cluster", compute.ClusterSpec),
+            libraries=_repeated_dict(d, "libraries", service_compute.Library),
+            new_cluster=_from_dict(d, "new_cluster", service_compute.ClusterSpec),
         )
 
 
 @dataclass
 class Compute:
-    hardware_accelerator: Optional[compute.HardwareAcceleratorType] = None
+    hardware_accelerator: Optional[service_compute.HardwareAcceleratorType] = None
     """Hardware accelerator configuration for Serverless GPU workloads."""
 
     def as_dict(self) -> dict:
@@ -742,7 +742,7 @@ class Compute:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> Compute:
         """Deserializes the Compute from a dictionary."""
-        return cls(hardware_accelerator=_enum(d, "hardware_accelerator", compute.HardwareAcceleratorType))
+        return cls(hardware_accelerator=_enum(d, "hardware_accelerator", service_compute.HardwareAcceleratorType))
 
 
 @dataclass
@@ -2422,7 +2422,7 @@ class JobCluster:
     `JobTaskSettings` may refer to this field to determine which cluster to launch for the task
     execution."""
 
-    new_cluster: compute.ClusterSpec
+    new_cluster: service_compute.ClusterSpec
     """If new_cluster, a description of a cluster that is created for each task."""
 
     def as_dict(self) -> dict:
@@ -2448,7 +2448,7 @@ class JobCluster:
         """Deserializes the JobCluster from a dictionary."""
         return cls(
             job_cluster_key=d.get("job_cluster_key", None),
-            new_cluster=_from_dict(d, "new_cluster", compute.ClusterSpec),
+            new_cluster=_from_dict(d, "new_cluster", service_compute.ClusterSpec),
         )
 
 
@@ -2636,7 +2636,7 @@ class JobEnvironment:
     environment_key: str
     """The key of an environment. It has to be unique within a job."""
 
-    spec: Optional[compute.Environment] = None
+    spec: Optional[service_compute.Environment] = None
 
     def as_dict(self) -> dict:
         """Serializes the JobEnvironment into a dictionary suitable for use as a JSON request body."""
@@ -2659,7 +2659,7 @@ class JobEnvironment:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> JobEnvironment:
         """Deserializes the JobEnvironment from a dictionary."""
-        return cls(environment_key=d.get("environment_key", None), spec=_from_dict(d, "spec", compute.Environment))
+        return cls(environment_key=d.get("environment_key", None), spec=_from_dict(d, "spec", service_compute.Environment))
 
 
 @dataclass
@@ -5807,11 +5807,11 @@ class RunTask:
     """If job_cluster_key, this task is executed reusing the cluster specified in
     `job.settings.job_clusters`."""
 
-    libraries: Optional[List[compute.Library]] = None
+    libraries: Optional[List[service_compute.Library]] = None
     """An optional list of libraries to be installed on the cluster. The default value is an empty
     list."""
 
-    new_cluster: Optional[compute.ClusterSpec] = None
+    new_cluster: Optional[service_compute.ClusterSpec] = None
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     notebook_task: Optional[NotebookTask] = None
@@ -6117,8 +6117,8 @@ class RunTask:
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
             git_source=_from_dict(d, "git_source", GitSource),
             job_cluster_key=d.get("job_cluster_key", None),
-            libraries=_repeated_dict(d, "libraries", compute.Library),
-            new_cluster=_from_dict(d, "new_cluster", compute.ClusterSpec),
+            libraries=_repeated_dict(d, "libraries", service_compute.Library),
+            new_cluster=_from_dict(d, "new_cluster", service_compute.ClusterSpec),
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
@@ -7015,11 +7015,11 @@ class SubmitTask:
 
     health: Optional[JobsHealthRules] = None
 
-    libraries: Optional[List[compute.Library]] = None
+    libraries: Optional[List[service_compute.Library]] = None
     """An optional list of libraries to be installed on the cluster. The default value is an empty
     list."""
 
-    new_cluster: Optional[compute.ClusterSpec] = None
+    new_cluster: Optional[service_compute.ClusterSpec] = None
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     notebook_task: Optional[NotebookTask] = None
@@ -7223,8 +7223,8 @@ class SubmitTask:
             for_each_task=_from_dict(d, "for_each_task", ForEachTask),
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
             health=_from_dict(d, "health", JobsHealthRules),
-            libraries=_repeated_dict(d, "libraries", compute.Library),
-            new_cluster=_from_dict(d, "new_cluster", compute.ClusterSpec),
+            libraries=_repeated_dict(d, "libraries", service_compute.Library),
+            new_cluster=_from_dict(d, "new_cluster", service_compute.ClusterSpec),
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
@@ -7514,7 +7514,7 @@ class Task:
     """If job_cluster_key, this task is executed reusing the cluster specified in
     `job.settings.job_clusters`."""
 
-    libraries: Optional[List[compute.Library]] = None
+    libraries: Optional[List[service_compute.Library]] = None
     """An optional list of libraries to be installed on the cluster. The default value is an empty
     list."""
 
@@ -7528,7 +7528,7 @@ class Task:
     """An optional minimal interval in milliseconds between the start of the failed run and the
     subsequent retry run. The default behavior is that unsuccessful runs are immediately retried."""
 
-    new_cluster: Optional[compute.ClusterSpec] = None
+    new_cluster: Optional[service_compute.ClusterSpec] = None
     """If new_cluster, a description of a new cluster that is created for each run."""
 
     notebook_task: Optional[NotebookTask] = None
@@ -7766,10 +7766,10 @@ class Task:
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
             health=_from_dict(d, "health", JobsHealthRules),
             job_cluster_key=d.get("job_cluster_key", None),
-            libraries=_repeated_dict(d, "libraries", compute.Library),
+            libraries=_repeated_dict(d, "libraries", service_compute.Library),
             max_retries=d.get("max_retries", None),
             min_retry_interval_millis=d.get("min_retry_interval_millis", None),
-            new_cluster=_from_dict(d, "new_cluster", compute.ClusterSpec),
+            new_cluster=_from_dict(d, "new_cluster", service_compute.ClusterSpec),
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
