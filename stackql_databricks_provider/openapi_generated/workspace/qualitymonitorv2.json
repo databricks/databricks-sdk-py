@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Qualitymonitorv2 API (workspace)",
     "description": "OpenAPI specification for the Databricks qualitymonitorv2 service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.qualitymonitorv2"
   },
   "servers": [
     {
@@ -74,7 +77,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorV2API"
       },
       "get": {
         "operationId": "quality_monitor_v2_list_quality_monitor",
@@ -132,7 +136,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorV2API"
       }
     },
     "/api/2.0/quality-monitors/{object_type}/{object_id}": {
@@ -186,7 +191,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorV2API"
       },
       "get": {
         "operationId": "quality_monitor_v2_get_quality_monitor",
@@ -245,7 +251,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorV2API"
       },
       "put": {
         "operationId": "quality_monitor_v2_update_quality_monitor",
@@ -322,7 +329,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorV2API"
       }
     }
   },

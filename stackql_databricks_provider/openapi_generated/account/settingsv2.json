@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Settingsv2 API (account)",
     "description": "OpenAPI specification for the Databricks settingsv2 service (account-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.settingsv2"
   },
   "servers": [
     {
@@ -69,7 +72,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountSettingsV2API"
       },
       "patch": {
         "operationId": "account_settings_v2_patch_public_account_setting",
@@ -144,7 +148,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountSettingsV2API"
       }
     },
     "/api/2.1/accounts/{account_id}/users/{user_id}/settings/{name}": {
@@ -213,7 +218,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountSettingsV2API"
       },
       "patch": {
         "operationId": "account_settings_v2_patch_public_account_user_preference",
@@ -297,7 +303,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountSettingsV2API"
       }
     },
     "/api/2.1/accounts/{account_id}/settings-metadata": {
@@ -366,7 +373,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountSettingsV2API"
       }
     },
     "/api/2.1/accounts/{account_id}/users/{user_id}/settings-metadata": {
@@ -444,7 +452,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountSettingsV2API"
       }
     }
   },

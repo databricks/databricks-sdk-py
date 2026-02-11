@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Serving API (workspace)",
     "description": "OpenAPI specification for the Databricks serving service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.serving"
   },
   "servers": [
     {
@@ -76,7 +79,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints": {
@@ -166,7 +170,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       },
       "get": {
         "operationId": "serving_endpoints_list",
@@ -205,7 +210,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/pt": {
@@ -285,7 +291,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/{name}": {
@@ -330,7 +337,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       },
       "get": {
         "operationId": "serving_endpoints_get",
@@ -380,7 +388,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/{name}/metrics": {
@@ -432,7 +441,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/{name}/openapi": {
@@ -484,7 +494,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels": {
@@ -536,7 +547,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/permissions/serving-endpoints/{serving_endpoint_id}": {
@@ -588,7 +600,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       },
       "put": {
         "operationId": "serving_endpoints_set_permissions",
@@ -653,7 +666,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       },
       "patch": {
         "operationId": "serving_endpoints_update_permissions",
@@ -718,7 +732,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/external-function": {
@@ -795,7 +810,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs": {
@@ -856,7 +872,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/{name}/tags": {
@@ -927,7 +944,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/{name}/rate-limits": {
@@ -994,7 +1012,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/{name}/ai-gateway": {
@@ -1077,7 +1096,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/serving-endpoints/{name}/invocations": {
@@ -1200,7 +1220,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/{name}/config": {
@@ -1279,7 +1300,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/{name}/notifications": {
@@ -1346,7 +1368,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     },
     "/api/2.0/serving-endpoints/pt/{name}/config": {
@@ -1416,7 +1439,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServingEndpointsAPI"
       }
     }
   },

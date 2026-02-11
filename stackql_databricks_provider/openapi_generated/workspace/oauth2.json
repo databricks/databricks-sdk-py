@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Oauth2 API (workspace)",
     "description": "OpenAPI specification for the Databricks oauth2 service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.oauth2"
   },
   "servers": [
     {
@@ -82,7 +85,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalSecretsProxyAPI"
       },
       "get": {
         "operationId": "service_principal_secrets_proxy_list",
@@ -149,7 +153,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalSecretsProxyAPI"
       }
     },
     "/api/2.0/accounts/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}": {
@@ -203,7 +208,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ServicePrincipalSecretsProxyAPI"
       }
     }
   },

@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Vectorsearch API (workspace)",
     "description": "OpenAPI specification for the Databricks vectorsearch service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.vectorsearch"
   },
   "servers": [
     {
@@ -83,7 +86,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchEndpointsAPI"
       },
       "get": {
         "operationId": "vector_search_endpoints_list_endpoints",
@@ -133,7 +137,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchEndpointsAPI"
       }
     },
     "/api/2.0/vector-search/endpoints/{endpoint_name}": {
@@ -178,7 +183,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchEndpointsAPI"
       },
       "get": {
         "operationId": "vector_search_endpoints_get_endpoint",
@@ -228,7 +234,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchEndpointsAPI"
       }
     },
     "/api/2.0/vector-search/endpoints/{name}/metrics": {
@@ -311,7 +318,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchEndpointsAPI"
       }
     },
     "/api/2.0/vector-search/endpoints/{endpoint_name}/budget-policy": {
@@ -381,7 +389,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchEndpointsAPI"
       }
     },
     "/api/2.0/vector-search/endpoints/{endpoint_name}/tags": {
@@ -451,7 +460,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchEndpointsAPI"
       }
     },
     "/api/2.0/vector-search/indexes": {
@@ -532,7 +542,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchIndexesAPI"
       },
       "get": {
         "operationId": "vector_search_indexes_list_indexes",
@@ -591,7 +602,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchIndexesAPI"
       }
     },
     "/api/2.0/vector-search/indexes/{index_name}/delete-data": {
@@ -652,7 +664,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchIndexesAPI"
       }
     },
     "/api/2.0/vector-search/indexes/{index_name}": {
@@ -697,7 +710,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchIndexesAPI"
       },
       "get": {
         "operationId": "vector_search_indexes_get_index",
@@ -756,7 +770,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchIndexesAPI"
       }
     },
     "/api/2.0/vector-search/indexes/{index_name}/query": {
@@ -858,7 +873,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchIndexesAPI"
       }
     },
     "/api/2.0/vector-search/indexes/{index_name}/query-next-page": {
@@ -929,7 +945,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchIndexesAPI"
       }
     },
     "/api/2.0/vector-search/indexes/{index_name}/scan": {
@@ -1000,7 +1017,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchIndexesAPI"
       }
     },
     "/api/2.0/vector-search/indexes/{index_name}/sync": {
@@ -1045,7 +1063,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchIndexesAPI"
       }
     },
     "/api/2.0/vector-search/indexes/{index_name}/upsert-data": {
@@ -1115,7 +1134,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VectorSearchIndexesAPI"
       }
     }
   },

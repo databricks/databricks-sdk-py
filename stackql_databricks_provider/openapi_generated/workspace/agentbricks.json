@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Agentbricks API (workspace)",
     "description": "OpenAPI specification for the Databricks agentbricks service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.agentbricks"
   },
   "servers": [
     {
@@ -60,7 +63,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AgentBricksAPI"
       }
     },
     "/api/2.0/custom-llms": {
@@ -136,7 +140,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AgentBricksAPI"
       }
     },
     "/api/2.0/custom-llms/{id}": {
@@ -181,7 +186,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AgentBricksAPI"
       },
       "get": {
         "operationId": "agent_bricks_get_custom_llm",
@@ -231,7 +237,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AgentBricksAPI"
       },
       "patch": {
         "operationId": "agent_bricks_update_custom_llm",
@@ -304,7 +311,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AgentBricksAPI"
       }
     },
     "/api/2.0/custom-llms/{id}/optimize": {
@@ -356,7 +364,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AgentBricksAPI"
       }
     }
   },

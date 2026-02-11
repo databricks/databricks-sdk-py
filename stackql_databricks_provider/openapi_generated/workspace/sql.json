@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Sql API (workspace)",
     "description": "OpenAPI specification for the Databricks sql service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.sql"
   },
   "servers": [
     {
@@ -74,7 +77,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsAPI"
       },
       "get": {
         "operationId": "alerts_list",
@@ -132,7 +136,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsAPI"
       }
     },
     "/api/2.0/sql/alerts/{id}": {
@@ -177,7 +182,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsAPI"
       },
       "get": {
         "operationId": "alerts_get",
@@ -227,7 +233,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsAPI"
       },
       "patch": {
         "operationId": "alerts_update",
@@ -301,7 +308,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsAPI"
       }
     },
     "/api/2.0/preview/sql/alerts": {
@@ -378,7 +386,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsLegacyAPI"
       },
       "get": {
         "operationId": "alerts_legacy_list",
@@ -417,7 +426,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsLegacyAPI"
       }
     },
     "/api/2.0/preview/sql/alerts/{alert_id}": {
@@ -462,7 +472,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsLegacyAPI"
       },
       "get": {
         "operationId": "alerts_legacy_get",
@@ -512,7 +523,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsLegacyAPI"
       },
       "put": {
         "operationId": "alerts_legacy_update",
@@ -586,7 +598,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsLegacyAPI"
       }
     },
     "/api/2.0/alerts": {
@@ -645,7 +658,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsV2API"
       },
       "get": {
         "operationId": "alerts_v2_list_alerts",
@@ -703,7 +717,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsV2API"
       }
     },
     "/api/2.0/alerts/{id}": {
@@ -755,7 +770,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsV2API"
       },
       "delete": {
         "operationId": "alerts_v2_trash_alert",
@@ -806,7 +822,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsV2API"
       },
       "patch": {
         "operationId": "alerts_v2_update_alert",
@@ -882,7 +899,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AlertsV2API"
       }
     },
     "/api/2.0/preview/sql/widgets": {
@@ -958,7 +976,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardWidgetsAPI"
       }
     },
     "/api/2.0/preview/sql/widgets/{id}": {
@@ -1003,7 +1022,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardWidgetsAPI"
       },
       "post": {
         "operationId": "dashboard_widgets_update",
@@ -1088,7 +1108,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardWidgetsAPI"
       }
     },
     "/api/2.0/preview/sql/dashboards/{dashboard_id}": {
@@ -1133,7 +1154,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardsAPI"
       },
       "get": {
         "operationId": "dashboards_get",
@@ -1183,7 +1205,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardsAPI"
       },
       "post": {
         "operationId": "dashboards_update",
@@ -1255,7 +1278,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardsAPI"
       }
     },
     "/api/2.0/preview/sql/dashboards": {
@@ -1334,7 +1358,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardsAPI"
       }
     },
     "/api/2.0/preview/sql/dashboards/trash/{dashboard_id}": {
@@ -1379,7 +1404,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardsAPI"
       }
     },
     "/api/2.0/preview/sql/data_sources": {
@@ -1420,7 +1446,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataSourcesAPI"
       }
     },
     "/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}": {
@@ -1489,7 +1516,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbsqlPermissionsAPI"
       },
       "post": {
         "operationId": "dbsql_permissions_set",
@@ -1569,7 +1597,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbsqlPermissionsAPI"
       }
     },
     "/api/2.0/preview/sql/permissions/{object_type.value}/{object_id}/transfer": {
@@ -1651,7 +1680,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DbsqlPermissionsAPI"
       }
     },
     "/api/2.0/sql/queries": {
@@ -1711,7 +1741,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesAPI"
       },
       "get": {
         "operationId": "queries_list",
@@ -1769,7 +1800,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesAPI"
       }
     },
     "/api/2.0/sql/queries/{id}": {
@@ -1814,7 +1846,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesAPI"
       },
       "get": {
         "operationId": "queries_get",
@@ -1864,7 +1897,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesAPI"
       },
       "patch": {
         "operationId": "queries_update",
@@ -1939,7 +1973,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesAPI"
       }
     },
     "/api/2.0/sql/queries/{id}/visualizations": {
@@ -2008,7 +2043,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesAPI"
       }
     },
     "/api/2.0/preview/sql/queries": {
@@ -2092,7 +2128,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesLegacyAPI"
       },
       "get": {
         "operationId": "queries_legacy_list",
@@ -2169,7 +2206,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesLegacyAPI"
       }
     },
     "/api/2.0/preview/sql/queries/{query_id}": {
@@ -2214,7 +2252,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesLegacyAPI"
       },
       "get": {
         "operationId": "queries_legacy_get",
@@ -2264,7 +2303,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesLegacyAPI"
       },
       "post": {
         "operationId": "queries_legacy_update",
@@ -2352,7 +2392,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesLegacyAPI"
       }
     },
     "/api/2.0/preview/sql/queries/trash/{query_id}": {
@@ -2397,7 +2438,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueriesLegacyAPI"
       }
     },
     "/api/2.0/sql/history/queries": {
@@ -2476,7 +2518,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueryHistoryAPI"
       }
     },
     "/api/2.0/sql/visualizations": {
@@ -2532,7 +2575,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueryVisualizationsAPI"
       }
     },
     "/api/2.0/sql/visualizations/{id}": {
@@ -2577,7 +2621,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueryVisualizationsAPI"
       },
       "patch": {
         "operationId": "query_visualizations_update",
@@ -2648,7 +2693,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueryVisualizationsAPI"
       }
     },
     "/api/2.0/preview/sql/visualizations": {
@@ -2725,7 +2771,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueryVisualizationsLegacyAPI"
       }
     },
     "/api/2.0/preview/sql/visualizations/{id}": {
@@ -2770,7 +2817,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueryVisualizationsLegacyAPI"
       },
       "post": {
         "operationId": "query_visualizations_legacy_update",
@@ -2857,7 +2905,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QueryVisualizationsLegacyAPI"
       }
     },
     "/api/2.0/redash-v2/config": {
@@ -2898,7 +2947,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RedashConfigAPI"
       }
     },
     "/api/2.0/sql/statements/{statement_id}/cancel": {
@@ -2943,7 +2993,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StatementExecutionAPI"
       }
     },
     "/api/2.0/sql/statements": {
@@ -3047,7 +3098,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StatementExecutionAPI"
       }
     },
     "/api/2.0/sql/statements/{statement_id}": {
@@ -3099,7 +3151,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StatementExecutionAPI"
       }
     },
     "/api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}": {
@@ -3160,7 +3213,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StatementExecutionAPI"
       }
     },
     "/api/2.0/sql/warehouses": {
@@ -3264,7 +3318,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       },
       "get": {
         "operationId": "warehouses_list",
@@ -3332,7 +3387,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       }
     },
     "/api/warehouses/v1/default-warehouse-overrides": {
@@ -3402,7 +3458,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       },
       "get": {
         "operationId": "warehouses_list_default_warehouse_overrides",
@@ -3461,7 +3518,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       }
     },
     "/api/2.0/sql/warehouses/{id}": {
@@ -3506,7 +3564,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       },
       "get": {
         "operationId": "warehouses_get",
@@ -3556,7 +3615,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       }
     },
     "/api/warehouses/v1/{name}": {
@@ -3601,7 +3661,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       },
       "get": {
         "operationId": "warehouses_get_default_warehouse_override",
@@ -3651,7 +3712,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       },
       "patch": {
         "operationId": "warehouses_update_default_warehouse_override",
@@ -3737,7 +3799,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       }
     },
     "/api/2.0/sql/warehouses/{id}/edit": {
@@ -3852,7 +3915,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       }
     },
     "/api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels": {
@@ -3904,7 +3968,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       }
     },
     "/api/2.0/permissions/warehouses/{warehouse_id}": {
@@ -3956,7 +4021,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       },
       "put": {
         "operationId": "warehouses_set_permissions",
@@ -4021,7 +4087,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       },
       "patch": {
         "operationId": "warehouses_update_permissions",
@@ -4086,7 +4153,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       }
     },
     "/api/2.0/sql/config/warehouses": {
@@ -4127,7 +4195,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       },
       "put": {
         "operationId": "warehouses_set_workspace_warehouse_config",
@@ -4210,7 +4279,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       }
     },
     "/api/2.0/sql/warehouses/{id}/start": {
@@ -4262,7 +4332,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       }
     },
     "/api/2.0/sql/warehouses/{id}/stop": {
@@ -4314,7 +4385,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WarehousesAPI"
       }
     }
   },

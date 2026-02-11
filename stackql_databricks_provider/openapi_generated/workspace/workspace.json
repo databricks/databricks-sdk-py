@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Workspace API (workspace)",
     "description": "OpenAPI specification for the Databricks workspace service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.workspace"
   },
   "servers": [
     {
@@ -98,7 +101,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GitCredentialsAPI"
       },
       "get": {
         "operationId": "git_credentials_list",
@@ -148,7 +152,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GitCredentialsAPI"
       }
     },
     "/api/2.0/git-credentials/{credential_id}": {
@@ -202,7 +207,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GitCredentialsAPI"
       },
       "get": {
         "operationId": "git_credentials_get",
@@ -261,7 +267,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GitCredentialsAPI"
       },
       "patch": {
         "operationId": "git_credentials_update",
@@ -346,7 +353,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GitCredentialsAPI"
       }
     },
     "/api/2.0/repos": {
@@ -418,7 +426,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ReposAPI"
       },
       "get": {
         "operationId": "repos_list",
@@ -477,7 +486,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ReposAPI"
       }
     },
     "/api/2.0/repos/{repo_id}": {
@@ -522,7 +532,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ReposAPI"
       },
       "get": {
         "operationId": "repos_get",
@@ -572,7 +583,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ReposAPI"
       },
       "patch": {
         "operationId": "repos_update",
@@ -638,7 +650,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ReposAPI"
       }
     },
     "/api/2.0/permissions/repos/{repo_id}/permissionLevels": {
@@ -690,7 +703,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ReposAPI"
       }
     },
     "/api/2.0/permissions/repos/{repo_id}": {
@@ -742,7 +756,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ReposAPI"
       },
       "put": {
         "operationId": "repos_set_permissions",
@@ -807,7 +822,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ReposAPI"
       },
       "patch": {
         "operationId": "repos_update_permissions",
@@ -872,7 +888,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ReposAPI"
       }
     },
     "/api/2.0/secrets/scopes/create": {
@@ -936,7 +953,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/secrets/acls/delete": {
@@ -993,7 +1011,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/secrets/scopes/delete": {
@@ -1045,7 +1064,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/secrets/delete": {
@@ -1102,7 +1122,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/secrets/acls/get": {
@@ -1163,7 +1184,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/secrets/get": {
@@ -1224,7 +1246,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/secrets/acls/list": {
@@ -1276,7 +1299,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/secrets/scopes/list": {
@@ -1317,7 +1341,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/secrets/list": {
@@ -1369,7 +1394,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/secrets/acls/put": {
@@ -1431,7 +1457,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/secrets/put": {
@@ -1496,7 +1523,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SecretsAPI"
       }
     },
     "/api/2.0/workspace/delete": {
@@ -1551,7 +1579,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAPI"
       }
     },
     "/api/2.0/workspace/export": {
@@ -1611,7 +1640,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAPI"
       }
     },
     "/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}/permissionLevels": {
@@ -1671,7 +1701,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAPI"
       }
     },
     "/api/2.0/permissions/{workspace_object_type}/{workspace_object_id}": {
@@ -1731,7 +1762,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAPI"
       },
       "put": {
         "operationId": "workspace_set_permissions",
@@ -1804,7 +1836,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAPI"
       },
       "patch": {
         "operationId": "workspace_update_permissions",
@@ -1877,7 +1910,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAPI"
       }
     },
     "/api/2.0/workspace/get-status": {
@@ -1928,7 +1962,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAPI"
       }
     },
     "/api/2.0/workspace/import": {
@@ -1995,7 +2030,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAPI"
       }
     },
     "/api/2.0/workspace/list": {
@@ -2055,7 +2091,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAPI"
       }
     },
     "/api/2.0/workspace/mkdirs": {
@@ -2106,7 +2143,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceAPI"
       }
     }
   },

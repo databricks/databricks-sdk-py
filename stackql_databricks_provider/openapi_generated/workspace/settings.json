@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Settings API (workspace)",
     "description": "OpenAPI specification for the Databricks settings service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.settings"
   },
   "servers": [
     {
@@ -67,7 +70,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AibiDashboardEmbeddingAccessPolicyAPI"
       },
       "get": {
         "operationId": "aibi_dashboard_embedding_access_policy_get",
@@ -117,7 +121,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AibiDashboardEmbeddingAccessPolicyAPI"
       },
       "patch": {
         "operationId": "aibi_dashboard_embedding_access_policy_update",
@@ -183,7 +188,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AibiDashboardEmbeddingAccessPolicyAPI"
       }
     },
     "/api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default": {
@@ -235,7 +241,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AibiDashboardEmbeddingApprovedDomainsAPI"
       },
       "get": {
         "operationId": "aibi_dashboard_embedding_approved_domains_get",
@@ -285,7 +292,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AibiDashboardEmbeddingApprovedDomainsAPI"
       },
       "patch": {
         "operationId": "aibi_dashboard_embedding_approved_domains_update",
@@ -351,7 +359,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AibiDashboardEmbeddingApprovedDomainsAPI"
       }
     },
     "/api/2.0/settings/types/automatic_cluster_update/names/default": {
@@ -403,7 +412,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AutomaticClusterUpdateAPI"
       },
       "patch": {
         "operationId": "automatic_cluster_update_update",
@@ -469,7 +479,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AutomaticClusterUpdateAPI"
       }
     },
     "/api/2.0/settings/types/shield_csp_enablement_ws_db/names/default": {
@@ -521,7 +532,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ComplianceSecurityProfileAPI"
       },
       "patch": {
         "operationId": "compliance_security_profile_update",
@@ -587,7 +599,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ComplianceSecurityProfileAPI"
       }
     },
     "/api/2.0/credentials-manager/exchange-tokens/token": {
@@ -656,7 +669,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsManagerAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/settings/types/shield_csp_enablement_ac/names/default": {
@@ -716,7 +730,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CspEnablementAccountAPI"
       },
       "patch": {
         "operationId": "csp_enablement_account_update",
@@ -792,7 +807,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CspEnablementAccountAPI"
       }
     },
     "/api/2.0/settings/types/dashboard_email_subscriptions/names/default": {
@@ -844,7 +860,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardEmailSubscriptionsAPI"
       },
       "get": {
         "operationId": "dashboard_email_subscriptions_get",
@@ -894,7 +911,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardEmailSubscriptionsAPI"
       },
       "patch": {
         "operationId": "dashboard_email_subscriptions_update",
@@ -960,7 +978,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DashboardEmailSubscriptionsAPI"
       }
     },
     "/api/2.0/settings/types/default_namespace_ws/names/default": {
@@ -1012,7 +1031,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DefaultNamespaceAPI"
       },
       "get": {
         "operationId": "default_namespace_get",
@@ -1062,7 +1082,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DefaultNamespaceAPI"
       },
       "patch": {
         "operationId": "default_namespace_update",
@@ -1128,7 +1149,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DefaultNamespaceAPI"
       }
     },
     "/api/2.0/settings/types/default_warehouse_id/names/default": {
@@ -1180,7 +1202,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DefaultWarehouseIdAPI"
       },
       "get": {
         "operationId": "default_warehouse_id_get",
@@ -1230,7 +1253,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DefaultWarehouseIdAPI"
       },
       "patch": {
         "operationId": "default_warehouse_id_update",
@@ -1296,7 +1320,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DefaultWarehouseIdAPI"
       }
     },
     "/api/2.0/settings/types/disable_legacy_access/names/default": {
@@ -1348,7 +1373,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DisableLegacyAccessAPI"
       },
       "get": {
         "operationId": "disable_legacy_access_get",
@@ -1398,7 +1424,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DisableLegacyAccessAPI"
       },
       "patch": {
         "operationId": "disable_legacy_access_update",
@@ -1464,7 +1491,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DisableLegacyAccessAPI"
       }
     },
     "/api/2.0/settings/types/disable_legacy_dbfs/names/default": {
@@ -1516,7 +1544,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DisableLegacyDbfsAPI"
       },
       "get": {
         "operationId": "disable_legacy_dbfs_get",
@@ -1566,7 +1595,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DisableLegacyDbfsAPI"
       },
       "patch": {
         "operationId": "disable_legacy_dbfs_update",
@@ -1632,7 +1662,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DisableLegacyDbfsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/settings/types/disable_legacy_features/names/default": {
@@ -1692,7 +1723,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DisableLegacyFeaturesAPI"
       },
       "get": {
         "operationId": "disable_legacy_features_get",
@@ -1750,7 +1782,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DisableLegacyFeaturesAPI"
       },
       "patch": {
         "operationId": "disable_legacy_features_update",
@@ -1826,7 +1859,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DisableLegacyFeaturesAPI"
       }
     },
     "/api/2.0/settings/types/enable-export-notebook/names/default": {
@@ -1867,7 +1901,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnableExportNotebookAPI"
       },
       "patch": {
         "operationId": "enable_export_notebook_patch_enable_export_notebook",
@@ -1933,7 +1968,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnableExportNotebookAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/settings/types/acct_ip_acl_enable/names/default": {
@@ -1993,7 +2029,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnableIpAccessListsAPI"
       },
       "get": {
         "operationId": "enable_ip_access_lists_get",
@@ -2051,7 +2088,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnableIpAccessListsAPI"
       },
       "patch": {
         "operationId": "enable_ip_access_lists_update",
@@ -2127,7 +2165,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnableIpAccessListsAPI"
       }
     },
     "/api/2.0/settings/types/enable-notebook-table-clipboard/names/default": {
@@ -2168,7 +2207,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnableNotebookTableClipboardAPI"
       },
       "patch": {
         "operationId": "enable_notebook_table_clipboard_patch_enable_notebook_table_clipboard",
@@ -2234,7 +2274,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnableNotebookTableClipboardAPI"
       }
     },
     "/api/2.0/settings/types/enable-results-downloading/names/default": {
@@ -2275,7 +2316,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnableResultsDownloadingAPI"
       },
       "patch": {
         "operationId": "enable_results_downloading_patch_enable_results_downloading",
@@ -2341,7 +2383,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnableResultsDownloadingAPI"
       }
     },
     "/api/2.0/settings/types/shield_esm_enablement_ws_db/names/default": {
@@ -2393,7 +2436,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnhancedSecurityMonitoringAPI"
       },
       "patch": {
         "operationId": "enhanced_security_monitoring_update",
@@ -2459,7 +2503,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EnhancedSecurityMonitoringAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/settings/types/shield_esm_enablement_ac/names/default": {
@@ -2519,7 +2564,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EsmEnablementAccountAPI"
       },
       "patch": {
         "operationId": "esm_enablement_account_update",
@@ -2595,7 +2641,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EsmEnablementAccountAPI"
       }
     },
     "/api/2.0/ip-access-lists": {
@@ -2662,7 +2709,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "IpAccessListsAPI"
       },
       "get": {
         "operationId": "ip_access_lists_list",
@@ -2701,7 +2749,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "IpAccessListsAPI"
       }
     },
     "/api/2.0/ip-access-lists/{ip_access_list_id}": {
@@ -2746,7 +2795,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "IpAccessListsAPI"
       },
       "get": {
         "operationId": "ip_access_lists_get",
@@ -2796,7 +2846,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "IpAccessListsAPI"
       },
       "put": {
         "operationId": "ip_access_lists_replace",
@@ -2870,7 +2921,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "IpAccessListsAPI"
       },
       "patch": {
         "operationId": "ip_access_lists_update",
@@ -2939,7 +2991,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "IpAccessListsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/settings/types/llm_proxy_partner_powered/names/default": {
@@ -2999,7 +3052,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LlmProxyPartnerPoweredAccountAPI"
       },
       "patch": {
         "operationId": "llm_proxy_partner_powered_account_update",
@@ -3075,7 +3129,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LlmProxyPartnerPoweredAccountAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/settings/types/llm_proxy_partner_powered_enforce/names/default": {
@@ -3135,7 +3190,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LlmProxyPartnerPoweredEnforceAPI"
       },
       "patch": {
         "operationId": "llm_proxy_partner_powered_enforce_update",
@@ -3211,7 +3267,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LlmProxyPartnerPoweredEnforceAPI"
       }
     },
     "/api/2.0/settings/types/llm_proxy_partner_powered/names/default": {
@@ -3263,7 +3320,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LlmProxyPartnerPoweredWorkspaceAPI"
       },
       "get": {
         "operationId": "llm_proxy_partner_powered_workspace_get",
@@ -3313,7 +3371,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LlmProxyPartnerPoweredWorkspaceAPI"
       },
       "patch": {
         "operationId": "llm_proxy_partner_powered_workspace_update",
@@ -3379,7 +3438,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "LlmProxyPartnerPoweredWorkspaceAPI"
       }
     },
     "/api/2.0/notification-destinations": {
@@ -3439,7 +3499,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "NotificationDestinationsAPI"
       },
       "get": {
         "operationId": "notification_destinations_list",
@@ -3497,7 +3558,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "NotificationDestinationsAPI"
       }
     },
     "/api/2.0/notification-destinations/{id}": {
@@ -3542,7 +3604,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "NotificationDestinationsAPI"
       },
       "get": {
         "operationId": "notification_destinations_get",
@@ -3592,7 +3655,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "NotificationDestinationsAPI"
       },
       "patch": {
         "operationId": "notification_destinations_update",
@@ -3661,7 +3725,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "NotificationDestinationsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/settings/types/dcp_acct_enable/names/default": {
@@ -3721,7 +3786,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PersonalComputeAPI"
       },
       "get": {
         "operationId": "personal_compute_get",
@@ -3779,7 +3845,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PersonalComputeAPI"
       },
       "patch": {
         "operationId": "personal_compute_update",
@@ -3855,7 +3922,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PersonalComputeAPI"
       }
     },
     "/api/2.0/settings/types/restrict_workspace_admins/names/default": {
@@ -3907,7 +3975,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RestrictWorkspaceAdminsAPI"
       },
       "get": {
         "operationId": "restrict_workspace_admins_get",
@@ -3957,7 +4026,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RestrictWorkspaceAdminsAPI"
       },
       "patch": {
         "operationId": "restrict_workspace_admins_update",
@@ -4023,7 +4093,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RestrictWorkspaceAdminsAPI"
       }
     },
     "/api/2.0/settings/types/sql_results_download/names/default": {
@@ -4075,7 +4146,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SqlResultsDownloadAPI"
       },
       "get": {
         "operationId": "sql_results_download_get",
@@ -4125,7 +4197,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SqlResultsDownloadAPI"
       },
       "patch": {
         "operationId": "sql_results_download_update",
@@ -4191,7 +4264,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SqlResultsDownloadAPI"
       }
     },
     "/api/2.0/token-management/on-behalf-of/tokens": {
@@ -4258,7 +4332,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokenManagementAPI"
       }
     },
     "/api/2.0/token-management/tokens/{token_id}": {
@@ -4303,7 +4378,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokenManagementAPI"
       },
       "get": {
         "operationId": "token_management_get",
@@ -4353,7 +4429,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokenManagementAPI"
       }
     },
     "/api/2.0/permissions/authorization/tokens/permissionLevels": {
@@ -4394,7 +4471,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokenManagementAPI"
       }
     },
     "/api/2.0/permissions/authorization/tokens": {
@@ -4435,7 +4513,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokenManagementAPI"
       },
       "put": {
         "operationId": "token_management_set_permissions",
@@ -4489,7 +4568,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokenManagementAPI"
       },
       "patch": {
         "operationId": "token_management_update_permissions",
@@ -4543,7 +4623,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokenManagementAPI"
       }
     },
     "/api/2.0/token-management/tokens": {
@@ -4604,7 +4685,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokenManagementAPI"
       }
     },
     "/api/2.0/token/create": {
@@ -4664,7 +4746,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokensAPI"
       }
     },
     "/api/2.0/token/delete": {
@@ -4716,7 +4799,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokensAPI"
       }
     },
     "/api/2.0/token/list": {
@@ -4757,7 +4841,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TokensAPI"
       }
     },
     "/api/2.0/workspace-conf": {
@@ -4809,7 +4894,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceConfAPI"
       },
       "patch": {
         "operationId": "workspace_conf_set_status",
@@ -4858,7 +4944,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceConfAPI"
       }
     }
   },

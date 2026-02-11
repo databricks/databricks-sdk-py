@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Dataquality API (workspace)",
     "description": "OpenAPI specification for the Databricks dataquality service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.dataquality"
   },
   "servers": [
     {
@@ -85,7 +88,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       }
     },
     "/api/data-quality/v1/monitors": {
@@ -144,7 +148,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       },
       "get": {
         "operationId": "data_quality_list_monitor",
@@ -202,7 +207,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       }
     },
     "/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes": {
@@ -281,7 +287,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       },
       "get": {
         "operationId": "data_quality_list_refresh",
@@ -357,7 +364,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       }
     },
     "/api/data-quality/v1/monitors/{object_type}/{object_id}": {
@@ -411,7 +419,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       },
       "get": {
         "operationId": "data_quality_get_monitor",
@@ -470,7 +479,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       },
       "patch": {
         "operationId": "data_quality_update_monitor",
@@ -556,7 +566,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       }
     },
     "/api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}": {
@@ -619,7 +630,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       },
       "get": {
         "operationId": "data_quality_get_refresh",
@@ -687,7 +699,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       },
       "patch": {
         "operationId": "data_quality_update_refresh",
@@ -782,7 +795,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "DataQualityAPI"
       }
     }
   },

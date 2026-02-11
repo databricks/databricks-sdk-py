@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Catalog API (workspace)",
     "description": "OpenAPI specification for the Databricks catalog service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.catalog"
   },
   "servers": [
     {
@@ -75,7 +78,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ArtifactAllowlistsAPI"
       },
       "put": {
         "operationId": "artifact_allowlists_update",
@@ -159,7 +163,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ArtifactAllowlistsAPI"
       }
     },
     "/api/2.1/unity-catalog/catalogs": {
@@ -246,7 +251,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CatalogsAPI"
       },
       "get": {
         "operationId": "catalogs_list",
@@ -323,7 +329,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CatalogsAPI"
       }
     },
     "/api/2.1/unity-catalog/catalogs/{name}": {
@@ -377,7 +384,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CatalogsAPI"
       },
       "get": {
         "operationId": "catalogs_get",
@@ -436,7 +444,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CatalogsAPI"
       },
       "patch": {
         "operationId": "catalogs_update",
@@ -525,7 +534,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CatalogsAPI"
       }
     },
     "/api/2.1/unity-catalog/connections": {
@@ -606,7 +616,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConnectionsAPI"
       },
       "get": {
         "operationId": "connections_list",
@@ -665,7 +676,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConnectionsAPI"
       }
     },
     "/api/2.1/unity-catalog/connections/{name}": {
@@ -710,7 +722,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConnectionsAPI"
       },
       "get": {
         "operationId": "connections_get",
@@ -760,7 +773,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConnectionsAPI"
       },
       "patch": {
         "operationId": "connections_update",
@@ -836,7 +850,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ConnectionsAPI"
       }
     },
     "/api/2.1/unity-catalog/entity-tag-assignments": {
@@ -895,7 +910,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EntityTagAssignmentsAPI"
       }
     },
     "/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}": {
@@ -958,7 +974,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EntityTagAssignmentsAPI"
       },
       "get": {
         "operationId": "entity_tag_assignments_get",
@@ -1026,7 +1043,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EntityTagAssignmentsAPI"
       },
       "patch": {
         "operationId": "entity_tag_assignments_update",
@@ -1120,7 +1138,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EntityTagAssignmentsAPI"
       }
     },
     "/api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags": {
@@ -1199,7 +1218,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EntityTagAssignmentsAPI"
       }
     },
     "/api/2.0/lineage-tracking/external-lineage": {
@@ -1258,7 +1278,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalLineageAPI"
       },
       "delete": {
         "operationId": "external_lineage_delete_external_lineage_relationship",
@@ -1301,7 +1322,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalLineageAPI"
       },
       "get": {
         "operationId": "external_lineage_list_external_lineage_relationships",
@@ -1378,7 +1400,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalLineageAPI"
       },
       "patch": {
         "operationId": "external_lineage_update_external_lineage_relationship",
@@ -1445,7 +1468,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalLineageAPI"
       }
     },
     "/api/2.1/unity-catalog/external-locations": {
@@ -1541,7 +1565,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalLocationsAPI"
       },
       "get": {
         "operationId": "external_locations_list",
@@ -1618,7 +1643,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalLocationsAPI"
       }
     },
     "/api/2.1/unity-catalog/external-locations/{name}": {
@@ -1672,7 +1698,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalLocationsAPI"
       },
       "get": {
         "operationId": "external_locations_get",
@@ -1731,7 +1758,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalLocationsAPI"
       },
       "patch": {
         "operationId": "external_locations_update",
@@ -1842,7 +1870,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalLocationsAPI"
       }
     },
     "/api/2.0/lineage-tracking/external-metadata": {
@@ -1901,7 +1930,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalMetadataAPI"
       },
       "get": {
         "operationId": "external_metadata_list_external_metadata",
@@ -1960,7 +1990,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalMetadataAPI"
       }
     },
     "/api/2.0/lineage-tracking/external-metadata/{name}": {
@@ -2005,7 +2036,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalMetadataAPI"
       },
       "get": {
         "operationId": "external_metadata_get_external_metadata",
@@ -2055,7 +2087,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalMetadataAPI"
       },
       "patch": {
         "operationId": "external_metadata_update_external_metadata",
@@ -2131,7 +2164,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExternalMetadataAPI"
       }
     },
     "/api/2.1/unity-catalog/functions": {
@@ -2190,7 +2224,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FunctionsAPI"
       },
       "get": {
         "operationId": "functions_list",
@@ -2276,7 +2311,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FunctionsAPI"
       }
     },
     "/api/2.1/unity-catalog/functions/{name}": {
@@ -2330,7 +2366,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FunctionsAPI"
       },
       "get": {
         "operationId": "functions_get",
@@ -2389,7 +2426,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FunctionsAPI"
       },
       "patch": {
         "operationId": "functions_update",
@@ -2454,7 +2492,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FunctionsAPI"
       }
     },
     "/api/2.1/unity-catalog/permissions/{securable_type}/{full_name}": {
@@ -2542,7 +2581,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GrantsAPI"
       },
       "patch": {
         "operationId": "grants_update",
@@ -2616,7 +2656,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GrantsAPI"
       }
     },
     "/api/2.1/unity-catalog/effective-permissions/{securable_type}/{full_name}": {
@@ -2704,7 +2745,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "GrantsAPI"
       }
     },
     "/api/2.1/unity-catalog/workspaces/{workspace_id}/metastore": {
@@ -2772,7 +2814,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MetastoresAPI"
       },
       "delete": {
         "operationId": "metastores_unassign",
@@ -2824,7 +2867,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MetastoresAPI"
       },
       "patch": {
         "operationId": "metastores_update_assignment",
@@ -2886,7 +2930,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MetastoresAPI"
       }
     },
     "/api/2.1/unity-catalog/metastores": {
@@ -2957,7 +3002,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MetastoresAPI"
       },
       "get": {
         "operationId": "metastores_list",
@@ -3016,7 +3062,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MetastoresAPI"
       }
     },
     "/api/2.1/unity-catalog/current-metastore-assignment": {
@@ -3057,7 +3104,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MetastoresAPI"
       }
     },
     "/api/2.1/unity-catalog/metastores/{id}": {
@@ -3111,7 +3159,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MetastoresAPI"
       },
       "get": {
         "operationId": "metastores_get",
@@ -3161,7 +3210,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MetastoresAPI"
       },
       "patch": {
         "operationId": "metastores_update",
@@ -3254,7 +3304,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MetastoresAPI"
       }
     },
     "/api/2.1/unity-catalog/metastore_summary": {
@@ -3295,7 +3346,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MetastoresAPI"
       }
     },
     "/api/2.1/unity-catalog/models/{full_name}/versions/{version}": {
@@ -3349,7 +3401,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelVersionsAPI"
       },
       "get": {
         "operationId": "model_versions_get",
@@ -3426,7 +3479,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelVersionsAPI"
       },
       "patch": {
         "operationId": "model_versions_update",
@@ -3562,7 +3616,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelVersionsAPI"
       }
     },
     "/api/2.1/unity-catalog/models/{full_name}/aliases/{alias}": {
@@ -3632,7 +3687,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelVersionsAPI"
       },
       "delete": {
         "operationId": "registered_models_delete_alias",
@@ -3684,7 +3740,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RegisteredModelsAPI"
       },
       "put": {
         "operationId": "registered_models_set_alias",
@@ -3761,7 +3818,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RegisteredModelsAPI"
       }
     },
     "/api/2.1/unity-catalog/models/{full_name}/versions": {
@@ -3840,7 +3898,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelVersionsAPI"
       }
     },
     "/api/2.0/online-tables": {
@@ -3899,7 +3958,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "OnlineTablesAPI"
       }
     },
     "/api/2.0/online-tables/{name}": {
@@ -3944,7 +4004,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "OnlineTablesAPI"
       },
       "get": {
         "operationId": "online_tables_get",
@@ -3994,7 +4055,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "OnlineTablesAPI"
       }
     },
     "/api/2.1/unity-catalog/policies": {
@@ -4053,7 +4115,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PoliciesAPI"
       }
     },
     "/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}/{name}": {
@@ -4123,7 +4186,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PoliciesAPI"
       },
       "get": {
         "operationId": "policies_get_policy",
@@ -4191,7 +4255,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PoliciesAPI"
       },
       "patch": {
         "operationId": "policies_update_policy",
@@ -4286,7 +4351,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PoliciesAPI"
       }
     },
     "/api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}": {
@@ -4374,7 +4440,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PoliciesAPI"
       }
     },
     "/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel": {
@@ -4428,7 +4495,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorsAPI"
       }
     },
     "/api/2.1/unity-catalog/tables/{table_name}/monitor": {
@@ -4550,7 +4618,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorsAPI"
       },
       "delete": {
         "operationId": "quality_monitors_delete",
@@ -4600,7 +4669,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorsAPI"
       },
       "get": {
         "operationId": "quality_monitors_get",
@@ -4650,7 +4720,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorsAPI"
       },
       "put": {
         "operationId": "quality_monitors_update",
@@ -4761,7 +4832,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorsAPI"
       }
     },
     "/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}": {
@@ -4822,7 +4894,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorsAPI"
       }
     },
     "/api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes": {
@@ -4874,7 +4947,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorsAPI"
       },
       "post": {
         "operationId": "quality_monitors_run_refresh",
@@ -4924,7 +4998,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorsAPI"
       }
     },
     "/api/2.1/quality-monitoring/tables/{table_name}/monitor/dashboard": {
@@ -4991,7 +5066,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "QualityMonitorsAPI"
       }
     },
     "/api/2.1/unity-catalog/models": {
@@ -5099,7 +5175,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RegisteredModelsAPI"
       },
       "get": {
         "operationId": "registered_models_list",
@@ -5185,7 +5262,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RegisteredModelsAPI"
       }
     },
     "/api/2.1/unity-catalog/models/{full_name}": {
@@ -5230,7 +5308,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RegisteredModelsAPI"
       },
       "get": {
         "operationId": "registered_models_get",
@@ -5298,7 +5377,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RegisteredModelsAPI"
       },
       "patch": {
         "operationId": "registered_models_update",
@@ -5415,7 +5495,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RegisteredModelsAPI"
       }
     },
     "/api/2.1/unity-catalog/resource-quotas/{parent_securable_type}/{parent_full_name}/{quota_name}": {
@@ -5485,7 +5566,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ResourceQuotasAPI"
       }
     },
     "/api/2.1/unity-catalog/resource-quotas/all-resource-quotas": {
@@ -5546,7 +5628,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ResourceQuotasAPI"
       }
     },
     "/api/3.0/rfa/requests": {
@@ -5602,7 +5685,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RfaAPI"
       }
     },
     "/api/3.0/rfa/destinations/{securable_type}/{full_name}": {
@@ -5663,7 +5747,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RfaAPI"
       }
     },
     "/api/3.0/rfa/destinations": {
@@ -5733,7 +5818,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "RfaAPI"
       }
     },
     "/api/2.1/unity-catalog/schemas": {
@@ -5809,7 +5895,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SchemasAPI"
       },
       "get": {
         "operationId": "schemas_list",
@@ -5886,7 +5973,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SchemasAPI"
       }
     },
     "/api/2.1/unity-catalog/schemas/{full_name}": {
@@ -5940,7 +6028,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SchemasAPI"
       },
       "get": {
         "operationId": "schemas_get",
@@ -5999,7 +6088,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SchemasAPI"
       },
       "patch": {
         "operationId": "schemas_update",
@@ -6080,7 +6170,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SchemasAPI"
       }
     },
     "/api/2.1/unity-catalog/storage-credentials": {
@@ -6171,7 +6262,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StorageCredentialsAPI"
       },
       "get": {
         "operationId": "storage_credentials_list",
@@ -6239,7 +6331,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StorageCredentialsAPI"
       }
     },
     "/api/2.1/unity-catalog/storage-credentials/{name}": {
@@ -6293,7 +6386,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StorageCredentialsAPI"
       },
       "get": {
         "operationId": "storage_credentials_get",
@@ -6343,7 +6437,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StorageCredentialsAPI"
       },
       "patch": {
         "operationId": "storage_credentials_update",
@@ -6452,7 +6547,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StorageCredentialsAPI"
       }
     },
     "/api/2.1/unity-catalog/validate-storage-credentials": {
@@ -6540,7 +6636,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StorageCredentialsAPI"
       }
     },
     "/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}": {
@@ -6594,7 +6691,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SystemSchemasAPI"
       },
       "put": {
         "operationId": "system_schemas_enable",
@@ -6661,7 +6759,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SystemSchemasAPI"
       }
     },
     "/api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas": {
@@ -6731,7 +6830,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "SystemSchemasAPI"
       }
     },
     "/api/2.1/unity-catalog/constraints": {
@@ -6795,7 +6895,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TableConstraintsAPI"
       }
     },
     "/api/2.1/unity-catalog/constraints/{full_name}": {
@@ -6858,7 +6959,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TableConstraintsAPI"
       }
     },
     "/api/2.1/unity-catalog/tables": {
@@ -6949,7 +7051,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TablesAPI"
       },
       "get": {
         "operationId": "tables_list",
@@ -7071,7 +7174,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TablesAPI"
       }
     },
     "/api/2.1/unity-catalog/tables/{full_name}": {
@@ -7116,7 +7220,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TablesAPI"
       },
       "get": {
         "operationId": "tables_get",
@@ -7193,7 +7298,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TablesAPI"
       },
       "patch": {
         "operationId": "tables_update",
@@ -7251,7 +7357,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TablesAPI"
       }
     },
     "/api/2.1/unity-catalog/tables/{full_name}/exists": {
@@ -7303,7 +7410,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TablesAPI"
       }
     },
     "/api/2.1/unity-catalog/table-summaries": {
@@ -7400,7 +7508,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TablesAPI"
       }
     },
     "/api/2.0/unity-catalog/temporary-path-credentials": {
@@ -7468,7 +7577,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TemporaryPathCredentialsAPI"
       }
     },
     "/api/2.0/unity-catalog/temporary-table-credentials": {
@@ -7528,7 +7638,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TemporaryTableCredentialsAPI"
       }
     },
     "/api/2.1/unity-catalog/volumes": {
@@ -7610,7 +7721,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VolumesAPI"
       },
       "get": {
         "operationId": "volumes_list",
@@ -7696,7 +7808,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VolumesAPI"
       }
     },
     "/api/2.1/unity-catalog/volumes/{name}": {
@@ -7741,7 +7854,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VolumesAPI"
       },
       "get": {
         "operationId": "volumes_read",
@@ -7800,7 +7914,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VolumesAPI"
       },
       "patch": {
         "operationId": "volumes_update",
@@ -7873,7 +7988,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VolumesAPI"
       }
     },
     "/api/2.1/unity-catalog/workspace-bindings/catalogs/{name}": {
@@ -7925,7 +8041,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceBindingsAPI"
       },
       "patch": {
         "operationId": "workspace_bindings_update",
@@ -7994,7 +8111,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceBindingsAPI"
       }
     },
     "/api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}": {
@@ -8073,7 +8191,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceBindingsAPI"
       },
       "patch": {
         "operationId": "workspace_bindings_update_bindings",
@@ -8151,7 +8270,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceBindingsAPI"
       }
     }
   },

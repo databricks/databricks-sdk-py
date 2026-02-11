@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Tags API (workspace)",
     "description": "OpenAPI specification for the Databricks tags service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.tags"
   },
   "servers": [
     {
@@ -74,7 +77,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TagPoliciesAPI"
       },
       "get": {
         "operationId": "tag_policies_list_tag_policies",
@@ -133,7 +137,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TagPoliciesAPI"
       }
     },
     "/api/2.1/tag-policies/{tag_key}": {
@@ -178,7 +183,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TagPoliciesAPI"
       },
       "get": {
         "operationId": "tag_policies_get_tag_policy",
@@ -228,7 +234,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TagPoliciesAPI"
       },
       "patch": {
         "operationId": "tag_policies_update_tag_policy",
@@ -304,7 +311,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "TagPoliciesAPI"
       }
     },
     "/api/2.0/entity-tag-assignments": {
@@ -363,7 +371,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceEntityTagAssignmentsAPI"
       }
     },
     "/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}": {
@@ -426,7 +435,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceEntityTagAssignmentsAPI"
       },
       "get": {
         "operationId": "workspace_entity_tag_assignments_get_tag_assignment",
@@ -494,7 +504,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceEntityTagAssignmentsAPI"
       },
       "patch": {
         "operationId": "workspace_entity_tag_assignments_update_tag_assignment",
@@ -588,7 +599,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceEntityTagAssignmentsAPI"
       }
     },
     "/api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags": {
@@ -667,7 +679,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspaceEntityTagAssignmentsAPI"
       }
     }
   },

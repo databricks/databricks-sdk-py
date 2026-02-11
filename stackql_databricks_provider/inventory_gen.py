@@ -8,9 +8,11 @@ manually-edited mappings are preserved.
 """
 
 import csv
+import inspect
 import json
 import logging
 import os
+import re
 import sys
 from typing import Any, Dict, List, Optional, Set, Tuple
 
@@ -308,6 +310,176 @@ def generate_all_inventories(
     return summary
 
 
+def _build_object_key_map() -> Dict[str, str]:
+    """Scan all SDK Iterator methods and build operationId -> objectKey mapping.
+
+    Parses each Iterator method's source code to find the JSON key used to
+    extract items from the HTTP response (e.g., ``"Resources"``, ``"jobs"``).
+
+    Returns:
+        Dict mapping ``operationId`` to ``$.json_key``.
+    """
+    import importlib
+
+    from stackql_databricks_provider.extract import _class_name_to_snake
+    from stackql_databricks_provider.registry import ACCOUNT_API_CLASSES, SERVICE_MODULES
+
+    mapping: Dict[str, str] = {}
+
+    for mod_name in SERVICE_MODULES:
+        try:
+            mod = importlib.import_module(f"databricks.sdk.service.{mod_name}")
+        except ImportError:
+            continue
+
+        for cls_name, cls in inspect.getmembers(mod, inspect.isclass):
+            if not cls_name.endswith("API") or cls_name.startswith("_"):
+                continue
+
+            resource_snake = _class_name_to_snake(cls_name)
+
+            for method_name, method in inspect.getmembers(cls, predicate=inspect.isfunction):
+                if method_name.startswith("_"):
+                    continue
+
+                # Check return type is Iterator[X]
+                hints = getattr(method, "__annotations__", {})
+                ret = hints.get("return", "")
+                if not isinstance(ret, str) or not ret.strip().startswith("Iterator["):
+                    continue
+
+                try:
+                    source = inspect.getsource(method)
+                except (OSError, TypeError):
+                    continue
+
+                if "self._api.do(" not in source:
+                    continue
+
+                # Find the JSON key the method extracts from
+                json_key = _detect_json_key(source, mod)
+                if not json_key:
+                    continue
+
+                operation_id = f"{resource_snake}_{method_name}"
+                mapping[operation_id] = f"$.{json_key}"
+
+    logger.info("Built object key mapping for %d Iterator operations", len(mapping))
+    return mapping
+
+
+def _detect_json_key(source: str, mod) -> Optional[str]:
+    """Detect the JSON response key an Iterator method extracts items from.
+
+    Handles three SDK patterns:
+    1. Direct iteration: ``if "key" in json: for v in json["key"]``
+    2. Response wrapper: ``ResponseClass.from_dict(json).field``
+    3. List comprehension: ``res.get("key", [])``
+    """
+    # Pattern 1: if "key" in json:
+    m = re.search(r'if\s+"(\w+)"\s+in\s+json', source)
+    if m:
+        return m.group(1)
+
+    # Pattern 2: json.get("key", ...)
+    m = re.search(r'json\.get\("(\w+)"', source)
+    if m:
+        return m.group(1)
+
+    # Pattern 3: ResponseClass.from_dict(json).field
+    m = re.search(r'(\w+)\.from_dict\(json\)\.(\w+)', source)
+    if m:
+        resp_cls_name, field_name = m.group(1), m.group(2)
+        resp_cls = getattr(mod, resp_cls_name, None)
+        if resp_cls and hasattr(resp_cls, "from_dict"):
+            try:
+                fd_source = inspect.getsource(resp_cls.from_dict)
+                # Find the JSON wire name for this field
+                fm = re.search(
+                    rf'{field_name}\s*=\s*(?:d\.get\(\s*"([^"]+)"|_\w+\(\s*d\s*,\s*"([^"]+)")',
+                    fd_source,
+                )
+                if fm:
+                    return fm.group(1) or fm.group(2)
+            except (OSError, TypeError):
+                pass
+        return field_name  # fallback to Python field name
+
+    # Pattern 4: res.get("key", ...)
+    m = re.search(r'res\.get\("(\w+)"', source)
+    if m:
+        return m.group(1)
+
+    return None
+
+
+def populate_object_keys(
+    inventory_dir: Optional[str] = None,
+) -> Dict[str, int]:
+    """Auto-populate stackql_object_key in per-service CSVs for Iterator endpoints.
+
+    Only updates rows where ``stackql_object_key`` is currently empty.
+    Reconstitutes ``all_services.csv`` afterward.
+
+    Args:
+        inventory_dir: Root inventory directory. Defaults to ``inventory/``.
+
+    Returns:
+        Summary dict with counts of updated rows per scope.
+    """
+    if inventory_dir is None:
+        inventory_dir = INVENTORY_DIR
+
+    key_map = _build_object_key_map()
+    summary: Dict[str, int] = {"account": 0, "workspace": 0}
+
+    for scope in ("account", "workspace"):
+        scope_dir = os.path.join(inventory_dir, scope)
+        if not os.path.isdir(scope_dir):
+            continue
+
+        all_rows: List[Dict[str, str]] = []
+
+        for fname in sorted(os.listdir(scope_dir)):
+            if not fname.endswith(".csv") or fname == "all_services.csv":
+                continue
+
+            csv_path = os.path.join(scope_dir, fname)
+            rows: List[Dict[str, str]] = []
+            updated = 0
+
+            with open(csv_path, "r", newline="") as f:
+                reader = csv.DictReader(f)
+                for row in reader:
+                    op_id = row.get("operationId", "")
+                    current_key = row.get("stackql_object_key", "").strip()
+                    # Only set if currently empty and we have a mapping
+                    if not current_key and op_id in key_map:
+                        row["stackql_object_key"] = key_map[op_id]
+                        updated += 1
+                    rows.append(row)
+
+            if updated > 0:
+                with open(csv_path, "w", newline="") as f:
+                    writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS, extrasaction="ignore")
+                    writer.writeheader()
+                    writer.writerows(rows)
+                logger.info("%s/%s: updated %d objectKey values", scope, fname, updated)
+                summary[scope] += updated
+
+            all_rows.extend(rows)
+
+        # Reconstitute all_services.csv
+        if all_rows:
+            consolidated_path = os.path.join(scope_dir, "all_services.csv")
+            with open(consolidated_path, "w", newline="") as f:
+                writer = csv.DictWriter(f, fieldnames=CSV_COLUMNS, extrasaction="ignore")
+                writer.writeheader()
+                writer.writerows(all_rows)
+
+    return summary
+
+
 def main():
     """CLI entry point for generating CSV inventories."""
     logging.basicConfig(
@@ -335,10 +507,27 @@ def main():
         action="store_true",
         help="Enable debug logging",
     )
+    parser.add_argument(
+        "--populate-object-keys",
+        action="store_true",
+        help="Auto-populate stackql_object_key for Iterator endpoints (only fills empty values)",
+    )
     args = parser.parse_args()
 
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
+
+    if args.populate_object_keys:
+        print("Populating stackql_object_key for Iterator endpoints...")
+        summary = populate_object_keys(args.output_dir)
+        print()
+        print("=" * 60)
+        print("Object Key Population Summary")
+        print("=" * 60)
+        print(f"  Account rows updated:   {summary['account']}")
+        print(f"  Workspace rows updated: {summary['workspace']}")
+        print()
+        return
 
     print("Generating CSV operation inventories...")
     print(f"  Spec dir:   {args.spec_dir or SPEC_DIR}")

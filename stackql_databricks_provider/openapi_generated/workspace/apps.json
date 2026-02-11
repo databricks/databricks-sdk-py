@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Apps API (workspace)",
     "description": "OpenAPI specification for the Databricks apps service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.apps"
   },
   "servers": [
     {
@@ -83,7 +86,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       },
       "get": {
         "operationId": "apps_list",
@@ -141,7 +145,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       }
     },
     "/api/2.0/apps/{app_name}/update": {
@@ -213,7 +218,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       },
       "get": {
         "operationId": "apps_get_update",
@@ -262,7 +268,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       }
     },
     "/api/2.0/apps/{name}": {
@@ -313,7 +320,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       },
       "get": {
         "operationId": "apps_get",
@@ -362,7 +370,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       },
       "patch": {
         "operationId": "apps_update",
@@ -429,7 +438,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       }
     },
     "/api/2.0/apps/{app_name}/deployments": {
@@ -498,7 +508,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       },
       "get": {
         "operationId": "apps_list_deployments",
@@ -565,7 +576,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       }
     },
     "/api/2.0/apps/{app_name}/deployments/{deployment_id}": {
@@ -625,7 +637,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       }
     },
     "/api/2.0/permissions/apps/{app_name}/permissionLevels": {
@@ -676,7 +689,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       }
     },
     "/api/2.0/permissions/apps/{app_name}": {
@@ -727,7 +741,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       },
       "put": {
         "operationId": "apps_set_permissions",
@@ -791,7 +806,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       },
       "patch": {
         "operationId": "apps_update_permissions",
@@ -855,7 +871,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       }
     },
     "/api/2.0/apps/{name}/start": {
@@ -906,7 +923,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       }
     },
     "/api/2.0/apps/{name}/stop": {
@@ -957,7 +975,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsAPI"
       }
     },
     "/api/2.0/apps-settings/templates": {
@@ -1016,7 +1035,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsSettingsAPI"
       },
       "get": {
         "operationId": "apps_settings_list_custom_templates",
@@ -1075,7 +1095,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsSettingsAPI"
       }
     },
     "/api/2.0/apps-settings/templates/{name}": {
@@ -1127,7 +1148,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsSettingsAPI"
       },
       "get": {
         "operationId": "apps_settings_get_custom_template",
@@ -1177,7 +1199,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsSettingsAPI"
       },
       "put": {
         "operationId": "apps_settings_update_custom_template",
@@ -1245,7 +1268,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AppsSettingsAPI"
       }
     }
   },

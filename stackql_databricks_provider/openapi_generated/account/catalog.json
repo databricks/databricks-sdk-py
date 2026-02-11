@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Catalog API (account)",
     "description": "OpenAPI specification for the Databricks catalog service (account-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.catalog"
   },
   "servers": [
     {
@@ -93,7 +96,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountMetastoreAssignmentsAPI"
       },
       "delete": {
         "operationId": "account_metastore_assignments_delete",
@@ -160,7 +164,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountMetastoreAssignmentsAPI"
       },
       "put": {
         "operationId": "account_metastore_assignments_update",
@@ -242,7 +247,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountMetastoreAssignmentsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}/metastore": {
@@ -302,7 +308,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountMetastoreAssignmentsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/metastores/{metastore_id}/workspaces": {
@@ -362,7 +369,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountMetastoreAssignmentsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/metastores": {
@@ -428,7 +436,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountMetastoresAPI"
       },
       "get": {
         "operationId": "account_metastores_list",
@@ -477,7 +486,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountMetastoresAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/metastores/{metastore_id}": {
@@ -546,7 +556,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountMetastoresAPI"
       },
       "get": {
         "operationId": "account_metastores_get",
@@ -604,7 +615,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountMetastoresAPI"
       },
       "put": {
         "operationId": "account_metastores_update",
@@ -677,7 +689,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountMetastoresAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/metastores/{metastore_id}/storage-credentials": {
@@ -755,7 +768,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountStorageCredentialsAPI"
       },
       "get": {
         "operationId": "account_storage_credentials_list",
@@ -813,7 +827,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountStorageCredentialsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}": {
@@ -891,7 +906,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountStorageCredentialsAPI"
       },
       "get": {
         "operationId": "account_storage_credentials_get",
@@ -958,7 +974,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountStorageCredentialsAPI"
       },
       "put": {
         "operationId": "account_storage_credentials_update",
@@ -1043,7 +1060,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "AccountStorageCredentialsAPI"
       }
     },
     "/api/2.1/unity-catalog/credentials": {
@@ -1134,7 +1152,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       },
       "get": {
         "operationId": "credentials_list_credentials",
@@ -1211,7 +1230,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       }
     },
     "/api/2.1/unity-catalog/credentials/{name_arg}": {
@@ -1265,7 +1285,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       },
       "get": {
         "operationId": "credentials_get_credential",
@@ -1315,7 +1336,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       },
       "patch": {
         "operationId": "credentials_update_credential",
@@ -1420,7 +1442,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       }
     },
     "/api/2.1/unity-catalog/temporary-service-credentials": {
@@ -1486,7 +1509,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       }
     },
     "/api/2.1/unity-catalog/validate-credentials": {
@@ -1568,7 +1592,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       }
     }
   },

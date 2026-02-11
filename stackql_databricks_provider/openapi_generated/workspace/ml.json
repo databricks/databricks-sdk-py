@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Ml API (workspace)",
     "description": "OpenAPI specification for the Databricks ml service (workspace-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.ml"
   },
   "servers": [
     {
@@ -82,7 +85,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/logged-models": {
@@ -161,7 +165,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/create": {
@@ -233,7 +238,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/experiments/delete": {
@@ -285,7 +291,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/logged-models/{model_id}": {
@@ -330,7 +337,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       },
       "patch": {
         "operationId": "experiments_finalize_logged_model",
@@ -398,7 +406,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       },
       "get": {
         "operationId": "experiments_get_logged_model",
@@ -448,7 +457,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/logged-models/{model_id}/tags/{tag_key}": {
@@ -502,7 +512,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/delete": {
@@ -554,7 +565,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/databricks/runs/delete-runs": {
@@ -622,7 +634,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/delete-tag": {
@@ -679,7 +692,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/experiments/get-by-name": {
@@ -731,7 +745,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/experiments/get": {
@@ -783,7 +798,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/metrics/get-history": {
@@ -871,7 +887,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/permissions/experiments/{experiment_id}/permissionLevels": {
@@ -923,7 +940,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/permissions/experiments/{experiment_id}": {
@@ -975,7 +993,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       },
       "put": {
         "operationId": "experiments_set_permissions",
@@ -1040,7 +1059,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       },
       "patch": {
         "operationId": "experiments_update_permissions",
@@ -1105,7 +1125,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/get": {
@@ -1166,7 +1187,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/artifacts/list": {
@@ -1245,7 +1267,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/experiments/list": {
@@ -1315,7 +1338,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/log-batch": {
@@ -1376,7 +1400,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/log-inputs": {
@@ -1436,7 +1461,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/logged-models/{model_id}/params": {
@@ -1496,7 +1522,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/log-metric": {
@@ -1582,7 +1609,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/log-model": {
@@ -1635,7 +1663,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/outputs": {
@@ -1691,7 +1720,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/log-parameter": {
@@ -1756,7 +1786,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/experiments/restore": {
@@ -1808,7 +1839,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/restore": {
@@ -1860,7 +1892,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/databricks/runs/restore-runs": {
@@ -1928,7 +1961,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/experiments/search": {
@@ -2000,7 +2034,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/logged-models/search": {
@@ -2076,7 +2111,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/search": {
@@ -2152,7 +2188,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/experiments/set-experiment-tag": {
@@ -2214,7 +2251,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/logged-models/{model_id}/tags": {
@@ -2274,7 +2312,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/set-tag": {
@@ -2339,7 +2378,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/experiments/update": {
@@ -2395,7 +2435,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/mlflow/runs/update": {
@@ -2467,7 +2508,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ExperimentsAPI"
       }
     },
     "/api/2.0/feature-engineering/materialized-features:batchCreate": {
@@ -2526,7 +2568,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       }
     },
     "/api/2.0/feature-engineering/features": {
@@ -2585,7 +2628,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       },
       "get": {
         "operationId": "feature_engineering_list_features",
@@ -2644,7 +2688,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       }
     },
     "/api/2.0/feature-engineering/features/kafka-configs": {
@@ -2703,7 +2748,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       },
       "get": {
         "operationId": "feature_engineering_list_kafka_configs",
@@ -2762,7 +2808,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       }
     },
     "/api/2.0/feature-engineering/materialized-features": {
@@ -2821,7 +2868,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       },
       "get": {
         "operationId": "feature_engineering_list_materialized_features",
@@ -2889,7 +2937,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       }
     },
     "/api/2.0/feature-engineering/features/{full_name}": {
@@ -2934,7 +2983,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       },
       "get": {
         "operationId": "feature_engineering_get_feature",
@@ -2984,7 +3034,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       },
       "patch": {
         "operationId": "feature_engineering_update_feature",
@@ -3061,7 +3112,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       }
     },
     "/api/2.0/feature-engineering/features/kafka-configs/{name}": {
@@ -3106,7 +3158,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       },
       "get": {
         "operationId": "feature_engineering_get_kafka_config",
@@ -3156,7 +3209,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       },
       "patch": {
         "operationId": "feature_engineering_update_kafka_config",
@@ -3233,7 +3287,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       }
     },
     "/api/2.0/feature-engineering/materialized-features/{materialized_feature_id}": {
@@ -3278,7 +3333,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       },
       "get": {
         "operationId": "feature_engineering_get_materialized_feature",
@@ -3328,7 +3384,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       },
       "patch": {
         "operationId": "feature_engineering_update_materialized_feature",
@@ -3405,7 +3462,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureEngineeringAPI"
       }
     },
     "/api/2.0/feature-store/online-stores": {
@@ -3464,7 +3522,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureStoreAPI"
       },
       "get": {
         "operationId": "feature_store_list_online_stores",
@@ -3523,7 +3582,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureStoreAPI"
       }
     },
     "/api/2.0/feature-store/online-stores/{name}": {
@@ -3568,7 +3628,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureStoreAPI"
       },
       "get": {
         "operationId": "feature_store_get_online_store",
@@ -3618,7 +3679,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureStoreAPI"
       },
       "patch": {
         "operationId": "feature_store_update_online_store",
@@ -3695,7 +3757,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureStoreAPI"
       }
     },
     "/api/2.0/feature-store/online-tables/{online_table_name}": {
@@ -3740,7 +3803,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureStoreAPI"
       }
     },
     "/api/2.0/feature-store/tables/{source_table_name}/publish": {
@@ -3810,7 +3874,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "FeatureStoreAPI"
       }
     },
     "/api/2.0/automl/create-forecasting-experiment": {
@@ -3937,7 +4002,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ForecastingAPI"
       }
     },
     "/api/2.0/automl/get-forecasting-experiment/{experiment_id}": {
@@ -3989,7 +4055,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ForecastingAPI"
       }
     },
     "/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags": {
@@ -4067,7 +4134,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MaterializedFeaturesAPI"
       },
       "get": {
         "operationId": "materialized_features_list_feature_tags",
@@ -4143,7 +4211,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MaterializedFeaturesAPI"
       }
     },
     "/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags/{key}": {
@@ -4206,7 +4275,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MaterializedFeaturesAPI"
       },
       "get": {
         "operationId": "materialized_features_get_feature_tag",
@@ -4273,7 +4343,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MaterializedFeaturesAPI"
       },
       "patch": {
         "operationId": "materialized_features_update_feature_tag",
@@ -4366,7 +4437,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MaterializedFeaturesAPI"
       }
     },
     "/api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/lineage": {
@@ -4427,7 +4499,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "MaterializedFeaturesAPI"
       }
     },
     "/api/2.0/mlflow/transition-requests/approve": {
@@ -4505,7 +4578,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/comments/create": {
@@ -4574,7 +4648,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registered-models/create": {
@@ -4641,7 +4716,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/model-versions/create": {
@@ -4721,7 +4797,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/transition-requests/create": {
@@ -4794,7 +4871,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registry-webhooks/create": {
@@ -4873,7 +4951,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/comments/delete": {
@@ -4918,7 +4997,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registered-models/delete": {
@@ -4963,7 +5043,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registered-models/delete-tag": {
@@ -5017,7 +5098,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/model-versions/delete": {
@@ -5071,7 +5153,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/model-versions/delete-tag": {
@@ -5134,7 +5217,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/transition-requests/delete": {
@@ -5222,7 +5306,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registry-webhooks/delete": {
@@ -5267,7 +5352,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registered-models/get-latest-versions": {
@@ -5330,7 +5416,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/databricks/registered-models/get": {
@@ -5382,7 +5469,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/model-versions/get": {
@@ -5443,7 +5531,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/model-versions/get-download-uri": {
@@ -5504,7 +5593,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels": {
@@ -5556,7 +5646,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/permissions/registered-models/{registered_model_id}": {
@@ -5608,7 +5699,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       },
       "put": {
         "operationId": "model_registry_set_permissions",
@@ -5673,7 +5765,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       },
       "patch": {
         "operationId": "model_registry_update_permissions",
@@ -5738,7 +5831,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registered-models/list": {
@@ -5799,7 +5893,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/transition-requests/list": {
@@ -5860,7 +5955,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registry-webhooks/list": {
@@ -5938,7 +6034,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/transition-requests/reject": {
@@ -6011,7 +6108,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registered-models/rename": {
@@ -6074,7 +6172,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/model-versions/search": {
@@ -6153,7 +6252,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registered-models/search": {
@@ -6232,7 +6332,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registered-models/set-tag": {
@@ -6294,7 +6395,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/model-versions/set-tag": {
@@ -6361,7 +6463,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registry-webhooks/test": {
@@ -6424,7 +6527,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/databricks/model-versions/transition-stage": {
@@ -6502,7 +6606,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/comments/update": {
@@ -6566,7 +6671,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registered-models/update": {
@@ -6629,7 +6735,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/model-versions/update": {
@@ -6697,7 +6804,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     },
     "/api/2.0/mlflow/registry-webhooks/update": {
@@ -6775,7 +6883,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "ModelRegistryAPI"
       }
     }
   },

@@ -3,7 +3,10 @@
   "info": {
     "title": "Databricks Provisioning API (account)",
     "description": "OpenAPI specification for the Databricks provisioning service (account-level APIs), generated from the Databricks Python SDK.",
-    "version": "0.1.0"
+    "version": "0.1.0",
+    "x-stackql-sdk-version": "0.86.0",
+    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-sdk-namespace": "databricks.sdk.service.provisioning"
   },
   "servers": [
     {
@@ -83,7 +86,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       },
       "get": {
         "operationId": "credentials_list",
@@ -132,7 +136,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/credentials/{credentials_id}": {
@@ -192,7 +197,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       },
       "get": {
         "operationId": "credentials_get",
@@ -250,7 +256,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "CredentialsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/customer-managed-keys": {
@@ -326,7 +333,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EncryptionKeysAPI"
       },
       "get": {
         "operationId": "encryption_keys_list",
@@ -375,7 +383,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EncryptionKeysAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/customer-managed-keys/{customer_managed_key_id}": {
@@ -435,7 +444,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EncryptionKeysAPI"
       },
       "get": {
         "operationId": "encryption_keys_get",
@@ -493,7 +503,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "EncryptionKeysAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/networks": {
@@ -577,7 +588,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "NetworksAPI"
       },
       "get": {
         "operationId": "networks_list",
@@ -626,7 +638,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "NetworksAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/networks/{network_id}": {
@@ -686,7 +699,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "NetworksAPI"
       },
       "get": {
         "operationId": "networks_get",
@@ -744,7 +758,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "NetworksAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/private-access-settings": {
@@ -826,7 +841,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PrivateAccessAPI"
       },
       "get": {
         "operationId": "private_access_list",
@@ -875,7 +891,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PrivateAccessAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/private-access-settings/{private_access_settings_id}": {
@@ -935,7 +952,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PrivateAccessAPI"
       },
       "get": {
         "operationId": "private_access_get",
@@ -993,7 +1011,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PrivateAccessAPI"
       },
       "put": {
         "operationId": "private_access_replace",
@@ -1069,7 +1088,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "PrivateAccessAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/storage-configurations": {
@@ -1147,7 +1167,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StorageAPI"
       },
       "get": {
         "operationId": "storage_list",
@@ -1196,7 +1217,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StorageAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/storage-configurations/{storage_configuration_id}": {
@@ -1256,7 +1278,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StorageAPI"
       },
       "get": {
         "operationId": "storage_get",
@@ -1314,7 +1337,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "StorageAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/vpc-endpoints": {
@@ -1392,7 +1416,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VpcEndpointsAPI"
       },
       "get": {
         "operationId": "vpc_endpoints_list",
@@ -1441,7 +1466,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VpcEndpointsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/vpc-endpoints/{vpc_endpoint_id}": {
@@ -1501,7 +1527,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VpcEndpointsAPI"
       },
       "get": {
         "operationId": "vpc_endpoints_get",
@@ -1559,7 +1586,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "VpcEndpointsAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/workspaces": {
@@ -1689,7 +1717,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspacesAPI"
       },
       "get": {
         "operationId": "workspaces_list",
@@ -1738,7 +1767,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspacesAPI"
       }
     },
     "/api/2.0/accounts/{account_id}/workspaces/{workspace_id}": {
@@ -1798,7 +1828,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspacesAPI"
       },
       "get": {
         "operationId": "workspaces_get",
@@ -1856,7 +1887,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspacesAPI"
       },
       "patch": {
         "operationId": "workspaces_update",
@@ -1940,7 +1972,8 @@
               }
             }
           }
-        }
+        },
+        "x-stackql-sdk-source": "WorkspacesAPI"
       }
     }
   },

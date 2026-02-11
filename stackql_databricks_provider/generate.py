@@ -10,6 +10,7 @@ import logging
 import os
 import shutil
 import sys
+from datetime import date
 from typing import Any, Dict, List, Optional, Set, Tuple
 
 from stackql_databricks_provider.extract import (
@@ -29,6 +30,16 @@ from stackql_databricks_provider.registry import (
 )
 
 logger = logging.getLogger(__name__)
+
+
+def _get_sdk_version() -> str:
+    """Return the installed Databricks SDK version."""
+    try:
+        import importlib.metadata
+        return importlib.metadata.version("databricks-sdk")
+    except Exception:
+        return "unknown"
+
 
 OUTPUT_DIR = os.path.join(
     os.path.dirname(os.path.abspath(__file__)), "openapi_generated"
@@ -78,6 +89,9 @@ def generate_spec_for_service(
                     resource_snake_name=resource_snake,
                 )
                 for path, methods in details.items():
+                    # Tag each operation with SDK source class
+                    for method_detail in methods.values():
+                        method_detail["x-stackql-sdk-source"] = class_name
                     if path not in paths:
                         paths[path] = {}
                     paths[path].update(methods)
@@ -111,6 +125,8 @@ def generate_spec_for_service(
     # Sanitize: replace any $ref pointing to undefined schemas with inline object
     _sanitize_orphaned_refs(paths, schemas)
 
+    sdk_namespace = f"databricks.sdk.service.{service_name}"
+
     spec: Dict[str, Any] = {
         "openapi": "3.0.0",
         "info": {
@@ -120,6 +136,9 @@ def generate_spec_for_service(
                 f"service ({scope}-level APIs), generated from the Databricks Python SDK."
             ),
             "version": "0.1.0",
+            "x-stackql-sdk-version": _get_sdk_version(),
+            "x-stackql-date-generated": date.today().isoformat(),
+            "x-stackql-sdk-namespace": sdk_namespace,
         },
         "servers": [{"url": server_url, "description": server_desc}],
         "paths": paths,
