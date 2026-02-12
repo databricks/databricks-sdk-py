@@ -505,10 +505,8 @@ class Config:
             return None
 
         # Handle unified hosts
-        if self.host_type == HostType.UNIFIED:
-            if not self.account_id:
-                raise ValueError("Unified host requires account_id to be set for OAuth endpoints")
-            return get_unified_endpoints(self.host, self.account_id)
+        if self.experimental_is_unified_host:
+            return self._experimental_oidc_discovery()
 
         # Handle traditional account hosts
         if self.host_type == HostType.ACCOUNTS and self.account_id:
@@ -516,6 +514,27 @@ class Config:
 
         # Default to workspace endpoints
         return get_workspace_endpoints(self.host)
+
+    def _experimental_oidc_discovery(self) -> Optional[OidcEndpoints]:
+        """[Experimental] Discover OIDC endpoints for Databricks OAuth.
+
+        This method discovers the OIDC endpoints for Databricks OAuth by making a request to the
+        multiple paths.
+        This is not to be used for production purposes. 
+        It is only to be used for testing and development purposes until a unified OIDC endpoint is available.
+        """
+        if not self.experimental_is_unified_host:
+            raise ValueError("experimental_oidc_discovery is only supported with the experimental_is_unified_host flag set")
+        if self.account_id:
+            try:
+                return get_account_endpoints(self.host, self.account_id)
+            except Exception as e:
+                logger.warning(f"Failed to discover OIDC endpoints for account {self.account_id}: {e}")
+        try:
+            return get_workspace_endpoints(self.host)
+        except Exception as e:
+            logger.warning(f"Failed to discover OIDC endpoints for workspace {self.workspace_id}: {e}")
+        raise ValueError("Failed to discover OIDC endpoints")
 
     @property
     def oidc_endpoints(self) -> Optional[OidcEndpoints]:
