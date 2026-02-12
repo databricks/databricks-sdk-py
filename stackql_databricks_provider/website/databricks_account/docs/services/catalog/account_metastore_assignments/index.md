@@ -43,26 +43,19 @@ The following fields are returned by `SELECT` queries:
 
 <SchemaTable fields={[
   {
-    "name": "metastore_assignment",
-    "type": "object",
-    "description": "",
-    "children": [
-      {
-        "name": "workspace_id",
-        "type": "integer",
-        "description": ""
-      },
-      {
-        "name": "metastore_id",
-        "type": "string",
-        "description": "The unique ID of the metastore."
-      },
-      {
-        "name": "default_catalog_name",
-        "type": "string",
-        "description": "The name of the default catalog in the metastore. This field is deprecated. Please use \"Default Namespace API\" to configure the default catalog for a Databricks workspace."
-      }
-    ]
+    "name": "metastore_id",
+    "type": "string",
+    "description": "The unique ID of the metastore."
+  },
+  {
+    "name": "workspace_id",
+    "type": "integer",
+    "description": ""
+  },
+  {
+    "name": "default_catalog_name",
+    "type": "string",
+    "description": "The name of the default catalog in the metastore. This field is deprecated. Please use \"Default Namespace API\" to configure the default catalog for a Databricks workspace."
   }
 ]} />
 </TabItem>
@@ -177,7 +170,9 @@ Gets the metastore assignment, if any, for the workspace specified by ID. If the
 
 ```sql
 SELECT
-metastore_assignment
+metastore_id,
+workspace_id,
+default_catalog_name
 FROM databricks_account.catalog.account_metastore_assignments
 WHERE account_id = '{{ account_id }}' -- required
 AND workspace_id = '{{ workspace_id }}' -- required

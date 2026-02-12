@@ -124,21 +124,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-request_object_type"><code>request_object_type</code></a>, <a href="#parameter-request_object_id"><code>request_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the permissions of an object. Objects can inherit permissions from their parent objects or root<br />object.<br /><br />:param request_object_type: str<br />  The type of the request object. Can be one of the following: alerts, alertsv2, authorization,<br />  clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,<br />  instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or<br />  warehouses.<br />:param request_object_id: str<br />  The id of the request object.<br /><br />:returns: :class:`ObjectPermissions`</td>
+    <td>Gets the permissions of an object. Objects can inherit permissions from their parent objects or root</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-request_object_type"><code>request_object_type</code></a>, <a href="#parameter-request_object_id"><code>request_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the permissions on an object. Objects can inherit permissions from their parent objects or<br />root object.<br /><br />:param request_object_type: str<br />  The type of the request object. Can be one of the following: alerts, alertsv2, authorization,<br />  clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,<br />  instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or<br />  warehouses.<br />:param request_object_id: str<br />  The id of the request object.<br />:param access_control_list: List[:class:`AccessControlRequest`] (optional)<br /><br />:returns: :class:`ObjectPermissions`</td>
+    <td>Updates the permissions on an object. Objects can inherit permissions from their parent objects or</td>
 </tr>
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-request_object_type"><code>request_object_type</code></a>, <a href="#parameter-request_object_id"><code>request_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct<br />permissions if none are specified. Objects can inherit permissions from their parent objects or root<br />object.<br /><br />:param request_object_type: str<br />  The type of the request object. Can be one of the following: alerts, alertsv2, authorization,<br />  clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,<br />  instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or<br />  warehouses.<br />:param request_object_id: str<br />  The id of the request object.<br />:param access_control_list: List[:class:`AccessControlRequest`] (optional)<br /><br />:returns: :class:`ObjectPermissions`</td>
+    <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct</td>
 </tr>
 </tbody>
 </table>
@@ -184,7 +184,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the permissions of an object. Objects can inherit permissions from their parent objects or root<br />object.<br /><br />:param request_object_type: str<br />  The type of the request object. Can be one of the following: alerts, alertsv2, authorization,<br />  clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,<br />  instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or<br />  warehouses.<br />:param request_object_id: str<br />  The id of the request object.<br /><br />:returns: :class:`ObjectPermissions`
+Gets the permissions of an object. Objects can inherit permissions from their parent objects or root
 
 ```sql
 SELECT
@@ -211,7 +211,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="update">
 
-Updates the permissions on an object. Objects can inherit permissions from their parent objects or<br />root object.<br /><br />:param request_object_type: str<br />  The type of the request object. Can be one of the following: alerts, alertsv2, authorization,<br />  clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,<br />  instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or<br />  warehouses.<br />:param request_object_id: str<br />  The id of the request object.<br />:param access_control_list: List[:class:`AccessControlRequest`] (optional)<br /><br />:returns: :class:`ObjectPermissions`
+Updates the permissions on an object. Objects can inherit permissions from their parent objects or
 
 ```sql
 UPDATE databricks_workspace.iam.permissions
@@ -240,7 +240,7 @@ object_type;
 >
 <TabItem value="set">
 
-Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct<br />permissions if none are specified. Objects can inherit permissions from their parent objects or root<br />object.<br /><br />:param request_object_type: str<br />  The type of the request object. Can be one of the following: alerts, alertsv2, authorization,<br />  clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,<br />  instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or<br />  warehouses.<br />:param request_object_id: str<br />  The id of the request object.<br />:param access_control_list: List[:class:`AccessControlRequest`] (optional)<br /><br />:returns: :class:`ObjectPermissions`
+Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
 
 ```sql
 REPLACE databricks_workspace.iam.permissions

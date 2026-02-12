@@ -55,14 +55,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-activation_url"><code>activation_url</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets an activation URL for a share.<br /><br />:param activation_url: str<br />  The one time activation url. It also accepts activation token.</td>
+    <td>Gets an activation URL for a share.</td>
 </tr>
 <tr>
     <td><a href="#retrieve_token"><CopyableCode code="retrieve_token" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-activation_url"><code>activation_url</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Retrieve access token with an activation url. This is a public API without any authentication.<br /><br />:param activation_url: str<br />  The one time activation url. It also accepts activation token.<br /><br />:returns: :class:`RetrieveTokenResponse`</td>
+    <td>Retrieve access token with an activation url. This is a public API without any authentication.</td>
 </tr>
 </tbody>
 </table>
@@ -104,7 +104,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_url">
 
-Gets an activation URL for a share.<br /><br />:param activation_url: str<br />  The one time activation url. It also accepts activation token.
+Gets an activation URL for a share.
 
 ```sql
 EXEC databricks_workspace.sharing.recipient_activation.get_url 
@@ -115,7 +115,7 @@ EXEC databricks_workspace.sharing.recipient_activation.get_url
 </TabItem>
 <TabItem value="retrieve_token">
 
-Retrieve access token with an activation url. This is a public API without any authentication.<br /><br />:param activation_url: str<br />  The one time activation url. It also accepts activation token.<br /><br />:returns: :class:`RetrieveTokenResponse`
+Retrieve access token with an activation url. This is a public API without any authentication.
 
 ```sql
 EXEC databricks_workspace.sharing.recipient_activation.retrieve_token 

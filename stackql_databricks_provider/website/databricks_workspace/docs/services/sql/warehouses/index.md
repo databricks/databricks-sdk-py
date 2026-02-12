@@ -75,7 +75,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "name",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       }
     ]
   },
@@ -277,7 +277,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "name",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       }
     ]
   },
@@ -465,49 +465,49 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the information for a single SQL warehouse.<br /><br />:param id: str<br />  Required. Id of the SQL warehouse.<br /><br />:returns: :class:`GetWarehouseResponse`</td>
+    <td>Gets the information for a single SQL warehouse.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-run_as_user_id"><code>run_as_user_id</code></a></td>
-    <td>Lists all SQL warehouses that a user has access to.<br /><br />:param page_size: int (optional)<br />  The max number of warehouses to return.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListWarehouses` call. Provide this to retrieve the<br />  subsequent page; otherwise the first will be retrieved.<br /><br />  When paginating, all other parameters provided to `ListWarehouses` must match the call that provided<br />  the page token.<br />:param run_as_user_id: int (optional)<br />  Service Principal which will be used to fetch the list of endpoints. If not specified, SQL Gateway<br />  will use the user from the session header.<br /><br />:returns: Iterator over :class:`EndpointInfo`</td>
+    <td>Lists all SQL warehouses that a user has access to.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates a new SQL warehouse.<br /><br />:param auto_stop_mins: int (optional)<br />  The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it<br />  is automatically stopped.<br /><br />  Supported values: - Must be == 0 or &gt;= 10 mins - 0 indicates no autostop.<br /><br />  Defaults to 120 mins<br />:param channel: :class:`Channel` (optional)<br />  Channel Details<br />:param cluster_size: str (optional)<br />  Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you<br />  to run larger queries on it. If you want to increase the number of concurrent queries, please tune<br />  max_num_clusters.<br /><br />  Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -<br />  4X-Large<br />:param creator_name: str (optional)<br />  warehouse creator name<br />:param enable_photon: bool (optional)<br />  Configures whether the warehouse should use Photon optimized clusters.<br /><br />  Defaults to false.<br />:param enable_serverless_compute: bool (optional)<br />  Configures whether the warehouse should use serverless compute<br />:param instance_profile_arn: str (optional)<br />  Deprecated. Instance profile used to pass IAM role to the cluster<br />:param max_num_clusters: int (optional)<br />  Maximum number of clusters that the autoscaler will create to handle concurrent queries.<br /><br />  Supported values: - Must be &gt;= min_num_clusters - Must be &lt;= 40.<br /><br />  Defaults to min_clusters if unset.<br />:param min_num_clusters: int (optional)<br />  Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing this<br />  will ensure that a larger number of clusters are always running and therefore may reduce the cold<br />  start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.<br /><br />  Supported values: - Must be &gt; 0 - Must be &lt;= min(max_num_clusters, 30)<br /><br />  Defaults to 1<br />:param name: str (optional)<br />  Logical name for the cluster.<br /><br />  Supported values: - Must be unique within an org. - Must be less than 100 characters.<br />:param spot_instance_policy: :class:`SpotInstancePolicy` (optional)<br />  Configurations whether the endpoint should use spot instances.<br />:param tags: :class:`EndpointTags` (optional)<br />  A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)<br />  associated with this SQL warehouse.<br /><br />  Supported values: - Number of tags &lt; 45.<br />:param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)<br />  Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and<br />  also set the field `enable_serverless_compute` to `true`.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GetWarehouseResponse`.<br />  See :method:wait_get_warehouse_running for more details.</td>
+    <td>Creates a new SQL warehouse.</td>
 </tr>
 <tr>
     <td><a href="#edit"><CopyableCode code="edit" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the configuration for a SQL warehouse.<br /><br />:param id: str<br />  Required. Id of the warehouse to configure.<br />:param auto_stop_mins: int (optional)<br />  The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it<br />  is automatically stopped.<br /><br />  Supported values: - Must be == 0 or &gt;= 10 mins - 0 indicates no autostop.<br /><br />  Defaults to 120 mins<br />:param channel: :class:`Channel` (optional)<br />  Channel Details<br />:param cluster_size: str (optional)<br />  Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you<br />  to run larger queries on it. If you want to increase the number of concurrent queries, please tune<br />  max_num_clusters.<br /><br />  Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -<br />  4X-Large<br />:param creator_name: str (optional)<br />  warehouse creator name<br />:param enable_photon: bool (optional)<br />  Configures whether the warehouse should use Photon optimized clusters.<br /><br />  Defaults to false.<br />:param enable_serverless_compute: bool (optional)<br />  Configures whether the warehouse should use serverless compute<br />:param instance_profile_arn: str (optional)<br />  Deprecated. Instance profile used to pass IAM role to the cluster<br />:param max_num_clusters: int (optional)<br />  Maximum number of clusters that the autoscaler will create to handle concurrent queries.<br /><br />  Supported values: - Must be &gt;= min_num_clusters - Must be &lt;= 40.<br /><br />  Defaults to min_clusters if unset.<br />:param min_num_clusters: int (optional)<br />  Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing this<br />  will ensure that a larger number of clusters are always running and therefore may reduce the cold<br />  start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.<br /><br />  Supported values: - Must be &gt; 0 - Must be &lt;= min(max_num_clusters, 30)<br /><br />  Defaults to 1<br />:param name: str (optional)<br />  Logical name for the cluster.<br /><br />  Supported values: - Must be unique within an org. - Must be less than 100 characters.<br />:param spot_instance_policy: :class:`SpotInstancePolicy` (optional)<br />  Configurations whether the endpoint should use spot instances.<br />:param tags: :class:`EndpointTags` (optional)<br />  A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)<br />  associated with this SQL warehouse.<br /><br />  Supported values: - Number of tags &lt; 45.<br />:param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)<br />  Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and<br />  also set the field `enable_serverless_compute` to `true`.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GetWarehouseResponse`.<br />  See :method:wait_get_warehouse_running for more details.</td>
+    <td>Updates the configuration for a SQL warehouse.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a SQL warehouse.<br /><br />:param id: str<br />  Required. Id of the SQL warehouse.</td>
+    <td>Deletes a SQL warehouse.</td>
 </tr>
 <tr>
     <td><a href="#start"><CopyableCode code="start" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Starts a SQL warehouse.<br /><br />:param id: str<br />  Required. Id of the SQL warehouse.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GetWarehouseResponse`.<br />  See :method:wait_get_warehouse_running for more details.</td>
+    <td>Starts a SQL warehouse.</td>
 </tr>
 <tr>
     <td><a href="#stop"><CopyableCode code="stop" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Stops a SQL warehouse.<br /><br />:param id: str<br />  Required. Id of the SQL warehouse.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GetWarehouseResponse`.<br />  See :method:wait_get_warehouse_stopped for more details.</td>
+    <td>Stops a SQL warehouse.</td>
 </tr>
 </tbody>
 </table>
@@ -564,7 +564,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the information for a single SQL warehouse.<br /><br />:param id: str<br />  Required. Id of the SQL warehouse.<br /><br />:returns: :class:`GetWarehouseResponse`
+Gets the information for a single SQL warehouse.
 
 ```sql
 SELECT
@@ -596,7 +596,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Lists all SQL warehouses that a user has access to.<br /><br />:param page_size: int (optional)<br />  The max number of warehouses to return.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListWarehouses` call. Provide this to retrieve the<br />  subsequent page; otherwise the first will be retrieved.<br /><br />  When paginating, all other parameters provided to `ListWarehouses` must match the call that provided<br />  the page token.<br />:param run_as_user_id: int (optional)<br />  Service Principal which will be used to fetch the list of endpoints. If not specified, SQL Gateway<br />  will use the user from the session header.<br /><br />:returns: Iterator over :class:`EndpointInfo`
+Lists all SQL warehouses that a user has access to.
 
 ```sql
 SELECT
@@ -642,7 +642,7 @@ AND run_as_user_id = '{{ run_as_user_id }}'
 >
 <TabItem value="create">
 
-Creates a new SQL warehouse.<br /><br />:param auto_stop_mins: int (optional)<br />  The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it<br />  is automatically stopped.<br /><br />  Supported values: - Must be == 0 or &gt;= 10 mins - 0 indicates no autostop.<br /><br />  Defaults to 120 mins<br />:param channel: :class:`Channel` (optional)<br />  Channel Details<br />:param cluster_size: str (optional)<br />  Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you<br />  to run larger queries on it. If you want to increase the number of concurrent queries, please tune<br />  max_num_clusters.<br /><br />  Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -<br />  4X-Large<br />:param creator_name: str (optional)<br />  warehouse creator name<br />:param enable_photon: bool (optional)<br />  Configures whether the warehouse should use Photon optimized clusters.<br /><br />  Defaults to false.<br />:param enable_serverless_compute: bool (optional)<br />  Configures whether the warehouse should use serverless compute<br />:param instance_profile_arn: str (optional)<br />  Deprecated. Instance profile used to pass IAM role to the cluster<br />:param max_num_clusters: int (optional)<br />  Maximum number of clusters that the autoscaler will create to handle concurrent queries.<br /><br />  Supported values: - Must be &gt;= min_num_clusters - Must be &lt;= 40.<br /><br />  Defaults to min_clusters if unset.<br />:param min_num_clusters: int (optional)<br />  Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing this<br />  will ensure that a larger number of clusters are always running and therefore may reduce the cold<br />  start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.<br /><br />  Supported values: - Must be &gt; 0 - Must be &lt;= min(max_num_clusters, 30)<br /><br />  Defaults to 1<br />:param name: str (optional)<br />  Logical name for the cluster.<br /><br />  Supported values: - Must be unique within an org. - Must be less than 100 characters.<br />:param spot_instance_policy: :class:`SpotInstancePolicy` (optional)<br />  Configurations whether the endpoint should use spot instances.<br />:param tags: :class:`EndpointTags` (optional)<br />  A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)<br />  associated with this SQL warehouse.<br /><br />  Supported values: - Number of tags &lt; 45.<br />:param warehouse_type: :class:`CreateWarehouseRequestWarehouseType` (optional)<br />  Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and<br />  also set the field `enable_serverless_compute` to `true`.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GetWarehouseResponse`.<br />  See :method:wait_get_warehouse_running for more details.
+Creates a new SQL warehouse.
 
 ```sql
 INSERT INTO databricks_workspace.sql.warehouses (
@@ -776,7 +776,7 @@ warehouse_type
 >
 <TabItem value="edit">
 
-Updates the configuration for a SQL warehouse.<br /><br />:param id: str<br />  Required. Id of the warehouse to configure.<br />:param auto_stop_mins: int (optional)<br />  The amount of time in minutes that a SQL warehouse must be idle (i.e., no RUNNING queries) before it<br />  is automatically stopped.<br /><br />  Supported values: - Must be == 0 or &gt;= 10 mins - 0 indicates no autostop.<br /><br />  Defaults to 120 mins<br />:param channel: :class:`Channel` (optional)<br />  Channel Details<br />:param cluster_size: str (optional)<br />  Size of the clusters allocated for this warehouse. Increasing the size of a spark cluster allows you<br />  to run larger queries on it. If you want to increase the number of concurrent queries, please tune<br />  max_num_clusters.<br /><br />  Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -<br />  4X-Large<br />:param creator_name: str (optional)<br />  warehouse creator name<br />:param enable_photon: bool (optional)<br />  Configures whether the warehouse should use Photon optimized clusters.<br /><br />  Defaults to false.<br />:param enable_serverless_compute: bool (optional)<br />  Configures whether the warehouse should use serverless compute<br />:param instance_profile_arn: str (optional)<br />  Deprecated. Instance profile used to pass IAM role to the cluster<br />:param max_num_clusters: int (optional)<br />  Maximum number of clusters that the autoscaler will create to handle concurrent queries.<br /><br />  Supported values: - Must be &gt;= min_num_clusters - Must be &lt;= 40.<br /><br />  Defaults to min_clusters if unset.<br />:param min_num_clusters: int (optional)<br />  Minimum number of available clusters that will be maintained for this SQL warehouse. Increasing this<br />  will ensure that a larger number of clusters are always running and therefore may reduce the cold<br />  start time for new queries. This is similar to reserved vs. revocable cores in a resource manager.<br /><br />  Supported values: - Must be &gt; 0 - Must be &lt;= min(max_num_clusters, 30)<br /><br />  Defaults to 1<br />:param name: str (optional)<br />  Logical name for the cluster.<br /><br />  Supported values: - Must be unique within an org. - Must be less than 100 characters.<br />:param spot_instance_policy: :class:`SpotInstancePolicy` (optional)<br />  Configurations whether the endpoint should use spot instances.<br />:param tags: :class:`EndpointTags` (optional)<br />  A set of key-value pairs that will be tagged on all resources (e.g., AWS instances and EBS volumes)<br />  associated with this SQL warehouse.<br /><br />  Supported values: - Number of tags &lt; 45.<br />:param warehouse_type: :class:`EditWarehouseRequestWarehouseType` (optional)<br />  Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and<br />  also set the field `enable_serverless_compute` to `true`.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GetWarehouseResponse`.<br />  See :method:wait_get_warehouse_running for more details.
+Updates the configuration for a SQL warehouse.
 
 ```sql
 REPLACE databricks_workspace.sql.warehouses
@@ -833,7 +833,7 @@ warehouse_type;
 >
 <TabItem value="delete">
 
-Deletes a SQL warehouse.<br /><br />:param id: str<br />  Required. Id of the SQL warehouse.
+Deletes a SQL warehouse.
 
 ```sql
 DELETE FROM databricks_workspace.sql.warehouses
@@ -856,7 +856,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="start">
 
-Starts a SQL warehouse.<br /><br />:param id: str<br />  Required. Id of the SQL warehouse.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GetWarehouseResponse`.<br />  See :method:wait_get_warehouse_running for more details.
+Starts a SQL warehouse.
 
 ```sql
 EXEC databricks_workspace.sql.warehouses.start 
@@ -867,7 +867,7 @@ EXEC databricks_workspace.sql.warehouses.start
 </TabItem>
 <TabItem value="stop">
 
-Stops a SQL warehouse.<br /><br />:param id: str<br />  Required. Id of the SQL warehouse.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GetWarehouseResponse`.<br />  See :method:wait_get_warehouse_stopped for more details.
+Stops a SQL warehouse.
 
 ```sql
 EXEC databricks_workspace.sql.warehouses.stop 

@@ -70,7 +70,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of a specified provider's shares within the metastore where:<br /><br />* the caller is a metastore admin, or * the caller is the owner.<br /><br />:param name: str<br />  Name of the provider in which to list shares.<br />:param max_results: int (optional)<br />  Maximum number of shares to return. - when set to 0, the page length is set to a server configured<br />  value (recommended); - when set to a value greater than 0, the page length is the minimum of this<br />  value and a server configured value; - when set to a value less than 0, an invalid parameter error<br />  is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of<br />  returned shares might be less than the specified max_results size, even zero. The only definitive<br />  indication that no further shares can be fetched is when the next_page_token is unset from the<br />  response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ProviderShare`</td>
+    <td>Gets an array of a specified provider's shares within the metastore where:</td>
 </tr>
 </tbody>
 </table>
@@ -121,7 +121,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list_shares">
 
-Gets an array of a specified provider's shares within the metastore where:<br /><br />* the caller is a metastore admin, or * the caller is the owner.<br /><br />:param name: str<br />  Name of the provider in which to list shares.<br />:param max_results: int (optional)<br />  Maximum number of shares to return. - when set to 0, the page length is set to a server configured<br />  value (recommended); - when set to a value greater than 0, the page length is the minimum of this<br />  value and a server configured value; - when set to a value less than 0, an invalid parameter error<br />  is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of<br />  returned shares might be less than the specified max_results size, even zero. The only definitive<br />  indication that no further shares can be fetched is when the next_page_token is unset from the<br />  response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ProviderShare`
+Gets an array of a specified provider's shares within the metastore where:
 
 ```sql
 SELECT

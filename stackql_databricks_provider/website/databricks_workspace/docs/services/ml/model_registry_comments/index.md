@@ -55,21 +55,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__version"><code>data__version</code></a>, <a href="#parameter-data__comment"><code>data__comment</code></a></td>
     <td></td>
-    <td>Posts a comment on a model version. A comment can be submitted either by a user or programmatically to<br />display relevant information about the model. For example, test results or deployment errors.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param comment: str<br />  User-provided comment on the action.<br /><br />:returns: :class:`CreateCommentResponse`</td>
+    <td>Posts a comment on a model version. A comment can be submitted either by a user or programmatically to</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__id"><code>data__id</code></a>, <a href="#parameter-data__comment"><code>data__comment</code></a></td>
     <td></td>
-    <td>Post an edit to a comment on a model version.<br /><br />:param id: str<br />  Unique identifier of an activity<br />:param comment: str<br />  User-provided comment on the action.<br /><br />:returns: :class:`UpdateCommentResponse`</td>
+    <td>Post an edit to a comment on a model version.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a comment on a model version.<br /><br />:param id: str<br />  Unique identifier of an activity</td>
+    <td>Deletes a comment on a model version.</td>
 </tr>
 </tbody>
 </table>
@@ -111,7 +111,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="create">
 
-Posts a comment on a model version. A comment can be submitted either by a user or programmatically to<br />display relevant information about the model. For example, test results or deployment errors.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param comment: str<br />  User-provided comment on the action.<br /><br />:returns: :class:`CreateCommentResponse`
+Posts a comment on a model version. A comment can be submitted either by a user or programmatically to
 
 ```sql
 INSERT INTO databricks_workspace.ml.model_registry_comments (
@@ -166,7 +166,7 @@ comment
 >
 <TabItem value="update">
 
-Post an edit to a comment on a model version.<br /><br />:param id: str<br />  Unique identifier of an activity<br />:param comment: str<br />  User-provided comment on the action.<br /><br />:returns: :class:`UpdateCommentResponse`
+Post an edit to a comment on a model version.
 
 ```sql
 UPDATE databricks_workspace.ml.model_registry_comments
@@ -194,7 +194,7 @@ comment;
 >
 <TabItem value="delete">
 
-Deletes a comment on a model version.<br /><br />:param id: str<br />  Unique identifier of an activity
+Deletes a comment on a model version.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_comments.delete 

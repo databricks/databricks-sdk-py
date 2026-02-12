@@ -85,7 +85,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "filter_type",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
           },
           {
             "name": "created_at",
@@ -226,7 +226,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "filter_type",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       },
       {
         "name": "created_at",
@@ -336,35 +336,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get an exchange.<br /><br />:param id: str<br /><br />:returns: :class:`GetExchangeResponse`</td>
+    <td>Get an exchange.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List exchanges visible to provider<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`Exchange`</td>
+    <td>List exchanges visible to provider</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__exchange"><code>data__exchange</code></a></td>
     <td></td>
-    <td>Create an exchange<br /><br />:param exchange: :class:`Exchange`<br /><br />:returns: :class:`CreateExchangeResponse`</td>
+    <td>Create an exchange</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__exchange"><code>data__exchange</code></a></td>
     <td></td>
-    <td>Update an exchange<br /><br />:param id: str<br />:param exchange: :class:`Exchange`<br /><br />:returns: :class:`UpdateExchangeResponse`</td>
+    <td>Update an exchange</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>This removes a listing from marketplace.<br /><br />:param id: str</td>
+    <td>This removes a listing from marketplace.</td>
 </tr>
 </tbody>
 </table>
@@ -416,7 +416,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get an exchange.<br /><br />:param id: str<br /><br />:returns: :class:`GetExchangeResponse`
+Get an exchange.
 
 ```sql
 SELECT
@@ -429,7 +429,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List exchanges visible to provider<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`Exchange`
+List exchanges visible to provider
 
 ```sql
 SELECT
@@ -463,7 +463,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create an exchange<br /><br />:param exchange: :class:`Exchange`<br /><br />:returns: :class:`CreateExchangeResponse`
+Create an exchange
 
 ```sql
 INSERT INTO databricks_workspace.marketplace.provider_exchanges (
@@ -506,7 +506,7 @@ exchange_id
 >
 <TabItem value="update">
 
-Update an exchange<br /><br />:param id: str<br />:param exchange: :class:`Exchange`<br /><br />:returns: :class:`UpdateExchangeResponse`
+Update an exchange
 
 ```sql
 REPLACE databricks_workspace.marketplace.provider_exchanges
@@ -533,7 +533,7 @@ exchange;
 >
 <TabItem value="delete">
 
-This removes a listing from marketplace.<br /><br />:param id: str
+This removes a listing from marketplace.
 
 ```sql
 DELETE FROM databricks_workspace.marketplace.provider_exchanges

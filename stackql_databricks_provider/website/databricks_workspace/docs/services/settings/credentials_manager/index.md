@@ -55,7 +55,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__partition_id"><code>data__partition_id</code></a>, <a href="#parameter-data__token_type"><code>data__token_type</code></a>, <a href="#parameter-data__scopes"><code>data__scopes</code></a></td>
     <td></td>
-    <td>Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to<br />determine token permissions.<br /><br />:param partition_id: :class:`PartitionId`<br />  The partition of Credentials store<br />:param token_type: List[:class:`TokenType`]<br />  A list of token types being requested<br />:param scopes: List[str]<br />  Array of scopes for the token request.<br /><br />:returns: :class:`ExchangeTokenResponse`</td>
+    <td>Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to</td>
 </tr>
 </tbody>
 </table>
@@ -92,7 +92,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="exchange_token">
 
-Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to<br />determine token permissions.<br /><br />:param partition_id: :class:`PartitionId`<br />  The partition of Credentials store<br />:param token_type: List[:class:`TokenType`]<br />  A list of token types being requested<br />:param scopes: List[str]<br />  Array of scopes for the token request.<br /><br />:returns: :class:`ExchangeTokenResponse`
+Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to
 
 ```sql
 INSERT INTO databricks_workspace.settings.credentials_manager (

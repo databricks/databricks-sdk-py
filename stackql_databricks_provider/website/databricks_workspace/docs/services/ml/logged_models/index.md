@@ -222,56 +222,56 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a logged model.<br /><br />:param model_id: str<br />  The ID of the logged model to retrieve.<br /><br />:returns: :class:`GetLoggedModelResponse`</td>
+    <td>Get a logged model.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__experiment_id"><code>data__experiment_id</code></a></td>
     <td></td>
-    <td>Create a logged model.<br /><br />:param experiment_id: str<br />  The ID of the experiment that owns the model.<br />:param model_type: str (optional)<br />  The type of the model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``.<br />:param name: str (optional)<br />  The name of the model (optional). If not specified one will be generated.<br />:param params: List[:class:`LoggedModelParameter`] (optional)<br />  Parameters attached to the model.<br />:param source_run_id: str (optional)<br />  The ID of the run that created the model.<br />:param tags: List[:class:`LoggedModelTag`] (optional)<br />  Tags attached to the model.<br /><br />:returns: :class:`CreateLoggedModelResponse`</td>
+    <td>Create a logged model.</td>
 </tr>
 <tr>
     <td><a href="#delete_tag"><CopyableCode code="delete_tag" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a tag on a logged model.<br /><br />:param model_id: str<br />  The ID of the logged model to delete the tag from.<br />:param tag_key: str<br />  The tag key.</td>
+    <td>Delete a tag on a logged model.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a logged model.<br /><br />:param model_id: str<br />  The ID of the logged model to delete.</td>
+    <td>Delete a logged model.</td>
 </tr>
 <tr>
     <td><a href="#finalize"><CopyableCode code="finalize" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-status"><code>status</code></a></td>
     <td></td>
-    <td>Finalize a logged model.<br /><br />:param model_id: str<br />  The ID of the logged model to finalize.<br />:param status: :class:`LoggedModelStatus`<br />  Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something<br />  went wrong when logging the model weights / agent code.<br /><br />:returns: :class:`FinalizeLoggedModelResponse`</td>
+    <td>Finalize a logged model.</td>
 </tr>
 <tr>
     <td><a href="#log_params"><CopyableCode code="log_params" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Logs params for a logged model. A param is a key-value pair (string key, string value). Examples<br />include hyperparameters used for ML model training. A param can be logged only once for a logged<br />model, and attempting to overwrite an existing param with a different value will result in an error<br /><br />:param model_id: str<br />  The ID of the logged model to log params for.<br />:param params: List[:class:`LoggedModelParameter`] (optional)<br />  Parameters to attach to the model.</td>
+    <td>Logs params for a logged model. A param is a key-value pair (string key, string value). Examples</td>
 </tr>
 <tr>
     <td><a href="#search"><CopyableCode code="search" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Search for Logged Models that satisfy specified search criteria.<br /><br />:param datasets: List[:class:`SearchLoggedModelsDataset`] (optional)<br />  List of datasets on which to apply the metrics filter clauses. For example, a filter with<br />  `metrics.accuracy > 0.9` and dataset info with name "test_dataset" means we will return all logged<br />  models with accuracy &gt; 0.9 on the test_dataset. Metric values from ANY dataset matching the criteria<br />  are considered. If no datasets are specified, then metrics across all datasets are considered in the<br />  filter.<br />:param experiment_ids: List[str] (optional)<br />  The IDs of the experiments in which to search for logged models.<br />:param filter: str (optional)<br />  A filter expression over logged model info and data that allows returning a subset of logged models.<br />  The syntax is a subset of SQL that supports AND'ing together binary operations.<br /><br />  Example: ``params.alpha &lt; 0.3 AND metrics.accuracy &gt; 0.9``.<br />:param max_results: int (optional)<br />  The maximum number of Logged Models to return. The maximum limit is 50.<br />:param order_by: List[:class:`SearchLoggedModelsOrderBy`] (optional)<br />  The list of columns for ordering the results, with additional fields for sorting criteria.<br />:param page_token: str (optional)<br />  The token indicating the page of logged models to fetch.<br /><br />:returns: :class:`SearchLoggedModelsResponse`</td>
+    <td>Search for Logged Models that satisfy specified search criteria.</td>
 </tr>
 <tr>
     <td><a href="#set_tags"><CopyableCode code="set_tags" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-model_id"><code>model_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Set tags for a logged model.<br /><br />:param model_id: str<br />  The ID of the logged model to set the tags on.<br />:param tags: List[:class:`LoggedModelTag`] (optional)<br />  The tags to set on the logged model.</td>
+    <td>Set tags for a logged model.</td>
 </tr>
 </tbody>
 </table>
@@ -317,7 +317,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a logged model.<br /><br />:param model_id: str<br />  The ID of the logged model to retrieve.<br /><br />:returns: :class:`GetLoggedModelResponse`
+Get a logged model.
 
 ```sql
 SELECT
@@ -342,7 +342,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Create a logged model.<br /><br />:param experiment_id: str<br />  The ID of the experiment that owns the model.<br />:param model_type: str (optional)<br />  The type of the model, such as ``"Agent"``, ``"Classifier"``, ``"LLM"``.<br />:param name: str (optional)<br />  The name of the model (optional). If not specified one will be generated.<br />:param params: List[:class:`LoggedModelParameter`] (optional)<br />  Parameters attached to the model.<br />:param source_run_id: str (optional)<br />  The ID of the run that created the model.<br />:param tags: List[:class:`LoggedModelTag`] (optional)<br />  Tags attached to the model.<br /><br />:returns: :class:`CreateLoggedModelResponse`
+Create a logged model.
 
 ```sql
 INSERT INTO databricks_workspace.ml.logged_models (
@@ -416,7 +416,7 @@ model
 >
 <TabItem value="delete_tag">
 
-Delete a tag on a logged model.<br /><br />:param model_id: str<br />  The ID of the logged model to delete the tag from.<br />:param tag_key: str<br />  The tag key.
+Delete a tag on a logged model.
 
 ```sql
 DELETE FROM databricks_workspace.ml.logged_models
@@ -428,7 +428,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 </TabItem>
 <TabItem value="delete">
 
-Delete a logged model.<br /><br />:param model_id: str<br />  The ID of the logged model to delete.
+Delete a logged model.
 
 ```sql
 DELETE FROM databricks_workspace.ml.logged_models
@@ -453,7 +453,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="finalize">
 
-Finalize a logged model.<br /><br />:param model_id: str<br />  The ID of the logged model to finalize.<br />:param status: :class:`LoggedModelStatus`<br />  Whether or not the model is ready for use. ``"LOGGED_MODEL_UPLOAD_FAILED"`` indicates that something<br />  went wrong when logging the model weights / agent code.<br /><br />:returns: :class:`FinalizeLoggedModelResponse`
+Finalize a logged model.
 
 ```sql
 EXEC databricks_workspace.ml.logged_models.finalize 
@@ -468,7 +468,7 @@ EXEC databricks_workspace.ml.logged_models.finalize
 </TabItem>
 <TabItem value="log_params">
 
-Logs params for a logged model. A param is a key-value pair (string key, string value). Examples<br />include hyperparameters used for ML model training. A param can be logged only once for a logged<br />model, and attempting to overwrite an existing param with a different value will result in an error<br /><br />:param model_id: str<br />  The ID of the logged model to log params for.<br />:param params: List[:class:`LoggedModelParameter`] (optional)<br />  Parameters to attach to the model.
+Logs params for a logged model. A param is a key-value pair (string key, string value). Examples
 
 ```sql
 EXEC databricks_workspace.ml.logged_models.log_params 
@@ -483,7 +483,7 @@ EXEC databricks_workspace.ml.logged_models.log_params
 </TabItem>
 <TabItem value="search">
 
-Search for Logged Models that satisfy specified search criteria.<br /><br />:param datasets: List[:class:`SearchLoggedModelsDataset`] (optional)<br />  List of datasets on which to apply the metrics filter clauses. For example, a filter with<br />  `metrics.accuracy > 0.9` and dataset info with name "test_dataset" means we will return all logged<br />  models with accuracy &gt; 0.9 on the test_dataset. Metric values from ANY dataset matching the criteria<br />  are considered. If no datasets are specified, then metrics across all datasets are considered in the<br />  filter.<br />:param experiment_ids: List[str] (optional)<br />  The IDs of the experiments in which to search for logged models.<br />:param filter: str (optional)<br />  A filter expression over logged model info and data that allows returning a subset of logged models.<br />  The syntax is a subset of SQL that supports AND'ing together binary operations.<br /><br />  Example: ``params.alpha &lt; 0.3 AND metrics.accuracy &gt; 0.9``.<br />:param max_results: int (optional)<br />  The maximum number of Logged Models to return. The maximum limit is 50.<br />:param order_by: List[:class:`SearchLoggedModelsOrderBy`] (optional)<br />  The list of columns for ordering the results, with additional fields for sorting criteria.<br />:param page_token: str (optional)<br />  The token indicating the page of logged models to fetch.<br /><br />:returns: :class:`SearchLoggedModelsResponse`
+Search for Logged Models that satisfy specified search criteria.
 
 ```sql
 EXEC databricks_workspace.ml.logged_models.search 
@@ -502,7 +502,7 @@ EXEC databricks_workspace.ml.logged_models.search
 </TabItem>
 <TabItem value="set_tags">
 
-Set tags for a logged model.<br /><br />:param model_id: str<br />  The ID of the logged model to set the tags on.<br />:param tags: List[:class:`LoggedModelTag`] (optional)<br />  The tags to set on the logged model.
+Set tags for a logged model.
 
 ```sql
 EXEC databricks_workspace.ml.logged_models.set_tags 

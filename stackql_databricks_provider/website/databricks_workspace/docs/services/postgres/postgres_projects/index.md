@@ -208,21 +208,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Returns a paginated list of database projects in the workspace that the user has permission to access.<br /><br />:param page_size: int (optional)<br />  Upper bound for items returned. Cannot be negative.<br />:param page_token: str (optional)<br />  Page token from a previous response. If not provided, returns the first page.<br /><br />:returns: Iterator over :class:`Project`</td>
+    <td>Returns a paginated list of database projects in the workspace that the user has permission to access.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-project_id"><code>project_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__project"><code>data__project</code></a></td>
     <td></td>
-    <td>Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute<br />endpoints.<br /><br />:param project: :class:`Project`<br />  The Project to create.<br />:param project_id: str<br />  The ID to use for the Project. This becomes the final component of the project's resource name. The<br />  ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only<br />  lowercase letters, numbers, and hyphens. For example, `my-app` becomes `projects/my-app`.<br /><br />:returns: :class:`Operation`</td>
+    <td>Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__project"><code>data__project</code></a></td>
     <td></td>
-    <td>Updates the specified database project.<br /><br />:param name: str<br />  Output only. The full resource path of the project. Format: projects/&#123;project_id&#125;<br />:param project: :class:`Project`<br />  The Project to update.<br /><br />  The project's `name` field is used to identify the project to update. Format: projects/&#123;project_id&#125;<br />:param update_mask: FieldMask<br />  The list of fields to update. If unspecified, all fields will be updated when possible.<br /><br />:returns: :class:`Operation`</td>
+    <td>Updates the specified database project.</td>
 </tr>
 </tbody>
 </table>
@@ -283,7 +283,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Returns a paginated list of database projects in the workspace that the user has permission to access.<br /><br />:param page_size: int (optional)<br />  Upper bound for items returned. Cannot be negative.<br />:param page_token: str (optional)<br />  Page token from a previous response. If not provided, returns the first page.<br /><br />:returns: Iterator over :class:`Project`
+Returns a paginated list of database projects in the workspace that the user has permission to access.
 
 ```sql
 SELECT
@@ -314,7 +314,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute<br />endpoints.<br /><br />:param project: :class:`Project`<br />  The Project to create.<br />:param project_id: str<br />  The ID to use for the Project. This becomes the final component of the project's resource name. The<br />  ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only<br />  lowercase letters, numbers, and hyphens. For example, `my-app` becomes `projects/my-app`.<br /><br />:returns: :class:`Operation`
+Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute
 
 ```sql
 INSERT INTO databricks_workspace.postgres.postgres_projects (
@@ -360,7 +360,7 @@ SELECT
 >
 <TabItem value="update">
 
-Updates the specified database project.<br /><br />:param name: str<br />  Output only. The full resource path of the project. Format: projects/&#123;project_id&#125;<br />:param project: :class:`Project`<br />  The Project to update.<br /><br />  The project's `name` field is used to identify the project to update. Format: projects/&#123;project_id&#125;<br />:param update_mask: FieldMask<br />  The list of fields to update. If unspecified, all fields will be updated when possible.<br /><br />:returns: :class:`Operation`
+Updates the specified database project.
 
 ```sql
 UPDATE databricks_workspace.postgres.postgres_projects

@@ -203,28 +203,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-subscription_id"><code>subscription_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get schedule subscription.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard which the subscription belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule which the subscription belongs.<br />:param subscription_id: str<br />  UUID identifying the subscription.<br /><br />:returns: :class:`Subscription`</td>
+    <td>Get schedule subscription.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List schedule subscriptions.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard which the subscriptions belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule which the subscriptions belongs.<br />:param page_size: int (optional)<br />  The number of subscriptions to return per page.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListSubscriptions` call. Use this to retrieve the subsequent<br />  page.<br /><br />:returns: Iterator over :class:`Subscription`</td>
+    <td>List schedule subscriptions.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__subscription"><code>data__subscription</code></a></td>
     <td></td>
-    <td>Create schedule subscription.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to which the subscription belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule to which the subscription belongs.<br />:param subscription: :class:`Subscription`<br />  The subscription to create. A schedule is limited to 100 subscriptions.<br /><br />:returns: :class:`Subscription`</td>
+    <td>Create schedule subscription.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-subscription_id"><code>subscription_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
-    <td>Delete schedule subscription.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard which the subscription belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule which the subscription belongs.<br />:param subscription_id: str<br />  UUID identifying the subscription.<br />:param etag: str (optional)<br />  The etag for the subscription. Can be optionally provided to ensure that the subscription has not<br />  been modified since the last read.</td>
+    <td>Delete schedule subscription.</td>
 </tr>
 </tbody>
 </table>
@@ -291,7 +291,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get schedule subscription.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard which the subscription belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule which the subscription belongs.<br />:param subscription_id: str<br />  UUID identifying the subscription.<br /><br />:returns: :class:`Subscription`
+Get schedule subscription.
 
 ```sql
 SELECT
@@ -313,7 +313,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List schedule subscriptions.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard which the subscriptions belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule which the subscriptions belongs.<br />:param page_size: int (optional)<br />  The number of subscriptions to return per page.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListSubscriptions` call. Use this to retrieve the subsequent<br />  page.<br /><br />:returns: Iterator over :class:`Subscription`
+List schedule subscriptions.
 
 ```sql
 SELECT
@@ -348,7 +348,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create schedule subscription.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to which the subscription belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule to which the subscription belongs.<br />:param subscription: :class:`Subscription`<br />  The subscription to create. A schedule is limited to 100 subscriptions.<br /><br />:returns: :class:`Subscription`
+Create schedule subscription.
 
 ```sql
 INSERT INTO databricks_workspace.dashboards.lakeview_subscriptions (
@@ -408,7 +408,7 @@ update_time
 >
 <TabItem value="delete">
 
-Delete schedule subscription.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard which the subscription belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule which the subscription belongs.<br />:param subscription_id: str<br />  UUID identifying the subscription.<br />:param etag: str (optional)<br />  The etag for the subscription. Can be optionally provided to ensure that the subscription has not<br />  been modified since the last read.
+Delete schedule subscription.
 
 ```sql
 DELETE FROM databricks_workspace.dashboards.lakeview_subscriptions

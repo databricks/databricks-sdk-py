@@ -43,181 +43,174 @@ The following fields are returned by `SELECT` queries:
 
 <SchemaTable fields={[
   {
-    "name": "credential_info",
+    "name": "id",
+    "type": "string",
+    "description": "The unique identifier of the credential."
+  },
+  {
+    "name": "name",
+    "type": "string",
+    "description": "The credential name. The name must be unique among storage and service credentials within the metastore."
+  },
+  {
+    "name": "metastore_id",
+    "type": "string",
+    "description": "Unique identifier of the parent metastore."
+  },
+  {
+    "name": "full_name",
+    "type": "string",
+    "description": "The full name of the credential."
+  },
+  {
+    "name": "aws_iam_role",
     "type": "object",
-    "description": "",
+    "description": "The AWS IAM role configuration",
     "children": [
       {
-        "name": "aws_iam_role",
-        "type": "object",
-        "description": "The AWS IAM role configuration",
-        "children": [
-          {
-            "name": "role_arn",
-            "type": "string",
-            "description": "The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials."
-          },
-          {
-            "name": "external_id",
-            "type": "string",
-            "description": "The external ID used in role assumption to prevent the confused deputy problem."
-          },
-          {
-            "name": "unity_catalog_iam_arn",
-            "type": "string",
-            "description": "The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity that is going to assume the AWS IAM role."
-          }
-        ]
-      },
-      {
-        "name": "azure_managed_identity",
-        "type": "object",
-        "description": "The Azure managed identity configuration.",
-        "children": [
-          {
-            "name": "access_connector_id",
-            "type": "string",
-            "description": "The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/&#123;guid&#125;/resourceGroups/&#123;rg-name&#125;/providers/Microsoft.Databricks/accessConnectors/&#123;connector-name&#125;`."
-          },
-          {
-            "name": "credential_id",
-            "type": "string",
-            "description": "The Databricks internal ID that represents this managed identity."
-          },
-          {
-            "name": "managed_identity_id",
-            "type": "string",
-            "description": "The Azure resource ID of the managed identity. Use the format, `/subscriptions/&#123;guid&#125;/resourceGroups/&#123;rg-name&#125;/providers/Microsoft.ManagedIdentity/userAssignedIdentities/&#123;identity-name&#125;` This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity is using the system-assigned identity."
-          }
-        ]
-      },
-      {
-        "name": "azure_service_principal",
-        "type": "object",
-        "description": "The Azure service principal configuration.",
-        "children": [
-          {
-            "name": "directory_id",
-            "type": "string",
-            "description": "The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application."
-          },
-          {
-            "name": "application_id",
-            "type": "string",
-            "description": "The application ID of the application registration within the referenced AAD tenant."
-          },
-          {
-            "name": "client_secret",
-            "type": "string",
-            "description": "The client secret generated for the above app ID in AAD."
-          }
-        ]
-      },
-      {
-        "name": "cloudflare_api_token",
-        "type": "object",
-        "description": "The Cloudflare API token configuration.",
-        "children": [
-          {
-            "name": "access_key_id",
-            "type": "string",
-            "description": "The access key ID associated with the API token."
-          },
-          {
-            "name": "secret_access_key",
-            "type": "string",
-            "description": "The secret access token generated for the above access key ID."
-          },
-          {
-            "name": "account_id",
-            "type": "string",
-            "description": "The ID of the account associated with the API token."
-          }
-        ]
-      },
-      {
-        "name": "comment",
+        "name": "role_arn",
         "type": "string",
-        "description": "Comment associated with the credential."
+        "description": "The Amazon Resource Name (ARN) of the AWS IAM role used to vend temporary credentials."
       },
       {
-        "name": "created_at",
-        "type": "integer",
-        "description": "Time at which this credential was created, in epoch milliseconds."
-      },
-      {
-        "name": "created_by",
+        "name": "external_id",
         "type": "string",
-        "description": "Username of credential creator."
+        "description": "The external ID used in role assumption to prevent the confused deputy problem."
       },
       {
-        "name": "databricks_gcp_service_account",
-        "type": "object",
-        "description": "The Databricks managed GCP service account configuration.",
-        "children": [
-          {
-            "name": "credential_id",
-            "type": "string",
-            "description": "The Databricks internal ID that represents this managed identity."
-          },
-          {
-            "name": "email",
-            "type": "string",
-            "description": "The email of the service account."
-          }
-        ]
-      },
-      {
-        "name": "full_name",
+        "name": "unity_catalog_iam_arn",
         "type": "string",
-        "description": "The full name of the credential."
-      },
-      {
-        "name": "id",
-        "type": "string",
-        "description": "The unique identifier of the credential."
-      },
-      {
-        "name": "isolation_mode",
-        "type": "string",
-        "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces."
-      },
-      {
-        "name": "metastore_id",
-        "type": "string",
-        "description": "Unique identifier of the parent metastore."
-      },
-      {
-        "name": "name",
-        "type": "string",
-        "description": "The credential name. The name must be unique among storage and service credentials within the metastore."
-      },
-      {
-        "name": "owner",
-        "type": "string",
-        "description": "Username of current owner of credential."
-      },
-      {
-        "name": "read_only",
-        "type": "boolean",
-        "description": "Whether the credential is usable only for read operations. Only applicable when purpose is **STORAGE**."
-      },
-      {
-        "name": "updated_at",
-        "type": "integer",
-        "description": "Time at which this credential was last modified, in epoch milliseconds."
-      },
-      {
-        "name": "updated_by",
-        "type": "string",
-        "description": "Username of user who last modified the credential."
-      },
-      {
-        "name": "used_for_managed_storage",
-        "type": "boolean",
-        "description": "Whether this credential is the current metastore's root storage credential. Only applicable when purpose is **STORAGE**."
+        "description": "The Amazon Resource Name (ARN) of the AWS IAM user managed by Databricks. This is the identity that is going to assume the AWS IAM role."
       }
     ]
+  },
+  {
+    "name": "azure_managed_identity",
+    "type": "object",
+    "description": "The Azure managed identity configuration.",
+    "children": [
+      {
+        "name": "access_connector_id",
+        "type": "string",
+        "description": "The Azure resource ID of the Azure Databricks Access Connector. Use the format `/subscriptions/&#123;guid&#125;/resourceGroups/&#123;rg-name&#125;/providers/Microsoft.Databricks/accessConnectors/&#123;connector-name&#125;`."
+      },
+      {
+        "name": "credential_id",
+        "type": "string",
+        "description": "The Databricks internal ID that represents this managed identity."
+      },
+      {
+        "name": "managed_identity_id",
+        "type": "string",
+        "description": "The Azure resource ID of the managed identity. Use the format, `/subscriptions/&#123;guid&#125;/resourceGroups/&#123;rg-name&#125;/providers/Microsoft.ManagedIdentity/userAssignedIdentities/&#123;identity-name&#125;` This is only available for user-assgined identities. For system-assigned identities, the access_connector_id is used to identify the identity. If this field is not provided, then we assume the AzureManagedIdentity is using the system-assigned identity."
+      }
+    ]
+  },
+  {
+    "name": "azure_service_principal",
+    "type": "object",
+    "description": "The Azure service principal configuration.",
+    "children": [
+      {
+        "name": "directory_id",
+        "type": "string",
+        "description": "The directory ID corresponding to the Azure Active Directory (AAD) tenant of the application."
+      },
+      {
+        "name": "application_id",
+        "type": "string",
+        "description": "The application ID of the application registration within the referenced AAD tenant."
+      },
+      {
+        "name": "client_secret",
+        "type": "string",
+        "description": "The client secret generated for the above app ID in AAD."
+      }
+    ]
+  },
+  {
+    "name": "cloudflare_api_token",
+    "type": "object",
+    "description": "The Cloudflare API token configuration.",
+    "children": [
+      {
+        "name": "access_key_id",
+        "type": "string",
+        "description": "The access key ID associated with the API token."
+      },
+      {
+        "name": "secret_access_key",
+        "type": "string",
+        "description": "The secret access token generated for the above access key ID."
+      },
+      {
+        "name": "account_id",
+        "type": "string",
+        "description": "The ID of the account associated with the API token."
+      }
+    ]
+  },
+  {
+    "name": "comment",
+    "type": "string",
+    "description": "Comment associated with the credential."
+  },
+  {
+    "name": "created_at",
+    "type": "integer",
+    "description": "Time at which this credential was created, in epoch milliseconds."
+  },
+  {
+    "name": "created_by",
+    "type": "string",
+    "description": "Username of credential creator."
+  },
+  {
+    "name": "databricks_gcp_service_account",
+    "type": "object",
+    "description": "The Databricks managed GCP service account configuration.",
+    "children": [
+      {
+        "name": "credential_id",
+        "type": "string",
+        "description": "The Databricks internal ID that represents this managed identity."
+      },
+      {
+        "name": "email",
+        "type": "string",
+        "description": "The email of the service account."
+      }
+    ]
+  },
+  {
+    "name": "isolation_mode",
+    "type": "string",
+    "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces."
+  },
+  {
+    "name": "owner",
+    "type": "string",
+    "description": "Username of current owner of credential."
+  },
+  {
+    "name": "read_only",
+    "type": "boolean",
+    "description": "Whether the credential is usable only for read operations. Only applicable when purpose is **STORAGE**."
+  },
+  {
+    "name": "updated_at",
+    "type": "integer",
+    "description": "Time at which this credential was last modified, in epoch milliseconds."
+  },
+  {
+    "name": "updated_by",
+    "type": "string",
+    "description": "Username of user who last modified the credential."
+  },
+  {
+    "name": "used_for_managed_storage",
+    "type": "boolean",
+    "description": "Whether this credential is the current metastore's root storage credential. Only applicable when purpose is **STORAGE**."
   }
 ]} />
 </TabItem>
@@ -502,7 +495,24 @@ Gets a storage credential from the metastore. The caller must be a metastore adm
 
 ```sql
 SELECT
-credential_info
+id,
+name,
+metastore_id,
+full_name,
+aws_iam_role,
+azure_managed_identity,
+azure_service_principal,
+cloudflare_api_token,
+comment,
+created_at,
+created_by,
+databricks_gcp_service_account,
+isolation_mode,
+owner,
+read_only,
+updated_at,
+updated_by,
+used_for_managed_storage
 FROM databricks_account.catalog.account_storage_credentials
 WHERE account_id = '{{ account_id }}' -- required
 AND metastore_id = '{{ metastore_id }}' -- required

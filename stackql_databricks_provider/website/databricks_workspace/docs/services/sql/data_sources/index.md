@@ -110,7 +110,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this<br />API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new<br />queries against it.<br /><br />**Warning**: This API is deprecated. Please use :method:warehouses/list instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br /><br />:returns: Iterator over :class:`DataSource`</td>
+    <td>Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this</td>
 </tr>
 </tbody>
 </table>
@@ -146,7 +146,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this<br />API response are enumerated for clarity. However, you need only a SQL warehouse's `id` to create new<br />queries against it.<br /><br />**Warning**: This API is deprecated. Please use :method:warehouses/list instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br /><br />:returns: Iterator over :class:`DataSource`
+Retrieves a full list of SQL warehouses available in this workspace. All fields that appear in this
 
 ```sql
 SELECT

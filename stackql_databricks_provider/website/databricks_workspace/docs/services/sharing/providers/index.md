@@ -245,35 +245,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a specific authentication provider. The caller must supply the name of the provider, and must<br />either be a metastore admin or the owner of the provider.<br /><br />:param name: str<br />  Name of the provider.<br /><br />:returns: :class:`ProviderInfo`</td>
+    <td>Gets a specific authentication provider. The caller must supply the name of the provider, and must</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-data_provider_global_metastore_id"><code>data_provider_global_metastore_id</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of available authentication providers. The caller must either be a metastore admin, have<br />the **USE_PROVIDER** privilege on the providers, or be the owner of the providers. Providers not owned<br />by the caller and for which the caller does not have the **USE_PROVIDER** privilege are not included<br />in the response. There is no guarantee of a specific ordering of the elements in the array.<br /><br />:param data_provider_global_metastore_id: str (optional)<br />  If not provided, all providers will be returned. If no providers exist with this ID, no results will<br />  be returned.<br />:param max_results: int (optional)<br />  Maximum number of providers to return. - when set to 0, the page length is set to a server<br />  configured value (recommended); - when set to a value greater than 0, the page length is the minimum<br />  of this value and a server configured value; - when set to a value less than 0, an invalid parameter<br />  error is returned; - If not set, all valid providers are returned (not recommended). - Note: The<br />  number of returned providers might be less than the specified max_results size, even zero. The only<br />  definitive indication that no further providers can be fetched is when the next_page_token is unset<br />  from the response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ProviderInfo`</td>
+    <td>Gets an array of available authentication providers. The caller must either be a metastore admin, have</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__authentication_type"><code>data__authentication_type</code></a></td>
     <td></td>
-    <td>Creates a new authentication provider minimally based on a name and authentication type. The caller<br />must be an admin on the metastore.<br /><br />:param name: str<br />  The name of the Provider.<br />:param authentication_type: :class:`AuthenticationType`<br />:param comment: str (optional)<br />  Description about the provider.<br />:param recipient_profile_str: str (optional)<br />  This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**<br />  or not provided.<br /><br />:returns: :class:`ProviderInfo`</td>
+    <td>Creates a new authentication provider minimally based on a name and authentication type. The caller</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the information for an authentication provider, if the caller is a metastore admin or is the<br />owner of the provider. If the update changes the provider name, the caller must be both a metastore<br />admin and the owner of the provider.<br /><br />:param name: str<br />  Name of the provider.<br />:param comment: str (optional)<br />  Description about the provider.<br />:param new_name: str (optional)<br />  New name for the provider.<br />:param owner: str (optional)<br />  Username of Provider owner.<br />:param recipient_profile_str: str (optional)<br />  This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**<br />  or not provided.<br /><br />:returns: :class:`ProviderInfo`</td>
+    <td>Updates the information for an authentication provider, if the caller is a metastore admin or is the</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes an authentication provider, if the caller is a metastore admin or is the owner of the<br />provider.<br /><br />:param name: str<br />  Name of the provider.</td>
+    <td>Deletes an authentication provider, if the caller is a metastore admin or is the owner of the</td>
 </tr>
 </tbody>
 </table>
@@ -330,7 +330,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a specific authentication provider. The caller must supply the name of the provider, and must<br />either be a metastore admin or the owner of the provider.<br /><br />:param name: str<br />  Name of the provider.<br /><br />:returns: :class:`ProviderInfo`
+Gets a specific authentication provider. The caller must supply the name of the provider, and must
 
 ```sql
 SELECT
@@ -356,7 +356,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets an array of available authentication providers. The caller must either be a metastore admin, have<br />the **USE_PROVIDER** privilege on the providers, or be the owner of the providers. Providers not owned<br />by the caller and for which the caller does not have the **USE_PROVIDER** privilege are not included<br />in the response. There is no guarantee of a specific ordering of the elements in the array.<br /><br />:param data_provider_global_metastore_id: str (optional)<br />  If not provided, all providers will be returned. If no providers exist with this ID, no results will<br />  be returned.<br />:param max_results: int (optional)<br />  Maximum number of providers to return. - when set to 0, the page length is set to a server<br />  configured value (recommended); - when set to a value greater than 0, the page length is the minimum<br />  of this value and a server configured value; - when set to a value less than 0, an invalid parameter<br />  error is returned; - If not set, all valid providers are returned (not recommended). - Note: The<br />  number of returned providers might be less than the specified max_results size, even zero. The only<br />  definitive indication that no further providers can be fetched is when the next_page_token is unset<br />  from the response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ProviderInfo`
+Gets an array of available authentication providers. The caller must either be a metastore admin, have
 
 ```sql
 SELECT
@@ -396,7 +396,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new authentication provider minimally based on a name and authentication type. The caller<br />must be an admin on the metastore.<br /><br />:param name: str<br />  The name of the Provider.<br />:param authentication_type: :class:`AuthenticationType`<br />:param comment: str (optional)<br />  Description about the provider.<br />:param recipient_profile_str: str (optional)<br />  This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**<br />  or not provided.<br /><br />:returns: :class:`ProviderInfo`
+Creates a new authentication provider minimally based on a name and authentication type. The caller
 
 ```sql
 INSERT INTO databricks_workspace.sharing.providers (
@@ -468,7 +468,7 @@ updated_by
 >
 <TabItem value="update">
 
-Updates the information for an authentication provider, if the caller is a metastore admin or is the<br />owner of the provider. If the update changes the provider name, the caller must be both a metastore<br />admin and the owner of the provider.<br /><br />:param name: str<br />  Name of the provider.<br />:param comment: str (optional)<br />  Description about the provider.<br />:param new_name: str (optional)<br />  New name for the provider.<br />:param owner: str (optional)<br />  Username of Provider owner.<br />:param recipient_profile_str: str (optional)<br />  This field is required when the __authentication_type__ is **TOKEN**, **OAUTH_CLIENT_CREDENTIALS**<br />  or not provided.<br /><br />:returns: :class:`ProviderInfo`
+Updates the information for an authentication provider, if the caller is a metastore admin or is the
 
 ```sql
 UPDATE databricks_workspace.sharing.providers
@@ -510,7 +510,7 @@ updated_by;
 >
 <TabItem value="delete">
 
-Deletes an authentication provider, if the caller is a metastore admin or is the owner of the<br />provider.<br /><br />:param name: str<br />  Name of the provider.
+Deletes an authentication provider, if the caller is a metastore admin or is the owner of the
 
 ```sql
 DELETE FROM databricks_workspace.sharing.providers

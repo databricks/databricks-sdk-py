@@ -371,35 +371,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get the policy definition on a securable<br /><br />:param on_securable_type: str<br />  Required. The type of the securable to retrieve the policy for.<br />:param on_securable_fullname: str<br />  Required. The fully qualified name of securable to retrieve policy for.<br />:param name: str<br />  Required. The name of the policy to retrieve.<br /><br />:returns: :class:`PolicyInfo`</td>
+    <td>Get the policy definition on a securable</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_inherited"><code>include_inherited</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List all policies defined on a securable. Optionally, the list can include inherited policies defined<br />on the securable's parent schema or catalog.<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param on_securable_type: str<br />  Required. The type of the securable to list policies for.<br />:param on_securable_fullname: str<br />  Required. The fully qualified name of securable to list policies for.<br />:param include_inherited: bool (optional)<br />  Optional. Whether to include policies defined on parent securables. By default, the inherited<br />  policies are not included.<br />:param max_results: int (optional)<br />  Optional. Maximum number of policies to return on a single page (page length). - When not set or set<br />  to 0, the page length is set to a server configured value (recommended); - When set to a value<br />  greater than 0, the page length is the minimum of this value and a server configured value;<br />:param page_token: str (optional)<br />  Optional. Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`PolicyInfo`</td>
+    <td>List all policies defined on a securable. Optionally, the list can include inherited policies defined</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__policy_info"><code>data__policy_info</code></a></td>
     <td></td>
-    <td>Creates a new policy on a securable. The new policy applies to the securable and all its descendants.<br /><br />:param policy_info: :class:`PolicyInfo`<br />  Required. The policy to create.<br /><br />:returns: :class:`PolicyInfo`</td>
+    <td>Creates a new policy on a securable. The new policy applies to the securable and all its descendants.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__policy_info"><code>data__policy_info</code></a></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a></td>
-    <td>Update an ABAC policy on a securable.<br /><br />:param on_securable_type: str<br />  Required. The type of the securable to update the policy for.<br />:param on_securable_fullname: str<br />  Required. The fully qualified name of the securable to update the policy for.<br />:param name: str<br />  Required. The name of the policy to update.<br />:param policy_info: :class:`PolicyInfo`<br />  Optional fields to update. This is the request body for updating a policy. Use `update_mask` field<br />  to specify which fields in the request is to be updated. - If `update_mask` is empty or "*", all<br />  specified fields will be updated. - If `update_mask` is specified, only the fields specified in the<br />  `update_mask` will be updated. If a field is specified in `update_mask` and not set in the request,<br />  the field will be cleared. Users can use the update mask to explicitly unset optional fields such as<br />  `exception_principals` and `when_condition`.<br />:param update_mask: str (optional)<br />  Optional. The update mask field for specifying user intentions on which fields to update in the<br />  request.<br /><br />:returns: :class:`PolicyInfo`</td>
+    <td>Update an ABAC policy on a securable.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete an ABAC policy defined on a securable.<br /><br />:param on_securable_type: str<br />  Required. The type of the securable to delete the policy from.<br />:param on_securable_fullname: str<br />  Required. The fully qualified name of the securable to delete the policy from.<br />:param name: str<br />  Required. The name of the policy to delete<br /><br />:returns: :class:`DeletePolicyResponse`</td>
+    <td>Delete an ABAC policy defined on a securable.</td>
 </tr>
 </tbody>
 </table>
@@ -471,7 +471,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get the policy definition on a securable<br /><br />:param on_securable_type: str<br />  Required. The type of the securable to retrieve the policy for.<br />:param on_securable_fullname: str<br />  Required. The fully qualified name of securable to retrieve policy for.<br />:param name: str<br />  Required. The name of the policy to retrieve.<br /><br />:returns: :class:`PolicyInfo`
+Get the policy definition on a securable
 
 ```sql
 SELECT
@@ -502,7 +502,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List all policies defined on a securable. Optionally, the list can include inherited policies defined<br />on the securable's parent schema or catalog.<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param on_securable_type: str<br />  Required. The type of the securable to list policies for.<br />:param on_securable_fullname: str<br />  Required. The fully qualified name of securable to list policies for.<br />:param include_inherited: bool (optional)<br />  Optional. Whether to include policies defined on parent securables. By default, the inherited<br />  policies are not included.<br />:param max_results: int (optional)<br />  Optional. Maximum number of policies to return on a single page (page length). - When not set or set<br />  to 0, the page length is set to a server configured value (recommended); - When set to a value<br />  greater than 0, the page length is the minimum of this value and a server configured value;<br />:param page_token: str (optional)<br />  Optional. Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`PolicyInfo`
+List all policies defined on a securable. Optionally, the list can include inherited policies defined
 
 ```sql
 SELECT
@@ -547,7 +547,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new policy on a securable. The new policy applies to the securable and all its descendants.<br /><br />:param policy_info: :class:`PolicyInfo`<br />  Required. The policy to create.<br /><br />:returns: :class:`PolicyInfo`
+Creates a new policy on a securable. The new policy applies to the securable and all its descendants.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.policies (
@@ -606,7 +606,7 @@ when_condition
 >
 <TabItem value="update">
 
-Update an ABAC policy on a securable.<br /><br />:param on_securable_type: str<br />  Required. The type of the securable to update the policy for.<br />:param on_securable_fullname: str<br />  Required. The fully qualified name of the securable to update the policy for.<br />:param name: str<br />  Required. The name of the policy to update.<br />:param policy_info: :class:`PolicyInfo`<br />  Optional fields to update. This is the request body for updating a policy. Use `update_mask` field<br />  to specify which fields in the request is to be updated. - If `update_mask` is empty or "*", all<br />  specified fields will be updated. - If `update_mask` is specified, only the fields specified in the<br />  `update_mask` will be updated. If a field is specified in `update_mask` and not set in the request,<br />  the field will be cleared. Users can use the update mask to explicitly unset optional fields such as<br />  `exception_principals` and `when_condition`.<br />:param update_mask: str (optional)<br />  Optional. The update mask field for specifying user intentions on which fields to update in the<br />  request.<br /><br />:returns: :class:`PolicyInfo`
+Update an ABAC policy on a securable.
 
 ```sql
 UPDATE databricks_workspace.catalog.policies
@@ -652,7 +652,7 @@ when_condition;
 >
 <TabItem value="delete">
 
-Delete an ABAC policy defined on a securable.<br /><br />:param on_securable_type: str<br />  Required. The type of the securable to delete the policy from.<br />:param on_securable_fullname: str<br />  Required. The fully qualified name of the securable to delete the policy from.<br />:param name: str<br />  Required. The name of the policy to delete<br /><br />:returns: :class:`DeletePolicyResponse`
+Delete an ABAC policy defined on a securable.
 
 ```sql
 DELETE FROM databricks_workspace.catalog.policies

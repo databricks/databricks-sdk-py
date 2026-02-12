@@ -163,21 +163,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get the status of libraries on a cluster. A status is returned for all libraries installed on this<br />cluster via the API or the libraries UI. The order of returned libraries is as follows: 1. Libraries<br />set to be installed on this cluster, in the order that the libraries were added to the cluster, are<br />returned first. 2. Libraries that were previously requested to be installed on this cluster or, but<br />are now marked for removal, in no particular order, are returned last.<br /><br />:param cluster_id: str<br />  Unique identifier of the cluster whose status should be retrieved.<br /><br />:returns: Iterator over :class:`LibraryFullStatus`</td>
+    <td>Get the status of libraries on a cluster. A status is returned for all libraries installed on this</td>
 </tr>
 <tr>
     <td><a href="#install"><CopyableCode code="install" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__cluster_id"><code>data__cluster_id</code></a>, <a href="#parameter-data__libraries"><code>data__libraries</code></a></td>
     <td></td>
-    <td>Add libraries to install on a cluster. The installation is asynchronous; it happens in the background<br />after the completion of this request.<br /><br />:param cluster_id: str<br />  Unique identifier for the cluster on which to install these libraries.<br />:param libraries: List[:class:`Library`]<br />  The libraries to install.</td>
+    <td>Add libraries to install on a cluster. The installation is asynchronous; it happens in the background</td>
 </tr>
 <tr>
     <td><a href="#uninstall"><CopyableCode code="uninstall" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-libraries"><code>libraries</code></a></td>
     <td></td>
-    <td>Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is<br />restarted. A request to uninstall a library that is not currently installed is ignored.<br /><br />:param cluster_id: str<br />  Unique identifier for the cluster on which to uninstall these libraries.<br />:param libraries: List[:class:`Library`]<br />  The libraries to uninstall.</td>
+    <td>Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is</td>
 </tr>
 </tbody>
 </table>
@@ -218,7 +218,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get the status of libraries on a cluster. A status is returned for all libraries installed on this<br />cluster via the API or the libraries UI. The order of returned libraries is as follows: 1. Libraries<br />set to be installed on this cluster, in the order that the libraries were added to the cluster, are<br />returned first. 2. Libraries that were previously requested to be installed on this cluster or, but<br />are now marked for removal, in no particular order, are returned last.<br /><br />:param cluster_id: str<br />  Unique identifier of the cluster whose status should be retrieved.<br /><br />:returns: Iterator over :class:`LibraryFullStatus`
+Get the status of libraries on a cluster. A status is returned for all libraries installed on this
 
 ```sql
 SELECT
@@ -246,7 +246,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="install">
 
-Add libraries to install on a cluster. The installation is asynchronous; it happens in the background<br />after the completion of this request.<br /><br />:param cluster_id: str<br />  Unique identifier for the cluster on which to install these libraries.<br />:param libraries: List[:class:`Library`]<br />  The libraries to install.
+Add libraries to install on a cluster. The installation is asynchronous; it happens in the background
 
 ```sql
 INSERT INTO databricks_workspace.compute.libraries (
@@ -293,7 +293,7 @@ SELECT
 >
 <TabItem value="uninstall">
 
-Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is<br />restarted. A request to uninstall a library that is not currently installed is ignored.<br /><br />:param cluster_id: str<br />  Unique identifier for the cluster on which to uninstall these libraries.<br />:param libraries: List[:class:`Library`]<br />  The libraries to uninstall.
+Set libraries to uninstall from a cluster. The libraries won't be uninstalled until the cluster is
 
 ```sql
 EXEC databricks_workspace.compute.libraries.uninstall 

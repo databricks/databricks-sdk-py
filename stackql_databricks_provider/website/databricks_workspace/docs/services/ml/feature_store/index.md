@@ -141,49 +141,49 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get an Online Feature Store.<br /><br />:param name: str<br />  Name of the online store to get.<br /><br />:returns: :class:`OnlineStore`</td>
+    <td>Get an Online Feature Store.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List Online Feature Stores.<br /><br />:param page_size: int (optional)<br />  The maximum number of results to return. Defaults to 100 if not specified.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous query.<br /><br />:returns: Iterator over :class:`OnlineStore`</td>
+    <td>List Online Feature Stores.</td>
 </tr>
 <tr>
     <td><a href="#publish_table"><CopyableCode code="publish_table" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-source_table_name"><code>source_table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__publish_spec"><code>data__publish_spec</code></a></td>
     <td></td>
-    <td>Publish features.<br /><br />:param source_table_name: str<br />  The full three-part (catalog, schema, table) name of the source table.<br />:param publish_spec: :class:`PublishSpec`<br />  The specification for publishing the online table from the source table.<br /><br />:returns: :class:`PublishTableResponse`</td>
+    <td>Publish features.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__online_store"><code>data__online_store</code></a></td>
     <td></td>
-    <td>Create an Online Feature Store.<br /><br />:param online_store: :class:`OnlineStore`<br />  Online store to create.<br /><br />:returns: :class:`OnlineStore`</td>
+    <td>Create an Online Feature Store.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__online_store"><code>data__online_store</code></a></td>
     <td></td>
-    <td>Update an Online Feature Store.<br /><br />:param name: str<br />  The name of the online store. This is the unique identifier for the online store.<br />:param online_store: :class:`OnlineStore`<br />  Online store to update.<br />:param update_mask: str<br />  The list of fields to update.<br /><br />:returns: :class:`OnlineStore`</td>
+    <td>Update an Online Feature Store.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete an Online Feature Store.<br /><br />:param name: str<br />  Name of the online store to delete.</td>
+    <td>Delete an Online Feature Store.</td>
 </tr>
 <tr>
     <td><a href="#delete_table"><CopyableCode code="delete_table" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-online_table_name"><code>online_table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete online table.<br /><br />:param online_table_name: str<br />  The full three-part (catalog, schema, table) name of the online table.</td>
+    <td>Delete online table.</td>
 </tr>
 </tbody>
 </table>
@@ -250,7 +250,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get an Online Feature Store.<br /><br />:param name: str<br />  Name of the online store to get.<br /><br />:returns: :class:`OnlineStore`
+Get an Online Feature Store.
 
 ```sql
 SELECT
@@ -269,7 +269,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List Online Feature Stores.<br /><br />:param page_size: int (optional)<br />  The maximum number of results to return. Defaults to 100 if not specified.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous query.<br /><br />:returns: Iterator over :class:`OnlineStore`
+List Online Feature Stores.
 
 ```sql
 SELECT
@@ -302,7 +302,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="publish_table">
 
-Publish features.<br /><br />:param source_table_name: str<br />  The full three-part (catalog, schema, table) name of the source table.<br />:param publish_spec: :class:`PublishSpec`<br />  The specification for publishing the online table from the source table.<br /><br />:returns: :class:`PublishTableResponse`
+Publish features.
 
 ```sql
 INSERT INTO databricks_workspace.ml.feature_store (
@@ -322,7 +322,7 @@ online_table_name
 </TabItem>
 <TabItem value="create">
 
-Create an Online Feature Store.<br /><br />:param online_store: :class:`OnlineStore`<br />  Online store to create.<br /><br />:returns: :class:`OnlineStore`
+Create an Online Feature Store.
 
 ```sql
 INSERT INTO databricks_workspace.ml.feature_store (
@@ -378,7 +378,7 @@ state
 >
 <TabItem value="update">
 
-Update an Online Feature Store.<br /><br />:param name: str<br />  The name of the online store. This is the unique identifier for the online store.<br />:param online_store: :class:`OnlineStore`<br />  Online store to update.<br />:param update_mask: str<br />  The list of fields to update.<br /><br />:returns: :class:`OnlineStore`
+Update an Online Feature Store.
 
 ```sql
 UPDATE databricks_workspace.ml.feature_store
@@ -413,7 +413,7 @@ state;
 >
 <TabItem value="delete">
 
-Delete an Online Feature Store.<br /><br />:param name: str<br />  Name of the online store to delete.
+Delete an Online Feature Store.
 
 ```sql
 DELETE FROM databricks_workspace.ml.feature_store
@@ -424,7 +424,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 </TabItem>
 <TabItem value="delete_table">
 
-Delete online table.<br /><br />:param online_table_name: str<br />  The full three-part (catalog, schema, table) name of the online table.
+Delete online table.
 
 ```sql
 DELETE FROM databricks_workspace.ml.feature_store

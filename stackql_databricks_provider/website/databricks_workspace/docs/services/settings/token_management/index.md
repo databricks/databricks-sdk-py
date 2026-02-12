@@ -168,28 +168,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-token_id"><code>token_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets information about a token, specified by its ID.<br /><br />:param token_id: str<br />  The ID of the token to get.<br /><br />:returns: :class:`GetTokenResponse`</td>
+    <td>Gets information about a token, specified by its ID.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-created_by_id"><code>created_by_id</code></a>, <a href="#parameter-created_by_username"><code>created_by_username</code></a></td>
-    <td>Lists all tokens associated with the specified workspace or user.<br /><br />:param created_by_id: int (optional)<br />  User ID of the user that created the token.<br />:param created_by_username: str (optional)<br />  Username of the user that created the token.<br /><br />:returns: Iterator over :class:`TokenInfo`</td>
+    <td>Lists all tokens associated with the specified workspace or user.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__application_id"><code>data__application_id</code></a></td>
     <td></td>
-    <td>Creates a token on behalf of a service principal.<br /><br />:param application_id: str<br />  Application ID of the service principal.<br />:param comment: str (optional)<br />  Comment that describes the purpose of the token.<br />:param lifetime_seconds: int (optional)<br />  The number of seconds before the token expires.<br /><br />:returns: :class:`CreateOboTokenResponse`</td>
+    <td>Creates a token on behalf of a service principal.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-token_id"><code>token_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a token, specified by its ID.<br /><br />:param token_id: str<br />  The ID of the token to revoke.</td>
+    <td>Deletes a token, specified by its ID.</td>
 </tr>
 </tbody>
 </table>
@@ -241,7 +241,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets information about a token, specified by its ID.<br /><br />:param token_id: str<br />  The ID of the token to get.<br /><br />:returns: :class:`GetTokenResponse`
+Gets information about a token, specified by its ID.
 
 ```sql
 SELECT
@@ -254,7 +254,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Lists all tokens associated with the specified workspace or user.<br /><br />:param created_by_id: int (optional)<br />  User ID of the user that created the token.<br />:param created_by_username: str (optional)<br />  Username of the user that created the token.<br /><br />:returns: Iterator over :class:`TokenInfo`
+Lists all tokens associated with the specified workspace or user.
 
 ```sql
 SELECT
@@ -288,7 +288,7 @@ AND created_by_username = '{{ created_by_username }}'
 >
 <TabItem value="create">
 
-Creates a token on behalf of a service principal.<br /><br />:param application_id: str<br />  Application ID of the service principal.<br />:param comment: str (optional)<br />  Comment that describes the purpose of the token.<br />:param lifetime_seconds: int (optional)<br />  The number of seconds before the token expires.<br /><br />:returns: :class:`CreateOboTokenResponse`
+Creates a token on behalf of a service principal.
 
 ```sql
 INSERT INTO databricks_workspace.settings.token_management (
@@ -344,7 +344,7 @@ token_value
 >
 <TabItem value="delete">
 
-Deletes a token, specified by its ID.<br /><br />:param token_id: str<br />  The ID of the token to revoke.
+Deletes a token, specified by its ID.
 
 ```sql
 DELETE FROM databricks_workspace.settings.token_management

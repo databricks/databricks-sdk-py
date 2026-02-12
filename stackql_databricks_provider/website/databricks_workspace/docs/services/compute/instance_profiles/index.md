@@ -80,28 +80,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>List the instance profiles that the calling user can use to launch a cluster.<br /><br />This API is available to all users.<br /><br /><br />:returns: Iterator over :class:`InstanceProfile`</td>
+    <td>List the instance profiles that the calling user can use to launch a cluster.</td>
 </tr>
 <tr>
     <td><a href="#add"><CopyableCode code="add" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__instance_profile_arn"><code>data__instance_profile_arn</code></a></td>
     <td></td>
-    <td>Registers an instance profile in Databricks. In the UI, you can then give users the permission to use<br />this instance profile when launching clusters.<br /><br />This API is only available to admin users.<br /><br />:param instance_profile_arn: str<br />  The AWS ARN of the instance profile to register with Databricks. This field is required.<br />:param iam_role_arn: str (optional)<br />  The AWS IAM role ARN of the role associated with the instance profile. This field is required if<br />  your role name and instance profile name do not match and you want to use the instance profile with<br />  [Databricks SQL Serverless].<br /><br />  Otherwise, this field is optional.<br /><br />  [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html<br />:param is_meta_instance_profile: bool (optional)<br />  Boolean flag indicating whether the instance profile should only be used in credential passthrough<br />  scenarios. If true, it means the instance profile contains an meta IAM role which could assume a<br />  wide range of roles. Therefore it should always be used with authorization. This field is optional,<br />  the default value is `false`.<br />:param skip_validation: bool (optional)<br />  By default, Databricks validates that it has sufficient permissions to launch instances with the<br />  instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation<br />  fails with an error message that does not indicate an IAM related permission issue, (e.g. “Your<br />  requested instance type is not supported in your requested availability zone”), you can pass this<br />  flag to skip the validation and forcibly add the instance profile.</td>
+    <td>Registers an instance profile in Databricks. In the UI, you can then give users the permission to use</td>
 </tr>
 <tr>
     <td><a href="#edit"><CopyableCode code="edit" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__instance_profile_arn"><code>data__instance_profile_arn</code></a></td>
     <td></td>
-    <td>The only supported field to change is the optional IAM role ARN associated with the instance profile.<br />It is required to specify the IAM role ARN if both of the following are true:<br /><br />* Your role name and instance profile name do not match. The name is the part after the last slash in<br />each ARN. * You want to use the instance profile with [Databricks SQL Serverless].<br /><br />To understand where these fields are in the AWS console, see [Enable serverless SQL warehouses].<br /><br />This API is only available to admin users.<br /><br />[Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html<br />[Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html<br /><br />:param instance_profile_arn: str<br />  The AWS ARN of the instance profile to register with Databricks. This field is required.<br />:param iam_role_arn: str (optional)<br />  The AWS IAM role ARN of the role associated with the instance profile. This field is required if<br />  your role name and instance profile name do not match and you want to use the instance profile with<br />  [Databricks SQL Serverless].<br /><br />  Otherwise, this field is optional.<br /><br />  [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html<br />:param is_meta_instance_profile: bool (optional)<br />  Boolean flag indicating whether the instance profile should only be used in credential passthrough<br />  scenarios. If true, it means the instance profile contains an meta IAM role which could assume a<br />  wide range of roles. Therefore it should always be used with authorization. This field is optional,<br />  the default value is `false`.</td>
+    <td>The only supported field to change is the optional IAM role ARN associated with the instance profile.</td>
 </tr>
 <tr>
     <td><a href="#remove"><CopyableCode code="remove" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Remove the instance profile with the provided ARN. Existing clusters with this instance profile will<br />continue to function.<br /><br />This API is only accessible to admin users.<br /><br />:param instance_profile_arn: str<br />  The ARN of the instance profile to remove. This field is required.</td>
+    <td>Remove the instance profile with the provided ARN. Existing clusters with this instance profile will</td>
 </tr>
 </tbody>
 </table>
@@ -137,7 +137,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-List the instance profiles that the calling user can use to launch a cluster.<br /><br />This API is available to all users.<br /><br /><br />:returns: Iterator over :class:`InstanceProfile`
+List the instance profiles that the calling user can use to launch a cluster.
 
 ```sql
 SELECT
@@ -163,7 +163,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="add">
 
-Registers an instance profile in Databricks. In the UI, you can then give users the permission to use<br />this instance profile when launching clusters.<br /><br />This API is only available to admin users.<br /><br />:param instance_profile_arn: str<br />  The AWS ARN of the instance profile to register with Databricks. This field is required.<br />:param iam_role_arn: str (optional)<br />  The AWS IAM role ARN of the role associated with the instance profile. This field is required if<br />  your role name and instance profile name do not match and you want to use the instance profile with<br />  [Databricks SQL Serverless].<br /><br />  Otherwise, this field is optional.<br /><br />  [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html<br />:param is_meta_instance_profile: bool (optional)<br />  Boolean flag indicating whether the instance profile should only be used in credential passthrough<br />  scenarios. If true, it means the instance profile contains an meta IAM role which could assume a<br />  wide range of roles. Therefore it should always be used with authorization. This field is optional,<br />  the default value is `false`.<br />:param skip_validation: bool (optional)<br />  By default, Databricks validates that it has sufficient permissions to launch instances with the<br />  instance profile. This validation uses AWS dry-run mode for the RunInstances API. If validation<br />  fails with an error message that does not indicate an IAM related permission issue, (e.g. “Your<br />  requested instance type is not supported in your requested availability zone”), you can pass this<br />  flag to skip the validation and forcibly add the instance profile.
+Registers an instance profile in Databricks. In the UI, you can then give users the permission to use
 
 ```sql
 INSERT INTO databricks_workspace.compute.instance_profiles (
@@ -222,7 +222,7 @@ SELECT
 >
 <TabItem value="edit">
 
-The only supported field to change is the optional IAM role ARN associated with the instance profile.<br />It is required to specify the IAM role ARN if both of the following are true:<br /><br />* Your role name and instance profile name do not match. The name is the part after the last slash in<br />each ARN. * You want to use the instance profile with [Databricks SQL Serverless].<br /><br />To understand where these fields are in the AWS console, see [Enable serverless SQL warehouses].<br /><br />This API is only available to admin users.<br /><br />[Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html<br />[Enable serverless SQL warehouses]: https://docs.databricks.com/sql/admin/serverless.html<br /><br />:param instance_profile_arn: str<br />  The AWS ARN of the instance profile to register with Databricks. This field is required.<br />:param iam_role_arn: str (optional)<br />  The AWS IAM role ARN of the role associated with the instance profile. This field is required if<br />  your role name and instance profile name do not match and you want to use the instance profile with<br />  [Databricks SQL Serverless].<br /><br />  Otherwise, this field is optional.<br /><br />  [Databricks SQL Serverless]: https://docs.databricks.com/sql/admin/serverless.html<br />:param is_meta_instance_profile: bool (optional)<br />  Boolean flag indicating whether the instance profile should only be used in credential passthrough<br />  scenarios. If true, it means the instance profile contains an meta IAM role which could assume a<br />  wide range of roles. Therefore it should always be used with authorization. This field is optional,<br />  the default value is `false`.
+The only supported field to change is the optional IAM role ARN associated with the instance profile.
 
 ```sql
 REPLACE databricks_workspace.compute.instance_profiles
@@ -248,7 +248,7 @@ AND data__instance_profile_arn = '{{ instance_profile_arn }}' --required;
 >
 <TabItem value="remove">
 
-Remove the instance profile with the provided ARN. Existing clusters with this instance profile will<br />continue to function.<br /><br />This API is only accessible to admin users.<br /><br />:param instance_profile_arn: str<br />  The ARN of the instance profile to remove. This field is required.
+Remove the instance profile with the provided ARN. Existing clusters with this instance profile will
 
 ```sql
 DELETE FROM databricks_workspace.compute.instance_profiles

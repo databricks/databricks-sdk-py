@@ -199,28 +199,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a role for a Database Instance.<br /><br />:param instance_name: str<br />:param name: str<br /><br />:returns: :class:`DatabaseInstanceRole`</td>
+    <td>Gets a role for a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage &lt; PUBLIC_PREVIEW. With more<br />recent Lakebase V2 plans, we don't plan to ever advance these to PUBLIC_PREVIEW. These APIs will<br />remain effectively undocumented/UI-only and we'll aim for a new public roles API as part of V2 PuPr.<br /><br />:param instance_name: str<br />:param page_size: int (optional)<br />  Upper bound for items returned.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of Database Instances. Requests first page if absent.<br /><br />:returns: Iterator over :class:`DatabaseInstanceRole`</td>
+    <td>START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage &lt; PUBLIC_PREVIEW. With more</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__database_instance_role"><code>data__database_instance_role</code></a></td>
     <td><a href="#parameter-database_instance_name"><code>database_instance_name</code></a></td>
-    <td>Create a role for a Database Instance.<br /><br />:param instance_name: str<br />:param database_instance_role: :class:`DatabaseInstanceRole`<br />:param database_instance_name: str (optional)<br /><br />:returns: :class:`DatabaseInstanceRole`</td>
+    <td>Create a role for a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-allow_missing"><code>allow_missing</code></a>, <a href="#parameter-reassign_owned_to"><code>reassign_owned_to</code></a></td>
-    <td>Deletes a role for a Database Instance.<br /><br />:param instance_name: str<br />:param name: str<br />:param allow_missing: bool (optional)<br />  This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option<br />:param reassign_owned_to: str (optional)</td>
+    <td>Deletes a role for a Database Instance.</td>
 </tr>
 </tbody>
 </table>
@@ -292,7 +292,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a role for a Database Instance.<br /><br />:param instance_name: str<br />:param name: str<br /><br />:returns: :class:`DatabaseInstanceRole`
+Gets a role for a Database Instance.
 
 ```sql
 SELECT
@@ -311,7 +311,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage &lt; PUBLIC_PREVIEW. With more<br />recent Lakebase V2 plans, we don't plan to ever advance these to PUBLIC_PREVIEW. These APIs will<br />remain effectively undocumented/UI-only and we'll aim for a new public roles API as part of V2 PuPr.<br /><br />:param instance_name: str<br />:param page_size: int (optional)<br />  Upper bound for items returned.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of Database Instances. Requests first page if absent.<br /><br />:returns: Iterator over :class:`DatabaseInstanceRole`
+START OF PG ROLE APIs Section These APIs are marked a PUBLIC with stage &lt; PUBLIC_PREVIEW. With more
 
 ```sql
 SELECT
@@ -343,7 +343,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a role for a Database Instance.<br /><br />:param instance_name: str<br />:param database_instance_role: :class:`DatabaseInstanceRole`<br />:param database_instance_name: str (optional)<br /><br />:returns: :class:`DatabaseInstanceRole`
+Create a role for a Database Instance.
 
 ```sql
 INSERT INTO databricks_workspace.database.database_instance_roles (
@@ -399,7 +399,7 @@ membership_role
 >
 <TabItem value="delete">
 
-Deletes a role for a Database Instance.<br /><br />:param instance_name: str<br />:param name: str<br />:param allow_missing: bool (optional)<br />  This is the AIP standard name for the equivalent of Postgres' `IF EXISTS` option<br />:param reassign_owned_to: str (optional)
+Deletes a role for a Database Instance.
 
 ```sql
 DELETE FROM databricks_workspace.database.database_instance_roles

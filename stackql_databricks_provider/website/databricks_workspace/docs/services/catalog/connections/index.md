@@ -265,35 +265,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a connection from it's name.<br /><br />:param name: str<br />  Name of the connection.<br /><br />:returns: :class:`ConnectionInfo`</td>
+    <td>Gets a connection from it's name.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List all connections.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param max_results: int (optional)<br />  Maximum number of connections to return. - If not set, all connections are returned (not<br />  recommended). - when set to a value greater than 0, the page length is the minimum of this value and<br />  a server configured value; - when set to 0, the page length is set to a server configured value<br />  (recommended); - when set to a value less than 0, an invalid parameter error is returned;<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ConnectionInfo`</td>
+    <td>List all connections.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__connection_type"><code>data__connection_type</code></a>, <a href="#parameter-data__options"><code>data__options</code></a></td>
     <td></td>
-    <td>Creates a new connection<br /><br />Creates a new connection to an external data source. It allows users to specify connection details and<br />configurations for interaction with the external server.<br /><br />:param name: str<br />  Name of the connection.<br />:param connection_type: :class:`ConnectionType`<br />  The type of connection.<br />:param options: Dict[str,str]<br />  A map of key-value properties attached to the securable.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param properties: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br />:param read_only: bool (optional)<br />  If the connection is read only.<br /><br />:returns: :class:`ConnectionInfo`</td>
+    <td>Creates a new connection</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__options"><code>data__options</code></a></td>
     <td></td>
-    <td>Updates the connection that matches the supplied name.<br /><br />:param name: str<br />  Name of the connection.<br />:param options: Dict[str,str]<br />  A map of key-value properties attached to the securable.<br />:param new_name: str (optional)<br />  New name for the connection.<br />:param owner: str (optional)<br />  Username of current owner of the connection.<br /><br />:returns: :class:`ConnectionInfo`</td>
+    <td>Updates the connection that matches the supplied name.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes the connection that matches the supplied name.<br /><br />:param name: str<br />  The name of the connection to be deleted.</td>
+    <td>Deletes the connection that matches the supplied name.</td>
 </tr>
 </tbody>
 </table>
@@ -345,7 +345,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a connection from it's name.<br /><br />:param name: str<br />  Name of the connection.<br /><br />:returns: :class:`ConnectionInfo`
+Gets a connection from it's name.
 
 ```sql
 SELECT
@@ -375,7 +375,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List all connections.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param max_results: int (optional)<br />  Maximum number of connections to return. - If not set, all connections are returned (not<br />  recommended). - when set to a value greater than 0, the page length is the minimum of this value and<br />  a server configured value; - when set to 0, the page length is set to a server configured value<br />  (recommended); - when set to a value less than 0, an invalid parameter error is returned;<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ConnectionInfo`
+List all connections.
 
 ```sql
 SELECT
@@ -418,7 +418,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new connection<br /><br />Creates a new connection to an external data source. It allows users to specify connection details and<br />configurations for interaction with the external server.<br /><br />:param name: str<br />  Name of the connection.<br />:param connection_type: :class:`ConnectionType`<br />  The type of connection.<br />:param options: Dict[str,str]<br />  A map of key-value properties attached to the securable.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param properties: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br />:param read_only: bool (optional)<br />  If the connection is read only.<br /><br />:returns: :class:`ConnectionInfo`
+Creates a new connection
 
 ```sql
 INSERT INTO databricks_workspace.catalog.connections (
@@ -508,7 +508,7 @@ url
 >
 <TabItem value="update">
 
-Updates the connection that matches the supplied name.<br /><br />:param name: str<br />  Name of the connection.<br />:param options: Dict[str,str]<br />  A map of key-value properties attached to the securable.<br />:param new_name: str (optional)<br />  New name for the connection.<br />:param owner: str (optional)<br />  Username of current owner of the connection.<br /><br />:returns: :class:`ConnectionInfo`
+Updates the connection that matches the supplied name.
 
 ```sql
 UPDATE databricks_workspace.catalog.connections
@@ -554,7 +554,7 @@ url;
 >
 <TabItem value="delete">
 
-Deletes the connection that matches the supplied name.<br /><br />:param name: str<br />  The name of the connection to be deleted.
+Deletes the connection that matches the supplied name.
 
 ```sql
 DELETE FROM databricks_workspace.catalog.connections

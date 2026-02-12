@@ -91,35 +91,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a FeatureTag.<br /><br />:param table_name: str<br />:param feature_name: str<br />:param key: str<br /><br />:returns: :class:`FeatureTag`</td>
+    <td>Gets a FeatureTag.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Lists FeatureTags.<br /><br />:param table_name: str<br />:param feature_name: str<br />:param page_size: int (optional)<br />  The maximum number of results to return.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous query.<br /><br />:returns: Iterator over :class:`FeatureTag`</td>
+    <td>Lists FeatureTags.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__feature_tag"><code>data__feature_tag</code></a></td>
     <td></td>
-    <td>Creates a FeatureTag.<br /><br />:param table_name: str<br />:param feature_name: str<br />:param feature_tag: :class:`FeatureTag`<br /><br />:returns: :class:`FeatureTag`</td>
+    <td>Creates a FeatureTag.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__feature_tag"><code>data__feature_tag</code></a></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a></td>
-    <td>Updates a FeatureTag.<br /><br />:param table_name: str<br />:param feature_name: str<br />:param key: str<br />:param feature_tag: :class:`FeatureTag`<br />:param update_mask: str (optional)<br />  The list of fields to update.<br /><br />:returns: :class:`FeatureTag`</td>
+    <td>Updates a FeatureTag.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a FeatureTag.<br /><br />:param table_name: str<br />  The name of the feature table.<br />:param feature_name: str<br />  The name of the feature within the feature table.<br />:param key: str<br />  The key of the tag to delete.</td>
+    <td>Deletes a FeatureTag.</td>
 </tr>
 </tbody>
 </table>
@@ -186,7 +186,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a FeatureTag.<br /><br />:param table_name: str<br />:param feature_name: str<br />:param key: str<br /><br />:returns: :class:`FeatureTag`
+Gets a FeatureTag.
 
 ```sql
 SELECT
@@ -202,7 +202,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Lists FeatureTags.<br /><br />:param table_name: str<br />:param feature_name: str<br />:param page_size: int (optional)<br />  The maximum number of results to return.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous query.<br /><br />:returns: Iterator over :class:`FeatureTag`
+Lists FeatureTags.
 
 ```sql
 SELECT
@@ -231,7 +231,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a FeatureTag.<br /><br />:param table_name: str<br />:param feature_name: str<br />:param feature_tag: :class:`FeatureTag`<br /><br />:returns: :class:`FeatureTag`
+Creates a FeatureTag.
 
 ```sql
 INSERT INTO databricks_workspace.ml.materialized_features (
@@ -285,7 +285,7 @@ value
 >
 <TabItem value="update">
 
-Updates a FeatureTag.<br /><br />:param table_name: str<br />:param feature_name: str<br />:param key: str<br />:param feature_tag: :class:`FeatureTag`<br />:param update_mask: str (optional)<br />  The list of fields to update.<br /><br />:returns: :class:`FeatureTag`
+Updates a FeatureTag.
 
 ```sql
 UPDATE databricks_workspace.ml.materialized_features
@@ -316,7 +316,7 @@ value;
 >
 <TabItem value="delete">
 
-Deletes a FeatureTag.<br /><br />:param table_name: str<br />  The name of the feature table.<br />:param feature_name: str<br />  The name of the feature within the feature table.<br />:param key: str<br />  The key of the tag to delete.
+Deletes a FeatureTag.
 
 ```sql
 DELETE FROM databricks_workspace.ml.materialized_features

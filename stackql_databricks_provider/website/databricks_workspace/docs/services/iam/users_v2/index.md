@@ -53,36 +53,26 @@ The following fields are returned by `SELECT` queries:
     "description": "",
     "children": [
       {
-        "name": "family_name",
+        "name": "familyName",
         "type": "string",
         "description": ""
       },
       {
-        "name": "given_name",
+        "name": "givenName",
         "type": "string",
         "description": "Given name of the Databricks user."
       }
     ]
   },
   {
-    "name": "external_id",
-    "type": "string",
-    "description": "External ID is not currently supported. It is reserved for future use."
-  },
-  {
-    "name": "display_name",
-    "type": "string",
-    "description": "String that represents a concatenation of given and family names. For example `John Smith`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"
-  },
-  {
-    "name": "user_name",
-    "type": "string",
-    "description": "Email address of the Databricks user."
-  },
-  {
     "name": "active",
     "type": "boolean",
     "description": ""
+  },
+  {
+    "name": "displayName",
+    "type": "string",
+    "description": "String that represents a concatenation of given and family names. For example `John Smith`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"
   },
   {
     "name": "emails",
@@ -100,7 +90,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -132,7 +122,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -147,6 +137,11 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       }
     ]
+  },
+  {
+    "name": "externalId",
+    "type": "string",
+    "description": "External ID is not currently supported. It is reserved for future use."
   },
   {
     "name": "groups",
@@ -164,7 +159,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -196,7 +191,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -216,6 +211,11 @@ The following fields are returned by `SELECT` queries:
     "name": "schemas",
     "type": "array",
     "description": "The schema of the user."
+  },
+  {
+    "name": "userName",
+    "type": "string",
+    "description": "Email address of the Databricks user."
   }
 ]} />
 </TabItem>
@@ -233,36 +233,26 @@ The following fields are returned by `SELECT` queries:
     "description": "",
     "children": [
       {
-        "name": "family_name",
+        "name": "familyName",
         "type": "string",
         "description": ""
       },
       {
-        "name": "given_name",
+        "name": "givenName",
         "type": "string",
         "description": "Given name of the Databricks user."
       }
     ]
   },
   {
-    "name": "external_id",
-    "type": "string",
-    "description": "External ID is not currently supported. It is reserved for future use."
-  },
-  {
-    "name": "display_name",
-    "type": "string",
-    "description": "String that represents a concatenation of given and family names. For example `John Smith`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"
-  },
-  {
-    "name": "user_name",
-    "type": "string",
-    "description": "Email address of the Databricks user."
-  },
-  {
     "name": "active",
     "type": "boolean",
     "description": ""
+  },
+  {
+    "name": "displayName",
+    "type": "string",
+    "description": "String that represents a concatenation of given and family names. For example `John Smith`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"
   },
   {
     "name": "emails",
@@ -280,7 +270,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -312,7 +302,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -327,6 +317,11 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       }
     ]
+  },
+  {
+    "name": "externalId",
+    "type": "string",
+    "description": "External ID is not currently supported. It is reserved for future use."
   },
   {
     "name": "groups",
@@ -344,7 +339,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -376,7 +371,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -396,6 +391,11 @@ The following fields are returned by `SELECT` queries:
     "name": "schemas",
     "type": "array",
     "description": "The schema of the user."
+  },
+  {
+    "name": "userName",
+    "type": "string",
+    "description": "Email address of the Databricks user."
   }
 ]} />
 </TabItem>
@@ -421,42 +421,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-attributes"><code>attributes</code></a>, <a href="#parameter-count"><code>count</code></a>, <a href="#parameter-excluded_attributes"><code>excluded_attributes</code></a>, <a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-sort_by"><code>sort_by</code></a>, <a href="#parameter-sort_order"><code>sort_order</code></a>, <a href="#parameter-start_index"><code>start_index</code></a></td>
-    <td>Gets information for a specific user in Databricks workspace.<br /><br />:param id: str<br />  Unique ID for a user in the Databricks workspace.<br />:param attributes: str (optional)<br />  Comma-separated list of attributes to return in response.<br />:param count: int (optional)<br />  Desired number of results per page.<br />:param excluded_attributes: str (optional)<br />  Comma-separated list of attributes to exclude in response.<br />:param filter: str (optional)<br />  Query by which the results have to be filtered. Supported operators are equals(`eq`),<br />  contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be<br />  formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently<br />  only support simple expressions.<br /><br />  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2<br />:param sort_by: str (optional)<br />  Attribute to sort the results. Multi-part paths are supported. For example, `userName`,<br />  `name.givenName`, and `emails`.<br />:param sort_order: :class:`GetSortOrder` (optional)<br />  The order to sort the results.<br />:param start_index: int (optional)<br />  Specifies the index of the first result. First item is number 1.<br /><br />:returns: :class:`User`</td>
+    <td>Gets information for a specific user in Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-attributes"><code>attributes</code></a>, <a href="#parameter-count"><code>count</code></a>, <a href="#parameter-excluded_attributes"><code>excluded_attributes</code></a>, <a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-sort_by"><code>sort_by</code></a>, <a href="#parameter-sort_order"><code>sort_order</code></a>, <a href="#parameter-start_index"><code>start_index</code></a></td>
-    <td>Gets details for all the users associated with a Databricks workspace.<br /><br />:param attributes: str (optional)<br />  Comma-separated list of attributes to return in response.<br />:param count: int (optional)<br />  Desired number of results per page.<br />:param excluded_attributes: str (optional)<br />  Comma-separated list of attributes to exclude in response.<br />:param filter: str (optional)<br />  Query by which the results have to be filtered. Supported operators are equals(`eq`),<br />  contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be<br />  formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently<br />  only support simple expressions.<br /><br />  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2<br />:param sort_by: str (optional)<br />  Attribute to sort the results. Multi-part paths are supported. For example, `userName`,<br />  `name.givenName`, and `emails`.<br />:param sort_order: :class:`ListSortOrder` (optional)<br />  The order to sort the results.<br />:param start_index: int (optional)<br />  Specifies the index of the first result. First item is number 1.<br /><br />:returns: Iterator over :class:`User`</td>
+    <td>Gets details for all the users associated with a Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates a new user in the Databricks workspace. This new user will also be added to the Databricks<br />account.<br /><br />:param active: bool (optional)<br />  If this user is active<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names. For example `John Smith`. This<br />  field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use<br />  Account SCIM APIs to update `displayName`.<br /><br />  [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation<br />:param emails: List[:class:`ComplexValue`] (optional)<br />  All the emails associated with the Databricks user.<br />:param entitlements: List[:class:`ComplexValue`] (optional)<br />  Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.<br /><br />  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements<br />:param external_id: str (optional)<br />  External ID is not currently supported. It is reserved for future use.<br />:param groups: List[:class:`ComplexValue`] (optional)<br />:param id: str (optional)<br />  Databricks user ID.<br />:param name: :class:`Name` (optional)<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Corresponds to AWS instance profile/arn role.<br />:param schemas: List[:class:`UserSchema`] (optional)<br />  The schema of the user.<br />:param user_name: str (optional)<br />  Email address of the Databricks user.<br /><br />:returns: :class:`User`</td>
+    <td>Creates a new user in the Databricks workspace. This new user will also be added to the Databricks</td>
 </tr>
 <tr>
     <td><a href="#patch"><CopyableCode code="patch" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Partially updates a user resource by applying the supplied operations on specific user attributes.<br /><br />:param id: str<br />  Unique ID in the Databricks workspace.<br />:param operations: List[:class:`Patch`] (optional)<br />:param schemas: List[:class:`PatchSchema`] (optional)<br />  The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].</td>
+    <td>Partially updates a user resource by applying the supplied operations on specific user attributes.</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Replaces a user's information with the data supplied in request.<br /><br />:param id: str<br />  Databricks user ID.<br />:param active: bool (optional)<br />  If this user is active<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names. For example `John Smith`. This<br />  field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use<br />  Account SCIM APIs to update `displayName`.<br /><br />  [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation<br />:param emails: List[:class:`ComplexValue`] (optional)<br />  All the emails associated with the Databricks user.<br />:param entitlements: List[:class:`ComplexValue`] (optional)<br />  Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.<br /><br />  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements<br />:param external_id: str (optional)<br />  External ID is not currently supported. It is reserved for future use.<br />:param groups: List[:class:`ComplexValue`] (optional)<br />:param name: :class:`Name` (optional)<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Corresponds to AWS instance profile/arn role.<br />:param schemas: List[:class:`UserSchema`] (optional)<br />  The schema of the user.<br />:param user_name: str (optional)<br />  Email address of the Databricks user.</td>
+    <td>Replaces a user's information with the data supplied in request.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the<br />user.<br /><br />:param id: str<br />  Unique ID for a user in the Databricks workspace.</td>
+    <td>Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the</td>
 </tr>
 </tbody>
 </table>
@@ -533,21 +533,21 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets information for a specific user in Databricks workspace.<br /><br />:param id: str<br />  Unique ID for a user in the Databricks workspace.<br />:param attributes: str (optional)<br />  Comma-separated list of attributes to return in response.<br />:param count: int (optional)<br />  Desired number of results per page.<br />:param excluded_attributes: str (optional)<br />  Comma-separated list of attributes to exclude in response.<br />:param filter: str (optional)<br />  Query by which the results have to be filtered. Supported operators are equals(`eq`),<br />  contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be<br />  formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently<br />  only support simple expressions.<br /><br />  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2<br />:param sort_by: str (optional)<br />  Attribute to sort the results. Multi-part paths are supported. For example, `userName`,<br />  `name.givenName`, and `emails`.<br />:param sort_order: :class:`GetSortOrder` (optional)<br />  The order to sort the results.<br />:param start_index: int (optional)<br />  Specifies the index of the first result. First item is number 1.<br /><br />:returns: :class:`User`
+Gets information for a specific user in Databricks workspace.
 
 ```sql
 SELECT
 id,
 name,
-external_id,
-display_name,
-user_name,
 active,
+displayName,
 emails,
 entitlements,
+externalId,
 groups,
 roles,
-schemas
+schemas,
+userName
 FROM databricks_workspace.iam.users_v2
 WHERE id = '{{ id }}' -- required
 AND deployment_name = '{{ deployment_name }}' -- required
@@ -563,21 +563,21 @@ AND start_index = '{{ start_index }}'
 </TabItem>
 <TabItem value="list">
 
-Gets details for all the users associated with a Databricks workspace.<br /><br />:param attributes: str (optional)<br />  Comma-separated list of attributes to return in response.<br />:param count: int (optional)<br />  Desired number of results per page.<br />:param excluded_attributes: str (optional)<br />  Comma-separated list of attributes to exclude in response.<br />:param filter: str (optional)<br />  Query by which the results have to be filtered. Supported operators are equals(`eq`),<br />  contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be<br />  formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently<br />  only support simple expressions.<br /><br />  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2<br />:param sort_by: str (optional)<br />  Attribute to sort the results. Multi-part paths are supported. For example, `userName`,<br />  `name.givenName`, and `emails`.<br />:param sort_order: :class:`ListSortOrder` (optional)<br />  The order to sort the results.<br />:param start_index: int (optional)<br />  Specifies the index of the first result. First item is number 1.<br /><br />:returns: Iterator over :class:`User`
+Gets details for all the users associated with a Databricks workspace.
 
 ```sql
 SELECT
 id,
 name,
-external_id,
-display_name,
-user_name,
 active,
+displayName,
 emails,
 entitlements,
+externalId,
 groups,
 roles,
-schemas
+schemas,
+userName
 FROM databricks_workspace.iam.users_v2
 WHERE deployment_name = '{{ deployment_name }}' -- required
 AND attributes = '{{ attributes }}'
@@ -604,7 +604,7 @@ AND start_index = '{{ start_index }}'
 >
 <TabItem value="create">
 
-Creates a new user in the Databricks workspace. This new user will also be added to the Databricks<br />account.<br /><br />:param active: bool (optional)<br />  If this user is active<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names. For example `John Smith`. This<br />  field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use<br />  Account SCIM APIs to update `displayName`.<br /><br />  [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation<br />:param emails: List[:class:`ComplexValue`] (optional)<br />  All the emails associated with the Databricks user.<br />:param entitlements: List[:class:`ComplexValue`] (optional)<br />  Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.<br /><br />  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements<br />:param external_id: str (optional)<br />  External ID is not currently supported. It is reserved for future use.<br />:param groups: List[:class:`ComplexValue`] (optional)<br />:param id: str (optional)<br />  Databricks user ID.<br />:param name: :class:`Name` (optional)<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Corresponds to AWS instance profile/arn role.<br />:param schemas: List[:class:`UserSchema`] (optional)<br />  The schema of the user.<br />:param user_name: str (optional)<br />  Email address of the Databricks user.<br /><br />:returns: :class:`User`
+Creates a new user in the Databricks workspace. This new user will also be added to the Databricks
 
 ```sql
 INSERT INTO databricks_workspace.iam.users_v2 (
@@ -637,15 +637,15 @@ SELECT
 RETURNING
 id,
 name,
-external_id,
-display_name,
-user_name,
 active,
+displayName,
 emails,
 entitlements,
+externalId,
 groups,
 roles,
-schemas
+schemas,
+userName
 ;
 ```
 </TabItem>
@@ -713,7 +713,7 @@ schemas
 >
 <TabItem value="patch">
 
-Partially updates a user resource by applying the supplied operations on specific user attributes.<br /><br />:param id: str<br />  Unique ID in the Databricks workspace.<br />:param operations: List[:class:`Patch`] (optional)<br />:param schemas: List[:class:`PatchSchema`] (optional)<br />  The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+Partially updates a user resource by applying the supplied operations on specific user attributes.
 
 ```sql
 UPDATE databricks_workspace.iam.users_v2
@@ -738,7 +738,7 @@ AND deployment_name = '{{ deployment_name }}' --required;
 >
 <TabItem value="replace">
 
-Replaces a user's information with the data supplied in request.<br /><br />:param id: str<br />  Databricks user ID.<br />:param active: bool (optional)<br />  If this user is active<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names. For example `John Smith`. This<br />  field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use<br />  Account SCIM APIs to update `displayName`.<br /><br />  [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation<br />:param emails: List[:class:`ComplexValue`] (optional)<br />  All the emails associated with the Databricks user.<br />:param entitlements: List[:class:`ComplexValue`] (optional)<br />  Entitlements assigned to the user. See [assigning entitlements] for a full list of supported values.<br /><br />  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements<br />:param external_id: str (optional)<br />  External ID is not currently supported. It is reserved for future use.<br />:param groups: List[:class:`ComplexValue`] (optional)<br />:param name: :class:`Name` (optional)<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Corresponds to AWS instance profile/arn role.<br />:param schemas: List[:class:`UserSchema`] (optional)<br />  The schema of the user.<br />:param user_name: str (optional)<br />  Email address of the Databricks user.
+Replaces a user's information with the data supplied in request.
 
 ```sql
 REPLACE databricks_workspace.iam.users_v2
@@ -771,7 +771,7 @@ AND deployment_name = '{{ deployment_name }}' --required;
 >
 <TabItem value="delete">
 
-Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the<br />user.<br /><br />:param id: str<br />  Unique ID for a user in the Databricks workspace.
+Deletes a user. Deleting a user from a Databricks workspace also removes objects associated with the
 
 ```sql
 DELETE FROM databricks_workspace.iam.users_v2

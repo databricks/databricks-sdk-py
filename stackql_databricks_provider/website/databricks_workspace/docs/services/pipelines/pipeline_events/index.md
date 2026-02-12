@@ -291,7 +291,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-order_by"><code>order_by</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Retrieves events for a pipeline.<br /><br />:param pipeline_id: str<br />  The pipeline to return events for.<br />:param filter: str (optional)<br />  Criteria to select a subset of results, expressed using a SQL-like syntax. The supported filters<br />  are: 1. level='INFO' (or WARN or ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp<br />  &gt; 'TIMESTAMP' (or &gt;=,&lt;,&lt;=,=)<br /><br />  Composite expressions are supported, for example: level in ('ERROR', 'WARN') AND timestamp&gt;<br />  '2021-07-22T06:37:33.083Z'<br />:param max_results: int (optional)<br />  Max number of entries to return in a single page. The system may return fewer than max_results<br />  events in a response, even if there are more events available.<br />:param order_by: List[str] (optional)<br />  A string indicating a sort order by timestamp for the results, for example, ["timestamp asc"]. The<br />  sort order can be ascending or descending. By default, events are returned in descending order by<br />  timestamp.<br />:param page_token: str (optional)<br />  Page token returned by previous call. This field is mutually exclusive with all fields in this<br />  request except max_results. An error is returned if any fields other than max_results are set when<br />  this field is set.<br /><br />:returns: Iterator over :class:`PipelineEvent`</td>
+    <td>Retrieves events for a pipeline.</td>
 </tr>
 </tbody>
 </table>
@@ -352,7 +352,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Retrieves events for a pipeline.<br /><br />:param pipeline_id: str<br />  The pipeline to return events for.<br />:param filter: str (optional)<br />  Criteria to select a subset of results, expressed using a SQL-like syntax. The supported filters<br />  are: 1. level='INFO' (or WARN or ERROR) 2. level in ('INFO', 'WARN') 3. id='[event-id]' 4. timestamp<br />  &gt; 'TIMESTAMP' (or &gt;=,&lt;,&lt;=,=)<br /><br />  Composite expressions are supported, for example: level in ('ERROR', 'WARN') AND timestamp&gt;<br />  '2021-07-22T06:37:33.083Z'<br />:param max_results: int (optional)<br />  Max number of entries to return in a single page. The system may return fewer than max_results<br />  events in a response, even if there are more events available.<br />:param order_by: List[str] (optional)<br />  A string indicating a sort order by timestamp for the results, for example, ["timestamp asc"]. The<br />  sort order can be ascending or descending. By default, events are returned in descending order by<br />  timestamp.<br />:param page_token: str (optional)<br />  Page token returned by previous call. This field is mutually exclusive with all fields in this<br />  request except max_results. An error is returned if any fields other than max_results are set when<br />  this field is set.<br /><br />:returns: Iterator over :class:`PipelineEvent`
+Retrieves events for a pipeline.
 
 ```sql
 SELECT

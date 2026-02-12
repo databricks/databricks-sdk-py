@@ -54,7 +54,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "name",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       }
     ]
   },
@@ -134,7 +134,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "warehouse_type",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       }
     ]
   },
@@ -259,14 +259,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.<br /><br /><br />:returns: :class:`GetWorkspaceWarehouseConfigResponse`</td>
+    <td>Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.</td>
 </tr>
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.<br /><br />:param channel: :class:`Channel` (optional)<br />  Optional: Channel selection details<br />:param config_param: :class:`RepeatedEndpointConfPairs` (optional)<br />  Deprecated: Use sql_configuration_parameters<br />:param data_access_config: List[:class:`EndpointConfPair`] (optional)<br />  Spark confs for external hive metastore configuration JSON serialized size must be less than &lt;= 512K<br />:param enable_serverless_compute: bool (optional)<br />  Enable Serverless compute for SQL warehouses<br />:param enabled_warehouse_types: List[:class:`WarehouseTypePair`] (optional)<br />  List of Warehouse Types allowed in this workspace (limits allowed value of the type field in<br />  CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be<br />  specified in SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be<br />  converted to another type. Used by frontend to save specific type availability in the warehouse<br />  create and edit form UI.<br />:param global_param: :class:`RepeatedEndpointConfPairs` (optional)<br />  Deprecated: Use sql_configuration_parameters<br />:param google_service_account: str (optional)<br />  GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage<br />:param instance_profile_arn: str (optional)<br />  AWS Only: The instance profile used to pass an IAM role to the SQL warehouses. This configuration is<br />  also applied to the workspace's serverless compute for notebooks and jobs.<br />:param security_policy: :class:`SetWorkspaceWarehouseConfigRequestSecurityPolicy` (optional)<br />  Security policy for warehouses<br />:param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)<br />  SQL configuration parameters</td>
+    <td>Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.</td>
 </tr>
 </tbody>
 </table>
@@ -302,7 +302,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.<br /><br /><br />:returns: :class:`GetWorkspaceWarehouseConfigResponse`
+Gets the workspace level configuration that is shared by all SQL warehouses in a workspace.
 
 ```sql
 SELECT
@@ -334,7 +334,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="set">
 
-Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.<br /><br />:param channel: :class:`Channel` (optional)<br />  Optional: Channel selection details<br />:param config_param: :class:`RepeatedEndpointConfPairs` (optional)<br />  Deprecated: Use sql_configuration_parameters<br />:param data_access_config: List[:class:`EndpointConfPair`] (optional)<br />  Spark confs for external hive metastore configuration JSON serialized size must be less than &lt;= 512K<br />:param enable_serverless_compute: bool (optional)<br />  Enable Serverless compute for SQL warehouses<br />:param enabled_warehouse_types: List[:class:`WarehouseTypePair`] (optional)<br />  List of Warehouse Types allowed in this workspace (limits allowed value of the type field in<br />  CreateWarehouse and EditWarehouse). Note: Some types cannot be disabled, they don't need to be<br />  specified in SetWorkspaceWarehouseConfig. Note: Disabling a type may cause existing warehouses to be<br />  converted to another type. Used by frontend to save specific type availability in the warehouse<br />  create and edit form UI.<br />:param global_param: :class:`RepeatedEndpointConfPairs` (optional)<br />  Deprecated: Use sql_configuration_parameters<br />:param google_service_account: str (optional)<br />  GCP only: Google Service Account used to pass to cluster to access Google Cloud Storage<br />:param instance_profile_arn: str (optional)<br />  AWS Only: The instance profile used to pass an IAM role to the SQL warehouses. This configuration is<br />  also applied to the workspace's serverless compute for notebooks and jobs.<br />:param security_policy: :class:`SetWorkspaceWarehouseConfigRequestSecurityPolicy` (optional)<br />  Security policy for warehouses<br />:param sql_configuration_parameters: :class:`RepeatedEndpointConfPairs` (optional)<br />  SQL configuration parameters
+Sets the workspace level configuration that is shared by all SQL warehouses in a workspace.
 
 ```sql
 REPLACE databricks_workspace.sql.workspace_warehouse_config

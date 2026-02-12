@@ -936,9 +936,10 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            application/octet-stream:
               schema:
-                $ref: '#/components/schemas/DownloadResponse'
+                type: string
+                format: binary
         default:
           description: Error response
           content:
@@ -1281,7 +1282,7 @@ components:
           operation:
             $ref: '#/paths/~1api~12.0~1fs~1files{file_path}/get'
           response:
-            mediaType: application/json
+            mediaType: application/octet-stream
             openAPIDocKey: '200'
         upload:
           operation:

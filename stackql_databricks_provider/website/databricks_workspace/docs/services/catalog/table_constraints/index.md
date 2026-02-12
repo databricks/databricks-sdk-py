@@ -55,14 +55,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__full_name_arg"><code>data__full_name_arg</code></a>, <a href="#parameter-data__constraint"><code>data__constraint</code></a></td>
     <td></td>
-    <td>Creates a new table constraint.<br /><br />For the table constraint creation to succeed, the user must satisfy both of these conditions: - the<br />user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**<br />privilege on the table's parent schema, and be the owner of the table. - if the new constraint is a<br />__ForeignKeyConstraint__, the user must have the **USE_CATALOG** privilege on the referenced parent<br />table's catalog, the **USE_SCHEMA** privilege on the referenced parent table's schema, and be the<br />owner of the referenced parent table.<br /><br />:param full_name_arg: str<br />  The full name of the table referenced by the constraint.<br />:param constraint: :class:`TableConstraint`<br /><br />:returns: :class:`TableConstraint`</td>
+    <td>Creates a new table constraint.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-constraint_name"><code>constraint_name</code></a>, <a href="#parameter-cascade"><code>cascade</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a table constraint.<br /><br />For the table constraint deletion to succeed, the user must satisfy both of these conditions: - the<br />user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**<br />privilege on the table's parent schema, and be the owner of the table. - if __cascade__ argument is<br />**true**, the user must have the following permissions on all of the child tables: the **USE_CATALOG**<br />privilege on the table's catalog, the **USE_SCHEMA** privilege on the table's schema, and be the owner<br />of the table.<br /><br />:param full_name: str<br />  Full name of the table referenced by the constraint.<br />:param constraint_name: str<br />  The name of the constraint to delete.<br />:param cascade: bool<br />  If true, try deleting all child constraints of the current constraint. If false, reject this<br />  operation if the current constraint has any child constraints.</td>
+    <td>Deletes a table constraint.</td>
 </tr>
 </tbody>
 </table>
@@ -114,7 +114,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="create">
 
-Creates a new table constraint.<br /><br />For the table constraint creation to succeed, the user must satisfy both of these conditions: - the<br />user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**<br />privilege on the table's parent schema, and be the owner of the table. - if the new constraint is a<br />__ForeignKeyConstraint__, the user must have the **USE_CATALOG** privilege on the referenced parent<br />table's catalog, the **USE_SCHEMA** privilege on the referenced parent table's schema, and be the<br />owner of the referenced parent table.<br /><br />:param full_name_arg: str<br />  The full name of the table referenced by the constraint.<br />:param constraint: :class:`TableConstraint`<br /><br />:returns: :class:`TableConstraint`
+Creates a new table constraint.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.table_constraints (
@@ -165,7 +165,7 @@ primary_key_constraint
 >
 <TabItem value="delete">
 
-Deletes a table constraint.<br /><br />For the table constraint deletion to succeed, the user must satisfy both of these conditions: - the<br />user must have the **USE_CATALOG** privilege on the table's parent catalog, the **USE_SCHEMA**<br />privilege on the table's parent schema, and be the owner of the table. - if __cascade__ argument is<br />**true**, the user must have the following permissions on all of the child tables: the **USE_CATALOG**<br />privilege on the table's catalog, the **USE_SCHEMA** privilege on the table's schema, and be the owner<br />of the table.<br /><br />:param full_name: str<br />  Full name of the table referenced by the constraint.<br />:param constraint_name: str<br />  The name of the constraint to delete.<br />:param cascade: bool<br />  If true, try deleting all child constraints of the current constraint. If false, reject this<br />  operation if the current constraint has any child constraints.
+Deletes a table constraint.
 
 ```sql
 DELETE FROM databricks_workspace.catalog.table_constraints

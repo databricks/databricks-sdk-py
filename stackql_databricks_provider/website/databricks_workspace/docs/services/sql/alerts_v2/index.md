@@ -571,35 +571,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets an alert.<br /><br />:param id: str<br /><br />:returns: :class:`AlertV2`</td>
+    <td>Gets an alert.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets a list of alerts accessible to the user, ordered by creation time.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`AlertV2`</td>
+    <td>Gets a list of alerts accessible to the user, ordered by creation time.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__alert"><code>data__alert</code></a></td>
     <td></td>
-    <td>Create Alert<br /><br />:param alert: :class:`AlertV2`<br /><br />:returns: :class:`AlertV2`</td>
+    <td>Create Alert</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__alert"><code>data__alert</code></a></td>
     <td></td>
-    <td>Update alert<br /><br />:param id: str<br />  UUID identifying the alert.<br />:param alert: :class:`AlertV2`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`AlertV2`</td>
+    <td>Update alert</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-purge"><code>purge</code></a></td>
-    <td>Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer<br />trigger. You can restore a trashed alert through the UI. A trashed alert is permanently deleted after<br />30 days.<br /><br />:param id: str<br />:param purge: bool (optional)<br />  Whether to permanently delete the alert. If not set, the alert will only be soft deleted.</td>
+    <td>Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer</td>
 </tr>
 </tbody>
 </table>
@@ -661,7 +661,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets an alert.<br /><br />:param id: str<br /><br />:returns: :class:`AlertV2`
+Gets an alert.
 
 ```sql
 SELECT
@@ -689,7 +689,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets a list of alerts accessible to the user, ordered by creation time.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`AlertV2`
+Gets a list of alerts accessible to the user, ordered by creation time.
 
 ```sql
 SELECT
@@ -730,7 +730,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create Alert<br /><br />:param alert: :class:`AlertV2`<br /><br />:returns: :class:`AlertV2`
+Create Alert
 
 ```sql
 INSERT INTO databricks_workspace.sql.alerts_v2 (
@@ -788,7 +788,7 @@ update_time
 >
 <TabItem value="update">
 
-Update alert<br /><br />:param id: str<br />  UUID identifying the alert.<br />:param alert: :class:`AlertV2`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`AlertV2`
+Update alert
 
 ```sql
 UPDATE databricks_workspace.sql.alerts_v2
@@ -831,7 +831,7 @@ update_time;
 >
 <TabItem value="delete">
 
-Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer<br />trigger. You can restore a trashed alert through the UI. A trashed alert is permanently deleted after<br />30 days.<br /><br />:param id: str<br />:param purge: bool (optional)<br />  Whether to permanently delete the alert. If not set, the alert will only be soft deleted.
+Moves an alert to the trash. Trashed alerts immediately disappear from list views, and can no longer
 
 ```sql
 DELETE FROM databricks_workspace.sql.alerts_v2

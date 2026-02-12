@@ -97,21 +97,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a JSON representation of the access control list (ACL) for a specified object.<br /><br />**Warning**: This API is deprecated. Please use :method:workspace/getpermissions instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param object_type: :class:`ObjectTypePlural`<br />  The type of object permissions to check.<br />:param object_id: str<br />  Object ID. An ACL is returned for the object with this UUID.<br /><br />:returns: :class:`GetResponse`</td>
+    <td>Gets a JSON representation of the access control list (ACL) for a specified object.</td>
 </tr>
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__object_type"><code>data__object_type</code></a></td>
     <td></td>
-    <td>Sets the access control list (ACL) for a specified object. This operation will complete rewrite the<br />ACL.<br /><br />**Warning**: This API is deprecated. Please use :method:workspace/setpermissions instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param object_type: :class:`ObjectTypePlural`<br />  The type of object permission to set.<br />:param object_id: str<br />  Object ID. The ACL for the object with this UUID is overwritten by this request's POST content.<br />:param access_control_list: List[:class:`AccessControl`] (optional)<br /><br />:returns: :class:`SetResponse`</td>
+    <td>Sets the access control list (ACL) for a specified object. This operation will complete rewrite the</td>
 </tr>
 <tr>
     <td><a href="#transfer_ownership"><CopyableCode code="transfer_ownership" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-object_type"><code>object_type</code></a></td>
     <td></td>
-    <td>Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.<br /><br />**Warning**: This API is deprecated. For queries and alerts, please use :method:queries/update and<br />:method:alerts/update respectively instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param object_type: :class:`OwnableObjectType`<br />  The type of object on which to change ownership.<br />:param object_id: :class:`TransferOwnershipObjectId`<br />  The ID of the object on which to change ownership.<br />:param new_owner: str (optional)<br />  Email address for the new owner, who must exist in the workspace.<br /><br />:returns: :class:`Success`</td>
+    <td>Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.</td>
 </tr>
 </tbody>
 </table>
@@ -162,7 +162,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a JSON representation of the access control list (ACL) for a specified object.<br /><br />**Warning**: This API is deprecated. Please use :method:workspace/getpermissions instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param object_type: :class:`ObjectTypePlural`<br />  The type of object permissions to check.<br />:param object_id: str<br />  Object ID. An ACL is returned for the object with this UUID.<br /><br />:returns: :class:`GetResponse`
+Gets a JSON representation of the access control list (ACL) for a specified object.
 
 ```sql
 SELECT
@@ -191,7 +191,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="set">
 
-Sets the access control list (ACL) for a specified object. This operation will complete rewrite the<br />ACL.<br /><br />**Warning**: This API is deprecated. Please use :method:workspace/setpermissions instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param object_type: :class:`ObjectTypePlural`<br />  The type of object permission to set.<br />:param object_id: str<br />  Object ID. The ACL for the object with this UUID is overwritten by this request's POST content.<br />:param access_control_list: List[:class:`AccessControl`] (optional)<br /><br />:returns: :class:`SetResponse`
+Sets the access control list (ACL) for a specified object. This operation will complete rewrite the
 
 ```sql
 INSERT INTO databricks_workspace.sql.dbsql_permissions (
@@ -252,7 +252,7 @@ object_type
 >
 <TabItem value="transfer_ownership">
 
-Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.<br /><br />**Warning**: This API is deprecated. For queries and alerts, please use :method:queries/update and<br />:method:alerts/update respectively instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param object_type: :class:`OwnableObjectType`<br />  The type of object on which to change ownership.<br />:param object_id: :class:`TransferOwnershipObjectId`<br />  The ID of the object on which to change ownership.<br />:param new_owner: str (optional)<br />  Email address for the new owner, who must exist in the workspace.<br /><br />:returns: :class:`Success`
+Transfers ownership of a dashboard, query, or alert to an active user. Requires an admin API key.
 
 ```sql
 EXEC databricks_workspace.sql.dbsql_permissions.transfer_ownership 

@@ -253,112 +253,112 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-run_uuid"><code>run_uuid</code></a></td>
-    <td>Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the<br />same key are logged for a run, return only the value with the latest timestamp.<br /><br />If there are multiple values with the latest timestamp, return the maximum of these values.<br /><br />:param run_id: str<br />  ID of the run to fetch. Must be provided.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run to fetch. This field will be removed in a future<br />  MLflow version.<br /><br />:returns: :class:`GetRunResponse`</td>
+    <td>Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates a new run within an experiment. A run is usually a single execution of a machine learning or<br />data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag`<br />associated with a single execution.<br /><br />:param experiment_id: str (optional)<br />  ID of the associated experiment.<br />:param run_name: str (optional)<br />  The name of the run.<br />:param start_time: int (optional)<br />  Unix timestamp in milliseconds of when the run started.<br />:param tags: List[:class:`RunTag`] (optional)<br />  Additional metadata for run.<br />:param user_id: str (optional)<br />  ID of the user executing the run. This field is deprecated as of MLflow 1.0, and will be removed in<br />  a future MLflow release. Use 'mlflow.user' tag instead.<br /><br />:returns: :class:`CreateRunResponse`</td>
+    <td>Creates a new run within an experiment. A run is usually a single execution of a machine learning or</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-run_id"><code>run_id</code></a></td>
     <td></td>
-    <td>Marks a run for deletion.<br /><br />:param run_id: str<br />  ID of the run to delete.</td>
+    <td>Marks a run for deletion.</td>
 </tr>
 <tr>
     <td><a href="#delete_bulk"><CopyableCode code="delete_bulk" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-max_timestamp_millis"><code>max_timestamp_millis</code></a></td>
     <td></td>
-    <td>Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at<br />most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the<br />client code snippet on<br /><br />:param experiment_id: str<br />  The ID of the experiment containing the runs to delete.<br />:param max_timestamp_millis: int<br />  The maximum creation timestamp in milliseconds since the UNIX epoch for deleting runs. Only runs<br />  created prior to or at this timestamp are deleted.<br />:param max_runs: int (optional)<br />  An optional positive integer indicating the maximum number of runs to delete. The maximum allowed<br />  value for max_runs is 10000.<br /><br />:returns: :class:`DeleteRunsResponse`</td>
+    <td>Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at</td>
 </tr>
 <tr>
     <td><a href="#delete_tag"><CopyableCode code="delete_tag" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-key"><code>key</code></a></td>
     <td></td>
-    <td>Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run<br />completes.<br /><br />:param run_id: str<br />  ID of the run that the tag was logged under. Must be provided.<br />:param key: str<br />  Name of the tag. Maximum size is 255 bytes. Must be provided.</td>
+    <td>Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run</td>
 </tr>
 <tr>
     <td><a href="#log_batch"><CopyableCode code="log_batch" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server<br />will respond with an error (non-200 status code).<br /><br />In case of error (due to internal server error or an invalid request), partial data may be written.<br /><br />You can write metrics, params, and tags in interleaving fashion, but within a given entity type are<br />guaranteed to follow the order specified in the request body.<br /><br />The overwrite behavior for metrics, params, and tags is as follows:<br /><br />* Metrics: metric values are never overwritten. Logging a metric (key, value, timestamp) appends to<br />the set of values for the metric with the provided key.<br /><br />* Tags: tag values can be overwritten by successive writes to the same tag key. That is, if multiple<br />tag values with the same key are provided in the same API request, the last-provided tag value is<br />written. Logging the same tag (key, value) is permitted. Specifically, logging a tag is idempotent.<br /><br />* Parameters: once written, param values cannot be changed (attempting to overwrite a param value will<br />result in an error). However, logging the same param (key, value) is permitted. Specifically, logging<br />a param is idempotent.<br /><br />Request Limits ------------------------------- A single JSON-serialized API request may be up to 1 MB<br />in size and contain:<br /><br />* No more than 1000 metrics, params, and tags in total<br /><br />* Up to 1000 metrics<br /><br />* Up to 100 params<br /><br />* Up to 100 tags<br /><br />For example, a valid request might contain 900 metrics, 50 params, and 50 tags, but logging 900<br />metrics, 50 params, and 51 tags is invalid.<br /><br />The following limits also apply to metric, param, and tag keys and values:<br /><br />* Metric keys, param keys, and tag keys can be up to 250 characters in length<br /><br />* Parameter and tag values can be up to 250 characters in length<br /><br />:param metrics: List[:class:`Metric`] (optional)<br />  Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params, and<br />  tags in total.<br />:param params: List[:class:`Param`] (optional)<br />  Params to log. A single request can contain up to 100 params, and up to 1000 metrics, params, and<br />  tags in total.<br />:param run_id: str (optional)<br />  ID of the run to log under<br />:param tags: List[:class:`RunTag`] (optional)<br />  Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and tags<br />  in total.</td>
+    <td>Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server</td>
 </tr>
 <tr>
     <td><a href="#log_inputs"><CopyableCode code="log_inputs" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-run_id"><code>run_id</code></a></td>
     <td></td>
-    <td>Logs inputs, such as datasets and models, to an MLflow Run.<br /><br />:param run_id: str<br />  ID of the run to log under<br />:param datasets: List[:class:`DatasetInput`] (optional)<br />  Dataset inputs<br />:param models: List[:class:`ModelInput`] (optional)<br />  Model inputs</td>
+    <td>Logs inputs, such as datasets and models, to an MLflow Run.</td>
 </tr>
 <tr>
     <td><a href="#log_metric"><CopyableCode code="log_metric" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a>, <a href="#parameter-timestamp"><code>timestamp</code></a></td>
     <td></td>
-    <td>Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated<br />timestamp. Examples include the various metrics that represent ML model accuracy. A metric can be<br />logged multiple times.<br /><br />:param key: str<br />  Name of the metric.<br />:param value: float<br />  Double value of the metric being logged.<br />:param timestamp: int<br />  Unix timestamp in milliseconds at the time metric was logged.<br />:param dataset_digest: str (optional)<br />  Dataset digest of the dataset associated with the metric, e.g. an md5 hash of the dataset that<br />  uniquely identifies it within datasets of the same name.<br />:param dataset_name: str (optional)<br />  The name of the dataset associated with the metric. E.g. “my.uc.table@2” “nyc-taxi-dataset”,<br />  “fantastic-elk-3”<br />:param model_id: str (optional)<br />  ID of the logged model associated with the metric, if applicable<br />:param run_id: str (optional)<br />  ID of the run under which to log the metric. Must be provided.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run under which to log the metric. This field will be<br />  removed in a future MLflow version.<br />:param step: int (optional)<br />  Step at which to log the metric</td>
+    <td>Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated</td>
 </tr>
 <tr>
     <td><a href="#log_model"><CopyableCode code="log_model" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>**Note:** the [Create a logged model](/api/workspace/experiments/createloggedmodel) API replaces this<br />endpoint.<br /><br />Log a model to an MLflow Run.<br /><br />:param model_json: str (optional)<br />  MLmodel file in json format.<br />:param run_id: str (optional)<br />  ID of the run to log under</td>
+    <td>**Note:** the [Create a logged model](/api/workspace/experiments/createloggedmodel) API replaces this</td>
 </tr>
 <tr>
     <td><a href="#log_outputs"><CopyableCode code="log_outputs" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-run_id"><code>run_id</code></a></td>
     <td></td>
-    <td>Logs outputs, such as models, from an MLflow Run.<br /><br />:param run_id: str<br />  The ID of the Run from which to log outputs.<br />:param models: List[:class:`ModelOutput`] (optional)<br />  The model outputs from the Run.</td>
+    <td>Logs outputs, such as models, from an MLflow Run.</td>
 </tr>
 <tr>
     <td><a href="#log_param"><CopyableCode code="log_param" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a></td>
     <td></td>
-    <td>Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include<br />hyperparameters used for ML model training and constant dates and values used in an ETL pipeline. A<br />param can be logged only once for a run.<br /><br />:param key: str<br />  Name of the param. Maximum size is 255 bytes.<br />:param value: str<br />  String value of the param being logged. Maximum size is 500 bytes.<br />:param run_id: str (optional)<br />  ID of the run under which to log the param. Must be provided.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run under which to log the param. This field will be<br />  removed in a future MLflow version.</td>
+    <td>Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include</td>
 </tr>
 <tr>
     <td><a href="#restore"><CopyableCode code="restore" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-run_id"><code>run_id</code></a></td>
     <td></td>
-    <td>Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.<br /><br />Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was permanently deleted.<br /><br />:param run_id: str<br />  ID of the run to restore.</td>
+    <td>Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.</td>
 </tr>
 <tr>
     <td><a href="#restore_bulk"><CopyableCode code="restore_bulk" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-min_timestamp_millis"><code>min_timestamp_millis</code></a></td>
     <td></td>
-    <td>Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores<br />at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the<br />client code snippet on<br /><br />:param experiment_id: str<br />  The ID of the experiment containing the runs to restore.<br />:param min_timestamp_millis: int<br />  The minimum deletion timestamp in milliseconds since the UNIX epoch for restoring runs. Only runs<br />  deleted no earlier than this timestamp are restored.<br />:param max_runs: int (optional)<br />  An optional positive integer indicating the maximum number of runs to restore. The maximum allowed<br />  value for max_runs is 10000.<br /><br />:returns: :class:`RestoreRunsResponse`</td>
+    <td>Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores</td>
 </tr>
 <tr>
     <td><a href="#search"><CopyableCode code="search" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Searches for runs that satisfy expressions.<br /><br />Search expressions can use `mlflowMetric` and `mlflowParam` keys.<br /><br />:param experiment_ids: List[str] (optional)<br />  List of experiment IDs to search over.<br />:param filter: str (optional)<br />  A filter expression over params, metrics, and tags, that allows returning a subset of runs. The<br />  syntax is a subset of SQL that supports ANDing together binary operations between a param, metric,<br />  or tag and a constant.<br /><br />  Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'`<br /><br />  You can select columns with special characters (hyphen, space, period, etc.) by using double quotes:<br />  `metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'`<br /><br />  Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`.<br />:param max_results: int (optional)<br />  Maximum number of runs desired. Max threshold is 50000<br />:param order_by: List[str] (optional)<br />  List of columns to be ordered by, including attributes, params, metrics, and tags with an optional<br />  `"DESC"` or `"ASC"` annotation, where `"ASC"` is the default. Example: `["params.input DESC",<br />  "metrics.alpha ASC", "metrics.rmse"]`. Tiebreaks are done by start_time `DESC` followed by `run_id`<br />  for runs with the same start time (and this is the default ordering criterion if order_by is not<br />  provided).<br />:param page_token: str (optional)<br />  Token for the current page of runs.<br />:param run_view_type: :class:`ViewType` (optional)<br />  Whether to display only active, only deleted, or all runs. Defaults to only active runs.<br /><br />:returns: Iterator over :class:`Run`</td>
+    <td>Searches for runs that satisfy expressions.</td>
 </tr>
 <tr>
     <td><a href="#set_tag"><CopyableCode code="set_tag" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a></td>
     <td></td>
-    <td>Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.<br /><br />:param key: str<br />  Name of the tag. Keys up to 250 bytes in size are supported.<br />:param value: str<br />  String value of the tag being logged. Values up to 64KB in size are supported.<br />:param run_id: str (optional)<br />  ID of the run under which to log the tag. Must be provided.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run under which to log the tag. This field will be<br />  removed in a future MLflow version.</td>
+    <td>Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates run metadata.<br /><br />:param end_time: int (optional)<br />  Unix timestamp in milliseconds of when the run ended.<br />:param run_id: str (optional)<br />  ID of the run to update. Must be provided.<br />:param run_name: str (optional)<br />  Updated name of the run.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run to update. This field will be removed in a future<br />  MLflow version.<br />:param status: :class:`UpdateRunStatus` (optional)<br />  Updated status of the run.<br /><br />:returns: :class:`UpdateRunResponse`</td>
+    <td>Updates run metadata.</td>
 </tr>
 </tbody>
 </table>
@@ -404,7 +404,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the<br />same key are logged for a run, return only the value with the latest timestamp.<br /><br />If there are multiple values with the latest timestamp, return the maximum of these values.<br /><br />:param run_id: str<br />  ID of the run to fetch. Must be provided.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run to fetch. This field will be removed in a future<br />  MLflow version.<br /><br />:returns: :class:`GetRunResponse`
+Gets the metadata, metrics, params, and tags for a run. In the case where multiple metrics with the
 
 ```sql
 SELECT
@@ -430,7 +430,7 @@ AND run_uuid = '{{ run_uuid }}'
 >
 <TabItem value="create">
 
-Creates a new run within an experiment. A run is usually a single execution of a machine learning or<br />data ETL pipeline. MLflow uses runs to track the `mlflowParam`, `mlflowMetric`, and `mlflowRunTag`<br />associated with a single execution.<br /><br />:param experiment_id: str (optional)<br />  ID of the associated experiment.<br />:param run_name: str (optional)<br />  The name of the run.<br />:param start_time: int (optional)<br />  Unix timestamp in milliseconds of when the run started.<br />:param tags: List[:class:`RunTag`] (optional)<br />  Additional metadata for run.<br />:param user_id: str (optional)<br />  ID of the user executing the run. This field is deprecated as of MLflow 1.0, and will be removed in<br />  a future MLflow release. Use 'mlflow.user' tag instead.<br /><br />:returns: :class:`CreateRunResponse`
+Creates a new run within an experiment. A run is usually a single execution of a machine learning or
 
 ```sql
 INSERT INTO databricks_workspace.ml.experiment_runs (
@@ -510,7 +510,7 @@ run
 >
 <TabItem value="delete">
 
-Marks a run for deletion.<br /><br />:param run_id: str<br />  ID of the run to delete.
+Marks a run for deletion.
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.delete 
@@ -524,7 +524,7 @@ EXEC databricks_workspace.ml.experiment_runs.delete
 </TabItem>
 <TabItem value="delete_bulk">
 
-Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at<br />most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the<br />client code snippet on<br /><br />:param experiment_id: str<br />  The ID of the experiment containing the runs to delete.<br />:param max_timestamp_millis: int<br />  The maximum creation timestamp in milliseconds since the UNIX epoch for deleting runs. Only runs<br />  created prior to or at this timestamp are deleted.<br />:param max_runs: int (optional)<br />  An optional positive integer indicating the maximum number of runs to delete. The maximum allowed<br />  value for max_runs is 10000.<br /><br />:returns: :class:`DeleteRunsResponse`
+Bulk delete runs in an experiment that were created prior to or at the specified timestamp. Deletes at
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.delete_bulk 
@@ -540,7 +540,7 @@ EXEC databricks_workspace.ml.experiment_runs.delete_bulk
 </TabItem>
 <TabItem value="delete_tag">
 
-Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run<br />completes.<br /><br />:param run_id: str<br />  ID of the run that the tag was logged under. Must be provided.<br />:param key: str<br />  Name of the tag. Maximum size is 255 bytes. Must be provided.
+Deletes a tag on a run. Tags are run metadata that can be updated during a run and after a run
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.delete_tag 
@@ -555,7 +555,7 @@ EXEC databricks_workspace.ml.experiment_runs.delete_tag
 </TabItem>
 <TabItem value="log_batch">
 
-Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server<br />will respond with an error (non-200 status code).<br /><br />In case of error (due to internal server error or an invalid request), partial data may be written.<br /><br />You can write metrics, params, and tags in interleaving fashion, but within a given entity type are<br />guaranteed to follow the order specified in the request body.<br /><br />The overwrite behavior for metrics, params, and tags is as follows:<br /><br />* Metrics: metric values are never overwritten. Logging a metric (key, value, timestamp) appends to<br />the set of values for the metric with the provided key.<br /><br />* Tags: tag values can be overwritten by successive writes to the same tag key. That is, if multiple<br />tag values with the same key are provided in the same API request, the last-provided tag value is<br />written. Logging the same tag (key, value) is permitted. Specifically, logging a tag is idempotent.<br /><br />* Parameters: once written, param values cannot be changed (attempting to overwrite a param value will<br />result in an error). However, logging the same param (key, value) is permitted. Specifically, logging<br />a param is idempotent.<br /><br />Request Limits ------------------------------- A single JSON-serialized API request may be up to 1 MB<br />in size and contain:<br /><br />* No more than 1000 metrics, params, and tags in total<br /><br />* Up to 1000 metrics<br /><br />* Up to 100 params<br /><br />* Up to 100 tags<br /><br />For example, a valid request might contain 900 metrics, 50 params, and 50 tags, but logging 900<br />metrics, 50 params, and 51 tags is invalid.<br /><br />The following limits also apply to metric, param, and tag keys and values:<br /><br />* Metric keys, param keys, and tag keys can be up to 250 characters in length<br /><br />* Parameter and tag values can be up to 250 characters in length<br /><br />:param metrics: List[:class:`Metric`] (optional)<br />  Metrics to log. A single request can contain up to 1000 metrics, and up to 1000 metrics, params, and<br />  tags in total.<br />:param params: List[:class:`Param`] (optional)<br />  Params to log. A single request can contain up to 100 params, and up to 1000 metrics, params, and<br />  tags in total.<br />:param run_id: str (optional)<br />  ID of the run to log under<br />:param tags: List[:class:`RunTag`] (optional)<br />  Tags to log. A single request can contain up to 100 tags, and up to 1000 metrics, params, and tags<br />  in total.
+Logs a batch of metrics, params, and tags for a run. If any data failed to be persisted, the server
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.log_batch 
@@ -572,7 +572,7 @@ EXEC databricks_workspace.ml.experiment_runs.log_batch
 </TabItem>
 <TabItem value="log_inputs">
 
-Logs inputs, such as datasets and models, to an MLflow Run.<br /><br />:param run_id: str<br />  ID of the run to log under<br />:param datasets: List[:class:`DatasetInput`] (optional)<br />  Dataset inputs<br />:param models: List[:class:`ModelInput`] (optional)<br />  Model inputs
+Logs inputs, such as datasets and models, to an MLflow Run.
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.log_inputs 
@@ -588,7 +588,7 @@ EXEC databricks_workspace.ml.experiment_runs.log_inputs
 </TabItem>
 <TabItem value="log_metric">
 
-Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated<br />timestamp. Examples include the various metrics that represent ML model accuracy. A metric can be<br />logged multiple times.<br /><br />:param key: str<br />  Name of the metric.<br />:param value: float<br />  Double value of the metric being logged.<br />:param timestamp: int<br />  Unix timestamp in milliseconds at the time metric was logged.<br />:param dataset_digest: str (optional)<br />  Dataset digest of the dataset associated with the metric, e.g. an md5 hash of the dataset that<br />  uniquely identifies it within datasets of the same name.<br />:param dataset_name: str (optional)<br />  The name of the dataset associated with the metric. E.g. “my.uc.table@2” “nyc-taxi-dataset”,<br />  “fantastic-elk-3”<br />:param model_id: str (optional)<br />  ID of the logged model associated with the metric, if applicable<br />:param run_id: str (optional)<br />  ID of the run under which to log the metric. Must be provided.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run under which to log the metric. This field will be<br />  removed in a future MLflow version.<br />:param step: int (optional)<br />  Step at which to log the metric
+Log a metric for a run. A metric is a key-value pair (string key, float value) with an associated
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.log_metric 
@@ -610,7 +610,7 @@ EXEC databricks_workspace.ml.experiment_runs.log_metric
 </TabItem>
 <TabItem value="log_model">
 
-**Note:** the [Create a logged model](/api/workspace/experiments/createloggedmodel) API replaces this<br />endpoint.<br /><br />Log a model to an MLflow Run.<br /><br />:param model_json: str (optional)<br />  MLmodel file in json format.<br />:param run_id: str (optional)<br />  ID of the run to log under
+**Note:** the [Create a logged model](/api/workspace/experiments/createloggedmodel) API replaces this
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.log_model 
@@ -625,7 +625,7 @@ EXEC databricks_workspace.ml.experiment_runs.log_model
 </TabItem>
 <TabItem value="log_outputs">
 
-Logs outputs, such as models, from an MLflow Run.<br /><br />:param run_id: str<br />  The ID of the Run from which to log outputs.<br />:param models: List[:class:`ModelOutput`] (optional)<br />  The model outputs from the Run.
+Logs outputs, such as models, from an MLflow Run.
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.log_outputs 
@@ -640,7 +640,7 @@ EXEC databricks_workspace.ml.experiment_runs.log_outputs
 </TabItem>
 <TabItem value="log_param">
 
-Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include<br />hyperparameters used for ML model training and constant dates and values used in an ETL pipeline. A<br />param can be logged only once for a run.<br /><br />:param key: str<br />  Name of the param. Maximum size is 255 bytes.<br />:param value: str<br />  String value of the param being logged. Maximum size is 500 bytes.<br />:param run_id: str (optional)<br />  ID of the run under which to log the param. Must be provided.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run under which to log the param. This field will be<br />  removed in a future MLflow version.
+Logs a param used for a run. A param is a key-value pair (string key, string value). Examples include
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.log_param 
@@ -657,7 +657,7 @@ EXEC databricks_workspace.ml.experiment_runs.log_param
 </TabItem>
 <TabItem value="restore">
 
-Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.<br /><br />Throws `RESOURCE_DOES_NOT_EXIST` if the run was never created or was permanently deleted.<br /><br />:param run_id: str<br />  ID of the run to restore.
+Restores a deleted run. This also restores associated metadata, runs, metrics, params, and tags.
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.restore 
@@ -671,7 +671,7 @@ EXEC databricks_workspace.ml.experiment_runs.restore
 </TabItem>
 <TabItem value="restore_bulk">
 
-Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores<br />at most max_runs per request. To call this API from a Databricks Notebook in Python, you can use the<br />client code snippet on<br /><br />:param experiment_id: str<br />  The ID of the experiment containing the runs to restore.<br />:param min_timestamp_millis: int<br />  The minimum deletion timestamp in milliseconds since the UNIX epoch for restoring runs. Only runs<br />  deleted no earlier than this timestamp are restored.<br />:param max_runs: int (optional)<br />  An optional positive integer indicating the maximum number of runs to restore. The maximum allowed<br />  value for max_runs is 10000.<br /><br />:returns: :class:`RestoreRunsResponse`
+Bulk restore runs in an experiment that were deleted no earlier than the specified timestamp. Restores
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.restore_bulk 
@@ -687,7 +687,7 @@ EXEC databricks_workspace.ml.experiment_runs.restore_bulk
 </TabItem>
 <TabItem value="search">
 
-Searches for runs that satisfy expressions.<br /><br />Search expressions can use `mlflowMetric` and `mlflowParam` keys.<br /><br />:param experiment_ids: List[str] (optional)<br />  List of experiment IDs to search over.<br />:param filter: str (optional)<br />  A filter expression over params, metrics, and tags, that allows returning a subset of runs. The<br />  syntax is a subset of SQL that supports ANDing together binary operations between a param, metric,<br />  or tag and a constant.<br /><br />  Example: `metrics.rmse < 1 and params.model_class = 'LogisticRegression'`<br /><br />  You can select columns with special characters (hyphen, space, period, etc.) by using double quotes:<br />  `metrics."model class" = 'LinearRegression' and tags."user-name" = 'Tomas'`<br /><br />  Supported operators are `=`, `!=`, `>`, `>=`, `<`, and `<=`.<br />:param max_results: int (optional)<br />  Maximum number of runs desired. Max threshold is 50000<br />:param order_by: List[str] (optional)<br />  List of columns to be ordered by, including attributes, params, metrics, and tags with an optional<br />  `"DESC"` or `"ASC"` annotation, where `"ASC"` is the default. Example: `["params.input DESC",<br />  "metrics.alpha ASC", "metrics.rmse"]`. Tiebreaks are done by start_time `DESC` followed by `run_id`<br />  for runs with the same start time (and this is the default ordering criterion if order_by is not<br />  provided).<br />:param page_token: str (optional)<br />  Token for the current page of runs.<br />:param run_view_type: :class:`ViewType` (optional)<br />  Whether to display only active, only deleted, or all runs. Defaults to only active runs.<br /><br />:returns: Iterator over :class:`Run`
+Searches for runs that satisfy expressions.
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.search 
@@ -706,7 +706,7 @@ EXEC databricks_workspace.ml.experiment_runs.search
 </TabItem>
 <TabItem value="set_tag">
 
-Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.<br /><br />:param key: str<br />  Name of the tag. Keys up to 250 bytes in size are supported.<br />:param value: str<br />  String value of the tag being logged. Values up to 64KB in size are supported.<br />:param run_id: str (optional)<br />  ID of the run under which to log the tag. Must be provided.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run under which to log the tag. This field will be<br />  removed in a future MLflow version.
+Sets a tag on a run. Tags are run metadata that can be updated during a run and after a run completes.
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.set_tag 
@@ -723,7 +723,7 @@ EXEC databricks_workspace.ml.experiment_runs.set_tag
 </TabItem>
 <TabItem value="update">
 
-Updates run metadata.<br /><br />:param end_time: int (optional)<br />  Unix timestamp in milliseconds of when the run ended.<br />:param run_id: str (optional)<br />  ID of the run to update. Must be provided.<br />:param run_name: str (optional)<br />  Updated name of the run.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run to update. This field will be removed in a future<br />  MLflow version.<br />:param status: :class:`UpdateRunStatus` (optional)<br />  Updated status of the run.<br /><br />:returns: :class:`UpdateRunResponse`
+Updates run metadata.
 
 ```sql
 EXEC databricks_workspace.ml.experiment_runs.update 

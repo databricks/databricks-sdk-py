@@ -82,14 +82,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the Results Table Clipboard features setting.<br /><br /><br />:returns: :class:`EnableNotebookTableClipboard`</td>
+    <td>Gets the Results Table Clipboard features setting.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__allow_missing"><code>data__allow_missing</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a>, <a href="#parameter-data__field_mask"><code>data__field_mask</code></a></td>
     <td></td>
-    <td>Updates the Results Table Clipboard features setting. The model follows eventual consistency, which<br />means the get after the update operation might receive stale values for some time.<br /><br />:param allow_missing: bool<br />  This should always be set to true for Settings API. Added for AIP compliance.<br />:param setting: :class:`EnableNotebookTableClipboard`<br />:param field_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`EnableNotebookTableClipboard`</td>
+    <td>Updates the Results Table Clipboard features setting. The model follows eventual consistency, which</td>
 </tr>
 </tbody>
 </table>
@@ -125,7 +125,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the Results Table Clipboard features setting.<br /><br /><br />:returns: :class:`EnableNotebookTableClipboard`
+Gets the Results Table Clipboard features setting.
 
 ```sql
 SELECT
@@ -149,7 +149,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="update">
 
-Updates the Results Table Clipboard features setting. The model follows eventual consistency, which<br />means the get after the update operation might receive stale values for some time.<br /><br />:param allow_missing: bool<br />  This should always be set to true for Settings API. Added for AIP compliance.<br />:param setting: :class:`EnableNotebookTableClipboard`<br />:param field_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`EnableNotebookTableClipboard`
+Updates the Results Table Clipboard features setting. The model follows eventual consistency, which
 
 ```sql
 UPDATE databricks_workspace.settings.enable_notebook_table_clipboard

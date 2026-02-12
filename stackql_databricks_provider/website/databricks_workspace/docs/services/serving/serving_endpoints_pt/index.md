@@ -55,14 +55,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__config"><code>data__config</code></a></td>
     <td></td>
-    <td>Create a new PT serving endpoint.<br /><br />:param name: str<br />  The name of the serving endpoint. This field is required and must be unique across a Databricks<br />  workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.<br />:param config: :class:`PtEndpointCoreConfig`<br />  The core config of the serving endpoint.<br />:param ai_gateway: :class:`AiGatewayConfig` (optional)<br />  The AI Gateway configuration for the serving endpoint.<br />:param budget_policy_id: str (optional)<br />  The budget policy associated with the endpoint.<br />:param email_notifications: :class:`EmailNotifications` (optional)<br />  Email notification settings.<br />:param tags: List[:class:`EndpointTag`] (optional)<br />  Tags to be attached to the serving endpoint and automatically propagated to billing logs.<br /><br />:returns:<br />  Long-running operation waiter for :class:`ServingEndpointDetailed`.<br />  See :method:wait_get_serving_endpoint_not_updating for more details.</td>
+    <td>Create a new PT serving endpoint.</td>
 </tr>
 <tr>
     <td><a href="#update_config"><CopyableCode code="update_config" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__config"><code>data__config</code></a></td>
     <td></td>
-    <td>Updates any combination of the pt endpoint's served entities, the compute configuration of those<br />served entities, and the endpoint's traffic config. Updates are instantaneous and endpoint should be<br />updated instantly<br /><br />:param name: str<br />  The name of the pt endpoint to update. This field is required.<br />:param config: :class:`PtEndpointCoreConfig`<br /><br />:returns:<br />  Long-running operation waiter for :class:`ServingEndpointDetailed`.<br />  See :method:wait_get_serving_endpoint_not_updating for more details.</td>
+    <td>Updates any combination of the pt endpoint's served entities, the compute configuration of those</td>
 </tr>
 </tbody>
 </table>
@@ -104,7 +104,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="create">
 
-Create a new PT serving endpoint.<br /><br />:param name: str<br />  The name of the serving endpoint. This field is required and must be unique across a Databricks<br />  workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.<br />:param config: :class:`PtEndpointCoreConfig`<br />  The core config of the serving endpoint.<br />:param ai_gateway: :class:`AiGatewayConfig` (optional)<br />  The AI Gateway configuration for the serving endpoint.<br />:param budget_policy_id: str (optional)<br />  The budget policy associated with the endpoint.<br />:param email_notifications: :class:`EmailNotifications` (optional)<br />  Email notification settings.<br />:param tags: List[:class:`EndpointTag`] (optional)<br />  Tags to be attached to the serving endpoint and automatically propagated to billing logs.<br /><br />:returns:<br />  Long-running operation waiter for :class:`ServingEndpointDetailed`.<br />  See :method:wait_get_serving_endpoint_not_updating for more details.
+Create a new PT serving endpoint.
 
 ```sql
 INSERT INTO databricks_workspace.serving.serving_endpoints_pt (
@@ -194,7 +194,7 @@ task
 >
 <TabItem value="update_config">
 
-Updates any combination of the pt endpoint's served entities, the compute configuration of those<br />served entities, and the endpoint's traffic config. Updates are instantaneous and endpoint should be<br />updated instantly<br /><br />:param name: str<br />  The name of the pt endpoint to update. This field is required.<br />:param config: :class:`PtEndpointCoreConfig`<br /><br />:returns:<br />  Long-running operation waiter for :class:`ServingEndpointDetailed`.<br />  See :method:wait_get_serving_endpoint_not_updating for more details.
+Updates any combination of the pt endpoint's served entities, the compute configuration of those
 
 ```sql
 REPLACE databricks_workspace.serving.serving_endpoints_pt

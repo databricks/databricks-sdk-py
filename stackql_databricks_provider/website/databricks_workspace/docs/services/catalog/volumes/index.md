@@ -279,35 +279,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a></td>
-    <td>Gets a volume from the metastore for a specific catalog and schema.<br /><br />The caller must be a metastore admin or an owner of (or have the **READ VOLUME** privilege on) the<br />volume. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege<br />on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.<br /><br />:param name: str<br />  The three-level (fully qualified) name of the volume<br />:param include_browse: bool (optional)<br />  Whether to include volumes in the response for which the principal can only access selective<br />  metadata for<br /><br />:returns: :class:`VolumeInfo`</td>
+    <td>Gets a volume from the metastore for a specific catalog and schema.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of volumes for the current metastore under the parent catalog and schema.<br /><br />The returned volumes are filtered based on the privileges of the calling user. For example, the<br />metastore admin is able to list all the volumes. A regular user needs to be the owner or have the<br />**READ VOLUME** privilege on the volume to receive the volumes in the response. For the latter case,<br />the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the<br />**USE_SCHEMA** privilege on the parent schema.<br /><br />There is no guarantee of a specific ordering of the elements in the array.<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param catalog_name: str<br />  The identifier of the catalog<br />:param schema_name: str<br />  The identifier of the schema<br />:param include_browse: bool (optional)<br />  Whether to include volumes in the response for which the principal can only access selective<br />  metadata for<br />:param max_results: int (optional)<br />  Maximum number of volumes to return (page length).<br /><br />  If not set, the page length is set to a server configured value (10000, as of 1/29/2024). - when set<br />  to a value greater than 0, the page length is the minimum of this value and a server configured<br />  value (10000, as of 1/29/2024); - when set to 0, the page length is set to a server configured value<br />  (10000, as of 1/29/2024) (recommended); - when set to a value less than 0, an invalid parameter<br />  error is returned;<br /><br />  Note: this parameter controls only the maximum number of volumes to return. The actual number of<br />  volumes returned in a page may be smaller than this value, including 0, even if there are more<br />  pages.<br />:param page_token: str (optional)<br />  Opaque token returned by a previous request. It must be included in the request to retrieve the next<br />  page of results (pagination).<br /><br />:returns: Iterator over :class:`VolumeInfo`</td>
+    <td>Gets an array of volumes for the current metastore under the parent catalog and schema.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__catalog_name"><code>data__catalog_name</code></a>, <a href="#parameter-data__schema_name"><code>data__schema_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__volume_type"><code>data__volume_type</code></a></td>
     <td></td>
-    <td>Creates a new volume.<br /><br />The user could create either an external volume or a managed volume. An external volume will be<br />created in the specified external location, while a managed volume will be located in the default<br />location which is specified by the parent schema, or the parent catalog, or the Metastore.<br /><br />For the volume creation to succeed, the user must satisfy following conditions: - The caller must be a<br />metastore admin, or be the owner of the parent catalog and schema, or have the **USE_CATALOG**<br />privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema. - The caller<br />must have **CREATE VOLUME** privilege on the parent schema.<br /><br />For an external volume, following conditions also need to satisfy - The caller must have **CREATE<br />EXTERNAL VOLUME** privilege on the external location. - There are no other tables, nor volumes<br />existing in the specified storage location. - The specified storage location is not under the location<br />of other tables, nor volumes, or catalogs or schemas.<br /><br />:param catalog_name: str<br />  The name of the catalog where the schema and the volume are<br />:param schema_name: str<br />  The name of the schema where the volume is<br />:param name: str<br />  The name of the volume<br />:param volume_type: :class:`VolumeType`<br />  The type of the volume. An external volume is located in the specified external location. A managed<br />  volume is located in the default location which is specified by the parent schema, or the parent<br />  catalog, or the Metastore. [Learn more]<br /><br />  [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external<br />:param comment: str (optional)<br />  The comment attached to the volume<br />:param storage_location: str (optional)<br />  The storage location on the cloud<br /><br />:returns: :class:`VolumeInfo`</td>
+    <td>Creates a new volume.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the specified volume under the specified parent catalog and schema.<br /><br />The caller must be a metastore admin or an owner of the volume. For the latter case, the caller must<br />also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**<br />privilege on the parent schema.<br /><br />Currently only the name, the owner or the comment of the volume could be updated.<br /><br />:param name: str<br />  The three-level (fully qualified) name of the volume<br />:param comment: str (optional)<br />  The comment attached to the volume<br />:param new_name: str (optional)<br />  New name for the volume.<br />:param owner: str (optional)<br />  The identifier of the user who owns the volume<br /><br />:returns: :class:`VolumeInfo`</td>
+    <td>Updates the specified volume under the specified parent catalog and schema.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a volume from the specified parent catalog and schema.<br /><br />The caller must be a metastore admin or an owner of the volume. For the latter case, the caller must<br />also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**<br />privilege on the parent schema.<br /><br />:param name: str<br />  The three-level (fully qualified) name of the volume</td>
+    <td>Deletes a volume from the specified parent catalog and schema.</td>
 </tr>
 </tbody>
 </table>
@@ -374,7 +374,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="read">
 
-Gets a volume from the metastore for a specific catalog and schema.<br /><br />The caller must be a metastore admin or an owner of (or have the **READ VOLUME** privilege on) the<br />volume. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege<br />on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.<br /><br />:param name: str<br />  The three-level (fully qualified) name of the volume<br />:param include_browse: bool (optional)<br />  Whether to include volumes in the response for which the principal can only access selective<br />  metadata for<br /><br />:returns: :class:`VolumeInfo`
+Gets a volume from the metastore for a specific catalog and schema.
 
 ```sql
 SELECT
@@ -404,7 +404,7 @@ AND include_browse = '{{ include_browse }}'
 </TabItem>
 <TabItem value="list">
 
-Gets an array of volumes for the current metastore under the parent catalog and schema.<br /><br />The returned volumes are filtered based on the privileges of the calling user. For example, the<br />metastore admin is able to list all the volumes. A regular user needs to be the owner or have the<br />**READ VOLUME** privilege on the volume to receive the volumes in the response. For the latter case,<br />the caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the<br />**USE_SCHEMA** privilege on the parent schema.<br /><br />There is no guarantee of a specific ordering of the elements in the array.<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param catalog_name: str<br />  The identifier of the catalog<br />:param schema_name: str<br />  The identifier of the schema<br />:param include_browse: bool (optional)<br />  Whether to include volumes in the response for which the principal can only access selective<br />  metadata for<br />:param max_results: int (optional)<br />  Maximum number of volumes to return (page length).<br /><br />  If not set, the page length is set to a server configured value (10000, as of 1/29/2024). - when set<br />  to a value greater than 0, the page length is the minimum of this value and a server configured<br />  value (10000, as of 1/29/2024); - when set to 0, the page length is set to a server configured value<br />  (10000, as of 1/29/2024) (recommended); - when set to a value less than 0, an invalid parameter<br />  error is returned;<br /><br />  Note: this parameter controls only the maximum number of volumes to return. The actual number of<br />  volumes returned in a page may be smaller than this value, including 0, even if there are more<br />  pages.<br />:param page_token: str (optional)<br />  Opaque token returned by a previous request. It must be included in the request to retrieve the next<br />  page of results (pagination).<br /><br />:returns: Iterator over :class:`VolumeInfo`
+Gets an array of volumes for the current metastore under the parent catalog and schema.
 
 ```sql
 SELECT
@@ -449,7 +449,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new volume.<br /><br />The user could create either an external volume or a managed volume. An external volume will be<br />created in the specified external location, while a managed volume will be located in the default<br />location which is specified by the parent schema, or the parent catalog, or the Metastore.<br /><br />For the volume creation to succeed, the user must satisfy following conditions: - The caller must be a<br />metastore admin, or be the owner of the parent catalog and schema, or have the **USE_CATALOG**<br />privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema. - The caller<br />must have **CREATE VOLUME** privilege on the parent schema.<br /><br />For an external volume, following conditions also need to satisfy - The caller must have **CREATE<br />EXTERNAL VOLUME** privilege on the external location. - There are no other tables, nor volumes<br />existing in the specified storage location. - The specified storage location is not under the location<br />of other tables, nor volumes, or catalogs or schemas.<br /><br />:param catalog_name: str<br />  The name of the catalog where the schema and the volume are<br />:param schema_name: str<br />  The name of the schema where the volume is<br />:param name: str<br />  The name of the volume<br />:param volume_type: :class:`VolumeType`<br />  The type of the volume. An external volume is located in the specified external location. A managed<br />  volume is located in the default location which is specified by the parent schema, or the parent<br />  catalog, or the Metastore. [Learn more]<br /><br />  [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external<br />:param comment: str (optional)<br />  The comment attached to the volume<br />:param storage_location: str (optional)<br />  The storage location on the cloud<br /><br />:returns: :class:`VolumeInfo`
+Creates a new volume.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.volumes (
@@ -538,7 +538,7 @@ volume_type
 >
 <TabItem value="update">
 
-Updates the specified volume under the specified parent catalog and schema.<br /><br />The caller must be a metastore admin or an owner of the volume. For the latter case, the caller must<br />also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**<br />privilege on the parent schema.<br /><br />Currently only the name, the owner or the comment of the volume could be updated.<br /><br />:param name: str<br />  The three-level (fully qualified) name of the volume<br />:param comment: str (optional)<br />  The comment attached to the volume<br />:param new_name: str (optional)<br />  New name for the volume.<br />:param owner: str (optional)<br />  The identifier of the user who owns the volume<br /><br />:returns: :class:`VolumeInfo`
+Updates the specified volume under the specified parent catalog and schema.
 
 ```sql
 UPDATE databricks_workspace.catalog.volumes
@@ -582,7 +582,7 @@ volume_type;
 >
 <TabItem value="delete">
 
-Deletes a volume from the specified parent catalog and schema.<br /><br />The caller must be a metastore admin or an owner of the volume. For the latter case, the caller must<br />also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA**<br />privilege on the parent schema.<br /><br />:param name: str<br />  The three-level (fully qualified) name of the volume
+Deletes a volume from the specified parent catalog and schema.
 
 ```sql
 DELETE FROM databricks_workspace.catalog.volumes

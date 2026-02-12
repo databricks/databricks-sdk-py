@@ -141,35 +141,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a auto-approval rule by rule ID<br /><br />:param clean_room_name: str<br />:param rule_id: str<br /><br />:returns: :class:`CleanRoomAutoApprovalRule`</td>
+    <td>Get a auto-approval rule by rule ID</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List all auto-approval rules for the caller<br /><br />:param clean_room_name: str<br />:param page_size: int (optional)<br />  Maximum number of auto-approval rules to return. Defaults to 100.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`CleanRoomAutoApprovalRule`</td>
+    <td>List all auto-approval rules for the caller</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__auto_approval_rule"><code>data__auto_approval_rule</code></a></td>
     <td></td>
-    <td>Create an auto-approval rule<br /><br />:param clean_room_name: str<br />  The name of the clean room this auto-approval rule belongs to.<br />:param auto_approval_rule: :class:`CleanRoomAutoApprovalRule`<br /><br />:returns: :class:`CleanRoomAutoApprovalRule`</td>
+    <td>Create an auto-approval rule</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__auto_approval_rule"><code>data__auto_approval_rule</code></a></td>
     <td></td>
-    <td>Update a auto-approval rule by rule ID<br /><br />:param clean_room_name: str<br />  The name of the clean room this auto-approval rule belongs to.<br />:param rule_id: str<br />  A generated UUID identifying the rule.<br />:param auto_approval_rule: :class:`CleanRoomAutoApprovalRule`<br />  The auto-approval rule to update. The rule_id field is used to identify the rule to update.<br /><br />:returns: :class:`CleanRoomAutoApprovalRule`</td>
+    <td>Update a auto-approval rule by rule ID</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a auto-approval rule by rule ID<br /><br />:param clean_room_name: str<br />:param rule_id: str</td>
+    <td>Delete a auto-approval rule by rule ID</td>
 </tr>
 </tbody>
 </table>
@@ -226,7 +226,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a auto-approval rule by rule ID<br /><br />:param clean_room_name: str<br />:param rule_id: str<br /><br />:returns: :class:`CleanRoomAutoApprovalRule`
+Get a auto-approval rule by rule ID
 
 ```sql
 SELECT
@@ -246,7 +246,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List all auto-approval rules for the caller<br /><br />:param clean_room_name: str<br />:param page_size: int (optional)<br />  Maximum number of auto-approval rules to return. Defaults to 100.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`CleanRoomAutoApprovalRule`
+List all auto-approval rules for the caller
 
 ```sql
 SELECT
@@ -279,7 +279,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create an auto-approval rule<br /><br />:param clean_room_name: str<br />  The name of the clean room this auto-approval rule belongs to.<br />:param auto_approval_rule: :class:`CleanRoomAutoApprovalRule`<br /><br />:returns: :class:`CleanRoomAutoApprovalRule`
+Create an auto-approval rule
 
 ```sql
 INSERT INTO databricks_workspace.cleanrooms.auto_approval_rules (
@@ -333,7 +333,7 @@ runner_collaborator_alias
 >
 <TabItem value="update">
 
-Update a auto-approval rule by rule ID<br /><br />:param clean_room_name: str<br />  The name of the clean room this auto-approval rule belongs to.<br />:param rule_id: str<br />  A generated UUID identifying the rule.<br />:param auto_approval_rule: :class:`CleanRoomAutoApprovalRule`<br />  The auto-approval rule to update. The rule_id field is used to identify the rule to update.<br /><br />:returns: :class:`CleanRoomAutoApprovalRule`
+Update a auto-approval rule by rule ID
 
 ```sql
 UPDATE databricks_workspace.cleanrooms.auto_approval_rules
@@ -367,7 +367,7 @@ runner_collaborator_alias;
 >
 <TabItem value="delete">
 
-Delete a auto-approval rule by rule ID<br /><br />:param clean_room_name: str<br />:param rule_id: str
+Delete a auto-approval rule by rule ID
 
 ```sql
 DELETE FROM databricks_workspace.cleanrooms.auto_approval_rules

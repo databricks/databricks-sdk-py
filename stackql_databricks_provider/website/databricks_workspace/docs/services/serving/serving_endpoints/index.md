@@ -170,7 +170,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "renewal_period",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
           },
           {
             "name": "calls",
@@ -300,7 +300,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "provider",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
               },
               {
                 "name": "name",
@@ -434,7 +434,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "deployment",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
               },
               {
                 "name": "deployment_state_message",
@@ -528,7 +528,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "deployment",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
               },
               {
                 "name": "deployment_state_message",
@@ -738,7 +738,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "provider",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
               },
               {
                 "name": "name",
@@ -872,7 +872,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "deployment",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
               },
               {
                 "name": "deployment_state_message",
@@ -966,7 +966,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "deployment",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
               },
               {
                 "name": "deployment_state_message",
@@ -1041,7 +1041,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "config_update",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       },
       {
         "name": "ready",
@@ -1210,7 +1210,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "renewal_period",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
           },
           {
             "name": "calls",
@@ -1276,7 +1276,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "provider",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
               },
               {
                 "name": "name",
@@ -1421,7 +1421,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "config_update",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       },
       {
         "name": "ready",
@@ -1476,49 +1476,49 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Retrieves the details for a single serving endpoint.<br /><br />:param name: str<br />  The name of the serving endpoint. This field is required.<br /><br />:returns: :class:`ServingEndpointDetailed`</td>
+    <td>Retrieves the details for a single serving endpoint.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get all serving endpoints.<br /><br /><br />:returns: Iterator over :class:`ServingEndpoint`</td>
+    <td>Get all serving endpoints.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
     <td></td>
-    <td>Create a new serving endpoint.<br /><br />:param name: str<br />  The name of the serving endpoint. This field is required and must be unique across a Databricks<br />  workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.<br />:param ai_gateway: :class:`AiGatewayConfig` (optional)<br />  The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned throughput,<br />  and pay-per-token endpoints are fully supported; agent endpoints currently only support inference<br />  tables.<br />:param budget_policy_id: str (optional)<br />  The budget policy to be applied to the serving endpoint.<br />:param config: :class:`EndpointCoreConfigInput` (optional)<br />  The core config of the serving endpoint.<br />:param description: str (optional)<br />:param email_notifications: :class:`EmailNotifications` (optional)<br />  Email notification settings.<br />:param rate_limits: List[:class:`RateLimit`] (optional)<br />  Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI<br />  Gateway to manage rate limits.<br />:param route_optimized: bool (optional)<br />  Enable route optimization for the serving endpoint.<br />:param tags: List[:class:`EndpointTag`] (optional)<br />  Tags to be attached to the serving endpoint and automatically propagated to billing logs.<br /><br />:returns:<br />  Long-running operation waiter for :class:`ServingEndpointDetailed`.<br />  See :method:wait_get_serving_endpoint_not_updating for more details.</td>
+    <td>Create a new serving endpoint.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Used to batch add and delete tags from a serving endpoint with a single API call.<br /><br />:param name: str<br />  The name of the serving endpoint who's tags to patch. This field is required.<br />:param add_tags: List[:class:`EndpointTag`] (optional)<br />  List of endpoint tags to add<br />:param delete_tags: List[str] (optional)<br />  List of tag keys to delete<br /><br />:returns: :class:`EndpointTags`</td>
+    <td>Used to batch add and delete tags from a serving endpoint with a single API call.</td>
 </tr>
 <tr>
     <td><a href="#update_config"><CopyableCode code="update_config" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates any combination of the serving endpoint's served entities, the compute configuration of those<br />served entities, and the endpoint's traffic config. An endpoint that already has an update in progress<br />can not be updated until the current update completes or fails.<br /><br />:param name: str<br />  The name of the serving endpoint to update. This field is required.<br />:param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)<br />  Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.<br />  Note: this field is deprecated for creating new provisioned throughput endpoints, or updating<br />  existing provisioned throughput endpoints that never have inference table configured; in these cases<br />  please use AI Gateway to manage inference tables.<br />:param served_entities: List[:class:`ServedEntityInput`] (optional)<br />  The list of served entities under the serving endpoint config.<br />:param served_models: List[:class:`ServedModelInput`] (optional)<br />  (Deprecated, use served_entities instead) The list of served models under the serving endpoint<br />  config.<br />:param traffic_config: :class:`TrafficConfig` (optional)<br />  The traffic configuration associated with the serving endpoint config.<br /><br />:returns:<br />  Long-running operation waiter for :class:`ServingEndpointDetailed`.<br />  See :method:wait_get_serving_endpoint_not_updating for more details.</td>
+    <td>Updates any combination of the serving endpoint's served entities, the compute configuration of those</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a serving endpoint.<br /><br />:param name: str</td>
+    <td>Delete a serving endpoint.</td>
 </tr>
 <tr>
     <td><a href="#query"><CopyableCode code="query" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Query a serving endpoint<br /><br />:param name: str<br />  The name of the serving endpoint. This field is required and is provided via the path parameter.<br />:param client_request_id: str (optional)<br />  Optional user-provided request identifier that will be recorded in the inference table and the usage<br />  tracking table.<br />:param dataframe_records: List[Any] (optional)<br />  Pandas Dataframe input in the records orientation.<br />:param dataframe_split: :class:`DataframeSplitInput` (optional)<br />  Pandas Dataframe input in the split orientation.<br />:param extra_params: Dict[str,str] (optional)<br />  The extra parameters field used ONLY for __completions, chat,__ and __embeddings external &<br />  foundation model__ serving endpoints. This is a map of strings and should only be used with other<br />  external/foundation model query fields.<br />:param input: Any (optional)<br />  The input string (or array of strings) field used ONLY for __embeddings external & foundation<br />  model__ serving endpoints and is the only field (along with extra_params if needed) used by<br />  embeddings queries.<br />:param inputs: Any (optional)<br />  Tensor-based input in columnar format.<br />:param instances: List[Any] (optional)<br />  Tensor-based input in row format.<br />:param max_tokens: int (optional)<br />  The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving<br />  endpoints. This is an integer and should only be used with other chat/completions query fields.<br />:param messages: List[:class:`ChatMessage`] (optional)<br />  The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an<br />  array of ChatMessage objects and should only be used with other chat query fields.<br />:param n: int (optional)<br />  The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation<br />  model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be<br />  used with other chat/completions query fields.<br />:param prompt: Any (optional)<br />  The prompt string (or array of strings) field used ONLY for __completions external & foundation<br />  model__ serving endpoints and should only be used with other completions query fields.<br />:param stop: List[str] (optional)<br />  The stop sequences field used ONLY for __completions__ and __chat external & foundation model__<br />  serving endpoints. This is a list of strings and should only be used with other chat/completions<br />  query fields.<br />:param stream: bool (optional)<br />  The stream field used ONLY for __completions__ and __chat external & foundation model__ serving<br />  endpoints. This is a boolean defaulting to false and should only be used with other chat/completions<br />  query fields.<br />:param temperature: float (optional)<br />  The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving<br />  endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with<br />  other chat/completions query fields.<br />:param usage_context: Dict[str,str] (optional)<br />  Optional user-provided context that will be recorded in the usage tracking table.<br /><br />:returns: :class:`QueryEndpointResponse`</td>
+    <td>Query a serving endpoint</td>
 </tr>
 </tbody>
 </table>
@@ -1560,7 +1560,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Retrieves the details for a single serving endpoint.<br /><br />:param name: str<br />  The name of the serving endpoint. This field is required.<br /><br />:returns: :class:`ServingEndpointDetailed`
+Retrieves the details for a single serving endpoint.
 
 ```sql
 SELECT
@@ -1590,7 +1590,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Get all serving endpoints.<br /><br /><br />:returns: Iterator over :class:`ServingEndpoint`
+Get all serving endpoints.
 
 ```sql
 SELECT
@@ -1626,7 +1626,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Create a new serving endpoint.<br /><br />:param name: str<br />  The name of the serving endpoint. This field is required and must be unique across a Databricks<br />  workspace. An endpoint name can consist of alphanumeric characters, dashes, and underscores.<br />:param ai_gateway: :class:`AiGatewayConfig` (optional)<br />  The AI Gateway configuration for the serving endpoint. NOTE: External model, provisioned throughput,<br />  and pay-per-token endpoints are fully supported; agent endpoints currently only support inference<br />  tables.<br />:param budget_policy_id: str (optional)<br />  The budget policy to be applied to the serving endpoint.<br />:param config: :class:`EndpointCoreConfigInput` (optional)<br />  The core config of the serving endpoint.<br />:param description: str (optional)<br />:param email_notifications: :class:`EmailNotifications` (optional)<br />  Email notification settings.<br />:param rate_limits: List[:class:`RateLimit`] (optional)<br />  Rate limits to be applied to the serving endpoint. NOTE: this field is deprecated, please use AI<br />  Gateway to manage rate limits.<br />:param route_optimized: bool (optional)<br />  Enable route optimization for the serving endpoint.<br />:param tags: List[:class:`EndpointTag`] (optional)<br />  Tags to be attached to the serving endpoint and automatically propagated to billing logs.<br /><br />:returns:<br />  Long-running operation waiter for :class:`ServingEndpointDetailed`.<br />  See :method:wait_get_serving_endpoint_not_updating for more details.
+Create a new serving endpoint.
 
 ```sql
 INSERT INTO databricks_workspace.serving.serving_endpoints (
@@ -1732,7 +1732,7 @@ task
 >
 <TabItem value="update">
 
-Used to batch add and delete tags from a serving endpoint with a single API call.<br /><br />:param name: str<br />  The name of the serving endpoint who's tags to patch. This field is required.<br />:param add_tags: List[:class:`EndpointTag`] (optional)<br />  List of endpoint tags to add<br />:param delete_tags: List[str] (optional)<br />  List of tag keys to delete<br /><br />:returns: :class:`EndpointTags`
+Used to batch add and delete tags from a serving endpoint with a single API call.
 
 ```sql
 UPDATE databricks_workspace.serving.serving_endpoints
@@ -1759,7 +1759,7 @@ tags;
 >
 <TabItem value="update_config">
 
-Updates any combination of the serving endpoint's served entities, the compute configuration of those<br />served entities, and the endpoint's traffic config. An endpoint that already has an update in progress<br />can not be updated until the current update completes or fails.<br /><br />:param name: str<br />  The name of the serving endpoint to update. This field is required.<br />:param auto_capture_config: :class:`AutoCaptureConfigInput` (optional)<br />  Configuration for Inference Tables which automatically logs requests and responses to Unity Catalog.<br />  Note: this field is deprecated for creating new provisioned throughput endpoints, or updating<br />  existing provisioned throughput endpoints that never have inference table configured; in these cases<br />  please use AI Gateway to manage inference tables.<br />:param served_entities: List[:class:`ServedEntityInput`] (optional)<br />  The list of served entities under the serving endpoint config.<br />:param served_models: List[:class:`ServedModelInput`] (optional)<br />  (Deprecated, use served_entities instead) The list of served models under the serving endpoint<br />  config.<br />:param traffic_config: :class:`TrafficConfig` (optional)<br />  The traffic configuration associated with the serving endpoint config.<br /><br />:returns:<br />  Long-running operation waiter for :class:`ServingEndpointDetailed`.<br />  See :method:wait_get_serving_endpoint_not_updating for more details.
+Updates any combination of the serving endpoint's served entities, the compute configuration of those
 
 ```sql
 REPLACE databricks_workspace.serving.serving_endpoints
@@ -1805,7 +1805,7 @@ task;
 >
 <TabItem value="delete">
 
-Delete a serving endpoint.<br /><br />:param name: str
+Delete a serving endpoint.
 
 ```sql
 DELETE FROM databricks_workspace.serving.serving_endpoints
@@ -1827,7 +1827,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="query">
 
-Query a serving endpoint<br /><br />:param name: str<br />  The name of the serving endpoint. This field is required and is provided via the path parameter.<br />:param client_request_id: str (optional)<br />  Optional user-provided request identifier that will be recorded in the inference table and the usage<br />  tracking table.<br />:param dataframe_records: List[Any] (optional)<br />  Pandas Dataframe input in the records orientation.<br />:param dataframe_split: :class:`DataframeSplitInput` (optional)<br />  Pandas Dataframe input in the split orientation.<br />:param extra_params: Dict[str,str] (optional)<br />  The extra parameters field used ONLY for __completions, chat,__ and __embeddings external &<br />  foundation model__ serving endpoints. This is a map of strings and should only be used with other<br />  external/foundation model query fields.<br />:param input: Any (optional)<br />  The input string (or array of strings) field used ONLY for __embeddings external & foundation<br />  model__ serving endpoints and is the only field (along with extra_params if needed) used by<br />  embeddings queries.<br />:param inputs: Any (optional)<br />  Tensor-based input in columnar format.<br />:param instances: List[Any] (optional)<br />  Tensor-based input in row format.<br />:param max_tokens: int (optional)<br />  The max tokens field used ONLY for __completions__ and __chat external & foundation model__ serving<br />  endpoints. This is an integer and should only be used with other chat/completions query fields.<br />:param messages: List[:class:`ChatMessage`] (optional)<br />  The messages field used ONLY for __chat external & foundation model__ serving endpoints. This is an<br />  array of ChatMessage objects and should only be used with other chat query fields.<br />:param n: int (optional)<br />  The n (number of candidates) field used ONLY for __completions__ and __chat external & foundation<br />  model__ serving endpoints. This is an integer between 1 and 5 with a default of 1 and should only be<br />  used with other chat/completions query fields.<br />:param prompt: Any (optional)<br />  The prompt string (or array of strings) field used ONLY for __completions external & foundation<br />  model__ serving endpoints and should only be used with other completions query fields.<br />:param stop: List[str] (optional)<br />  The stop sequences field used ONLY for __completions__ and __chat external & foundation model__<br />  serving endpoints. This is a list of strings and should only be used with other chat/completions<br />  query fields.<br />:param stream: bool (optional)<br />  The stream field used ONLY for __completions__ and __chat external & foundation model__ serving<br />  endpoints. This is a boolean defaulting to false and should only be used with other chat/completions<br />  query fields.<br />:param temperature: float (optional)<br />  The temperature field used ONLY for __completions__ and __chat external & foundation model__ serving<br />  endpoints. This is a float between 0.0 and 2.0 with a default of 1.0 and should only be used with<br />  other chat/completions query fields.<br />:param usage_context: Dict[str,str] (optional)<br />  Optional user-provided context that will be recorded in the usage tracking table.<br /><br />:returns: :class:`QueryEndpointResponse`
+Query a serving endpoint
 
 ```sql
 EXEC databricks_workspace.serving.serving_endpoints.query 

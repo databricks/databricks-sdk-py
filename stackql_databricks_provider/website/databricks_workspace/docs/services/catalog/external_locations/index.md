@@ -248,7 +248,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "owner",
@@ -486,7 +486,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "owner",
@@ -537,35 +537,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a></td>
-    <td>Gets an external location from the metastore. The caller must be either a metastore admin, the owner<br />of the external location, or a user that has some privilege on the external location.<br /><br />:param name: str<br />  Name of the external location.<br />:param include_browse: bool (optional)<br />  Whether to include external locations in the response for which the principal can only access<br />  selective metadata for<br /><br />:returns: :class:`ExternalLocationInfo`</td>
+    <td>Gets an external location from the metastore. The caller must be either a metastore admin, the owner</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-include_unbound"><code>include_unbound</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller<br />must be a metastore admin, the owner of the external location, or a user that has some privilege on<br />the external location. There is no guarantee of a specific ordering of the elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param include_browse: bool (optional)<br />  Whether to include external locations in the response for which the principal can only access<br />  selective metadata for<br />:param include_unbound: bool (optional)<br />  Whether to include external locations not bound to the workspace. Effective only if the user has<br />  permission to update the location–workspace binding.<br />:param max_results: int (optional)<br />  Maximum number of external locations to return. If not set, all the external locations are returned<br />  (not recommended). - when set to a value greater than 0, the page length is the minimum of this<br />  value and a server configured value; - when set to 0, the page length is set to a server configured<br />  value (recommended); - when set to a value less than 0, an invalid parameter error is returned;<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ExternalLocationInfo`</td>
+    <td>Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__url"><code>data__url</code></a>, <a href="#parameter-data__credential_name"><code>data__credential_name</code></a></td>
     <td></td>
-    <td>Creates a new external location entry in the metastore. The caller must be a metastore admin or have<br />the **CREATE_EXTERNAL_LOCATION** privilege on both the metastore and the associated storage<br />credential.<br /><br />:param name: str<br />  Name of the external location.<br />:param url: str<br />  Path URL of the external location.<br />:param credential_name: str<br />  Name of the storage credential used with this location.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param enable_file_events: bool (optional)<br />  Whether to enable file events on this external location. Default to `true`. Set to `false` to<br />  disable file events.<br />:param encryption_details: :class:`EncryptionDetails` (optional)<br />:param fallback: bool (optional)<br />  Indicates whether fallback mode is enabled for this external location. When fallback mode is<br />  enabled, the access to the location falls back to cluster credentials if UC credentials are not<br />  sufficient.<br />:param file_event_queue: :class:`FileEventQueue` (optional)<br />  File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly<br />  one of the documented properties.<br />:param read_only: bool (optional)<br />  Indicates whether the external location is read-only.<br />:param skip_validation: bool (optional)<br />  Skips validation of the storage credential associated with the external location.<br /><br />:returns: :class:`ExternalLocationInfo`</td>
+    <td>Creates a new external location entry in the metastore. The caller must be a metastore admin or have</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates an external location in the metastore. The caller must be the owner of the external location,<br />or be a metastore admin. In the second case, the admin can only update the name of the external<br />location.<br /><br />:param name: str<br />  Name of the external location.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param credential_name: str (optional)<br />  Name of the storage credential used with this location.<br />:param enable_file_events: bool (optional)<br />  Whether to enable file events on this external location. Default to `true`. Set to `false` to<br />  disable file events.<br />:param encryption_details: :class:`EncryptionDetails` (optional)<br />:param fallback: bool (optional)<br />  Indicates whether fallback mode is enabled for this external location. When fallback mode is<br />  enabled, the access to the location falls back to cluster credentials if UC credentials are not<br />  sufficient.<br />:param file_event_queue: :class:`FileEventQueue` (optional)<br />  File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly<br />  one of the documented properties.<br />:param force: bool (optional)<br />  Force update even if changing url invalidates dependent external tables or mounts.<br />:param isolation_mode: :class:`IsolationMode` (optional)<br />:param new_name: str (optional)<br />  New name for the external location.<br />:param owner: str (optional)<br />  The owner of the external location.<br />:param read_only: bool (optional)<br />  Indicates whether the external location is read-only.<br />:param skip_validation: bool (optional)<br />  Skips validation of the storage credential associated with the external location.<br />:param url: str (optional)<br />  Path URL of the external location.<br /><br />:returns: :class:`ExternalLocationInfo`</td>
+    <td>Updates an external location in the metastore. The caller must be the owner of the external location,</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
-    <td>Deletes the specified external location from the metastore. The caller must be the owner of the<br />external location.<br /><br />:param name: str<br />  Name of the external location.<br />:param force: bool (optional)<br />  Force deletion even if there are dependent external tables or mounts.</td>
+    <td>Deletes the specified external location from the metastore. The caller must be the owner of the</td>
 </tr>
 </tbody>
 </table>
@@ -632,7 +632,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets an external location from the metastore. The caller must be either a metastore admin, the owner<br />of the external location, or a user that has some privilege on the external location.<br /><br />:param name: str<br />  Name of the external location.<br />:param include_browse: bool (optional)<br />  Whether to include external locations in the response for which the principal can only access<br />  selective metadata for<br /><br />:returns: :class:`ExternalLocationInfo`
+Gets an external location from the metastore. The caller must be either a metastore admin, the owner
 
 ```sql
 SELECT
@@ -663,7 +663,7 @@ AND include_browse = '{{ include_browse }}'
 </TabItem>
 <TabItem value="list">
 
-Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller<br />must be a metastore admin, the owner of the external location, or a user that has some privilege on<br />the external location. There is no guarantee of a specific ordering of the elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param include_browse: bool (optional)<br />  Whether to include external locations in the response for which the principal can only access<br />  selective metadata for<br />:param include_unbound: bool (optional)<br />  Whether to include external locations not bound to the workspace. Effective only if the user has<br />  permission to update the location–workspace binding.<br />:param max_results: int (optional)<br />  Maximum number of external locations to return. If not set, all the external locations are returned<br />  (not recommended). - when set to a value greater than 0, the page length is the minimum of this<br />  value and a server configured value; - when set to 0, the page length is set to a server configured<br />  value (recommended); - when set to a value less than 0, an invalid parameter error is returned;<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ExternalLocationInfo`
+Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
 
 ```sql
 SELECT
@@ -708,7 +708,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new external location entry in the metastore. The caller must be a metastore admin or have<br />the **CREATE_EXTERNAL_LOCATION** privilege on both the metastore and the associated storage<br />credential.<br /><br />:param name: str<br />  Name of the external location.<br />:param url: str<br />  Path URL of the external location.<br />:param credential_name: str<br />  Name of the storage credential used with this location.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param enable_file_events: bool (optional)<br />  Whether to enable file events on this external location. Default to `true`. Set to `false` to<br />  disable file events.<br />:param encryption_details: :class:`EncryptionDetails` (optional)<br />:param fallback: bool (optional)<br />  Indicates whether fallback mode is enabled for this external location. When fallback mode is<br />  enabled, the access to the location falls back to cluster credentials if UC credentials are not<br />  sufficient.<br />:param file_event_queue: :class:`FileEventQueue` (optional)<br />  File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly<br />  one of the documented properties.<br />:param read_only: bool (optional)<br />  Indicates whether the external location is read-only.<br />:param skip_validation: bool (optional)<br />  Skips validation of the storage credential associated with the external location.<br /><br />:returns: :class:`ExternalLocationInfo`
+Creates a new external location entry in the metastore. The caller must be a metastore admin or have
 
 ```sql
 INSERT INTO databricks_workspace.catalog.external_locations (
@@ -820,7 +820,7 @@ url
 >
 <TabItem value="update">
 
-Updates an external location in the metastore. The caller must be the owner of the external location,<br />or be a metastore admin. In the second case, the admin can only update the name of the external<br />location.<br /><br />:param name: str<br />  Name of the external location.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param credential_name: str (optional)<br />  Name of the storage credential used with this location.<br />:param enable_file_events: bool (optional)<br />  Whether to enable file events on this external location. Default to `true`. Set to `false` to<br />  disable file events.<br />:param encryption_details: :class:`EncryptionDetails` (optional)<br />:param fallback: bool (optional)<br />  Indicates whether fallback mode is enabled for this external location. When fallback mode is<br />  enabled, the access to the location falls back to cluster credentials if UC credentials are not<br />  sufficient.<br />:param file_event_queue: :class:`FileEventQueue` (optional)<br />  File event queue settings. If `enable_file_events` is not `false`, must be defined and have exactly<br />  one of the documented properties.<br />:param force: bool (optional)<br />  Force update even if changing url invalidates dependent external tables or mounts.<br />:param isolation_mode: :class:`IsolationMode` (optional)<br />:param new_name: str (optional)<br />  New name for the external location.<br />:param owner: str (optional)<br />  The owner of the external location.<br />:param read_only: bool (optional)<br />  Indicates whether the external location is read-only.<br />:param skip_validation: bool (optional)<br />  Skips validation of the storage credential associated with the external location.<br />:param url: str (optional)<br />  Path URL of the external location.<br /><br />:returns: :class:`ExternalLocationInfo`
+Updates an external location in the metastore. The caller must be the owner of the external location,
 
 ```sql
 UPDATE databricks_workspace.catalog.external_locations
@@ -875,7 +875,7 @@ url;
 >
 <TabItem value="delete">
 
-Deletes the specified external location from the metastore. The caller must be the owner of the<br />external location.<br /><br />:param name: str<br />  Name of the external location.<br />:param force: bool (optional)<br />  Force deletion even if there are dependent external tables or mounts.
+Deletes the specified external location from the metastore. The caller must be the owner of the
 
 ```sql
 DELETE FROM databricks_workspace.catalog.external_locations

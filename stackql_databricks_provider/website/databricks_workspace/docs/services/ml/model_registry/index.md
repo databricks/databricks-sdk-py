@@ -472,63 +472,63 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also<br />returns the model's Databricks workspace ID and the permission level of the requesting user on the<br />model.<br /><br />[MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel<br /><br />:param name: str<br />  Registered model unique name identifier.<br /><br />:returns: :class:`GetModelResponse`</td>
+    <td>Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Lists all available registered models, up to the limit specified in __max_results__.<br /><br />:param max_results: int (optional)<br />  Maximum number of registered models desired. Max threshold is 1000.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous query.<br /><br />:returns: Iterator over :class:`Model`</td>
+    <td>Lists all available registered models, up to the limit specified in __max_results__.</td>
 </tr>
 <tr>
     <td><a href="#search"><CopyableCode code="search" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-order_by"><code>order_by</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Search for registered models based on the specified __filter__.<br /><br />:param filter: str (optional)<br />  String filter condition, like "name LIKE 'my-model-name'". Interpreted in the backend automatically<br />  as "name LIKE '%my-model-name%'". Single boolean condition, with string values wrapped in single<br />  quotes.<br />:param max_results: int (optional)<br />  Maximum number of models desired. Default is 100. Max threshold is 1000.<br />:param order_by: List[str] (optional)<br />  List of columns for ordering search results, which can include model name and last updated timestamp<br />  with an optional "DESC" or "ASC" annotation, where "ASC" is the default. Tiebreaks are done by model<br />  name ASC.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous search query.<br /><br />:returns: Iterator over :class:`Model`</td>
+    <td>Search for registered models based on the specified __filter__.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
     <td></td>
-    <td>Creates a new registered model with the name specified in the request body. Throws<br />`RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.<br /><br />:param name: str<br />  Register models under this name<br />:param description: str (optional)<br />  Optional description for registered model.<br />:param tags: List[:class:`ModelTag`] (optional)<br />  Additional metadata for registered model.<br /><br />:returns: :class:`CreateModelResponse`</td>
+    <td>Creates a new registered model with the name specified in the request body. Throws</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
     <td></td>
-    <td>Updates a registered model.<br /><br />:param name: str<br />  Registered model unique name identifier.<br />:param description: str (optional)<br />  If provided, updates the description for this `registered_model`.<br /><br />:returns: :class:`UpdateModelResponse`</td>
+    <td>Updates a registered model.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a registered model.<br /><br />:param name: str<br />  Registered model unique name identifier.</td>
+    <td>Deletes a registered model.</td>
 </tr>
 <tr>
     <td><a href="#delete_tag"><CopyableCode code="delete_tag" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes the tag for a registered model.<br /><br />:param name: str<br />  Name of the registered model that the tag was logged under.<br />:param key: str<br />  Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size<br />  is 250 bytes.</td>
+    <td>Deletes the tag for a registered model.</td>
 </tr>
 <tr>
     <td><a href="#rename"><CopyableCode code="rename" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
-    <td>Renames a registered model.<br /><br />:param name: str<br />  Registered model unique name identifier.<br />:param new_name: str (optional)<br />  If provided, updates the name for this `registered_model`.<br /><br />:returns: :class:`RenameModelResponse`</td>
+    <td>Renames a registered model.</td>
 </tr>
 <tr>
     <td><a href="#set_tag"><CopyableCode code="set_tag" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a></td>
     <td></td>
-    <td>Sets a tag on a registered model.<br /><br />:param name: str<br />  Unique name of the model.<br />:param key: str<br />  Name of the tag. Maximum size depends on storage backend. If a tag with this name already exists,<br />  its preexisting value will be replaced by the specified `value`. All storage backends are guaranteed<br />  to support key values up to 250 bytes in size.<br />:param value: str<br />  String value of the tag being logged. Maximum size depends on storage backend. All storage backends<br />  are guaranteed to support key values up to 5000 bytes in size.</td>
+    <td>Sets a tag on a registered model.</td>
 </tr>
 </tbody>
 </table>
@@ -596,7 +596,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also<br />returns the model's Databricks workspace ID and the permission level of the requesting user on the<br />model.<br /><br />[MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#get-registeredmodel<br /><br />:param name: str<br />  Registered model unique name identifier.<br /><br />:returns: :class:`GetModelResponse`
+Get the details of a model. This is a Databricks workspace version of the [MLflow endpoint] that also
 
 ```sql
 SELECT
@@ -609,7 +609,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Lists all available registered models, up to the limit specified in __max_results__.<br /><br />:param max_results: int (optional)<br />  Maximum number of registered models desired. Max threshold is 1000.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous query.<br /><br />:returns: Iterator over :class:`Model`
+Lists all available registered models, up to the limit specified in __max_results__.
 
 ```sql
 SELECT
@@ -629,7 +629,7 @@ AND page_token = '{{ page_token }}'
 </TabItem>
 <TabItem value="search">
 
-Search for registered models based on the specified __filter__.<br /><br />:param filter: str (optional)<br />  String filter condition, like "name LIKE 'my-model-name'". Interpreted in the backend automatically<br />  as "name LIKE '%my-model-name%'". Single boolean condition, with string values wrapped in single<br />  quotes.<br />:param max_results: int (optional)<br />  Maximum number of models desired. Default is 100. Max threshold is 1000.<br />:param order_by: List[str] (optional)<br />  List of columns for ordering search results, which can include model name and last updated timestamp<br />  with an optional "DESC" or "ASC" annotation, where "ASC" is the default. Tiebreaks are done by model<br />  name ASC.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous search query.<br /><br />:returns: Iterator over :class:`Model`
+Search for registered models based on the specified __filter__.
 
 ```sql
 SELECT
@@ -663,7 +663,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new registered model with the name specified in the request body. Throws<br />`RESOURCE_ALREADY_EXISTS` if a registered model with the given name exists.<br /><br />:param name: str<br />  Register models under this name<br />:param description: str (optional)<br />  Optional description for registered model.<br />:param tags: List[:class:`ModelTag`] (optional)<br />  Additional metadata for registered model.<br /><br />:returns: :class:`CreateModelResponse`
+Creates a new registered model with the name specified in the request body. Throws
 
 ```sql
 INSERT INTO databricks_workspace.ml.model_registry (
@@ -718,7 +718,7 @@ registered_model
 >
 <TabItem value="update">
 
-Updates a registered model.<br /><br />:param name: str<br />  Registered model unique name identifier.<br />:param description: str (optional)<br />  If provided, updates the description for this `registered_model`.<br /><br />:returns: :class:`UpdateModelResponse`
+Updates a registered model.
 
 ```sql
 UPDATE databricks_workspace.ml.model_registry
@@ -745,7 +745,7 @@ registered_model;
 >
 <TabItem value="delete">
 
-Deletes a registered model.<br /><br />:param name: str<br />  Registered model unique name identifier.
+Deletes a registered model.
 
 ```sql
 DELETE FROM databricks_workspace.ml.model_registry
@@ -769,7 +769,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="delete_tag">
 
-Deletes the tag for a registered model.<br /><br />:param name: str<br />  Name of the registered model that the tag was logged under.<br />:param key: str<br />  Name of the tag. The name must be an exact match; wild-card deletion is not supported. Maximum size<br />  is 250 bytes.
+Deletes the tag for a registered model.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry.delete_tag 
@@ -781,7 +781,7 @@ EXEC databricks_workspace.ml.model_registry.delete_tag
 </TabItem>
 <TabItem value="rename">
 
-Renames a registered model.<br /><br />:param name: str<br />  Registered model unique name identifier.<br />:param new_name: str (optional)<br />  If provided, updates the name for this `registered_model`.<br /><br />:returns: :class:`RenameModelResponse`
+Renames a registered model.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry.rename 
@@ -796,7 +796,7 @@ EXEC databricks_workspace.ml.model_registry.rename
 </TabItem>
 <TabItem value="set_tag">
 
-Sets a tag on a registered model.<br /><br />:param name: str<br />  Unique name of the model.<br />:param key: str<br />  Name of the tag. Maximum size depends on storage backend. If a tag with this name already exists,<br />  its preexisting value will be replaced by the specified `value`. All storage backends are guaranteed<br />  to support key values up to 250 bytes in size.<br />:param value: str<br />  String value of the tag being logged. Maximum size depends on storage backend. All storage backends<br />  are guaranteed to support key values up to 5000 bytes in size.
+Sets a tag on a registered model.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry.set_tag 

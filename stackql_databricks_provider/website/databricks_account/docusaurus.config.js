@@ -7,8 +7,8 @@
 import {themes as prismThemes} from 'prism-react-renderer';
 
 // Provider configuration - change these for different providers
-const providerName = "awscc"; // used in URLs and file paths, must be all lowercase
-const providerTitle = "AWS Cloud Control";
+const providerName = "databricks_account"; // used in URLs and file paths, must be all lowercase
+const providerTitle = "Databricks Account";
 
 const providerDropDownListItems = [
   {

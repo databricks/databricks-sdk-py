@@ -138,14 +138,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-parent_securable_type"><code>parent_securable_type</code></a>, <a href="#parameter-parent_full_name"><code>parent_full_name</code></a>, <a href="#parameter-quota_name"><code>quota_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>The GetQuota API returns usage information for a single resource quota, defined as a child-parent<br />pair. This API also refreshes the quota count if it is out of date. Refreshes are triggered<br />asynchronously. The updated count might not be returned in the first call.<br /><br />:param parent_securable_type: str<br />  Securable type of the quota parent.<br />:param parent_full_name: str<br />  Full name of the parent resource. Provide the metastore ID if the parent is a metastore.<br />:param quota_name: str<br />  Name of the quota. Follows the pattern of the quota type, with "-quota" added as a suffix.<br /><br />:returns: :class:`GetQuotaResponse`</td>
+    <td>The GetQuota API returns usage information for a single resource quota, defined as a child-parent</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the<br />counts returned. This API does not trigger a refresh of quota counts.<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param max_results: int (optional)<br />  The number of quotas to return.<br />:param page_token: str (optional)<br />  Opaque token for the next page of results.<br /><br />:returns: Iterator over :class:`QuotaInfo`</td>
+    <td>ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the</td>
 </tr>
 </tbody>
 </table>
@@ -207,7 +207,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-The GetQuota API returns usage information for a single resource quota, defined as a child-parent<br />pair. This API also refreshes the quota count if it is out of date. Refreshes are triggered<br />asynchronously. The updated count might not be returned in the first call.<br /><br />:param parent_securable_type: str<br />  Securable type of the quota parent.<br />:param parent_full_name: str<br />  Full name of the parent resource. Provide the metastore ID if the parent is a metastore.<br />:param quota_name: str<br />  Name of the quota. Follows the pattern of the quota type, with "-quota" added as a suffix.<br /><br />:returns: :class:`GetQuotaResponse`
+The GetQuota API returns usage information for a single resource quota, defined as a child-parent
 
 ```sql
 SELECT
@@ -222,7 +222,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the<br />counts returned. This API does not trigger a refresh of quota counts.<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param max_results: int (optional)<br />  The number of quotas to return.<br />:param page_token: str (optional)<br />  Opaque token for the next page of results.<br /><br />:returns: Iterator over :class:`QuotaInfo`
+ListQuotas returns all quota values under the metastore. There are no SLAs on the freshness of the
 
 ```sql
 SELECT

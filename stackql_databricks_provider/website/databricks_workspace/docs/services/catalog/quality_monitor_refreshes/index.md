@@ -138,21 +138,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>[DEPRECATED] Gets info about a specific monitor refresh using the given refresh ID. Use Data Quality<br />Monitors API instead (/api/data-quality/v1/monitors).<br /><br />The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the<br />table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:<br />- **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -<br />**SELECT** privilege on the table.<br /><br />Additionally, the call must be made from the workspace where the monitor was created.<br /><br />:param table_name: str<br />  Full name of the table.<br />:param refresh_id: int<br />  ID of the refresh.<br /><br />:returns: :class:`MonitorRefreshInfo`</td>
+    <td>[DEPRECATED] Gets info about a specific monitor refresh using the given refresh ID. Use Data Quality</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>[DEPRECATED] Gets an array containing the history of the most recent refreshes (up to 25) for this<br />table. Use Data Quality Monitors API instead (/api/data-quality/v1/monitors).<br /><br />The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the<br />table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:<br />- **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -<br />**SELECT** privilege on the table.<br /><br />Additionally, the call must be made from the workspace where the monitor was created.<br /><br />:param table_name: str<br />  UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are<br />  disallowed.<br /><br />:returns: :class:`MonitorRefreshListResponse`</td>
+    <td>[DEPRECATED] Gets an array containing the history of the most recent refreshes (up to 25) for this</td>
 </tr>
 <tr>
     <td><a href="#run"><CopyableCode code="run" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>[DEPRECATED] Queues a metric refresh on the monitor for the specified table. Use Data Quality Monitors<br />API instead (/api/data-quality/v1/monitors). The refresh will execute in the background.<br /><br />The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the<br />table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:<br />- **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an<br />owner of the table<br /><br />Additionally, the call must be made from the workspace where the monitor was created.<br /><br />:param table_name: str<br />  UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are<br />  disallowed.<br /><br />:returns: :class:`MonitorRefreshInfo`</td>
+    <td>[DEPRECATED] Queues a metric refresh on the monitor for the specified table. Use Data Quality Monitors</td>
 </tr>
 </tbody>
 </table>
@@ -199,7 +199,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-[DEPRECATED] Gets info about a specific monitor refresh using the given refresh ID. Use Data Quality<br />Monitors API instead (/api/data-quality/v1/monitors).<br /><br />The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the<br />table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:<br />- **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -<br />**SELECT** privilege on the table.<br /><br />Additionally, the call must be made from the workspace where the monitor was created.<br /><br />:param table_name: str<br />  Full name of the table.<br />:param refresh_id: int<br />  ID of the refresh.<br /><br />:returns: :class:`MonitorRefreshInfo`
+[DEPRECATED] Gets info about a specific monitor refresh using the given refresh ID. Use Data Quality
 
 ```sql
 SELECT
@@ -218,7 +218,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-[DEPRECATED] Gets an array containing the history of the most recent refreshes (up to 25) for this<br />table. Use Data Quality Monitors API instead (/api/data-quality/v1/monitors).<br /><br />The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the<br />table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:<br />- **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema -<br />**SELECT** privilege on the table.<br /><br />Additionally, the call must be made from the workspace where the monitor was created.<br /><br />:param table_name: str<br />  UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are<br />  disallowed.<br /><br />:returns: :class:`MonitorRefreshListResponse`
+[DEPRECATED] Gets an array containing the history of the most recent refreshes (up to 25) for this
 
 ```sql
 SELECT
@@ -242,7 +242,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="run">
 
-[DEPRECATED] Queues a metric refresh on the monitor for the specified table. Use Data Quality Monitors<br />API instead (/api/data-quality/v1/monitors). The refresh will execute in the background.<br /><br />The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the<br />table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:<br />- **USE_CATALOG** on the table's parent catalog - **USE_SCHEMA** on the table's parent schema - be an<br />owner of the table<br /><br />Additionally, the call must be made from the workspace where the monitor was created.<br /><br />:param table_name: str<br />  UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are<br />  disallowed.<br /><br />:returns: :class:`MonitorRefreshInfo`
+[DEPRECATED] Queues a metric refresh on the monitor for the specified table. Use Data Quality Monitors
 
 ```sql
 EXEC databricks_workspace.catalog.quality_monitor_refreshes.run 

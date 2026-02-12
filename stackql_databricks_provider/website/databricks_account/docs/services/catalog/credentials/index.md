@@ -404,6 +404,20 @@ The following methods are available for this resource:
     <td>Creates a new credential. The type of credential to be created is determined by the **purpose** field,</td>
 </tr>
 <tr>
+    <td><a href="#credentials_generate_temporary_service_credential"><CopyableCode code="credentials_generate_temporary_service_credential" /></a></td>
+    <td><CopyableCode code="insert" /></td>
+    <td><a href="#parameter-data__credential_name"><code>data__credential_name</code></a></td>
+    <td></td>
+    <td>Returns a set of temporary credentials generated using the specified service credential. The caller</td>
+</tr>
+<tr>
+    <td><a href="#credentials_validate_credential"><CopyableCode code="credentials_validate_credential" /></a></td>
+    <td><CopyableCode code="insert" /></td>
+    <td></td>
+    <td></td>
+    <td>Validates a credential.</td>
+</tr>
+<tr>
     <td><a href="#update_credential"><CopyableCode code="update_credential" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name_arg"><code>name_arg</code></a></td>
@@ -416,20 +430,6 @@ The following methods are available for this resource:
     <td><a href="#parameter-name_arg"><code>name_arg</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
     <td>Deletes a service or storage credential from the metastore. The caller must be an owner of the</td>
-</tr>
-<tr>
-    <td><a href="#generate_temporary_service_credential"><CopyableCode code="generate_temporary_service_credential" /></a></td>
-    <td><CopyableCode code="exec" /></td>
-    <td><a href="#parameter-credential_name"><code>credential_name</code></a></td>
-    <td></td>
-    <td>Returns a set of temporary credentials generated using the specified service credential. The caller</td>
-</tr>
-<tr>
-    <td><a href="#validate_credential"><CopyableCode code="validate_credential" /></a></td>
-    <td><CopyableCode code="exec" /></td>
-    <td></td>
-    <td></td>
-    <td>Validates a credential.</td>
 </tr>
 </tbody>
 </table>
@@ -559,6 +559,8 @@ AND purpose = '{{ purpose }}'
     defaultValue="create_credential"
     values={[
         { label: 'create_credential', value: 'create_credential' },
+        { label: 'credentials_generate_temporary_service_credential', value: 'credentials_generate_temporary_service_credential' },
+        { label: 'credentials_validate_credential', value: 'credentials_validate_credential' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
@@ -610,6 +612,58 @@ used_for_managed_storage
 ;
 ```
 </TabItem>
+<TabItem value="credentials_generate_temporary_service_credential">
+
+Returns a set of temporary credentials generated using the specified service credential. The caller
+
+```sql
+INSERT INTO databricks_account.catalog.credentials (
+data__credential_name,
+data__azure_options,
+data__gcp_options
+)
+SELECT 
+'{{ credential_name }}' /* required */,
+'{{ azure_options }}',
+'{{ gcp_options }}'
+RETURNING
+aws_temp_credentials,
+azure_aad,
+expiration_time,
+gcp_oauth_token
+;
+```
+</TabItem>
+<TabItem value="credentials_validate_credential">
+
+Validates a credential.
+
+```sql
+INSERT INTO databricks_account.catalog.credentials (
+data__aws_iam_role,
+data__azure_managed_identity,
+data__credential_name,
+data__databricks_gcp_service_account,
+data__external_location_name,
+data__purpose,
+data__read_only,
+data__url
+)
+SELECT 
+'{{ aws_iam_role }}',
+'{{ azure_managed_identity }}',
+'{{ credential_name }}',
+'{{ databricks_gcp_service_account }}',
+'{{ external_location_name }}',
+'{{ purpose }}',
+'{{ read_only }}',
+'{{ url }}'
+RETURNING
+isDir,
+results
+;
+```
+</TabItem>
 <TabItem value="manifest">
 
 ```yaml
@@ -623,11 +677,9 @@ used_for_managed_storage
     - name: aws_iam_role
       value: string
       description: |
-        The AWS IAM role configuration.
+        :param azure_managed_identity: :class:`AzureManagedIdentity` (optional)
     - name: azure_managed_identity
       value: string
-      description: |
-        The Azure managed identity configuration.
     - name: azure_service_principal
       value: string
       description: |
@@ -639,19 +691,35 @@ used_for_managed_storage
     - name: databricks_gcp_service_account
       value: string
       description: |
-        The Databricks managed GCP service account configuration.
+        :param external_location_name: str (optional) The name of an existing external location to validate. Only applicable for storage credentials (purpose is **STORAGE**.)
     - name: purpose
       value: string
       description: |
-        Indicates the purpose of the credential.
+        The purpose of the credential. This should only be used when the credential is specified.
     - name: read_only
       value: string
       description: |
-        Whether the credential is usable only for read operations. Only applicable when purpose is **STORAGE**.
+        Whether the credential is only usable for read operations. Only applicable for storage credentials (purpose is **STORAGE**.)
     - name: skip_validation
       value: string
       description: |
         Optional. Supplying true to this argument skips validation of the created set of credentials.
+    - name: credential_name
+      value: string
+      description: |
+        Required. The name of an existing credential or long-lived cloud credential to validate.
+    - name: azure_options
+      value: string
+      description: |
+        :param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)
+    - name: gcp_options
+      value: string
+    - name: external_location_name
+      value: string
+    - name: url
+      value: string
+      description: |
+        The external location url to validate. Only applicable when purpose is **STORAGE**.
 ```
 </TabItem>
 </Tabs>
@@ -725,53 +793,6 @@ Deletes a service or storage credential from the metastore. The caller must be a
 DELETE FROM databricks_account.catalog.credentials
 WHERE name_arg = '{{ name_arg }}' --required
 AND force = '{{ force }}'
-;
-```
-</TabItem>
-</Tabs>
-
-
-## Lifecycle Methods
-
-<Tabs
-    defaultValue="generate_temporary_service_credential"
-    values={[
-        { label: 'generate_temporary_service_credential', value: 'generate_temporary_service_credential' },
-        { label: 'validate_credential', value: 'validate_credential' }
-    ]}
->
-<TabItem value="generate_temporary_service_credential">
-
-Returns a set of temporary credentials generated using the specified service credential. The caller
-
-```sql
-EXEC databricks_account.catalog.credentials.generate_temporary_service_credential 
-@@json=
-'{
-"credential_name": "{{ credential_name }}", 
-"azure_options": "{{ azure_options }}", 
-"gcp_options": "{{ gcp_options }}"
-}'
-;
-```
-</TabItem>
-<TabItem value="validate_credential">
-
-Validates a credential.
-
-```sql
-EXEC databricks_account.catalog.credentials.validate_credential 
-@@json=
-'{
-"aws_iam_role": "{{ aws_iam_role }}", 
-"azure_managed_identity": "{{ azure_managed_identity }}", 
-"credential_name": "{{ credential_name }}", 
-"databricks_gcp_service_account": "{{ databricks_gcp_service_account }}", 
-"external_location_name": "{{ external_location_name }}", 
-"purpose": "{{ purpose }}", 
-"read_only": "{{ read_only }}", 
-"url": "{{ url }}"
-}'
 ;
 ```
 </TabItem>

@@ -43,103 +43,96 @@ The following fields are returned by `SELECT` queries:
 
 <SchemaTable fields={[
   {
-    "name": "log_delivery_configuration",
+    "name": "account_id",
+    "type": "string",
+    "description": "Databricks account ID."
+  },
+  {
+    "name": "config_id",
+    "type": "string",
+    "description": "The unique UUID of log delivery configuration"
+  },
+  {
+    "name": "credentials_id",
+    "type": "string",
+    "description": "The ID for a method:credentials/create that represents the AWS IAM role with policy and trust relationship as described in the main billable usage documentation page. See [Configure billable usage delivery]. [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"
+  },
+  {
+    "name": "storage_configuration_id",
+    "type": "string",
+    "description": "The ID for a method:storage/create that represents the S3 bucket with bucket policy as described in the main billable usage documentation page. See [Configure billable usage delivery]. [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"
+  },
+  {
+    "name": "config_name",
+    "type": "string",
+    "description": "The optional human-readable name of the log delivery configuration. Defaults to empty."
+  },
+  {
+    "name": "creation_time",
+    "type": "integer",
+    "description": "Time in epoch milliseconds when the log delivery configuration was created."
+  },
+  {
+    "name": "delivery_path_prefix",
+    "type": "string",
+    "description": "The optional delivery path prefix within Amazon S3 storage. Defaults to empty, which means that logs are delivered to the root of the bucket. This must be a valid S3 object key. This must not start or end with a slash character."
+  },
+  {
+    "name": "delivery_start_time",
+    "type": "string",
+    "description": "This field applies only if log_type is BILLABLE_USAGE. This is the optional start month and year for delivery, specified in YYYY-MM format. Defaults to current year and month. BILLABLE_USAGE logs are not available for usage before March 2019 (2019-03)."
+  },
+  {
+    "name": "log_delivery_status",
     "type": "object",
-    "description": "* Log Delivery Configuration",
+    "description": "The LogDeliveryStatus of this log delivery configuration",
     "children": [
-      {
-        "name": "log_type",
-        "type": "string",
-        "description": "Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the [View billable usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit logging] [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"
-      },
-      {
-        "name": "output_format",
-        "type": "string",
-        "description": "The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated values) format is supported. For the schema, see the [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript Object Notation) format is supported. For the schema, see the [Configuring audit logs]. [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"
-      },
-      {
-        "name": "credentials_id",
-        "type": "string",
-        "description": "The ID for a method:credentials/create that represents the AWS IAM role with policy and trust relationship as described in the main billable usage documentation page. See [Configure billable usage delivery]. [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"
-      },
-      {
-        "name": "storage_configuration_id",
-        "type": "string",
-        "description": "The ID for a method:storage/create that represents the S3 bucket with bucket policy as described in the main billable usage documentation page. See [Configure billable usage delivery]. [Configure billable usage delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"
-      },
-      {
-        "name": "account_id",
-        "type": "string",
-        "description": "Databricks account ID."
-      },
-      {
-        "name": "config_id",
-        "type": "string",
-        "description": "The unique UUID of log delivery configuration"
-      },
-      {
-        "name": "config_name",
-        "type": "string",
-        "description": "The optional human-readable name of the log delivery configuration. Defaults to empty."
-      },
-      {
-        "name": "creation_time",
-        "type": "integer",
-        "description": "Time in epoch milliseconds when the log delivery configuration was created."
-      },
-      {
-        "name": "delivery_path_prefix",
-        "type": "string",
-        "description": "The optional delivery path prefix within Amazon S3 storage. Defaults to empty, which means that logs are delivered to the root of the bucket. This must be a valid S3 object key. This must not start or end with a slash character."
-      },
-      {
-        "name": "delivery_start_time",
-        "type": "string",
-        "description": "This field applies only if log_type is BILLABLE_USAGE. This is the optional start month and year for delivery, specified in YYYY-MM format. Defaults to current year and month. BILLABLE_USAGE logs are not available for usage before March 2019 (2019-03)."
-      },
-      {
-        "name": "log_delivery_status",
-        "type": "object",
-        "description": "The LogDeliveryStatus of this log delivery configuration",
-        "children": [
-          {
-            "name": "status",
-            "type": "string",
-            "description": "* The status string for log delivery. Possible values are: `CREATED`: There were no log delivery<br />attempts since the config was created. `SUCCEEDED`: The latest attempt of log delivery has<br />succeeded completely. `USER_FAILURE`: The latest attempt of log delivery failed because of<br />misconfiguration of customer provided permissions on role or storage. `SYSTEM_FAILURE`: The<br />latest attempt of log delivery failed because of an Databricks internal error. Contact support<br />if it doesn't go away soon. `NOT_FOUND`: The log delivery status as the configuration has been<br />disabled since the release of this feature or there are no workspaces in the account."
-          },
-          {
-            "name": "message",
-            "type": "string",
-            "description": "Informative message about the latest log delivery attempt. If the log delivery fails with USER_FAILURE, error details will be provided for fixing misconfigurations in cloud permissions."
-          },
-          {
-            "name": "last_attempt_time",
-            "type": "string",
-            "description": "The UTC time for the latest log delivery attempt."
-          },
-          {
-            "name": "last_successful_attempt_time",
-            "type": "string",
-            "description": "The UTC time for the latest successful log delivery."
-          }
-        ]
-      },
       {
         "name": "status",
         "type": "string",
-        "description": "Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is not supported, so disable a log delivery configuration that is no longer needed."
+        "description": "* The status string for log delivery. Possible values are: `CREATED`: There were no log delivery<br />attempts since the config was created. `SUCCEEDED`: The latest attempt of log delivery has<br />succeeded completely. `USER_FAILURE`: The latest attempt of log delivery failed because of<br />misconfiguration of customer provided permissions on role or storage. `SYSTEM_FAILURE`: The<br />latest attempt of log delivery failed because of an Databricks internal error. Contact support<br />if it doesn't go away soon. `NOT_FOUND`: The log delivery status as the configuration has been<br />disabled since the release of this feature or there are no workspaces in the account."
       },
       {
-        "name": "update_time",
-        "type": "integer",
-        "description": "Time in epoch milliseconds when the log delivery configuration was updated."
+        "name": "message",
+        "type": "string",
+        "description": "Informative message about the latest log delivery attempt. If the log delivery fails with USER_FAILURE, error details will be provided for fixing misconfigurations in cloud permissions."
       },
       {
-        "name": "workspace_ids_filter",
-        "type": "array",
-        "description": "Optional filter that specifies workspace IDs to deliver logs for. By default the workspace filter is empty and log delivery applies at the account level, delivering workspace-level logs for all workspaces in your account, plus account level logs. You can optionally set this field to an array of workspace IDs (each one is an `int64`) to which log delivery should apply, in which case only workspace-level logs relating to the specified workspaces are delivered. If you plan to use different log delivery configurations for different workspaces, set this field explicitly. Be aware that delivery configurations mentioning specific workspaces won't apply to new workspaces created in the future, and delivery won't include account level logs. For some types of Databricks deployments there is only one workspace per account ID, so this field is unnecessary."
+        "name": "last_attempt_time",
+        "type": "string",
+        "description": "The UTC time for the latest log delivery attempt."
+      },
+      {
+        "name": "last_successful_attempt_time",
+        "type": "string",
+        "description": "The UTC time for the latest successful log delivery."
       }
     ]
+  },
+  {
+    "name": "log_type",
+    "type": "string",
+    "description": "Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the [View billable usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit logging] [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"
+  },
+  {
+    "name": "output_format",
+    "type": "string",
+    "description": "The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated values) format is supported. For the schema, see the [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript Object Notation) format is supported. For the schema, see the [Configuring audit logs]. [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"
+  },
+  {
+    "name": "status",
+    "type": "string",
+    "description": "Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is not supported, so disable a log delivery configuration that is no longer needed."
+  },
+  {
+    "name": "update_time",
+    "type": "integer",
+    "description": "Time in epoch milliseconds when the log delivery configuration was updated."
+  },
+  {
+    "name": "workspace_ids_filter",
+    "type": "array",
+    "description": "Optional filter that specifies workspace IDs to deliver logs for. By default the workspace filter is empty and log delivery applies at the account level, delivering workspace-level logs for all workspaces in your account, plus account level logs. You can optionally set this field to an array of workspace IDs (each one is an `int64`) to which log delivery should apply, in which case only workspace-level logs relating to the specified workspaces are delivered. If you plan to use different log delivery configurations for different workspaces, set this field explicitly. Be aware that delivery configurations mentioning specific workspaces won't apply to new workspaces created in the future, and delivery won't include account level logs. For some types of Databricks deployments there is only one workspace per account ID, so this field is unnecessary."
   }
 ]} />
 </TabItem>
@@ -349,7 +342,20 @@ Gets a Databricks log delivery configuration object for an account, both specifi
 
 ```sql
 SELECT
-log_delivery_configuration
+account_id,
+config_id,
+credentials_id,
+storage_configuration_id,
+config_name,
+creation_time,
+delivery_path_prefix,
+delivery_start_time,
+log_delivery_status,
+log_type,
+output_format,
+status,
+update_time,
+workspace_ids_filter
 FROM databricks_account.billing.log_delivery
 WHERE account_id = '{{ account_id }}' -- required
 AND log_delivery_configuration_id = '{{ log_delivery_configuration_id }}' -- required

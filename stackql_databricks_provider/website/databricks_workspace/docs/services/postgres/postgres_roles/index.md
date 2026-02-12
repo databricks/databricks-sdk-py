@@ -199,28 +199,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Returns a paginated list of Postgres roles in the branch.<br /><br />:param parent: str<br />  The Branch that owns this collection of roles. Format: projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;<br />:param page_size: int (optional)<br />  Upper bound for items returned. Cannot be negative.<br />:param page_token: str (optional)<br />  Page token from a previous response. If not provided, returns the first page.<br /><br />:returns: Iterator over :class:`Role`</td>
+    <td>Returns a paginated list of Postgres roles in the branch.</td>
 </tr>
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Retrieves information about the specified Postgres role, including its authentication method and<br />permissions.<br /><br />:param name: str<br />  The full resource path of the role to retrieve. Format:<br />  projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;/roles/&#123;role_id&#125;<br /><br />:returns: :class:`Role`</td>
+    <td>Retrieves information about the specified Postgres role, including its authentication method and</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__role"><code>data__role</code></a></td>
     <td><a href="#parameter-role_id"><code>role_id</code></a></td>
-    <td>Creates a new Postgres role in the branch.<br /><br />:param parent: str<br />  The Branch where this Role is created. Format: projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;<br />:param role: :class:`Role`<br />  The desired specification of a Role.<br />:param role_id: str (optional)<br />  The ID to use for the Role, which will become the final component of the role's resource name. This<br />  ID becomes the role in Postgres.<br /><br />  This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and<br />  hyphens, as defined by RFC 1123.<br /><br />  If role_id is not specified in the request, it is generated automatically.<br /><br />:returns: :class:`Operation`</td>
+    <td>Creates a new Postgres role in the branch.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-reassign_owned_to"><code>reassign_owned_to</code></a></td>
-    <td>Deletes the specified Postgres role.<br /><br />:param name: str<br />  The full resource path of the role to delete. Format:<br />  projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;/roles/&#123;role_id&#125;<br />:param reassign_owned_to: str (optional)<br />  Reassign objects. If this is set, all objects owned by the role are reassigned to the role specified<br />  in this parameter.<br /><br />  NOTE: setting this requires spinning up a compute to succeed, since it involves running SQL queries.<br /><br />  TODO: #LKB-7187 implement reassign_owned_to on LBM side. This might end-up being a synchronous query<br />  when this parameter is used.<br /><br />:returns: :class:`Operation`</td>
+    <td>Deletes the specified Postgres role.</td>
 </tr>
 </tbody>
 </table>
@@ -287,7 +287,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Returns a paginated list of Postgres roles in the branch.<br /><br />:param parent: str<br />  The Branch that owns this collection of roles. Format: projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;<br />:param page_size: int (optional)<br />  Upper bound for items returned. Cannot be negative.<br />:param page_token: str (optional)<br />  Page token from a previous response. If not provided, returns the first page.<br /><br />:returns: Iterator over :class:`Role`
+Returns a paginated list of Postgres roles in the branch.
 
 ```sql
 SELECT
@@ -307,7 +307,7 @@ AND page_token = '{{ page_token }}'
 </TabItem>
 <TabItem value="get">
 
-Retrieves information about the specified Postgres role, including its authentication method and<br />permissions.<br /><br />:param name: str<br />  The full resource path of the role to retrieve. Format:<br />  projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;/roles/&#123;role_id&#125;<br /><br />:returns: :class:`Role`
+Retrieves information about the specified Postgres role, including its authentication method and
 
 ```sql
 SELECT
@@ -337,7 +337,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Creates a new Postgres role in the branch.<br /><br />:param parent: str<br />  The Branch where this Role is created. Format: projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;<br />:param role: :class:`Role`<br />  The desired specification of a Role.<br />:param role_id: str (optional)<br />  The ID to use for the Role, which will become the final component of the role's resource name. This<br />  ID becomes the role in Postgres.<br /><br />  This value should be 4-63 characters, and valid characters are lowercase letters, numbers, and<br />  hyphens, as defined by RFC 1123.<br /><br />  If role_id is not specified in the request, it is generated automatically.<br /><br />:returns: :class:`Operation`
+Creates a new Postgres role in the branch.
 
 ```sql
 INSERT INTO databricks_workspace.postgres.postgres_roles (
@@ -388,7 +388,7 @@ SELECT
 >
 <TabItem value="delete">
 
-Deletes the specified Postgres role.<br /><br />:param name: str<br />  The full resource path of the role to delete. Format:<br />  projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;/roles/&#123;role_id&#125;<br />:param reassign_owned_to: str (optional)<br />  Reassign objects. If this is set, all objects owned by the role are reassigned to the role specified<br />  in this parameter.<br /><br />  NOTE: setting this requires spinning up a compute to succeed, since it involves running SQL queries.<br /><br />  TODO: #LKB-7187 implement reassign_owned_to on LBM side. This might end-up being a synchronous query<br />  when this parameter is used.<br /><br />:returns: :class:`Operation`
+Deletes the specified Postgres role.
 
 ```sql
 DELETE FROM databricks_workspace.postgres.postgres_roles

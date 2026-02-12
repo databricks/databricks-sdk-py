@@ -85,21 +85,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Lists all the valid tokens for a user-workspace pair.<br /><br /><br />:returns: Iterator over :class:`PublicTokenInfo`</td>
+    <td>Lists all the valid tokens for a user-workspace pair.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates and returns a token for a user. If this call is made through token authentication, it creates<br />a token with the same client ID as the authenticated token. If the user's token quota is exceeded,<br />this call returns an error **QUOTA_EXCEEDED**.<br /><br />:param comment: str (optional)<br />  Optional description to attach to the token.<br />:param lifetime_seconds: int (optional)<br />  The lifetime of the token, in seconds.<br /><br />  If the lifetime is not specified, this token remains valid for 2 years.<br /><br />:returns: :class:`CreateTokenResponse`</td>
+    <td>Creates and returns a token for a user. If this call is made through token authentication, it creates</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-token_id"><code>token_id</code></a></td>
     <td></td>
-    <td>Revokes an access token.<br /><br />If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.<br /><br />:param token_id: str<br />  The ID of the token to be revoked.</td>
+    <td>Revokes an access token.</td>
 </tr>
 </tbody>
 </table>
@@ -135,7 +135,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Lists all the valid tokens for a user-workspace pair.<br /><br /><br />:returns: Iterator over :class:`PublicTokenInfo`
+Lists all the valid tokens for a user-workspace pair.
 
 ```sql
 SELECT
@@ -162,7 +162,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Creates and returns a token for a user. If this call is made through token authentication, it creates<br />a token with the same client ID as the authenticated token. If the user's token quota is exceeded,<br />this call returns an error **QUOTA_EXCEEDED**.<br /><br />:param comment: str (optional)<br />  Optional description to attach to the token.<br />:param lifetime_seconds: int (optional)<br />  The lifetime of the token, in seconds.<br /><br />  If the lifetime is not specified, this token remains valid for 2 years.<br /><br />:returns: :class:`CreateTokenResponse`
+Creates and returns a token for a user. If this call is made through token authentication, it creates
 
 ```sql
 INSERT INTO databricks_workspace.settings.tokens (
@@ -212,7 +212,7 @@ token_value
 >
 <TabItem value="delete">
 
-Revokes an access token.<br /><br />If a token with the specified ID is not valid, this call returns an error **RESOURCE_DOES_NOT_EXIST**.<br /><br />:param token_id: str<br />  The ID of the token to be revoked.
+Revokes an access token.
 
 ```sql
 EXEC databricks_workspace.settings.tokens.delete 

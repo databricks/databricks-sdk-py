@@ -206,7 +206,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Returns a list of supported Spark node types. These node types can be used to launch a cluster.<br /><br /><br />:returns: :class:`ListNodeTypesResponse`</td>
+    <td>Returns a list of supported Spark node types. These node types can be used to launch a cluster.</td>
 </tr>
 </tbody>
 </table>
@@ -242,7 +242,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Returns a list of supported Spark node types. These node types can be used to launch a cluster.<br /><br /><br />:returns: :class:`ListNodeTypesResponse`
+Returns a list of supported Spark node types. These node types can be used to launch a cluster.
 
 ```sql
 SELECT

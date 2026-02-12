@@ -86,28 +86,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-securable_name"><code>securable_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the<br />securable.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param securable_type: str<br />  The type of the securable to bind to a workspace (catalog, storage_credential, credential, or<br />  external_location).<br />:param securable_name: str<br />  The name of the securable.<br />:param max_results: int (optional)<br />  Maximum number of workspace bindings to return. - When set to 0, the page length is set to a server<br />  configured value (recommended); - When set to a value greater than 0, the page length is the minimum<br />  of this value and a server configured value; - When set to a value less than 0, an invalid parameter<br />  error is returned; - If not set, all the workspace bindings are returned (not recommended).<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`WorkspaceBinding`</td>
+    <td>Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the</td>
 </tr>
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the<br />catalog.<br /><br />:param name: str<br />  The name of the catalog.<br /><br />:returns: :class:`GetCatalogWorkspaceBindingsResponse`</td>
+    <td>Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the</td>
 </tr>
 <tr>
     <td><a href="#update_bindings"><CopyableCode code="update_bindings" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-securable_name"><code>securable_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the<br />securable.<br /><br />:param securable_type: str<br />  The type of the securable to bind to a workspace (catalog, storage_credential, credential, or<br />  external_location).<br />:param securable_name: str<br />  The name of the securable.<br />:param add: List[:class:`WorkspaceBinding`] (optional)<br />  List of workspace bindings to add. If a binding for the workspace already exists with a different<br />  binding_type, adding it again with a new binding_type will update the existing binding (e.g., from<br />  READ_WRITE to READ_ONLY).<br />:param remove: List[:class:`WorkspaceBinding`] (optional)<br />  List of workspace bindings to remove.<br /><br />:returns: :class:`UpdateWorkspaceBindingsResponse`</td>
+    <td>Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the<br />catalog.<br /><br />:param name: str<br />  The name of the catalog.<br />:param assign_workspaces: List[int] (optional)<br />  A list of workspace IDs.<br />:param unassign_workspaces: List[int] (optional)<br />  A list of workspace IDs.<br /><br />:returns: :class:`UpdateCatalogWorkspaceBindingsResponse`</td>
+    <td>Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the</td>
 </tr>
 </tbody>
 </table>
@@ -169,7 +169,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_bindings">
 
-Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the<br />securable.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param securable_type: str<br />  The type of the securable to bind to a workspace (catalog, storage_credential, credential, or<br />  external_location).<br />:param securable_name: str<br />  The name of the securable.<br />:param max_results: int (optional)<br />  Maximum number of workspace bindings to return. - When set to 0, the page length is set to a server<br />  configured value (recommended); - When set to a value greater than 0, the page length is the minimum<br />  of this value and a server configured value; - When set to a value less than 0, an invalid parameter<br />  error is returned; - If not set, all the workspace bindings are returned (not recommended).<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`WorkspaceBinding`
+Gets workspace bindings of the securable. The caller must be a metastore admin or an owner of the
 
 ```sql
 SELECT
@@ -186,7 +186,7 @@ AND page_token = '{{ page_token }}'
 </TabItem>
 <TabItem value="get">
 
-Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the<br />catalog.<br /><br />:param name: str<br />  The name of the catalog.<br /><br />:returns: :class:`GetCatalogWorkspaceBindingsResponse`
+Gets workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
 
 ```sql
 SELECT
@@ -211,7 +211,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="update_bindings">
 
-Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the<br />securable.<br /><br />:param securable_type: str<br />  The type of the securable to bind to a workspace (catalog, storage_credential, credential, or<br />  external_location).<br />:param securable_name: str<br />  The name of the securable.<br />:param add: List[:class:`WorkspaceBinding`] (optional)<br />  List of workspace bindings to add. If a binding for the workspace already exists with a different<br />  binding_type, adding it again with a new binding_type will update the existing binding (e.g., from<br />  READ_WRITE to READ_ONLY).<br />:param remove: List[:class:`WorkspaceBinding`] (optional)<br />  List of workspace bindings to remove.<br /><br />:returns: :class:`UpdateWorkspaceBindingsResponse`
+Updates workspace bindings of the securable. The caller must be a metastore admin or an owner of the
 
 ```sql
 UPDATE databricks_workspace.catalog.workspace_bindings
@@ -228,7 +228,7 @@ bindings;
 </TabItem>
 <TabItem value="update">
 
-Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the<br />catalog.<br /><br />:param name: str<br />  The name of the catalog.<br />:param assign_workspaces: List[int] (optional)<br />  A list of workspace IDs.<br />:param unassign_workspaces: List[int] (optional)<br />  A list of workspace IDs.<br /><br />:returns: :class:`UpdateCatalogWorkspaceBindingsResponse`
+Updates workspace bindings of the catalog. The caller must be a metastore admin or an owner of the
 
 ```sql
 UPDATE databricks_workspace.catalog.workspace_bindings

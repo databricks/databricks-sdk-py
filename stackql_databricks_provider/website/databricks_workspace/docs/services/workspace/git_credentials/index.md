@@ -131,35 +131,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-principal_id"><code>principal_id</code></a></td>
-    <td>Gets the Git credential with the specified credential ID.<br /><br />:param credential_id: int<br />  The ID for the corresponding credential to access.<br />:param principal_id: int (optional)<br />  The ID of the service principal whose credentials will be modified. Only service principal managers<br />  can perform this action.<br /><br />:returns: :class:`GetCredentialsResponse`</td>
+    <td>Gets the Git credential with the specified credential ID.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-principal_id"><code>principal_id</code></a></td>
-    <td>Lists the calling user's Git credentials.<br /><br />:param principal_id: int (optional)<br />  The ID of the service principal whose credentials will be listed. Only service principal managers<br />  can perform this action.<br /><br />:returns: Iterator over :class:`CredentialInfo`</td>
+    <td>Lists the calling user's Git credentials.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__git_provider"><code>data__git_provider</code></a></td>
     <td></td>
-    <td>Creates a Git credential entry for the user. Only one Git credential per user is supported, so any<br />attempts to create credentials if an entry already exists will fail. Use the PATCH endpoint to update<br />existing credentials, or the DELETE endpoint to delete existing credentials.<br /><br />:param git_provider: str<br />  Git provider. This field is case-insensitive. The available Git providers are `gitHub`,<br />  `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,<br />  `gitLabEnterpriseEdition` and `awsCodeCommit`.<br />:param git_email: str (optional)<br />  The authenticating email associated with your Git provider user account. Used for authentication<br />  with the remote repository and also sets the author & committer identity for commits. Required for<br />  most Git providers except AWS CodeCommit. Learn more at<br />  https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider<br />:param git_username: str (optional)<br />  The username provided with your Git provider account and associated with the credential. For most<br />  Git providers it is only used to set the Git committer & author names for commits, however it may be<br />  required for authentication depending on your Git provider / token requirements. Required for AWS<br />  CodeCommit.<br />:param is_default_for_provider: bool (optional)<br />  if the credential is the default for the given provider<br />:param name: str (optional)<br />  the name of the git credential, used for identification and ease of lookup<br />:param personal_access_token: str (optional)<br />  The personal access token used to authenticate to the corresponding Git provider. For certain<br />  providers, support may exist for other types of scoped access tokens. [Learn more].<br /><br />  [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html<br />:param principal_id: int (optional)<br />  The ID of the service principal whose credentials will be modified. Only service principal managers<br />  can perform this action.<br /><br />:returns: :class:`CreateCredentialsResponse`</td>
+    <td>Creates a Git credential entry for the user. Only one Git credential per user is supported, so any</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__git_provider"><code>data__git_provider</code></a></td>
     <td></td>
-    <td>Updates the specified Git credential.<br /><br />:param credential_id: int<br />  The ID for the corresponding credential to access.<br />:param git_provider: str<br />  Git provider. This field is case-insensitive. The available Git providers are `gitHub`,<br />  `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,<br />  `gitLabEnterpriseEdition` and `awsCodeCommit`.<br />:param git_email: str (optional)<br />  The authenticating email associated with your Git provider user account. Used for authentication<br />  with the remote repository and also sets the author & committer identity for commits. Required for<br />  most Git providers except AWS CodeCommit. Learn more at<br />  https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider<br />:param git_username: str (optional)<br />  The username provided with your Git provider account and associated with the credential. For most<br />  Git providers it is only used to set the Git committer & author names for commits, however it may be<br />  required for authentication depending on your Git provider / token requirements. Required for AWS<br />  CodeCommit.<br />:param is_default_for_provider: bool (optional)<br />  if the credential is the default for the given provider<br />:param name: str (optional)<br />  the name of the git credential, used for identification and ease of lookup<br />:param personal_access_token: str (optional)<br />  The personal access token used to authenticate to the corresponding Git provider. For certain<br />  providers, support may exist for other types of scoped access tokens. [Learn more].<br /><br />  [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html<br />:param principal_id: int (optional)<br />  The ID of the service principal whose credentials will be modified. Only service principal managers<br />  can perform this action.</td>
+    <td>Updates the specified Git credential.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-principal_id"><code>principal_id</code></a></td>
-    <td>Deletes the specified Git credential.<br /><br />:param credential_id: int<br />  The ID for the corresponding credential to access.<br />:param principal_id: int (optional)<br />  The ID of the service principal whose credentials will be modified. Only service principal managers<br />  can perform this action.</td>
+    <td>Deletes the specified Git credential.</td>
 </tr>
 </tbody>
 </table>
@@ -206,7 +206,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the Git credential with the specified credential ID.<br /><br />:param credential_id: int<br />  The ID for the corresponding credential to access.<br />:param principal_id: int (optional)<br />  The ID of the service principal whose credentials will be modified. Only service principal managers<br />  can perform this action.<br /><br />:returns: :class:`GetCredentialsResponse`
+Gets the Git credential with the specified credential ID.
 
 ```sql
 SELECT
@@ -225,7 +225,7 @@ AND principal_id = '{{ principal_id }}'
 </TabItem>
 <TabItem value="list">
 
-Lists the calling user's Git credentials.<br /><br />:param principal_id: int (optional)<br />  The ID of the service principal whose credentials will be listed. Only service principal managers<br />  can perform this action.<br /><br />:returns: Iterator over :class:`CredentialInfo`
+Lists the calling user's Git credentials.
 
 ```sql
 SELECT
@@ -255,7 +255,7 @@ AND principal_id = '{{ principal_id }}'
 >
 <TabItem value="create">
 
-Creates a Git credential entry for the user. Only one Git credential per user is supported, so any<br />attempts to create credentials if an entry already exists will fail. Use the PATCH endpoint to update<br />existing credentials, or the DELETE endpoint to delete existing credentials.<br /><br />:param git_provider: str<br />  Git provider. This field is case-insensitive. The available Git providers are `gitHub`,<br />  `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,<br />  `gitLabEnterpriseEdition` and `awsCodeCommit`.<br />:param git_email: str (optional)<br />  The authenticating email associated with your Git provider user account. Used for authentication<br />  with the remote repository and also sets the author & committer identity for commits. Required for<br />  most Git providers except AWS CodeCommit. Learn more at<br />  https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider<br />:param git_username: str (optional)<br />  The username provided with your Git provider account and associated with the credential. For most<br />  Git providers it is only used to set the Git committer & author names for commits, however it may be<br />  required for authentication depending on your Git provider / token requirements. Required for AWS<br />  CodeCommit.<br />:param is_default_for_provider: bool (optional)<br />  if the credential is the default for the given provider<br />:param name: str (optional)<br />  the name of the git credential, used for identification and ease of lookup<br />:param personal_access_token: str (optional)<br />  The personal access token used to authenticate to the corresponding Git provider. For certain<br />  providers, support may exist for other types of scoped access tokens. [Learn more].<br /><br />  [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html<br />:param principal_id: int (optional)<br />  The ID of the service principal whose credentials will be modified. Only service principal managers<br />  can perform this action.<br /><br />:returns: :class:`CreateCredentialsResponse`
+Creates a Git credential entry for the user. Only one Git credential per user is supported, so any
 
 ```sql
 INSERT INTO databricks_workspace.workspace.git_credentials (
@@ -339,7 +339,7 @@ is_default_for_provider
 >
 <TabItem value="update">
 
-Updates the specified Git credential.<br /><br />:param credential_id: int<br />  The ID for the corresponding credential to access.<br />:param git_provider: str<br />  Git provider. This field is case-insensitive. The available Git providers are `gitHub`,<br />  `bitbucketCloud`, `gitLab`, `azureDevOpsServices`, `gitHubEnterprise`, `bitbucketServer`,<br />  `gitLabEnterpriseEdition` and `awsCodeCommit`.<br />:param git_email: str (optional)<br />  The authenticating email associated with your Git provider user account. Used for authentication<br />  with the remote repository and also sets the author & committer identity for commits. Required for<br />  most Git providers except AWS CodeCommit. Learn more at<br />  https://docs.databricks.com/aws/en/repos/get-access-tokens-from-git-provider<br />:param git_username: str (optional)<br />  The username provided with your Git provider account and associated with the credential. For most<br />  Git providers it is only used to set the Git committer & author names for commits, however it may be<br />  required for authentication depending on your Git provider / token requirements. Required for AWS<br />  CodeCommit.<br />:param is_default_for_provider: bool (optional)<br />  if the credential is the default for the given provider<br />:param name: str (optional)<br />  the name of the git credential, used for identification and ease of lookup<br />:param personal_access_token: str (optional)<br />  The personal access token used to authenticate to the corresponding Git provider. For certain<br />  providers, support may exist for other types of scoped access tokens. [Learn more].<br /><br />  [Learn more]: https://docs.databricks.com/repos/get-access-tokens-from-git-provider.html<br />:param principal_id: int (optional)<br />  The ID of the service principal whose credentials will be modified. Only service principal managers<br />  can perform this action.
+Updates the specified Git credential.
 
 ```sql
 UPDATE databricks_workspace.workspace.git_credentials
@@ -370,7 +370,7 @@ AND data__git_provider = '{{ git_provider }}' --required;
 >
 <TabItem value="delete">
 
-Deletes the specified Git credential.<br /><br />:param credential_id: int<br />  The ID for the corresponding credential to access.<br />:param principal_id: int (optional)<br />  The ID of the service principal whose credentials will be modified. Only service principal managers<br />  can perform this action.
+Deletes the specified Git credential.
 
 ```sql
 DELETE FROM databricks_workspace.workspace.git_credentials

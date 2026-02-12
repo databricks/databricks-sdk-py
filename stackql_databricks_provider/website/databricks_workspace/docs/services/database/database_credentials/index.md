@@ -55,7 +55,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Generates a credential that can be used to access database instances.<br /><br />:param claims: List[:class:`RequestedClaims`] (optional)<br />  The returned token will be scoped to the union of instance_names and instances containing the<br />  specified UC tables, so instance_names is allowed to be empty.<br />:param instance_names: List[str] (optional)<br />  Instances to which the token will be scoped.<br />:param request_id: str (optional)<br /><br />:returns: :class:`DatabaseCredential`</td>
+    <td>Generates a credential that can be used to access database instances.</td>
 </tr>
 </tbody>
 </table>
@@ -91,7 +91,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="generate">
 
-Generates a credential that can be used to access database instances.<br /><br />:param claims: List[:class:`RequestedClaims`] (optional)<br />  The returned token will be scoped to the union of instance_names and instances containing the<br />  specified UC tables, so instance_names is allowed to be empty.<br />:param instance_names: List[str] (optional)<br />  Instances to which the token will be scoped.<br />:param request_id: str (optional)<br /><br />:returns: :class:`DatabaseCredential`
+Generates a credential that can be used to access database instances.
 
 ```sql
 EXEC databricks_workspace.database.database_credentials.generate 

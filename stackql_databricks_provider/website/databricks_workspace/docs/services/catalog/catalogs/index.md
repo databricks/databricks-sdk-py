@@ -105,7 +105,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "value",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       },
       {
         "name": "inherited_from_name",
@@ -122,7 +122,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "enable_predictive_optimization",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "isolation_mode",
@@ -249,7 +249,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "value",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       },
       {
         "name": "inherited_from_name",
@@ -266,7 +266,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "enable_predictive_optimization",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "isolation_mode",
@@ -349,35 +349,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a></td>
-    <td>Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the<br />catalog, or a user that has the **USE_CATALOG** privilege set for their account.<br /><br />:param name: str<br />  The name of the catalog.<br />:param include_browse: bool (optional)<br />  Whether to include catalogs in the response for which the principal can only access selective<br />  metadata for<br /><br />:returns: :class:`CatalogInfo`</td>
+    <td>Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-include_unbound"><code>include_unbound</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be<br />retrieved. Otherwise, only catalogs owned by the caller (or for which the caller has the<br />**USE_CATALOG** privilege) will be retrieved. There is no guarantee of a specific ordering of the<br />elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param include_browse: bool (optional)<br />  Whether to include catalogs in the response for which the principal can only access selective<br />  metadata for<br />:param include_unbound: bool (optional)<br />  Whether to include catalogs not bound to the workspace. Effective only if the user has permission to<br />  update the catalog–workspace binding.<br />:param max_results: int (optional)<br />  Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured<br />  value (recommended); - when set to a value greater than 0, the page length is the minimum of this<br />  value and a server configured value; - when set to a value less than 0, an invalid parameter error<br />  is returned; - If not set, all valid catalogs are returned (not recommended). - Note: The number of<br />  returned catalogs might be less than the specified max_results size, even zero. The only definitive<br />  indication that no further catalogs can be fetched is when the next_page_token is unset from the<br />  response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`CatalogInfo`</td>
+    <td>Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
     <td></td>
-    <td>Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the<br />**CREATE_CATALOG** privilege.<br /><br />:param name: str<br />  Name of catalog.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param connection_name: str (optional)<br />  The name of the connection to an external data source.<br />:param options: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br />:param properties: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br />:param provider_name: str (optional)<br />  The name of delta sharing provider.<br /><br />  A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server.<br />:param share_name: str (optional)<br />  The name of the share under the share provider.<br />:param storage_root: str (optional)<br />  Storage root URL for managed tables within catalog.<br /><br />:returns: :class:`CatalogInfo`</td>
+    <td>Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the catalog that matches the supplied name. The caller must be either the owner of the<br />catalog, or a metastore admin (when changing the owner field of the catalog).<br /><br />:param name: str<br />  The name of the catalog.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)<br />  Whether predictive optimization should be enabled for this object and objects under it.<br />:param isolation_mode: :class:`CatalogIsolationMode` (optional)<br />  Whether the current securable is accessible from all workspaces or a specific set of workspaces.<br />:param new_name: str (optional)<br />  New name for the catalog.<br />:param options: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br />:param owner: str (optional)<br />  Username of current owner of catalog.<br />:param properties: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br /><br />:returns: :class:`CatalogInfo`</td>
+    <td>Updates the catalog that matches the supplied name. The caller must be either the owner of the</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
-    <td>Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner<br />of the catalog.<br /><br />:param name: str<br />  The name of the catalog.<br />:param force: bool (optional)<br />  Force deletion even if the catalog is not empty.</td>
+    <td>Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner</td>
 </tr>
 </tbody>
 </table>
@@ -444,7 +444,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the<br />catalog, or a user that has the **USE_CATALOG** privilege set for their account.<br /><br />:param name: str<br />  The name of the catalog.<br />:param include_browse: bool (optional)<br />  Whether to include catalogs in the response for which the principal can only access selective<br />  metadata for<br /><br />:returns: :class:`CatalogInfo`
+Gets the specified catalog in a metastore. The caller must be a metastore admin, the owner of the
 
 ```sql
 SELECT
@@ -480,7 +480,7 @@ AND include_browse = '{{ include_browse }}'
 </TabItem>
 <TabItem value="list">
 
-Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be<br />retrieved. Otherwise, only catalogs owned by the caller (or for which the caller has the<br />**USE_CATALOG** privilege) will be retrieved. There is no guarantee of a specific ordering of the<br />elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param include_browse: bool (optional)<br />  Whether to include catalogs in the response for which the principal can only access selective<br />  metadata for<br />:param include_unbound: bool (optional)<br />  Whether to include catalogs not bound to the workspace. Effective only if the user has permission to<br />  update the catalog–workspace binding.<br />:param max_results: int (optional)<br />  Maximum number of catalogs to return. - when set to 0, the page length is set to a server configured<br />  value (recommended); - when set to a value greater than 0, the page length is the minimum of this<br />  value and a server configured value; - when set to a value less than 0, an invalid parameter error<br />  is returned; - If not set, all valid catalogs are returned (not recommended). - Note: The number of<br />  returned catalogs might be less than the specified max_results size, even zero. The only definitive<br />  indication that no further catalogs can be fetched is when the next_page_token is unset from the<br />  response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`CatalogInfo`
+Gets an array of catalogs in the metastore. If the caller is the metastore admin, all catalogs will be
 
 ```sql
 SELECT
@@ -530,7 +530,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the<br />**CREATE_CATALOG** privilege.<br /><br />:param name: str<br />  Name of catalog.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param connection_name: str (optional)<br />  The name of the connection to an external data source.<br />:param options: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br />:param properties: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br />:param provider_name: str (optional)<br />  The name of delta sharing provider.<br /><br />  A Delta Sharing catalog is a catalog that is based on a Delta share on a remote sharing server.<br />:param share_name: str (optional)<br />  The name of the share under the share provider.<br />:param storage_root: str (optional)<br />  Storage root URL for managed tables within catalog.<br /><br />:returns: :class:`CatalogInfo`
+Creates a new catalog instance in the parent metastore if the caller is a metastore admin or has the
 
 ```sql
 INSERT INTO databricks_workspace.catalog.catalogs (
@@ -637,7 +637,7 @@ updated_by
 >
 <TabItem value="update">
 
-Updates the catalog that matches the supplied name. The caller must be either the owner of the<br />catalog, or a metastore admin (when changing the owner field of the catalog).<br /><br />:param name: str<br />  The name of the catalog.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)<br />  Whether predictive optimization should be enabled for this object and objects under it.<br />:param isolation_mode: :class:`CatalogIsolationMode` (optional)<br />  Whether the current securable is accessible from all workspaces or a specific set of workspaces.<br />:param new_name: str (optional)<br />  New name for the catalog.<br />:param options: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br />:param owner: str (optional)<br />  Username of current owner of catalog.<br />:param properties: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br /><br />:returns: :class:`CatalogInfo`
+Updates the catalog that matches the supplied name. The caller must be either the owner of the
 
 ```sql
 UPDATE databricks_workspace.catalog.catalogs
@@ -691,7 +691,7 @@ updated_by;
 >
 <TabItem value="delete">
 
-Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner<br />of the catalog.<br /><br />:param name: str<br />  The name of the catalog.<br />:param force: bool (optional)<br />  Force deletion even if the catalog is not empty.
+Deletes the catalog that matches the supplied name. The caller must be a metastore admin or the owner
 
 ```sql
 DELETE FROM databricks_workspace.catalog.catalogs

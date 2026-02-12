@@ -363,35 +363,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_shared_data"><code>include_shared_data</code></a></td>
-    <td>Gets a data object share from the metastore. The caller must have the USE_SHARE privilege on the<br />metastore or be the owner of the share.<br /><br />:param name: str<br />  The name of the share.<br />:param include_shared_data: bool (optional)<br />  Query for data to include in the share.<br /><br />:returns: :class:`ShareInfo`</td>
+    <td>Gets a data object share from the metastore. The caller must have the USE_SHARE privilege on the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on<br />the metastore, all shares are returned. Otherwise, only shares owned by the caller are returned. There<br />is no guarantee of a specific ordering of the elements in the array.<br /><br />:param max_results: int (optional)<br />  Maximum number of shares to return. - when set to 0, the page length is set to a server configured<br />  value (recommended); - when set to a value greater than 0, the page length is the minimum of this<br />  value and a server configured value; - when set to a value less than 0, an invalid parameter error<br />  is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of<br />  returned shares might be less than the specified max_results size, even zero. The only definitive<br />  indication that no further shares can be fetched is when the next_page_token is unset from the<br />  response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ShareInfo`</td>
+    <td>Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
     <td></td>
-    <td>Creates a new share for data objects. Data objects can be added after creation with **update**. The<br />caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.<br /><br />:param name: str<br />  Name of the share.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param storage_root: str (optional)<br />  Storage root URL for the share.<br /><br />:returns: :class:`ShareInfo`</td>
+    <td>Creates a new share for data objects. Data objects can be added after creation with **update**. The</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the share with the changes and data objects in the request. The caller must be the owner of<br />the share or a metastore admin.<br /><br />When the caller is a metastore admin, only the __owner__ field can be updated.<br /><br />In the case the share name is changed, **updateShare** requires that the caller is the owner of the<br />share and has the CREATE_SHARE privilege.<br /><br />If there are notebook files in the share, the __storage_root__ field cannot be updated.<br /><br />For each table that is added through this method, the share owner must also have **SELECT** privilege<br />on the table. This privilege must be maintained indefinitely for recipients to be able to access the<br />table. Typically, you should use a group as the share owner.<br /><br />Table removals through **update** do not require additional privileges.<br /><br />:param name: str<br />  The name of the share.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param new_name: str (optional)<br />  New name for the share.<br />:param owner: str (optional)<br />  Username of current owner of share.<br />:param storage_root: str (optional)<br />  Storage root URL for the share.<br />:param updates: List[:class:`SharedDataObjectUpdate`] (optional)<br />  Array of shared data object updates.<br /><br />:returns: :class:`ShareInfo`</td>
+    <td>Updates the share with the changes and data objects in the request. The caller must be the owner of</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a data object share from the metastore. The caller must be an owner of the share.<br /><br />:param name: str<br />  The name of the share.</td>
+    <td>Deletes a data object share from the metastore. The caller must be an owner of the share.</td>
 </tr>
 </tbody>
 </table>
@@ -448,7 +448,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a data object share from the metastore. The caller must have the USE_SHARE privilege on the<br />metastore or be the owner of the share.<br /><br />:param name: str<br />  The name of the share.<br />:param include_shared_data: bool (optional)<br />  Query for data to include in the share.<br /><br />:returns: :class:`ShareInfo`
+Gets a data object share from the metastore. The caller must have the USE_SHARE privilege on the
 
 ```sql
 SELECT
@@ -471,7 +471,7 @@ AND include_shared_data = '{{ include_shared_data }}'
 </TabItem>
 <TabItem value="list">
 
-Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on<br />the metastore, all shares are returned. Otherwise, only shares owned by the caller are returned. There<br />is no guarantee of a specific ordering of the elements in the array.<br /><br />:param max_results: int (optional)<br />  Maximum number of shares to return. - when set to 0, the page length is set to a server configured<br />  value (recommended); - when set to a value greater than 0, the page length is the minimum of this<br />  value and a server configured value; - when set to a value less than 0, an invalid parameter error<br />  is returned; - If not set, all valid shares are returned (not recommended). - Note: The number of<br />  returned shares might be less than the specified max_results size, even zero. The only definitive<br />  indication that no further shares can be fetched is when the next_page_token is unset from the<br />  response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ShareInfo`
+Gets an array of data object shares from the metastore. If the caller has the USE_SHARE privilege on
 
 ```sql
 SELECT
@@ -506,7 +506,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new share for data objects. Data objects can be added after creation with **update**. The<br />caller must be a metastore admin or have the **CREATE_SHARE** privilege on the metastore.<br /><br />:param name: str<br />  Name of the share.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param storage_root: str (optional)<br />  Storage root URL for the share.<br /><br />:returns: :class:`ShareInfo`
+Creates a new share for data objects. Data objects can be added after creation with **update**. The
 
 ```sql
 INSERT INTO databricks_workspace.sharing.shares (
@@ -570,7 +570,7 @@ updated_by
 >
 <TabItem value="update">
 
-Updates the share with the changes and data objects in the request. The caller must be the owner of<br />the share or a metastore admin.<br /><br />When the caller is a metastore admin, only the __owner__ field can be updated.<br /><br />In the case the share name is changed, **updateShare** requires that the caller is the owner of the<br />share and has the CREATE_SHARE privilege.<br /><br />If there are notebook files in the share, the __storage_root__ field cannot be updated.<br /><br />For each table that is added through this method, the share owner must also have **SELECT** privilege<br />on the table. This privilege must be maintained indefinitely for recipients to be able to access the<br />table. Typically, you should use a group as the share owner.<br /><br />Table removals through **update** do not require additional privileges.<br /><br />:param name: str<br />  The name of the share.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param new_name: str (optional)<br />  New name for the share.<br />:param owner: str (optional)<br />  Username of current owner of share.<br />:param storage_root: str (optional)<br />  Storage root URL for the share.<br />:param updates: List[:class:`SharedDataObjectUpdate`] (optional)<br />  Array of shared data object updates.<br /><br />:returns: :class:`ShareInfo`
+Updates the share with the changes and data objects in the request. The caller must be the owner of
 
 ```sql
 UPDATE databricks_workspace.sharing.shares
@@ -609,7 +609,7 @@ updated_by;
 >
 <TabItem value="delete">
 
-Deletes a data object share from the metastore. The caller must be an owner of the share.<br /><br />:param name: str<br />  The name of the share.
+Deletes a data object share from the metastore. The caller must be an owner of the share.
 
 ```sql
 DELETE FROM databricks_workspace.sharing.shares

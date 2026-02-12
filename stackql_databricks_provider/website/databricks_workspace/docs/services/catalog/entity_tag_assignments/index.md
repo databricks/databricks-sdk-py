@@ -111,35 +111,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a tag assignment for an Unity Catalog entity by tag key.<br /><br />:param entity_type: str<br />  The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,<br />  columns, volumes.<br />:param entity_name: str<br />  The fully qualified name of the entity to which the tag is assigned<br />:param tag_key: str<br />  Required. The key of the tag<br /><br />:returns: :class:`EntityTagAssignment`</td>
+    <td>Gets a tag assignment for an Unity Catalog entity by tag key.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List tag assignments for an Unity Catalog entity<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param entity_type: str<br />  The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,<br />  columns, volumes.<br />:param entity_name: str<br />  The fully qualified name of the entity to which the tag is assigned<br />:param max_results: int (optional)<br />  Optional. Maximum number of tag assignments to return in a single page<br />:param page_token: str (optional)<br />  Optional. Pagination token to retrieve the next page of results<br /><br />:returns: Iterator over :class:`EntityTagAssignment`</td>
+    <td>List tag assignments for an Unity Catalog entity</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_assignment"><code>data__tag_assignment</code></a></td>
     <td></td>
-    <td>Creates a tag assignment for an Unity Catalog entity.<br /><br />To add tags to Unity Catalog entities, you must own the entity or have the following privileges: -<br />**APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the<br />entity's parent catalog<br /><br />To add a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**<br />permission on the tag policy. See [Manage tag policy permissions].<br /><br />[Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions<br /><br />:param tag_assignment: :class:`EntityTagAssignment`<br /><br />:returns: :class:`EntityTagAssignment`</td>
+    <td>Creates a tag assignment for an Unity Catalog entity.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_assignment"><code>data__tag_assignment</code></a></td>
     <td></td>
-    <td>Updates an existing tag assignment for an Unity Catalog entity.<br /><br />To update tags to Unity Catalog entities, you must own the entity or have the following privileges: -<br />**APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the<br />entity's parent catalog<br /><br />To update a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**<br />permission on the tag policy. See [Manage tag policy permissions].<br /><br />[Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions<br /><br />:param entity_type: str<br />  The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,<br />  columns, volumes.<br />:param entity_name: str<br />  The fully qualified name of the entity to which the tag is assigned<br />:param tag_key: str<br />  The key of the tag<br />:param tag_assignment: :class:`EntityTagAssignment`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`EntityTagAssignment`</td>
+    <td>Updates an existing tag assignment for an Unity Catalog entity.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a tag assignment for an Unity Catalog entity by its key.<br /><br />To delete tags from Unity Catalog entities, you must own the entity or have the following privileges:<br />- **APPLY TAG** on the entity - **USE_SCHEMA** on the entity's parent schema - **USE_CATALOG** on the<br />entity's parent catalog<br /><br />To delete a governed tag from Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**<br />permission on the tag policy. See [Manage tag policy permissions].<br /><br />[Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions<br /><br />:param entity_type: str<br />  The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,<br />  columns, volumes.<br />:param entity_name: str<br />  The fully qualified name of the entity to which the tag is assigned<br />:param tag_key: str<br />  Required. The key of the tag to delete</td>
+    <td>Deletes a tag assignment for an Unity Catalog entity by its key.</td>
 </tr>
 </tbody>
 </table>
@@ -206,7 +206,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a tag assignment for an Unity Catalog entity by tag key.<br /><br />:param entity_type: str<br />  The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,<br />  columns, volumes.<br />:param entity_name: str<br />  The fully qualified name of the entity to which the tag is assigned<br />:param tag_key: str<br />  Required. The key of the tag<br /><br />:returns: :class:`EntityTagAssignment`
+Gets a tag assignment for an Unity Catalog entity by tag key.
 
 ```sql
 SELECT
@@ -224,7 +224,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List tag assignments for an Unity Catalog entity<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param entity_type: str<br />  The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,<br />  columns, volumes.<br />:param entity_name: str<br />  The fully qualified name of the entity to which the tag is assigned<br />:param max_results: int (optional)<br />  Optional. Maximum number of tag assignments to return in a single page<br />:param page_token: str (optional)<br />  Optional. Pagination token to retrieve the next page of results<br /><br />:returns: Iterator over :class:`EntityTagAssignment`
+List tag assignments for an Unity Catalog entity
 
 ```sql
 SELECT
@@ -255,7 +255,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a tag assignment for an Unity Catalog entity.<br /><br />To add tags to Unity Catalog entities, you must own the entity or have the following privileges: -<br />**APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the<br />entity's parent catalog<br /><br />To add a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**<br />permission on the tag policy. See [Manage tag policy permissions].<br /><br />[Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions<br /><br />:param tag_assignment: :class:`EntityTagAssignment`<br /><br />:returns: :class:`EntityTagAssignment`
+Creates a tag assignment for an Unity Catalog entity.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.entity_tag_assignments (
@@ -301,7 +301,7 @@ tag_value
 >
 <TabItem value="update">
 
-Updates an existing tag assignment for an Unity Catalog entity.<br /><br />To update tags to Unity Catalog entities, you must own the entity or have the following privileges: -<br />**APPLY TAG** on the entity - **USE SCHEMA** on the entity's parent schema - **USE CATALOG** on the<br />entity's parent catalog<br /><br />To update a governed tag to Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**<br />permission on the tag policy. See [Manage tag policy permissions].<br /><br />[Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions<br /><br />:param entity_type: str<br />  The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,<br />  columns, volumes.<br />:param entity_name: str<br />  The fully qualified name of the entity to which the tag is assigned<br />:param tag_key: str<br />  The key of the tag<br />:param tag_assignment: :class:`EntityTagAssignment`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`EntityTagAssignment`
+Updates an existing tag assignment for an Unity Catalog entity.
 
 ```sql
 UPDATE databricks_workspace.catalog.entity_tag_assignments
@@ -334,7 +334,7 @@ tag_value;
 >
 <TabItem value="delete">
 
-Deletes a tag assignment for an Unity Catalog entity by its key.<br /><br />To delete tags from Unity Catalog entities, you must own the entity or have the following privileges:<br />- **APPLY TAG** on the entity - **USE_SCHEMA** on the entity's parent schema - **USE_CATALOG** on the<br />entity's parent catalog<br /><br />To delete a governed tag from Unity Catalog entities, you must also have the **ASSIGN** or **MANAGE**<br />permission on the tag policy. See [Manage tag policy permissions].<br /><br />[Manage tag policy permissions]: https://docs.databricks.com/aws/en/admin/tag-policies/manage-permissions<br /><br />:param entity_type: str<br />  The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas, tables,<br />  columns, volumes.<br />:param entity_name: str<br />  The fully qualified name of the entity to which the tag is assigned<br />:param tag_key: str<br />  Required. The key of the tag to delete
+Deletes a tag assignment for an Unity Catalog entity by its key.
 
 ```sql
 DELETE FROM databricks_workspace.catalog.entity_tag_assignments

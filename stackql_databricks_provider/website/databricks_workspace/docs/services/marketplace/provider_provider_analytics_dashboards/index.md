@@ -80,28 +80,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get provider analytics dashboard.<br /><br /><br />:returns: :class:`ListProviderAnalyticsDashboardResponse`</td>
+    <td>Get provider analytics dashboard.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the<br />Lakeview dashboard id.<br /><br /><br />:returns: :class:`ProviderAnalyticsDashboard`</td>
+    <td>Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Update provider analytics dashboard.<br /><br />:param id: str<br />  id is immutable property and can't be updated.<br />:param version: int (optional)<br />  this is the version of the dashboard template we want to update our user to current expectation is<br />  that it should be equal to latest version of the dashboard template<br /><br />:returns: :class:`UpdateProviderAnalyticsDashboardResponse`</td>
+    <td>Update provider analytics dashboard.</td>
 </tr>
 <tr>
     <td><a href="#get_latest_version"><CopyableCode code="get_latest_version" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get latest version of provider analytics dashboard.<br /><br /><br />:returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`</td>
+    <td>Get latest version of provider analytics dashboard.</td>
 </tr>
 </tbody>
 </table>
@@ -142,7 +142,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get provider analytics dashboard.<br /><br /><br />:returns: :class:`ListProviderAnalyticsDashboardResponse`
+Get provider analytics dashboard.
 
 ```sql
 SELECT
@@ -168,7 +168,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the<br />Lakeview dashboard id.<br /><br /><br />:returns: :class:`ProviderAnalyticsDashboard`
+Create provider analytics dashboard. Returns Marketplace specific `id`. Not to be confused with the
 
 ```sql
 INSERT INTO databricks_workspace.marketplace.provider_provider_analytics_dashboards (
@@ -205,7 +205,7 @@ id
 >
 <TabItem value="update">
 
-Update provider analytics dashboard.<br /><br />:param id: str<br />  id is immutable property and can't be updated.<br />:param version: int (optional)<br />  this is the version of the dashboard template we want to update our user to current expectation is<br />  that it should be equal to latest version of the dashboard template<br /><br />:returns: :class:`UpdateProviderAnalyticsDashboardResponse`
+Update provider analytics dashboard.
 
 ```sql
 REPLACE databricks_workspace.marketplace.provider_provider_analytics_dashboards
@@ -233,7 +233,7 @@ version;
 >
 <TabItem value="get_latest_version">
 
-Get latest version of provider analytics dashboard.<br /><br /><br />:returns: :class:`GetLatestVersionProviderAnalyticsDashboardResponse`
+Get latest version of provider analytics dashboard.
 
 ```sql
 EXEC databricks_workspace.marketplace.provider_provider_analytics_dashboards.get_latest_version 

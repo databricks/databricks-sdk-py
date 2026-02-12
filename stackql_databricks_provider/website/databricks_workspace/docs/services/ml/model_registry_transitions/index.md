@@ -110,42 +110,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a list of all open stage transition requests for the model version.<br /><br />:param name: str<br />  Name of the registered model.<br />:param version: str<br />  Version of the model.<br /><br />:returns: Iterator over :class:`Activity`</td>
+    <td>Gets a list of all open stage transition requests for the model version.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__version"><code>data__version</code></a>, <a href="#parameter-data__stage"><code>data__stage</code></a></td>
     <td></td>
-    <td>Creates a model version stage transition request.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param stage: str<br />  Target stage of the transition. Valid values are:<br /><br />  * `None`: The initial stage of a model version.<br /><br />  * `Staging`: Staging or pre-production stage.<br /><br />  * `Production`: Production stage.<br /><br />  * `Archived`: Archived stage.<br />:param comment: str (optional)<br />  User-provided comment on the action.<br /><br />:returns: :class:`CreateTransitionRequestResponse`</td>
+    <td>Creates a model version stage transition request.</td>
 </tr>
 <tr>
     <td><a href="#approve"><CopyableCode code="approve" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a>, <a href="#parameter-archive_existing_versions"><code>archive_existing_versions</code></a></td>
     <td></td>
-    <td>Approves a model version stage transition request.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param stage: str<br />  Target stage of the transition. Valid values are:<br /><br />  * `None`: The initial stage of a model version.<br /><br />  * `Staging`: Staging or pre-production stage.<br /><br />  * `Production`: Production stage.<br /><br />  * `Archived`: Archived stage.<br />:param archive_existing_versions: bool<br />  Specifies whether to archive all current model versions in the target stage.<br />:param comment: str (optional)<br />  User-provided comment on the action.<br /><br />:returns: :class:`ApproveTransitionRequestResponse`</td>
+    <td>Approves a model version stage transition request.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a>, <a href="#parameter-creator"><code>creator</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-comment"><code>comment</code></a></td>
-    <td>Cancels a model version stage transition request.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param stage: str<br />  Target stage of the transition request. Valid values are:<br /><br />  * `None`: The initial stage of a model version.<br /><br />  * `Staging`: Staging or pre-production stage.<br /><br />  * `Production`: Production stage.<br /><br />  * `Archived`: Archived stage.<br />:param creator: str<br />  Username of the user who created this request. Of the transition requests matching the specified<br />  details, only the one transition created by this user will be deleted.<br />:param comment: str (optional)<br />  User-provided comment on the action.<br /><br />:returns: :class:`DeleteTransitionRequestResponse`</td>
+    <td>Cancels a model version stage transition request.</td>
 </tr>
 <tr>
     <td><a href="#reject"><CopyableCode code="reject" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a></td>
     <td></td>
-    <td>Rejects a model version stage transition request.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param stage: str<br />  Target stage of the transition. Valid values are:<br /><br />  * `None`: The initial stage of a model version.<br /><br />  * `Staging`: Staging or pre-production stage.<br /><br />  * `Production`: Production stage.<br /><br />  * `Archived`: Archived stage.<br />:param comment: str (optional)<br />  User-provided comment on the action.<br /><br />:returns: :class:`RejectTransitionRequestResponse`</td>
+    <td>Rejects a model version stage transition request.</td>
 </tr>
 <tr>
     <td><a href="#transition"><CopyableCode code="transition" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a>, <a href="#parameter-archive_existing_versions"><code>archive_existing_versions</code></a></td>
     <td></td>
-    <td>Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]<br />that also accepts a comment associated with the transition to be recorded.<br /><br />[MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param stage: str<br />  Target stage of the transition. Valid values are:<br /><br />  * `None`: The initial stage of a model version.<br /><br />  * `Staging`: Staging or pre-production stage.<br /><br />  * `Production`: Production stage.<br /><br />  * `Archived`: Archived stage.<br />:param archive_existing_versions: bool<br />  Specifies whether to archive all current model versions in the target stage.<br />:param comment: str (optional)<br />  User-provided comment on the action.<br /><br />:returns: :class:`TransitionStageResponse`</td>
+    <td>Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]</td>
 </tr>
 </tbody>
 </table>
@@ -206,7 +206,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Gets a list of all open stage transition requests for the model version.<br /><br />:param name: str<br />  Name of the registered model.<br />:param version: str<br />  Version of the model.<br /><br />:returns: Iterator over :class:`Activity`
+Gets a list of all open stage transition requests for the model version.
 
 ```sql
 SELECT
@@ -240,7 +240,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Creates a model version stage transition request.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param stage: str<br />  Target stage of the transition. Valid values are:<br /><br />  * `None`: The initial stage of a model version.<br /><br />  * `Staging`: Staging or pre-production stage.<br /><br />  * `Production`: Production stage.<br /><br />  * `Archived`: Archived stage.<br />:param comment: str (optional)<br />  User-provided comment on the action.<br /><br />:returns: :class:`CreateTransitionRequestResponse`
+Creates a model version stage transition request.
 
 ```sql
 INSERT INTO databricks_workspace.ml.model_registry_transitions (
@@ -304,7 +304,7 @@ request
 >
 <TabItem value="approve">
 
-Approves a model version stage transition request.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param stage: str<br />  Target stage of the transition. Valid values are:<br /><br />  * `None`: The initial stage of a model version.<br /><br />  * `Staging`: Staging or pre-production stage.<br /><br />  * `Production`: Production stage.<br /><br />  * `Archived`: Archived stage.<br />:param archive_existing_versions: bool<br />  Specifies whether to archive all current model versions in the target stage.<br />:param comment: str (optional)<br />  User-provided comment on the action.<br /><br />:returns: :class:`ApproveTransitionRequestResponse`
+Approves a model version stage transition request.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_transitions.approve 
@@ -322,7 +322,7 @@ EXEC databricks_workspace.ml.model_registry_transitions.approve
 </TabItem>
 <TabItem value="delete">
 
-Cancels a model version stage transition request.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param stage: str<br />  Target stage of the transition request. Valid values are:<br /><br />  * `None`: The initial stage of a model version.<br /><br />  * `Staging`: Staging or pre-production stage.<br /><br />  * `Production`: Production stage.<br /><br />  * `Archived`: Archived stage.<br />:param creator: str<br />  Username of the user who created this request. Of the transition requests matching the specified<br />  details, only the one transition created by this user will be deleted.<br />:param comment: str (optional)<br />  User-provided comment on the action.<br /><br />:returns: :class:`DeleteTransitionRequestResponse`
+Cancels a model version stage transition request.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_transitions.delete 
@@ -337,7 +337,7 @@ EXEC databricks_workspace.ml.model_registry_transitions.delete
 </TabItem>
 <TabItem value="reject">
 
-Rejects a model version stage transition request.<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param stage: str<br />  Target stage of the transition. Valid values are:<br /><br />  * `None`: The initial stage of a model version.<br /><br />  * `Staging`: Staging or pre-production stage.<br /><br />  * `Production`: Production stage.<br /><br />  * `Archived`: Archived stage.<br />:param comment: str (optional)<br />  User-provided comment on the action.<br /><br />:returns: :class:`RejectTransitionRequestResponse`
+Rejects a model version stage transition request.
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_transitions.reject 
@@ -354,7 +354,7 @@ EXEC databricks_workspace.ml.model_registry_transitions.reject
 </TabItem>
 <TabItem value="transition">
 
-Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]<br />that also accepts a comment associated with the transition to be recorded.<br /><br />[MLflow endpoint]: https://www.mlflow.org/docs/latest/rest-api.html#transition-modelversion-stage<br /><br />:param name: str<br />  Name of the model.<br />:param version: str<br />  Version of the model.<br />:param stage: str<br />  Target stage of the transition. Valid values are:<br /><br />  * `None`: The initial stage of a model version.<br /><br />  * `Staging`: Staging or pre-production stage.<br /><br />  * `Production`: Production stage.<br /><br />  * `Archived`: Archived stage.<br />:param archive_existing_versions: bool<br />  Specifies whether to archive all current model versions in the target stage.<br />:param comment: str (optional)<br />  User-provided comment on the action.<br /><br />:returns: :class:`TransitionStageResponse`
+Transition a model version's stage. This is a Databricks workspace version of the [MLflow endpoint]
 
 ```sql
 EXEC databricks_workspace.ml.model_registry_transitions.transition 

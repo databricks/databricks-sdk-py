@@ -242,7 +242,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "destination_type",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   }
 ]} />
 </TabItem>
@@ -268,35 +268,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a notification destination.<br /><br />:param id: str<br /><br />:returns: :class:`NotificationDestination`</td>
+    <td>Gets a notification destination.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Lists notification destinations.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ListNotificationDestinationsResult`</td>
+    <td>Lists notification destinations.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates a notification destination. Requires workspace admin permissions.<br /><br />:param config: :class:`Config` (optional)<br />  The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.<br />:param display_name: str (optional)<br />  The display name for the notification destination.<br /><br />:returns: :class:`NotificationDestination`</td>
+    <td>Creates a notification destination. Requires workspace admin permissions.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates a notification destination. Requires workspace admin permissions. At least one field is<br />required in the request body.<br /><br />:param id: str<br />  UUID identifying notification destination.<br />:param config: :class:`Config` (optional)<br />  The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.<br />:param display_name: str (optional)<br />  The display name for the notification destination.<br /><br />:returns: :class:`NotificationDestination`</td>
+    <td>Updates a notification destination. Requires workspace admin permissions. At least one field is</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a notification destination. Requires workspace admin permissions.<br /><br />:param id: str</td>
+    <td>Deletes a notification destination. Requires workspace admin permissions.</td>
 </tr>
 </tbody>
 </table>
@@ -348,7 +348,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a notification destination.<br /><br />:param id: str<br /><br />:returns: :class:`NotificationDestination`
+Gets a notification destination.
 
 ```sql
 SELECT
@@ -364,7 +364,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Lists notification destinations.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ListNotificationDestinationsResult`
+Lists notification destinations.
 
 ```sql
 SELECT
@@ -392,7 +392,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a notification destination. Requires workspace admin permissions.<br /><br />:param config: :class:`Config` (optional)<br />  The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.<br />:param display_name: str (optional)<br />  The display name for the notification destination.<br /><br />:returns: :class:`NotificationDestination`
+Creates a notification destination. Requires workspace admin permissions.
 
 ```sql
 INSERT INTO databricks_workspace.settings.notification_destinations (
@@ -444,7 +444,7 @@ destination_type
 >
 <TabItem value="update">
 
-Updates a notification destination. Requires workspace admin permissions. At least one field is<br />required in the request body.<br /><br />:param id: str<br />  UUID identifying notification destination.<br />:param config: :class:`Config` (optional)<br />  The configuration for the notification destination. Must wrap EXACTLY one of the nested configs.<br />:param display_name: str (optional)<br />  The display name for the notification destination.<br /><br />:returns: :class:`NotificationDestination`
+Updates a notification destination. Requires workspace admin permissions. At least one field is
 
 ```sql
 UPDATE databricks_workspace.settings.notification_destinations
@@ -474,7 +474,7 @@ destination_type;
 >
 <TabItem value="delete">
 
-Deletes a notification destination. Requires workspace admin permissions.<br /><br />:param id: str
+Deletes a notification destination. Requires workspace admin permissions.
 
 ```sql
 DELETE FROM databricks_workspace.settings.notification_destinations

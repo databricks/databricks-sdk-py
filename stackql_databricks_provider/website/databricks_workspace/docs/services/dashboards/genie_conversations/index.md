@@ -92,21 +92,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_all"><code>include_all</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Get a list of conversations in a Genie Space.<br /><br />:param space_id: str<br />  The ID of the Genie space to retrieve conversations from.<br />:param include_all: bool (optional)<br />  Include all conversations in the space across all users. Requires at least CAN MANAGE permission on<br />  the space.<br />:param page_size: int (optional)<br />  Maximum number of conversations to return per page<br />:param page_token: str (optional)<br />  Token to get the next page of results<br /><br />:returns: :class:`GenieListConversationsResponse`</td>
+    <td>Get a list of conversations in a Genie Space.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a conversation.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the conversation is located.<br />:param conversation_id: str<br />  The ID of the conversation to delete.</td>
+    <td>Delete a conversation.</td>
 </tr>
 <tr>
     <td><a href="#start"><CopyableCode code="start" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-content"><code>content</code></a></td>
     <td></td>
-    <td>Start a new conversation.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where you want to start a conversation.<br />:param content: str<br />  The text of the message that starts the conversation.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GenieMessage`.<br />  See :method:wait_get_message_genie_completed for more details.</td>
+    <td>Start a new conversation.</td>
 </tr>
 </tbody>
 </table>
@@ -167,7 +167,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Get a list of conversations in a Genie Space.<br /><br />:param space_id: str<br />  The ID of the Genie space to retrieve conversations from.<br />:param include_all: bool (optional)<br />  Include all conversations in the space across all users. Requires at least CAN MANAGE permission on<br />  the space.<br />:param page_size: int (optional)<br />  Maximum number of conversations to return per page<br />:param page_token: str (optional)<br />  Token to get the next page of results<br /><br />:returns: :class:`GenieListConversationsResponse`
+Get a list of conversations in a Genie Space.
 
 ```sql
 SELECT
@@ -195,7 +195,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="delete">
 
-Delete a conversation.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the conversation is located.<br />:param conversation_id: str<br />  The ID of the conversation to delete.
+Delete a conversation.
 
 ```sql
 DELETE FROM databricks_workspace.dashboards.genie_conversations
@@ -218,7 +218,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="start">
 
-Start a new conversation.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where you want to start a conversation.<br />:param content: str<br />  The text of the message that starts the conversation.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GenieMessage`.<br />  See :method:wait_get_message_genie_completed for more details.
+Start a new conversation.
 
 ```sql
 EXEC databricks_workspace.dashboards.genie_conversations.start 

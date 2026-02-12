@@ -85,21 +85,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get the current published dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the published dashboard.<br /><br />:returns: :class:`PublishedDashboard`</td>
+    <td>Get the current published dashboard.</td>
 </tr>
 <tr>
     <td><a href="#publish"><CopyableCode code="publish" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Publish the current draft dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to be published.<br />:param embed_credentials: bool (optional)<br />  Flag to indicate if the publisher's credentials should be embedded in the published dashboard. These<br />  embedded credentials will be used to execute the published dashboard's queries.<br />:param warehouse_id: str (optional)<br />  The ID of the warehouse that can be used to override the warehouse which was set in the draft.<br /><br />:returns: :class:`PublishedDashboard`</td>
+    <td>Publish the current draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#unpublish"><CopyableCode code="unpublish" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Unpublish the dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the published dashboard.</td>
+    <td>Unpublish the dashboard.</td>
 </tr>
 </tbody>
 </table>
@@ -140,7 +140,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get the current published dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the published dashboard.<br /><br />:returns: :class:`PublishedDashboard`
+Get the current published dashboard.
 
 ```sql
 SELECT
@@ -168,7 +168,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="publish">
 
-Publish the current draft dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to be published.<br />:param embed_credentials: bool (optional)<br />  Flag to indicate if the publisher's credentials should be embedded in the published dashboard. These<br />  embedded credentials will be used to execute the published dashboard's queries.<br />:param warehouse_id: str (optional)<br />  The ID of the warehouse that can be used to override the warehouse which was set in the draft.<br /><br />:returns: :class:`PublishedDashboard`
+Publish the current draft dashboard.
 
 ```sql
 EXEC databricks_workspace.dashboards.lakeview_published.publish 
@@ -184,7 +184,7 @@ EXEC databricks_workspace.dashboards.lakeview_published.publish
 </TabItem>
 <TabItem value="unpublish">
 
-Unpublish the dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the published dashboard.
+Unpublish the dashboard.
 
 ```sql
 EXEC databricks_workspace.dashboards.lakeview_published.unpublish 

@@ -205,14 +205,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Returns a paginated list of compute endpoints in the branch.<br /><br />:param parent: str<br />  The Branch that owns this collection of endpoints. Format:<br />  projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;<br />:param page_size: int (optional)<br />  Upper bound for items returned. Cannot be negative.<br />:param page_token: str (optional)<br />  Page token from a previous response. If not provided, returns the first page.<br /><br />:returns: Iterator over :class:`Endpoint`</td>
+    <td>Returns a paginated list of compute endpoints in the branch.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-endpoint_id"><code>endpoint_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__endpoint"><code>data__endpoint</code></a></td>
     <td></td>
-    <td>Creates a new compute endpoint in the branch.<br /><br />:param parent: str<br />  The Branch where this Endpoint will be created. Format: projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;<br />:param endpoint: :class:`Endpoint`<br />  The Endpoint to create.<br />:param endpoint_id: str<br />  The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.<br />  The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only<br />  lowercase letters, numbers, and hyphens. For example, `primary` becomes<br />  `projects/my-app/branches/development/endpoints/primary`.<br /><br />:returns: :class:`Operation`</td>
+    <td>Creates a new compute endpoint in the branch.</td>
 </tr>
 </tbody>
 </table>
@@ -268,7 +268,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Returns a paginated list of compute endpoints in the branch.<br /><br />:param parent: str<br />  The Branch that owns this collection of endpoints. Format:<br />  projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;<br />:param page_size: int (optional)<br />  Upper bound for items returned. Cannot be negative.<br />:param page_token: str (optional)<br />  Page token from a previous response. If not provided, returns the first page.<br /><br />:returns: Iterator over :class:`Endpoint`
+Returns a paginated list of compute endpoints in the branch.
 
 ```sql
 SELECT
@@ -301,7 +301,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new compute endpoint in the branch.<br /><br />:param parent: str<br />  The Branch where this Endpoint will be created. Format: projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;<br />:param endpoint: :class:`Endpoint`<br />  The Endpoint to create.<br />:param endpoint_id: str<br />  The ID to use for the Endpoint. This becomes the final component of the endpoint's resource name.<br />  The ID is required and must be 1-63 characters long, start with a lowercase letter, and contain only<br />  lowercase letters, numbers, and hyphens. For example, `primary` becomes<br />  `projects/my-app/branches/development/endpoints/primary`.<br /><br />:returns: :class:`Operation`
+Creates a new compute endpoint in the branch.
 
 ```sql
 INSERT INTO databricks_workspace.postgres.postgres_endpoints (

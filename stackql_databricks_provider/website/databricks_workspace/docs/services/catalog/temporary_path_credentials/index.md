@@ -55,7 +55,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__url"><code>data__url</code></a>, <a href="#parameter-data__operation"><code>data__operation</code></a></td>
     <td></td>
-    <td>Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.<br />The Generate Temporary Path Credentials API is only supported for external storage paths, specifically<br />external locations and external tables. Managed tables are not supported by this API. The metastore<br />must have **external_access_enabled** flag set to true (default false). The caller must have the<br />**EXTERNAL_USE_LOCATION** privilege on the external location; this privilege can only be granted by<br />external location owners. For requests on existing external tables, the caller must also have the<br />**EXTERNAL_USE_SCHEMA** privilege on the parent schema; this privilege can only be granted by catalog<br />owners.<br /><br />:param url: str<br />  URL for path-based access.<br />:param operation: :class:`PathOperation`<br />  The operation being performed on the path.<br />:param dry_run: bool (optional)<br />  Optional. When set to true, the service will not validate that the generated credentials can perform<br />  write operations, therefore no new paths will be created and the response will not contain valid<br />  credentials. Defaults to false.<br /><br />:returns: :class:`GenerateTemporaryPathCredentialResponse`</td>
+    <td>Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.</td>
 </tr>
 </tbody>
 </table>
@@ -92,7 +92,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="generate">
 
-Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.<br />The Generate Temporary Path Credentials API is only supported for external storage paths, specifically<br />external locations and external tables. Managed tables are not supported by this API. The metastore<br />must have **external_access_enabled** flag set to true (default false). The caller must have the<br />**EXTERNAL_USE_LOCATION** privilege on the external location; this privilege can only be granted by<br />external location owners. For requests on existing external tables, the caller must also have the<br />**EXTERNAL_USE_SCHEMA** privilege on the parent schema; this privilege can only be granted by catalog<br />owners.<br /><br />:param url: str<br />  URL for path-based access.<br />:param operation: :class:`PathOperation`<br />  The operation being performed on the path.<br />:param dry_run: bool (optional)<br />  Optional. When set to true, the service will not validate that the generated credentials can perform<br />  write operations, therefore no new paths will be created and the response will not contain valid<br />  credentials. Defaults to false.<br /><br />:returns: :class:`GenerateTemporaryPathCredentialResponse`
+Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.temporary_path_credentials (

@@ -55,7 +55,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-keys"><code>keys</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the configuration status for a workspace.<br /><br />:param keys: str<br /><br />:returns: Dict[str,str]</td>
+    <td>Gets the configuration status for a workspace.</td>
 </tr>
 <tr>
     <td><a href="#set_workspace_config"><CopyableCode code="set_workspace_config" /></a></td>
@@ -104,7 +104,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_workspace_config">
 
-Gets the configuration status for a workspace.<br /><br />:param keys: str<br /><br />:returns: Dict[str,str]
+Gets the configuration status for a workspace.
 
 ```sql
 EXEC databricks_workspace.settings.workspace_config.get_workspace_config 

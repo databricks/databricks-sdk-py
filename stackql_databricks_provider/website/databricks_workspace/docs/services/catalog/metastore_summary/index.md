@@ -160,7 +160,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets information about a metastore. This summary includes the storage credential, the cloud vendor,<br />the cloud region, and the global metastore ID.<br /><br /><br />:returns: :class:`GetMetastoreSummaryResponse`</td>
+    <td>Gets information about a metastore. This summary includes the storage credential, the cloud vendor,</td>
 </tr>
 </tbody>
 </table>
@@ -196,7 +196,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets information about a metastore. This summary includes the storage credential, the cloud vendor,<br />the cloud region, and the global metastore ID.<br /><br /><br />:returns: :class:`GetMetastoreSummaryResponse`
+Gets information about a metastore. This summary includes the storage credential, the cloud vendor,
 
 ```sql
 SELECT

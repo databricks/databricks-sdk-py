@@ -261,56 +261,56 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this<br />info.<br /><br />:param id: str<br />  Unique ID of the metastore.<br /><br />:returns: :class:`MetastoreInfo`</td>
+    <td>Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin<br />to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param max_results: int (optional)<br />  Maximum number of metastores to return. - when set to a value greater than 0, the page length is the<br />  minimum of this value and a server configured value; - when set to 0, the page length is set to a<br />  server configured value (recommended); - when set to a value less than 0, an invalid parameter error<br />  is returned; - If not set, all the metastores are returned (not recommended). - Note: The number of<br />  returned metastores might be less than the specified max_results size, even zero. The only<br />  definitive indication that no further metastores can be fetched is when the next_page_token is unset<br />  from the response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`MetastoreInfo`</td>
+    <td>Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
     <td></td>
-    <td>Creates a new metastore based on a provided name and optional storage root path. By default (if the<br />__owner__ field is not set), the owner of the new metastore is the user calling the<br />__createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is<br />assigned to the System User instead.<br /><br />:param name: str<br />  The user-specified name of the metastore.<br />:param external_access_enabled: bool (optional)<br />  Whether to allow non-DBR clients to directly access entities under the metastore.<br />:param region: str (optional)<br />  Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).<br />:param storage_root: str (optional)<br />  The storage root URL for metastore<br /><br />:returns: :class:`MetastoreInfo`</td>
+    <td>Creates a new metastore based on a provided name and optional storage root path. By default (if the</td>
 </tr>
 <tr>
     <td><a href="#update_assignment"><CopyableCode code="update_assignment" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates a metastore assignment. This operation can be used to update __metastore_id__ or<br />__default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.<br />The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a<br />Workspace admin.<br /><br />:param workspace_id: int<br />  A workspace ID.<br />:param default_catalog_name: str (optional)<br />  The name of the default catalog in the metastore. This field is deprecated. Please use "Default<br />  Namespace API" to configure the default catalog for a Databricks workspace.<br />:param metastore_id: str (optional)<br />  The unique ID of the metastore.</td>
+    <td>Updates a metastore assignment. This operation can be used to update __metastore_id__ or</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__<br />field is set to the empty string (**""**), the ownership is updated to the System User.<br /><br />:param id: str<br />  Unique ID of the metastore.<br />:param delta_sharing_organization_name: str (optional)<br />  The organization name of a Delta Sharing entity, to be used in Databricks-to-Databricks Delta<br />  Sharing as the official name.<br />:param delta_sharing_recipient_token_lifetime_in_seconds: int (optional)<br />  The lifetime of delta sharing recipient token in seconds.<br />:param delta_sharing_scope: :class:`DeltaSharingScopeEnum` (optional)<br />  The scope of Delta Sharing enabled for the metastore.<br />:param external_access_enabled: bool (optional)<br />  Whether to allow non-DBR clients to directly access entities under the metastore.<br />:param new_name: str (optional)<br />  New name for the metastore.<br />:param owner: str (optional)<br />  The owner of the metastore.<br />:param privilege_model_version: str (optional)<br />  Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`).<br />:param storage_root_credential_id: str (optional)<br />  UUID of storage credential to access the metastore storage_root.<br /><br />:returns: :class:`MetastoreInfo`</td>
+    <td>Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__</td>
 </tr>
 <tr>
     <td><a href="#assign"><CopyableCode code="assign" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__metastore_id"><code>data__metastore_id</code></a>, <a href="#parameter-data__default_catalog_name"><code>data__default_catalog_name</code></a></td>
     <td></td>
-    <td>Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be<br />overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account<br />admin.<br /><br />:param workspace_id: int<br />  A workspace ID.<br />:param metastore_id: str<br />  The unique ID of the metastore.<br />:param default_catalog_name: str<br />  The name of the default catalog in the metastore. This field is deprecated. Please use "Default<br />  Namespace API" to configure the default catalog for a Databricks workspace.</td>
+    <td>Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be</td>
 </tr>
 <tr>
     <td><a href="#unassign"><CopyableCode code="unassign" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a metastore assignment. The caller must be an account administrator.<br /><br />:param workspace_id: int<br />  A workspace ID.<br />:param metastore_id: str<br />  Query for the ID of the metastore to delete.</td>
+    <td>Deletes a metastore assignment. The caller must be an account administrator.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
-    <td>Deletes a metastore. The caller must be a metastore admin.<br /><br />:param id: str<br />  Unique ID of the metastore.<br />:param force: bool (optional)<br />  Force deletion even if the metastore is not empty. Default is false.</td>
+    <td>Deletes a metastore. The caller must be a metastore admin.</td>
 </tr>
 </tbody>
 </table>
@@ -377,7 +377,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this<br />info.<br /><br />:param id: str<br />  Unique ID of the metastore.<br /><br />:returns: :class:`MetastoreInfo`
+Gets a metastore that matches the supplied ID. The caller must be a metastore admin to retrieve this
 
 ```sql
 SELECT
@@ -408,7 +408,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin<br />to retrieve this info. There is no guarantee of a specific ordering of the elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param max_results: int (optional)<br />  Maximum number of metastores to return. - when set to a value greater than 0, the page length is the<br />  minimum of this value and a server configured value; - when set to 0, the page length is set to a<br />  server configured value (recommended); - when set to a value less than 0, an invalid parameter error<br />  is returned; - If not set, all the metastores are returned (not recommended). - Note: The number of<br />  returned metastores might be less than the specified max_results size, even zero. The only<br />  definitive indication that no further metastores can be fetched is when the next_page_token is unset<br />  from the response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`MetastoreInfo`
+Gets an array of the available metastores (as __MetastoreInfo__ objects). The caller must be an admin
 
 ```sql
 SELECT
@@ -452,7 +452,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new metastore based on a provided name and optional storage root path. By default (if the<br />__owner__ field is not set), the owner of the new metastore is the user calling the<br />__createMetastore__ API. If the __owner__ field is set to the empty string (**""**), the ownership is<br />assigned to the System User instead.<br /><br />:param name: str<br />  The user-specified name of the metastore.<br />:param external_access_enabled: bool (optional)<br />  Whether to allow non-DBR clients to directly access entities under the metastore.<br />:param region: str (optional)<br />  Cloud region which the metastore serves (e.g., `us-west-2`, `westus`).<br />:param storage_root: str (optional)<br />  The storage root URL for metastore<br /><br />:returns: :class:`MetastoreInfo`
+Creates a new metastore based on a provided name and optional storage root path. By default (if the
 
 ```sql
 INSERT INTO databricks_workspace.catalog.metastores (
@@ -532,7 +532,7 @@ updated_by
 >
 <TabItem value="update_assignment">
 
-Updates a metastore assignment. This operation can be used to update __metastore_id__ or<br />__default_catalog_name__ for a specified Workspace, if the Workspace is already assigned a metastore.<br />The caller must be an account admin to update __metastore_id__; otherwise, the caller can be a<br />Workspace admin.<br /><br />:param workspace_id: int<br />  A workspace ID.<br />:param default_catalog_name: str (optional)<br />  The name of the default catalog in the metastore. This field is deprecated. Please use "Default<br />  Namespace API" to configure the default catalog for a Databricks workspace.<br />:param metastore_id: str (optional)<br />  The unique ID of the metastore.
+Updates a metastore assignment. This operation can be used to update __metastore_id__ or
 
 ```sql
 UPDATE databricks_workspace.catalog.metastores
@@ -546,7 +546,7 @@ AND deployment_name = '{{ deployment_name }}' --required;
 </TabItem>
 <TabItem value="update">
 
-Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__<br />field is set to the empty string (**""**), the ownership is updated to the System User.<br /><br />:param id: str<br />  Unique ID of the metastore.<br />:param delta_sharing_organization_name: str (optional)<br />  The organization name of a Delta Sharing entity, to be used in Databricks-to-Databricks Delta<br />  Sharing as the official name.<br />:param delta_sharing_recipient_token_lifetime_in_seconds: int (optional)<br />  The lifetime of delta sharing recipient token in seconds.<br />:param delta_sharing_scope: :class:`DeltaSharingScopeEnum` (optional)<br />  The scope of Delta Sharing enabled for the metastore.<br />:param external_access_enabled: bool (optional)<br />  Whether to allow non-DBR clients to directly access entities under the metastore.<br />:param new_name: str (optional)<br />  New name for the metastore.<br />:param owner: str (optional)<br />  The owner of the metastore.<br />:param privilege_model_version: str (optional)<br />  Privilege model version of the metastore, of the form `major.minor` (e.g., `1.0`).<br />:param storage_root_credential_id: str (optional)<br />  UUID of storage credential to access the metastore storage_root.<br /><br />:returns: :class:`MetastoreInfo`
+Updates information for a specific metastore. The caller must be a metastore admin. If the __owner__
 
 ```sql
 UPDATE databricks_workspace.catalog.metastores
@@ -597,7 +597,7 @@ updated_by;
 >
 <TabItem value="assign">
 
-Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be<br />overwritten by the new __metastore_id__ and __default_catalog_name__. The caller must be an account<br />admin.<br /><br />:param workspace_id: int<br />  A workspace ID.<br />:param metastore_id: str<br />  The unique ID of the metastore.<br />:param default_catalog_name: str<br />  The name of the default catalog in the metastore. This field is deprecated. Please use "Default<br />  Namespace API" to configure the default catalog for a Databricks workspace.
+Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be
 
 ```sql
 REPLACE databricks_workspace.catalog.metastores
@@ -625,7 +625,7 @@ AND data__default_catalog_name = '{{ default_catalog_name }}' --required;
 >
 <TabItem value="unassign">
 
-Deletes a metastore assignment. The caller must be an account administrator.<br /><br />:param workspace_id: int<br />  A workspace ID.<br />:param metastore_id: str<br />  Query for the ID of the metastore to delete.
+Deletes a metastore assignment. The caller must be an account administrator.
 
 ```sql
 DELETE FROM databricks_workspace.catalog.metastores
@@ -637,7 +637,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 </TabItem>
 <TabItem value="delete">
 
-Deletes a metastore. The caller must be a metastore admin.<br /><br />:param id: str<br />  Unique ID of the metastore.<br />:param force: bool (optional)<br />  Force deletion even if the metastore is not empty. Default is false.
+Deletes a metastore. The caller must be a metastore admin.
 
 ```sql
 DELETE FROM databricks_workspace.catalog.metastores

@@ -185,28 +185,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get dashboard schedule.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to which the schedule belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule.<br /><br />:returns: :class:`Schedule`</td>
+    <td>Get dashboard schedule.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List dashboard schedules.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to which the schedules belongs.<br />:param page_size: int (optional)<br />  The number of schedules to return per page.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListSchedules` call. Use this to retrieve the subsequent<br />  page.<br /><br />:returns: Iterator over :class:`Schedule`</td>
+    <td>List dashboard schedules.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__schedule"><code>data__schedule</code></a></td>
     <td></td>
-    <td>Create dashboard schedule.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to which the schedule belongs.<br />:param schedule: :class:`Schedule`<br />  The schedule to create. A dashboard is limited to 10 schedules.<br /><br />:returns: :class:`Schedule`</td>
+    <td>Create dashboard schedule.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
-    <td>Delete dashboard schedule.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to which the schedule belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule.<br />:param etag: str (optional)<br />  The etag for the schedule. Optionally, it can be provided to verify that the schedule has not been<br />  modified from its last retrieval.</td>
+    <td>Delete dashboard schedule.</td>
 </tr>
 </tbody>
 </table>
@@ -268,7 +268,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get dashboard schedule.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to which the schedule belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule.<br /><br />:returns: :class:`Schedule`
+Get dashboard schedule.
 
 ```sql
 SELECT
@@ -290,7 +290,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List dashboard schedules.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to which the schedules belongs.<br />:param page_size: int (optional)<br />  The number of schedules to return per page.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListSchedules` call. Use this to retrieve the subsequent<br />  page.<br /><br />:returns: Iterator over :class:`Schedule`
+List dashboard schedules.
 
 ```sql
 SELECT
@@ -325,7 +325,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create dashboard schedule.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to which the schedule belongs.<br />:param schedule: :class:`Schedule`<br />  The schedule to create. A dashboard is limited to 10 schedules.<br /><br />:returns: :class:`Schedule`
+Create dashboard schedule.
 
 ```sql
 INSERT INTO databricks_workspace.dashboards.lakeview_schedules (
@@ -381,7 +381,7 @@ update_time
 >
 <TabItem value="delete">
 
-Delete dashboard schedule.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard to which the schedule belongs.<br />:param schedule_id: str<br />  UUID identifying the schedule.<br />:param etag: str (optional)<br />  The etag for the schedule. Optionally, it can be provided to verify that the schedule has not been<br />  modified from its last retrieval.
+Delete dashboard schedule.
 
 ```sql
 DELETE FROM databricks_workspace.dashboards.lakeview_schedules

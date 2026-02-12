@@ -218,35 +218,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get provider profile<br /><br />:param id: str<br /><br />:returns: :class:`GetProviderResponse`</td>
+    <td>Get provider profile</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List provider profiles for account.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ProviderInfo`</td>
+    <td>List provider profiles for account.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__provider"><code>data__provider</code></a></td>
     <td></td>
-    <td>Create a provider<br /><br />:param provider: :class:`ProviderInfo`<br /><br />:returns: :class:`CreateProviderResponse`</td>
+    <td>Create a provider</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__provider"><code>data__provider</code></a></td>
     <td></td>
-    <td>Update provider profile<br /><br />:param id: str<br />:param provider: :class:`ProviderInfo`<br /><br />:returns: :class:`UpdateProviderResponse`</td>
+    <td>Update provider profile</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete provider<br /><br />:param id: str</td>
+    <td>Delete provider</td>
 </tr>
 </tbody>
 </table>
@@ -298,7 +298,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get provider profile<br /><br />:param id: str<br /><br />:returns: :class:`GetProviderResponse`
+Get provider profile
 
 ```sql
 SELECT
@@ -311,7 +311,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List provider profiles for account.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ProviderInfo`
+List provider profiles for account.
 
 ```sql
 SELECT
@@ -350,7 +350,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a provider<br /><br />:param provider: :class:`ProviderInfo`<br /><br />:returns: :class:`CreateProviderResponse`
+Create a provider
 
 ```sql
 INSERT INTO databricks_workspace.marketplace.provider_providers (
@@ -393,7 +393,7 @@ id
 >
 <TabItem value="update">
 
-Update provider profile<br /><br />:param id: str<br />:param provider: :class:`ProviderInfo`<br /><br />:returns: :class:`UpdateProviderResponse`
+Update provider profile
 
 ```sql
 REPLACE databricks_workspace.marketplace.provider_providers
@@ -420,7 +420,7 @@ provider;
 >
 <TabItem value="delete">
 
-Delete provider<br /><br />:param id: str
+Delete provider
 
 ```sql
 DELETE FROM databricks_workspace.marketplace.provider_providers

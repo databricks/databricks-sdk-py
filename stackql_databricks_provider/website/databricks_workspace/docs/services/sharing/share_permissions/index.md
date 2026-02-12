@@ -87,14 +87,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets the permissions for a data share from the metastore. The caller must have the USE_SHARE privilege<br />on the metastore or be the owner of the share.<br /><br />:param name: str<br />  The name of the Recipient.<br />:param max_results: int (optional)<br />  Maximum number of permissions to return. - when set to 0, the page length is set to a server<br />  configured value (recommended); - when set to a value greater than 0, the page length is the minimum<br />  of this value and a server configured value; - when set to a value less than 0, an invalid parameter<br />  error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The<br />  number of returned permissions might be less than the specified max_results size, even zero. The<br />  only definitive indication that no further permissions can be fetched is when the next_page_token is<br />  unset from the response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: :class:`GetSharePermissionsResponse`</td>
+    <td>Gets the permissions for a data share from the metastore. The caller must have the USE_SHARE privilege</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the permissions for a data share in the metastore. The caller must have both the USE_SHARE and<br />SET_SHARE_PERMISSION privileges on the metastore, or be the owner of the share.<br /><br />For new recipient grants, the user must also be the owner of the recipients. recipient revocations do<br />not require additional privileges.<br /><br />:param name: str<br />  The name of the share.<br />:param changes: List[:class:`PermissionsChange`] (optional)<br />  Array of permissions change objects.<br />:param omit_permissions_list: bool (optional)<br />  Optional. Whether to return the latest permissions list of the share in the response.<br /><br />:returns: :class:`UpdateSharePermissionsResponse`</td>
+    <td>Updates the permissions for a data share in the metastore. The caller must have both the USE_SHARE and</td>
 </tr>
 </tbody>
 </table>
@@ -145,7 +145,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Gets the permissions for a data share from the metastore. The caller must have the USE_SHARE privilege<br />on the metastore or be the owner of the share.<br /><br />:param name: str<br />  The name of the Recipient.<br />:param max_results: int (optional)<br />  Maximum number of permissions to return. - when set to 0, the page length is set to a server<br />  configured value (recommended); - when set to a value greater than 0, the page length is the minimum<br />  of this value and a server configured value; - when set to a value less than 0, an invalid parameter<br />  error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The<br />  number of returned permissions might be less than the specified max_results size, even zero. The<br />  only definitive indication that no further permissions can be fetched is when the next_page_token is<br />  unset from the response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: :class:`GetSharePermissionsResponse`
+Gets the permissions for a data share from the metastore. The caller must have the USE_SHARE privilege
 
 ```sql
 SELECT
@@ -172,7 +172,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="update">
 
-Updates the permissions for a data share in the metastore. The caller must have both the USE_SHARE and<br />SET_SHARE_PERMISSION privileges on the metastore, or be the owner of the share.<br /><br />For new recipient grants, the user must also be the owner of the recipients. recipient revocations do<br />not require additional privileges.<br /><br />:param name: str<br />  The name of the share.<br />:param changes: List[:class:`PermissionsChange`] (optional)<br />  Array of permissions change objects.<br />:param omit_permissions_list: bool (optional)<br />  Optional. Whether to return the latest permissions list of the share in the response.<br /><br />:returns: :class:`UpdateSharePermissionsResponse`
+Updates the permissions for a data share in the metastore. The caller must have both the USE_SHARE and
 
 ```sql
 UPDATE databricks_workspace.sharing.share_permissions

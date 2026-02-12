@@ -70,7 +70,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-served_model_name"><code>served_model_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Retrieves the build logs associated with the provided served model.<br /><br />:param name: str<br />  The name of the serving endpoint that the served model belongs to. This field is required.<br />:param served_model_name: str<br />  The name of the served model that build logs will be retrieved for. This field is required.<br /><br />:returns: :class:`BuildLogsResponse`</td>
+    <td>Retrieves the build logs associated with the provided served model.</td>
 </tr>
 </tbody>
 </table>
@@ -116,7 +116,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Retrieves the build logs associated with the provided served model.<br /><br />:param name: str<br />  The name of the serving endpoint that the served model belongs to. This field is required.<br />:param served_model_name: str<br />  The name of the served model that build logs will be retrieved for. This field is required.<br /><br />:returns: :class:`BuildLogsResponse`
+Retrieves the build logs associated with the provided served model.
 
 ```sql
 SELECT

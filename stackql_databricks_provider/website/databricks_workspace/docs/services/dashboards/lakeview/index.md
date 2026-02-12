@@ -171,49 +171,49 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a draft dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard.<br /><br />:returns: :class:`Dashboard`</td>
+    <td>Get a draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-show_trashed"><code>show_trashed</code></a>, <a href="#parameter-view"><code>view</code></a></td>
-    <td>List dashboards.<br /><br />:param page_size: int (optional)<br />  The number of dashboards to return per page.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListDashboards` call. This token can be used to retrieve the<br />  subsequent page.<br />:param show_trashed: bool (optional)<br />  The flag to include dashboards located in the trash. If unspecified, only active dashboards will be<br />  returned.<br />:param view: :class:`DashboardView` (optional)<br />  `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.<br /><br />:returns: Iterator over :class:`Dashboard`</td>
+    <td>List dashboards.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__dashboard"><code>data__dashboard</code></a></td>
     <td><a href="#parameter-dataset_catalog"><code>dataset_catalog</code></a>, <a href="#parameter-dataset_schema"><code>dataset_schema</code></a></td>
-    <td>Create a draft dashboard.<br /><br />:param dashboard: :class:`Dashboard`<br />:param dataset_catalog: str (optional)<br />  Sets the default catalog for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s<br />  existing configuration.<br />:param dataset_schema: str (optional)<br />  Sets the default schema for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing<br />  configuration.<br /><br />:returns: :class:`Dashboard`</td>
+    <td>Create a draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__dashboard"><code>data__dashboard</code></a></td>
     <td><a href="#parameter-dataset_catalog"><code>dataset_catalog</code></a>, <a href="#parameter-dataset_schema"><code>dataset_schema</code></a></td>
-    <td>Update a draft dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard.<br />:param dashboard: :class:`Dashboard`<br />:param dataset_catalog: str (optional)<br />  Sets the default catalog for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s<br />  existing configuration.<br />:param dataset_schema: str (optional)<br />  Sets the default schema for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing<br />  configuration.<br /><br />:returns: :class:`Dashboard`</td>
+    <td>Update a draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__dashboard"><code>data__dashboard</code></a></td>
     <td><a href="#parameter-dataset_catalog"><code>dataset_catalog</code></a>, <a href="#parameter-dataset_schema"><code>dataset_schema</code></a></td>
-    <td>Update a draft dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard.<br />:param dashboard: :class:`Dashboard`<br />:param dataset_catalog: str (optional)<br />  Sets the default catalog for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s<br />  existing configuration.<br />:param dataset_schema: str (optional)<br />  Sets the default schema for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing<br />  configuration.<br /><br />:returns: :class:`Dashboard`</td>
+    <td>Update a draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Trash a dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard.</td>
+    <td>Trash a dashboard.</td>
 </tr>
 <tr>
     <td><a href="#migrate"><CopyableCode code="migrate" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-source_dashboard_id"><code>source_dashboard_id</code></a></td>
     <td></td>
-    <td>Migrates a classic SQL dashboard to Lakeview.<br /><br />:param source_dashboard_id: str<br />  UUID of the dashboard to be migrated.<br />:param display_name: str (optional)<br />  Display name for the new Lakeview dashboard.<br />:param parent_path: str (optional)<br />  The workspace path of the folder to contain the migrated Lakeview dashboard.<br />:param update_parameter_syntax: bool (optional)<br />  Flag to indicate if mustache parameter syntax (&#123;&#123; param &#125;&#125;) should be auto-updated to named syntax<br />  (:param) when converting datasets in the dashboard.<br /><br />:returns: :class:`Dashboard`</td>
+    <td>Migrates a classic SQL dashboard to Lakeview.</td>
 </tr>
 </tbody>
 </table>
@@ -285,7 +285,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a draft dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard.<br /><br />:returns: :class:`Dashboard`
+Get a draft dashboard.
 
 ```sql
 SELECT
@@ -307,7 +307,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List dashboards.<br /><br />:param page_size: int (optional)<br />  The number of dashboards to return per page.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListDashboards` call. This token can be used to retrieve the<br />  subsequent page.<br />:param show_trashed: bool (optional)<br />  The flag to include dashboards located in the trash. If unspecified, only active dashboards will be<br />  returned.<br />:param view: :class:`DashboardView` (optional)<br />  `DASHBOARD_VIEW_BASIC`only includes summary metadata from the dashboard.<br /><br />:returns: Iterator over :class:`Dashboard`
+List dashboards.
 
 ```sql
 SELECT
@@ -344,7 +344,7 @@ AND view = '{{ view }}'
 >
 <TabItem value="create">
 
-Create a draft dashboard.<br /><br />:param dashboard: :class:`Dashboard`<br />:param dataset_catalog: str (optional)<br />  Sets the default catalog for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s<br />  existing configuration.<br />:param dataset_schema: str (optional)<br />  Sets the default schema for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing<br />  configuration.<br /><br />:returns: :class:`Dashboard`
+Create a draft dashboard.
 
 ```sql
 INSERT INTO databricks_workspace.dashboards.lakeview (
@@ -405,7 +405,7 @@ update_time
 >
 <TabItem value="update">
 
-Update a draft dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard.<br />:param dashboard: :class:`Dashboard`<br />:param dataset_catalog: str (optional)<br />  Sets the default catalog for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s<br />  existing configuration.<br />:param dataset_schema: str (optional)<br />  Sets the default schema for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing<br />  configuration.<br /><br />:returns: :class:`Dashboard`
+Update a draft dashboard.
 
 ```sql
 UPDATE databricks_workspace.dashboards.lakeview
@@ -443,7 +443,7 @@ update_time;
 >
 <TabItem value="update">
 
-Update a draft dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard.<br />:param dashboard: :class:`Dashboard`<br />:param dataset_catalog: str (optional)<br />  Sets the default catalog for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified catalog names (ex: samples.nyctaxi.trips). Leave blank to keep each dataset’s<br />  existing configuration.<br />:param dataset_schema: str (optional)<br />  Sets the default schema for all datasets in this dashboard. Does not impact table references that<br />  use fully qualified schema names (ex: nyctaxi.trips). Leave blank to keep each dataset’s existing<br />  configuration.<br /><br />:returns: :class:`Dashboard`
+Update a draft dashboard.
 
 ```sql
 REPLACE databricks_workspace.dashboards.lakeview
@@ -481,7 +481,7 @@ update_time;
 >
 <TabItem value="delete">
 
-Trash a dashboard.<br /><br />:param dashboard_id: str<br />  UUID identifying the dashboard.
+Trash a dashboard.
 
 ```sql
 DELETE FROM databricks_workspace.dashboards.lakeview
@@ -503,7 +503,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="migrate">
 
-Migrates a classic SQL dashboard to Lakeview.<br /><br />:param source_dashboard_id: str<br />  UUID of the dashboard to be migrated.<br />:param display_name: str (optional)<br />  Display name for the new Lakeview dashboard.<br />:param parent_path: str (optional)<br />  The workspace path of the folder to contain the migrated Lakeview dashboard.<br />:param update_parameter_syntax: bool (optional)<br />  Flag to indicate if mustache parameter syntax (&#123;&#123; param &#125;&#125;) should be auto-updated to named syntax<br />  (:param) when converting datasets in the dashboard.<br /><br />:returns: :class:`Dashboard`
+Migrates a classic SQL dashboard to Lakeview.
 
 ```sql
 EXEC databricks_workspace.dashboards.lakeview.migrate 

@@ -327,28 +327,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-object_info"><code>object_info</code></a>, <a href="#parameter-lineage_direction"><code>lineage_direction</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Lists external lineage relationships of a Databricks object or external metadata given a supplied<br />direction.<br /><br />:param object_info: :class:`ExternalLineageObject`<br />  The object to query external lineage relationships for. Since this field is a query parameter,<br />  please flatten the nested fields. For example, if the object is a table, the query parameter should<br />  look like: `object_info.table.name=main.sales.customers`<br />:param lineage_direction: :class:`LineageDirection`<br />  The lineage direction to filter on.<br />:param page_size: int (optional)<br />  Specifies the maximum number of external lineage relationships to return in a single response. The<br />  value must be less than or equal to 1000.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ExternalLineageInfo`</td>
+    <td>Lists external lineage relationships of a Databricks object or external metadata given a supplied</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__external_lineage_relationship"><code>data__external_lineage_relationship</code></a></td>
     <td></td>
-    <td>Creates an external lineage relationship between a Databricks or external metadata object and another<br />external metadata object.<br /><br />:param external_lineage_relationship: :class:`CreateRequestExternalLineage`<br /><br />:returns: :class:`ExternalLineageRelationship`</td>
+    <td>Creates an external lineage relationship between a Databricks or external metadata object and another</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__external_lineage_relationship"><code>data__external_lineage_relationship</code></a></td>
     <td></td>
-    <td>Updates an external lineage relationship between a Databricks or external metadata object and another<br />external metadata object.<br /><br />:param external_lineage_relationship: :class:`UpdateRequestExternalLineage`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`ExternalLineageRelationship`</td>
+    <td>Updates an external lineage relationship between a Databricks or external metadata object and another</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-external_lineage_relationship"><code>external_lineage_relationship</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes an external lineage relationship between a Databricks or external metadata object and another<br />external metadata object.<br /><br />:param external_lineage_relationship: :class:`DeleteRequestExternalLineage`</td>
+    <td>Deletes an external lineage relationship between a Databricks or external metadata object and another</td>
 </tr>
 </tbody>
 </table>
@@ -414,7 +414,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Lists external lineage relationships of a Databricks object or external metadata given a supplied<br />direction.<br /><br />:param object_info: :class:`ExternalLineageObject`<br />  The object to query external lineage relationships for. Since this field is a query parameter,<br />  please flatten the nested fields. For example, if the object is a table, the query parameter should<br />  look like: `object_info.table.name=main.sales.customers`<br />:param lineage_direction: :class:`LineageDirection`<br />  The lineage direction to filter on.<br />:param page_size: int (optional)<br />  Specifies the maximum number of external lineage relationships to return in a single response. The<br />  value must be less than or equal to 1000.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ExternalLineageInfo`
+Lists external lineage relationships of a Databricks object or external metadata given a supplied
 
 ```sql
 SELECT
@@ -446,7 +446,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates an external lineage relationship between a Databricks or external metadata object and another<br />external metadata object.<br /><br />:param external_lineage_relationship: :class:`CreateRequestExternalLineage`<br /><br />:returns: :class:`ExternalLineageRelationship`
+Creates an external lineage relationship between a Databricks or external metadata object and another
 
 ```sql
 INSERT INTO databricks_workspace.catalog.external_lineage (
@@ -493,7 +493,7 @@ target
 >
 <TabItem value="update">
 
-Updates an external lineage relationship between a Databricks or external metadata object and another<br />external metadata object.<br /><br />:param external_lineage_relationship: :class:`UpdateRequestExternalLineage`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`ExternalLineageRelationship`
+Updates an external lineage relationship between a Databricks or external metadata object and another
 
 ```sql
 UPDATE databricks_workspace.catalog.external_lineage
@@ -524,7 +524,7 @@ target;
 >
 <TabItem value="delete">
 
-Deletes an external lineage relationship between a Databricks or external metadata object and another<br />external metadata object.<br /><br />:param external_lineage_relationship: :class:`DeleteRequestExternalLineage`
+Deletes an external lineage relationship between a Databricks or external metadata object and another
 
 ```sql
 DELETE FROM databricks_workspace.catalog.external_lineage

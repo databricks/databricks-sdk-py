@@ -139,42 +139,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a Custom LLM.<br /><br />:param id: str<br />  The id of the custom llm<br /><br />:returns: :class:`CustomLlm`</td>
+    <td>Get a Custom LLM.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__instructions"><code>data__instructions</code></a></td>
     <td></td>
-    <td>Create a Custom LLM.<br /><br />:param name: str<br />  Name of the custom LLM. Only alphanumeric characters and dashes allowed.<br />:param instructions: str<br />  Instructions for the custom LLM to follow<br />:param agent_artifact_path: str (optional)<br />  This will soon be deprecated!! Optional: UC path for agent artifacts. If you are using a dataset<br />  that you only have read permissions, please provide a destination path where you have write<br />  permissions. Please provide this in catalog.schema format.<br />:param datasets: List[:class:`Dataset`] (optional)<br />  Datasets used for training and evaluating the model, not for inference. Currently, only 1 dataset is<br />  accepted.<br />:param guidelines: List[str] (optional)<br />  Guidelines for the custom LLM to adhere to<br /><br />:returns: :class:`CustomLlm`</td>
+    <td>Create a Custom LLM.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__custom_llm"><code>data__custom_llm</code></a>, <a href="#parameter-data__update_mask"><code>data__update_mask</code></a></td>
     <td></td>
-    <td>Update a Custom LLM.<br /><br />:param id: str<br />  The id of the custom llm<br />:param custom_llm: :class:`CustomLlm`<br />  The CustomLlm containing the fields which should be updated.<br />:param update_mask: str<br />  The list of the CustomLlm fields to update. These should correspond to the values (or lack thereof)<br />  present in `custom_llm`.<br /><br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`CustomLlm`</td>
+    <td>Update a Custom LLM.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a Custom LLM.<br /><br />:param id: str<br />  The id of the custom llm</td>
+    <td>Delete a Custom LLM.</td>
 </tr>
 <tr>
     <td><a href="#cancel_optimize"><CopyableCode code="cancel_optimize" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Cancel a Custom LLM Optimization Run.<br /><br />:param id: str</td>
+    <td>Cancel a Custom LLM Optimization Run.</td>
 </tr>
 <tr>
     <td><a href="#start_optimize"><CopyableCode code="start_optimize" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Start a Custom LLM Optimization Run.<br /><br />:param id: str<br />  The Id of the tile.<br /><br />:returns: :class:`CustomLlm`</td>
+    <td>Start a Custom LLM Optimization Run.</td>
 </tr>
 </tbody>
 </table>
@@ -215,7 +215,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a Custom LLM.<br /><br />:param id: str<br />  The id of the custom llm<br /><br />:returns: :class:`CustomLlm`
+Get a Custom LLM.
 
 ```sql
 SELECT
@@ -249,7 +249,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Create a Custom LLM.<br /><br />:param name: str<br />  Name of the custom LLM. Only alphanumeric characters and dashes allowed.<br />:param instructions: str<br />  Instructions for the custom LLM to follow<br />:param agent_artifact_path: str (optional)<br />  This will soon be deprecated!! Optional: UC path for agent artifacts. If you are using a dataset<br />  that you only have read permissions, please provide a destination path where you have write<br />  permissions. Please provide this in catalog.schema format.<br />:param datasets: List[:class:`Dataset`] (optional)<br />  Datasets used for training and evaluating the model, not for inference. Currently, only 1 dataset is<br />  accepted.<br />:param guidelines: List[str] (optional)<br />  Guidelines for the custom LLM to adhere to<br /><br />:returns: :class:`CustomLlm`
+Create a Custom LLM.
 
 ```sql
 INSERT INTO databricks_workspace.agentbricks.custom_llms (
@@ -325,7 +325,7 @@ optimization_state
 >
 <TabItem value="update">
 
-Update a Custom LLM.<br /><br />:param id: str<br />  The id of the custom llm<br />:param custom_llm: :class:`CustomLlm`<br />  The CustomLlm containing the fields which should be updated.<br />:param update_mask: str<br />  The list of the CustomLlm fields to update. These should correspond to the values (or lack thereof)<br />  present in `custom_llm`.<br /><br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`CustomLlm`
+Update a Custom LLM.
 
 ```sql
 UPDATE databricks_workspace.agentbricks.custom_llms
@@ -363,7 +363,7 @@ optimization_state;
 >
 <TabItem value="delete">
 
-Delete a Custom LLM.<br /><br />:param id: str<br />  The id of the custom llm
+Delete a Custom LLM.
 
 ```sql
 DELETE FROM databricks_workspace.agentbricks.custom_llms
@@ -386,7 +386,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="cancel_optimize">
 
-Cancel a Custom LLM Optimization Run.<br /><br />:param id: str
+Cancel a Custom LLM Optimization Run.
 
 ```sql
 EXEC databricks_workspace.agentbricks.custom_llms.cancel_optimize 
@@ -397,7 +397,7 @@ EXEC databricks_workspace.agentbricks.custom_llms.cancel_optimize
 </TabItem>
 <TabItem value="start_optimize">
 
-Start a Custom LLM Optimization Run.<br /><br />:param id: str<br />  The Id of the tile.<br /><br />:returns: :class:`CustomLlm`
+Start a Custom LLM Optimization Run.
 
 ```sql
 EXEC databricks_workspace.agentbricks.custom_llms.start_optimize 

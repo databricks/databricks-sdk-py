@@ -111,35 +111,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_id"><code>entity_id</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a tag assignment<br /><br />:param entity_type: str<br />  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces<br />:param entity_id: str<br />  The identifier of the entity to which the tag is assigned<br />:param tag_key: str<br />  The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed<br /><br />:returns: :class:`TagAssignment`</td>
+    <td>Get a tag assignment</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_id"><code>entity_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List the tag assignments for an entity<br /><br />:param entity_type: str<br />  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces<br />:param entity_id: str<br />  The identifier of the entity to which the tag is assigned<br />:param page_size: int (optional)<br />  Optional. Maximum number of tag assignments to return in a single page<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of tag assignments. Requests first page if absent.<br /><br />:returns: Iterator over :class:`TagAssignment`</td>
+    <td>List the tag assignments for an entity</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_assignment"><code>data__tag_assignment</code></a></td>
     <td></td>
-    <td>Create a tag assignment<br /><br />:param tag_assignment: :class:`TagAssignment`<br /><br />:returns: :class:`TagAssignment`</td>
+    <td>Create a tag assignment</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_id"><code>entity_id</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_assignment"><code>data__tag_assignment</code></a></td>
     <td></td>
-    <td>Update a tag assignment<br /><br />:param entity_type: str<br />  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces<br />:param entity_id: str<br />  The identifier of the entity to which the tag is assigned<br />:param tag_key: str<br />  The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed<br />:param tag_assignment: :class:`TagAssignment`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`TagAssignment`</td>
+    <td>Update a tag assignment</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_id"><code>entity_id</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a tag assignment<br /><br />:param entity_type: str<br />  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces<br />:param entity_id: str<br />  The identifier of the entity to which the tag is assigned<br />:param tag_key: str<br />  The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed</td>
+    <td>Delete a tag assignment</td>
 </tr>
 </tbody>
 </table>
@@ -206,7 +206,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a tag assignment<br /><br />:param entity_type: str<br />  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces<br />:param entity_id: str<br />  The identifier of the entity to which the tag is assigned<br />:param tag_key: str<br />  The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed<br /><br />:returns: :class:`TagAssignment`
+Get a tag assignment
 
 ```sql
 SELECT
@@ -224,7 +224,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List the tag assignments for an entity<br /><br />:param entity_type: str<br />  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces<br />:param entity_id: str<br />  The identifier of the entity to which the tag is assigned<br />:param page_size: int (optional)<br />  Optional. Maximum number of tag assignments to return in a single page<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of tag assignments. Requests first page if absent.<br /><br />:returns: Iterator over :class:`TagAssignment`
+List the tag assignments for an entity
 
 ```sql
 SELECT
@@ -255,7 +255,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a tag assignment<br /><br />:param tag_assignment: :class:`TagAssignment`<br /><br />:returns: :class:`TagAssignment`
+Create a tag assignment
 
 ```sql
 INSERT INTO databricks_workspace.tags.workspace_entity_tag_assignments (
@@ -301,7 +301,7 @@ tag_value
 >
 <TabItem value="update">
 
-Update a tag assignment<br /><br />:param entity_type: str<br />  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces<br />:param entity_id: str<br />  The identifier of the entity to which the tag is assigned<br />:param tag_key: str<br />  The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed<br />:param tag_assignment: :class:`TagAssignment`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`TagAssignment`
+Update a tag assignment
 
 ```sql
 UPDATE databricks_workspace.tags.workspace_entity_tag_assignments
@@ -334,7 +334,7 @@ tag_value;
 >
 <TabItem value="delete">
 
-Delete a tag assignment<br /><br />:param entity_type: str<br />  The type of entity to which the tag is assigned. Allowed values are apps, dashboards, geniespaces<br />:param entity_id: str<br />  The identifier of the entity to which the tag is assigned<br />:param tag_key: str<br />  The key of the tag. The characters , . : / - = and leading/trailing spaces are not allowed
+Delete a tag assignment
 
 ```sql
 DELETE FROM databricks_workspace.tags.workspace_entity_tag_assignments

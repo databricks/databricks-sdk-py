@@ -124,21 +124,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-serving_endpoint_id"><code>serving_endpoint_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root<br />object.<br /><br />:param serving_endpoint_id: str<br />  The serving endpoint for which to get or manage permissions.<br /><br />:returns: :class:`ServingEndpointPermissions`</td>
+    <td>Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-serving_endpoint_id"><code>serving_endpoint_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their<br />root object.<br /><br />:param serving_endpoint_id: str<br />  The serving endpoint for which to get or manage permissions.<br />:param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)<br /><br />:returns: :class:`ServingEndpointPermissions`</td>
+    <td>Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their</td>
 </tr>
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-serving_endpoint_id"><code>serving_endpoint_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct<br />permissions if none are specified. Objects can inherit permissions from their root object.<br /><br />:param serving_endpoint_id: str<br />  The serving endpoint for which to get or manage permissions.<br />:param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)<br /><br />:returns: :class:`ServingEndpointPermissions`</td>
+    <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct</td>
 </tr>
 </tbody>
 </table>
@@ -179,7 +179,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root<br />object.<br /><br />:param serving_endpoint_id: str<br />  The serving endpoint for which to get or manage permissions.<br /><br />:returns: :class:`ServingEndpointPermissions`
+Gets the permissions of a serving endpoint. Serving endpoints can inherit permissions from their root
 
 ```sql
 SELECT
@@ -205,7 +205,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="update">
 
-Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their<br />root object.<br /><br />:param serving_endpoint_id: str<br />  The serving endpoint for which to get or manage permissions.<br />:param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)<br /><br />:returns: :class:`ServingEndpointPermissions`
+Updates the permissions on a serving endpoint. Serving endpoints can inherit permissions from their
 
 ```sql
 UPDATE databricks_workspace.serving.serving_endpoint_permissions
@@ -233,7 +233,7 @@ object_type;
 >
 <TabItem value="set">
 
-Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct<br />permissions if none are specified. Objects can inherit permissions from their root object.<br /><br />:param serving_endpoint_id: str<br />  The serving endpoint for which to get or manage permissions.<br />:param access_control_list: List[:class:`ServingEndpointAccessControlRequest`] (optional)<br /><br />:returns: :class:`ServingEndpointPermissions`
+Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
 
 ```sql
 REPLACE databricks_workspace.serving.serving_endpoint_permissions

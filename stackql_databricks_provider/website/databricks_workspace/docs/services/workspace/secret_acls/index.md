@@ -91,28 +91,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-principal"><code>principal</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Describes the details about the given ACL, such as the group and permission.<br /><br />Users must have the ``MANAGE`` permission to invoke this API.<br /><br />Example response:<br /><br />.. code::<br /><br />&#123; "principal": "data-scientists", "permission": "READ" &#125;<br /><br />Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the<br />user does not have permission to make this API call. Throws ``INVALID_PARAMETER_VALUE`` if the<br />permission or principal is invalid.<br /><br />:param scope: str<br />  The name of the scope to fetch ACL information from.<br />:param principal: str<br />  The principal to fetch ACL information for.<br /><br />:returns: :class:`AclItem`</td>
+    <td>Describes the details about the given ACL, such as the group and permission.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Lists the ACLs set on the given scope.<br /><br />Users must have the ``MANAGE`` permission to invoke this API.<br /><br />Example response:<br /><br />.. code::<br /><br />&#123; "acls": [&#123; "principal": "admins", "permission": "MANAGE" &#125;,&#123; "principal": "data-scientists",<br />"permission": "READ" &#125;] &#125;<br /><br />Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the<br />user does not have permission to make this API call.<br /><br />:param scope: str<br />  The name of the scope to fetch ACL information from.<br /><br />:returns: Iterator over :class:`AclItem`</td>
+    <td>Lists the ACLs set on the given scope.</td>
 </tr>
 <tr>
     <td><a href="#put"><CopyableCode code="put" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__scope"><code>data__scope</code></a>, <a href="#parameter-data__principal"><code>data__principal</code></a>, <a href="#parameter-data__permission"><code>data__permission</code></a></td>
     <td></td>
-    <td>Creates or overwrites the ACL associated with the given principal (user or group) on the specified<br />scope point. In general, a user or group will use the most powerful permission available to them, and<br />permissions are ordered as follows:<br /><br />* ``MANAGE`` - Allowed to change ACLs, and read and write to this secret scope. * ``WRITE`` - Allowed<br />to read and write to this secret scope. * ``READ`` - Allowed to read this secret scope and list what<br />secrets are available.<br /><br />Note that in general, secret values can only be read from within a command on a cluster (for example,<br />through a notebook). There is no API to read the actual secret value material outside of a cluster.<br />However, the user's permission will be applied based on who is executing the command, and they must<br />have at least READ permission.<br /><br />Users must have the ``MANAGE`` permission to invoke this API.<br /><br />Example request:<br /><br />.. code::<br /><br />&#123; "scope": "my-secret-scope", "principal": "data-scientists", "permission": "READ" &#125;<br /><br />The principal is a user or group name corresponding to an existing Databricks principal to be granted<br />or revoked access.<br /><br />Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``RESOURCE_ALREADY_EXISTS``<br />if a permission for the principal already exists. Throws ``INVALID_PARAMETER_VALUE`` if the permission<br />or principal is invalid. Throws ``PERMISSION_DENIED`` if the user does not have permission to make<br />this API call.<br /><br />:param scope: str<br />  The name of the scope to apply permissions to.<br />:param principal: str<br />  The principal in which the permission is applied.<br />:param permission: :class:`AclPermission`<br />  The permission level applied to the principal.</td>
+    <td>Creates or overwrites the ACL associated with the given principal (user or group) on the specified</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-principal"><code>principal</code></a></td>
     <td></td>
-    <td>Deletes the given ACL on the given scope.<br /><br />Users must have the ``MANAGE`` permission to invoke this API.<br /><br />Example request:<br /><br />.. code::<br /><br />&#123; "scope": "my-secret-scope", "principal": "data-scientists" &#125;<br /><br />Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope, principal, or ACL exists. Throws<br />``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws<br />``INVALID_PARAMETER_VALUE`` if the permission or principal is invalid.<br /><br />:param scope: str<br />  The name of the scope to remove permissions from.<br />:param principal: str<br />  The principal to remove an existing ACL from.</td>
+    <td>Deletes the given ACL on the given scope.</td>
 </tr>
 </tbody>
 </table>
@@ -159,7 +159,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Describes the details about the given ACL, such as the group and permission.<br /><br />Users must have the ``MANAGE`` permission to invoke this API.<br /><br />Example response:<br /><br />.. code::<br /><br />&#123; "principal": "data-scientists", "permission": "READ" &#125;<br /><br />Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the<br />user does not have permission to make this API call. Throws ``INVALID_PARAMETER_VALUE`` if the<br />permission or principal is invalid.<br /><br />:param scope: str<br />  The name of the scope to fetch ACL information from.<br />:param principal: str<br />  The principal to fetch ACL information for.<br /><br />:returns: :class:`AclItem`
+Describes the details about the given ACL, such as the group and permission.
 
 ```sql
 SELECT
@@ -174,7 +174,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Lists the ACLs set on the given scope.<br /><br />Users must have the ``MANAGE`` permission to invoke this API.<br /><br />Example response:<br /><br />.. code::<br /><br />&#123; "acls": [&#123; "principal": "admins", "permission": "MANAGE" &#125;,&#123; "principal": "data-scientists",<br />"permission": "READ" &#125;] &#125;<br /><br />Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``PERMISSION_DENIED`` if the<br />user does not have permission to make this API call.<br /><br />:param scope: str<br />  The name of the scope to fetch ACL information from.<br /><br />:returns: Iterator over :class:`AclItem`
+Lists the ACLs set on the given scope.
 
 ```sql
 SELECT
@@ -200,7 +200,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="put">
 
-Creates or overwrites the ACL associated with the given principal (user or group) on the specified<br />scope point. In general, a user or group will use the most powerful permission available to them, and<br />permissions are ordered as follows:<br /><br />* ``MANAGE`` - Allowed to change ACLs, and read and write to this secret scope. * ``WRITE`` - Allowed<br />to read and write to this secret scope. * ``READ`` - Allowed to read this secret scope and list what<br />secrets are available.<br /><br />Note that in general, secret values can only be read from within a command on a cluster (for example,<br />through a notebook). There is no API to read the actual secret value material outside of a cluster.<br />However, the user's permission will be applied based on who is executing the command, and they must<br />have at least READ permission.<br /><br />Users must have the ``MANAGE`` permission to invoke this API.<br /><br />Example request:<br /><br />.. code::<br /><br />&#123; "scope": "my-secret-scope", "principal": "data-scientists", "permission": "READ" &#125;<br /><br />The principal is a user or group name corresponding to an existing Databricks principal to be granted<br />or revoked access.<br /><br />Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope exists. Throws ``RESOURCE_ALREADY_EXISTS``<br />if a permission for the principal already exists. Throws ``INVALID_PARAMETER_VALUE`` if the permission<br />or principal is invalid. Throws ``PERMISSION_DENIED`` if the user does not have permission to make<br />this API call.<br /><br />:param scope: str<br />  The name of the scope to apply permissions to.<br />:param principal: str<br />  The principal in which the permission is applied.<br />:param permission: :class:`AclPermission`<br />  The permission level applied to the principal.
+Creates or overwrites the ACL associated with the given principal (user or group) on the specified
 
 ```sql
 INSERT INTO databricks_workspace.workspace.secret_acls (
@@ -253,7 +253,7 @@ SELECT
 >
 <TabItem value="delete">
 
-Deletes the given ACL on the given scope.<br /><br />Users must have the ``MANAGE`` permission to invoke this API.<br /><br />Example request:<br /><br />.. code::<br /><br />&#123; "scope": "my-secret-scope", "principal": "data-scientists" &#125;<br /><br />Throws ``RESOURCE_DOES_NOT_EXIST`` if no such secret scope, principal, or ACL exists. Throws<br />``PERMISSION_DENIED`` if the user does not have permission to make this API call. Throws<br />``INVALID_PARAMETER_VALUE`` if the permission or principal is invalid.<br /><br />:param scope: str<br />  The name of the scope to remove permissions from.<br />:param principal: str<br />  The principal to remove an existing ACL from.
+Deletes the given ACL on the given scope.
 
 ```sql
 EXEC databricks_workspace.workspace.secret_acls.delete 

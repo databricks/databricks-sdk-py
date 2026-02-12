@@ -229,49 +229,49 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get details for a single vector search endpoint.<br /><br />:param endpoint_name: str<br />  Name of the endpoint<br /><br />:returns: :class:`EndpointInfo`</td>
+    <td>Get details for a single vector search endpoint.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List all vector search endpoints in the workspace.<br /><br />:param page_token: str (optional)<br />  Token for pagination<br /><br />:returns: Iterator over :class:`EndpointInfo`</td>
+    <td>List all vector search endpoints in the workspace.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__endpoint_type"><code>data__endpoint_type</code></a></td>
     <td></td>
-    <td>Create a new endpoint.<br /><br />:param name: str<br />  Name of the vector search endpoint<br />:param endpoint_type: :class:`EndpointType`<br />  Type of endpoint<br />:param budget_policy_id: str (optional)<br />  The budget policy id to be applied<br /><br />:returns:<br />  Long-running operation waiter for :class:`EndpointInfo`.<br />  See :method:wait_get_endpoint_vector_search_endpoint_online for more details.</td>
+    <td>Create a new endpoint.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a vector search endpoint.<br /><br />:param endpoint_name: str<br />  Name of the vector search endpoint</td>
+    <td>Delete a vector search endpoint.</td>
 </tr>
 <tr>
     <td><a href="#retrieve_user_visible_metrics"><CopyableCode code="retrieve_user_visible_metrics" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Retrieve user-visible metrics for an endpoint<br /><br />:param name: str<br />  Vector search endpoint name<br />:param end_time: str (optional)<br />  End time for metrics query<br />:param granularity_in_seconds: int (optional)<br />  Granularity in seconds<br />:param metrics: List[:class:`Metric`] (optional)<br />  List of metrics to retrieve<br />:param page_token: str (optional)<br />  Token for pagination<br />:param start_time: str (optional)<br />  Start time for metrics query<br /><br />:returns: :class:`RetrieveUserVisibleMetricsResponse`</td>
+    <td>Retrieve user-visible metrics for an endpoint</td>
 </tr>
 <tr>
     <td><a href="#update_endpoint_budget_policy"><CopyableCode code="update_endpoint_budget_policy" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-budget_policy_id"><code>budget_policy_id</code></a></td>
     <td></td>
-    <td>Update the budget policy of an endpoint<br /><br />:param endpoint_name: str<br />  Name of the vector search endpoint<br />:param budget_policy_id: str<br />  The budget policy id to be applied<br /><br />:returns: :class:`PatchEndpointBudgetPolicyResponse`</td>
+    <td>Update the budget policy of an endpoint</td>
 </tr>
 <tr>
     <td><a href="#update_endpoint_custom_tags"><CopyableCode code="update_endpoint_custom_tags" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-custom_tags"><code>custom_tags</code></a></td>
     <td></td>
-    <td>Update the custom tags of an endpoint.<br /><br />:param endpoint_name: str<br />  Name of the vector search endpoint<br />:param custom_tags: List[:class:`CustomTag`]<br />  The new custom tags for the vector search endpoint<br /><br />:returns: :class:`UpdateEndpointCustomTagsResponse`</td>
+    <td>Update the custom tags of an endpoint.</td>
 </tr>
 </tbody>
 </table>
@@ -323,7 +323,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get details for a single vector search endpoint.<br /><br />:param endpoint_name: str<br />  Name of the endpoint<br /><br />:returns: :class:`EndpointInfo`
+Get details for a single vector search endpoint.
 
 ```sql
 SELECT
@@ -346,7 +346,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List all vector search endpoints in the workspace.<br /><br />:param page_token: str (optional)<br />  Token for pagination<br /><br />:returns: Iterator over :class:`EndpointInfo`
+List all vector search endpoints in the workspace.
 
 ```sql
 SELECT
@@ -381,7 +381,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a new endpoint.<br /><br />:param name: str<br />  Name of the vector search endpoint<br />:param endpoint_type: :class:`EndpointType`<br />  Type of endpoint<br />:param budget_policy_id: str (optional)<br />  The budget policy id to be applied<br /><br />:returns:<br />  Long-running operation waiter for :class:`EndpointInfo`.<br />  See :method:wait_get_endpoint_vector_search_endpoint_online for more details.
+Create a new endpoint.
 
 ```sql
 INSERT INTO databricks_workspace.vectorsearch.endpoints (
@@ -446,7 +446,7 @@ num_indexes
 >
 <TabItem value="delete">
 
-Delete a vector search endpoint.<br /><br />:param endpoint_name: str<br />  Name of the vector search endpoint
+Delete a vector search endpoint.
 
 ```sql
 DELETE FROM databricks_workspace.vectorsearch.endpoints
@@ -470,7 +470,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="retrieve_user_visible_metrics">
 
-Retrieve user-visible metrics for an endpoint<br /><br />:param name: str<br />  Vector search endpoint name<br />:param end_time: str (optional)<br />  End time for metrics query<br />:param granularity_in_seconds: int (optional)<br />  Granularity in seconds<br />:param metrics: List[:class:`Metric`] (optional)<br />  List of metrics to retrieve<br />:param page_token: str (optional)<br />  Token for pagination<br />:param start_time: str (optional)<br />  Start time for metrics query<br /><br />:returns: :class:`RetrieveUserVisibleMetricsResponse`
+Retrieve user-visible metrics for an endpoint
 
 ```sql
 EXEC databricks_workspace.vectorsearch.endpoints.retrieve_user_visible_metrics 
@@ -489,7 +489,7 @@ EXEC databricks_workspace.vectorsearch.endpoints.retrieve_user_visible_metrics
 </TabItem>
 <TabItem value="update_endpoint_budget_policy">
 
-Update the budget policy of an endpoint<br /><br />:param endpoint_name: str<br />  Name of the vector search endpoint<br />:param budget_policy_id: str<br />  The budget policy id to be applied<br /><br />:returns: :class:`PatchEndpointBudgetPolicyResponse`
+Update the budget policy of an endpoint
 
 ```sql
 EXEC databricks_workspace.vectorsearch.endpoints.update_endpoint_budget_policy 
@@ -504,7 +504,7 @@ EXEC databricks_workspace.vectorsearch.endpoints.update_endpoint_budget_policy
 </TabItem>
 <TabItem value="update_endpoint_custom_tags">
 
-Update the custom tags of an endpoint.<br /><br />:param endpoint_name: str<br />  Name of the vector search endpoint<br />:param custom_tags: List[:class:`CustomTag`]<br />  The new custom tags for the vector search endpoint<br /><br />:returns: :class:`UpdateEndpointCustomTagsResponse`
+Update the custom tags of an endpoint.
 
 ```sql
 EXEC databricks_workspace.vectorsearch.endpoints.update_endpoint_custom_tags 

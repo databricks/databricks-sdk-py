@@ -701,42 +701,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a Database Instance.<br /><br />:param name: str<br />  Name of the cluster to get.<br /><br />:returns: :class:`DatabaseInstance`</td>
+    <td>Get a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List Database Instances.<br /><br />:param page_size: int (optional)<br />  Upper bound for items returned.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of Database Instances. Requests first page if absent.<br /><br />:returns: Iterator over :class:`DatabaseInstance`</td>
+    <td>List Database Instances.</td>
 </tr>
 <tr>
     <td><a href="#find_by_uid"><CopyableCode code="find_by_uid" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-uid"><code>uid</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Find a Database Instance by uid.<br /><br />:param uid: str (optional)<br />  UID of the cluster to get.<br /><br />:returns: :class:`DatabaseInstance`</td>
+    <td>Find a Database Instance by uid.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__database_instance"><code>data__database_instance</code></a></td>
     <td></td>
-    <td>Create a Database Instance.<br /><br />:param database_instance: :class:`DatabaseInstance`<br />  Instance to create.<br /><br />:returns:<br />  Long-running operation waiter for :class:`DatabaseInstance`.<br />  See :method:wait_get_database_instance_database_available for more details.</td>
+    <td>Create a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__database_instance"><code>data__database_instance</code></a></td>
     <td></td>
-    <td>Update a Database Instance.<br /><br />:param name: str<br />  The name of the instance. This is the unique identifier for the instance.<br />:param database_instance: :class:`DatabaseInstance`<br />:param update_mask: str<br />  The list of fields to update. If unspecified, all fields will be updated when possible. To wipe out<br />  custom_tags, specify custom_tags in the update_mask with an empty custom_tags map.<br /><br />:returns: :class:`DatabaseInstance`</td>
+    <td>Update a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a>, <a href="#parameter-purge"><code>purge</code></a></td>
-    <td>Delete a Database Instance.<br /><br />:param name: str<br />  Name of the instance to delete.<br />:param force: bool (optional)<br />  By default, a instance cannot be deleted if it has descendant instances created via PITR. If this<br />  flag is specified as true, all descendent instances will be deleted as well.<br />:param purge: bool (optional)<br />  Deprecated. Omitting the field or setting it to true will result in the field being hard deleted.<br />  Setting a value of false will throw a bad request.</td>
+    <td>Delete a Database Instance.</td>
 </tr>
 </tbody>
 </table>
@@ -809,7 +809,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a Database Instance.<br /><br />:param name: str<br />  Name of the cluster to get.<br /><br />:returns: :class:`DatabaseInstance`
+Get a Database Instance.
 
 ```sql
 SELECT
@@ -847,7 +847,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List Database Instances.<br /><br />:param page_size: int (optional)<br />  Upper bound for items returned.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of Database Instances. Requests first page if absent.<br /><br />:returns: Iterator over :class:`DatabaseInstance`
+List Database Instances.
 
 ```sql
 SELECT
@@ -886,7 +886,7 @@ AND page_token = '{{ page_token }}'
 </TabItem>
 <TabItem value="find_by_uid">
 
-Find a Database Instance by uid.<br /><br />:param uid: str (optional)<br />  UID of the cluster to get.<br /><br />:returns: :class:`DatabaseInstance`
+Find a Database Instance by uid.
 
 ```sql
 SELECT
@@ -936,7 +936,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Create a Database Instance.<br /><br />:param database_instance: :class:`DatabaseInstance`<br />  Instance to create.<br /><br />:returns:<br />  Long-running operation waiter for :class:`DatabaseInstance`.<br />  See :method:wait_get_database_instance_database_available for more details.
+Create a Database Instance.
 
 ```sql
 INSERT INTO databricks_workspace.database.database_instances (
@@ -1004,7 +1004,7 @@ uid
 >
 <TabItem value="update">
 
-Update a Database Instance.<br /><br />:param name: str<br />  The name of the instance. This is the unique identifier for the instance.<br />:param database_instance: :class:`DatabaseInstance`<br />:param update_mask: str<br />  The list of fields to update. If unspecified, all fields will be updated when possible. To wipe out<br />  custom_tags, specify custom_tags in the update_mask with an empty custom_tags map.<br /><br />:returns: :class:`DatabaseInstance`
+Update a Database Instance.
 
 ```sql
 UPDATE databricks_workspace.database.database_instances
@@ -1057,7 +1057,7 @@ uid;
 >
 <TabItem value="delete">
 
-Delete a Database Instance.<br /><br />:param name: str<br />  Name of the instance to delete.<br />:param force: bool (optional)<br />  By default, a instance cannot be deleted if it has descendant instances created via PITR. If this<br />  flag is specified as true, all descendent instances will be deleted as well.<br />:param purge: bool (optional)<br />  Deprecated. Omitting the field or setting it to true will result in the field being hard deleted.<br />  Setting a value of false will throw a bad request.
+Delete a Database Instance.
 
 ```sql
 DELETE FROM databricks_workspace.database.database_instances

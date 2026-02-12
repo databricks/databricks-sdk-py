@@ -82,7 +82,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Returns the list of available Spark versions. These versions can be used to launch a cluster.<br /><br /><br />:returns: :class:`GetSparkVersionsResponse`</td>
+    <td>Returns the list of available Spark versions. These versions can be used to launch a cluster.</td>
 </tr>
 </tbody>
 </table>
@@ -118,7 +118,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Returns the list of available Spark versions. These versions can be used to launch a cluster.<br /><br /><br />:returns: :class:`GetSparkVersionsResponse`
+Returns the list of available Spark versions. These versions can be used to launch a cluster.
 
 ```sql
 SELECT

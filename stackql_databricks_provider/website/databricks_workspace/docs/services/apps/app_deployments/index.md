@@ -341,21 +341,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_id"><code>deployment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Retrieves information for the app deployment with the supplied name and deployment id.<br /><br />:param app_name: str<br />  The name of the app.<br />:param deployment_id: str<br />  The unique id of the deployment.<br /><br />:returns: :class:`AppDeployment`</td>
+    <td>Retrieves information for the app deployment with the supplied name and deployment id.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Lists all app deployments for the app with the supplied name.<br /><br />:param app_name: str<br />  The name of the app.<br />:param page_size: int (optional)<br />  Upper bound for items returned.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of apps. Requests first page if absent.<br /><br />:returns: Iterator over :class:`AppDeployment`</td>
+    <td>Lists all app deployments for the app with the supplied name.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__app_deployment"><code>data__app_deployment</code></a></td>
     <td></td>
-    <td>Creates an app deployment for the app with the supplied name.<br /><br />:param app_name: str<br />  The name of the app.<br />:param app_deployment: :class:`AppDeployment`<br />  The app deployment configuration.<br /><br />:returns:<br />  Long-running operation waiter for :class:`AppDeployment`.<br />  See :method:wait_get_deployment_app_succeeded for more details.</td>
+    <td>Creates an app deployment for the app with the supplied name.</td>
 </tr>
 </tbody>
 </table>
@@ -412,7 +412,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Retrieves information for the app deployment with the supplied name and deployment id.<br /><br />:param app_name: str<br />  The name of the app.<br />:param deployment_id: str<br />  The unique id of the deployment.<br /><br />:returns: :class:`AppDeployment`
+Retrieves information for the app deployment with the supplied name and deployment id.
 
 ```sql
 SELECT
@@ -436,7 +436,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Lists all app deployments for the app with the supplied name.<br /><br />:param app_name: str<br />  The name of the app.<br />:param page_size: int (optional)<br />  Upper bound for items returned.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of apps. Requests first page if absent.<br /><br />:returns: Iterator over :class:`AppDeployment`
+Lists all app deployments for the app with the supplied name.
 
 ```sql
 SELECT
@@ -473,7 +473,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates an app deployment for the app with the supplied name.<br /><br />:param app_name: str<br />  The name of the app.<br />:param app_deployment: :class:`AppDeployment`<br />  The app deployment configuration.<br /><br />:returns:<br />  Long-running operation waiter for :class:`AppDeployment`.<br />  See :method:wait_get_deployment_app_succeeded for more details.
+Creates an app deployment for the app with the supplied name.
 
 ```sql
 INSERT INTO databricks_workspace.apps.app_deployments (

@@ -105,35 +105,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-path"><code>path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-notebooks_modified_after"><code>notebooks_modified_after</code></a></td>
-    <td>Lists the contents of a directory, or the object if it is not a directory. If the input path does not<br />exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.<br /><br />:param path: str<br />  The absolute path of the notebook or directory.<br />:param notebooks_modified_after: int (optional)<br />  UTC timestamp in milliseconds<br /><br />:returns: Iterator over :class:`ObjectInfo`</td>
+    <td>Lists the contents of a directory, or the object if it is not a directory. If the input path does not</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-path"><code>path</code></a></td>
     <td></td>
-    <td>Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *<br />If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a<br />non-empty directory and `recursive` is set to `false`, this call returns an error<br />`DIRECTORY_NOT_EMPTY`.<br /><br />Object deletion cannot be undone and deleting a directory recursively is not atomic.<br /><br />:param path: str<br />  The absolute path of the notebook or directory.<br />:param recursive: bool (optional)<br />  The flag that specifies whether to delete the object recursively. It is `false` by default. Please<br />  note this deleting directory is not atomic. If it fails in the middle, some of objects under this<br />  directory may be deleted and cannot be undone.</td>
+    <td>Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *</td>
 </tr>
 <tr>
     <td><a href="#export"><CopyableCode code="export" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-path"><code>path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-format"><code>format</code></a></td>
-    <td>Exports an object or the contents of an entire directory.<br /><br />If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.<br /><br />If the exported data would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.<br />Currently, this API does not support exporting a library.<br /><br />:param path: str<br />  The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`,<br />  `SOURCE`, and `AUTO` format.<br />:param format: :class:`ExportFormat` (optional)<br />  This specifies the format of the exported file. By default, this is `SOURCE`.<br /><br />  The value is case sensitive.<br /><br />  - `SOURCE`: The notebook is exported as source code. Directory exports will not include non-notebook<br />  entries. - `HTML`: The notebook is exported as an HTML file. - `JUPYTER`: The notebook is exported<br />  as a Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in Databricks archive format.<br />  Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to<br />  R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type.<br />  Directory exports will include notebooks and workspace files.<br /><br />:returns: :class:`ExportResponse`</td>
+    <td>Exports an object or the contents of an entire directory.</td>
 </tr>
 <tr>
     <td><a href="#import"><CopyableCode code="import" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-path"><code>path</code></a></td>
     <td></td>
-    <td>Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.<br />If `path` already exists and `overwrite` is set to `false`, this call returns an error<br />`RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`<br />format with the `language` field unset. To import a single file as `SOURCE`, you must set the<br />`language` field. Zip files within directories are not supported.<br /><br />:param path: str<br />  The absolute path of the object or directory. Importing a directory is only supported for the `DBC`<br />  and `SOURCE` formats.<br />:param content: str (optional)<br />  The base64-encoded content. This has a limit of 10 MB.<br /><br />  If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.<br />  This parameter might be absent, and instead a posted file is used.<br />:param format: :class:`ImportFormat` (optional)<br />  This specifies the format of the file to be imported.<br /><br />  The value is case sensitive.<br /><br />  - `AUTO`: The item is imported depending on an analysis of the item's extension and the header<br />  content provided in the request. If the item is imported as a notebook, then the item's extension is<br />  automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`:<br />  The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython<br />  Notebook file. - `DBC`: The notebook is imported in Databricks archive format. Required for<br />  directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format.<br />:param language: :class:`Language` (optional)<br />  The language of the object. This value is set only if the object type is `NOTEBOOK`.<br />:param overwrite: bool (optional)<br />  The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`<br />  format, `overwrite` is not supported since it may contain a directory.</td>
+    <td>Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.</td>
 </tr>
 <tr>
     <td><a href="#mkdirs"><CopyableCode code="mkdirs" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-path"><code>path</code></a></td>
     <td></td>
-    <td>Creates the specified directory (and necessary parent directories if they do not exist). If there is<br />an object (not a directory) at any prefix of the input path, this call returns an error<br />`RESOURCE_ALREADY_EXISTS`.<br /><br />Note that if this operation fails it may have succeeded in creating some of the necessary parent<br />directories.<br /><br />:param path: str<br />  The absolute path of the directory. If the parent directories do not exist, it will also create<br />  them. If the directory already exists, this command will do nothing and succeed.</td>
+    <td>Creates the specified directory (and necessary parent directories if they do not exist). If there is</td>
 </tr>
 </tbody>
 </table>
@@ -184,7 +184,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Lists the contents of a directory, or the object if it is not a directory. If the input path does not<br />exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.<br /><br />:param path: str<br />  The absolute path of the notebook or directory.<br />:param notebooks_modified_after: int (optional)<br />  UTC timestamp in milliseconds<br /><br />:returns: Iterator over :class:`ObjectInfo`
+Lists the contents of a directory, or the object if it is not a directory. If the input path does not
 
 ```sql
 SELECT
@@ -219,7 +219,7 @@ AND notebooks_modified_after = '{{ notebooks_modified_after }}'
 >
 <TabItem value="delete">
 
-Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *<br />If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`. * If `path` is a<br />non-empty directory and `recursive` is set to `false`, this call returns an error<br />`DIRECTORY_NOT_EMPTY`.<br /><br />Object deletion cannot be undone and deleting a directory recursively is not atomic.<br /><br />:param path: str<br />  The absolute path of the notebook or directory.<br />:param recursive: bool (optional)<br />  The flag that specifies whether to delete the object recursively. It is `false` by default. Please<br />  note this deleting directory is not atomic. If it fails in the middle, some of objects under this<br />  directory may be deleted and cannot be undone.
+Deletes an object or a directory (and optionally recursively deletes all objects in the directory). *
 
 ```sql
 EXEC databricks_workspace.workspace.workspace.delete 
@@ -234,7 +234,7 @@ EXEC databricks_workspace.workspace.workspace.delete
 </TabItem>
 <TabItem value="export">
 
-Exports an object or the contents of an entire directory.<br /><br />If `path` does not exist, this call returns an error `RESOURCE_DOES_NOT_EXIST`.<br /><br />If the exported data would exceed size limit, this call returns `MAX_NOTEBOOK_SIZE_EXCEEDED`.<br />Currently, this API does not support exporting a library.<br /><br />:param path: str<br />  The absolute path of the object or directory. Exporting a directory is only supported for the `DBC`,<br />  `SOURCE`, and `AUTO` format.<br />:param format: :class:`ExportFormat` (optional)<br />  This specifies the format of the exported file. By default, this is `SOURCE`.<br /><br />  The value is case sensitive.<br /><br />  - `SOURCE`: The notebook is exported as source code. Directory exports will not include non-notebook<br />  entries. - `HTML`: The notebook is exported as an HTML file. - `JUPYTER`: The notebook is exported<br />  as a Jupyter/IPython Notebook file. - `DBC`: The notebook is exported in Databricks archive format.<br />  Directory exports will not include non-notebook entries. - `R_MARKDOWN`: The notebook is exported to<br />  R Markdown format. - `AUTO`: The object or directory is exported depending on the objects type.<br />  Directory exports will include notebooks and workspace files.<br /><br />:returns: :class:`ExportResponse`
+Exports an object or the contents of an entire directory.
 
 ```sql
 EXEC databricks_workspace.workspace.workspace.export 
@@ -246,7 +246,7 @@ EXEC databricks_workspace.workspace.workspace.export
 </TabItem>
 <TabItem value="import">
 
-Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.<br />If `path` already exists and `overwrite` is set to `false`, this call returns an error<br />`RESOURCE_ALREADY_EXISTS`. To import a directory, you can use either the `DBC` format or the `SOURCE`<br />format with the `language` field unset. To import a single file as `SOURCE`, you must set the<br />`language` field. Zip files within directories are not supported.<br /><br />:param path: str<br />  The absolute path of the object or directory. Importing a directory is only supported for the `DBC`<br />  and `SOURCE` formats.<br />:param content: str (optional)<br />  The base64-encoded content. This has a limit of 10 MB.<br /><br />  If the limit (10MB) is exceeded, exception with error code **MAX_NOTEBOOK_SIZE_EXCEEDED** is thrown.<br />  This parameter might be absent, and instead a posted file is used.<br />:param format: :class:`ImportFormat` (optional)<br />  This specifies the format of the file to be imported.<br /><br />  The value is case sensitive.<br /><br />  - `AUTO`: The item is imported depending on an analysis of the item's extension and the header<br />  content provided in the request. If the item is imported as a notebook, then the item's extension is<br />  automatically removed. - `SOURCE`: The notebook or directory is imported as source code. - `HTML`:<br />  The notebook is imported as an HTML file. - `JUPYTER`: The notebook is imported as a Jupyter/IPython<br />  Notebook file. - `DBC`: The notebook is imported in Databricks archive format. Required for<br />  directories. - `R_MARKDOWN`: The notebook is imported from R Markdown format.<br />:param language: :class:`Language` (optional)<br />  The language of the object. This value is set only if the object type is `NOTEBOOK`.<br />:param overwrite: bool (optional)<br />  The flag that specifies whether to overwrite existing object. It is `false` by default. For `DBC`<br />  format, `overwrite` is not supported since it may contain a directory.
+Imports a workspace object (for example, a notebook or file) or the contents of an entire directory.
 
 ```sql
 EXEC databricks_workspace.workspace.workspace.import 
@@ -264,7 +264,7 @@ EXEC databricks_workspace.workspace.workspace.import
 </TabItem>
 <TabItem value="mkdirs">
 
-Creates the specified directory (and necessary parent directories if they do not exist). If there is<br />an object (not a directory) at any prefix of the input path, this call returns an error<br />`RESOURCE_ALREADY_EXISTS`.<br /><br />Note that if this operation fails it may have succeeded in creating some of the necessary parent<br />directories.<br /><br />:param path: str<br />  The absolute path of the directory. If the parent directories do not exist, it will also create<br />  them. If the directory already exists, this command will do nothing and succeed.
+Creates the specified directory (and necessary parent directories if they do not exist). If there is
 
 ```sql
 EXEC databricks_workspace.workspace.workspace.mkdirs 

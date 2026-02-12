@@ -82,7 +82,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the permission levels that a user can have on an object.<br /><br />:param workspace_object_type: str<br />  The workspace object type for which to get or manage permissions. Could be one of the following:<br />  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,<br />  queries<br />:param workspace_object_id: str<br />  The workspace object for which to get or manage permissions.<br /><br />:returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`</td>
+    <td>Gets the permission levels that a user can have on an object.</td>
 </tr>
 </tbody>
 </table>
@@ -128,7 +128,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the permission levels that a user can have on an object.<br /><br />:param workspace_object_type: str<br />  The workspace object type for which to get or manage permissions. Could be one of the following:<br />  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,<br />  queries<br />:param workspace_object_id: str<br />  The workspace object for which to get or manage permissions.<br /><br />:returns: :class:`GetWorkspaceObjectPermissionLevelsResponse`
+Gets the permission levels that a user can have on an object.
 
 ```sql
 SELECT

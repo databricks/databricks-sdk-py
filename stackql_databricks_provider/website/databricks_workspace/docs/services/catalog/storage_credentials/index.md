@@ -185,7 +185,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "owner",
@@ -360,7 +360,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "owner",
@@ -411,42 +411,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the<br />storage credential, or have some permission on the storage credential.<br /><br />:param name: str<br />  Name of the storage credential.<br /><br />:returns: :class:`StorageCredentialInfo`</td>
+    <td>Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_unbound"><code>include_unbound</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to<br />only those storage credentials the caller has permission to access. If the caller is a metastore<br />admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the<br />elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param include_unbound: bool (optional)<br />  Whether to include credentials not bound to the workspace. Effective only if the user has permission<br />  to update the credential–workspace binding.<br />:param max_results: int (optional)<br />  Maximum number of storage credentials to return. If not set, all the storage credentials are<br />  returned (not recommended). - when set to a value greater than 0, the page length is the minimum of<br />  this value and a server configured value; - when set to 0, the page length is set to a server<br />  configured value (recommended); - when set to a value less than 0, an invalid parameter error is<br />  returned;<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`StorageCredentialInfo`</td>
+    <td>Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
     <td></td>
-    <td>Creates a new storage credential.<br /><br />The caller must be a metastore admin or have the **CREATE_STORAGE_CREDENTIAL** privilege on the<br />metastore.<br /><br />:param name: str<br />  The credential name. The name must be unique among storage and service credentials within the<br />  metastore.<br />:param aws_iam_role: :class:`AwsIamRoleRequest` (optional)<br />  The AWS IAM role configuration.<br />:param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)<br />  The Azure managed identity configuration.<br />:param azure_service_principal: :class:`AzureServicePrincipal` (optional)<br />  The Azure service principal configuration.<br />:param cloudflare_api_token: :class:`CloudflareApiToken` (optional)<br />  The Cloudflare API token configuration.<br />:param comment: str (optional)<br />  Comment associated with the credential.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)<br />  The Databricks managed GCP service account configuration.<br />:param read_only: bool (optional)<br />  Whether the credential is usable only for read operations. Only applicable when purpose is<br />  **STORAGE**.<br />:param skip_validation: bool (optional)<br />  Supplying true to this argument skips validation of the created credential.<br /><br />:returns: :class:`StorageCredentialInfo`</td>
+    <td>Creates a new storage credential.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates a storage credential on the metastore.<br /><br />The caller must be the owner of the storage credential or a metastore admin. If the caller is a<br />metastore admin, only the **owner** field can be changed.<br /><br />:param name: str<br />  Name of the storage credential.<br />:param aws_iam_role: :class:`AwsIamRoleRequest` (optional)<br />  The AWS IAM role configuration.<br />:param azure_managed_identity: :class:`AzureManagedIdentityResponse` (optional)<br />  The Azure managed identity configuration.<br />:param azure_service_principal: :class:`AzureServicePrincipal` (optional)<br />  The Azure service principal configuration.<br />:param cloudflare_api_token: :class:`CloudflareApiToken` (optional)<br />  The Cloudflare API token configuration.<br />:param comment: str (optional)<br />  Comment associated with the credential.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)<br />  The Databricks managed GCP service account configuration.<br />:param force: bool (optional)<br />  Force update even if there are dependent external locations or external tables.<br />:param isolation_mode: :class:`IsolationMode` (optional)<br />  Whether the current securable is accessible from all workspaces or a specific set of workspaces.<br />:param new_name: str (optional)<br />  New name for the storage credential.<br />:param owner: str (optional)<br />  Username of current owner of credential.<br />:param read_only: bool (optional)<br />  Whether the credential is usable only for read operations. Only applicable when purpose is<br />  **STORAGE**.<br />:param skip_validation: bool (optional)<br />  Supplying true to this argument skips validation of the updated credential.<br /><br />:returns: :class:`StorageCredentialInfo`</td>
+    <td>Updates a storage credential on the metastore.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
-    <td>Deletes a storage credential from the metastore. The caller must be an owner of the storage<br />credential.<br /><br />:param name: str<br />  Name of the storage credential.<br />:param force: bool (optional)<br />  Force an update even if there are dependent external locations or external tables (when purpose is<br />  **STORAGE**) or dependent services (when purpose is **SERVICE**).</td>
+    <td>Deletes a storage credential from the metastore. The caller must be an owner of the storage</td>
 </tr>
 <tr>
     <td><a href="#validate"><CopyableCode code="validate" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Validates a storage credential. At least one of __external_location_name__ and __url__ need to be<br />provided. If only one of them is provided, it will be used for validation. And if both are provided,<br />the __url__ will be used for validation, and __external_location_name__ will be ignored when checking<br />overlapping urls.<br /><br />Either the __storage_credential_name__ or the cloud-specific credential must be provided.<br /><br />The caller must be a metastore admin or the storage credential owner or have the<br />**CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.<br /><br />:param aws_iam_role: :class:`AwsIamRoleRequest` (optional)<br />  The AWS IAM role configuration.<br />:param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)<br />  The Azure managed identity configuration.<br />:param azure_service_principal: :class:`AzureServicePrincipal` (optional)<br />  The Azure service principal configuration.<br />:param cloudflare_api_token: :class:`CloudflareApiToken` (optional)<br />  The Cloudflare API token configuration.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)<br />  The Databricks created GCP service account configuration.<br />:param external_location_name: str (optional)<br />  The name of an existing external location to validate.<br />:param read_only: bool (optional)<br />  Whether the storage credential is only usable for read operations.<br />:param storage_credential_name: str (optional)<br />  Required. The name of an existing credential or long-lived cloud credential to validate.<br />:param url: str (optional)<br />  The external location url to validate.<br /><br />:returns: :class:`ValidateStorageCredentialResponse`</td>
+    <td>Validates a storage credential. At least one of __external_location_name__ and __url__ need to be</td>
 </tr>
 </tbody>
 </table>
@@ -508,7 +508,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the<br />storage credential, or have some permission on the storage credential.<br /><br />:param name: str<br />  Name of the storage credential.<br /><br />:returns: :class:`StorageCredentialInfo`
+Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
 
 ```sql
 SELECT
@@ -538,7 +538,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to<br />only those storage credentials the caller has permission to access. If the caller is a metastore<br />admin, retrieval of credentials is unrestricted. There is no guarantee of a specific ordering of the<br />elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param include_unbound: bool (optional)<br />  Whether to include credentials not bound to the workspace. Effective only if the user has permission<br />  to update the credential–workspace binding.<br />:param max_results: int (optional)<br />  Maximum number of storage credentials to return. If not set, all the storage credentials are<br />  returned (not recommended). - when set to a value greater than 0, the page length is the minimum of<br />  this value and a server configured value; - when set to 0, the page length is set to a server<br />  configured value (recommended); - when set to a value less than 0, an invalid parameter error is<br />  returned;<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`StorageCredentialInfo`
+Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
 
 ```sql
 SELECT
@@ -582,7 +582,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new storage credential.<br /><br />The caller must be a metastore admin or have the **CREATE_STORAGE_CREDENTIAL** privilege on the<br />metastore.<br /><br />:param name: str<br />  The credential name. The name must be unique among storage and service credentials within the<br />  metastore.<br />:param aws_iam_role: :class:`AwsIamRoleRequest` (optional)<br />  The AWS IAM role configuration.<br />:param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)<br />  The Azure managed identity configuration.<br />:param azure_service_principal: :class:`AzureServicePrincipal` (optional)<br />  The Azure service principal configuration.<br />:param cloudflare_api_token: :class:`CloudflareApiToken` (optional)<br />  The Cloudflare API token configuration.<br />:param comment: str (optional)<br />  Comment associated with the credential.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)<br />  The Databricks managed GCP service account configuration.<br />:param read_only: bool (optional)<br />  Whether the credential is usable only for read operations. Only applicable when purpose is<br />  **STORAGE**.<br />:param skip_validation: bool (optional)<br />  Supplying true to this argument skips validation of the created credential.<br /><br />:returns: :class:`StorageCredentialInfo`
+Creates a new storage credential.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.storage_credentials (
@@ -690,7 +690,7 @@ used_for_managed_storage
 >
 <TabItem value="update">
 
-Updates a storage credential on the metastore.<br /><br />The caller must be the owner of the storage credential or a metastore admin. If the caller is a<br />metastore admin, only the **owner** field can be changed.<br /><br />:param name: str<br />  Name of the storage credential.<br />:param aws_iam_role: :class:`AwsIamRoleRequest` (optional)<br />  The AWS IAM role configuration.<br />:param azure_managed_identity: :class:`AzureManagedIdentityResponse` (optional)<br />  The Azure managed identity configuration.<br />:param azure_service_principal: :class:`AzureServicePrincipal` (optional)<br />  The Azure service principal configuration.<br />:param cloudflare_api_token: :class:`CloudflareApiToken` (optional)<br />  The Cloudflare API token configuration.<br />:param comment: str (optional)<br />  Comment associated with the credential.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)<br />  The Databricks managed GCP service account configuration.<br />:param force: bool (optional)<br />  Force update even if there are dependent external locations or external tables.<br />:param isolation_mode: :class:`IsolationMode` (optional)<br />  Whether the current securable is accessible from all workspaces or a specific set of workspaces.<br />:param new_name: str (optional)<br />  New name for the storage credential.<br />:param owner: str (optional)<br />  Username of current owner of credential.<br />:param read_only: bool (optional)<br />  Whether the credential is usable only for read operations. Only applicable when purpose is<br />  **STORAGE**.<br />:param skip_validation: bool (optional)<br />  Supplying true to this argument skips validation of the updated credential.<br /><br />:returns: :class:`StorageCredentialInfo`
+Updates a storage credential on the metastore.
 
 ```sql
 UPDATE databricks_workspace.catalog.storage_credentials
@@ -744,7 +744,7 @@ used_for_managed_storage;
 >
 <TabItem value="delete">
 
-Deletes a storage credential from the metastore. The caller must be an owner of the storage<br />credential.<br /><br />:param name: str<br />  Name of the storage credential.<br />:param force: bool (optional)<br />  Force an update even if there are dependent external locations or external tables (when purpose is<br />  **STORAGE**) or dependent services (when purpose is **SERVICE**).
+Deletes a storage credential from the metastore. The caller must be an owner of the storage
 
 ```sql
 DELETE FROM databricks_workspace.catalog.storage_credentials
@@ -767,7 +767,7 @@ AND force = '{{ force }}'
 >
 <TabItem value="validate">
 
-Validates a storage credential. At least one of __external_location_name__ and __url__ need to be<br />provided. If only one of them is provided, it will be used for validation. And if both are provided,<br />the __url__ will be used for validation, and __external_location_name__ will be ignored when checking<br />overlapping urls.<br /><br />Either the __storage_credential_name__ or the cloud-specific credential must be provided.<br /><br />The caller must be a metastore admin or the storage credential owner or have the<br />**CREATE_EXTERNAL_LOCATION** privilege on the metastore and the storage credential.<br /><br />:param aws_iam_role: :class:`AwsIamRoleRequest` (optional)<br />  The AWS IAM role configuration.<br />:param azure_managed_identity: :class:`AzureManagedIdentityRequest` (optional)<br />  The Azure managed identity configuration.<br />:param azure_service_principal: :class:`AzureServicePrincipal` (optional)<br />  The Azure service principal configuration.<br />:param cloudflare_api_token: :class:`CloudflareApiToken` (optional)<br />  The Cloudflare API token configuration.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccountRequest` (optional)<br />  The Databricks created GCP service account configuration.<br />:param external_location_name: str (optional)<br />  The name of an existing external location to validate.<br />:param read_only: bool (optional)<br />  Whether the storage credential is only usable for read operations.<br />:param storage_credential_name: str (optional)<br />  Required. The name of an existing credential or long-lived cloud credential to validate.<br />:param url: str (optional)<br />  The external location url to validate.<br /><br />:returns: :class:`ValidateStorageCredentialResponse`
+Validates a storage credential. At least one of __external_location_name__ and __url__ need to be
 
 ```sql
 EXEC databricks_workspace.catalog.storage_credentials.validate 

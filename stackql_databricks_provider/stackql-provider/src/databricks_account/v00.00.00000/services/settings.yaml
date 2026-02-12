@@ -4116,6 +4116,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.ip_access_list
         account_ip_access_lists_replace:
           operation:
             $ref: >-

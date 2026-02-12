@@ -80,7 +80,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the metastore assignment for the workspace being accessed.<br /><br /><br />:returns: :class:`MetastoreAssignment`</td>
+    <td>Gets the metastore assignment for the workspace being accessed.</td>
 </tr>
 </tbody>
 </table>
@@ -116,7 +116,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the metastore assignment for the workspace being accessed.<br /><br /><br />:returns: :class:`MetastoreAssignment`
+Gets the metastore assignment for the workspace being accessed.
 
 ```sql
 SELECT

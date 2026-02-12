@@ -82,7 +82,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-actor"><code>actor</code></a>, <a href="#parameter-permission"><code>permission</code></a>, <a href="#parameter-resource"><code>resource</code></a>, <a href="#parameter-consistency_token"><code>consistency_token</code></a>, <a href="#parameter-authz_identity"><code>authz_identity</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-resource_info"><code>resource_info</code></a></td>
-    <td>Check access policy to a resource.<br /><br />:param actor: :class:`Actor`<br />:param permission: str<br />:param resource: str<br />  Ex: (servicePrincipal/use, accounts/&lt;account-id&gt;/servicePrincipals/&lt;sp-id&gt;) Ex:<br />  (servicePrincipal.ruleSet/update, accounts/&lt;account-id&gt;/servicePrincipals/&lt;sp-id&gt;/ruleSets/default)<br />:param consistency_token: :class:`ConsistencyToken`<br />:param authz_identity: :class:`RequestAuthzIdentity`<br />:param resource_info: :class:`ResourceInfo` (optional)<br /><br />:returns: :class:`CheckPolicyResponse`</td>
+    <td>Check access policy to a resource.</td>
 </tr>
 </tbody>
 </table>
@@ -148,7 +148,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="check">
 
-Check access policy to a resource.<br /><br />:param actor: :class:`Actor`<br />:param permission: str<br />:param resource: str<br />  Ex: (servicePrincipal/use, accounts/&lt;account-id&gt;/servicePrincipals/&lt;sp-id&gt;) Ex:<br />  (servicePrincipal.ruleSet/update, accounts/&lt;account-id&gt;/servicePrincipals/&lt;sp-id&gt;/ruleSets/default)<br />:param consistency_token: :class:`ConsistencyToken`<br />:param authz_identity: :class:`RequestAuthzIdentity`<br />:param resource_info: :class:`ResourceInfo` (optional)<br /><br />:returns: :class:`CheckPolicyResponse`
+Check access policy to a resource.
 
 ```sql
 SELECT

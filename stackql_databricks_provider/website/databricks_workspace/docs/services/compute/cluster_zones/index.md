@@ -75,7 +75,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These<br />zones can be used to launch a cluster.<br /><br /><br />:returns: :class:`ListAvailableZonesResponse`</td>
+    <td>Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These</td>
 </tr>
 </tbody>
 </table>
@@ -111,7 +111,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These<br />zones can be used to launch a cluster.<br /><br /><br />:returns: :class:`ListAvailableZonesResponse`
+Returns a list of availability zones where clusters can be created in (For example, us-west-2a). These
 
 ```sql
 SELECT

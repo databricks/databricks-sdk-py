@@ -229,42 +229,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a materialized feature.<br /><br />:param materialized_feature_id: str<br />  The ID of the materialized feature.<br /><br />:returns: :class:`MaterializedFeature`</td>
+    <td>Get a materialized feature.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List materialized features.<br /><br />:param feature_name: str (optional)<br />  Filter by feature name. If specified, only materialized features materialized from this feature will<br />  be returned.<br />:param page_size: int (optional)<br />  The maximum number of results to return. Defaults to 100 if not specified. Cannot be greater than<br />  1000.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous query.<br /><br />:returns: Iterator over :class:`MaterializedFeature`</td>
+    <td>List materialized features.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__materialized_feature"><code>data__materialized_feature</code></a></td>
     <td></td>
-    <td>Create a materialized feature.<br /><br />:param materialized_feature: :class:`MaterializedFeature`<br />  The materialized feature to create.<br /><br />:returns: :class:`MaterializedFeature`</td>
+    <td>Create a materialized feature.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__materialized_feature"><code>data__materialized_feature</code></a></td>
     <td></td>
-    <td>Update a materialized feature (pause/resume).<br /><br />:param materialized_feature_id: str<br />  Unique identifier for the materialized feature.<br />:param materialized_feature: :class:`MaterializedFeature`<br />  The materialized feature to update.<br />:param update_mask: str<br />  Provide the materialization feature fields which should be updated. Currently, only the<br />  pipeline_state field can be updated.<br /><br />:returns: :class:`MaterializedFeature`</td>
+    <td>Update a materialized feature (pause/resume).</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a materialized feature.<br /><br />:param materialized_feature_id: str<br />  The ID of the materialized feature to delete.</td>
+    <td>Delete a materialized feature.</td>
 </tr>
 <tr>
     <td><a href="#batch_create"><CopyableCode code="batch_create" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-requests"><code>requests</code></a></td>
     <td></td>
-    <td>Batch create materialized features.<br /><br />:param requests: List[:class:`CreateMaterializedFeatureRequest`]<br />  The requests to create materialized features.<br /><br />:returns: :class:`BatchCreateMaterializedFeaturesResponse`</td>
+    <td>Batch create materialized features.</td>
 </tr>
 </tbody>
 </table>
@@ -326,7 +326,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a materialized feature.<br /><br />:param materialized_feature_id: str<br />  The ID of the materialized feature.<br /><br />:returns: :class:`MaterializedFeature`
+Get a materialized feature.
 
 ```sql
 SELECT
@@ -346,7 +346,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List materialized features.<br /><br />:param feature_name: str (optional)<br />  Filter by feature name. If specified, only materialized features materialized from this feature will<br />  be returned.<br />:param page_size: int (optional)<br />  The maximum number of results to return. Defaults to 100 if not specified. Cannot be greater than<br />  1000.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous query.<br /><br />:returns: Iterator over :class:`MaterializedFeature`
+List materialized features.
 
 ```sql
 SELECT
@@ -380,7 +380,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a materialized feature.<br /><br />:param materialized_feature: :class:`MaterializedFeature`<br />  The materialized feature to create.<br /><br />:returns: :class:`MaterializedFeature`
+Create a materialized feature.
 
 ```sql
 INSERT INTO databricks_workspace.ml.feature_materialized (
@@ -430,7 +430,7 @@ pipeline_schedule_state
 >
 <TabItem value="update">
 
-Update a materialized feature (pause/resume).<br /><br />:param materialized_feature_id: str<br />  Unique identifier for the materialized feature.<br />:param materialized_feature: :class:`MaterializedFeature`<br />  The materialized feature to update.<br />:param update_mask: str<br />  Provide the materialization feature fields which should be updated. Currently, only the<br />  pipeline_state field can be updated.<br /><br />:returns: :class:`MaterializedFeature`
+Update a materialized feature (pause/resume).
 
 ```sql
 UPDATE databricks_workspace.ml.feature_materialized
@@ -465,7 +465,7 @@ pipeline_schedule_state;
 >
 <TabItem value="delete">
 
-Delete a materialized feature.<br /><br />:param materialized_feature_id: str<br />  The ID of the materialized feature to delete.
+Delete a materialized feature.
 
 ```sql
 DELETE FROM databricks_workspace.ml.feature_materialized
@@ -487,7 +487,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="batch_create">
 
-Batch create materialized features.<br /><br />:param requests: List[:class:`CreateMaterializedFeatureRequest`]<br />  The requests to create materialized features.<br /><br />:returns: :class:`BatchCreateMaterializedFeaturesResponse`
+Batch create materialized features.
 
 ```sql
 EXEC databricks_workspace.ml.feature_materialized.batch_create 

@@ -55,21 +55,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates visualization in the query.<br /><br />**Warning**: This API is deprecated. Please use :method:queryvisualizations/update instead. [Learn<br />more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param created_at: str (optional)<br />:param description: str (optional)<br />  A short description of this visualization. This is not displayed in the UI.<br />:param id: str (optional)<br />  The UUID for this visualization.<br />:param name: str (optional)<br />  The name of the visualization that appears on dashboards and the query screen.<br />:param options: Any (optional)<br />  The options object varies widely from one visualization type to the next and is unsupported.<br />  Databricks does not recommend modifying visualization settings in JSON.<br />:param query: :class:`LegacyQuery` (optional)<br />:param type: str (optional)<br />  The type of visualization: chart, table, pivot table, and so on.<br />:param updated_at: str (optional)<br /><br />:returns: :class:`LegacyVisualization`</td>
+    <td>Updates visualization in the query.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__options"><code>data__options</code></a>, <a href="#parameter-data__query_id"><code>data__query_id</code></a>, <a href="#parameter-data__type"><code>data__type</code></a></td>
     <td></td>
-    <td>Creates visualization in the query.<br /><br />**Warning**: This API is deprecated. Please use :method:queryvisualizations/create instead. [Learn<br />more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param options: Any<br />  The options object varies widely from one visualization type to the next and is unsupported.<br />  Databricks does not recommend modifying visualization settings in JSON.<br />:param query_id: str<br />  The identifier returned by :method:queries/create<br />:param type: str<br />  The type of visualization: chart, table, pivot table, and so on.<br />:param description: str (optional)<br />  A short description of this visualization. This is not displayed in the UI.<br />:param name: str (optional)<br />  The name of the visualization that appears on dashboards and the query screen.<br /><br />:returns: :class:`LegacyVisualization`</td>
+    <td>Creates visualization in the query.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Removes a visualization from the query.<br /><br />**Warning**: This API is deprecated. Please use :method:queryvisualizations/delete instead. [Learn<br />more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param id: str<br />  Widget ID returned by :method:queryvisualizations/create</td>
+    <td>Removes a visualization from the query.</td>
 </tr>
 </tbody>
 </table>
@@ -112,7 +112,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="update">
 
-Updates visualization in the query.<br /><br />**Warning**: This API is deprecated. Please use :method:queryvisualizations/update instead. [Learn<br />more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param created_at: str (optional)<br />:param description: str (optional)<br />  A short description of this visualization. This is not displayed in the UI.<br />:param id: str (optional)<br />  The UUID for this visualization.<br />:param name: str (optional)<br />  The name of the visualization that appears on dashboards and the query screen.<br />:param options: Any (optional)<br />  The options object varies widely from one visualization type to the next and is unsupported.<br />  Databricks does not recommend modifying visualization settings in JSON.<br />:param query: :class:`LegacyQuery` (optional)<br />:param type: str (optional)<br />  The type of visualization: chart, table, pivot table, and so on.<br />:param updated_at: str (optional)<br /><br />:returns: :class:`LegacyVisualization`
+Updates visualization in the query.
 
 ```sql
 INSERT INTO databricks_workspace.sql.query_visualizations_legacy (
@@ -150,7 +150,7 @@ updated_at
 </TabItem>
 <TabItem value="create">
 
-Creates visualization in the query.<br /><br />**Warning**: This API is deprecated. Please use :method:queryvisualizations/create instead. [Learn<br />more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param options: Any<br />  The options object varies widely from one visualization type to the next and is unsupported.<br />  Databricks does not recommend modifying visualization settings in JSON.<br />:param query_id: str<br />  The identifier returned by :method:queries/create<br />:param type: str<br />  The type of visualization: chart, table, pivot table, and so on.<br />:param description: str (optional)<br />  A short description of this visualization. This is not displayed in the UI.<br />:param name: str (optional)<br />  The name of the visualization that appears on dashboards and the query screen.<br /><br />:returns: :class:`LegacyVisualization`
+Creates visualization in the query.
 
 ```sql
 INSERT INTO databricks_workspace.sql.query_visualizations_legacy (
@@ -239,7 +239,7 @@ updated_at
 >
 <TabItem value="delete">
 
-Removes a visualization from the query.<br /><br />**Warning**: This API is deprecated. Please use :method:queryvisualizations/delete instead. [Learn<br />more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param id: str<br />  Widget ID returned by :method:queryvisualizations/create
+Removes a visualization from the query.
 
 ```sql
 DELETE FROM databricks_workspace.sql.query_visualizations_legacy

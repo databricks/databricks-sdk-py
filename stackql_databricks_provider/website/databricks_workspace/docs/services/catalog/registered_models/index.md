@@ -275,49 +275,49 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_aliases"><code>include_aliases</code></a>, <a href="#parameter-include_browse"><code>include_browse</code></a></td>
-    <td>Get a registered model.<br /><br />The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the<br />registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**<br />privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.<br /><br />:param full_name: str<br />  The three-level (fully qualified) name of the registered model<br />:param include_aliases: bool (optional)<br />  Whether to include registered model aliases in the response<br />:param include_browse: bool (optional)<br />  Whether to include registered models in the response for which the principal can only access<br />  selective metadata for<br /><br />:returns: :class:`RegisteredModelInfo`</td>
+    <td>Get a registered model.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a></td>
-    <td>List registered models. You can list registered models under a particular schema, or list all<br />registered models in the current metastore.<br /><br />The returned models are filtered based on the privileges of the calling user. For example, the<br />metastore admin is able to list all the registered models. A regular user needs to be the owner or<br />have the **EXECUTE** privilege on the registered model to recieve the registered models in the<br />response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege<br />on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.<br /><br />There is no guarantee of a specific ordering of the elements in the response.<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param catalog_name: str (optional)<br />  The identifier of the catalog under which to list registered models. If specified, schema_name must<br />  be specified.<br />:param include_browse: bool (optional)<br />  Whether to include registered models in the response for which the principal can only access<br />  selective metadata for<br />:param max_results: int (optional)<br />  Max number of registered models to return.<br /><br />  If both catalog and schema are specified: - when max_results is not specified, the page length is<br />  set to a server configured value (10000, as of 4/2/2024). - when set to a value greater than 0, the<br />  page length is the minimum of this value and a server configured value (10000, as of 4/2/2024); -<br />  when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024); - when<br />  set to a value less than 0, an invalid parameter error is returned;<br /><br />  If neither schema nor catalog is specified: - when max_results is not specified, the page length is<br />  set to a server configured value (100, as of 4/2/2024). - when set to a value greater than 0, the<br />  page length is the minimum of this value and a server configured value (1000, as of 4/2/2024); -<br />  when set to 0, the page length is set to a server configured value (100, as of 4/2/2024); - when set<br />  to a value less than 0, an invalid parameter error is returned;<br />:param page_token: str (optional)<br />  Opaque token to send for the next page of results (pagination).<br />:param schema_name: str (optional)<br />  The identifier of the schema under which to list registered models. If specified, catalog_name must<br />  be specified.<br /><br />:returns: Iterator over :class:`RegisteredModelInfo`</td>
+    <td>List registered models. You can list registered models under a particular schema, or list all</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates a new registered model in Unity Catalog.<br /><br />File storage for model versions in the registered model will be located in the default location which<br />is specified by the parent schema, or the parent catalog, or the Metastore.<br /><br />For registered model creation to succeed, the user must satisfy the following conditions: - The caller<br />must be a metastore admin, or be the owner of the parent catalog and schema, or have the<br />**USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.<br />- The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.<br /><br />:param aliases: List[:class:`RegisteredModelAlias`] (optional)<br />  List of aliases associated with the registered model<br />:param browse_only: bool (optional)<br />  Indicates whether the principal is limited to retrieving metadata for the associated object through<br />  the BROWSE privilege when include_browse is enabled in the request.<br />:param catalog_name: str (optional)<br />  The name of the catalog where the schema and the registered model reside<br />:param comment: str (optional)<br />  The comment attached to the registered model<br />:param created_at: int (optional)<br />  Creation timestamp of the registered model in milliseconds since the Unix epoch<br />:param created_by: str (optional)<br />  The identifier of the user who created the registered model<br />:param full_name: str (optional)<br />  The three-level (fully qualified) name of the registered model<br />:param metastore_id: str (optional)<br />  The unique identifier of the metastore<br />:param name: str (optional)<br />  The name of the registered model<br />:param owner: str (optional)<br />  The identifier of the user who owns the registered model<br />:param schema_name: str (optional)<br />  The name of the schema where the registered model resides<br />:param storage_location: str (optional)<br />  The storage location on the cloud under which model version data files are stored<br />:param updated_at: int (optional)<br />  Last-update timestamp of the registered model in milliseconds since the Unix epoch<br />:param updated_by: str (optional)<br />  The identifier of the user who updated the registered model last time<br /><br />:returns: :class:`RegisteredModelInfo`</td>
+    <td>Creates a new registered model in Unity Catalog.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the specified registered model.<br /><br />The caller must be a metastore admin or an owner of the registered model. For the latter case, the<br />caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the<br />**USE_SCHEMA** privilege on the parent schema.<br /><br />Currently only the name, the owner or the comment of the registered model can be updated.<br /><br />:param full_name: str<br />  The three-level (fully qualified) name of the registered model<br />:param aliases: List[:class:`RegisteredModelAlias`] (optional)<br />  List of aliases associated with the registered model<br />:param browse_only: bool (optional)<br />  Indicates whether the principal is limited to retrieving metadata for the associated object through<br />  the BROWSE privilege when include_browse is enabled in the request.<br />:param catalog_name: str (optional)<br />  The name of the catalog where the schema and the registered model reside<br />:param comment: str (optional)<br />  The comment attached to the registered model<br />:param created_at: int (optional)<br />  Creation timestamp of the registered model in milliseconds since the Unix epoch<br />:param created_by: str (optional)<br />  The identifier of the user who created the registered model<br />:param metastore_id: str (optional)<br />  The unique identifier of the metastore<br />:param name: str (optional)<br />  The name of the registered model<br />:param new_name: str (optional)<br />  New name for the registered model.<br />:param owner: str (optional)<br />  The identifier of the user who owns the registered model<br />:param schema_name: str (optional)<br />  The name of the schema where the registered model resides<br />:param storage_location: str (optional)<br />  The storage location on the cloud under which model version data files are stored<br />:param updated_at: int (optional)<br />  Last-update timestamp of the registered model in milliseconds since the Unix epoch<br />:param updated_by: str (optional)<br />  The identifier of the user who updated the registered model last time<br /><br />:returns: :class:`RegisteredModelInfo`</td>
+    <td>Updates the specified registered model.</td>
 </tr>
 <tr>
     <td><a href="#set_alias"><CopyableCode code="set_alias" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-alias"><code>alias</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__version_num"><code>data__version_num</code></a></td>
     <td></td>
-    <td>Set an alias on the specified registered model.<br /><br />The caller must be a metastore admin or an owner of the registered model. For the latter case, the<br />caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the<br />**USE_SCHEMA** privilege on the parent schema.<br /><br />:param full_name: str<br />  The three-level (fully qualified) name of the registered model<br />:param alias: str<br />  The name of the alias<br />:param version_num: int<br />  The version number of the model version to which the alias points<br /><br />:returns: :class:`RegisteredModelAlias`</td>
+    <td>Set an alias on the specified registered model.</td>
 </tr>
 <tr>
     <td><a href="#delete_alias"><CopyableCode code="delete_alias" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-alias"><code>alias</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a registered model alias.<br /><br />The caller must be a metastore admin or an owner of the registered model. For the latter case, the<br />caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the<br />**USE_SCHEMA** privilege on the parent schema.<br /><br />:param full_name: str<br />  The three-level (fully qualified) name of the registered model<br />:param alias: str<br />  The name of the alias</td>
+    <td>Deletes a registered model alias.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a registered model and all its model versions from the specified parent catalog and schema.<br /><br />The caller must be a metastore admin or an owner of the registered model. For the latter case, the<br />caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the<br />**USE_SCHEMA** privilege on the parent schema.<br /><br />:param full_name: str<br />  The three-level (fully qualified) name of the registered model</td>
+    <td>Deletes a registered model and all its model versions from the specified parent catalog and schema.</td>
 </tr>
 </tbody>
 </table>
@@ -394,7 +394,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a registered model.<br /><br />The caller must be a metastore admin or an owner of (or have the **EXECUTE** privilege on) the<br />registered model. For the latter case, the caller must also be the owner or have the **USE_CATALOG**<br />privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.<br /><br />:param full_name: str<br />  The three-level (fully qualified) name of the registered model<br />:param include_aliases: bool (optional)<br />  Whether to include registered model aliases in the response<br />:param include_browse: bool (optional)<br />  Whether to include registered models in the response for which the principal can only access<br />  selective metadata for<br /><br />:returns: :class:`RegisteredModelInfo`
+Get a registered model.
 
 ```sql
 SELECT
@@ -422,7 +422,7 @@ AND include_browse = '{{ include_browse }}'
 </TabItem>
 <TabItem value="list">
 
-List registered models. You can list registered models under a particular schema, or list all<br />registered models in the current metastore.<br /><br />The returned models are filtered based on the privileges of the calling user. For example, the<br />metastore admin is able to list all the registered models. A regular user needs to be the owner or<br />have the **EXECUTE** privilege on the registered model to recieve the registered models in the<br />response. For the latter case, the caller must also be the owner or have the **USE_CATALOG** privilege<br />on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.<br /><br />There is no guarantee of a specific ordering of the elements in the response.<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param catalog_name: str (optional)<br />  The identifier of the catalog under which to list registered models. If specified, schema_name must<br />  be specified.<br />:param include_browse: bool (optional)<br />  Whether to include registered models in the response for which the principal can only access<br />  selective metadata for<br />:param max_results: int (optional)<br />  Max number of registered models to return.<br /><br />  If both catalog and schema are specified: - when max_results is not specified, the page length is<br />  set to a server configured value (10000, as of 4/2/2024). - when set to a value greater than 0, the<br />  page length is the minimum of this value and a server configured value (10000, as of 4/2/2024); -<br />  when set to 0, the page length is set to a server configured value (10000, as of 4/2/2024); - when<br />  set to a value less than 0, an invalid parameter error is returned;<br /><br />  If neither schema nor catalog is specified: - when max_results is not specified, the page length is<br />  set to a server configured value (100, as of 4/2/2024). - when set to a value greater than 0, the<br />  page length is the minimum of this value and a server configured value (1000, as of 4/2/2024); -<br />  when set to 0, the page length is set to a server configured value (100, as of 4/2/2024); - when set<br />  to a value less than 0, an invalid parameter error is returned;<br />:param page_token: str (optional)<br />  Opaque token to send for the next page of results (pagination).<br />:param schema_name: str (optional)<br />  The identifier of the schema under which to list registered models. If specified, catalog_name must<br />  be specified.<br /><br />:returns: Iterator over :class:`RegisteredModelInfo`
+List registered models. You can list registered models under a particular schema, or list all
 
 ```sql
 SELECT
@@ -464,7 +464,7 @@ AND schema_name = '{{ schema_name }}'
 >
 <TabItem value="create">
 
-Creates a new registered model in Unity Catalog.<br /><br />File storage for model versions in the registered model will be located in the default location which<br />is specified by the parent schema, or the parent catalog, or the Metastore.<br /><br />For registered model creation to succeed, the user must satisfy the following conditions: - The caller<br />must be a metastore admin, or be the owner of the parent catalog and schema, or have the<br />**USE_CATALOG** privilege on the parent catalog and the **USE_SCHEMA** privilege on the parent schema.<br />- The caller must have the **CREATE MODEL** or **CREATE FUNCTION** privilege on the parent schema.<br /><br />:param aliases: List[:class:`RegisteredModelAlias`] (optional)<br />  List of aliases associated with the registered model<br />:param browse_only: bool (optional)<br />  Indicates whether the principal is limited to retrieving metadata for the associated object through<br />  the BROWSE privilege when include_browse is enabled in the request.<br />:param catalog_name: str (optional)<br />  The name of the catalog where the schema and the registered model reside<br />:param comment: str (optional)<br />  The comment attached to the registered model<br />:param created_at: int (optional)<br />  Creation timestamp of the registered model in milliseconds since the Unix epoch<br />:param created_by: str (optional)<br />  The identifier of the user who created the registered model<br />:param full_name: str (optional)<br />  The three-level (fully qualified) name of the registered model<br />:param metastore_id: str (optional)<br />  The unique identifier of the metastore<br />:param name: str (optional)<br />  The name of the registered model<br />:param owner: str (optional)<br />  The identifier of the user who owns the registered model<br />:param schema_name: str (optional)<br />  The name of the schema where the registered model resides<br />:param storage_location: str (optional)<br />  The storage location on the cloud under which model version data files are stored<br />:param updated_at: int (optional)<br />  Last-update timestamp of the registered model in milliseconds since the Unix epoch<br />:param updated_by: str (optional)<br />  The identifier of the user who updated the registered model last time<br /><br />:returns: :class:`RegisteredModelInfo`
+Creates a new registered model in Unity Catalog.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.registered_models (
@@ -598,7 +598,7 @@ updated_by
 >
 <TabItem value="update">
 
-Updates the specified registered model.<br /><br />The caller must be a metastore admin or an owner of the registered model. For the latter case, the<br />caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the<br />**USE_SCHEMA** privilege on the parent schema.<br /><br />Currently only the name, the owner or the comment of the registered model can be updated.<br /><br />:param full_name: str<br />  The three-level (fully qualified) name of the registered model<br />:param aliases: List[:class:`RegisteredModelAlias`] (optional)<br />  List of aliases associated with the registered model<br />:param browse_only: bool (optional)<br />  Indicates whether the principal is limited to retrieving metadata for the associated object through<br />  the BROWSE privilege when include_browse is enabled in the request.<br />:param catalog_name: str (optional)<br />  The name of the catalog where the schema and the registered model reside<br />:param comment: str (optional)<br />  The comment attached to the registered model<br />:param created_at: int (optional)<br />  Creation timestamp of the registered model in milliseconds since the Unix epoch<br />:param created_by: str (optional)<br />  The identifier of the user who created the registered model<br />:param metastore_id: str (optional)<br />  The unique identifier of the metastore<br />:param name: str (optional)<br />  The name of the registered model<br />:param new_name: str (optional)<br />  New name for the registered model.<br />:param owner: str (optional)<br />  The identifier of the user who owns the registered model<br />:param schema_name: str (optional)<br />  The name of the schema where the registered model resides<br />:param storage_location: str (optional)<br />  The storage location on the cloud under which model version data files are stored<br />:param updated_at: int (optional)<br />  Last-update timestamp of the registered model in milliseconds since the Unix epoch<br />:param updated_by: str (optional)<br />  The identifier of the user who updated the registered model last time<br /><br />:returns: :class:`RegisteredModelInfo`
+Updates the specified registered model.
 
 ```sql
 UPDATE databricks_workspace.catalog.registered_models
@@ -650,7 +650,7 @@ updated_by;
 >
 <TabItem value="set_alias">
 
-Set an alias on the specified registered model.<br /><br />The caller must be a metastore admin or an owner of the registered model. For the latter case, the<br />caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the<br />**USE_SCHEMA** privilege on the parent schema.<br /><br />:param full_name: str<br />  The three-level (fully qualified) name of the registered model<br />:param alias: str<br />  The name of the alias<br />:param version_num: int<br />  The version number of the model version to which the alias points<br /><br />:returns: :class:`RegisteredModelAlias`
+Set an alias on the specified registered model.
 
 ```sql
 REPLACE databricks_workspace.catalog.registered_models
@@ -684,7 +684,7 @@ version_num;
 >
 <TabItem value="delete_alias">
 
-Deletes a registered model alias.<br /><br />The caller must be a metastore admin or an owner of the registered model. For the latter case, the<br />caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the<br />**USE_SCHEMA** privilege on the parent schema.<br /><br />:param full_name: str<br />  The three-level (fully qualified) name of the registered model<br />:param alias: str<br />  The name of the alias
+Deletes a registered model alias.
 
 ```sql
 DELETE FROM databricks_workspace.catalog.registered_models
@@ -696,7 +696,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 </TabItem>
 <TabItem value="delete">
 
-Deletes a registered model and all its model versions from the specified parent catalog and schema.<br /><br />The caller must be a metastore admin or an owner of the registered model. For the latter case, the<br />caller must also be the owner or have the **USE_CATALOG** privilege on the parent catalog and the<br />**USE_SCHEMA** privilege on the parent schema.<br /><br />:param full_name: str<br />  The three-level (fully qualified) name of the registered model
+Deletes a registered model and all its model versions from the specified parent catalog and schema.
 
 ```sql
 DELETE FROM databricks_workspace.catalog.registered_models

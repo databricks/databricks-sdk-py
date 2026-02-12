@@ -105,28 +105,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets a list of visualizations on a query.<br /><br />:param id: str<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`Visualization`</td>
+    <td>Gets a list of visualizations on a query.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Adds a visualization to a query.<br /><br />:param visualization: :class:`CreateVisualizationRequestVisualization` (optional)<br /><br />:returns: :class:`Visualization`</td>
+    <td>Adds a visualization to a query.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__update_mask"><code>data__update_mask</code></a></td>
     <td></td>
-    <td>Updates a visualization.<br /><br />:param id: str<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br />:param visualization: :class:`UpdateVisualizationRequestVisualization` (optional)<br /><br />:returns: :class:`Visualization`</td>
+    <td>Updates a visualization.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Removes a visualization.<br /><br />:param id: str</td>
+    <td>Removes a visualization.</td>
 </tr>
 </tbody>
 </table>
@@ -177,7 +177,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Gets a list of visualizations on a query.<br /><br />:param id: str<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`Visualization`
+Gets a list of visualizations on a query.
 
 ```sql
 SELECT
@@ -211,7 +211,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Adds a visualization to a query.<br /><br />:param visualization: :class:`CreateVisualizationRequestVisualization` (optional)<br /><br />:returns: :class:`Visualization`
+Adds a visualization to a query.
 
 ```sql
 INSERT INTO databricks_workspace.sql.query_visualizations (
@@ -261,7 +261,7 @@ update_time
 >
 <TabItem value="update">
 
-Updates a visualization.<br /><br />:param id: str<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br />:param visualization: :class:`UpdateVisualizationRequestVisualization` (optional)<br /><br />:returns: :class:`Visualization`
+Updates a visualization.
 
 ```sql
 UPDATE databricks_workspace.sql.query_visualizations
@@ -296,7 +296,7 @@ update_time;
 >
 <TabItem value="delete">
 
-Removes a visualization.<br /><br />:param id: str
+Removes a visualization.
 
 ```sql
 DELETE FROM databricks_workspace.sql.query_visualizations

@@ -50,7 +50,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "access_restricted",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "comment",
@@ -80,7 +80,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       }
     ]
   },
@@ -230,7 +230,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "access_restricted",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "comment",
@@ -260,7 +260,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       }
     ]
   },
@@ -421,42 +421,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get the details of a clean room given its name.<br /><br />:param name: str<br /><br />:returns: :class:`CleanRoom`</td>
+    <td>Get the details of a clean room given its name.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are<br />returned.<br /><br />:param page_size: int (optional)<br />  Maximum number of clean rooms to return (i.e., the page length). Defaults to 100.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`CleanRoom`</td>
+    <td>Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__clean_room"><code>data__clean_room</code></a></td>
     <td></td>
-    <td>Create a new clean room with the specified collaborators. This method is asynchronous; the returned<br />name field inside the clean_room field can be used to poll the clean room status, using the<br />:method:cleanrooms/get method. When this method returns, the clean room will be in a PROVISIONING<br />state, with only name, owner, comment, created_at and status populated. The clean room will be usable<br />once it enters an ACTIVE state.<br /><br />The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on the metastore.<br /><br />:param clean_room: :class:`CleanRoom`<br /><br />:returns:<br />  Long-running operation waiter for :class:`CleanRoom`.<br />  See :method:wait_get_clean_room_active for more details.</td>
+    <td>Create a new clean room with the specified collaborators. This method is asynchronous; the returned</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**<br />privilege, or be metastore admin.<br /><br />When the caller is a metastore admin, only the __owner__ field can be updated.<br /><br />:param name: str<br />  Name of the clean room.<br />:param clean_room: :class:`CleanRoom` (optional)<br /><br />:returns: :class:`CleanRoom`</td>
+    <td>Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other<br />collaborators have not deleted the clean room, they will still have the clean room in their metastore,<br />but it will be in a DELETED state and no operations other than deletion can be performed on it.<br /><br />:param name: str<br />  Name of the clean room.</td>
+    <td>Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other</td>
 </tr>
 <tr>
     <td><a href="#create_output_catalog"><CopyableCode code="create_output_catalog" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-output_catalog"><code>output_catalog</code></a></td>
     <td></td>
-    <td>Create the output catalog of the clean room.<br /><br />:param clean_room_name: str<br />  Name of the clean room.<br />:param output_catalog: :class:`CleanRoomOutputCatalog`<br /><br />:returns: :class:`CreateCleanRoomOutputCatalogResponse`</td>
+    <td>Create the output catalog of the clean room.</td>
 </tr>
 </tbody>
 </table>
@@ -513,7 +513,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get the details of a clean room given its name.<br /><br />:param name: str<br /><br />:returns: :class:`CleanRoom`
+Get the details of a clean room given its name.
 
 ```sql
 SELECT
@@ -535,7 +535,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are<br />returned.<br /><br />:param page_size: int (optional)<br />  Maximum number of clean rooms to return (i.e., the page length). Defaults to 100.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`CleanRoom`
+Get a list of all clean rooms of the metastore. Only clean rooms the caller has access to are
 
 ```sql
 SELECT
@@ -570,7 +570,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a new clean room with the specified collaborators. This method is asynchronous; the returned<br />name field inside the clean_room field can be used to poll the clean room status, using the<br />:method:cleanrooms/get method. When this method returns, the clean room will be in a PROVISIONING<br />state, with only name, owner, comment, created_at and status populated. The clean room will be usable<br />once it enters an ACTIVE state.<br /><br />The caller must be a metastore admin or have the **CREATE_CLEAN_ROOM** privilege on the metastore.<br /><br />:param clean_room: :class:`CleanRoom`<br /><br />:returns:<br />  Long-running operation waiter for :class:`CleanRoom`.<br />  See :method:wait_get_clean_room_active for more details.
+Create a new clean room with the specified collaborators. This method is asynchronous; the returned
 
 ```sql
 INSERT INTO databricks_workspace.cleanrooms.clean_rooms (
@@ -622,7 +622,7 @@ updated_at
 >
 <TabItem value="update">
 
-Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**<br />privilege, or be metastore admin.<br /><br />When the caller is a metastore admin, only the __owner__ field can be updated.<br /><br />:param name: str<br />  Name of the clean room.<br />:param clean_room: :class:`CleanRoom` (optional)<br /><br />:returns: :class:`CleanRoom`
+Update a clean room. The caller must be the owner of the clean room, have **MODIFY_CLEAN_ROOM**
 
 ```sql
 UPDATE databricks_workspace.cleanrooms.clean_rooms
@@ -657,7 +657,7 @@ updated_at;
 >
 <TabItem value="delete">
 
-Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other<br />collaborators have not deleted the clean room, they will still have the clean room in their metastore,<br />but it will be in a DELETED state and no operations other than deletion can be performed on it.<br /><br />:param name: str<br />  Name of the clean room.
+Delete a clean room. After deletion, the clean room will be removed from the metastore. If the other
 
 ```sql
 DELETE FROM databricks_workspace.cleanrooms.clean_rooms
@@ -679,7 +679,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="create_output_catalog">
 
-Create the output catalog of the clean room.<br /><br />:param clean_room_name: str<br />  Name of the clean room.<br />:param output_catalog: :class:`CleanRoomOutputCatalog`<br /><br />:returns: :class:`CreateCleanRoomOutputCatalogResponse`
+Create the output catalog of the clean room.
 
 ```sql
 EXEC databricks_workspace.cleanrooms.clean_rooms.create_output_catalog 

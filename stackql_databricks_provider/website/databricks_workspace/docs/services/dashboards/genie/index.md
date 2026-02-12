@@ -133,35 +133,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_serialized_space"><code>include_serialized_space</code></a></td>
-    <td>Get details of a Genie Space.<br /><br />:param space_id: str<br />  The ID associated with the Genie space<br />:param include_serialized_space: bool (optional)<br />  Whether to include the serialized space export in the response. Requires at least CAN EDIT<br />  permission on the space.<br /><br />:returns: :class:`GenieSpace`</td>
+    <td>Get details of a Genie Space.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Get list of Genie Spaces.<br /><br />:param page_size: int (optional)<br />  Maximum number of spaces to return per page<br />:param page_token: str (optional)<br />  Pagination token for getting the next page of results<br /><br />:returns: :class:`GenieListSpacesResponse`</td>
+    <td>Get list of Genie Spaces.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__warehouse_id"><code>data__warehouse_id</code></a>, <a href="#parameter-data__serialized_space"><code>data__serialized_space</code></a></td>
     <td></td>
-    <td>Creates a Genie space from a serialized payload.<br /><br />:param warehouse_id: str<br />  Warehouse to associate with the new space<br />:param serialized_space: str<br />  The contents of the Genie Space in serialized string form. Use the [Get Genie<br />  Space](:method:genie/getspace) API to retrieve an example response, which includes the<br />  `serialized_space` field. This field provides the structure of the JSON string that represents the<br />  space's layout and components.<br />:param description: str (optional)<br />  Optional description<br />:param parent_path: str (optional)<br />  Parent folder path where the space will be registered<br />:param title: str (optional)<br />  Optional title override<br /><br />:returns: :class:`GenieSpace`</td>
+    <td>Creates a Genie space from a serialized payload.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates a Genie space with a serialized payload.<br /><br />:param space_id: str<br />  Genie space ID<br />:param description: str (optional)<br />  Optional description<br />:param serialized_space: str (optional)<br />  The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie<br />  Space](:method:genie/getspace) API to retrieve an example response, which includes the<br />  `serialized_space` field. This field provides the structure of the JSON string that represents the<br />  space's layout and components.<br />:param title: str (optional)<br />  Optional title override<br />:param warehouse_id: str (optional)<br />  Optional warehouse override<br /><br />:returns: :class:`GenieSpace`</td>
+    <td>Updates a Genie space with a serialized payload.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Move a Genie Space to the trash.<br /><br />:param space_id: str<br />  The ID associated with the Genie space to be sent to the trash.</td>
+    <td>Move a Genie Space to the trash.</td>
 </tr>
 </tbody>
 </table>
@@ -218,7 +218,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get details of a Genie Space.<br /><br />:param space_id: str<br />  The ID associated with the Genie space<br />:param include_serialized_space: bool (optional)<br />  Whether to include the serialized space export in the response. Requires at least CAN EDIT<br />  permission on the space.<br /><br />:returns: :class:`GenieSpace`
+Get details of a Genie Space.
 
 ```sql
 SELECT
@@ -236,7 +236,7 @@ AND include_serialized_space = '{{ include_serialized_space }}'
 </TabItem>
 <TabItem value="list">
 
-Get list of Genie Spaces.<br /><br />:param page_size: int (optional)<br />  Maximum number of spaces to return per page<br />:param page_token: str (optional)<br />  Pagination token for getting the next page of results<br /><br />:returns: :class:`GenieListSpacesResponse`
+Get list of Genie Spaces.
 
 ```sql
 SELECT
@@ -263,7 +263,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a Genie space from a serialized payload.<br /><br />:param warehouse_id: str<br />  Warehouse to associate with the new space<br />:param serialized_space: str<br />  The contents of the Genie Space in serialized string form. Use the [Get Genie<br />  Space](:method:genie/getspace) API to retrieve an example response, which includes the<br />  `serialized_space` field. This field provides the structure of the JSON string that represents the<br />  space's layout and components.<br />:param description: str (optional)<br />  Optional description<br />:param parent_path: str (optional)<br />  Parent folder path where the space will be registered<br />:param title: str (optional)<br />  Optional title override<br /><br />:returns: :class:`GenieSpace`
+Creates a Genie space from a serialized payload.
 
 ```sql
 INSERT INTO databricks_workspace.dashboards.genie (
@@ -334,7 +334,7 @@ title
 >
 <TabItem value="update">
 
-Updates a Genie space with a serialized payload.<br /><br />:param space_id: str<br />  Genie space ID<br />:param description: str (optional)<br />  Optional description<br />:param serialized_space: str (optional)<br />  The contents of the Genie Space in serialized string form (full replacement). Use the [Get Genie<br />  Space](:method:genie/getspace) API to retrieve an example response, which includes the<br />  `serialized_space` field. This field provides the structure of the JSON string that represents the<br />  space's layout and components.<br />:param title: str (optional)<br />  Optional title override<br />:param warehouse_id: str (optional)<br />  Optional warehouse override<br /><br />:returns: :class:`GenieSpace`
+Updates a Genie space with a serialized payload.
 
 ```sql
 UPDATE databricks_workspace.dashboards.genie
@@ -367,7 +367,7 @@ title;
 >
 <TabItem value="delete">
 
-Move a Genie Space to the trash.<br /><br />:param space_id: str<br />  The ID associated with the Genie space to be sent to the trash.
+Move a Genie Space to the trash.
 
 ```sql
 DELETE FROM databricks_workspace.dashboards.genie

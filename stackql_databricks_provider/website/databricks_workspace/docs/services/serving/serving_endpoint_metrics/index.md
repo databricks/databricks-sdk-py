@@ -43,7 +43,7 @@ The following fields are returned by `SELECT` queries:
 <SchemaTable fields={[
   {
     "name": "contents",
-    "type": "string (binary)",
+    "type": "string",
     "description": ""
   }
 ]} />
@@ -70,7 +70,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Retrieves the metrics associated with the provided serving endpoint in either Prometheus or<br />OpenMetrics exposition format.<br /><br />:param name: str<br />  The name of the serving endpoint to retrieve metrics for. This field is required.<br /><br />:returns: :class:`ExportMetricsResponse`</td>
+    <td>Retrieves the metrics associated with the provided serving endpoint in either Prometheus or</td>
 </tr>
 </tbody>
 </table>
@@ -111,7 +111,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Retrieves the metrics associated with the provided serving endpoint in either Prometheus or<br />OpenMetrics exposition format.<br /><br />:param name: str<br />  The name of the serving endpoint to retrieve metrics for. This field is required.<br /><br />:returns: :class:`ExportMetricsResponse`
+Retrieves the metrics associated with the provided serving endpoint in either Prometheus or
 
 ```sql
 SELECT

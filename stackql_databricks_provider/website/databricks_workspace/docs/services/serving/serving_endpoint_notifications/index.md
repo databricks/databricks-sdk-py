@@ -55,7 +55,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the email and webhook notification settings for an endpoint.<br /><br />:param name: str<br />  The name of the serving endpoint whose notifications are being updated. This field is required.<br />:param email_notifications: :class:`EmailNotifications` (optional)<br />  The email notification settings to update. Specify email addresses to notify when endpoint state<br />  changes occur.<br /><br />:returns: :class:`UpdateInferenceEndpointNotificationsResponse`</td>
+    <td>Updates the email and webhook notification settings for an endpoint.</td>
 </tr>
 </tbody>
 </table>
@@ -96,7 +96,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="update">
 
-Updates the email and webhook notification settings for an endpoint.<br /><br />:param name: str<br />  The name of the serving endpoint whose notifications are being updated. This field is required.<br />:param email_notifications: :class:`EmailNotifications` (optional)<br />  The email notification settings to update. Specify email addresses to notify when endpoint state<br />  changes occur.<br /><br />:returns: :class:`UpdateInferenceEndpointNotificationsResponse`
+Updates the email and webhook notification settings for an endpoint.
 
 ```sql
 UPDATE databricks_workspace.serving.serving_endpoint_notifications

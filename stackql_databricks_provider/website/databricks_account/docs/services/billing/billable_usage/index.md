@@ -43,7 +43,7 @@ The following fields are returned by `SELECT` queries:
 <SchemaTable fields={[
   {
     "name": "contents",
-    "type": "string (binary)",
+    "type": "string",
     "description": ""
   }
 ]} />
@@ -116,7 +116,8 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 <Tabs
     defaultValue="billable_usage_download"
     values={[
-        { label: 'billable_usage_download', value: 'billable_usage_download' }
+        { label: 'billable_usage_download', value: 'billable_usage_download' },
+        { label: 'Export to CSV', value: 'export_to_csv' }
     ]}
 >
 <TabItem value="billable_usage_download">
@@ -133,5 +134,25 @@ AND end_month = '{{ end_month }}' -- required
 AND personal_data = '{{ personal_data }}'
 ;
 ```
+</TabItem>
+
+<TabItem value="export_to_csv">
+
+Export billable usage data to a local CSV file using the StackQL CLI:
+
+```bash
+./stackql exec \
+  -o text \
+  --hideheaders \
+  -f billable_usage.csv \
+  "SELECT contents 
+  FROM databricks_account.billing.billable_usage 
+  WHERE start_month = '2025-12' 
+  AND end_month = '2026-01' 
+  AND account_id = 'your-account-id'"
+```
+
+This downloads the usage data in CSV format directly from the Databricks API.
+
 </TabItem>
 </Tabs>

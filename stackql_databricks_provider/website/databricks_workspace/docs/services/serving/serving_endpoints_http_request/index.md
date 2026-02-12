@@ -1,10 +1,10 @@
 ---
-title: cluster_policy_permission_levels
+title: serving_endpoints_http_request
 hide_title: false
 hide_table_of_contents: false
 keywords:
-  - cluster_policy_permission_levels
-  - compute
+  - serving_endpoints_http_request
+  - serving
   - databricks_workspace
   - infrastructure-as-code
   - configuration-as-data
@@ -19,13 +19,13 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
 
-Creates, updates, deletes, gets or lists a <code>cluster_policy_permission_levels</code> resource.
+Creates, updates, deletes, gets or lists a <code>serving_endpoints_http_request</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>cluster_policy_permission_levels</code></td></tr>
+<tr><td><b>Name</b></td><td><code>serving_endpoints_http_request</code></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
-<tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.cluster_policy_permission_levels" /></td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.serving.serving_endpoints_http_request" /></td></tr>
 </tbody></table>
 
 ## Fields
@@ -33,30 +33,18 @@ Creates, updates, deletes, gets or lists a <code>cluster_policy_permission_level
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="serving_endpoints_http_request"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'serving_endpoints_http_request', value: 'serving_endpoints_http_request' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="serving_endpoints_http_request">
 
 <SchemaTable fields={[
   {
-    "name": "permission_levels",
-    "type": "array",
-    "description": "",
-    "children": [
-      {
-        "name": "description",
-        "type": "string",
-        "description": ""
-      },
-      {
-        "name": "permission_level",
-        "type": "string",
-        "description": "Permission level"
-      }
-    ]
+    "name": "contents",
+    "type": "string",
+    "description": ""
   }
 ]} />
 </TabItem>
@@ -78,11 +66,11 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#serving_endpoints_http_request"><CopyableCode code="serving_endpoints_http_request" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-cluster_policy_id"><code>cluster_policy_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the permission levels that a user can have on an object.</td>
+    <td>Make external services call using the credentials stored in UC Connection.</td>
 </tr>
 </tbody>
 </table>
@@ -100,11 +88,6 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
-<tr id="parameter-cluster_policy_id">
-    <td><CopyableCode code="cluster_policy_id" /></td>
-    <td><code>string</code></td>
-    <td>The cluster policy for which to get or manage permissions.</td>
-</tr>
 <tr id="parameter-deployment_name">
     <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
@@ -116,21 +99,20 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="serving_endpoints_http_request"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'serving_endpoints_http_request', value: 'serving_endpoints_http_request' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="serving_endpoints_http_request">
 
-Gets the permission levels that a user can have on an object.
+Make external services call using the credentials stored in UC Connection.
 
 ```sql
 SELECT
-permission_levels
-FROM databricks_workspace.compute.cluster_policy_permission_levels
-WHERE cluster_policy_id = '{{ cluster_policy_id }}' -- required
-AND deployment_name = '{{ deployment_name }}' -- required
+contents
+FROM databricks_workspace.serving.serving_endpoints_http_request
+WHERE deployment_name = '{{ deployment_name }}' -- required
 ;
 ```
 </TabItem>

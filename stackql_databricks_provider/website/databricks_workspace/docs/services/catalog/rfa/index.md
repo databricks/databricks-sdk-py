@@ -146,21 +146,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets an array of access request destinations for the specified securable. Any caller can see URL<br />destinations or the destinations on the metastore. Otherwise, only those with **BROWSE** permissions<br />on the securable can see destinations.<br /><br />The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",<br />"connection", "credential", "function", "registered_model", and "volume".<br /><br />:param securable_type: str<br />  The type of the securable.<br />:param full_name: str<br />  The full name of the securable.<br /><br />:returns: :class:`AccessRequestDestinations`</td>
+    <td>Gets an array of access request destinations for the specified securable. Any caller can see URL</td>
 </tr>
 <tr>
     <td><a href="#batch_create"><CopyableCode code="batch_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates access requests for Unity Catalog permissions for a specified principal on a securable object.<br />This Batch API can take in multiple principals, securable objects, and permissions as the input and<br />returns the access request destinations for each. Principals must be unique across the API call.<br /><br />The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",<br />"connection", "credential", "function", "registered_model", and "volume".<br /><br />:param requests: List[:class:`CreateAccessRequest`] (optional)<br />  A list of individual access requests, where each request corresponds to a set of permissions being<br />  requested on a list of securables for a specified principal.<br /><br />  At most 30 requests per API call.<br /><br />:returns: :class:`BatchCreateAccessRequestsResponse`</td>
+    <td>Creates access requests for Unity Catalog permissions for a specified principal on a securable object.</td>
 </tr>
 <tr>
     <td><a href="#update_destinations"><CopyableCode code="update_destinations" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__access_request_destinations"><code>data__access_request_destinations</code></a></td>
     <td></td>
-    <td>Updates the access request destinations for the given securable. The caller must be a metastore admin,<br />the owner of the securable, or a user that has the **MANAGE** privilege on the securable in order to<br />assign destinations. Destinations cannot be updated for securables underneath schemas (tables,<br />volumes, functions, and models). For these securable types, destinations are inherited from the parent<br />securable. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft Teams, and<br />Generic Webhook destinations) can be assigned to a securable. If a URL destination is assigned, no<br />other destinations can be set.<br /><br />The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",<br />"connection", "credential", "function", "registered_model", and "volume".<br /><br />:param access_request_destinations: :class:`AccessRequestDestinations`<br />  The access request destinations to assign to the securable. For each destination, a<br />  **destination_id** and **destination_type** must be defined.<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`AccessRequestDestinations`</td>
+    <td>Updates the access request destinations for the given securable. The caller must be a metastore admin,</td>
 </tr>
 </tbody>
 </table>
@@ -211,7 +211,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_destinations">
 
-Gets an array of access request destinations for the specified securable. Any caller can see URL<br />destinations or the destinations on the metastore. Otherwise, only those with **BROWSE** permissions<br />on the securable can see destinations.<br /><br />The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",<br />"connection", "credential", "function", "registered_model", and "volume".<br /><br />:param securable_type: str<br />  The type of the securable.<br />:param full_name: str<br />  The full name of the securable.<br /><br />:returns: :class:`AccessRequestDestinations`
+Gets an array of access request destinations for the specified securable. Any caller can see URL
 
 ```sql
 SELECT
@@ -242,7 +242,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="batch_create">
 
-Creates access requests for Unity Catalog permissions for a specified principal on a securable object.<br />This Batch API can take in multiple principals, securable objects, and permissions as the input and<br />returns the access request destinations for each. Principals must be unique across the API call.<br /><br />The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",<br />"connection", "credential", "function", "registered_model", and "volume".<br /><br />:param requests: List[:class:`CreateAccessRequest`] (optional)<br />  A list of individual access requests, where each request corresponds to a set of permissions being<br />  requested on a list of securables for a specified principal.<br /><br />  At most 30 requests per API call.<br /><br />:returns: :class:`BatchCreateAccessRequestsResponse`
+Creates access requests for Unity Catalog permissions for a specified principal on a securable object.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.rfa (
@@ -285,7 +285,7 @@ responses
 >
 <TabItem value="update_destinations">
 
-Updates the access request destinations for the given securable. The caller must be a metastore admin,<br />the owner of the securable, or a user that has the **MANAGE** privilege on the securable in order to<br />assign destinations. Destinations cannot be updated for securables underneath schemas (tables,<br />volumes, functions, and models). For these securable types, destinations are inherited from the parent<br />securable. A maximum of 5 emails and 5 external notification destinations (Slack, Microsoft Teams, and<br />Generic Webhook destinations) can be assigned to a securable. If a URL destination is assigned, no<br />other destinations can be set.<br /><br />The supported securable types are: "metastore", "catalog", "schema", "table", "external_location",<br />"connection", "credential", "function", "registered_model", and "volume".<br /><br />:param access_request_destinations: :class:`AccessRequestDestinations`<br />  The access request destinations to assign to the securable. For each destination, a<br />  **destination_id** and **destination_type** must be defined.<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`AccessRequestDestinations`
+Updates the access request destinations for the given securable. The caller must be a metastore admin,
 
 ```sql
 UPDATE databricks_workspace.catalog.rfa

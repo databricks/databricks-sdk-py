@@ -172,12 +172,12 @@ The following fields are returned by `SELECT` queries:
             "description": "Custom description of the widget"
           },
           {
-            "name": "is_hidden",
+            "name": "isHidden",
             "type": "boolean",
             "description": "Whether this widget is hidden on the dashboard."
           },
           {
-            "name": "parameter_mappings",
+            "name": "parameterMappings",
             "type": "object",
             "description": "How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does not recommend modifying this definition in JSON."
           },
@@ -187,7 +187,7 @@ The following fields are returned by `SELECT` queries:
             "description": "Coordinates of this widget on a dashboard. This portion of the API changes frequently and is unsupported.",
             "children": [
               {
-                "name": "auto_height",
+                "name": "autoHeight",
                 "type": "boolean",
                 "description": "reserved for internal use"
               },
@@ -202,12 +202,12 @@ The following fields are returned by `SELECT` queries:
                 "description": "row in the dashboard grid. Values start with 0"
               },
               {
-                "name": "size_x",
+                "name": "sizeX",
                 "type": "integer",
                 "description": "width of the widget measured in dashboard grid cells"
               },
               {
-                "name": "size_y",
+                "name": "sizeY",
                 "type": "integer",
                 "description": "height of the widget measured in dashboard grid cells"
               }
@@ -536,12 +536,12 @@ The following fields are returned by `SELECT` queries:
             "description": "Custom description of the widget"
           },
           {
-            "name": "is_hidden",
+            "name": "isHidden",
             "type": "boolean",
             "description": "Whether this widget is hidden on the dashboard."
           },
           {
-            "name": "parameter_mappings",
+            "name": "parameterMappings",
             "type": "object",
             "description": "How parameters used by the visualization in this widget relate to other widgets on the dashboard. Databricks does not recommend modifying this definition in JSON."
           },
@@ -551,7 +551,7 @@ The following fields are returned by `SELECT` queries:
             "description": "Coordinates of this widget on a dashboard. This portion of the API changes frequently and is unsupported.",
             "children": [
               {
-                "name": "auto_height",
+                "name": "autoHeight",
                 "type": "boolean",
                 "description": "reserved for internal use"
               },
@@ -566,12 +566,12 @@ The following fields are returned by `SELECT` queries:
                 "description": "row in the dashboard grid. Values start with 0"
               },
               {
-                "name": "size_x",
+                "name": "sizeX",
                 "type": "integer",
                 "description": "width of the widget measured in dashboard grid cells"
               },
               {
-                "name": "size_y",
+                "name": "sizeY",
                 "type": "integer",
                 "description": "height of the widget measured in dashboard grid cells"
               }
@@ -789,35 +789,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Returns a JSON representation of a dashboard object, including its visualization and query objects.<br /><br />:param dashboard_id: str<br /><br />:returns: :class:`Dashboard`</td>
+    <td>Returns a JSON representation of a dashboard object, including its visualization and query objects.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-order"><code>order</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-q"><code>q</code></a></td>
-    <td>Fetch a paginated list of dashboard objects.<br /><br />**Warning**: Calling this API concurrently 10 or more times could result in throttling, service<br />degradation, or a temporary ban.<br /><br />:param order: :class:`ListOrder` (optional)<br />  Name of dashboard attribute to order by.<br />:param page: int (optional)<br />  Page number to retrieve.<br />:param page_size: int (optional)<br />  Number of dashboards to return per page.<br />:param q: str (optional)<br />  Full text search term.<br /><br />:returns: Iterator over :class:`Dashboard`</td>
+    <td>Fetch a paginated list of dashboard objects.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Modify this dashboard definition. This operation only affects attributes of the dashboard object. It<br />does not add, modify, or remove widgets.<br /><br />**Note**: You cannot undo this operation.<br /><br />:param dashboard_id: str<br />:param name: str (optional)<br />  The title of this dashboard that appears in list views and at the top of the dashboard page.<br />:param run_as_role: :class:`RunAsRole` (optional)<br />  Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as<br />  viewer" behavior) or `"owner"` (signifying "run as owner" behavior)<br />:param tags: List[str] (optional)<br /><br />:returns: :class:`Dashboard`</td>
+    <td>Modify this dashboard definition. This operation only affects attributes of the dashboard object. It</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot<br />be shared.<br /><br />:param dashboard_id: str</td>
+    <td>Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot</td>
 </tr>
 <tr>
     <td><a href="#restore"><CopyableCode code="restore" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>A restored dashboard appears in list views and searches and can be shared.<br /><br />:param dashboard_id: str</td>
+    <td>A restored dashboard appears in list views and searches and can be shared.</td>
 </tr>
 </tbody>
 </table>
@@ -879,7 +879,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Returns a JSON representation of a dashboard object, including its visualization and query objects.<br /><br />:param dashboard_id: str<br /><br />:returns: :class:`Dashboard`
+Returns a JSON representation of a dashboard object, including its visualization and query objects.
 
 ```sql
 SELECT
@@ -908,7 +908,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Fetch a paginated list of dashboard objects.<br /><br />**Warning**: Calling this API concurrently 10 or more times could result in throttling, service<br />degradation, or a temporary ban.<br /><br />:param order: :class:`ListOrder` (optional)<br />  Name of dashboard attribute to order by.<br />:param page: int (optional)<br />  Page number to retrieve.<br />:param page_size: int (optional)<br />  Number of dashboards to return per page.<br />:param q: str (optional)<br />  Full text search term.<br /><br />:returns: Iterator over :class:`Dashboard`
+Fetch a paginated list of dashboard objects.
 
 ```sql
 SELECT
@@ -952,7 +952,7 @@ AND q = '{{ q }}'
 >
 <TabItem value="update">
 
-Modify this dashboard definition. This operation only affects attributes of the dashboard object. It<br />does not add, modify, or remove widgets.<br /><br />**Note**: You cannot undo this operation.<br /><br />:param dashboard_id: str<br />:param name: str (optional)<br />  The title of this dashboard that appears in list views and at the top of the dashboard page.<br />:param run_as_role: :class:`RunAsRole` (optional)<br />  Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as<br />  viewer" behavior) or `"owner"` (signifying "run as owner" behavior)<br />:param tags: List[str] (optional)<br /><br />:returns: :class:`Dashboard`
+Modify this dashboard definition. This operation only affects attributes of the dashboard object. It
 
 ```sql
 INSERT INTO databricks_workspace.sql.dashboards (
@@ -1026,7 +1026,7 @@ widgets
 >
 <TabItem value="delete">
 
-Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot<br />be shared.<br /><br />:param dashboard_id: str
+Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
 
 ```sql
 DELETE FROM databricks_workspace.sql.dashboards
@@ -1048,7 +1048,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="restore">
 
-A restored dashboard appears in list views and searches and can be shared.<br /><br />:param dashboard_id: str
+A restored dashboard appears in list views and searches and can be shared.
 
 ```sql
 EXEC databricks_workspace.sql.dashboards.restore 

@@ -145,35 +145,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a single tag policy by its associated governed tag's key. For Terraform usage, see the [Tag<br />Policy Terraform documentation]. To list granted permissions for tag policies, use the [Account Access<br />Control Proxy API].<br /><br />[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy<br />[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policy<br /><br />:param tag_key: str<br /><br />:returns: :class:`TagPolicy`</td>
+    <td>Gets a single tag policy by its associated governed tag's key. For Terraform usage, see the [Tag</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Lists the tag policies for all governed tags in the account. For Terraform usage, see the [Tag Policy<br />Terraform documentation]. To list granted permissions for tag policies, use the [Account Access<br />Control Proxy API].<br /><br />[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy<br />[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policies<br /><br />:param page_size: int (optional)<br />  The maximum number of results to return in this request. Fewer results may be returned than<br />  requested. If unspecified or set to 0, this defaults to 1000. The maximum value is 1000; values<br />  above 1000 will be coerced down to 1000.<br />:param page_token: str (optional)<br />  An optional page token received from a previous list tag policies call.<br /><br />:returns: Iterator over :class:`TagPolicy`</td>
+    <td>Lists the tag policies for all governed tags in the account. For Terraform usage, see the [Tag Policy</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_policy"><code>data__tag_policy</code></a></td>
     <td></td>
-    <td>Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the [Tag<br />Policy Terraform documentation]. To manage permissions for tag policies, use the [Account Access<br />Control Proxy API].<br /><br />[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy<br />[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy<br /><br />:param tag_policy: :class:`TagPolicy`<br /><br />:returns: :class:`TagPolicy`</td>
+    <td>Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the [Tag</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_policy"><code>data__tag_policy</code></a></td>
     <td></td>
-    <td>Updates an existing tag policy for a single governed tag. For Terraform usage, see the [Tag Policy<br />Terraform documentation]. To manage permissions for tag policies, use the [Account Access Control<br />Proxy API].<br /><br />[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy<br />[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy<br /><br />:param tag_key: str<br />:param tag_policy: :class:`TagPolicy`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`TagPolicy`</td>
+    <td>Updates an existing tag policy for a single governed tag. For Terraform usage, see the [Tag Policy</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned. For<br />Terraform usage, see the [Tag Policy Terraform documentation].<br /><br />[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy<br /><br />:param tag_key: str</td>
+    <td>Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned. For</td>
 </tr>
 </tbody>
 </table>
@@ -230,7 +230,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a single tag policy by its associated governed tag's key. For Terraform usage, see the [Tag<br />Policy Terraform documentation]. To list granted permissions for tag policies, use the [Account Access<br />Control Proxy API].<br /><br />[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy<br />[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policy<br /><br />:param tag_key: str<br /><br />:returns: :class:`TagPolicy`
+Gets a single tag policy by its associated governed tag's key. For Terraform usage, see the [Tag
 
 ```sql
 SELECT
@@ -248,7 +248,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Lists the tag policies for all governed tags in the account. For Terraform usage, see the [Tag Policy<br />Terraform documentation]. To list granted permissions for tag policies, use the [Account Access<br />Control Proxy API].<br /><br />[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy<br />[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/data-sources/tag_policies<br /><br />:param page_size: int (optional)<br />  The maximum number of results to return in this request. Fewer results may be returned than<br />  requested. If unspecified or set to 0, this defaults to 1000. The maximum value is 1000; values<br />  above 1000 will be coerced down to 1000.<br />:param page_token: str (optional)<br />  An optional page token received from a previous list tag policies call.<br /><br />:returns: Iterator over :class:`TagPolicy`
+Lists the tag policies for all governed tags in the account. For Terraform usage, see the [Tag Policy
 
 ```sql
 SELECT
@@ -279,7 +279,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the [Tag<br />Policy Terraform documentation]. To manage permissions for tag policies, use the [Account Access<br />Control Proxy API].<br /><br />[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy<br />[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy<br /><br />:param tag_policy: :class:`TagPolicy`<br /><br />:returns: :class:`TagPolicy`
+Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the [Tag
 
 ```sql
 INSERT INTO databricks_workspace.tags.tag_policies (
@@ -327,7 +327,7 @@ values
 >
 <TabItem value="update">
 
-Updates an existing tag policy for a single governed tag. For Terraform usage, see the [Tag Policy<br />Terraform documentation]. To manage permissions for tag policies, use the [Account Access Control<br />Proxy API].<br /><br />[Account Access Control Proxy API]: https://docs.databricks.com/api/workspace/accountaccesscontrolproxy<br />[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy<br /><br />:param tag_key: str<br />:param tag_policy: :class:`TagPolicy`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`TagPolicy`
+Updates an existing tag policy for a single governed tag. For Terraform usage, see the [Tag Policy
 
 ```sql
 UPDATE databricks_workspace.tags.tag_policies
@@ -360,7 +360,7 @@ values;
 >
 <TabItem value="delete">
 
-Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned. For<br />Terraform usage, see the [Tag Policy Terraform documentation].<br /><br />[Tag Policy Terraform documentation]: https://registry.terraform.io/providers/databricks/databricks/latest/docs/resources/tag_policy<br /><br />:param tag_key: str
+Deletes a tag policy by its associated governed tag's key, leaving that tag key ungoverned. For
 
 ```sql
 DELETE FROM databricks_workspace.tags.tag_policies

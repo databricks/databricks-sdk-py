@@ -80,21 +80,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a Database Table.<br /><br />:param name: str<br /><br />:returns: :class:`DatabaseTable`</td>
+    <td>Get a Database Table.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__table"><code>data__table</code></a></td>
     <td></td>
-    <td>Create a Database Table. Useful for registering pre-existing PG tables in UC. See<br />CreateSyncedDatabaseTable for creating synced tables in PG from a source table in UC.<br /><br />:param table: :class:`DatabaseTable`<br /><br />:returns: :class:`DatabaseTable`</td>
+    <td>Create a Database Table. Useful for registering pre-existing PG tables in UC. See</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a Database Table.<br /><br />:param name: str</td>
+    <td>Delete a Database Table.</td>
 </tr>
 </tbody>
 </table>
@@ -135,7 +135,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a Database Table.<br /><br />:param name: str<br /><br />:returns: :class:`DatabaseTable`
+Get a Database Table.
 
 ```sql
 SELECT
@@ -162,7 +162,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Create a Database Table. Useful for registering pre-existing PG tables in UC. See<br />CreateSyncedDatabaseTable for creating synced tables in PG from a source table in UC.<br /><br />:param table: :class:`DatabaseTable`<br /><br />:returns: :class:`DatabaseTable`
+Create a Database Table. Useful for registering pre-existing PG tables in UC. See
 
 ```sql
 INSERT INTO databricks_workspace.database.database_tables (
@@ -207,7 +207,7 @@ logical_database_name
 >
 <TabItem value="delete">
 
-Delete a Database Table.<br /><br />:param name: str
+Delete a Database Table.
 
 ```sql
 DELETE FROM databricks_workspace.database.database_tables

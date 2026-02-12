@@ -82,7 +82,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-serving_endpoint_id"><code>serving_endpoint_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the permission levels that a user can have on an object.<br /><br />:param serving_endpoint_id: str<br />  The serving endpoint for which to get or manage permissions.<br /><br />:returns: :class:`GetServingEndpointPermissionLevelsResponse`</td>
+    <td>Gets the permission levels that a user can have on an object.</td>
 </tr>
 </tbody>
 </table>
@@ -123,7 +123,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the permission levels that a user can have on an object.<br /><br />:param serving_endpoint_id: str<br />  The serving endpoint for which to get or manage permissions.<br /><br />:returns: :class:`GetServingEndpointPermissionLevelsResponse`
+Gets the permission levels that a user can have on an object.
 
 ```sql
 SELECT

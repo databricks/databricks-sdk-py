@@ -111,7 +111,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get Feature Lineage.<br /><br />:param table_name: str<br />  The full name of the feature table in Unity Catalog.<br />:param feature_name: str<br />  The name of the feature.<br /><br />:returns: :class:`FeatureLineage`</td>
+    <td>Get Feature Lineage.</td>
 </tr>
 </tbody>
 </table>
@@ -157,7 +157,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get Feature Lineage.<br /><br />:param table_name: str<br />  The full name of the feature table in Unity Catalog.<br />:param feature_name: str<br />  The name of the feature.<br /><br />:returns: :class:`FeatureLineage`
+Get Feature Lineage.
 
 ```sql
 SELECT

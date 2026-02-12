@@ -115,7 +115,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Read workspace configuration for Redash-v2.<br /><br /><br />:returns: :class:`ClientConfig`</td>
+    <td>Read workspace configuration for Redash-v2.</td>
 </tr>
 </tbody>
 </table>
@@ -151,7 +151,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Read workspace configuration for Redash-v2.<br /><br /><br />:returns: :class:`ClientConfig`
+Read workspace configuration for Redash-v2.
 
 ```sql
 SELECT

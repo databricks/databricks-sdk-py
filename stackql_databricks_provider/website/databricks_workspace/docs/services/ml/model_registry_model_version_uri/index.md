@@ -70,7 +70,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a URI to download the model version.<br /><br />:param name: str<br />  Name of the registered model<br />:param version: str<br />  Model version number<br /><br />:returns: :class:`GetModelVersionDownloadUriResponse`</td>
+    <td>Gets a URI to download the model version.</td>
 </tr>
 </tbody>
 </table>
@@ -116,7 +116,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_download_uri">
 
-Gets a URI to download the model version.<br /><br />:param name: str<br />  Name of the registered model<br />:param version: str<br />  Model version number<br /><br />:returns: :class:`GetModelVersionDownloadUriResponse`
+Gets a URI to download the model version.
 
 ```sql
 SELECT

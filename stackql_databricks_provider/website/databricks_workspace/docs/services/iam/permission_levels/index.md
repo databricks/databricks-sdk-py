@@ -82,7 +82,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-request_object_type"><code>request_object_type</code></a>, <a href="#parameter-request_object_id"><code>request_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the permission levels that a user can have on an object.<br /><br />:param request_object_type: str<br />  The type of the request object. Can be one of the following: alerts, alertsv2, authorization,<br />  clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,<br />  instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or<br />  warehouses.<br />:param request_object_id: str<br /><br />:returns: :class:`GetPermissionLevelsResponse`</td>
+    <td>Gets the permission levels that a user can have on an object.</td>
 </tr>
 </tbody>
 </table>
@@ -128,7 +128,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the permission levels that a user can have on an object.<br /><br />:param request_object_type: str<br />  The type of the request object. Can be one of the following: alerts, alertsv2, authorization,<br />  clusters, cluster-policies, dashboards, dbsql-dashboards, directories, experiments, files, genie,<br />  instance-pools, jobs, notebooks, pipelines, queries, registered-models, repos, serving-endpoints, or<br />  warehouses.<br />:param request_object_id: str<br /><br />:returns: :class:`GetPermissionLevelsResponse`
+Gets the permission levels that a user can have on an object.
 
 ```sql
 SELECT

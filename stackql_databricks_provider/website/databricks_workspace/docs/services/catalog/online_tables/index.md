@@ -293,21 +293,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get information about an existing online table and its status.<br /><br />:param name: str<br />  Full three-part (catalog, schema, table) name of the table.<br /><br />:returns: :class:`OnlineTable`</td>
+    <td>Get information about an existing online table and its status.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__table"><code>data__table</code></a></td>
     <td></td>
-    <td>Create a new Online Table.<br /><br />:param table: :class:`OnlineTable`<br />  Specification of the online table to be created.<br /><br />:returns:<br />  Long-running operation waiter for :class:`OnlineTable`.<br />  See :method:wait_get_online_table_active for more details.</td>
+    <td>Create a new Online Table.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete an online table. Warning: This will delete all the data in the online table. If the source<br />Delta table was deleted or modified since this Online Table was created, this will lose the data<br />forever!<br /><br />:param name: str<br />  Full three-part (catalog, schema, table) name of the table.</td>
+    <td>Delete an online table. Warning: This will delete all the data in the online table. If the source</td>
 </tr>
 </tbody>
 </table>
@@ -348,7 +348,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get information about an existing online table and its status.<br /><br />:param name: str<br />  Full three-part (catalog, schema, table) name of the table.<br /><br />:returns: :class:`OnlineTable`
+Get information about an existing online table and its status.
 
 ```sql
 SELECT
@@ -377,7 +377,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Create a new Online Table.<br /><br />:param table: :class:`OnlineTable`<br />  Specification of the online table to be created.<br /><br />:returns:<br />  Long-running operation waiter for :class:`OnlineTable`.<br />  See :method:wait_get_online_table_active for more details.
+Create a new Online Table.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.online_tables (
@@ -424,7 +424,7 @@ unity_catalog_provisioning_state
 >
 <TabItem value="delete">
 
-Delete an online table. Warning: This will delete all the data in the online table. If the source<br />Delta table was deleted or modified since this Online Table was created, this will lose the data<br />forever!<br /><br />:param name: str<br />  Full three-part (catalog, schema, table) name of the table.
+Delete an online table. Warning: This will delete all the data in the online table. If the source
 
 ```sql
 DELETE FROM databricks_workspace.catalog.online_tables

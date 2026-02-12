@@ -43,7 +43,7 @@ The following fields are returned by `SELECT` queries:
 <SchemaTable fields={[
   {
     "name": "contents",
-    "type": "string (binary)",
+    "type": "string",
     "description": ""
   }
 ]} />
@@ -70,7 +70,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for<br />the supported paths, input and output format and datatypes.<br /><br />:param name: str<br />  The name of the serving endpoint that the served model belongs to. This field is required.<br /><br />:returns: :class:`GetOpenApiResponse`</td>
+    <td>Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for</td>
 </tr>
 </tbody>
 </table>
@@ -111,7 +111,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for<br />the supported paths, input and output format and datatypes.<br /><br />:param name: str<br />  The name of the serving endpoint that the served model belongs to. This field is required.<br /><br />:returns: :class:`GetOpenApiResponse`
+Get the query schema of the serving endpoint in OpenAPI format. The schema contains information for
 
 ```sql
 SELECT

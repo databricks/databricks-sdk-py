@@ -175,7 +175,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get the status of all libraries on all clusters. A status is returned for all libraries installed on<br />this cluster via the API or the libraries UI.<br /><br /><br />:returns: Iterator over :class:`ClusterLibraryStatuses`</td>
+    <td>Get the status of all libraries on all clusters. A status is returned for all libraries installed on</td>
 </tr>
 </tbody>
 </table>
@@ -211,7 +211,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Get the status of all libraries on all clusters. A status is returned for all libraries installed on<br />this cluster via the API or the libraries UI.<br /><br /><br />:returns: Iterator over :class:`ClusterLibraryStatuses`
+Get the status of all libraries on all clusters. A status is returned for all libraries installed on
 
 ```sql
 SELECT

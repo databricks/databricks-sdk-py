@@ -92,14 +92,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
-    <td>Gets the compliance security profile setting.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`ComplianceSecurityProfileSetting`</td>
+    <td>Gets the compliance security profile setting.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__allow_missing"><code>data__allow_missing</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a>, <a href="#parameter-data__field_mask"><code>data__field_mask</code></a></td>
     <td></td>
-    <td>Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided<br />in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`<br />request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and<br />the request must be retried by using the fresh etag in the 409 response.<br /><br />:param allow_missing: bool<br />  This should always be set to true for Settings API. Added for AIP compliance.<br />:param setting: :class:`ComplianceSecurityProfileSetting`<br />:param field_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`ComplianceSecurityProfileSetting`</td>
+    <td>Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided</td>
 </tr>
 </tbody>
 </table>
@@ -140,7 +140,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the compliance security profile setting.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`ComplianceSecurityProfileSetting`
+Gets the compliance security profile setting.
 
 ```sql
 SELECT
@@ -166,7 +166,7 @@ AND etag = '{{ etag }}'
 >
 <TabItem value="update">
 
-Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided<br />in `PATCH` requests (as part of the setting field). The etag can be retrieved by making a `GET`<br />request before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and<br />the request must be retried by using the fresh etag in the 409 response.<br /><br />:param allow_missing: bool<br />  This should always be set to true for Settings API. Added for AIP compliance.<br />:param setting: :class:`ComplianceSecurityProfileSetting`<br />:param field_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`ComplianceSecurityProfileSetting`
+Updates the compliance security profile setting for the workspace. A fresh etag needs to be provided
 
 ```sql
 UPDATE databricks_workspace.settings.compliance_security_profile

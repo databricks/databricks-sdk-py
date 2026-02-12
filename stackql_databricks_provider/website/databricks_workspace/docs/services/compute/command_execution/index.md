@@ -62,17 +62,17 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "file_name",
+        "name": "fileName",
         "type": "string",
         "description": "The image data in one of the following formats: 1. A Data URL with base64-encoded image data: `data:image/&#123;type&#125;;base64,&#123;base64-data&#125;`. Example: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...` 2. A FileStore file path for large images: `/plots/&#123;filename&#125;.png`. Example: `/plots/b6a7ad70-fb2c-4353-8aed-3f1e015174a4.png`"
       },
       {
-        "name": "file_names",
+        "name": "fileNames",
         "type": "array",
         "description": "List of image data for multiple images. Each element follows the same format as file_name."
       },
       {
-        "name": "is_json_schema",
+        "name": "isJsonSchema",
         "type": "boolean",
         "description": "true if a JSON schema is returned instead of a string representation of the Hive type."
       },
@@ -82,9 +82,9 @@ The following fields are returned by `SELECT` queries:
         "description": "internal field used by SDK"
       },
       {
-        "name": "result_type",
+        "name": "resultType",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       },
       {
         "name": "schema",
@@ -106,7 +106,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   }
 ]} />
 </TabItem>
@@ -132,35 +132,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-context_id"><code>context_id</code></a>, <a href="#parameter-command_id"><code>command_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the status of and, if available, the results from a currently executing command.<br /><br />The command ID is obtained from a prior successful call to __execute__.<br /><br />:param cluster_id: str<br />:param context_id: str<br />:param command_id: str<br /><br />:returns: :class:`CommandStatusResponse`</td>
+    <td>Gets the status of and, if available, the results from a currently executing command.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates an execution context for running cluster commands.<br /><br />If successful, this method returns the ID of the new execution context.<br /><br />:param cluster_id: str (optional)<br />  Running cluster id<br />:param language: :class:`Language` (optional)<br /><br />:returns:<br />  Long-running operation waiter for :class:`ContextStatusResponse`.<br />  See :method:wait_context_status_command_execution_running for more details.</td>
+    <td>Creates an execution context for running cluster commands.</td>
 </tr>
 <tr>
     <td><a href="#cancel"><CopyableCode code="cancel" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Cancels a currently running command within an execution context.<br /><br />The command ID is obtained from a prior successful call to __execute__.<br /><br />:param cluster_id: str (optional)<br />:param command_id: str (optional)<br />:param context_id: str (optional)<br /><br />:returns:<br />  Long-running operation waiter for :class:`CommandStatusResponse`.<br />  See :method:wait_command_status_command_execution_cancelled for more details.</td>
+    <td>Cancels a currently running command within an execution context.</td>
 </tr>
 <tr>
     <td><a href="#destroy"><CopyableCode code="destroy" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-context_id"><code>context_id</code></a></td>
     <td></td>
-    <td>Deletes an execution context.<br /><br />:param cluster_id: str<br />:param context_id: str</td>
+    <td>Deletes an execution context.</td>
 </tr>
 <tr>
     <td><a href="#execute"><CopyableCode code="execute" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Runs a cluster command in the given execution context, using the provided language.<br /><br />If successful, it returns an ID for tracking the status of the command's execution.<br /><br />:param cluster_id: str (optional)<br />  Running cluster id<br />:param command: str (optional)<br />  Executable code<br />:param context_id: str (optional)<br />  Running context id<br />:param language: :class:`Language` (optional)<br /><br />:returns:<br />  Long-running operation waiter for :class:`CommandStatusResponse`.<br />  See :method:wait_command_status_command_execution_finished_or_error for more details.</td>
+    <td>Runs a cluster command in the given execution context, using the provided language.</td>
 </tr>
 </tbody>
 </table>
@@ -211,7 +211,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="command_status">
 
-Gets the status of and, if available, the results from a currently executing command.<br /><br />The command ID is obtained from a prior successful call to __execute__.<br /><br />:param cluster_id: str<br />:param context_id: str<br />:param command_id: str<br /><br />:returns: :class:`CommandStatusResponse`
+Gets the status of and, if available, the results from a currently executing command.
 
 ```sql
 SELECT
@@ -240,7 +240,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Creates an execution context for running cluster commands.<br /><br />If successful, this method returns the ID of the new execution context.<br /><br />:param cluster_id: str (optional)<br />  Running cluster id<br />:param language: :class:`Language` (optional)<br /><br />:returns:<br />  Long-running operation waiter for :class:`ContextStatusResponse`.<br />  See :method:wait_context_status_command_execution_running for more details.
+Creates an execution context for running cluster commands.
 
 ```sql
 INSERT INTO databricks_workspace.compute.command_execution (
@@ -292,7 +292,7 @@ status
 >
 <TabItem value="cancel">
 
-Cancels a currently running command within an execution context.<br /><br />The command ID is obtained from a prior successful call to __execute__.<br /><br />:param cluster_id: str (optional)<br />:param command_id: str (optional)<br />:param context_id: str (optional)<br /><br />:returns:<br />  Long-running operation waiter for :class:`CommandStatusResponse`.<br />  See :method:wait_command_status_command_execution_cancelled for more details.
+Cancels a currently running command within an execution context.
 
 ```sql
 EXEC databricks_workspace.compute.command_execution.cancel 
@@ -308,7 +308,7 @@ EXEC databricks_workspace.compute.command_execution.cancel
 </TabItem>
 <TabItem value="destroy">
 
-Deletes an execution context.<br /><br />:param cluster_id: str<br />:param context_id: str
+Deletes an execution context.
 
 ```sql
 EXEC databricks_workspace.compute.command_execution.destroy 
@@ -323,7 +323,7 @@ EXEC databricks_workspace.compute.command_execution.destroy
 </TabItem>
 <TabItem value="execute">
 
-Runs a cluster command in the given execution context, using the provided language.<br /><br />If successful, it returns an ID for tracking the status of the command's execution.<br /><br />:param cluster_id: str (optional)<br />  Running cluster id<br />:param command: str (optional)<br />  Executable code<br />:param context_id: str (optional)<br />  Running context id<br />:param language: :class:`Language` (optional)<br /><br />:returns:<br />  Long-running operation waiter for :class:`CommandStatusResponse`.<br />  See :method:wait_command_status_command_execution_finished_or_error for more details.
+Runs a cluster command in the given execution context, using the provided language.
 
 ```sql
 EXEC databricks_workspace.compute.command_execution.execute 

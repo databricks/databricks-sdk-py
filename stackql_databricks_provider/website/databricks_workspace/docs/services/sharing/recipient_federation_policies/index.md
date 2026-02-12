@@ -175,28 +175,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks<br />to non-Databricks recipients. The caller must have read access to the recipient.<br /><br />:param recipient_name: str<br />  Name of the recipient. This is the name of the recipient for which the policy is being retrieved.<br />:param name: str<br />  Name of the policy. This is the name of the policy to be retrieved.<br /><br />:returns: :class:`FederationPolicy`</td>
+    <td>Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to<br />non-Databricks recipients. The caller must have read access to the recipient.<br /><br />:param recipient_name: str<br />  Name of the recipient. This is the name of the recipient for which the policies are being listed.<br />:param max_results: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`FederationPolicy`</td>
+    <td>Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__policy"><code>data__policy</code></a></td>
     <td></td>
-    <td>Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to<br />non-Databricks recipients. The caller must be the owner of the recipient. When sharing data from<br />Databricks to non-Databricks clients, you can define a federation policy to authenticate<br />non-Databricks recipients. The federation policy validates OIDC claims in federated tokens and is<br />defined at the recipient level. This enables secretless sharing clients to authenticate using OIDC<br />tokens.<br /><br />Supported scenarios for federation policies: 1. **User-to-Machine (U2M) flow** (e.g., PowerBI): A user<br />accesses a resource using their own identity. 2. **Machine-to-Machine (M2M) flow** (e.g., OAuth App):<br />An OAuth App accesses a resource using its own identity, typically for tasks like running nightly<br />jobs.<br /><br />For an overview, refer to: - Blog post: Overview of feature:<br />https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security<br /><br />For detailed configuration guides based on your use case: - Creating a Federation Policy as a<br />provider: https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed - Configuration and<br />usage for Machine-to-Machine (M2M) applications (e.g., Python Delta Sharing Client):<br />https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-m2m - Configuration and usage for<br />User-to-Machine (U2M) applications (e.g., PowerBI):<br />https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-u2m<br /><br />:param recipient_name: str<br />  Name of the recipient. This is the name of the recipient for which the policy is being created.<br />:param policy: :class:`FederationPolicy`<br />  Name of the policy. This is the name of the policy to be created.<br /><br />:returns: :class:`FederationPolicy`</td>
+    <td>Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes an existing federation policy for an OIDC_FEDERATION recipient. The caller must be the owner<br />of the recipient.<br /><br />:param recipient_name: str<br />  Name of the recipient. This is the name of the recipient for which the policy is being deleted.<br />:param name: str<br />  Name of the policy. This is the name of the policy to be deleted.</td>
+    <td>Deletes an existing federation policy for an OIDC_FEDERATION recipient. The caller must be the owner</td>
 </tr>
 </tbody>
 </table>
@@ -253,7 +253,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks<br />to non-Databricks recipients. The caller must have read access to the recipient.<br /><br />:param recipient_name: str<br />  Name of the recipient. This is the name of the recipient for which the policy is being retrieved.<br />:param name: str<br />  Name of the policy. This is the name of the policy to be retrieved.<br /><br />:returns: :class:`FederationPolicy`
+Reads an existing federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks
 
 ```sql
 SELECT
@@ -272,7 +272,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to<br />non-Databricks recipients. The caller must have read access to the recipient.<br /><br />:param recipient_name: str<br />  Name of the recipient. This is the name of the recipient for which the policies are being listed.<br />:param max_results: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`FederationPolicy`
+Lists federation policies for an OIDC_FEDERATION recipient for sharing data from Databricks to
 
 ```sql
 SELECT
@@ -304,7 +304,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to<br />non-Databricks recipients. The caller must be the owner of the recipient. When sharing data from<br />Databricks to non-Databricks clients, you can define a federation policy to authenticate<br />non-Databricks recipients. The federation policy validates OIDC claims in federated tokens and is<br />defined at the recipient level. This enables secretless sharing clients to authenticate using OIDC<br />tokens.<br /><br />Supported scenarios for federation policies: 1. **User-to-Machine (U2M) flow** (e.g., PowerBI): A user<br />accesses a resource using their own identity. 2. **Machine-to-Machine (M2M) flow** (e.g., OAuth App):<br />An OAuth App accesses a resource using its own identity, typically for tasks like running nightly<br />jobs.<br /><br />For an overview, refer to: - Blog post: Overview of feature:<br />https://www.databricks.com/blog/announcing-oidc-token-federation-enhanced-delta-sharing-security<br /><br />For detailed configuration guides based on your use case: - Creating a Federation Policy as a<br />provider: https://docs.databricks.com/en/delta-sharing/create-recipient-oidc-fed - Configuration and<br />usage for Machine-to-Machine (M2M) applications (e.g., Python Delta Sharing Client):<br />https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-m2m - Configuration and usage for<br />User-to-Machine (U2M) applications (e.g., PowerBI):<br />https://docs.databricks.com/aws/en/delta-sharing/sharing-over-oidc-u2m<br /><br />:param recipient_name: str<br />  Name of the recipient. This is the name of the recipient for which the policy is being created.<br />:param policy: :class:`FederationPolicy`<br />  Name of the policy. This is the name of the policy to be created.<br /><br />:returns: :class:`FederationPolicy`
+Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to
 
 ```sql
 INSERT INTO databricks_workspace.sharing.recipient_federation_policies (
@@ -357,7 +357,7 @@ update_time
 >
 <TabItem value="delete">
 
-Deletes an existing federation policy for an OIDC_FEDERATION recipient. The caller must be the owner<br />of the recipient.<br /><br />:param recipient_name: str<br />  Name of the recipient. This is the name of the recipient for which the policy is being deleted.<br />:param name: str<br />  Name of the policy. This is the name of the policy to be deleted.
+Deletes an existing federation policy for an OIDC_FEDERATION recipient. The caller must be the owner
 
 ```sql
 DELETE FROM databricks_workspace.sharing.recipient_federation_policies

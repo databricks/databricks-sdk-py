@@ -454,7 +454,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-filter_by"><code>filter_by</code></a>, <a href="#parameter-include_metrics"><code>include_metrics</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List the history of queries through SQL warehouses, and serverless compute.<br /><br />You can filter by user ID, warehouse ID, status, and time range. Most recently started queries are<br />returned first (up to max_results in request). The pagination token returned in response can be used<br />to list subsequent query statuses.<br /><br />:param filter_by: :class:`QueryFilter` (optional)<br />  An optional filter object to limit query history results. Accepts parameters such as user IDs,<br />  endpoint IDs, and statuses to narrow the returned data. In a URL, the parameters of this filter are<br />  specified with dot notation. For example: `filter_by.statement_ids`.<br />:param include_metrics: bool (optional)<br />  Whether to include the query metrics with each query. Only use this for a small subset of queries<br />  (max_results). Defaults to false.<br />:param max_results: int (optional)<br />  Limit the number of results returned in one page. Must be less than 1000 and the default is 100.<br />:param page_token: str (optional)<br />  A token that can be used to get the next page of results. The token can contains characters that<br />  need to be encoded before using it in a URL. For example, the character '+' needs to be replaced by<br />  %2B. This field is optional.<br /><br />:returns: :class:`ListQueriesResponse`</td>
+    <td>List the history of queries through SQL warehouses, and serverless compute.</td>
 </tr>
 </tbody>
 </table>
@@ -510,7 +510,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-List the history of queries through SQL warehouses, and serverless compute.<br /><br />You can filter by user ID, warehouse ID, status, and time range. Most recently started queries are<br />returned first (up to max_results in request). The pagination token returned in response can be used<br />to list subsequent query statuses.<br /><br />:param filter_by: :class:`QueryFilter` (optional)<br />  An optional filter object to limit query history results. Accepts parameters such as user IDs,<br />  endpoint IDs, and statuses to narrow the returned data. In a URL, the parameters of this filter are<br />  specified with dot notation. For example: `filter_by.statement_ids`.<br />:param include_metrics: bool (optional)<br />  Whether to include the query metrics with each query. Only use this for a small subset of queries<br />  (max_results). Defaults to false.<br />:param max_results: int (optional)<br />  Limit the number of results returned in one page. Must be less than 1000 and the default is 100.<br />:param page_token: str (optional)<br />  A token that can be used to get the next page of results. The token can contains characters that<br />  need to be encoded before using it in a URL. For example, the character '+' needs to be replaced by<br />  %2B. This field is optional.<br /><br />:returns: :class:`ListQueriesResponse`
+List the history of queries through SQL warehouses, and serverless compute.
 
 ```sql
 SELECT

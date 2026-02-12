@@ -761,35 +761,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a></td>
-    <td>Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must<br />satisfy one of the following requirements: - Is a metastore admin - Is an owner of the function's<br />parent catalog - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner<br />of the function - Have the **USE_CATALOG** privilege on the function's parent catalog, the<br />**USE_SCHEMA** privilege on the function's parent schema, and the **EXECUTE** privilege on the<br />function itself<br /><br />:param name: str<br />  The fully-qualified name of the function (of the form<br />  __catalog_name__.__schema_name__.__function__name__).<br />:param include_browse: bool (optional)<br />  Whether to include functions in the response for which the principal can only access selective<br />  metadata for<br /><br />:returns: :class:`FunctionInfo`</td>
+    <td>Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List functions within the specified parent catalog and schema. If the user is a metastore admin, all<br />functions are returned in the output list. Otherwise, the user must have the **USE_CATALOG** privilege<br />on the catalog and the **USE_SCHEMA** privilege on the schema, and the output list contains only<br />functions for which either the user has the **EXECUTE** privilege or the user is the owner. There is<br />no guarantee of a specific ordering of the elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param catalog_name: str<br />  Name of parent catalog for functions of interest.<br />:param schema_name: str<br />  Parent schema of functions.<br />:param include_browse: bool (optional)<br />  Whether to include functions in the response for which the principal can only access selective<br />  metadata for<br />:param max_results: int (optional)<br />  Maximum number of functions to return. If not set, all the functions are returned (not recommended).<br />  - when set to a value greater than 0, the page length is the minimum of this value and a server<br />  configured value; - when set to 0, the page length is set to a server configured value<br />  (recommended); - when set to a value less than 0, an invalid parameter error is returned;<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`FunctionInfo`</td>
+    <td>List functions within the specified parent catalog and schema. If the user is a metastore admin, all</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__function_info"><code>data__function_info</code></a></td>
     <td></td>
-    <td>**WARNING: This API is experimental and will change in future versions**<br /><br />Creates a new function<br /><br />The user must have the following permissions in order for the function to be created: -<br />**USE_CATALOG** on the function's parent catalog - **USE_SCHEMA** and **CREATE_FUNCTION** on the<br />function's parent schema<br /><br />:param function_info: :class:`CreateFunction`<br />  Partial __FunctionInfo__ specifying the function to be created.<br /><br />:returns: :class:`FunctionInfo`</td>
+    <td>**WARNING: This API is experimental and will change in future versions**</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the function that matches the supplied name. Only the owner of the function can be updated. If<br />the user is not a metastore admin, the user must be a member of the group that is the new function<br />owner. - Is a metastore admin - Is the owner of the function's parent catalog - Is the owner of the<br />function's parent schema and has the **USE_CATALOG** privilege on its parent catalog - Is the owner of<br />the function itself and has the **USE_CATALOG** privilege on its parent catalog as well as the<br />**USE_SCHEMA** privilege on the function's parent schema.<br /><br />:param name: str<br />  The fully-qualified name of the function (of the form<br />  __catalog_name__.__schema_name__.__function__name__).<br />:param owner: str (optional)<br />  Username of current owner of the function.<br /><br />:returns: :class:`FunctionInfo`</td>
+    <td>Updates the function that matches the supplied name. Only the owner of the function can be updated. If</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
-    <td>Deletes the function that matches the supplied name. For the deletion to succeed, the user must<br />satisfy one of the following conditions: - Is the owner of the function's parent catalog - Is the<br />owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent catalog -<br />Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent catalog<br />and the **USE_SCHEMA** privilege on its parent schema<br /><br />:param name: str<br />  The fully-qualified name of the function (of the form<br />  __catalog_name__.__schema_name__.__function__name__) .<br />:param force: bool (optional)<br />  Force deletion even if the function is notempty.</td>
+    <td>Deletes the function that matches the supplied name. For the deletion to succeed, the user must</td>
 </tr>
 </tbody>
 </table>
@@ -861,7 +861,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must<br />satisfy one of the following requirements: - Is a metastore admin - Is an owner of the function's<br />parent catalog - Have the **USE_CATALOG** privilege on the function's parent catalog and be the owner<br />of the function - Have the **USE_CATALOG** privilege on the function's parent catalog, the<br />**USE_SCHEMA** privilege on the function's parent schema, and the **EXECUTE** privilege on the<br />function itself<br /><br />:param name: str<br />  The fully-qualified name of the function (of the form<br />  __catalog_name__.__schema_name__.__function__name__).<br />:param include_browse: bool (optional)<br />  Whether to include functions in the response for which the principal can only access selective<br />  metadata for<br /><br />:returns: :class:`FunctionInfo`
+Gets a function from within a parent catalog and schema. For the fetch to succeed, the user must
 
 ```sql
 SELECT
@@ -904,7 +904,7 @@ AND include_browse = '{{ include_browse }}'
 </TabItem>
 <TabItem value="list">
 
-List functions within the specified parent catalog and schema. If the user is a metastore admin, all<br />functions are returned in the output list. Otherwise, the user must have the **USE_CATALOG** privilege<br />on the catalog and the **USE_SCHEMA** privilege on the schema, and the output list contains only<br />functions for which either the user has the **EXECUTE** privilege or the user is the owner. There is<br />no guarantee of a specific ordering of the elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param catalog_name: str<br />  Name of parent catalog for functions of interest.<br />:param schema_name: str<br />  Parent schema of functions.<br />:param include_browse: bool (optional)<br />  Whether to include functions in the response for which the principal can only access selective<br />  metadata for<br />:param max_results: int (optional)<br />  Maximum number of functions to return. If not set, all the functions are returned (not recommended).<br />  - when set to a value greater than 0, the page length is the minimum of this value and a server<br />  configured value; - when set to 0, the page length is set to a server configured value<br />  (recommended); - when set to a value less than 0, an invalid parameter error is returned;<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`FunctionInfo`
+List functions within the specified parent catalog and schema. If the user is a metastore admin, all
 
 ```sql
 SELECT
@@ -962,7 +962,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-**WARNING: This API is experimental and will change in future versions**<br /><br />Creates a new function<br /><br />The user must have the following permissions in order for the function to be created: -<br />**USE_CATALOG** on the function's parent catalog - **USE_SCHEMA** and **CREATE_FUNCTION** on the<br />function's parent schema<br /><br />:param function_info: :class:`CreateFunction`<br />  Partial __FunctionInfo__ specifying the function to be created.<br /><br />:returns: :class:`FunctionInfo`
+**WARNING: This API is experimental and will change in future versions**
 
 ```sql
 INSERT INTO databricks_workspace.catalog.functions (
@@ -1034,7 +1034,7 @@ updated_by
 >
 <TabItem value="update">
 
-Updates the function that matches the supplied name. Only the owner of the function can be updated. If<br />the user is not a metastore admin, the user must be a member of the group that is the new function<br />owner. - Is a metastore admin - Is the owner of the function's parent catalog - Is the owner of the<br />function's parent schema and has the **USE_CATALOG** privilege on its parent catalog - Is the owner of<br />the function itself and has the **USE_CATALOG** privilege on its parent catalog as well as the<br />**USE_SCHEMA** privilege on the function's parent schema.<br /><br />:param name: str<br />  The fully-qualified name of the function (of the form<br />  __catalog_name__.__schema_name__.__function__name__).<br />:param owner: str (optional)<br />  Username of current owner of the function.<br /><br />:returns: :class:`FunctionInfo`
+Updates the function that matches the supplied name. Only the owner of the function can be updated. If
 
 ```sql
 UPDATE databricks_workspace.catalog.functions
@@ -1089,7 +1089,7 @@ updated_by;
 >
 <TabItem value="delete">
 
-Deletes the function that matches the supplied name. For the deletion to succeed, the user must<br />satisfy one of the following conditions: - Is the owner of the function's parent catalog - Is the<br />owner of the function's parent schema and have the **USE_CATALOG** privilege on its parent catalog -<br />Is the owner of the function itself and have both the **USE_CATALOG** privilege on its parent catalog<br />and the **USE_SCHEMA** privilege on its parent schema<br /><br />:param name: str<br />  The fully-qualified name of the function (of the form<br />  __catalog_name__.__schema_name__.__function__name__) .<br />:param force: bool (optional)<br />  Force deletion even if the function is notempty.
+Deletes the function that matches the supplied name. For the deletion to succeed, the user must
 
 ```sql
 DELETE FROM databricks_workspace.catalog.functions

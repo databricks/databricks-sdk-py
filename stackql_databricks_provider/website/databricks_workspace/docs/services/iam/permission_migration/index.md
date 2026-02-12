@@ -55,7 +55,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__workspace_id"><code>data__workspace_id</code></a>, <a href="#parameter-data__from_workspace_group_name"><code>data__from_workspace_group_name</code></a>, <a href="#parameter-data__to_account_group_name"><code>data__to_account_group_name</code></a></td>
     <td></td>
-    <td>Migrate Permissions.<br /><br />:param workspace_id: int<br />  WorkspaceId of the associated workspace where the permission migration will occur.<br />:param from_workspace_group_name: str<br />  The name of the workspace group that permissions will be migrated from.<br />:param to_account_group_name: str<br />  The name of the account group that permissions will be migrated to.<br />:param size: int (optional)<br />  The maximum number of permissions that will be migrated.<br /><br />:returns: :class:`MigratePermissionsResponse`</td>
+    <td>Migrate Permissions.</td>
 </tr>
 </tbody>
 </table>
@@ -92,7 +92,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="migrate">
 
-Migrate Permissions.<br /><br />:param workspace_id: int<br />  WorkspaceId of the associated workspace where the permission migration will occur.<br />:param from_workspace_group_name: str<br />  The name of the workspace group that permissions will be migrated from.<br />:param to_account_group_name: str<br />  The name of the account group that permissions will be migrated to.<br />:param size: int (optional)<br />  The maximum number of permissions that will be migrated.<br /><br />:returns: :class:`MigratePermissionsResponse`
+Migrate Permissions.
 
 ```sql
 INSERT INTO databricks_workspace.iam.permission_migration (

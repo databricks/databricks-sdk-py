@@ -48,24 +48,19 @@ The following fields are returned by `SELECT` queries:
     "description": "Databricks service principal ID."
   },
   {
-    "name": "application_id",
+    "name": "active",
+    "type": "boolean",
+    "description": ""
+  },
+  {
+    "name": "applicationId",
     "type": "string",
     "description": "UUID relating to the service principal"
   },
   {
-    "name": "external_id",
-    "type": "string",
-    "description": ""
-  },
-  {
-    "name": "display_name",
+    "name": "displayName",
     "type": "string",
     "description": "String that represents a concatenation of given and family names."
-  },
-  {
-    "name": "active",
-    "type": "boolean",
-    "description": ""
   },
   {
     "name": "entitlements",
@@ -83,7 +78,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -98,6 +93,11 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       }
     ]
+  },
+  {
+    "name": "externalId",
+    "type": "string",
+    "description": ""
   },
   {
     "name": "groups",
@@ -115,7 +115,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -147,7 +147,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -179,24 +179,19 @@ The following fields are returned by `SELECT` queries:
     "description": "Databricks service principal ID."
   },
   {
-    "name": "application_id",
+    "name": "active",
+    "type": "boolean",
+    "description": ""
+  },
+  {
+    "name": "applicationId",
     "type": "string",
     "description": "UUID relating to the service principal"
   },
   {
-    "name": "external_id",
-    "type": "string",
-    "description": ""
-  },
-  {
-    "name": "display_name",
+    "name": "displayName",
     "type": "string",
     "description": "String that represents a concatenation of given and family names."
-  },
-  {
-    "name": "active",
-    "type": "boolean",
-    "description": ""
   },
   {
     "name": "entitlements",
@@ -214,7 +209,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -229,6 +224,11 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       }
     ]
+  },
+  {
+    "name": "externalId",
+    "type": "string",
+    "description": ""
   },
   {
     "name": "groups",
@@ -246,7 +246,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -278,7 +278,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -323,42 +323,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the details for a single service principal define in the Databricks workspace.<br /><br />:param id: str<br />  Unique ID for a service principal in the Databricks workspace.<br /><br />:returns: :class:`ServicePrincipal`</td>
+    <td>Gets the details for a single service principal define in the Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-attributes"><code>attributes</code></a>, <a href="#parameter-count"><code>count</code></a>, <a href="#parameter-excluded_attributes"><code>excluded_attributes</code></a>, <a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-sort_by"><code>sort_by</code></a>, <a href="#parameter-sort_order"><code>sort_order</code></a>, <a href="#parameter-start_index"><code>start_index</code></a></td>
-    <td>Gets the set of service principals associated with a Databricks workspace.<br /><br />:param attributes: str (optional)<br />  Comma-separated list of attributes to return in response.<br />:param count: int (optional)<br />  Desired number of results per page.<br />:param excluded_attributes: str (optional)<br />  Comma-separated list of attributes to exclude in response.<br />:param filter: str (optional)<br />  Query by which the results have to be filtered. Supported operators are equals(`eq`),<br />  contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be<br />  formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently<br />  only support simple expressions.<br /><br />  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2<br />:param sort_by: str (optional)<br />  Attribute to sort the results.<br />:param sort_order: :class:`ListSortOrder` (optional)<br />  The order to sort the results.<br />:param start_index: int (optional)<br />  Specifies the index of the first result. First item is number 1.<br /><br />:returns: Iterator over :class:`ServicePrincipal`</td>
+    <td>Gets the set of service principals associated with a Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates a new service principal in the Databricks workspace.<br /><br />:param active: bool (optional)<br />  If this user is active<br />:param application_id: str (optional)<br />  UUID relating to the service principal<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names.<br />:param entitlements: List[:class:`ComplexValue`] (optional)<br />  Entitlements assigned to the service principal. See [assigning entitlements] for a full list of<br />  supported values.<br /><br />  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements<br />:param external_id: str (optional)<br />:param groups: List[:class:`ComplexValue`] (optional)<br />:param id: str (optional)<br />  Databricks service principal ID.<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Corresponds to AWS instance profile/arn role.<br />:param schemas: List[:class:`ServicePrincipalSchema`] (optional)<br />  The schema of the List response.<br /><br />:returns: :class:`ServicePrincipal`</td>
+    <td>Creates a new service principal in the Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#patch"><CopyableCode code="patch" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Partially updates the details of a single service principal in the Databricks workspace.<br /><br />:param id: str<br />  Unique ID in the Databricks workspace.<br />:param operations: List[:class:`Patch`] (optional)<br />:param schemas: List[:class:`PatchSchema`] (optional)<br />  The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].</td>
+    <td>Partially updates the details of a single service principal in the Databricks workspace.</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the details of a single service principal.<br /><br />This action replaces the existing service principal with the same name.<br /><br />:param id: str<br />  Databricks service principal ID.<br />:param active: bool (optional)<br />  If this user is active<br />:param application_id: str (optional)<br />  UUID relating to the service principal<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names.<br />:param entitlements: List[:class:`ComplexValue`] (optional)<br />  Entitlements assigned to the service principal. See [assigning entitlements] for a full list of<br />  supported values.<br /><br />  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements<br />:param external_id: str (optional)<br />:param groups: List[:class:`ComplexValue`] (optional)<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Corresponds to AWS instance profile/arn role.<br />:param schemas: List[:class:`ServicePrincipalSchema`] (optional)<br />  The schema of the List response.</td>
+    <td>Updates the details of a single service principal.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a single service principal in the Databricks workspace.<br /><br />:param id: str<br />  Unique ID for a service principal in the Databricks workspace.</td>
+    <td>Delete a single service principal in the Databricks workspace.</td>
 </tr>
 </tbody>
 </table>
@@ -435,16 +435,16 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the details for a single service principal define in the Databricks workspace.<br /><br />:param id: str<br />  Unique ID for a service principal in the Databricks workspace.<br /><br />:returns: :class:`ServicePrincipal`
+Gets the details for a single service principal define in the Databricks workspace.
 
 ```sql
 SELECT
 id,
-application_id,
-external_id,
-display_name,
 active,
+applicationId,
+displayName,
 entitlements,
+externalId,
 groups,
 roles,
 schemas
@@ -456,16 +456,16 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets the set of service principals associated with a Databricks workspace.<br /><br />:param attributes: str (optional)<br />  Comma-separated list of attributes to return in response.<br />:param count: int (optional)<br />  Desired number of results per page.<br />:param excluded_attributes: str (optional)<br />  Comma-separated list of attributes to exclude in response.<br />:param filter: str (optional)<br />  Query by which the results have to be filtered. Supported operators are equals(`eq`),<br />  contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be<br />  formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently<br />  only support simple expressions.<br /><br />  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2<br />:param sort_by: str (optional)<br />  Attribute to sort the results.<br />:param sort_order: :class:`ListSortOrder` (optional)<br />  The order to sort the results.<br />:param start_index: int (optional)<br />  Specifies the index of the first result. First item is number 1.<br /><br />:returns: Iterator over :class:`ServicePrincipal`
+Gets the set of service principals associated with a Databricks workspace.
 
 ```sql
 SELECT
 id,
-application_id,
-external_id,
-display_name,
 active,
+applicationId,
+displayName,
 entitlements,
+externalId,
 groups,
 roles,
 schemas
@@ -495,7 +495,7 @@ AND start_index = '{{ start_index }}'
 >
 <TabItem value="create">
 
-Creates a new service principal in the Databricks workspace.<br /><br />:param active: bool (optional)<br />  If this user is active<br />:param application_id: str (optional)<br />  UUID relating to the service principal<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names.<br />:param entitlements: List[:class:`ComplexValue`] (optional)<br />  Entitlements assigned to the service principal. See [assigning entitlements] for a full list of<br />  supported values.<br /><br />  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements<br />:param external_id: str (optional)<br />:param groups: List[:class:`ComplexValue`] (optional)<br />:param id: str (optional)<br />  Databricks service principal ID.<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Corresponds to AWS instance profile/arn role.<br />:param schemas: List[:class:`ServicePrincipalSchema`] (optional)<br />  The schema of the List response.<br /><br />:returns: :class:`ServicePrincipal`
+Creates a new service principal in the Databricks workspace.
 
 ```sql
 INSERT INTO databricks_workspace.iam.service_principals_v2 (
@@ -523,11 +523,11 @@ SELECT
 '{{ deployment_name }}'
 RETURNING
 id,
-application_id,
-external_id,
-display_name,
 active,
+applicationId,
+displayName,
 entitlements,
+externalId,
 groups,
 roles,
 schemas
@@ -592,7 +592,7 @@ schemas
 >
 <TabItem value="patch">
 
-Partially updates the details of a single service principal in the Databricks workspace.<br /><br />:param id: str<br />  Unique ID in the Databricks workspace.<br />:param operations: List[:class:`Patch`] (optional)<br />:param schemas: List[:class:`PatchSchema`] (optional)<br />  The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+Partially updates the details of a single service principal in the Databricks workspace.
 
 ```sql
 UPDATE databricks_workspace.iam.service_principals_v2
@@ -617,7 +617,7 @@ AND deployment_name = '{{ deployment_name }}' --required;
 >
 <TabItem value="replace">
 
-Updates the details of a single service principal.<br /><br />This action replaces the existing service principal with the same name.<br /><br />:param id: str<br />  Databricks service principal ID.<br />:param active: bool (optional)<br />  If this user is active<br />:param application_id: str (optional)<br />  UUID relating to the service principal<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names.<br />:param entitlements: List[:class:`ComplexValue`] (optional)<br />  Entitlements assigned to the service principal. See [assigning entitlements] for a full list of<br />  supported values.<br /><br />  [assigning entitlements]: https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements<br />:param external_id: str (optional)<br />:param groups: List[:class:`ComplexValue`] (optional)<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Corresponds to AWS instance profile/arn role.<br />:param schemas: List[:class:`ServicePrincipalSchema`] (optional)<br />  The schema of the List response.
+Updates the details of a single service principal.
 
 ```sql
 REPLACE databricks_workspace.iam.service_principals_v2
@@ -648,7 +648,7 @@ AND deployment_name = '{{ deployment_name }}' --required;
 >
 <TabItem value="delete">
 
-Delete a single service principal in the Databricks workspace.<br /><br />:param id: str<br />  Unique ID for a service principal in the Databricks workspace.
+Delete a single service principal in the Databricks workspace.
 
 ```sql
 DELETE FROM databricks_workspace.iam.service_principals_v2

@@ -92,14 +92,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-etag"><code>etag</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a rule set by its name. A rule set is always attached to a resource and contains a list of access<br />rules on the said resource. Currently only a default rule set for each resource is supported.<br /><br />:param name: str<br />  The ruleset name associated with the request.<br /><br />  Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set<br />  on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule<br />  set on the group.<br />  `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` |<br />  A name for a rule set on the service principal.<br />  `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default` | A name for a rule set on<br />  the tag policy.<br />:param etag: str<br />  Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for<br />  optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from<br />  overwriting each other. It is strongly suggested that systems make use of the etag in the read -&gt;<br />  modify -&gt; write pattern to perform rule set updates in order to avoid race conditions that is get an<br />  etag from a GET rule set request, and pass it with the PUT update request to identify the rule set<br />  version you are updating.<br /><br />  Examples | Summary :--- | :--- `etag=` | An empty etag can only be used in GET to indicate no<br />  freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An<br />  etag encoded a specific version of the rule set to get or to be updated.<br /><br />:returns: :class:`RuleSetResponse`</td>
+    <td>Get a rule set by its name. A rule set is always attached to a resource and contains a list of access</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__rule_set"><code>data__rule_set</code></a></td>
     <td></td>
-    <td>Replace the rules of a rule set. First, use get to read the current version of the rule set before<br />modifying it. This pattern helps prevent conflicts between concurrent updates.<br /><br />:param name: str<br />  Name of the rule set.<br />:param rule_set: :class:`RuleSetUpdateRequest`<br /><br />:returns: :class:`RuleSetResponse`</td>
+    <td>Replace the rules of a rule set. First, use get to read the current version of the rule set before</td>
 </tr>
 </tbody>
 </table>
@@ -145,7 +145,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a rule set by its name. A rule set is always attached to a resource and contains a list of access<br />rules on the said resource. Currently only a default rule set for each resource is supported.<br /><br />:param name: str<br />  The ruleset name associated with the request.<br /><br />  Examples | Summary :--- | :--- `name=accounts/<ACCOUNT_ID>/ruleSets/default` | A name for a rule set<br />  on the account. `name=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>/ruleSets/default` | A name for a rule<br />  set on the group.<br />  `name=accounts/<ACCOUNT_ID>/servicePrincipals/<SERVICE_PRINCIPAL_APPLICATION_ID>/ruleSets/default` |<br />  A name for a rule set on the service principal.<br />  `name=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>/ruleSets/default` | A name for a rule set on<br />  the tag policy.<br />:param etag: str<br />  Etag used for versioning. The response is at least as fresh as the eTag provided. Etag is used for<br />  optimistic concurrency control as a way to help prevent simultaneous updates of a rule set from<br />  overwriting each other. It is strongly suggested that systems make use of the etag in the read -&gt;<br />  modify -&gt; write pattern to perform rule set updates in order to avoid race conditions that is get an<br />  etag from a GET rule set request, and pass it with the PUT update request to identify the rule set<br />  version you are updating.<br /><br />  Examples | Summary :--- | :--- `etag=` | An empty etag can only be used in GET to indicate no<br />  freshness requirements. `etag=RENUAAABhSweA4NvVmmUYdiU717H3Tgy0UJdor3gE4a+mq/oj9NjAf8ZsQ==` | An<br />  etag encoded a specific version of the rule set to get or to be updated.<br /><br />:returns: :class:`RuleSetResponse`
+Get a rule set by its name. A rule set is always attached to a resource and contains a list of access
 
 ```sql
 SELECT
@@ -172,7 +172,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="update">
 
-Replace the rules of a rule set. First, use get to read the current version of the rule set before<br />modifying it. This pattern helps prevent conflicts between concurrent updates.<br /><br />:param name: str<br />  Name of the rule set.<br />:param rule_set: :class:`RuleSetUpdateRequest`<br /><br />:returns: :class:`RuleSetResponse`
+Replace the rules of a rule set. First, use get to read the current version of the rule set before
 
 ```sql
 REPLACE databricks_workspace.iam.rule_sets

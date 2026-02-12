@@ -105,7 +105,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-path"><code>path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the status of an object or a directory. If `path` does not exist, this call returns an error<br />`RESOURCE_DOES_NOT_EXIST`.<br /><br />:param path: str<br />  The absolute path of the notebook or directory.<br /><br />:returns: :class:`ObjectInfo`</td>
+    <td>Gets the status of an object or a directory. If `path` does not exist, this call returns an error</td>
 </tr>
 </tbody>
 </table>
@@ -146,7 +146,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the status of an object or a directory. If `path` does not exist, this call returns an error<br />`RESOURCE_DOES_NOT_EXIST`.<br /><br />:param path: str<br />  The absolute path of the notebook or directory.<br /><br />:returns: :class:`ObjectInfo`
+Gets the status of an object or a directory. If `path` does not exist, this call returns an error
 
 ```sql
 SELECT

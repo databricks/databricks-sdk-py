@@ -81,43 +81,7 @@ The following fields are returned by `SELECT` queries:
 </TabItem>
 <TabItem value="list_for_exchange">
 
-<SchemaTable fields={[
-  {
-    "name": "id",
-    "type": "string",
-    "description": ""
-  },
-  {
-    "name": "exchange_id",
-    "type": "string",
-    "description": ""
-  },
-  {
-    "name": "listing_id",
-    "type": "string",
-    "description": ""
-  },
-  {
-    "name": "exchange_name",
-    "type": "string",
-    "description": ""
-  },
-  {
-    "name": "listing_name",
-    "type": "string",
-    "description": ""
-  },
-  {
-    "name": "created_at",
-    "type": "integer",
-    "description": ""
-  },
-  {
-    "name": "created_by",
-    "type": "string",
-    "description": ""
-  }
-]} />
+<SchemaTable fields={[]} />
 </TabItem>
 </Tabs>
 
@@ -141,28 +105,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List exchanges associated with a listing<br /><br />:param listing_id: str<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ExchangeListing`</td>
+    <td>List exchanges associated with a listing</td>
 </tr>
 <tr>
     <td><a href="#list_for_exchange"><CopyableCode code="list_for_exchange" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-exchange_id"><code>exchange_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List listings associated with an exchange<br /><br />:param exchange_id: str<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ExchangeListing`</td>
+    <td>List listings associated with an exchange</td>
 </tr>
 <tr>
     <td><a href="#add"><CopyableCode code="add" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__listing_id"><code>data__listing_id</code></a>, <a href="#parameter-data__exchange_id"><code>data__exchange_id</code></a></td>
     <td></td>
-    <td>Associate an exchange with a listing<br /><br />:param listing_id: str<br />:param exchange_id: str<br /><br />:returns: :class:`AddExchangeForListingResponse`</td>
+    <td>Associate an exchange with a listing</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Disassociate an exchange with a listing<br /><br />:param id: str</td>
+    <td>Disassociate an exchange with a listing</td>
 </tr>
 </tbody>
 </table>
@@ -224,7 +188,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list_for_listing">
 
-List exchanges associated with a listing<br /><br />:param listing_id: str<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ExchangeListing`
+List exchanges associated with a listing
 
 ```sql
 SELECT
@@ -245,17 +209,11 @@ AND page_token = '{{ page_token }}'
 </TabItem>
 <TabItem value="list_for_exchange">
 
-List listings associated with an exchange<br /><br />:param exchange_id: str<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ExchangeListing`
+List listings associated with an exchange
 
 ```sql
 SELECT
-id,
-exchange_id,
-listing_id,
-exchange_name,
-listing_name,
-created_at,
-created_by
+*
 FROM databricks_workspace.marketplace.provider_exchange_listings
 WHERE exchange_id = '{{ exchange_id }}' -- required
 AND deployment_name = '{{ deployment_name }}' -- required
@@ -278,7 +236,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="add">
 
-Associate an exchange with a listing<br /><br />:param listing_id: str<br />:param exchange_id: str<br /><br />:returns: :class:`AddExchangeForListingResponse`
+Associate an exchange with a listing
 
 ```sql
 INSERT INTO databricks_workspace.marketplace.provider_exchange_listings (
@@ -325,7 +283,7 @@ exchange_for_listing
 >
 <TabItem value="delete">
 
-Disassociate an exchange with a listing<br /><br />:param id: str
+Disassociate an exchange with a listing
 
 ```sql
 DELETE FROM databricks_workspace.marketplace.provider_exchange_listings

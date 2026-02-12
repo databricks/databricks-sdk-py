@@ -43,61 +43,54 @@ The following fields are returned by `SELECT` queries:
 
 <SchemaTable fields={[
   {
-    "name": "ip_access_list",
-    "type": "object",
-    "description": "Definition of an IP Access list",
-    "children": [
-      {
-        "name": "address_count",
-        "type": "integer",
-        "description": "Total number of IP or CIDR values."
-      },
-      {
-        "name": "created_at",
-        "type": "integer",
-        "description": "Creation timestamp in milliseconds."
-      },
-      {
-        "name": "created_by",
-        "type": "integer",
-        "description": "User ID of the user who created this list."
-      },
-      {
-        "name": "enabled",
-        "type": "boolean",
-        "description": "Specifies whether this IP access list is enabled."
-      },
-      {
-        "name": "ip_addresses",
-        "type": "array",
-        "description": ""
-      },
-      {
-        "name": "label",
-        "type": "string",
-        "description": "Label for the IP access list. This **cannot** be empty."
-      },
-      {
-        "name": "list_id",
-        "type": "string",
-        "description": "Universally unique identifier (UUID) of the IP access list."
-      },
-      {
-        "name": "list_type",
-        "type": "string",
-        "description": "Type of IP access list. Valid values are as follows and are case-sensitive:<br /><br />* `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or<br />range. IP addresses in the block list are excluded even if they are included in an allow list."
-      },
-      {
-        "name": "updated_at",
-        "type": "integer",
-        "description": "Update timestamp in milliseconds."
-      },
-      {
-        "name": "updated_by",
-        "type": "integer",
-        "description": "User ID of the user who updated this list."
-      }
-    ]
+    "name": "list_id",
+    "type": "string",
+    "description": "Universally unique identifier (UUID) of the IP access list."
+  },
+  {
+    "name": "address_count",
+    "type": "integer",
+    "description": "Total number of IP or CIDR values."
+  },
+  {
+    "name": "created_at",
+    "type": "integer",
+    "description": "Creation timestamp in milliseconds."
+  },
+  {
+    "name": "created_by",
+    "type": "integer",
+    "description": "User ID of the user who created this list."
+  },
+  {
+    "name": "enabled",
+    "type": "boolean",
+    "description": "Specifies whether this IP access list is enabled."
+  },
+  {
+    "name": "ip_addresses",
+    "type": "array",
+    "description": ""
+  },
+  {
+    "name": "label",
+    "type": "string",
+    "description": "Label for the IP access list. This **cannot** be empty."
+  },
+  {
+    "name": "list_type",
+    "type": "string",
+    "description": "Type of IP access list. Valid values are as follows and are case-sensitive:<br /><br />* `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or<br />range. IP addresses in the block list are excluded even if they are included in an allow list."
+  },
+  {
+    "name": "updated_at",
+    "type": "integer",
+    "description": "Update timestamp in milliseconds."
+  },
+  {
+    "name": "updated_by",
+    "type": "integer",
+    "description": "User ID of the user who updated this list."
   }
 ]} />
 </TabItem>
@@ -259,7 +252,16 @@ Gets an IP access list, specified by its list ID.
 
 ```sql
 SELECT
-ip_access_list
+list_id,
+address_count,
+created_at,
+created_by,
+enabled,
+ip_addresses,
+label,
+list_type,
+updated_at,
+updated_by
 FROM databricks_account.settings.account_ip_access_lists
 WHERE account_id = '{{ account_id }}' -- required
 AND ip_access_list_id = '{{ ip_access_list_id }}' -- required

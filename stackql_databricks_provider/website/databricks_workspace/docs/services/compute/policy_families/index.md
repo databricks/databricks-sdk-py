@@ -111,14 +111,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-policy_family_id"><code>policy_family_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-version"><code>version</code></a></td>
-    <td>Retrieve the information for an policy family based on its identifier and version<br /><br />:param policy_family_id: str<br />  The family ID about which to retrieve information.<br />:param version: int (optional)<br />  The version number for the family to fetch. Defaults to the latest version.<br /><br />:returns: :class:`PolicyFamily`</td>
+    <td>Retrieve the information for an policy family based on its identifier and version</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Returns the list of policy definition types available to use at their latest version. This API is<br />paginated.<br /><br />:param max_results: int (optional)<br />  Maximum number of policy families to return.<br />:param page_token: str (optional)<br />  A token that can be used to get the next page of results.<br /><br />:returns: Iterator over :class:`PolicyFamily`</td>
+    <td>Returns the list of policy definition types available to use at their latest version. This API is</td>
 </tr>
 </tbody>
 </table>
@@ -175,7 +175,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Retrieve the information for an policy family based on its identifier and version<br /><br />:param policy_family_id: str<br />  The family ID about which to retrieve information.<br />:param version: int (optional)<br />  The version number for the family to fetch. Defaults to the latest version.<br /><br />:returns: :class:`PolicyFamily`
+Retrieve the information for an policy family based on its identifier and version
 
 ```sql
 SELECT
@@ -192,7 +192,7 @@ AND version = '{{ version }}'
 </TabItem>
 <TabItem value="list">
 
-Returns the list of policy definition types available to use at their latest version. This API is<br />paginated.<br /><br />:param max_results: int (optional)<br />  Maximum number of policy families to return.<br />:param page_token: str (optional)<br />  A token that can be used to get the next page of results.<br /><br />:returns: Iterator over :class:`PolicyFamily`
+Returns the list of policy definition types available to use at their latest version. This API is
 
 ```sql
 SELECT

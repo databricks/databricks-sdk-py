@@ -105,7 +105,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-metric_key"><code>metric_key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-run_uuid"><code>run_uuid</code></a></td>
-    <td>Gets a list of all values for the specified metric for a given run.<br /><br />:param metric_key: str<br />  Name of the metric.<br />:param max_results: int (optional)<br />  Maximum number of Metric records to return per paginated request. Default is set to 25,000. If set<br />  higher than 25,000, a request Exception will be raised.<br />:param page_token: str (optional)<br />  Token indicating the page of metric histories to fetch.<br />:param run_id: str (optional)<br />  ID of the run from which to fetch metric values. Must be provided.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run from which to fetch metric values. This field will<br />  be removed in a future MLflow version.<br /><br />:returns: Iterator over :class:`Metric`</td>
+    <td>Gets a list of all values for the specified metric for a given run.</td>
 </tr>
 </tbody>
 </table>
@@ -166,7 +166,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a list of all values for the specified metric for a given run.<br /><br />:param metric_key: str<br />  Name of the metric.<br />:param max_results: int (optional)<br />  Maximum number of Metric records to return per paginated request. Default is set to 25,000. If set<br />  higher than 25,000, a request Exception will be raised.<br />:param page_token: str (optional)<br />  Token indicating the page of metric histories to fetch.<br />:param run_id: str (optional)<br />  ID of the run from which to fetch metric values. Must be provided.<br />:param run_uuid: str (optional)<br />  [Deprecated, use `run_id` instead] ID of the run from which to fetch metric values. This field will<br />  be removed in a future MLflow version.<br /><br />:returns: Iterator over :class:`Metric`
+Gets a list of all values for the specified metric for a given run.
 
 ```sql
 SELECT

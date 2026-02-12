@@ -265,70 +265,70 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-index_name"><code>index_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-ensure_reranker_compatible"><code>ensure_reranker_compatible</code></a></td>
-    <td>Get an index.<br /><br />:param index_name: str<br />  Name of the index<br />:param ensure_reranker_compatible: bool (optional)<br />  If true, the URL returned for the index is guaranteed to be compatible with the reranker. Currently<br />  this means we return the CP URL regardless of how the index is being accessed. If not set or set to<br />  false, the URL may still be compatible with the reranker depending on what URL we return.<br /><br />:returns: :class:`VectorIndex`</td>
+    <td>Get an index.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List all indexes in the given endpoint.<br /><br />:param endpoint_name: str<br />  Name of the endpoint<br />:param page_token: str (optional)<br />  Token for pagination<br /><br />:returns: Iterator over :class:`MiniVectorIndex`</td>
+    <td>List all indexes in the given endpoint.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__endpoint_name"><code>data__endpoint_name</code></a>, <a href="#parameter-data__primary_key"><code>data__primary_key</code></a>, <a href="#parameter-data__index_type"><code>data__index_type</code></a></td>
     <td></td>
-    <td>Create a new index.<br /><br />:param name: str<br />  Name of the index<br />:param endpoint_name: str<br />  Name of the endpoint to be used for serving the index<br />:param primary_key: str<br />  Primary key of the index<br />:param index_type: :class:`VectorIndexType`<br />:param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional)<br />  Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.<br />:param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)<br />  Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.<br /><br />:returns: :class:`VectorIndex`</td>
+    <td>Create a new index.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-index_name"><code>index_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete an index.<br /><br />:param index_name: str<br />  Name of the index</td>
+    <td>Delete an index.</td>
 </tr>
 <tr>
     <td><a href="#delete_data_vector_index"><CopyableCode code="delete_data_vector_index" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-index_name"><code>index_name</code></a>, <a href="#parameter-primary_keys"><code>primary_keys</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Handles the deletion of data from a specified vector index.<br /><br />:param index_name: str<br />  Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index.<br />:param primary_keys: List[str]<br />  List of primary keys for the data to be deleted.<br /><br />:returns: :class:`DeleteDataVectorIndexResponse`</td>
+    <td>Handles the deletion of data from a specified vector index.</td>
 </tr>
 <tr>
     <td><a href="#query_index"><CopyableCode code="query_index" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-index_name"><code>index_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-columns"><code>columns</code></a></td>
     <td></td>
-    <td>Query the specified vector index.<br /><br />:param index_name: str<br />  Name of the vector index to query.<br />:param columns: List[str]<br />  List of column names to include in the response.<br />:param columns_to_rerank: List[str] (optional)<br />  Column names used to retrieve data to send to the reranker.<br />:param filters_json: str (optional)<br />  JSON string representing query filters.<br /><br />  Example filters:<br /><br />  - `&#123;"id <": 5&#125;`: Filter for id less than 5. - `&#123;"id >": 5&#125;`: Filter for id greater than 5. - `&#123;"id<br />  <=": 5&#125;`: Filter for id less than equal to 5. - `&#123;"id >=": 5&#125;`: Filter for id greater than equal to<br />  5. - `&#123;"id": 5&#125;`: Filter for id equal to 5.<br />:param num_results: int (optional)<br />  Number of results to return. Defaults to 10.<br />:param query_text: str (optional)<br />  Query text. Required for Delta Sync Index using model endpoint.<br />:param query_type: str (optional)<br />  The query type to use. Choices are `ANN` and `HYBRID` and `FULL_TEXT`. Defaults to `ANN`.<br />:param query_vector: List[float] (optional)<br />  Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed<br />  vectors.<br />:param reranker: :class:`RerankerConfig` (optional)<br />  If set, the top 50 results are reranked with the Databricks Reranker model before returning the<br />  `num_results` results to the user. The setting `columns_to_rerank` selects which columns are used<br />  for reranking. For each datapoint, the columns selected are concatenated before being sent to the<br />  reranking model. See https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank for<br />  more information.<br />:param score_threshold: float (optional)<br />  Threshold for the approximate nearest neighbor search. Defaults to 0.0.<br /><br />:returns: :class:`QueryVectorIndexResponse`</td>
+    <td>Query the specified vector index.</td>
 </tr>
 <tr>
     <td><a href="#query_next_page"><CopyableCode code="query_next_page" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-index_name"><code>index_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request<br />to fetch next page of results.<br /><br />:param index_name: str<br />  Name of the vector index to query.<br />:param endpoint_name: str (optional)<br />  Name of the endpoint.<br />:param page_token: str (optional)<br />  Page token returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` API.<br /><br />:returns: :class:`QueryVectorIndexResponse`</td>
+    <td>Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request</td>
 </tr>
 <tr>
     <td><a href="#scan_index"><CopyableCode code="scan_index" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-index_name"><code>index_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Scan the specified vector index and return the first `num_results` entries after the exclusive<br />`primary_key`.<br /><br />:param index_name: str<br />  Name of the vector index to scan.<br />:param last_primary_key: str (optional)<br />  Primary key of the last entry returned in the previous scan.<br />:param num_results: int (optional)<br />  Number of results to return. Defaults to 10.<br /><br />:returns: :class:`ScanVectorIndexResponse`</td>
+    <td>Scan the specified vector index and return the first `num_results` entries after the exclusive</td>
 </tr>
 <tr>
     <td><a href="#sync_index"><CopyableCode code="sync_index" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-index_name"><code>index_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Triggers a synchronization process for a specified vector index.<br /><br />:param index_name: str<br />  Name of the vector index to synchronize. Must be a Delta Sync Index.</td>
+    <td>Triggers a synchronization process for a specified vector index.</td>
 </tr>
 <tr>
     <td><a href="#upsert_data_vector_index"><CopyableCode code="upsert_data_vector_index" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-index_name"><code>index_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-inputs_json"><code>inputs_json</code></a></td>
     <td></td>
-    <td>Handles the upserting of data into a specified vector index.<br /><br />:param index_name: str<br />  Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.<br />:param inputs_json: str<br />  JSON string representing the data to be upserted.<br /><br />:returns: :class:`UpsertDataVectorIndexResponse`</td>
+    <td>Handles the upserting of data into a specified vector index.</td>
 </tr>
 </tbody>
 </table>
@@ -390,7 +390,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get an index.<br /><br />:param index_name: str<br />  Name of the index<br />:param ensure_reranker_compatible: bool (optional)<br />  If true, the URL returned for the index is guaranteed to be compatible with the reranker. Currently<br />  this means we return the CP URL regardless of how the index is being accessed. If not set or set to<br />  false, the URL may still be compatible with the reranker depending on what URL we return.<br /><br />:returns: :class:`VectorIndex`
+Get an index.
 
 ```sql
 SELECT
@@ -411,7 +411,7 @@ AND ensure_reranker_compatible = '{{ ensure_reranker_compatible }}'
 </TabItem>
 <TabItem value="list">
 
-List all indexes in the given endpoint.<br /><br />:param endpoint_name: str<br />  Name of the endpoint<br />:param page_token: str (optional)<br />  Token for pagination<br /><br />:returns: Iterator over :class:`MiniVectorIndex`
+List all indexes in the given endpoint.
 
 ```sql
 SELECT
@@ -441,7 +441,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a new index.<br /><br />:param name: str<br />  Name of the index<br />:param endpoint_name: str<br />  Name of the endpoint to be used for serving the index<br />:param primary_key: str<br />  Primary key of the index<br />:param index_type: :class:`VectorIndexType`<br />:param delta_sync_index_spec: :class:`DeltaSyncVectorIndexSpecRequest` (optional)<br />  Specification for Delta Sync Index. Required if `index_type` is `DELTA_SYNC`.<br />:param direct_access_index_spec: :class:`DirectAccessVectorIndexSpec` (optional)<br />  Specification for Direct Vector Access Index. Required if `index_type` is `DIRECT_ACCESS`.<br /><br />:returns: :class:`VectorIndex`
+Create a new index.
 
 ```sql
 INSERT INTO databricks_workspace.vectorsearch.indexes (
@@ -519,7 +519,7 @@ status
 >
 <TabItem value="delete">
 
-Delete an index.<br /><br />:param index_name: str<br />  Name of the index
+Delete an index.
 
 ```sql
 DELETE FROM databricks_workspace.vectorsearch.indexes
@@ -546,7 +546,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="delete_data_vector_index">
 
-Handles the deletion of data from a specified vector index.<br /><br />:param index_name: str<br />  Name of the vector index where data is to be deleted. Must be a Direct Vector Access Index.<br />:param primary_keys: List[str]<br />  List of primary keys for the data to be deleted.<br /><br />:returns: :class:`DeleteDataVectorIndexResponse`
+Handles the deletion of data from a specified vector index.
 
 ```sql
 EXEC databricks_workspace.vectorsearch.indexes.delete_data_vector_index 
@@ -558,7 +558,7 @@ EXEC databricks_workspace.vectorsearch.indexes.delete_data_vector_index
 </TabItem>
 <TabItem value="query_index">
 
-Query the specified vector index.<br /><br />:param index_name: str<br />  Name of the vector index to query.<br />:param columns: List[str]<br />  List of column names to include in the response.<br />:param columns_to_rerank: List[str] (optional)<br />  Column names used to retrieve data to send to the reranker.<br />:param filters_json: str (optional)<br />  JSON string representing query filters.<br /><br />  Example filters:<br /><br />  - `&#123;"id <": 5&#125;`: Filter for id less than 5. - `&#123;"id >": 5&#125;`: Filter for id greater than 5. - `&#123;"id<br />  <=": 5&#125;`: Filter for id less than equal to 5. - `&#123;"id >=": 5&#125;`: Filter for id greater than equal to<br />  5. - `&#123;"id": 5&#125;`: Filter for id equal to 5.<br />:param num_results: int (optional)<br />  Number of results to return. Defaults to 10.<br />:param query_text: str (optional)<br />  Query text. Required for Delta Sync Index using model endpoint.<br />:param query_type: str (optional)<br />  The query type to use. Choices are `ANN` and `HYBRID` and `FULL_TEXT`. Defaults to `ANN`.<br />:param query_vector: List[float] (optional)<br />  Query vector. Required for Direct Vector Access Index and Delta Sync Index using self-managed<br />  vectors.<br />:param reranker: :class:`RerankerConfig` (optional)<br />  If set, the top 50 results are reranked with the Databricks Reranker model before returning the<br />  `num_results` results to the user. The setting `columns_to_rerank` selects which columns are used<br />  for reranking. For each datapoint, the columns selected are concatenated before being sent to the<br />  reranking model. See https://docs.databricks.com/aws/en/vector-search/query-vector-search#rerank for<br />  more information.<br />:param score_threshold: float (optional)<br />  Threshold for the approximate nearest neighbor search. Defaults to 0.0.<br /><br />:returns: :class:`QueryVectorIndexResponse`
+Query the specified vector index.
 
 ```sql
 EXEC databricks_workspace.vectorsearch.indexes.query_index 
@@ -581,7 +581,7 @@ EXEC databricks_workspace.vectorsearch.indexes.query_index
 </TabItem>
 <TabItem value="query_next_page">
 
-Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request<br />to fetch next page of results.<br /><br />:param index_name: str<br />  Name of the vector index to query.<br />:param endpoint_name: str (optional)<br />  Name of the endpoint.<br />:param page_token: str (optional)<br />  Page token returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` API.<br /><br />:returns: :class:`QueryVectorIndexResponse`
+Use `next_page_token` returned from previous `QueryVectorIndex` or `QueryVectorIndexNextPage` request
 
 ```sql
 EXEC databricks_workspace.vectorsearch.indexes.query_next_page 
@@ -597,7 +597,7 @@ EXEC databricks_workspace.vectorsearch.indexes.query_next_page
 </TabItem>
 <TabItem value="scan_index">
 
-Scan the specified vector index and return the first `num_results` entries after the exclusive<br />`primary_key`.<br /><br />:param index_name: str<br />  Name of the vector index to scan.<br />:param last_primary_key: str (optional)<br />  Primary key of the last entry returned in the previous scan.<br />:param num_results: int (optional)<br />  Number of results to return. Defaults to 10.<br /><br />:returns: :class:`ScanVectorIndexResponse`
+Scan the specified vector index and return the first `num_results` entries after the exclusive
 
 ```sql
 EXEC databricks_workspace.vectorsearch.indexes.scan_index 
@@ -613,7 +613,7 @@ EXEC databricks_workspace.vectorsearch.indexes.scan_index
 </TabItem>
 <TabItem value="sync_index">
 
-Triggers a synchronization process for a specified vector index.<br /><br />:param index_name: str<br />  Name of the vector index to synchronize. Must be a Delta Sync Index.
+Triggers a synchronization process for a specified vector index.
 
 ```sql
 EXEC databricks_workspace.vectorsearch.indexes.sync_index 
@@ -624,7 +624,7 @@ EXEC databricks_workspace.vectorsearch.indexes.sync_index
 </TabItem>
 <TabItem value="upsert_data_vector_index">
 
-Handles the upserting of data into a specified vector index.<br /><br />:param index_name: str<br />  Name of the vector index where data is to be upserted. Must be a Direct Vector Access Index.<br />:param inputs_json: str<br />  JSON string representing the data to be upserted.<br /><br />:returns: :class:`UpsertDataVectorIndexResponse`
+Handles the upserting of data into a specified vector index.
 
 ```sql
 EXEC databricks_workspace.vectorsearch.indexes.upsert_data_vector_index 

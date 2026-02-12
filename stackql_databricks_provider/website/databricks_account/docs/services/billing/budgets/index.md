@@ -43,110 +43,98 @@ The following fields are returned by `SELECT` queries:
 
 <SchemaTable fields={[
   {
-    "name": "budget",
-    "type": "object",
-    "description": "",
+    "name": "account_id",
+    "type": "string",
+    "description": ""
+  },
+  {
+    "name": "budget_configuration_id",
+    "type": "string",
+    "description": "Databricks budget configuration ID."
+  },
+  {
+    "name": "display_name",
+    "type": "string",
+    "description": "Human-readable name of budget configuration. Max Length: 128"
+  },
+  {
+    "name": "alert_configurations",
+    "type": "array",
+    "description": "Alerts to configure when this budget is in a triggered state. Budgets must have exactly one alert configuration.",
     "children": [
       {
-        "name": "account_id",
-        "type": "string",
-        "description": ""
-      },
-      {
-        "name": "alert_configurations",
+        "name": "action_configurations",
         "type": "array",
-        "description": "Alerts to configure when this budget is in a triggered state. Budgets must have exactly one alert configuration.",
+        "description": "",
         "children": [
           {
-            "name": "action_configurations",
-            "type": "array",
-            "description": "",
-            "children": [
-              {
-                "name": "action_configuration_id",
-                "type": "string",
-                "description": ""
-              },
-              {
-                "name": "action_type",
-                "type": "string",
-                "description": "The type of the action."
-              },
-              {
-                "name": "target",
-                "type": "string",
-                "description": "Target for the action. For example, an email address."
-              }
-            ]
+            "name": "action_configuration_id",
+            "type": "string",
+            "description": ""
           },
           {
-            "name": "alert_configuration_id",
+            "name": "action_type",
             "type": "string",
-            "description": "Databricks alert configuration ID."
+            "description": "The type of the action."
           },
           {
-            "name": "quantity_threshold",
+            "name": "target",
             "type": "string",
-            "description": "The threshold for the budget alert to determine if it is in a triggered state. The number is evaluated based on `quantity_type`."
-          },
-          {
-            "name": "quantity_type",
-            "type": "string",
-            "description": "The way to calculate cost for this budget alert. This is what `quantity_threshold` is measured in."
-          },
-          {
-            "name": "time_period",
-            "type": "string",
-            "description": "The time window of usage data for the budget."
-          },
-          {
-            "name": "trigger_type",
-            "type": "string",
-            "description": "The evaluation method to determine when this budget alert is in a triggered state."
+            "description": "Target for the action. For example, an email address."
           }
         ]
       },
       {
-        "name": "budget_configuration_id",
+        "name": "alert_configuration_id",
         "type": "string",
-        "description": "Databricks budget configuration ID."
+        "description": "Databricks alert configuration ID."
       },
       {
-        "name": "create_time",
-        "type": "integer",
-        "description": "Creation time of this budget configuration."
-      },
-      {
-        "name": "display_name",
+        "name": "quantity_threshold",
         "type": "string",
-        "description": "Human-readable name of budget configuration. Max Length: 128"
+        "description": "The threshold for the budget alert to determine if it is in a triggered state. The number is evaluated based on `quantity_type`."
       },
       {
-        "name": "filter",
-        "type": "object",
-        "description": "Configured filters for this budget. These are applied to your account's usage to limit the scope of what is considered for this budget. Leave empty to include all usage for this account. All provided filters must be matched for usage to be included.",
+        "name": "quantity_type",
+        "type": "string",
+        "description": "The way to calculate cost for this budget alert. This is what `quantity_threshold` is measured in."
+      },
+      {
+        "name": "time_period",
+        "type": "string",
+        "description": "The time window of usage data for the budget."
+      },
+      {
+        "name": "trigger_type",
+        "type": "string",
+        "description": "The evaluation method to determine when this budget alert is in a triggered state."
+      }
+    ]
+  },
+  {
+    "name": "create_time",
+    "type": "integer",
+    "description": "Creation time of this budget configuration."
+  },
+  {
+    "name": "filter",
+    "type": "object",
+    "description": "Configured filters for this budget. These are applied to your account's usage to limit the scope of what is considered for this budget. Leave empty to include all usage for this account. All provided filters must be matched for usage to be included.",
+    "children": [
+      {
+        "name": "tags",
+        "type": "array",
+        "description": "",
         "children": [
           {
-            "name": "tags",
-            "type": "array",
-            "description": "",
-            "children": [
-              {
-                "name": "key",
-                "type": "string",
-                "description": ""
-              },
-              {
-                "name": "value",
-                "type": "object",
-                "description": ""
-              }
-            ]
+            "name": "key",
+            "type": "string",
+            "description": ""
           },
           {
-            "name": "workspace_id",
+            "name": "value",
             "type": "object",
-            "description": "If provided, usage must match with the provided Databricks workspace IDs.",
+            "description": "",
             "children": [
               {
                 "name": "operator",
@@ -163,11 +151,28 @@ The following fields are returned by `SELECT` queries:
         ]
       },
       {
-        "name": "update_time",
-        "type": "integer",
-        "description": "Update time of this budget configuration."
+        "name": "workspace_id",
+        "type": "object",
+        "description": "If provided, usage must match with the provided Databricks workspace IDs.",
+        "children": [
+          {
+            "name": "operator",
+            "type": "string",
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+          },
+          {
+            "name": "values",
+            "type": "array",
+            "description": ""
+          }
+        ]
       }
     ]
+  },
+  {
+    "name": "update_time",
+    "type": "integer",
+    "description": "Update time of this budget configuration."
   }
 ]} />
 </TabItem>
@@ -409,7 +414,13 @@ Gets a budget configuration for an account. Both account and budget configuratio
 
 ```sql
 SELECT
-budget
+account_id,
+budget_configuration_id,
+display_name,
+alert_configurations,
+create_time,
+filter,
+update_time
 FROM databricks_account.billing.budgets
 WHERE account_id = '{{ account_id }}' -- required
 AND budget_id = '{{ budget_id }}' -- required

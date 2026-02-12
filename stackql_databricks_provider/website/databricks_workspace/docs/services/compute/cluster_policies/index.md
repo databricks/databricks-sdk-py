@@ -337,35 +337,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a cluster policy entity. Creation and editing is available to admins only.<br /><br />:param policy_id: str<br />  Canonical unique identifier for the Cluster Policy.<br /><br />:returns: :class:`Policy`</td>
+    <td>Get a cluster policy entity. Creation and editing is available to admins only.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-sort_column"><code>sort_column</code></a>, <a href="#parameter-sort_order"><code>sort_order</code></a></td>
-    <td>Returns a list of policies accessible by the requesting user.<br /><br />:param sort_column: :class:`ListSortColumn` (optional)<br />  The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort result list by policy<br />  creation time. * `POLICY_NAME` - Sort result list by policy name.<br />:param sort_order: :class:`ListSortOrder` (optional)<br />  The order in which the policies get listed. * `DESC` - Sort result list in descending order. * `ASC`<br />  - Sort result list in ascending order.<br /><br />:returns: Iterator over :class:`Policy`</td>
+    <td>Returns a list of policies accessible by the requesting user.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates a new policy with prescribed settings.<br /><br />:param definition: str (optional)<br />  Policy definition document expressed in [Databricks Cluster Policy Definition Language].<br /><br />  [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html<br />:param description: str (optional)<br />  Additional human-readable description of the cluster policy.<br />:param libraries: List[:class:`Library`] (optional)<br />  A list of libraries to be installed on the next cluster restart that uses this policy. The maximum<br />  number of libraries is 500.<br />:param max_clusters_per_user: int (optional)<br />  Max number of clusters per user that can be active using this policy. If not present, there is no<br />  max limit.<br />:param name: str (optional)<br />  Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100<br />  characters.<br />:param policy_family_definition_overrides: str (optional)<br />  Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON<br />  document must be passed as a string and cannot be embedded in the requests.<br /><br />  You can use this to customize the policy definition inherited from the policy family. Policy rules<br />  specified here are merged into the inherited policy definition.<br /><br />  [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html<br />:param policy_family_id: str (optional)<br />  ID of the policy family. The cluster policy's policy definition inherits the policy family's policy<br />  definition.<br /><br />  Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the<br />  policy definition.<br /><br />:returns: :class:`CreatePolicyResponse`</td>
+    <td>Creates a new policy with prescribed settings.</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__policy_id"><code>data__policy_id</code></a></td>
     <td></td>
-    <td>Update an existing policy for cluster. This operation may make some clusters governed by the previous<br />policy invalid.<br /><br />:param policy_id: str<br />  The ID of the policy to update.<br />:param definition: str (optional)<br />  Policy definition document expressed in [Databricks Cluster Policy Definition Language].<br /><br />  [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html<br />:param description: str (optional)<br />  Additional human-readable description of the cluster policy.<br />:param libraries: List[:class:`Library`] (optional)<br />  A list of libraries to be installed on the next cluster restart that uses this policy. The maximum<br />  number of libraries is 500.<br />:param max_clusters_per_user: int (optional)<br />  Max number of clusters per user that can be active using this policy. If not present, there is no<br />  max limit.<br />:param name: str (optional)<br />  Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100<br />  characters.<br />:param policy_family_definition_overrides: str (optional)<br />  Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON<br />  document must be passed as a string and cannot be embedded in the requests.<br /><br />  You can use this to customize the policy definition inherited from the policy family. Policy rules<br />  specified here are merged into the inherited policy definition.<br /><br />  [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html<br />:param policy_family_id: str (optional)<br />  ID of the policy family. The cluster policy's policy definition inherits the policy family's policy<br />  definition.<br /><br />  Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the<br />  policy definition.</td>
+    <td>Update an existing policy for cluster. This operation may make some clusters governed by the previous</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.<br /><br />:param policy_id: str<br />  The ID of the policy to delete.</td>
+    <td>Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.</td>
 </tr>
 </tbody>
 </table>
@@ -417,7 +417,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a cluster policy entity. Creation and editing is available to admins only.<br /><br />:param policy_id: str<br />  Canonical unique identifier for the Cluster Policy.<br /><br />:returns: :class:`Policy`
+Get a cluster policy entity. Creation and editing is available to admins only.
 
 ```sql
 SELECT
@@ -440,7 +440,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Returns a list of policies accessible by the requesting user.<br /><br />:param sort_column: :class:`ListSortColumn` (optional)<br />  The cluster policy attribute to sort by. * `POLICY_CREATION_TIME` - Sort result list by policy<br />  creation time. * `POLICY_NAME` - Sort result list by policy name.<br />:param sort_order: :class:`ListSortOrder` (optional)<br />  The order in which the policies get listed. * `DESC` - Sort result list in descending order. * `ASC`<br />  - Sort result list in ascending order.<br /><br />:returns: Iterator over :class:`Policy`
+Returns a list of policies accessible by the requesting user.
 
 ```sql
 SELECT
@@ -476,7 +476,7 @@ AND sort_order = '{{ sort_order }}'
 >
 <TabItem value="create">
 
-Creates a new policy with prescribed settings.<br /><br />:param definition: str (optional)<br />  Policy definition document expressed in [Databricks Cluster Policy Definition Language].<br /><br />  [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html<br />:param description: str (optional)<br />  Additional human-readable description of the cluster policy.<br />:param libraries: List[:class:`Library`] (optional)<br />  A list of libraries to be installed on the next cluster restart that uses this policy. The maximum<br />  number of libraries is 500.<br />:param max_clusters_per_user: int (optional)<br />  Max number of clusters per user that can be active using this policy. If not present, there is no<br />  max limit.<br />:param name: str (optional)<br />  Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100<br />  characters.<br />:param policy_family_definition_overrides: str (optional)<br />  Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON<br />  document must be passed as a string and cannot be embedded in the requests.<br /><br />  You can use this to customize the policy definition inherited from the policy family. Policy rules<br />  specified here are merged into the inherited policy definition.<br /><br />  [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html<br />:param policy_family_id: str (optional)<br />  ID of the policy family. The cluster policy's policy definition inherits the policy family's policy<br />  definition.<br /><br />  Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the<br />  policy definition.<br /><br />:returns: :class:`CreatePolicyResponse`
+Creates a new policy with prescribed settings.
 
 ```sql
 INSERT INTO databricks_workspace.compute.cluster_policies (
@@ -555,7 +555,7 @@ policy_id
 >
 <TabItem value="replace">
 
-Update an existing policy for cluster. This operation may make some clusters governed by the previous<br />policy invalid.<br /><br />:param policy_id: str<br />  The ID of the policy to update.<br />:param definition: str (optional)<br />  Policy definition document expressed in [Databricks Cluster Policy Definition Language].<br /><br />  [Databricks Cluster Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html<br />:param description: str (optional)<br />  Additional human-readable description of the cluster policy.<br />:param libraries: List[:class:`Library`] (optional)<br />  A list of libraries to be installed on the next cluster restart that uses this policy. The maximum<br />  number of libraries is 500.<br />:param max_clusters_per_user: int (optional)<br />  Max number of clusters per user that can be active using this policy. If not present, there is no<br />  max limit.<br />:param name: str (optional)<br />  Cluster Policy name requested by the user. This has to be unique. Length must be between 1 and 100<br />  characters.<br />:param policy_family_definition_overrides: str (optional)<br />  Policy definition JSON document expressed in [Databricks Policy Definition Language]. The JSON<br />  document must be passed as a string and cannot be embedded in the requests.<br /><br />  You can use this to customize the policy definition inherited from the policy family. Policy rules<br />  specified here are merged into the inherited policy definition.<br /><br />  [Databricks Policy Definition Language]: https://docs.databricks.com/administration-guide/clusters/policy-definition.html<br />:param policy_family_id: str (optional)<br />  ID of the policy family. The cluster policy's policy definition inherits the policy family's policy<br />  definition.<br /><br />  Cannot be used with `definition`. Use `policy_family_definition_overrides` instead to customize the<br />  policy definition.
+Update an existing policy for cluster. This operation may make some clusters governed by the previous
 
 ```sql
 REPLACE databricks_workspace.compute.cluster_policies
@@ -586,7 +586,7 @@ AND data__policy_id = '{{ policy_id }}' --required;
 >
 <TabItem value="delete">
 
-Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.<br /><br />:param policy_id: str<br />  The ID of the policy to delete.
+Delete a policy for a cluster. Clusters governed by this policy can still run, but cannot be edited.
 
 ```sql
 DELETE FROM databricks_workspace.compute.cluster_policies

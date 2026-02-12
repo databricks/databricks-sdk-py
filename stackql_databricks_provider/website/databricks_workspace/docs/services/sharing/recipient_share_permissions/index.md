@@ -99,7 +99,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets the share permissions for the specified Recipient. The caller must have the **USE_RECIPIENT**<br />privilege on the metastore or be the owner of the Recipient.<br /><br />:param name: str<br />  The name of the Recipient.<br />:param max_results: int (optional)<br />  Maximum number of permissions to return. - when set to 0, the page length is set to a server<br />  configured value (recommended); - when set to a value greater than 0, the page length is the minimum<br />  of this value and a server configured value; - when set to a value less than 0, an invalid parameter<br />  error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The<br />  number of returned permissions might be less than the specified max_results size, even zero. The<br />  only definitive indication that no further permissions can be fetched is when the next_page_token is<br />  unset from the response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: :class:`GetRecipientSharePermissionsResponse`</td>
+    <td>Gets the share permissions for the specified Recipient. The caller must have the **USE_RECIPIENT**</td>
 </tr>
 </tbody>
 </table>
@@ -150,7 +150,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Gets the share permissions for the specified Recipient. The caller must have the **USE_RECIPIENT**<br />privilege on the metastore or be the owner of the Recipient.<br /><br />:param name: str<br />  The name of the Recipient.<br />:param max_results: int (optional)<br />  Maximum number of permissions to return. - when set to 0, the page length is set to a server<br />  configured value (recommended); - when set to a value greater than 0, the page length is the minimum<br />  of this value and a server configured value; - when set to a value less than 0, an invalid parameter<br />  error is returned; - If not set, all valid permissions are returned (not recommended). - Note: The<br />  number of returned permissions might be less than the specified max_results size, even zero. The<br />  only definitive indication that no further permissions can be fetched is when the next_page_token is<br />  unset from the response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: :class:`GetRecipientSharePermissionsResponse`
+Gets the share permissions for the specified Recipient. The caller must have the **USE_RECIPIENT**
 
 ```sql
 SELECT

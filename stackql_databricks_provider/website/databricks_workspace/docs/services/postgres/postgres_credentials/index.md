@@ -55,7 +55,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-endpoint"><code>endpoint</code></a></td>
     <td></td>
-    <td>Generate OAuth credentials for a Postgres database.<br /><br />:param endpoint: str<br />  This field is not yet supported. The endpoint for which this credential will be generated. Format:<br />  projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;/endpoints/&#123;endpoint_id&#125;<br />:param claims: List[:class:`RequestedClaims`] (optional)<br />  The returned token will be scoped to UC tables with the specified permissions.<br /><br />:returns: :class:`DatabaseCredential`</td>
+    <td>Generate OAuth credentials for a Postgres database.</td>
 </tr>
 </tbody>
 </table>
@@ -91,7 +91,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="generate">
 
-Generate OAuth credentials for a Postgres database.<br /><br />:param endpoint: str<br />  This field is not yet supported. The endpoint for which this credential will be generated. Format:<br />  projects/&#123;project_id&#125;/branches/&#123;branch_id&#125;/endpoints/&#123;endpoint_id&#125;<br />:param claims: List[:class:`RequestedClaims`] (optional)<br />  The returned token will be scoped to UC tables with the specified permissions.<br /><br />:returns: :class:`DatabaseCredential`
+Generate OAuth credentials for a Postgres database.
 
 ```sql
 EXEC databricks_workspace.postgres.postgres_credentials.generate 

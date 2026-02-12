@@ -2777,7 +2777,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-run_id"><code>run_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Retrieve the output and metadata of a single task run. When a notebook task returns a value through<br />the `dbutils.notebook.exit()` call, you can use this endpoint to retrieve that value. Databricks<br />restricts this API to returning the first 5 MB of the output. To return a larger result, you can store<br />job results in a cloud storage service.<br /><br />This endpoint validates that the __run_id__ parameter is valid and returns an HTTP status code 400 if<br />the __run_id__ parameter is invalid. Runs are automatically removed after 60 days. If you to want to<br />reference them beyond 60 days, you must save old run results before they expire.<br /><br />:param run_id: int<br />  The canonical identifier for the run.<br /><br />:returns: :class:`RunOutput`</td>
+    <td>Retrieve the output and metadata of a single task run. When a notebook task returns a value through</td>
 </tr>
 </tbody>
 </table>
@@ -2818,7 +2818,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_output">
 
-Retrieve the output and metadata of a single task run. When a notebook task returns a value through<br />the `dbutils.notebook.exit()` call, you can use this endpoint to retrieve that value. Databricks<br />restricts this API to returning the first 5 MB of the output. To return a larger result, you can store<br />job results in a cloud storage service.<br /><br />This endpoint validates that the __run_id__ parameter is valid and returns an HTTP status code 400 if<br />the __run_id__ parameter is invalid. Runs are automatically removed after 60 days. If you to want to<br />reference them beyond 60 days, you must save old run results before they expire.<br /><br />:param run_id: int<br />  The canonical identifier for the run.<br /><br />:returns: :class:`RunOutput`
+Retrieve the output and metadata of a single task run. When a notebook task returns a value through
 
 ```sql
 SELECT

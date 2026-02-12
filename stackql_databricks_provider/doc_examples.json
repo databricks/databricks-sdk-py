@@ -10,7 +10,7 @@
         {
           "label": "Export to CSV",
           "value": "export_to_csv",
-          "content": "Export billable usage data to a local CSV file using the StackQL CLI:\n\n```bash\n./stackql exec \\\n  --registry=\"${REG_STR}\" \\\n  -o text \\\n  --hideheaders \\\n  -f billable_usage.csv \\\n  \"SELECT contents \n  FROM databricks_account.billing.billable_usage \n  WHERE start_month = '2025-12' \n  AND end_month = '2026-01' \n  AND account_id = 'your-account-id'\"\n```\n\nThis downloads the usage data in CSV format directly from the Databricks API."
+          "content": "Export billable usage data to a local CSV file using the StackQL CLI:\n\n```bash\n./stackql exec \\\n  -o text \\\n  --hideheaders \\\n  -f billable_usage.csv \\\n  \"SELECT contents \n  FROM databricks_account.billing.billable_usage \n  WHERE start_month = '2025-12' \n  AND end_month = '2026-01' \n  AND account_id = 'your-account-id'\"\n```\n\nThis downloads the usage data in CSV format directly from the Databricks API."
         }
       ]
     }

@@ -59,7 +59,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       }
     ]
   }
@@ -87,21 +87,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
-    <td>Gets the restrict workspace admins setting.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`RestrictWorkspaceAdminsSetting`</td>
+    <td>Gets the restrict workspace admins setting.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__allow_missing"><code>data__allow_missing</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a>, <a href="#parameter-data__field_mask"><code>data__field_mask</code></a></td>
     <td></td>
-    <td>Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in<br />`PATCH` requests (as part of the setting field). The etag can be retrieved by making a GET request<br />before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the<br />request must be retried by using the fresh etag in the 409 response.<br /><br />:param allow_missing: bool<br />  This should always be set to true for Settings API. Added for AIP compliance.<br />:param setting: :class:`RestrictWorkspaceAdminsSetting`<br />:param field_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`RestrictWorkspaceAdminsSetting`</td>
+    <td>Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
-    <td>Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be<br />provided in `DELETE` requests (as a query parameter). The etag can be retrieved by making a `GET`<br />request before the DELETE request. If the setting is updated/deleted concurrently, `DELETE` fails with<br />409 and the request must be retried by using the fresh etag in the 409 response.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`DeleteRestrictWorkspaceAdminsSettingResponse`</td>
+    <td>Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be</td>
 </tr>
 </tbody>
 </table>
@@ -142,7 +142,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the restrict workspace admins setting.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`RestrictWorkspaceAdminsSetting`
+Gets the restrict workspace admins setting.
 
 ```sql
 SELECT
@@ -168,7 +168,7 @@ AND etag = '{{ etag }}'
 >
 <TabItem value="update">
 
-Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in<br />`PATCH` requests (as part of the setting field). The etag can be retrieved by making a GET request<br />before the `PATCH` request. If the setting is updated concurrently, `PATCH` fails with 409 and the<br />request must be retried by using the fresh etag in the 409 response.<br /><br />:param allow_missing: bool<br />  This should always be set to true for Settings API. Added for AIP compliance.<br />:param setting: :class:`RestrictWorkspaceAdminsSetting`<br />:param field_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`RestrictWorkspaceAdminsSetting`
+Updates the restrict workspace admins setting for the workspace. A fresh etag needs to be provided in
 
 ```sql
 UPDATE databricks_workspace.settings.restrict_workspace_admins
@@ -200,7 +200,7 @@ restrict_workspace_admins;
 >
 <TabItem value="delete">
 
-Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be<br />provided in `DELETE` requests (as a query parameter). The etag can be retrieved by making a `GET`<br />request before the DELETE request. If the setting is updated/deleted concurrently, `DELETE` fails with<br />409 and the request must be retried by using the fresh etag in the 409 response.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`DeleteRestrictWorkspaceAdminsSettingResponse`
+Reverts the restrict workspace admins setting status for the workspace. A fresh etag needs to be
 
 ```sql
 DELETE FROM databricks_workspace.settings.restrict_workspace_admins

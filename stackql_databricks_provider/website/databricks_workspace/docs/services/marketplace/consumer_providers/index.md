@@ -218,21 +218,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a provider in the Databricks Marketplace with at least one visible listing.<br /><br />:param id: str<br /><br />:returns: :class:`GetProviderResponse`</td>
+    <td>Get a provider in the Databricks Marketplace with at least one visible listing.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-is_featured"><code>is_featured</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List all providers in the Databricks Marketplace with at least one visible listing.<br /><br />:param is_featured: bool (optional)<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ProviderInfo`</td>
+    <td>List all providers in the Databricks Marketplace with at least one visible listing.</td>
 </tr>
 <tr>
     <td><a href="#batch_get"><CopyableCode code="batch_get" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-ids"><code>ids</code></a></td>
-    <td>Batch get a provider in the Databricks Marketplace with at least one visible listing.<br /><br />:param ids: List[str] (optional)<br /><br />:returns: :class:`BatchGetProvidersResponse`</td>
+    <td>Batch get a provider in the Databricks Marketplace with at least one visible listing.</td>
 </tr>
 </tbody>
 </table>
@@ -294,7 +294,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a provider in the Databricks Marketplace with at least one visible listing.<br /><br />:param id: str<br /><br />:returns: :class:`GetProviderResponse`
+Get a provider in the Databricks Marketplace with at least one visible listing.
 
 ```sql
 SELECT
@@ -307,7 +307,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List all providers in the Databricks Marketplace with at least one visible listing.<br /><br />:param is_featured: bool (optional)<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ProviderInfo`
+List all providers in the Databricks Marketplace with at least one visible listing.
 
 ```sql
 SELECT
@@ -346,7 +346,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="batch_get">
 
-Batch get a provider in the Databricks Marketplace with at least one visible listing.<br /><br />:param ids: List[str] (optional)<br /><br />:returns: :class:`BatchGetProvidersResponse`
+Batch get a provider in the Databricks Marketplace with at least one visible listing.
 
 ```sql
 EXEC databricks_workspace.marketplace.consumer_providers.batch_get 

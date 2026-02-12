@@ -275,35 +275,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the<br />entire metastore. Only the creator of the Kafka config can delete it.<br /><br />:param name: str<br />  Name of the Kafka config to get.<br /><br />:returns: :class:`KafkaConfig`</td>
+    <td>Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List Kafka configs. During PrPr, Kafka configs can be read and used when creating features under the<br />entire metastore. Only the creator of the Kafka config can delete it.<br /><br />:param page_size: int (optional)<br />  The maximum number of results to return.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous query.<br /><br />:returns: Iterator over :class:`KafkaConfig`</td>
+    <td>List Kafka configs. During PrPr, Kafka configs can be read and used when creating features under the</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__kafka_config"><code>data__kafka_config</code></a></td>
     <td></td>
-    <td>Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under<br />the entire metastore. Only the creator of the Kafka config can delete it.<br /><br />:param kafka_config: :class:`KafkaConfig`<br /><br />:returns: :class:`KafkaConfig`</td>
+    <td>Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__kafka_config"><code>data__kafka_config</code></a></td>
     <td></td>
-    <td>Update a Kafka config. During PrPr, Kafka configs can be read and used when creating features under<br />the entire metastore. Only the creator of the Kafka config can delete it.<br /><br />:param name: str<br />  Name that uniquely identifies this Kafka config within the metastore. This will be the identifier<br />  used from the Feature object to reference these configs for a feature. Can be distinct from topic<br />  name.<br />:param kafka_config: :class:`KafkaConfig`<br />  The Kafka config to update.<br />:param update_mask: FieldMask<br />  The list of fields to update.<br /><br />:returns: :class:`KafkaConfig`</td>
+    <td>Update a Kafka config. During PrPr, Kafka configs can be read and used when creating features under</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under<br />the entire metastore. Only the creator of the Kafka config can delete it.<br /><br />:param name: str<br />  Name of the Kafka config to delete.</td>
+    <td>Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under</td>
 </tr>
 </tbody>
 </table>
@@ -360,7 +360,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the<br />entire metastore. Only the creator of the Kafka config can delete it.<br /><br />:param name: str<br />  Name of the Kafka config to get.<br /><br />:returns: :class:`KafkaConfig`
+Get a Kafka config. During PrPr, Kafka configs can be read and used when creating features under the
 
 ```sql
 SELECT
@@ -380,7 +380,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List Kafka configs. During PrPr, Kafka configs can be read and used when creating features under the<br />entire metastore. Only the creator of the Kafka config can delete it.<br /><br />:param page_size: int (optional)<br />  The maximum number of results to return.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page based on a previous query.<br /><br />:returns: Iterator over :class:`KafkaConfig`
+List Kafka configs. During PrPr, Kafka configs can be read and used when creating features under the
 
 ```sql
 SELECT
@@ -413,7 +413,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under<br />the entire metastore. Only the creator of the Kafka config can delete it.<br /><br />:param kafka_config: :class:`KafkaConfig`<br /><br />:returns: :class:`KafkaConfig`
+Create a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
 
 ```sql
 INSERT INTO databricks_workspace.ml.feature_kafka_configs (
@@ -463,7 +463,7 @@ value_schema
 >
 <TabItem value="update">
 
-Update a Kafka config. During PrPr, Kafka configs can be read and used when creating features under<br />the entire metastore. Only the creator of the Kafka config can delete it.<br /><br />:param name: str<br />  Name that uniquely identifies this Kafka config within the metastore. This will be the identifier<br />  used from the Feature object to reference these configs for a feature. Can be distinct from topic<br />  name.<br />:param kafka_config: :class:`KafkaConfig`<br />  The Kafka config to update.<br />:param update_mask: FieldMask<br />  The list of fields to update.<br /><br />:returns: :class:`KafkaConfig`
+Update a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
 
 ```sql
 UPDATE databricks_workspace.ml.feature_kafka_configs
@@ -498,7 +498,7 @@ value_schema;
 >
 <TabItem value="delete">
 
-Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under<br />the entire metastore. Only the creator of the Kafka config can delete it.<br /><br />:param name: str<br />  Name of the Kafka config to delete.
+Delete a Kafka config. During PrPr, Kafka configs can be read and used when creating features under
 
 ```sql
 DELETE FROM databricks_workspace.ml.feature_kafka_configs

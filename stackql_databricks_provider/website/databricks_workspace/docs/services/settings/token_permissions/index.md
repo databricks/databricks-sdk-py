@@ -124,21 +124,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the permissions of all tokens. Tokens can inherit permissions from their root object.<br /><br /><br />:returns: :class:`TokenPermissions`</td>
+    <td>Gets the permissions of all tokens. Tokens can inherit permissions from their root object.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the permissions on all tokens. Tokens can inherit permissions from their root object.<br /><br />:param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)<br /><br />:returns: :class:`TokenPermissions`</td>
+    <td>Updates the permissions on all tokens. Tokens can inherit permissions from their root object.</td>
 </tr>
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct<br />permissions if none are specified. Objects can inherit permissions from their root object.<br /><br />:param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)<br /><br />:returns: :class:`TokenPermissions`</td>
+    <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct</td>
 </tr>
 </tbody>
 </table>
@@ -174,7 +174,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the permissions of all tokens. Tokens can inherit permissions from their root object.<br /><br /><br />:returns: :class:`TokenPermissions`
+Gets the permissions of all tokens. Tokens can inherit permissions from their root object.
 
 ```sql
 SELECT
@@ -199,7 +199,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="update">
 
-Updates the permissions on all tokens. Tokens can inherit permissions from their root object.<br /><br />:param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)<br /><br />:returns: :class:`TokenPermissions`
+Updates the permissions on all tokens. Tokens can inherit permissions from their root object.
 
 ```sql
 UPDATE databricks_workspace.settings.token_permissions
@@ -226,7 +226,7 @@ object_type;
 >
 <TabItem value="set">
 
-Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct<br />permissions if none are specified. Objects can inherit permissions from their root object.<br /><br />:param access_control_list: List[:class:`TokenAccessControlRequest`] (optional)<br /><br />:returns: :class:`TokenPermissions`
+Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
 
 ```sql
 REPLACE databricks_workspace.settings.token_permissions

@@ -85,7 +85,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "recipient_type",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "repo_path",
@@ -95,7 +95,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "token_detail",
@@ -103,7 +103,7 @@ The following fields are returned by `SELECT` queries:
     "description": "",
     "children": [
       {
-        "name": "bearer_token",
+        "name": "bearerToken",
         "type": "string",
         "description": ""
       },
@@ -113,12 +113,12 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "expiration_time",
+        "name": "expirationTime",
         "type": "string",
         "description": ""
       },
       {
-        "name": "share_credentials_version",
+        "name": "shareCredentialsVersion",
         "type": "integer",
         "description": "These field names must follow the delta sharing protocol. Original message: RetrieveToken.Response in managed-catalog/api/messages/recipient.proto"
       }
@@ -214,7 +214,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "recipient_type",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "repo_path",
@@ -224,7 +224,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "token_detail",
@@ -232,7 +232,7 @@ The following fields are returned by `SELECT` queries:
     "description": "",
     "children": [
       {
-        "name": "bearer_token",
+        "name": "bearerToken",
         "type": "string",
         "description": ""
       },
@@ -242,12 +242,12 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "expiration_time",
+        "name": "expirationTime",
         "type": "string",
         "description": ""
       },
       {
-        "name": "share_credentials_version",
+        "name": "shareCredentialsVersion",
         "type": "integer",
         "description": "These field names must follow the delta sharing protocol. Original message: RetrieveToken.Response in managed-catalog/api/messages/recipient.proto"
       }
@@ -319,35 +319,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List all installations for a particular listing.<br /><br />:param listing_id: str<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`InstallationDetail`</td>
+    <td>List all installations for a particular listing.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List all installations across all listings.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`InstallationDetail`</td>
+    <td>List all installations across all listings.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Install payload associated with a Databricks Marketplace listing.<br /><br />:param listing_id: str<br />:param accepted_consumer_terms: :class:`ConsumerTerms` (optional)<br />:param catalog_name: str (optional)<br />:param recipient_type: :class:`DeltaSharingRecipientType` (optional)<br />:param repo_detail: :class:`RepoInstallation` (optional)<br />  for git repo installations<br />:param share_name: str (optional)<br /><br />:returns: :class:`Installation`</td>
+    <td>Install payload associated with a Databricks Marketplace listing.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-installation_id"><code>installation_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__installation"><code>data__installation</code></a></td>
     <td></td>
-    <td>This is a update API that will update the part of the fields defined in the installation table as well<br />as interact with external services according to the fields not included in the installation table 1.<br />the token will be rotate if the rotateToken flag is true 2. the token will be forcibly rotate if the<br />rotateToken flag is true and the tokenInfo field is empty<br /><br />:param listing_id: str<br />:param installation_id: str<br />:param installation: :class:`InstallationDetail`<br />:param rotate_token: bool (optional)<br /><br />:returns: :class:`UpdateInstallationResponse`</td>
+    <td>This is a update API that will update the part of the fields defined in the installation table as well</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-installation_id"><code>installation_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Uninstall an installation associated with a Databricks Marketplace listing.<br /><br />:param listing_id: str<br />:param installation_id: str</td>
+    <td>Uninstall an installation associated with a Databricks Marketplace listing.</td>
 </tr>
 </tbody>
 </table>
@@ -404,7 +404,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list_for_listing">
 
-List all installations for a particular listing.<br /><br />:param listing_id: str<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`InstallationDetail`
+List all installations for a particular listing.
 
 ```sql
 SELECT
@@ -431,7 +431,7 @@ AND page_token = '{{ page_token }}'
 </TabItem>
 <TabItem value="list">
 
-List all installations across all listings.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`InstallationDetail`
+List all installations across all listings.
 
 ```sql
 SELECT
@@ -469,7 +469,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Install payload associated with a Databricks Marketplace listing.<br /><br />:param listing_id: str<br />:param accepted_consumer_terms: :class:`ConsumerTerms` (optional)<br />:param catalog_name: str (optional)<br />:param recipient_type: :class:`DeltaSharingRecipientType` (optional)<br />:param repo_detail: :class:`RepoInstallation` (optional)<br />  for git repo installations<br />:param share_name: str (optional)<br /><br />:returns: :class:`Installation`
+Install payload associated with a Databricks Marketplace listing.
 
 ```sql
 INSERT INTO databricks_workspace.marketplace.consumer_installations (
@@ -537,7 +537,7 @@ installation
 >
 <TabItem value="update">
 
-This is a update API that will update the part of the fields defined in the installation table as well<br />as interact with external services according to the fields not included in the installation table 1.<br />the token will be rotate if the rotateToken flag is true 2. the token will be forcibly rotate if the<br />rotateToken flag is true and the tokenInfo field is empty<br /><br />:param listing_id: str<br />:param installation_id: str<br />:param installation: :class:`InstallationDetail`<br />:param rotate_token: bool (optional)<br /><br />:returns: :class:`UpdateInstallationResponse`
+This is a update API that will update the part of the fields defined in the installation table as well
 
 ```sql
 REPLACE databricks_workspace.marketplace.consumer_installations
@@ -566,7 +566,7 @@ installation;
 >
 <TabItem value="delete">
 
-Uninstall an installation associated with a Databricks Marketplace listing.<br /><br />:param listing_id: str<br />:param installation_id: str
+Uninstall an installation associated with a Databricks Marketplace listing.
 
 ```sql
 DELETE FROM databricks_workspace.marketplace.consumer_installations

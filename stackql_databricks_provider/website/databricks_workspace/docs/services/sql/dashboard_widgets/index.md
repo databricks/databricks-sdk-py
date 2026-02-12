@@ -55,21 +55,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__dashboard_id"><code>data__dashboard_id</code></a>, <a href="#parameter-data__options"><code>data__options</code></a>, <a href="#parameter-data__width"><code>data__width</code></a></td>
     <td></td>
-    <td>Updates an existing widget<br /><br />:param id: str<br />  Widget ID returned by :method:dashboardwidgets/create<br />:param dashboard_id: str<br />  Dashboard ID returned by :method:dashboards/create.<br />:param options: :class:`WidgetOptions`<br />:param width: int<br />  Width of a widget<br />:param text: str (optional)<br />  If this is a textbox widget, the application displays this text. This field is ignored if the widget<br />  contains a visualization in the `visualization` field.<br />:param visualization_id: str (optional)<br />  Query Vizualization ID returned by :method:queryvisualizations/create.<br /><br />:returns: :class:`Widget`</td>
+    <td>Updates an existing widget</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__dashboard_id"><code>data__dashboard_id</code></a>, <a href="#parameter-data__options"><code>data__options</code></a>, <a href="#parameter-data__width"><code>data__width</code></a></td>
     <td></td>
-    <td>Adds a widget to a dashboard<br /><br />:param dashboard_id: str<br />  Dashboard ID returned by :method:dashboards/create.<br />:param options: :class:`WidgetOptions`<br />:param width: int<br />  Width of a widget<br />:param text: str (optional)<br />  If this is a textbox widget, the application displays this text. This field is ignored if the widget<br />  contains a visualization in the `visualization` field.<br />:param visualization_id: str (optional)<br />  Query Vizualization ID returned by :method:queryvisualizations/create.<br /><br />:returns: :class:`Widget`</td>
+    <td>Adds a widget to a dashboard</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Removes a widget from a dashboard<br /><br />:param id: str<br />  Widget ID returned by :method:dashboardwidgets/create</td>
+    <td>Removes a widget from a dashboard</td>
 </tr>
 </tbody>
 </table>
@@ -112,7 +112,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="update">
 
-Updates an existing widget<br /><br />:param id: str<br />  Widget ID returned by :method:dashboardwidgets/create<br />:param dashboard_id: str<br />  Dashboard ID returned by :method:dashboards/create.<br />:param options: :class:`WidgetOptions`<br />:param width: int<br />  Width of a widget<br />:param text: str (optional)<br />  If this is a textbox widget, the application displays this text. This field is ignored if the widget<br />  contains a visualization in the `visualization` field.<br />:param visualization_id: str (optional)<br />  Query Vizualization ID returned by :method:queryvisualizations/create.<br /><br />:returns: :class:`Widget`
+Updates an existing widget
 
 ```sql
 INSERT INTO databricks_workspace.sql.dashboard_widgets (
@@ -142,7 +142,7 @@ width
 </TabItem>
 <TabItem value="create">
 
-Adds a widget to a dashboard<br /><br />:param dashboard_id: str<br />  Dashboard ID returned by :method:dashboards/create.<br />:param options: :class:`WidgetOptions`<br />:param width: int<br />  Width of a widget<br />:param text: str (optional)<br />  If this is a textbox widget, the application displays this text. This field is ignored if the widget<br />  contains a visualization in the `visualization` field.<br />:param visualization_id: str (optional)<br />  Query Vizualization ID returned by :method:queryvisualizations/create.<br /><br />:returns: :class:`Widget`
+Adds a widget to a dashboard
 
 ```sql
 INSERT INTO databricks_workspace.sql.dashboard_widgets (
@@ -213,7 +213,7 @@ width
 >
 <TabItem value="delete">
 
-Removes a widget from a dashboard<br /><br />:param id: str<br />  Widget ID returned by :method:dashboardwidgets/create
+Removes a widget from a dashboard
 
 ```sql
 DELETE FROM databricks_workspace.sql.dashboard_widgets

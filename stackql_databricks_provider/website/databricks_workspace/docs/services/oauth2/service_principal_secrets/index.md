@@ -95,21 +95,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List all secrets associated with the given service principal. This operation only returns information<br />about the secrets themselves and does not include the secret values.<br /><br />:param service_principal_id: str<br />  The service principal ID.<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br />  An opaque page token which was the `next_page_token` in the response of the previous request to list<br />  the secrets for this service principal. Provide this token to retrieve the next page of secret<br />  entries. When providing a `page_token`, all other parameters provided to the request must match the<br />  previous request. To list all of the secrets for a service principal, it is necessary to continue<br />  requesting pages of entries until the response contains no `next_page_token`. Note that the number<br />  of entries returned must not be used to determine when the listing is complete.<br /><br />:returns: Iterator over :class:`SecretInfo`</td>
+    <td>List all secrets associated with the given service principal. This operation only returns information</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Create a secret for the given service principal.<br /><br />:param service_principal_id: str<br />  The service principal ID.<br />:param lifetime: str (optional)<br />  The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a<br />  default lifetime of 730 days (63072000s).<br /><br />:returns: :class:`CreateServicePrincipalSecretResponse`</td>
+    <td>Create a secret for the given service principal.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-secret_id"><code>secret_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a secret from the given service principal.<br /><br />:param service_principal_id: str<br />  The service principal ID.<br />:param secret_id: str<br />  The secret ID.</td>
+    <td>Delete a secret from the given service principal.</td>
 </tr>
 </tbody>
 </table>
@@ -165,7 +165,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-List all secrets associated with the given service principal. This operation only returns information<br />about the secrets themselves and does not include the secret values.<br /><br />:param service_principal_id: str<br />  The service principal ID.<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br />  An opaque page token which was the `next_page_token` in the response of the previous request to list<br />  the secrets for this service principal. Provide this token to retrieve the next page of secret<br />  entries. When providing a `page_token`, all other parameters provided to the request must match the<br />  previous request. To list all of the secrets for a service principal, it is necessary to continue<br />  requesting pages of entries until the response contains no `next_page_token`. Note that the number<br />  of entries returned must not be used to determine when the listing is complete.<br /><br />:returns: Iterator over :class:`SecretInfo`
+List all secrets associated with the given service principal. This operation only returns information
 
 ```sql
 SELECT
@@ -197,7 +197,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a secret for the given service principal.<br /><br />:param service_principal_id: str<br />  The service principal ID.<br />:param lifetime: str (optional)<br />  The lifetime of the secret in seconds. If this parameter is not provided, the secret will have a<br />  default lifetime of 730 days (63072000s).<br /><br />:returns: :class:`CreateServicePrincipalSecretResponse`
+Create a secret for the given service principal.
 
 ```sql
 INSERT INTO databricks_workspace.oauth2.service_principal_secrets (
@@ -251,7 +251,7 @@ update_time
 >
 <TabItem value="delete">
 
-Delete a secret from the given service principal.<br /><br />:param service_principal_id: str<br />  The service principal ID.<br />:param secret_id: str<br />  The secret ID.
+Delete a secret from the given service principal.
 
 ```sql
 DELETE FROM databricks_workspace.oauth2.service_principal_secrets

@@ -137,7 +137,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-notebook_name"><code>notebook_name</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List all the historical notebook task runs in a clean room.<br /><br />:param clean_room_name: str<br />  Name of the clean room.<br />:param notebook_name: str (optional)<br />  Notebook name<br />:param page_size: int (optional)<br />  The maximum number of task runs to return. Currently ignored - all runs will be returned.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`CleanRoomNotebookTaskRun`</td>
+    <td>List all the historical notebook task runs in a clean room.</td>
 </tr>
 </tbody>
 </table>
@@ -193,7 +193,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-List all the historical notebook task runs in a clean room.<br /><br />:param clean_room_name: str<br />  Name of the clean room.<br />:param notebook_name: str (optional)<br />  Notebook name<br />:param page_size: int (optional)<br />  The maximum number of task runs to return. Currently ignored - all runs will be returned.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`CleanRoomNotebookTaskRun`
+List all the historical notebook task runs in a clean room.
 
 ```sql
 SELECT

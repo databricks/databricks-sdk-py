@@ -124,21 +124,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the permissions of a workspace object. Workspace objects can inherit permissions from their<br />parent objects or root object.<br /><br />:param workspace_object_type: str<br />  The workspace object type for which to get or manage permissions. Could be one of the following:<br />  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,<br />  queries<br />:param workspace_object_id: str<br />  The workspace object for which to get or manage permissions.<br /><br />:returns: :class:`WorkspaceObjectPermissions`</td>
+    <td>Gets the permissions of a workspace object. Workspace objects can inherit permissions from their</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the permissions on a workspace object. Workspace objects can inherit permissions from their<br />parent objects or root object.<br /><br />:param workspace_object_type: str<br />  The workspace object type for which to get or manage permissions. Could be one of the following:<br />  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,<br />  queries<br />:param workspace_object_id: str<br />  The workspace object for which to get or manage permissions.<br />:param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)<br /><br />:returns: :class:`WorkspaceObjectPermissions`</td>
+    <td>Updates the permissions on a workspace object. Workspace objects can inherit permissions from their</td>
 </tr>
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-workspace_object_type"><code>workspace_object_type</code></a>, <a href="#parameter-workspace_object_id"><code>workspace_object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct<br />permissions if none are specified. Objects can inherit permissions from their parent objects or root<br />object.<br /><br />:param workspace_object_type: str<br />  The workspace object type for which to get or manage permissions. Could be one of the following:<br />  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,<br />  queries<br />:param workspace_object_id: str<br />  The workspace object for which to get or manage permissions.<br />:param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)<br /><br />:returns: :class:`WorkspaceObjectPermissions`</td>
+    <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct</td>
 </tr>
 </tbody>
 </table>
@@ -184,7 +184,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the permissions of a workspace object. Workspace objects can inherit permissions from their<br />parent objects or root object.<br /><br />:param workspace_object_type: str<br />  The workspace object type for which to get or manage permissions. Could be one of the following:<br />  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,<br />  queries<br />:param workspace_object_id: str<br />  The workspace object for which to get or manage permissions.<br /><br />:returns: :class:`WorkspaceObjectPermissions`
+Gets the permissions of a workspace object. Workspace objects can inherit permissions from their
 
 ```sql
 SELECT
@@ -211,7 +211,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="update">
 
-Updates the permissions on a workspace object. Workspace objects can inherit permissions from their<br />parent objects or root object.<br /><br />:param workspace_object_type: str<br />  The workspace object type for which to get or manage permissions. Could be one of the following:<br />  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,<br />  queries<br />:param workspace_object_id: str<br />  The workspace object for which to get or manage permissions.<br />:param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)<br /><br />:returns: :class:`WorkspaceObjectPermissions`
+Updates the permissions on a workspace object. Workspace objects can inherit permissions from their
 
 ```sql
 UPDATE databricks_workspace.workspace.object_permissions
@@ -240,7 +240,7 @@ object_type;
 >
 <TabItem value="set">
 
-Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct<br />permissions if none are specified. Objects can inherit permissions from their parent objects or root<br />object.<br /><br />:param workspace_object_type: str<br />  The workspace object type for which to get or manage permissions. Could be one of the following:<br />  alerts, alertsv2, dashboards, dbsql-dashboards, directories, experiments, files, genie, notebooks,<br />  queries<br />:param workspace_object_id: str<br />  The workspace object for which to get or manage permissions.<br />:param access_control_list: List[:class:`WorkspaceObjectAccessControlRequest`] (optional)<br /><br />:returns: :class:`WorkspaceObjectPermissions`
+Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
 
 ```sql
 REPLACE databricks_workspace.workspace.object_permissions

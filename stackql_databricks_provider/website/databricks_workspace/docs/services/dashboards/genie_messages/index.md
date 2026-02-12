@@ -223,7 +223,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "type",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       }
     ]
   },
@@ -422,7 +422,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
           }
         ]
       },
@@ -511,56 +511,56 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-attachment_id"><code>attachment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)<br />instead.<br /><br />:param space_id: str<br />  Genie space ID<br />:param conversation_id: str<br />  Conversation ID<br />:param message_id: str<br />  Message ID<br />:param attachment_id: str<br />  Attachment ID<br /><br />:returns: :class:`GenieGetMessageQueryResultResponse`</td>
+    <td>DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)</td>
 </tr>
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get message from conversation.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the target conversation is located.<br />:param conversation_id: str<br />  The ID associated with the target conversation.<br />:param message_id: str<br />  The ID associated with the target message from the identified conversation.<br /><br />:returns: :class:`GenieMessage`</td>
+    <td>Get message from conversation.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List messages in a conversation<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the conversation is located<br />:param conversation_id: str<br />  The ID of the conversation to list messages from<br />:param page_size: int (optional)<br />  Maximum number of messages to return per page<br />:param page_token: str (optional)<br />  Token to get the next page of results<br /><br />:returns: :class:`GenieListConversationMessagesResponse`</td>
+    <td>List messages in a conversation</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__content"><code>data__content</code></a></td>
     <td></td>
-    <td>Create new message in a [conversation](:method:genie/startconversation). The AI response uses all<br />previously created messages in the conversation to respond.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the conversation is started.<br />:param conversation_id: str<br />  The ID associated with the conversation.<br />:param content: str<br />  User message content.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GenieMessage`.<br />  See :method:wait_get_message_genie_completed for more details.</td>
+    <td>Create new message in a [conversation](:method:genie/startconversation). The AI response uses all</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a conversation message.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the message is located.<br />:param conversation_id: str<br />  The ID associated with the conversation.<br />:param message_id: str<br />  The ID associated with the message to delete.</td>
+    <td>Delete a conversation message.</td>
 </tr>
 <tr>
     <td><a href="#execute_query"><CopyableCode code="execute_query" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>DEPRECATED: Use [Execute Message Attachment Query](:method:genie/executemessageattachmentquery)<br />instead.<br /><br />:param space_id: str<br />  Genie space ID<br />:param conversation_id: str<br />  Conversation ID<br />:param message_id: str<br />  Message ID<br /><br />:returns: :class:`GenieGetMessageQueryResultResponse`</td>
+    <td>DEPRECATED: Use [Execute Message Attachment Query](:method:genie/executemessageattachmentquery)</td>
 </tr>
 <tr>
     <td><a href="#get_query_result_deprecated"><CopyableCode code="get_query_result_deprecated" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)<br />instead.<br /><br />:param space_id: str<br />  Genie space ID<br />:param conversation_id: str<br />  Conversation ID<br />:param message_id: str<br />  Message ID<br /><br />:returns: :class:`GenieGetMessageQueryResultResponse`</td>
+    <td>DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)</td>
 </tr>
 <tr>
     <td><a href="#send_feedback"><CopyableCode code="send_feedback" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-rating"><code>rating</code></a></td>
     <td></td>
-    <td>Send feedback for a message.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the message is located.<br />:param conversation_id: str<br />  The ID associated with the conversation.<br />:param message_id: str<br />  The ID associated with the message to provide feedback for.<br />:param rating: :class:`GenieFeedbackRating`<br />  The rating (POSITIVE, NEGATIVE, or NONE).</td>
+    <td>Send feedback for a message.</td>
 </tr>
 </tbody>
 </table>
@@ -628,7 +628,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_query_result_by_attachment">
 
-DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)<br />instead.<br /><br />:param space_id: str<br />  Genie space ID<br />:param conversation_id: str<br />  Conversation ID<br />:param message_id: str<br />  Message ID<br />:param attachment_id: str<br />  Attachment ID<br /><br />:returns: :class:`GenieGetMessageQueryResultResponse`
+DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)
 
 ```sql
 SELECT
@@ -644,7 +644,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="get">
 
-Get message from conversation.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the target conversation is located.<br />:param conversation_id: str<br />  The ID associated with the target conversation.<br />:param message_id: str<br />  The ID associated with the target message from the identified conversation.<br /><br />:returns: :class:`GenieMessage`
+Get message from conversation.
 
 ```sql
 SELECT
@@ -671,7 +671,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List messages in a conversation<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the conversation is located<br />:param conversation_id: str<br />  The ID of the conversation to list messages from<br />:param page_size: int (optional)<br />  Maximum number of messages to return per page<br />:param page_token: str (optional)<br />  Token to get the next page of results<br /><br />:returns: :class:`GenieListConversationMessagesResponse`
+List messages in a conversation
 
 ```sql
 SELECT
@@ -700,7 +700,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create new message in a [conversation](:method:genie/startconversation). The AI response uses all<br />previously created messages in the conversation to respond.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the conversation is started.<br />:param conversation_id: str<br />  The ID associated with the conversation.<br />:param content: str<br />  User message content.<br /><br />:returns:<br />  Long-running operation waiter for :class:`GenieMessage`.<br />  See :method:wait_get_message_genie_completed for more details.
+Create new message in a [conversation](:method:genie/startconversation). The AI response uses all
 
 ```sql
 INSERT INTO databricks_workspace.dashboards.genie_messages (
@@ -765,7 +765,7 @@ status
 >
 <TabItem value="delete">
 
-Delete a conversation message.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the message is located.<br />:param conversation_id: str<br />  The ID associated with the conversation.<br />:param message_id: str<br />  The ID associated with the message to delete.
+Delete a conversation message.
 
 ```sql
 DELETE FROM databricks_workspace.dashboards.genie_messages
@@ -791,7 +791,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="execute_query">
 
-DEPRECATED: Use [Execute Message Attachment Query](:method:genie/executemessageattachmentquery)<br />instead.<br /><br />:param space_id: str<br />  Genie space ID<br />:param conversation_id: str<br />  Conversation ID<br />:param message_id: str<br />  Message ID<br /><br />:returns: :class:`GenieGetMessageQueryResultResponse`
+DEPRECATED: Use [Execute Message Attachment Query](:method:genie/executemessageattachmentquery)
 
 ```sql
 EXEC databricks_workspace.dashboards.genie_messages.execute_query 
@@ -804,7 +804,7 @@ EXEC databricks_workspace.dashboards.genie_messages.execute_query
 </TabItem>
 <TabItem value="get_query_result_deprecated">
 
-DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)<br />instead.<br /><br />:param space_id: str<br />  Genie space ID<br />:param conversation_id: str<br />  Conversation ID<br />:param message_id: str<br />  Message ID<br /><br />:returns: :class:`GenieGetMessageQueryResultResponse`
+DEPRECATED: Use [Get Message Attachment Query Result](:method:genie/getmessageattachmentqueryresult)
 
 ```sql
 EXEC databricks_workspace.dashboards.genie_messages.get_query_result_deprecated 
@@ -817,7 +817,7 @@ EXEC databricks_workspace.dashboards.genie_messages.get_query_result_deprecated
 </TabItem>
 <TabItem value="send_feedback">
 
-Send feedback for a message.<br /><br />:param space_id: str<br />  The ID associated with the Genie space where the message is located.<br />:param conversation_id: str<br />  The ID associated with the conversation.<br />:param message_id: str<br />  The ID associated with the message to provide feedback for.<br />:param rating: :class:`GenieFeedbackRating`<br />  The rating (POSITIVE, NEGATIVE, or NONE).
+Send feedback for a message.
 
 ```sql
 EXEC databricks_workspace.dashboards.genie_messages.send_feedback 

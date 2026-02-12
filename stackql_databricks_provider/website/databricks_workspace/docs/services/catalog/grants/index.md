@@ -87,14 +87,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-principal"><code>principal</code></a></td>
-    <td>Gets the permissions for a securable. Does not include inherited permissions.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param securable_type: str<br />  Type of securable.<br />:param full_name: str<br />  Full name of securable.<br />:param max_results: int (optional)<br />  Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment<br />  present in a single page response is guaranteed to contain all the privileges granted on the<br />  requested Securable for the respective principal.<br /><br />  If not set, all the permissions are returned. If set to - lesser than 0: invalid parameter error -<br />  0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid<br />  parameter error (this is to ensure that server is able to return at least one complete<br />  PrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the<br />  minimum of this value and a server configured value<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br />:param principal: str (optional)<br />  If provided, only the permissions for the specified principal (user or group) are returned.<br /><br />:returns: :class:`GetPermissionsResponse`</td>
+    <td>Gets the permissions for a securable. Does not include inherited permissions.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-securable_type"><code>securable_type</code></a>, <a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the permissions for a securable.<br /><br />:param securable_type: str<br />  Type of securable.<br />:param full_name: str<br />  Full name of securable.<br />:param changes: List[:class:`PermissionsChange`] (optional)<br />  Array of permissions change objects.<br /><br />:returns: :class:`UpdatePermissionsResponse`</td>
+    <td>Updates the permissions for a securable.</td>
 </tr>
 </tbody>
 </table>
@@ -155,7 +155,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the permissions for a securable. Does not include inherited permissions.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param securable_type: str<br />  Type of securable.<br />:param full_name: str<br />  Full name of securable.<br />:param max_results: int (optional)<br />  Specifies the maximum number of privileges to return (page length). Every PrivilegeAssignment<br />  present in a single page response is guaranteed to contain all the privileges granted on the<br />  requested Securable for the respective principal.<br /><br />  If not set, all the permissions are returned. If set to - lesser than 0: invalid parameter error -<br />  0: page length is set to a server configured value - lesser than 150 but greater than 0: invalid<br />  parameter error (this is to ensure that server is able to return at least one complete<br />  PrivilegeAssignment in a single page response) - greater than (or equal to) 150: page length is the<br />  minimum of this value and a server configured value<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br />:param principal: str (optional)<br />  If provided, only the permissions for the specified principal (user or group) are returned.<br /><br />:returns: :class:`GetPermissionsResponse`
+Gets the permissions for a securable. Does not include inherited permissions.
 
 ```sql
 SELECT
@@ -184,7 +184,7 @@ AND principal = '{{ principal }}'
 >
 <TabItem value="update">
 
-Updates the permissions for a securable.<br /><br />:param securable_type: str<br />  Type of securable.<br />:param full_name: str<br />  Full name of securable.<br />:param changes: List[:class:`PermissionsChange`] (optional)<br />  Array of permissions change objects.<br /><br />:returns: :class:`UpdatePermissionsResponse`
+Updates the permissions for a securable.
 
 ```sql
 UPDATE databricks_workspace.catalog.grants

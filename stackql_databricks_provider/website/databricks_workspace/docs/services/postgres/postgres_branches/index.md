@@ -189,14 +189,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Returns a paginated list of database branches in the project.<br /><br />:param parent: str<br />  The Project that owns this collection of branches. Format: projects/&#123;project_id&#125;<br />:param page_size: int (optional)<br />  Upper bound for items returned. Cannot be negative.<br />:param page_token: str (optional)<br />  Page token from a previous response. If not provided, returns the first page.<br /><br />:returns: Iterator over :class:`Branch`</td>
+    <td>Returns a paginated list of database branches in the project.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-branch_id"><code>branch_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__branch"><code>data__branch</code></a></td>
     <td></td>
-    <td>Creates a new database branch in the project.<br /><br />:param parent: str<br />  The Project where this Branch will be created. Format: projects/&#123;project_id&#125;<br />:param branch: :class:`Branch`<br />  The Branch to create.<br />:param branch_id: str<br />  The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID<br />  is required and must be 1-63 characters long, start with a lowercase letter, and contain only<br />  lowercase letters, numbers, and hyphens. For example, `development` becomes<br />  `projects/my-app/branches/development`.<br /><br />:returns: :class:`Operation`</td>
+    <td>Creates a new database branch in the project.</td>
 </tr>
 </tbody>
 </table>
@@ -252,7 +252,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Returns a paginated list of database branches in the project.<br /><br />:param parent: str<br />  The Project that owns this collection of branches. Format: projects/&#123;project_id&#125;<br />:param page_size: int (optional)<br />  Upper bound for items returned. Cannot be negative.<br />:param page_token: str (optional)<br />  Page token from a previous response. If not provided, returns the first page.<br /><br />:returns: Iterator over :class:`Branch`
+Returns a paginated list of database branches in the project.
 
 ```sql
 SELECT
@@ -285,7 +285,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new database branch in the project.<br /><br />:param parent: str<br />  The Project where this Branch will be created. Format: projects/&#123;project_id&#125;<br />:param branch: :class:`Branch`<br />  The Branch to create.<br />:param branch_id: str<br />  The ID to use for the Branch. This becomes the final component of the branch's resource name. The ID<br />  is required and must be 1-63 characters long, start with a lowercase letter, and contain only<br />  lowercase letters, numbers, and hyphens. For example, `development` becomes<br />  `projects/my-app/branches/development`.<br /><br />:returns: :class:`Operation`
+Creates a new database branch in the project.
 
 ```sql
 INSERT INTO databricks_workspace.postgres.postgres_branches (

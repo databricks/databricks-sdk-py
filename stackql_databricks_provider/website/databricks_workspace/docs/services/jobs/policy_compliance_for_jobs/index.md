@@ -96,21 +96,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-job_id"><code>job_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Returns the policy compliance status of a job. Jobs could be out of compliance if a cluster policy<br />they use was updated after the job was last edited and some of its job clusters no longer comply with<br />their updated policies.<br /><br />:param job_id: int<br />  The ID of the job whose compliance status you are requesting.<br /><br />:returns: :class:`GetPolicyComplianceResponse`</td>
+    <td>Returns the policy compliance status of a job. Jobs could be out of compliance if a cluster policy</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Returns the policy compliance status of all jobs that use a given policy. Jobs could be out of<br />compliance if a cluster policy they use was updated after the job was last edited and its job clusters<br />no longer comply with the updated policy.<br /><br />:param policy_id: str<br />  Canonical unique identifier for the cluster policy.<br />:param page_size: int (optional)<br />  Use this field to specify the maximum number of results to be returned by the server. The server may<br />  further constrain the maximum number of results returned in a single page.<br />:param page_token: str (optional)<br />  A page token that can be used to navigate to the next page or previous page as returned by<br />  `next_page_token` or `prev_page_token`.<br /><br />:returns: Iterator over :class:`JobCompliance`</td>
+    <td>Returns the policy compliance status of all jobs that use a given policy. Jobs could be out of</td>
 </tr>
 <tr>
     <td><a href="#enforce"><CopyableCode code="enforce" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__job_id"><code>data__job_id</code></a></td>
     <td></td>
-    <td>Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)<br />are compliant with the current versions of their respective cluster policies. All-purpose clusters<br />used in the job will not be updated.<br /><br />:param job_id: int<br />  The ID of the job you want to enforce policy compliance on.<br />:param validate_only: bool (optional)<br />  If set, previews changes made to the job to comply with its policy, but does not update the job.<br /><br />:returns: :class:`EnforcePolicyComplianceResponse`</td>
+    <td>Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)</td>
 </tr>
 </tbody>
 </table>
@@ -167,7 +167,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Returns the policy compliance status of a job. Jobs could be out of compliance if a cluster policy<br />they use was updated after the job was last edited and some of its job clusters no longer comply with<br />their updated policies.<br /><br />:param job_id: int<br />  The ID of the job whose compliance status you are requesting.<br /><br />:returns: :class:`GetPolicyComplianceResponse`
+Returns the policy compliance status of a job. Jobs could be out of compliance if a cluster policy
 
 ```sql
 SELECT
@@ -181,7 +181,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Returns the policy compliance status of all jobs that use a given policy. Jobs could be out of<br />compliance if a cluster policy they use was updated after the job was last edited and its job clusters<br />no longer comply with the updated policy.<br /><br />:param policy_id: str<br />  Canonical unique identifier for the cluster policy.<br />:param page_size: int (optional)<br />  Use this field to specify the maximum number of results to be returned by the server. The server may<br />  further constrain the maximum number of results returned in a single page.<br />:param page_token: str (optional)<br />  A page token that can be used to navigate to the next page or previous page as returned by<br />  `next_page_token` or `prev_page_token`.<br /><br />:returns: Iterator over :class:`JobCompliance`
+Returns the policy compliance status of all jobs that use a given policy. Jobs could be out of
 
 ```sql
 SELECT
@@ -210,7 +210,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="enforce">
 
-Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)<br />are compliant with the current versions of their respective cluster policies. All-purpose clusters<br />used in the job will not be updated.<br /><br />:param job_id: int<br />  The ID of the job you want to enforce policy compliance on.<br />:param validate_only: bool (optional)<br />  If set, previews changes made to the job to comply with its policy, but does not update the job.<br /><br />:returns: :class:`EnforcePolicyComplianceResponse`
+Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)
 
 ```sql
 INSERT INTO databricks_workspace.jobs.policy_compliance_for_jobs (

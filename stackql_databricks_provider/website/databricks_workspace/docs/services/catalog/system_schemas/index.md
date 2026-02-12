@@ -75,21 +75,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore<br />admin.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param metastore_id: str<br />  The ID for the metastore in which the system schema resides.<br />:param max_results: int (optional)<br />  Maximum number of schemas to return. - When set to 0, the page length is set to a server configured<br />  value (recommended); - When set to a value greater than 0, the page length is the minimum of this<br />  value and a server configured value; - When set to a value less than 0, an invalid parameter error<br />  is returned; - If not set, all the schemas are returned (not recommended).<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`SystemSchemaInfo`</td>
+    <td>Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore</td>
 </tr>
 <tr>
     <td><a href="#enable"><CopyableCode code="enable" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Enables the system schema and adds it to the system catalog. The caller must be an account admin or a<br />metastore admin.<br /><br />:param metastore_id: str<br />  The metastore ID under which the system schema lives.<br />:param schema_name: str<br />  Full name of the system schema.<br />:param catalog_name: str (optional)<br />  the catalog for which the system schema is to enabled in</td>
+    <td>Enables the system schema and adds it to the system catalog. The caller must be an account admin or a</td>
 </tr>
 <tr>
     <td><a href="#disable"><CopyableCode code="disable" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Disables the system schema and removes it from the system catalog. The caller must be an account admin<br />or a metastore admin.<br /><br />:param metastore_id: str<br />  The metastore ID under which the system schema lives.<br />:param schema_name: str<br />  Full name of the system schema.</td>
+    <td>Disables the system schema and removes it from the system catalog. The caller must be an account admin</td>
 </tr>
 </tbody>
 </table>
@@ -145,7 +145,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore<br />admin.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param metastore_id: str<br />  The ID for the metastore in which the system schema resides.<br />:param max_results: int (optional)<br />  Maximum number of schemas to return. - When set to 0, the page length is set to a server configured<br />  value (recommended); - When set to a value greater than 0, the page length is the minimum of this<br />  value and a server configured value; - When set to a value less than 0, an invalid parameter error<br />  is returned; - If not set, all the schemas are returned (not recommended).<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`SystemSchemaInfo`
+Gets an array of system schemas for a metastore. The caller must be an account admin or a metastore
 
 ```sql
 SELECT
@@ -172,7 +172,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="enable">
 
-Enables the system schema and adds it to the system catalog. The caller must be an account admin or a<br />metastore admin.<br /><br />:param metastore_id: str<br />  The metastore ID under which the system schema lives.<br />:param schema_name: str<br />  Full name of the system schema.<br />:param catalog_name: str (optional)<br />  the catalog for which the system schema is to enabled in
+Enables the system schema and adds it to the system catalog. The caller must be an account admin or a
 
 ```sql
 REPLACE databricks_workspace.catalog.system_schemas
@@ -197,7 +197,7 @@ AND deployment_name = '{{ deployment_name }}' --required;
 >
 <TabItem value="disable">
 
-Disables the system schema and removes it from the system catalog. The caller must be an account admin<br />or a metastore admin.<br /><br />:param metastore_id: str<br />  The metastore ID under which the system schema lives.<br />:param schema_name: str<br />  Full name of the system schema.
+Disables the system schema and removes it from the system catalog. The caller must be an account admin
 
 ```sql
 DELETE FROM databricks_workspace.catalog.system_schemas

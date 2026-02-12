@@ -156,35 +156,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets all the details of a script, including its Base64-encoded contents.<br /><br />:param script_id: str<br />  The ID of the global init script.<br /><br />:returns: :class:`GlobalInitScriptDetailsWithContent`</td>
+    <td>Gets all the details of a script, including its Base64-encoded contents.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a list of all global init scripts for this workspace. This returns all properties for each script<br />but **not** the script contents. To retrieve the contents of a script, use the [get a global init<br />script](:method:globalinitscripts/get) operation.<br /><br /><br />:returns: Iterator over :class:`GlobalInitScriptDetails`</td>
+    <td>Get a list of all global init scripts for this workspace. This returns all properties for each script</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__script"><code>data__script</code></a></td>
     <td></td>
-    <td>Creates a new global init script in this workspace.<br /><br />:param name: str<br />  The name of the script<br />:param script: str<br />  The Base64-encoded content of the script.<br />:param enabled: bool (optional)<br />  Specifies whether the script is enabled. The script runs only if enabled.<br />:param position: int (optional)<br />  The position of a global init script, where 0 represents the first script to run, 1 is the second<br />  script to run, in ascending order.<br /><br />  If you omit the numeric position for a new global init script, it defaults to last position. It will<br />  run after all current scripts. Setting any value greater than the position of the last script is<br />  equivalent to the last position. Example: Take three existing scripts with positions 0, 1, and 2.<br />  Any position of (3) or greater puts the script in the last position. If an explicit position value<br />  conflicts with an existing script value, your request succeeds, but the original script at that<br />  position and all later scripts have their positions incremented by 1.<br /><br />:returns: :class:`CreateResponse`</td>
+    <td>Creates a new global init script in this workspace.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__script"><code>data__script</code></a></td>
     <td></td>
-    <td>Updates a global init script, specifying only the fields to change. All fields are optional.<br />Unspecified fields retain their current value.<br /><br />:param script_id: str<br />  The ID of the global init script.<br />:param name: str<br />  The name of the script<br />:param script: str<br />  The Base64-encoded content of the script.<br />:param enabled: bool (optional)<br />  Specifies whether the script is enabled. The script runs only if enabled.<br />:param position: int (optional)<br />  The position of a script, where 0 represents the first script to run, 1 is the second script to run,<br />  in ascending order. To move the script to run first, set its position to 0.<br /><br />  To move the script to the end, set its position to any value greater or equal to the position of the<br />  last script. Example, three existing scripts with positions 0, 1, and 2. Any position value of 2 or<br />  greater puts the script in the last position (2).<br /><br />  If an explicit position value conflicts with an existing script, your request succeeds, but the<br />  original script at that position and all later scripts have their positions incremented by 1.</td>
+    <td>Updates a global init script, specifying only the fields to change. All fields are optional.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a global init script.<br /><br />:param script_id: str<br />  The ID of the global init script.</td>
+    <td>Deletes a global init script.</td>
 </tr>
 </tbody>
 </table>
@@ -226,7 +226,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets all the details of a script, including its Base64-encoded contents.<br /><br />:param script_id: str<br />  The ID of the global init script.<br /><br />:returns: :class:`GlobalInitScriptDetailsWithContent`
+Gets all the details of a script, including its Base64-encoded contents.
 
 ```sql
 SELECT
@@ -247,7 +247,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Get a list of all global init scripts for this workspace. This returns all properties for each script<br />but **not** the script contents. To retrieve the contents of a script, use the [get a global init<br />script](:method:globalinitscripts/get) operation.<br /><br /><br />:returns: Iterator over :class:`GlobalInitScriptDetails`
+Get a list of all global init scripts for this workspace. This returns all properties for each script
 
 ```sql
 SELECT
@@ -278,7 +278,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Creates a new global init script in this workspace.<br /><br />:param name: str<br />  The name of the script<br />:param script: str<br />  The Base64-encoded content of the script.<br />:param enabled: bool (optional)<br />  Specifies whether the script is enabled. The script runs only if enabled.<br />:param position: int (optional)<br />  The position of a global init script, where 0 represents the first script to run, 1 is the second<br />  script to run, in ascending order.<br /><br />  If you omit the numeric position for a new global init script, it defaults to last position. It will<br />  run after all current scripts. Setting any value greater than the position of the last script is<br />  equivalent to the last position. Example: Take three existing scripts with positions 0, 1, and 2.<br />  Any position of (3) or greater puts the script in the last position. If an explicit position value<br />  conflicts with an existing script value, your request succeeds, but the original script at that<br />  position and all later scripts have their positions incremented by 1.<br /><br />:returns: :class:`CreateResponse`
+Creates a new global init script in this workspace.
 
 ```sql
 INSERT INTO databricks_workspace.compute.global_init_scripts (
@@ -339,7 +339,7 @@ script_id
 >
 <TabItem value="update">
 
-Updates a global init script, specifying only the fields to change. All fields are optional.<br />Unspecified fields retain their current value.<br /><br />:param script_id: str<br />  The ID of the global init script.<br />:param name: str<br />  The name of the script<br />:param script: str<br />  The Base64-encoded content of the script.<br />:param enabled: bool (optional)<br />  Specifies whether the script is enabled. The script runs only if enabled.<br />:param position: int (optional)<br />  The position of a script, where 0 represents the first script to run, 1 is the second script to run,<br />  in ascending order. To move the script to run first, set its position to 0.<br /><br />  To move the script to the end, set its position to any value greater or equal to the position of the<br />  last script. Example, three existing scripts with positions 0, 1, and 2. Any position value of 2 or<br />  greater puts the script in the last position (2).<br /><br />  If an explicit position value conflicts with an existing script, your request succeeds, but the<br />  original script at that position and all later scripts have their positions incremented by 1.
+Updates a global init script, specifying only the fields to change. All fields are optional.
 
 ```sql
 UPDATE databricks_workspace.compute.global_init_scripts
@@ -368,7 +368,7 @@ AND data__script = '{{ script }}' --required;
 >
 <TabItem value="delete">
 
-Deletes a global init script.<br /><br />:param script_id: str<br />  The ID of the global init script.
+Deletes a global init script.
 
 ```sql
 DELETE FROM databricks_workspace.compute.global_init_scripts

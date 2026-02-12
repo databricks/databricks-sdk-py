@@ -427,14 +427,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-etag"><code>etag</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a specific revision of an asset<br /><br />:param clean_room_name: str<br />  Name of the clean room.<br />:param asset_type: :class:`CleanRoomAssetAssetType`<br />  Asset type. Only NOTEBOOK_FILE is supported.<br />:param name: str<br />  Name of the asset.<br />:param etag: str<br />  Revision etag to fetch. If not provided, the latest revision will be returned.<br /><br />:returns: :class:`CleanRoomAsset`</td>
+    <td>Get a specific revision of an asset</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List revisions for an asset<br /><br />:param clean_room_name: str<br />  Name of the clean room.<br />:param asset_type: :class:`CleanRoomAssetAssetType`<br />  Asset type. Only NOTEBOOK_FILE is supported.<br />:param name: str<br />  Name of the asset.<br />:param page_size: int (optional)<br />  Maximum number of asset revisions to return. Defaults to 10.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on the previous query.<br /><br />:returns: Iterator over :class:`CleanRoomAsset`</td>
+    <td>List revisions for an asset</td>
 </tr>
 </tbody>
 </table>
@@ -506,7 +506,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a specific revision of an asset<br /><br />:param clean_room_name: str<br />  Name of the clean room.<br />:param asset_type: :class:`CleanRoomAssetAssetType`<br />  Asset type. Only NOTEBOOK_FILE is supported.<br />:param name: str<br />  Name of the asset.<br />:param etag: str<br />  Revision etag to fetch. If not provided, the latest revision will be returned.<br /><br />:returns: :class:`CleanRoomAsset`
+Get a specific revision of an asset
 
 ```sql
 SELECT
@@ -536,7 +536,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List revisions for an asset<br /><br />:param clean_room_name: str<br />  Name of the clean room.<br />:param asset_type: :class:`CleanRoomAssetAssetType`<br />  Asset type. Only NOTEBOOK_FILE is supported.<br />:param name: str<br />  Name of the asset.<br />:param page_size: int (optional)<br />  Maximum number of asset revisions to return. Defaults to 10.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on the previous query.<br /><br />:returns: Iterator over :class:`CleanRoomAsset`
+List revisions for an asset
 
 ```sql
 SELECT

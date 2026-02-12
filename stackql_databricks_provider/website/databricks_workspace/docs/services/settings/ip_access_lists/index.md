@@ -178,42 +178,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets an IP access list, specified by its list ID.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br /><br />:returns: :class:`FetchIpAccessListResponse`</td>
+    <td>Gets an IP access list, specified by its list ID.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets all IP access lists for the specified workspace.<br /><br /><br />:returns: Iterator over :class:`IpAccessListInfo`</td>
+    <td>Gets all IP access lists for the specified workspace.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__label"><code>data__label</code></a>, <a href="#parameter-data__list_type"><code>data__list_type</code></a></td>
     <td></td>
-    <td>Creates an IP access list for this workspace.<br /><br />A list can be an allow list or a block list. See the top of this file for a description of how the<br />server treats allow lists and block lists at runtime.<br /><br />When creating or updating an IP access list:<br /><br />* For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,<br />where one CIDR counts as a single value. Attempts to exceed that number return error 400 with<br />`error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,<br />error 400 is returned with `error_code` value `INVALID_STATE`.<br /><br />It can take a few minutes for the changes to take effect. **Note**: Your new IP access list has no<br />effect until you enable the feature. See :method:workspaceconf/setStatus<br /><br />:param label: str<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType`<br />:param ip_addresses: List[str] (optional)<br /><br />:returns: :class:`CreateIpAccessListResponse`</td>
+    <td>Creates an IP access list for this workspace.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates an existing IP access list, specified by its ID.<br /><br />A list can include allow lists and block lists. See the top of this file for a description of how the<br />server treats allow lists and block lists at run time.<br /><br />When updating an IP access list:<br /><br />* For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,<br />where one CIDR counts as a single value. Attempts to exceed that number return error 400 with<br />`error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,<br />error 400 is returned with `error_code` value `INVALID_STATE`.<br /><br />It can take a few minutes for the changes to take effect. Note that your resulting IP access list has<br />no effect until you enable the feature. See :method:workspaceconf/setStatus.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br />:param enabled: bool (optional)<br />  Specifies whether this IP access list is enabled.<br />:param ip_addresses: List[str] (optional)<br />:param label: str (optional)<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType` (optional)</td>
+    <td>Updates an existing IP access list, specified by its ID.</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__label"><code>data__label</code></a>, <a href="#parameter-data__list_type"><code>data__list_type</code></a>, <a href="#parameter-data__enabled"><code>data__enabled</code></a></td>
     <td></td>
-    <td>Replaces an IP access list, specified by its ID.<br /><br />A list can include allow lists and block lists. See the top of this file for a description of how the<br />server treats allow lists and block lists at run time. When replacing an IP access list: * For all<br />allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values, where one<br />CIDR counts as a single value. Attempts to exceed that number return error 400 with `error_code` value<br />`QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is<br />returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take<br />effect. Note that your resulting IP access list has no effect until you enable the feature. See<br />:method:workspaceconf/setStatus.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br />:param label: str<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType`<br />:param enabled: bool<br />  Specifies whether this IP access list is enabled.<br />:param ip_addresses: List[str] (optional)</td>
+    <td>Replaces an IP access list, specified by its ID.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes an IP access list, specified by its list ID.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list</td>
+    <td>Deletes an IP access list, specified by its list ID.</td>
 </tr>
 </tbody>
 </table>
@@ -255,7 +255,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets an IP access list, specified by its list ID.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br /><br />:returns: :class:`FetchIpAccessListResponse`
+Gets an IP access list, specified by its list ID.
 
 ```sql
 SELECT
@@ -268,7 +268,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets all IP access lists for the specified workspace.<br /><br /><br />:returns: Iterator over :class:`IpAccessListInfo`
+Gets all IP access lists for the specified workspace.
 
 ```sql
 SELECT
@@ -301,7 +301,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Creates an IP access list for this workspace.<br /><br />A list can be an allow list or a block list. See the top of this file for a description of how the<br />server treats allow lists and block lists at runtime.<br /><br />When creating or updating an IP access list:<br /><br />* For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,<br />where one CIDR counts as a single value. Attempts to exceed that number return error 400 with<br />`error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,<br />error 400 is returned with `error_code` value `INVALID_STATE`.<br /><br />It can take a few minutes for the changes to take effect. **Note**: Your new IP access list has no<br />effect until you enable the feature. See :method:workspaceconf/setStatus<br /><br />:param label: str<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType`<br />:param ip_addresses: List[str] (optional)<br /><br />:returns: :class:`CreateIpAccessListResponse`
+Creates an IP access list for this workspace.
 
 ```sql
 INSERT INTO databricks_workspace.settings.ip_access_lists (
@@ -354,7 +354,7 @@ ip_access_list
 >
 <TabItem value="update">
 
-Updates an existing IP access list, specified by its ID.<br /><br />A list can include allow lists and block lists. See the top of this file for a description of how the<br />server treats allow lists and block lists at run time.<br /><br />When updating an IP access list:<br /><br />* For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,<br />where one CIDR counts as a single value. Attempts to exceed that number return error 400 with<br />`error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,<br />error 400 is returned with `error_code` value `INVALID_STATE`.<br /><br />It can take a few minutes for the changes to take effect. Note that your resulting IP access list has<br />no effect until you enable the feature. See :method:workspaceconf/setStatus.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br />:param enabled: bool (optional)<br />  Specifies whether this IP access list is enabled.<br />:param ip_addresses: List[str] (optional)<br />:param label: str (optional)<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType` (optional)
+Updates an existing IP access list, specified by its ID.
 
 ```sql
 UPDATE databricks_workspace.settings.ip_access_lists
@@ -381,7 +381,7 @@ AND deployment_name = '{{ deployment_name }}' --required;
 >
 <TabItem value="replace">
 
-Replaces an IP access list, specified by its ID.<br /><br />A list can include allow lists and block lists. See the top of this file for a description of how the<br />server treats allow lists and block lists at run time. When replacing an IP access list: * For all<br />allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values, where one<br />CIDR counts as a single value. Attempts to exceed that number return error 400 with `error_code` value<br />`QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is<br />returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take<br />effect. Note that your resulting IP access list has no effect until you enable the feature. See<br />:method:workspaceconf/setStatus.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br />:param label: str<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType`<br />:param enabled: bool<br />  Specifies whether this IP access list is enabled.<br />:param ip_addresses: List[str] (optional)
+Replaces an IP access list, specified by its ID.
 
 ```sql
 REPLACE databricks_workspace.settings.ip_access_lists
@@ -411,7 +411,7 @@ AND data__enabled = {{ enabled }} --required;
 >
 <TabItem value="delete">
 
-Deletes an IP access list, specified by its list ID.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list
+Deletes an IP access list, specified by its list ID.
 
 ```sql
 DELETE FROM databricks_workspace.settings.ip_access_lists

@@ -124,21 +124,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.<br /><br />:param pipeline_id: str<br />  The pipeline for which to get or manage permissions.<br /><br />:returns: :class:`PipelinePermissions`</td>
+    <td>Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.<br /><br />:param pipeline_id: str<br />  The pipeline for which to get or manage permissions.<br />:param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)<br /><br />:returns: :class:`PipelinePermissions`</td>
+    <td>Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.</td>
 </tr>
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct<br />permissions if none are specified. Objects can inherit permissions from their root object.<br /><br />:param pipeline_id: str<br />  The pipeline for which to get or manage permissions.<br />:param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)<br /><br />:returns: :class:`PipelinePermissions`</td>
+    <td>Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct</td>
 </tr>
 </tbody>
 </table>
@@ -179,7 +179,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.<br /><br />:param pipeline_id: str<br />  The pipeline for which to get or manage permissions.<br /><br />:returns: :class:`PipelinePermissions`
+Gets the permissions of a pipeline. Pipelines can inherit permissions from their root object.
 
 ```sql
 SELECT
@@ -205,7 +205,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="update">
 
-Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.<br /><br />:param pipeline_id: str<br />  The pipeline for which to get or manage permissions.<br />:param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)<br /><br />:returns: :class:`PipelinePermissions`
+Updates the permissions on a pipeline. Pipelines can inherit permissions from their root object.
 
 ```sql
 UPDATE databricks_workspace.pipelines.pipeline_permissions
@@ -233,7 +233,7 @@ object_type;
 >
 <TabItem value="set">
 
-Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct<br />permissions if none are specified. Objects can inherit permissions from their root object.<br /><br />:param pipeline_id: str<br />  The pipeline for which to get or manage permissions.<br />:param access_control_list: List[:class:`PipelineAccessControlRequest`] (optional)<br /><br />:returns: :class:`PipelinePermissions`
+Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
 
 ```sql
 REPLACE databricks_workspace.pipelines.pipeline_permissions

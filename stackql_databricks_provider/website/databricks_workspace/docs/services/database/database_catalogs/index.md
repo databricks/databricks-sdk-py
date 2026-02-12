@@ -121,35 +121,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a Database Catalog.<br /><br />:param name: str<br /><br />:returns: :class:`DatabaseCatalog`</td>
+    <td>Get a Database Catalog.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>This API is currently unimplemented, but exposed for Terraform support.<br /><br />:param instance_name: str<br />  Name of the instance to get database catalogs for.<br />:param page_size: int (optional)<br />  Upper bound for items returned.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of synced database tables. Requests first page if absent.<br /><br />:returns: Iterator over :class:`DatabaseCatalog`</td>
+    <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__catalog"><code>data__catalog</code></a></td>
     <td></td>
-    <td>Create a Database Catalog.<br /><br />:param catalog: :class:`DatabaseCatalog`<br /><br />:returns: :class:`DatabaseCatalog`</td>
+    <td>Create a Database Catalog.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__database_catalog"><code>data__database_catalog</code></a></td>
     <td></td>
-    <td>This API is currently unimplemented, but exposed for Terraform support.<br /><br />:param name: str<br />  The name of the catalog in UC.<br />:param database_catalog: :class:`DatabaseCatalog`<br />  Note that updating a database catalog is not yet supported.<br />:param update_mask: str<br />  The list of fields to update. Setting this field is not yet supported.<br /><br />:returns: :class:`DatabaseCatalog`</td>
+    <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Delete a Database Catalog.<br /><br />:param name: str</td>
+    <td>Delete a Database Catalog.</td>
 </tr>
 </tbody>
 </table>
@@ -211,7 +211,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a Database Catalog.<br /><br />:param name: str<br /><br />:returns: :class:`DatabaseCatalog`
+Get a Database Catalog.
 
 ```sql
 SELECT
@@ -228,7 +228,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-This API is currently unimplemented, but exposed for Terraform support.<br /><br />:param instance_name: str<br />  Name of the instance to get database catalogs for.<br />:param page_size: int (optional)<br />  Upper bound for items returned.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of synced database tables. Requests first page if absent.<br /><br />:returns: Iterator over :class:`DatabaseCatalog`
+This API is currently unimplemented, but exposed for Terraform support.
 
 ```sql
 SELECT
@@ -259,7 +259,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a Database Catalog.<br /><br />:param catalog: :class:`DatabaseCatalog`<br /><br />:returns: :class:`DatabaseCatalog`
+Create a Database Catalog.
 
 ```sql
 INSERT INTO databricks_workspace.database.database_catalogs (
@@ -306,7 +306,7 @@ uid
 >
 <TabItem value="update">
 
-This API is currently unimplemented, but exposed for Terraform support.<br /><br />:param name: str<br />  The name of the catalog in UC.<br />:param database_catalog: :class:`DatabaseCatalog`<br />  Note that updating a database catalog is not yet supported.<br />:param update_mask: str<br />  The list of fields to update. Setting this field is not yet supported.<br /><br />:returns: :class:`DatabaseCatalog`
+This API is currently unimplemented, but exposed for Terraform support.
 
 ```sql
 UPDATE databricks_workspace.database.database_catalogs
@@ -338,7 +338,7 @@ uid;
 >
 <TabItem value="delete">
 
-Delete a Database Catalog.<br /><br />:param name: str
+Delete a Database Catalog.
 
 ```sql
 DELETE FROM databricks_workspace.database.database_catalogs

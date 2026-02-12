@@ -150,12 +150,12 @@ The following fields are returned by `SELECT` queries:
         "description": "",
         "children": [
           {
-            "name": "enum_options",
+            "name": "enumOptions",
             "type": "string",
             "description": ""
           },
           {
-            "name": "multi_values_options",
+            "name": "multiValuesOptions",
             "type": "object",
             "description": "If specified, allows multiple values to be selected for this parameter. Only applies to dropdown list and query-based dropdown list parameters.",
             "children": [
@@ -182,7 +182,7 @@ The following fields are returned by `SELECT` queries:
             "description": "The literal parameter marker that appears between double curly braces in the query text."
           },
           {
-            "name": "query_id",
+            "name": "queryId",
             "type": "string",
             "description": "The UUID of the query that provides the parameter values. Only applies for query-based dropdown list parameters."
           },
@@ -647,12 +647,12 @@ The following fields are returned by `SELECT` queries:
         "description": "",
         "children": [
           {
-            "name": "enum_options",
+            "name": "enumOptions",
             "type": "string",
             "description": ""
           },
           {
-            "name": "multi_values_options",
+            "name": "multiValuesOptions",
             "type": "object",
             "description": "If specified, allows multiple values to be selected for this parameter. Only applies to dropdown list and query-based dropdown list parameters.",
             "children": [
@@ -679,7 +679,7 @@ The following fields are returned by `SELECT` queries:
             "description": "The literal parameter marker that appears between double curly braces in the query text."
           },
           {
-            "name": "query_id",
+            "name": "queryId",
             "type": "string",
             "description": "The UUID of the query that provides the parameter values. Only applies for query-based dropdown list parameters."
           },
@@ -1055,42 +1055,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Retrieve a query object definition along with contextual permissions information about the currently<br />authenticated user.<br /><br />**Warning**: This API is deprecated. Please use :method:queries/get instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param query_id: str<br /><br />:returns: :class:`LegacyQuery`</td>
+    <td>Retrieve a query object definition along with contextual permissions information about the currently</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-order"><code>order</code></a>, <a href="#parameter-page"><code>page</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-q"><code>q</code></a></td>
-    <td>Gets a list of queries. Optionally, this list can be filtered by a search term.<br /><br />**Warning**: Calling this API concurrently 10 or more times could result in throttling, service<br />degradation, or a temporary ban.<br /><br />**Warning**: This API is deprecated. Please use :method:queries/list instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param order: str (optional)<br />  Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order<br />  descending instead.<br /><br />  - `name`: The name of the query.<br /><br />  - `created_at`: The timestamp the query was created.<br /><br />  - `runtime`: The time it took to run this query. This is blank for parameterized queries. A blank<br />  value is treated as the highest value for sorting.<br /><br />  - `executed_at`: The timestamp when the query was last run.<br /><br />  - `created_by`: The user name of the user that created the query.<br />:param page: int (optional)<br />  Page number to retrieve.<br />:param page_size: int (optional)<br />  Number of queries to return per page.<br />:param q: str (optional)<br />  Full text search term<br /><br />:returns: Iterator over :class:`LegacyQuery`</td>
+    <td>Gets a list of queries. Optionally, this list can be filtered by a search term.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates a new query definition. Queries created with this endpoint belong to the authenticated user<br />making the request.<br /><br />The `data_source_id` field specifies the ID of the SQL warehouse to run this query against. You can<br />use the Data Sources API to see a complete list of available SQL warehouses. Or you can copy the<br />`data_source_id` from an existing query.<br /><br />**Note**: You cannot add a visualization until you create the query.<br /><br />**Warning**: This API is deprecated. Please use :method:queries/create instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param data_source_id: str (optional)<br />  Data source ID maps to the ID of the data source used by the resource and is distinct from the<br />  warehouse ID. [Learn more]<br /><br />  [Learn more]: https://docs.databricks.com/api/workspace/datasources/list<br />:param description: str (optional)<br />  General description that conveys additional information about this query such as usage notes.<br />:param name: str (optional)<br />  The title of this query that appears in list views, widget headings, and on the query page.<br />:param options: Any (optional)<br />  Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,<br />  `name`, `type`, and `value` properties. The `value` field here is the default value. It can be<br />  overridden at runtime.<br />:param parent: str (optional)<br />  The identifier of the workspace folder containing the object.<br />:param query: str (optional)<br />  The text of the query to be run.<br />:param run_as_role: :class:`RunAsRole` (optional)<br />  Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as<br />  viewer" behavior) or `"owner"` (signifying "run as owner" behavior)<br />:param tags: List[str] (optional)<br /><br />:returns: :class:`LegacyQuery`</td>
+    <td>Creates a new query definition. Queries created with this endpoint belong to the authenticated user</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Modify this query definition.<br /><br />**Note**: You cannot undo this operation.<br /><br />**Warning**: This API is deprecated. Please use :method:queries/update instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param query_id: str<br />:param data_source_id: str (optional)<br />  Data source ID maps to the ID of the data source used by the resource and is distinct from the<br />  warehouse ID. [Learn more]<br /><br />  [Learn more]: https://docs.databricks.com/api/workspace/datasources/list<br />:param description: str (optional)<br />  General description that conveys additional information about this query such as usage notes.<br />:param name: str (optional)<br />  The title of this query that appears in list views, widget headings, and on the query page.<br />:param options: Any (optional)<br />  Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,<br />  `name`, `type`, and `value` properties. The `value` field here is the default value. It can be<br />  overridden at runtime.<br />:param query: str (optional)<br />  The text of the query to be run.<br />:param run_as_role: :class:`RunAsRole` (optional)<br />  Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as<br />  viewer" behavior) or `"owner"` (signifying "run as owner" behavior)<br />:param tags: List[str] (optional)<br /><br />:returns: :class:`LegacyQuery`</td>
+    <td>Modify this query definition.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and<br />they cannot be used for alerts. The trash is deleted after 30 days.<br /><br />**Warning**: This API is deprecated. Please use :method:queries/delete instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param query_id: str</td>
+    <td>Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and</td>
 </tr>
 <tr>
     <td><a href="#restore"><CopyableCode code="restore" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Restore a query that has been moved to the trash. A restored query appears in list views and searches.<br />You can use restored queries for alerts.<br /><br />**Warning**: This API is deprecated. Please see the latest version. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param query_id: str</td>
+    <td>Restore a query that has been moved to the trash. A restored query appears in list views and searches.</td>
 </tr>
 </tbody>
 </table>
@@ -1152,7 +1152,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Retrieve a query object definition along with contextual permissions information about the currently<br />authenticated user.<br /><br />**Warning**: This API is deprecated. Please use :method:queries/get instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param query_id: str<br /><br />:returns: :class:`LegacyQuery`
+Retrieve a query object definition along with contextual permissions information about the currently
 
 ```sql
 SELECT
@@ -1188,7 +1188,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets a list of queries. Optionally, this list can be filtered by a search term.<br /><br />**Warning**: Calling this API concurrently 10 or more times could result in throttling, service<br />degradation, or a temporary ban.<br /><br />**Warning**: This API is deprecated. Please use :method:queries/list instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param order: str (optional)<br />  Name of query attribute to order by. Default sort order is ascending. Append a dash (`-`) to order<br />  descending instead.<br /><br />  - `name`: The name of the query.<br /><br />  - `created_at`: The timestamp the query was created.<br /><br />  - `runtime`: The time it took to run this query. This is blank for parameterized queries. A blank<br />  value is treated as the highest value for sorting.<br /><br />  - `executed_at`: The timestamp when the query was last run.<br /><br />  - `created_by`: The user name of the user that created the query.<br />:param page: int (optional)<br />  Page number to retrieve.<br />:param page_size: int (optional)<br />  Number of queries to return per page.<br />:param q: str (optional)<br />  Full text search term<br /><br />:returns: Iterator over :class:`LegacyQuery`
+Gets a list of queries. Optionally, this list can be filtered by a search term.
 
 ```sql
 SELECT
@@ -1239,7 +1239,7 @@ AND q = '{{ q }}'
 >
 <TabItem value="create">
 
-Creates a new query definition. Queries created with this endpoint belong to the authenticated user<br />making the request.<br /><br />The `data_source_id` field specifies the ID of the SQL warehouse to run this query against. You can<br />use the Data Sources API to see a complete list of available SQL warehouses. Or you can copy the<br />`data_source_id` from an existing query.<br /><br />**Note**: You cannot add a visualization until you create the query.<br /><br />**Warning**: This API is deprecated. Please use :method:queries/create instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param data_source_id: str (optional)<br />  Data source ID maps to the ID of the data source used by the resource and is distinct from the<br />  warehouse ID. [Learn more]<br /><br />  [Learn more]: https://docs.databricks.com/api/workspace/datasources/list<br />:param description: str (optional)<br />  General description that conveys additional information about this query such as usage notes.<br />:param name: str (optional)<br />  The title of this query that appears in list views, widget headings, and on the query page.<br />:param options: Any (optional)<br />  Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,<br />  `name`, `type`, and `value` properties. The `value` field here is the default value. It can be<br />  overridden at runtime.<br />:param parent: str (optional)<br />  The identifier of the workspace folder containing the object.<br />:param query: str (optional)<br />  The text of the query to be run.<br />:param run_as_role: :class:`RunAsRole` (optional)<br />  Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as<br />  viewer" behavior) or `"owner"` (signifying "run as owner" behavior)<br />:param tags: List[str] (optional)<br /><br />:returns: :class:`LegacyQuery`
+Creates a new query definition. Queries created with this endpoint belong to the authenticated user
 
 ```sql
 INSERT INTO databricks_workspace.sql.queries_legacy (
@@ -1347,7 +1347,7 @@ visualizations
 >
 <TabItem value="replace">
 
-Modify this query definition.<br /><br />**Note**: You cannot undo this operation.<br /><br />**Warning**: This API is deprecated. Please use :method:queries/update instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param query_id: str<br />:param data_source_id: str (optional)<br />  Data source ID maps to the ID of the data source used by the resource and is distinct from the<br />  warehouse ID. [Learn more]<br /><br />  [Learn more]: https://docs.databricks.com/api/workspace/datasources/list<br />:param description: str (optional)<br />  General description that conveys additional information about this query such as usage notes.<br />:param name: str (optional)<br />  The title of this query that appears in list views, widget headings, and on the query page.<br />:param options: Any (optional)<br />  Exclusively used for storing a list parameter definitions. A parameter is an object with `title`,<br />  `name`, `type`, and `value` properties. The `value` field here is the default value. It can be<br />  overridden at runtime.<br />:param query: str (optional)<br />  The text of the query to be run.<br />:param run_as_role: :class:`RunAsRole` (optional)<br />  Sets the **Run as** role for the object. Must be set to one of `"viewer"` (signifying "run as<br />  viewer" behavior) or `"owner"` (signifying "run as owner" behavior)<br />:param tags: List[str] (optional)<br /><br />:returns: :class:`LegacyQuery`
+Modify this query definition.
 
 ```sql
 REPLACE databricks_workspace.sql.queries_legacy
@@ -1402,7 +1402,7 @@ visualizations;
 >
 <TabItem value="delete">
 
-Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and<br />they cannot be used for alerts. The trash is deleted after 30 days.<br /><br />**Warning**: This API is deprecated. Please use :method:queries/delete instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param query_id: str
+Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
 
 ```sql
 DELETE FROM databricks_workspace.sql.queries_legacy
@@ -1424,7 +1424,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 >
 <TabItem value="restore">
 
-Restore a query that has been moved to the trash. A restored query appears in list views and searches.<br />You can use restored queries for alerts.<br /><br />**Warning**: This API is deprecated. Please see the latest version. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param query_id: str
+Restore a query that has been moved to the trash. A restored query appears in list views and searches.
 
 ```sql
 EXEC databricks_workspace.sql.queries_legacy.restore 

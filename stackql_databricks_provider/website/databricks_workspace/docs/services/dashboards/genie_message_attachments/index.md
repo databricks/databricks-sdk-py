@@ -70,14 +70,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-attachment_id"><code>attachment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get the result of SQL query if the message has a query attachment. This is only available if a message<br />has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.<br /><br />:param space_id: str<br />  Genie space ID<br />:param conversation_id: str<br />  Conversation ID<br />:param message_id: str<br />  Message ID<br />:param attachment_id: str<br />  Attachment ID<br /><br />:returns: :class:`GenieGetMessageQueryResultResponse`</td>
+    <td>Get the result of SQL query if the message has a query attachment. This is only available if a message</td>
 </tr>
 <tr>
     <td><a href="#execute_attachment_query"><CopyableCode code="execute_attachment_query" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-space_id"><code>space_id</code></a>, <a href="#parameter-conversation_id"><code>conversation_id</code></a>, <a href="#parameter-message_id"><code>message_id</code></a>, <a href="#parameter-attachment_id"><code>attachment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Execute the SQL for a message query attachment. Use this API when the query attachment has expired and<br />needs to be re-executed.<br /><br />:param space_id: str<br />  Genie space ID<br />:param conversation_id: str<br />  Conversation ID<br />:param message_id: str<br />  Message ID<br />:param attachment_id: str<br />  Attachment ID<br /><br />:returns: :class:`GenieGetMessageQueryResultResponse`</td>
+    <td>Execute the SQL for a message query attachment. Use this API when the query attachment has expired and</td>
 </tr>
 </tbody>
 </table>
@@ -133,7 +133,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_query_result">
 
-Get the result of SQL query if the message has a query attachment. This is only available if a message<br />has a query attachment and the message status is `EXECUTING_QUERY` OR `COMPLETED`.<br /><br />:param space_id: str<br />  Genie space ID<br />:param conversation_id: str<br />  Conversation ID<br />:param message_id: str<br />  Message ID<br />:param attachment_id: str<br />  Attachment ID<br /><br />:returns: :class:`GenieGetMessageQueryResultResponse`
+Get the result of SQL query if the message has a query attachment. This is only available if a message
 
 ```sql
 SELECT
@@ -160,7 +160,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="execute_attachment_query">
 
-Execute the SQL for a message query attachment. Use this API when the query attachment has expired and<br />needs to be re-executed.<br /><br />:param space_id: str<br />  Genie space ID<br />:param conversation_id: str<br />  Conversation ID<br />:param message_id: str<br />  Message ID<br />:param attachment_id: str<br />  Attachment ID<br /><br />:returns: :class:`GenieGetMessageQueryResultResponse`
+Execute the SQL for a message query attachment. Use this API when the query attachment has expired and
 
 ```sql
 EXEC databricks_workspace.dashboards.genie_message_attachments.execute_attachment_query 

@@ -55,7 +55,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deprecated: Please use AI Gateway to manage rate limits instead.<br /><br />:param name: str<br />  The name of the serving endpoint whose rate limits are being updated. This field is required.<br />:param rate_limits: List[:class:`RateLimit`] (optional)<br />  The list of endpoint rate limits.<br /><br />:returns: :class:`PutResponse`</td>
+    <td>Deprecated: Please use AI Gateway to manage rate limits instead.</td>
 </tr>
 </tbody>
 </table>
@@ -96,7 +96,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="update">
 
-Deprecated: Please use AI Gateway to manage rate limits instead.<br /><br />:param name: str<br />  The name of the serving endpoint whose rate limits are being updated. This field is required.<br />:param rate_limits: List[:class:`RateLimit`] (optional)<br />  The list of endpoint rate limits.<br /><br />:returns: :class:`PutResponse`
+Deprecated: Please use AI Gateway to manage rate limits instead.
 
 ```sql
 REPLACE databricks_workspace.serving.serving_endpoint_rate_limits

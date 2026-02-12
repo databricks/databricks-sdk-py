@@ -55,7 +55,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a short-lived credential for directly accessing the table data on cloud storage. The metastore<br />must have **external_access_enabled** flag set to true (default false). The caller must have the<br />**EXTERNAL_USE_SCHEMA** privilege on the parent schema and this privilege can only be granted by<br />catalog owners.<br /><br />:param operation: :class:`TableOperation` (optional)<br />  The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is<br />  specified, the credentials returned will have write permissions, otherwise, it will be read only.<br />:param table_id: str (optional)<br />  UUID of the table to read or write.<br /><br />:returns: :class:`GenerateTemporaryTableCredentialResponse`</td>
+    <td>Get a short-lived credential for directly accessing the table data on cloud storage. The metastore</td>
 </tr>
 </tbody>
 </table>
@@ -92,7 +92,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="generate">
 
-Get a short-lived credential for directly accessing the table data on cloud storage. The metastore<br />must have **external_access_enabled** flag set to true (default false). The caller must have the<br />**EXTERNAL_USE_SCHEMA** privilege on the parent schema and this privilege can only be granted by<br />catalog owners.<br /><br />:param operation: :class:`TableOperation` (optional)<br />  The operation performed against the table data, either READ or READ_WRITE. If READ_WRITE is<br />  specified, the credentials returned will have write permissions, otherwise, it will be read only.<br />:param table_id: str (optional)<br />  UUID of the table to read or write.<br /><br />:returns: :class:`GenerateTemporaryTableCredentialResponse`
+Get a short-lived credential for directly accessing the table data on cloud storage. The metastore
 
 ```sql
 INSERT INTO databricks_workspace.catalog.temporary_table_credentials (

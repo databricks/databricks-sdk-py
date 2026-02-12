@@ -52,36 +52,26 @@ The following fields are returned by `SELECT` queries:
     "description": "",
     "children": [
       {
-        "name": "family_name",
+        "name": "familyName",
         "type": "string",
         "description": ""
       },
       {
-        "name": "given_name",
+        "name": "givenName",
         "type": "string",
         "description": "Given name of the Databricks user."
       }
     ]
   },
   {
-    "name": "external_id",
-    "type": "string",
-    "description": "External ID is not currently supported. It is reserved for future use."
-  },
-  {
-    "name": "display_name",
-    "type": "string",
-    "description": "String that represents a concatenation of given and family names. For example `John Smith`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"
-  },
-  {
-    "name": "user_name",
-    "type": "string",
-    "description": "Email address of the Databricks user."
-  },
-  {
     "name": "active",
     "type": "boolean",
     "description": ""
+  },
+  {
+    "name": "displayName",
+    "type": "string",
+    "description": "String that represents a concatenation of given and family names. For example `John Smith`. This field cannot be updated through the Workspace SCIM APIs when [identity federation is enabled]. Use Account SCIM APIs to update `displayName`. [identity federation is enabled]: https://docs.databricks.com/administration-guide/users-groups/best-practices.html#enable-identity-federation"
   },
   {
     "name": "emails",
@@ -99,7 +89,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -131,7 +121,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -146,6 +136,11 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       }
     ]
+  },
+  {
+    "name": "externalId",
+    "type": "string",
+    "description": "External ID is not currently supported. It is reserved for future use."
   },
   {
     "name": "groups",
@@ -163,7 +158,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -195,7 +190,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -215,6 +210,11 @@ The following fields are returned by `SELECT` queries:
     "name": "schemas",
     "type": "array",
     "description": "The schema of the user."
+  },
+  {
+    "name": "userName",
+    "type": "string",
+    "description": "Email address of the Databricks user."
   }
 ]} />
 </TabItem>
@@ -240,7 +240,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get details about the current method caller's identity.<br /><br /><br />:returns: :class:`User`</td>
+    <td>Get details about the current method caller's identity.</td>
 </tr>
 </tbody>
 </table>
@@ -276,21 +276,21 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get details about the current method caller's identity.<br /><br /><br />:returns: :class:`User`
+Get details about the current method caller's identity.
 
 ```sql
 SELECT
 id,
 name,
-external_id,
-display_name,
-user_name,
 active,
+displayName,
 emails,
 entitlements,
+externalId,
 groups,
 roles,
-schemas
+schemas,
+userName
 FROM databricks_workspace.iam.current_user
 WHERE deployment_name = '{{ deployment_name }}' -- required
 ;

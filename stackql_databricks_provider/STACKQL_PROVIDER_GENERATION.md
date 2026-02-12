@@ -101,12 +101,6 @@ npm run generate-provider -- \
   --overwrite
 ```
 
-add any post generation response transforms:
-
-```bash
-
-```
-
 #### Workspace scope
 
 ```bash
@@ -123,7 +117,7 @@ npm run generate-provider -- \
 add any post generation response transforms:
 
 ```bash
-
+python -m add_response_transforms
 ```
 
 **Parameters explained:**
@@ -230,6 +224,9 @@ npm run generate-docs -- \
   --provider-data-dir ./docgen/provider-data/databricks_workspace
 ```
 
+```bash
+python -m add_doc_examples --doc-dir website
+```
 ### 8. Authentication
 
 Databricks uses personal access tokens (PAT) for authentication. Set the token in your environment:

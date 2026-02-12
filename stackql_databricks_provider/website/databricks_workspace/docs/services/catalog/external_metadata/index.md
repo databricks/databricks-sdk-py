@@ -211,35 +211,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets the specified external metadata object in a metastore. The caller must be a metastore admin, the<br />owner of the external metadata object, or a user that has the **BROWSE** privilege.<br /><br />:param name: str<br /><br />:returns: :class:`ExternalMetadata`</td>
+    <td>Gets the specified external metadata object in a metastore. The caller must be a metastore admin, the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of external metadata objects in the metastore. If the caller is the metastore admin, all<br />external metadata objects will be retrieved. Otherwise, only external metadata objects that the caller<br />has **BROWSE** on will be retrieved. There is no guarantee of a specific ordering of the elements in<br />the array.<br /><br />:param page_size: int (optional)<br />  Specifies the maximum number of external metadata objects to return in a single response. The value<br />  must be less than or equal to 1000.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ExternalMetadata`</td>
+    <td>Gets an array of external metadata objects in the metastore. If the caller is the metastore admin, all</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__external_metadata"><code>data__external_metadata</code></a></td>
     <td></td>
-    <td>Creates a new external metadata object in the parent metastore if the caller is a metastore admin or<br />has the **CREATE_EXTERNAL_METADATA** privilege. Grants **BROWSE** to all account users upon creation<br />by default.<br /><br />:param external_metadata: :class:`ExternalMetadata`<br /><br />:returns: :class:`ExternalMetadata`</td>
+    <td>Creates a new external metadata object in the parent metastore if the caller is a metastore admin or</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__external_metadata"><code>data__external_metadata</code></a></td>
     <td></td>
-    <td>Updates the external metadata object that matches the supplied name. The caller can only update either<br />the owner or other metadata fields in one request. The caller must be a metastore admin, the owner of<br />the external metadata object, or a user that has the **MODIFY** privilege. If the caller is updating<br />the owner, they must also have the **MANAGE** privilege.<br /><br />:param name: str<br />  Name of the external metadata object.<br />:param external_metadata: :class:`ExternalMetadata`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`ExternalMetadata`</td>
+    <td>Updates the external metadata object that matches the supplied name. The caller can only update either</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes the external metadata object that matches the supplied name. The caller must be a metastore<br />admin, the owner of the external metadata object, or a user that has the **MANAGE** privilege.<br /><br />:param name: str</td>
+    <td>Deletes the external metadata object that matches the supplied name. The caller must be a metastore</td>
 </tr>
 </tbody>
 </table>
@@ -296,7 +296,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the specified external metadata object in a metastore. The caller must be a metastore admin, the<br />owner of the external metadata object, or a user that has the **BROWSE** privilege.<br /><br />:param name: str<br /><br />:returns: :class:`ExternalMetadata`
+Gets the specified external metadata object in a metastore. The caller must be a metastore admin, the
 
 ```sql
 SELECT
@@ -322,7 +322,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets an array of external metadata objects in the metastore. If the caller is the metastore admin, all<br />external metadata objects will be retrieved. Otherwise, only external metadata objects that the caller<br />has **BROWSE** on will be retrieved. There is no guarantee of a specific ordering of the elements in<br />the array.<br /><br />:param page_size: int (optional)<br />  Specifies the maximum number of external metadata objects to return in a single response. The value<br />  must be less than or equal to 1000.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`ExternalMetadata`
+Gets an array of external metadata objects in the metastore. If the caller is the metastore admin, all
 
 ```sql
 SELECT
@@ -361,7 +361,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new external metadata object in the parent metastore if the caller is a metastore admin or<br />has the **CREATE_EXTERNAL_METADATA** privilege. Grants **BROWSE** to all account users upon creation<br />by default.<br /><br />:param external_metadata: :class:`ExternalMetadata`<br /><br />:returns: :class:`ExternalMetadata`
+Creates a new external metadata object in the parent metastore if the caller is a metastore admin or
 
 ```sql
 INSERT INTO databricks_workspace.catalog.external_metadata (
@@ -417,7 +417,7 @@ url
 >
 <TabItem value="update">
 
-Updates the external metadata object that matches the supplied name. The caller can only update either<br />the owner or other metadata fields in one request. The caller must be a metastore admin, the owner of<br />the external metadata object, or a user that has the **MODIFY** privilege. If the caller is updating<br />the owner, they must also have the **MANAGE** privilege.<br /><br />:param name: str<br />  Name of the external metadata object.<br />:param external_metadata: :class:`ExternalMetadata`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`ExternalMetadata`
+Updates the external metadata object that matches the supplied name. The caller can only update either
 
 ```sql
 UPDATE databricks_workspace.catalog.external_metadata
@@ -458,7 +458,7 @@ url;
 >
 <TabItem value="delete">
 
-Deletes the external metadata object that matches the supplied name. The caller must be a metastore<br />admin, the owner of the external metadata object, or a user that has the **MANAGE** privilege.<br /><br />:param name: str
+Deletes the external metadata object that matches the supplied name. The caller must be a metastore
 
 ```sql
 DELETE FROM databricks_workspace.catalog.external_metadata

@@ -232,63 +232,63 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-experiment_name"><code>experiment_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets metadata for an experiment.<br /><br />This endpoint will return deleted experiments, but prefers the active experiment if an active and<br />deleted experiment share the same name. If multiple deleted experiments share the same name, the API<br />will return one of them.<br /><br />Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name exists.<br /><br />:param experiment_name: str<br />  Name of the associated experiment.<br /><br />:returns: :class:`GetExperimentByNameResponse`</td>
+    <td>Gets metadata for an experiment.</td>
 </tr>
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets metadata for an experiment. This method works on deleted experiments.<br /><br />:param experiment_id: str<br />  ID of the associated experiment.<br /><br />:returns: :class:`GetExperimentResponse`</td>
+    <td>Gets metadata for an experiment. This method works on deleted experiments.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-view_type"><code>view_type</code></a></td>
-    <td>Gets a list of all experiments.<br /><br />:param max_results: int (optional)<br />  Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If<br />  `max_results` is too large, it'll be automatically capped at 1000. Callers of this endpoint are<br />  encouraged to pass max_results explicitly and leverage page_token to iterate through experiments.<br />:param page_token: str (optional)<br />  Token indicating the page of experiments to fetch<br />:param view_type: :class:`ViewType` (optional)<br />  Qualifier for type of experiments to be returned. If unspecified, return only active experiments.<br /><br />:returns: Iterator over :class:`Experiment`</td>
+    <td>Gets a list of all experiments.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
     <td></td>
-    <td>Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that<br />another experiment with the same name does not already exist and fails if another experiment with the<br />same name already exists.<br /><br />Throws `RESOURCE_ALREADY_EXISTS` if an experiment with the given name exists.<br /><br />:param name: str<br />  Experiment name.<br />:param artifact_location: str (optional)<br />  Location where all artifacts for the experiment are stored. If not provided, the remote server will<br />  select an appropriate default.<br />:param tags: List[:class:`ExperimentTag`] (optional)<br />  A collection of tags to set on the experiment. Maximum tag size and number of tags per request<br />  depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250<br />  bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to<br />  support up to 20 tags per request.<br /><br />:returns: :class:`CreateExperimentResponse`</td>
+    <td>Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
     <td></td>
-    <td>Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the<br />experiment uses FileStore, artifacts associated with the experiment are also deleted.<br /><br />:param experiment_id: str<br />  ID of the associated experiment.</td>
+    <td>Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the</td>
 </tr>
 <tr>
     <td><a href="#restore"><CopyableCode code="restore" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
     <td></td>
-    <td>Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,<br />params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are<br />also restored.<br /><br />Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted.<br /><br />:param experiment_id: str<br />  ID of the associated experiment.</td>
+    <td>Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,</td>
 </tr>
 <tr>
     <td><a href="#search"><CopyableCode code="search" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Searches for experiments that satisfy specified search criteria.<br /><br />:param filter: str (optional)<br />  String representing a SQL filter condition (e.g. "name ILIKE 'my-experiment%'")<br />:param max_results: int (optional)<br />  Maximum number of experiments desired. Max threshold is 3000.<br />:param order_by: List[str] (optional)<br />  List of columns for ordering search results, which can include experiment name and last updated<br />  timestamp with an optional "DESC" or "ASC" annotation, where "ASC" is the default. Tiebreaks are<br />  done by experiment id DESC.<br />:param page_token: str (optional)<br />  Token indicating the page of experiments to fetch<br />:param view_type: :class:`ViewType` (optional)<br />  Qualifier for type of experiments to be returned. If unspecified, return only active experiments.<br /><br />:returns: Iterator over :class:`Experiment`</td>
+    <td>Searches for experiments that satisfy specified search criteria.</td>
 </tr>
 <tr>
     <td><a href="#set_tag"><CopyableCode code="set_tag" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-value"><code>value</code></a></td>
     <td></td>
-    <td>Sets a tag on an experiment. Experiment tags are metadata that can be updated.<br /><br />:param experiment_id: str<br />  ID of the experiment under which to log the tag. Must be provided.<br />:param key: str<br />  Name of the tag. Keys up to 250 bytes in size are supported.<br />:param value: str<br />  String value of the tag being logged. Values up to 64KB in size are supported.</td>
+    <td>Sets a tag on an experiment. Experiment tags are metadata that can be updated.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
     <td></td>
-    <td>Updates experiment metadata.<br /><br />:param experiment_id: str<br />  ID of the associated experiment.<br />:param new_name: str (optional)<br />  If provided, the experiment's name is changed to the new name. The new name must be unique.</td>
+    <td>Updates experiment metadata.</td>
 </tr>
 </tbody>
 </table>
@@ -351,7 +351,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_by_name">
 
-Gets metadata for an experiment.<br /><br />This endpoint will return deleted experiments, but prefers the active experiment if an active and<br />deleted experiment share the same name. If multiple deleted experiments share the same name, the API<br />will return one of them.<br /><br />Throws `RESOURCE_DOES_NOT_EXIST` if no experiment with the specified name exists.<br /><br />:param experiment_name: str<br />  Name of the associated experiment.<br /><br />:returns: :class:`GetExperimentByNameResponse`
+Gets metadata for an experiment.
 
 ```sql
 SELECT
@@ -364,7 +364,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="get">
 
-Gets metadata for an experiment. This method works on deleted experiments.<br /><br />:param experiment_id: str<br />  ID of the associated experiment.<br /><br />:returns: :class:`GetExperimentResponse`
+Gets metadata for an experiment. This method works on deleted experiments.
 
 ```sql
 SELECT
@@ -377,7 +377,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets a list of all experiments.<br /><br />:param max_results: int (optional)<br />  Maximum number of experiments desired. If `max_results` is unspecified, return all experiments. If<br />  `max_results` is too large, it'll be automatically capped at 1000. Callers of this endpoint are<br />  encouraged to pass max_results explicitly and leverage page_token to iterate through experiments.<br />:param page_token: str (optional)<br />  Token indicating the page of experiments to fetch<br />:param view_type: :class:`ViewType` (optional)<br />  Qualifier for type of experiments to be returned. If unspecified, return only active experiments.<br /><br />:returns: Iterator over :class:`Experiment`
+Gets a list of all experiments.
 
 ```sql
 SELECT
@@ -410,7 +410,7 @@ AND view_type = '{{ view_type }}'
 >
 <TabItem value="create">
 
-Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that<br />another experiment with the same name does not already exist and fails if another experiment with the<br />same name already exists.<br /><br />Throws `RESOURCE_ALREADY_EXISTS` if an experiment with the given name exists.<br /><br />:param name: str<br />  Experiment name.<br />:param artifact_location: str (optional)<br />  Location where all artifacts for the experiment are stored. If not provided, the remote server will<br />  select an appropriate default.<br />:param tags: List[:class:`ExperimentTag`] (optional)<br />  A collection of tags to set on the experiment. Maximum tag size and number of tags per request<br />  depends on the storage backend. All storage backends are guaranteed to support tag keys up to 250<br />  bytes in size and tag values up to 5000 bytes in size. All storage backends are also guaranteed to<br />  support up to 20 tags per request.<br /><br />:returns: :class:`CreateExperimentResponse`
+Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that
 
 ```sql
 INSERT INTO databricks_workspace.ml.experiments (
@@ -469,7 +469,7 @@ experiment_id
 >
 <TabItem value="delete">
 
-Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the<br />experiment uses FileStore, artifacts associated with the experiment are also deleted.<br /><br />:param experiment_id: str<br />  ID of the associated experiment.
+Marks an experiment and associated metadata, runs, metrics, params, and tags for deletion. If the
 
 ```sql
 EXEC databricks_workspace.ml.experiments.delete 
@@ -483,7 +483,7 @@ EXEC databricks_workspace.ml.experiments.delete
 </TabItem>
 <TabItem value="restore">
 
-Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,<br />params, and tags. If experiment uses FileStore, underlying artifacts associated with experiment are<br />also restored.<br /><br />Throws `RESOURCE_DOES_NOT_EXIST` if experiment was never created or was permanently deleted.<br /><br />:param experiment_id: str<br />  ID of the associated experiment.
+Restore an experiment marked for deletion. This also restores associated metadata, runs, metrics,
 
 ```sql
 EXEC databricks_workspace.ml.experiments.restore 
@@ -497,7 +497,7 @@ EXEC databricks_workspace.ml.experiments.restore
 </TabItem>
 <TabItem value="search">
 
-Searches for experiments that satisfy specified search criteria.<br /><br />:param filter: str (optional)<br />  String representing a SQL filter condition (e.g. "name ILIKE 'my-experiment%'")<br />:param max_results: int (optional)<br />  Maximum number of experiments desired. Max threshold is 3000.<br />:param order_by: List[str] (optional)<br />  List of columns for ordering search results, which can include experiment name and last updated<br />  timestamp with an optional "DESC" or "ASC" annotation, where "ASC" is the default. Tiebreaks are<br />  done by experiment id DESC.<br />:param page_token: str (optional)<br />  Token indicating the page of experiments to fetch<br />:param view_type: :class:`ViewType` (optional)<br />  Qualifier for type of experiments to be returned. If unspecified, return only active experiments.<br /><br />:returns: Iterator over :class:`Experiment`
+Searches for experiments that satisfy specified search criteria.
 
 ```sql
 EXEC databricks_workspace.ml.experiments.search 
@@ -515,7 +515,7 @@ EXEC databricks_workspace.ml.experiments.search
 </TabItem>
 <TabItem value="set_tag">
 
-Sets a tag on an experiment. Experiment tags are metadata that can be updated.<br /><br />:param experiment_id: str<br />  ID of the experiment under which to log the tag. Must be provided.<br />:param key: str<br />  Name of the tag. Keys up to 250 bytes in size are supported.<br />:param value: str<br />  String value of the tag being logged. Values up to 64KB in size are supported.
+Sets a tag on an experiment. Experiment tags are metadata that can be updated.
 
 ```sql
 EXEC databricks_workspace.ml.experiments.set_tag 
@@ -531,7 +531,7 @@ EXEC databricks_workspace.ml.experiments.set_tag
 </TabItem>
 <TabItem value="update">
 
-Updates experiment metadata.<br /><br />:param experiment_id: str<br />  ID of the associated experiment.<br />:param new_name: str (optional)<br />  If provided, the experiment's name is changed to the new name. The new name must be unique.
+Updates experiment metadata.
 
 ```sql
 EXEC databricks_workspace.ml.experiments.update 

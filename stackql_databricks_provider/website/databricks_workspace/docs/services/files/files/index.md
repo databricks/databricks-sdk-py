@@ -71,28 +71,7 @@ The following fields are returned by `SELECT` queries:
 </TabItem>
 <TabItem value="download">
 
-<SchemaTable fields={[
-  {
-    "name": "content_length",
-    "type": "integer",
-    "description": ""
-  },
-  {
-    "name": "content_type",
-    "type": "string",
-    "description": ""
-  },
-  {
-    "name": "contents",
-    "type": "string (binary)",
-    "description": ""
-  },
-  {
-    "name": "last_modified",
-    "type": "string",
-    "description": "The last modified time of the file in HTTP-date (RFC 7231) format."
-  }
-]} />
+<SchemaTable fields={[]} />
 </TabItem>
 </Tabs>
 
@@ -116,42 +95,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-directory_path"><code>directory_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Returns the contents of a directory. If there is no directory at the specified path, the API returns a<br />HTTP 404 error.<br /><br />:param directory_path: str<br />  The absolute path of a directory.<br />:param page_size: int (optional)<br />  The maximum number of directory entries to return. The response may contain fewer entries. If the<br />  response contains a `next_page_token`, there may be more entries, even if fewer than `page_size`<br />  entries are in the response.<br /><br />  We recommend not to set this value unless you are intentionally listing less than the complete<br />  directory contents.<br /><br />  If unspecified, at most 1000 directory entries will be returned. The maximum value is 1000. Values<br />  above 1000 will be coerced to 1000.<br />:param page_token: str (optional)<br />  An opaque page token which was the `next_page_token` in the response of the previous request to list<br />  the contents of this directory. Provide this token to retrieve the next page of directory entries.<br />  When providing a `page_token`, all other parameters provided to the request must match the previous<br />  request. To list all of the entries in a directory, it is necessary to continue requesting pages of<br />  entries until the response contains no `next_page_token`. Note that the number of entries returned<br />  must not be used to determine when the listing is complete.<br /><br />:returns: Iterator over :class:`DirectoryEntry`</td>
+    <td>Returns the contents of a directory. If there is no directory at the specified path, the API returns a</td>
 </tr>
 <tr>
     <td><a href="#download"><CopyableCode code="download" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Downloads a file. The file contents are the response body. This is a standard HTTP file download, not<br />a JSON RPC. It supports the Range and If-Unmodified-Since HTTP headers.<br /><br />:param file_path: str<br />  The absolute path of the file.<br /><br />:returns: :class:`DownloadResponse`</td>
+    <td>Downloads a file. The file contents are the response body. This is a standard HTTP file download, not</td>
 </tr>
 <tr>
     <td><a href="#create_directory"><CopyableCode code="create_directory" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-directory_path"><code>directory_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates an empty directory. If necessary, also creates any parent directories of the new, empty<br />directory (like the shell command `mkdir -p`). If called on an existing directory, returns a success<br />response; this method is idempotent (it will succeed if the directory already exists).<br /><br />:param directory_path: str<br />  The absolute path of a directory.</td>
+    <td>Creates an empty directory. If necessary, also creates any parent directories of the new, empty</td>
 </tr>
 <tr>
     <td><a href="#upload"><CopyableCode code="upload" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__contents"><code>data__contents</code></a></td>
     <td><a href="#parameter-overwrite"><code>overwrite</code></a></td>
-    <td>Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an<br />octet stream); do not encode or otherwise modify the bytes before sending. The contents of the<br />resulting file will be exactly the bytes sent in the request body. If the request is successful, there<br />is no response body.<br /><br />:param file_path: str<br />  The absolute path of the file.<br />:param contents: BinaryIO<br />:param overwrite: bool (optional)<br />  If true or unspecified, an existing file will be overwritten. If false, an error will be returned if<br />  the path points to an existing file.</td>
+    <td>Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an</td>
 </tr>
 <tr>
     <td><a href="#delete_directory"><CopyableCode code="delete_directory" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-directory_path"><code>directory_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes an empty directory.<br /><br />To delete a non-empty directory, first delete all of its contents. This can be done by listing the<br />directory contents and deleting each file and subdirectory recursively.<br /><br />:param directory_path: str<br />  The absolute path of a directory.</td>
+    <td>Deletes an empty directory.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes a file. If the request is successful, there is no response body.<br /><br />:param file_path: str<br />  The absolute path of the file.</td>
+    <td>Deletes a file. If the request is successful, there is no response body.</td>
 </tr>
 </tbody>
 </table>
@@ -213,7 +192,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list_directory_contents">
 
-Returns the contents of a directory. If there is no directory at the specified path, the API returns a<br />HTTP 404 error.<br /><br />:param directory_path: str<br />  The absolute path of a directory.<br />:param page_size: int (optional)<br />  The maximum number of directory entries to return. The response may contain fewer entries. If the<br />  response contains a `next_page_token`, there may be more entries, even if fewer than `page_size`<br />  entries are in the response.<br /><br />  We recommend not to set this value unless you are intentionally listing less than the complete<br />  directory contents.<br /><br />  If unspecified, at most 1000 directory entries will be returned. The maximum value is 1000. Values<br />  above 1000 will be coerced to 1000.<br />:param page_token: str (optional)<br />  An opaque page token which was the `next_page_token` in the response of the previous request to list<br />  the contents of this directory. Provide this token to retrieve the next page of directory entries.<br />  When providing a `page_token`, all other parameters provided to the request must match the previous<br />  request. To list all of the entries in a directory, it is necessary to continue requesting pages of<br />  entries until the response contains no `next_page_token`. Note that the number of entries returned<br />  must not be used to determine when the listing is complete.<br /><br />:returns: Iterator over :class:`DirectoryEntry`
+Returns the contents of a directory. If there is no directory at the specified path, the API returns a
 
 ```sql
 SELECT
@@ -232,14 +211,11 @@ AND page_token = '{{ page_token }}'
 </TabItem>
 <TabItem value="download">
 
-Downloads a file. The file contents are the response body. This is a standard HTTP file download, not<br />a JSON RPC. It supports the Range and If-Unmodified-Since HTTP headers.<br /><br />:param file_path: str<br />  The absolute path of the file.<br /><br />:returns: :class:`DownloadResponse`
+Downloads a file. The file contents are the response body. This is a standard HTTP file download, not
 
 ```sql
 SELECT
-content_length,
-content_type,
-contents,
-last_modified
+*
 FROM databricks_workspace.files.files
 WHERE file_path = '{{ file_path }}' -- required
 AND deployment_name = '{{ deployment_name }}' -- required
@@ -260,7 +236,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create_directory">
 
-Creates an empty directory. If necessary, also creates any parent directories of the new, empty<br />directory (like the shell command `mkdir -p`). If called on an existing directory, returns a success<br />response; this method is idempotent (it will succeed if the directory already exists).<br /><br />:param directory_path: str<br />  The absolute path of a directory.
+Creates an empty directory. If necessary, also creates any parent directories of the new, empty
 
 ```sql
 REPLACE databricks_workspace.files.files
@@ -273,7 +249,7 @@ AND deployment_name = '{{ deployment_name }}' --required;
 </TabItem>
 <TabItem value="upload">
 
-Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an<br />octet stream); do not encode or otherwise modify the bytes before sending. The contents of the<br />resulting file will be exactly the bytes sent in the request body. If the request is successful, there<br />is no response body.<br /><br />:param file_path: str<br />  The absolute path of the file.<br />:param contents: BinaryIO<br />:param overwrite: bool (optional)<br />  If true or unspecified, an existing file will be overwritten. If false, an error will be returned if<br />  the path points to an existing file.
+Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an
 
 ```sql
 REPLACE databricks_workspace.files.files
@@ -300,7 +276,7 @@ AND overwrite = '{{ overwrite}}';
 >
 <TabItem value="delete_directory">
 
-Deletes an empty directory.<br /><br />To delete a non-empty directory, first delete all of its contents. This can be done by listing the<br />directory contents and deleting each file and subdirectory recursively.<br /><br />:param directory_path: str<br />  The absolute path of a directory.
+Deletes an empty directory.
 
 ```sql
 DELETE FROM databricks_workspace.files.files
@@ -311,7 +287,7 @@ AND deployment_name = '{{ deployment_name }}' --required
 </TabItem>
 <TabItem value="delete">
 
-Deletes a file. If the request is successful, there is no response body.<br /><br />:param file_path: str<br />  The absolute path of the file.
+Deletes a file. If the request is successful, there is no response body.
 
 ```sql
 DELETE FROM databricks_workspace.files.files

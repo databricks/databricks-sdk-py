@@ -92,21 +92,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Lists all secret scopes available in the workspace.<br /><br />Example response:<br /><br />.. code::<br /><br />&#123; "scopes": [&#123; "name": "my-databricks-scope", "backend_type": "DATABRICKS" &#125;,&#123; "name": "mount-points",<br />"backend_type": "DATABRICKS" &#125;] &#125;<br /><br />Throws ``PERMISSION_DENIED`` if the user does not have permission to make this API call.<br /><br /><br />:returns: Iterator over :class:`SecretScope`</td>
+    <td>Lists all secret scopes available in the workspace.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__scope"><code>data__scope</code></a></td>
     <td></td>
-    <td>Creates a new secret scope.<br /><br />The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not<br />exceed 128 characters.<br /><br />Example request:<br /><br />.. code::<br /><br />&#123; "scope": "my-simple-databricks-scope", "initial_manage_principal": "users" "scope_backend_type":<br />"databricks|azure_keyvault", # below is only required if scope type is azure_keyvault<br />"backend_azure_keyvault": &#123; "resource_id":<br />"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxx/providers/Microsoft.KeyVault/vaults/xxxx",<br />"tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "dns_name": "https://xxxx.vault.azure.net/", &#125; &#125;<br /><br />If ``initial_manage_principal`` is specified, the initial ACL applied to the scope is applied to the<br />supplied principal (user or group) with ``MANAGE`` permissions. The only supported principal for this<br />option is the group ``users``, which contains all users in the workspace. If<br />``initial_manage_principal`` is not specified, the initial ACL with ``MANAGE`` permission applied to<br />the scope is assigned to the API request issuer's user identity.<br /><br />If ``scope_backend_type`` is ``azure_keyvault``, a secret scope is created with secrets from a given<br />Azure KeyVault. The caller must provide the keyvault_resource_id and the tenant_id for the key vault.<br />If ``scope_backend_type`` is ``databricks`` or is unspecified, an empty secret scope is created and<br />stored in Databricks's own storage.<br /><br />Throws ``RESOURCE_ALREADY_EXISTS`` if a scope with the given name already exists. Throws<br />``RESOURCE_LIMIT_EXCEEDED`` if maximum number of scopes in the workspace is exceeded. Throws<br />``INVALID_PARAMETER_VALUE`` if the scope name is invalid. Throws ``BAD_REQUEST`` if request violated<br />constraints. Throws ``CUSTOMER_UNAUTHORIZED`` if normal user attempts to create a scope with name<br />reserved for databricks internal usage. Throws ``UNAUTHENTICATED`` if unable to verify user access<br />permission on Azure KeyVault<br /><br />:param scope: str<br />  Scope name requested by the user. Scope names are unique.<br />:param backend_azure_keyvault: :class:`AzureKeyVaultSecretScopeMetadata` (optional)<br />  The metadata for the secret scope if the type is ``AZURE_KEYVAULT``<br />:param initial_manage_principal: str (optional)<br />  The principal that is initially granted ``MANAGE`` permission to the created scope.<br />:param scope_backend_type: :class:`ScopeBackendType` (optional)<br />  The backend type the scope will be created with. If not specified, will default to ``DATABRICKS``</td>
+    <td>Creates a new secret scope.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a></td>
     <td></td>
-    <td>Deletes a secret scope.<br /><br />Example request:<br /><br />.. code::<br /><br />&#123; "scope": "my-secret-scope" &#125;<br /><br />Throws ``RESOURCE_DOES_NOT_EXIST`` if the scope does not exist. Throws ``PERMISSION_DENIED`` if the<br />user does not have permission to make this API call. Throws ``BAD_REQUEST`` if system user attempts to<br />delete internal secret scope.<br /><br />:param scope: str<br />  Name of the scope to delete.</td>
+    <td>Deletes a secret scope.</td>
 </tr>
 </tbody>
 </table>
@@ -142,7 +142,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Lists all secret scopes available in the workspace.<br /><br />Example response:<br /><br />.. code::<br /><br />&#123; "scopes": [&#123; "name": "my-databricks-scope", "backend_type": "DATABRICKS" &#125;,&#123; "name": "mount-points",<br />"backend_type": "DATABRICKS" &#125;] &#125;<br /><br />Throws ``PERMISSION_DENIED`` if the user does not have permission to make this API call.<br /><br /><br />:returns: Iterator over :class:`SecretScope`
+Lists all secret scopes available in the workspace.
 
 ```sql
 SELECT
@@ -168,7 +168,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Creates a new secret scope.<br /><br />The scope name must consist of alphanumeric characters, dashes, underscores, and periods, and may not<br />exceed 128 characters.<br /><br />Example request:<br /><br />.. code::<br /><br />&#123; "scope": "my-simple-databricks-scope", "initial_manage_principal": "users" "scope_backend_type":<br />"databricks|azure_keyvault", # below is only required if scope type is azure_keyvault<br />"backend_azure_keyvault": &#123; "resource_id":<br />"/subscriptions/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/resourceGroups/xxxx/providers/Microsoft.KeyVault/vaults/xxxx",<br />"tenant_id": "xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx", "dns_name": "https://xxxx.vault.azure.net/", &#125; &#125;<br /><br />If ``initial_manage_principal`` is specified, the initial ACL applied to the scope is applied to the<br />supplied principal (user or group) with ``MANAGE`` permissions. The only supported principal for this<br />option is the group ``users``, which contains all users in the workspace. If<br />``initial_manage_principal`` is not specified, the initial ACL with ``MANAGE`` permission applied to<br />the scope is assigned to the API request issuer's user identity.<br /><br />If ``scope_backend_type`` is ``azure_keyvault``, a secret scope is created with secrets from a given<br />Azure KeyVault. The caller must provide the keyvault_resource_id and the tenant_id for the key vault.<br />If ``scope_backend_type`` is ``databricks`` or is unspecified, an empty secret scope is created and<br />stored in Databricks's own storage.<br /><br />Throws ``RESOURCE_ALREADY_EXISTS`` if a scope with the given name already exists. Throws<br />``RESOURCE_LIMIT_EXCEEDED`` if maximum number of scopes in the workspace is exceeded. Throws<br />``INVALID_PARAMETER_VALUE`` if the scope name is invalid. Throws ``BAD_REQUEST`` if request violated<br />constraints. Throws ``CUSTOMER_UNAUTHORIZED`` if normal user attempts to create a scope with name<br />reserved for databricks internal usage. Throws ``UNAUTHENTICATED`` if unable to verify user access<br />permission on Azure KeyVault<br /><br />:param scope: str<br />  Scope name requested by the user. Scope names are unique.<br />:param backend_azure_keyvault: :class:`AzureKeyVaultSecretScopeMetadata` (optional)<br />  The metadata for the secret scope if the type is ``AZURE_KEYVAULT``<br />:param initial_manage_principal: str (optional)<br />  The principal that is initially granted ``MANAGE`` permission to the created scope.<br />:param scope_backend_type: :class:`ScopeBackendType` (optional)<br />  The backend type the scope will be created with. If not specified, will default to ``DATABRICKS``
+Creates a new secret scope.
 
 ```sql
 INSERT INTO databricks_workspace.workspace.secret_scopes (
@@ -227,7 +227,7 @@ SELECT
 >
 <TabItem value="delete">
 
-Deletes a secret scope.<br /><br />Example request:<br /><br />.. code::<br /><br />&#123; "scope": "my-secret-scope" &#125;<br /><br />Throws ``RESOURCE_DOES_NOT_EXIST`` if the scope does not exist. Throws ``PERMISSION_DENIED`` if the<br />user does not have permission to make this API call. Throws ``BAD_REQUEST`` if system user attempts to<br />delete internal secret scope.<br /><br />:param scope: str<br />  Name of the scope to delete.
+Deletes a secret scope.
 
 ```sql
 EXEC databricks_workspace.workspace.secret_scopes.delete 

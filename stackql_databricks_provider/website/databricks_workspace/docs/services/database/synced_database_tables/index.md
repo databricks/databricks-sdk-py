@@ -699,35 +699,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get a Synced Database Table.<br /><br />:param name: str<br /><br />:returns: :class:`SyncedDatabaseTable`</td>
+    <td>Get a Synced Database Table.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>This API is currently unimplemented, but exposed for Terraform support.<br /><br />:param instance_name: str<br />  Name of the instance to get synced tables for.<br />:param page_size: int (optional)<br />  Upper bound for items returned.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of synced database tables. Requests first page if absent.<br /><br />:returns: Iterator over :class:`SyncedDatabaseTable`</td>
+    <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__synced_table"><code>data__synced_table</code></a></td>
     <td></td>
-    <td>Create a Synced Database Table.<br /><br />:param synced_table: :class:`SyncedDatabaseTable`<br /><br />:returns: :class:`SyncedDatabaseTable`</td>
+    <td>Create a Synced Database Table.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__synced_table"><code>data__synced_table</code></a></td>
     <td></td>
-    <td>This API is currently unimplemented, but exposed for Terraform support.<br /><br />:param name: str<br />  Full three-part (catalog, schema, table) name of the table.<br />:param synced_table: :class:`SyncedDatabaseTable`<br />  Note that updating a synced database table is not yet supported.<br />:param update_mask: str<br />  The list of fields to update. Setting this field is not yet supported.<br /><br />:returns: :class:`SyncedDatabaseTable`</td>
+    <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-purge_data"><code>purge_data</code></a></td>
-    <td>Delete a Synced Database Table.<br /><br />:param name: str<br />:param purge_data: bool (optional)<br />  Optional. When set to true, the actual PostgreSQL table will be dropped from the database.</td>
+    <td>Delete a Synced Database Table.</td>
 </tr>
 </tbody>
 </table>
@@ -794,7 +794,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a Synced Database Table.<br /><br />:param name: str<br /><br />:returns: :class:`SyncedDatabaseTable`
+Get a Synced Database Table.
 
 ```sql
 SELECT
@@ -814,7 +814,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-This API is currently unimplemented, but exposed for Terraform support.<br /><br />:param instance_name: str<br />  Name of the instance to get synced tables for.<br />:param page_size: int (optional)<br />  Upper bound for items returned.<br />:param page_token: str (optional)<br />  Pagination token to go to the next page of synced database tables. Requests first page if absent.<br /><br />:returns: Iterator over :class:`SyncedDatabaseTable`
+This API is currently unimplemented, but exposed for Terraform support.
 
 ```sql
 SELECT
@@ -848,7 +848,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Create a Synced Database Table.<br /><br />:param synced_table: :class:`SyncedDatabaseTable`<br /><br />:returns: :class:`SyncedDatabaseTable`
+Create a Synced Database Table.
 
 ```sql
 INSERT INTO databricks_workspace.database.synced_database_tables (
@@ -898,7 +898,7 @@ unity_catalog_provisioning_state
 >
 <TabItem value="update">
 
-This API is currently unimplemented, but exposed for Terraform support.<br /><br />:param name: str<br />  Full three-part (catalog, schema, table) name of the table.<br />:param synced_table: :class:`SyncedDatabaseTable`<br />  Note that updating a synced database table is not yet supported.<br />:param update_mask: str<br />  The list of fields to update. Setting this field is not yet supported.<br /><br />:returns: :class:`SyncedDatabaseTable`
+This API is currently unimplemented, but exposed for Terraform support.
 
 ```sql
 UPDATE databricks_workspace.database.synced_database_tables
@@ -933,7 +933,7 @@ unity_catalog_provisioning_state;
 >
 <TabItem value="delete">
 
-Delete a Synced Database Table.<br /><br />:param name: str<br />:param purge_data: bool (optional)<br />  Optional. When set to true, the actual PostgreSQL table will be dropped from the database.
+Delete a Synced Database Table.
 
 ```sql
 DELETE FROM databricks_workspace.database.synced_database_tables

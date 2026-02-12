@@ -85,16 +85,16 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#get"><CopyableCode code="get" /></a></td>
     <td><CopyableCode code="select" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
-    <td>Gets the enforcement status of partner powered AI features account setting.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`LlmProxyPartnerPoweredEnforce`</td>
+    <td>Gets the enforcement status of partner powered AI features account setting.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__allow_missing"><code>data__allow_missing</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a>, <a href="#parameter-data__field_mask"><code>data__field_mask</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__allow_missing"><code>data__allow_missing</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a>, <a href="#parameter-data__field_mask"><code>data__field_mask</code></a></td>
     <td></td>
-    <td>Updates the enable enforcement status of partner powered AI features account setting.<br /><br />:param allow_missing: bool<br />  This should always be set to true for Settings API. Added for AIP compliance.<br />:param setting: :class:`LlmProxyPartnerPoweredEnforce`<br />:param field_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`LlmProxyPartnerPoweredEnforce`</td>
+    <td>Updates the enable enforcement status of partner powered AI features account setting.</td>
 </tr>
 </tbody>
 </table>
@@ -112,6 +112,11 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
     </tr>
 </thead>
 <tbody>
+<tr id="parameter-account_id">
+    <td><CopyableCode code="account_id" /></td>
+    <td><code>string</code></td>
+    <td></td>
+</tr>
 <tr id="parameter-deployment_name">
     <td><CopyableCode code="deployment_name" /></td>
     <td><code>string</code></td>
@@ -135,7 +140,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the enforcement status of partner powered AI features account setting.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`LlmProxyPartnerPoweredEnforce`
+Gets the enforcement status of partner powered AI features account setting.
 
 ```sql
 SELECT
@@ -143,7 +148,8 @@ setting_name,
 boolean_val,
 etag
 FROM databricks_workspace.settings.llm_proxy_partner_powered_enforce
-WHERE deployment_name = '{{ deployment_name }}' -- required
+WHERE account_id = '{{ account_id }}' -- required
+AND deployment_name = '{{ deployment_name }}' -- required
 AND etag = '{{ etag }}'
 ;
 ```
@@ -161,7 +167,7 @@ AND etag = '{{ etag }}'
 >
 <TabItem value="update">
 
-Updates the enable enforcement status of partner powered AI features account setting.<br /><br />:param allow_missing: bool<br />  This should always be set to true for Settings API. Added for AIP compliance.<br />:param setting: :class:`LlmProxyPartnerPoweredEnforce`<br />:param field_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`LlmProxyPartnerPoweredEnforce`
+Updates the enable enforcement status of partner powered AI features account setting.
 
 ```sql
 UPDATE databricks_workspace.settings.llm_proxy_partner_powered_enforce
@@ -170,7 +176,8 @@ data__allow_missing = {{ allow_missing }},
 data__setting = '{{ setting }}',
 data__field_mask = '{{ field_mask }}'
 WHERE 
-deployment_name = '{{ deployment_name }}' --required
+account_id = '{{ account_id }}' --required
+AND deployment_name = '{{ deployment_name }}' --required
 AND data__allow_missing = {{ allow_missing }} --required
 AND data__setting = '{{ setting }}' --required
 AND data__field_mask = '{{ field_mask }}' --required

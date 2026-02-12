@@ -373,42 +373,42 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**<br />privilege on the metastore * The owner of the share recipient * A metastore admin<br /><br />:param name: str<br />  Name of the recipient.<br /><br />:returns: :class:`RecipientInfo`</td>
+    <td>Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-data_recipient_global_metastore_id"><code>data_recipient_global_metastore_id</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of all share recipients within the current metastore where:<br /><br />* the caller is a metastore admin, or * the caller is the owner. There is no guarantee of a specific<br />ordering of the elements in the array.<br /><br />:param data_recipient_global_metastore_id: str (optional)<br />  If not provided, all recipients will be returned. If no recipients exist with this ID, no results<br />  will be returned.<br />:param max_results: int (optional)<br />  Maximum number of recipients to return. - when set to 0, the page length is set to a server<br />  configured value (recommended); - when set to a value greater than 0, the page length is the minimum<br />  of this value and a server configured value; - when set to a value less than 0, an invalid parameter<br />  error is returned; - If not set, all valid recipients are returned (not recommended). - Note: The<br />  number of returned recipients might be less than the specified max_results size, even zero. The only<br />  definitive indication that no further recipients can be fetched is when the next_page_token is unset<br />  from the response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`RecipientInfo`</td>
+    <td>Gets an array of all share recipients within the current metastore where:</td>
 </tr>
 <tr>
     <td><a href="#rotate_token"><CopyableCode code="rotate_token" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__existing_token_expire_in_seconds"><code>data__existing_token_expire_in_seconds</code></a></td>
     <td></td>
-    <td>Refreshes the specified recipient's delta sharing authentication token with the provided token info.<br />The caller must be the owner of the recipient.<br /><br />:param name: str<br />  The name of the Recipient.<br />:param existing_token_expire_in_seconds: int<br />  The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of<br />  existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to expire<br />  the existing token immediately, negative number will return an error.<br /><br />:returns: :class:`RecipientInfo`</td>
+    <td>Refreshes the specified recipient's delta sharing authentication token with the provided token info.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__authentication_type"><code>data__authentication_type</code></a></td>
     <td></td>
-    <td>Creates a new recipient with the delta sharing authentication type in the metastore. The caller must<br />be a metastore admin or have the **CREATE_RECIPIENT** privilege on the metastore.<br /><br />:param name: str<br />  Name of Recipient.<br />:param authentication_type: :class:`AuthenticationType`<br />:param comment: str (optional)<br />  Description about the recipient.<br />:param data_recipient_global_metastore_id: str (optional)<br />  The global Unity Catalog metastore id provided by the data recipient. This field is only present<br />  when the __authentication_type__ is **DATABRICKS**. The identifier is of format<br />  __cloud__:__region__:__metastore-uuid__.<br />:param expiration_time: int (optional)<br />  Expiration timestamp of the token, in epoch milliseconds.<br />:param id: str (optional)<br />  [Create,Update:IGN] common - id of the recipient<br />:param ip_access_list: :class:`IpAccessList` (optional)<br />  IP Access List<br />:param owner: str (optional)<br />  Username of the recipient owner.<br />:param properties_kvpairs: :class:`SecurablePropertiesKvPairs` (optional)<br />  Recipient properties as map of string key-value pairs. When provided in update request, the<br />  specified properties will override the existing properties. To add and remove properties, one would<br />  need to perform a read-modify-write.<br />:param sharing_code: str (optional)<br />  The one-time sharing code provided by the data recipient. This field is only present when the<br />  __authentication_type__ is **DATABRICKS**.<br /><br />:returns: :class:`RecipientInfo`</td>
+    <td>Creates a new recipient with the delta sharing authentication type in the metastore. The caller must</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of<br />the recipient. If the recipient name will be updated, the user must be both a metastore admin and the<br />owner of the recipient.<br /><br />:param name: str<br />  Name of the recipient.<br />:param comment: str (optional)<br />  Description about the recipient.<br />:param expiration_time: int (optional)<br />  Expiration timestamp of the token, in epoch milliseconds.<br />:param id: str (optional)<br />  [Create,Update:IGN] common - id of the recipient<br />:param ip_access_list: :class:`IpAccessList` (optional)<br />  IP Access List<br />:param new_name: str (optional)<br />  New name for the recipient. .<br />:param owner: str (optional)<br />  Username of the recipient owner.<br />:param properties_kvpairs: :class:`SecurablePropertiesKvPairs` (optional)<br />  Recipient properties as map of string key-value pairs. When provided in update request, the<br />  specified properties will override the existing properties. To add and remove properties, one would<br />  need to perform a read-modify-write.<br /><br />:returns: :class:`RecipientInfo`</td>
+    <td>Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.<br /><br />:param name: str<br />  Name of the recipient.</td>
+    <td>Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.</td>
 </tr>
 </tbody>
 </table>
@@ -465,7 +465,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**<br />privilege on the metastore * The owner of the share recipient * A metastore admin<br /><br />:param name: str<br />  Name of the recipient.<br /><br />:returns: :class:`RecipientInfo`
+Gets a share recipient from the metastore. The caller must be one of: * A user with **USE_RECIPIENT**
 
 ```sql
 SELECT
@@ -497,7 +497,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets an array of all share recipients within the current metastore where:<br /><br />* the caller is a metastore admin, or * the caller is the owner. There is no guarantee of a specific<br />ordering of the elements in the array.<br /><br />:param data_recipient_global_metastore_id: str (optional)<br />  If not provided, all recipients will be returned. If no recipients exist with this ID, no results<br />  will be returned.<br />:param max_results: int (optional)<br />  Maximum number of recipients to return. - when set to 0, the page length is set to a server<br />  configured value (recommended); - when set to a value greater than 0, the page length is the minimum<br />  of this value and a server configured value; - when set to a value less than 0, an invalid parameter<br />  error is returned; - If not set, all valid recipients are returned (not recommended). - Note: The<br />  number of returned recipients might be less than the specified max_results size, even zero. The only<br />  definitive indication that no further recipients can be fetched is when the next_page_token is unset<br />  from the response.<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`RecipientInfo`
+Gets an array of all share recipients within the current metastore where:
 
 ```sql
 SELECT
@@ -544,7 +544,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="rotate_token">
 
-Refreshes the specified recipient's delta sharing authentication token with the provided token info.<br />The caller must be the owner of the recipient.<br /><br />:param name: str<br />  The name of the Recipient.<br />:param existing_token_expire_in_seconds: int<br />  The expiration time of the bearer token in ISO 8601 format. This will set the expiration_time of<br />  existing token only to a smaller timestamp, it cannot extend the expiration_time. Use 0 to expire<br />  the existing token immediately, negative number will return an error.<br /><br />:returns: :class:`RecipientInfo`
+Refreshes the specified recipient's delta sharing authentication token with the provided token info.
 
 ```sql
 INSERT INTO databricks_workspace.sharing.recipients (
@@ -582,7 +582,7 @@ updated_by
 </TabItem>
 <TabItem value="create">
 
-Creates a new recipient with the delta sharing authentication type in the metastore. The caller must<br />be a metastore admin or have the **CREATE_RECIPIENT** privilege on the metastore.<br /><br />:param name: str<br />  Name of Recipient.<br />:param authentication_type: :class:`AuthenticationType`<br />:param comment: str (optional)<br />  Description about the recipient.<br />:param data_recipient_global_metastore_id: str (optional)<br />  The global Unity Catalog metastore id provided by the data recipient. This field is only present<br />  when the __authentication_type__ is **DATABRICKS**. The identifier is of format<br />  __cloud__:__region__:__metastore-uuid__.<br />:param expiration_time: int (optional)<br />  Expiration timestamp of the token, in epoch milliseconds.<br />:param id: str (optional)<br />  [Create,Update:IGN] common - id of the recipient<br />:param ip_access_list: :class:`IpAccessList` (optional)<br />  IP Access List<br />:param owner: str (optional)<br />  Username of the recipient owner.<br />:param properties_kvpairs: :class:`SecurablePropertiesKvPairs` (optional)<br />  Recipient properties as map of string key-value pairs. When provided in update request, the<br />  specified properties will override the existing properties. To add and remove properties, one would<br />  need to perform a read-modify-write.<br />:param sharing_code: str (optional)<br />  The one-time sharing code provided by the data recipient. This field is only present when the<br />  __authentication_type__ is **DATABRICKS**.<br /><br />:returns: :class:`RecipientInfo`
+Creates a new recipient with the delta sharing authentication type in the metastore. The caller must
 
 ```sql
 INSERT INTO databricks_workspace.sharing.recipients (
@@ -703,7 +703,7 @@ updated_by
 >
 <TabItem value="update">
 
-Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of<br />the recipient. If the recipient name will be updated, the user must be both a metastore admin and the<br />owner of the recipient.<br /><br />:param name: str<br />  Name of the recipient.<br />:param comment: str (optional)<br />  Description about the recipient.<br />:param expiration_time: int (optional)<br />  Expiration timestamp of the token, in epoch milliseconds.<br />:param id: str (optional)<br />  [Create,Update:IGN] common - id of the recipient<br />:param ip_access_list: :class:`IpAccessList` (optional)<br />  IP Access List<br />:param new_name: str (optional)<br />  New name for the recipient. .<br />:param owner: str (optional)<br />  Username of the recipient owner.<br />:param properties_kvpairs: :class:`SecurablePropertiesKvPairs` (optional)<br />  Recipient properties as map of string key-value pairs. When provided in update request, the<br />  specified properties will override the existing properties. To add and remove properties, one would<br />  need to perform a read-modify-write.<br /><br />:returns: :class:`RecipientInfo`
+Updates an existing recipient in the metastore. The caller must be a metastore admin or the owner of
 
 ```sql
 UPDATE databricks_workspace.sharing.recipients
@@ -754,7 +754,7 @@ updated_by;
 >
 <TabItem value="delete">
 
-Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.<br /><br />:param name: str<br />  Name of the recipient.
+Deletes the specified recipient from the metastore. The caller must be the owner of the recipient.
 
 ```sql
 DELETE FROM databricks_workspace.sharing.recipients

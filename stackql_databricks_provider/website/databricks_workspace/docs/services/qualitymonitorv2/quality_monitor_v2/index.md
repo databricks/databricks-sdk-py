@@ -261,35 +261,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>[DEPRECATED] Read a quality monitor on UC object. Use Data Quality Monitoring API instead.<br /><br />:param object_type: str<br />  The type of the monitored object. Can be one of the following: schema.<br />:param object_id: str<br />  The uuid of the request object. For example, schema id.<br /><br />:returns: :class:`QualityMonitor`</td>
+    <td>[DEPRECATED] Read a quality monitor on UC object. Use Data Quality Monitoring API instead.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>[DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality Monitoring API instead.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`QualityMonitor`</td>
+    <td>[DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality Monitoring API instead.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__quality_monitor"><code>data__quality_monitor</code></a></td>
     <td></td>
-    <td>[DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.<br /><br />:param quality_monitor: :class:`QualityMonitor`<br /><br />:returns: :class:`QualityMonitor`</td>
+    <td>[DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__quality_monitor"><code>data__quality_monitor</code></a></td>
     <td></td>
-    <td>[DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API<br />instead.<br /><br />:param object_type: str<br />  The type of the monitored object. Can be one of the following: schema.<br />:param object_id: str<br />  The uuid of the request object. For example, schema id.<br />:param quality_monitor: :class:`QualityMonitor`<br /><br />:returns: :class:`QualityMonitor`</td>
+    <td>[DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>[DEPRECATED] Delete a quality monitor on UC object. Use Data Quality Monitoring API instead.<br /><br />:param object_type: str<br />  The type of the monitored object. Can be one of the following: schema.<br />:param object_id: str<br />  The uuid of the request object. For example, schema id.</td>
+    <td>[DEPRECATED] Delete a quality monitor on UC object. Use Data Quality Monitoring API instead.</td>
 </tr>
 </tbody>
 </table>
@@ -346,7 +346,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-[DEPRECATED] Read a quality monitor on UC object. Use Data Quality Monitoring API instead.<br /><br />:param object_type: str<br />  The type of the monitored object. Can be one of the following: schema.<br />:param object_id: str<br />  The uuid of the request object. For example, schema id.<br /><br />:returns: :class:`QualityMonitor`
+[DEPRECATED] Read a quality monitor on UC object. Use Data Quality Monitoring API instead.
 
 ```sql
 SELECT
@@ -363,7 +363,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-[DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality Monitoring API instead.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`QualityMonitor`
+[DEPRECATED] (Unimplemented) List quality monitors. Use Data Quality Monitoring API instead.
 
 ```sql
 SELECT
@@ -392,7 +392,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-[DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.<br /><br />:param quality_monitor: :class:`QualityMonitor`<br /><br />:returns: :class:`QualityMonitor`
+[DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.
 
 ```sql
 INSERT INTO databricks_workspace.qualitymonitorv2.quality_monitor_v2 (
@@ -438,7 +438,7 @@ validity_check_configurations
 >
 <TabItem value="update">
 
-[DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API<br />instead.<br /><br />:param object_type: str<br />  The type of the monitored object. Can be one of the following: schema.<br />:param object_id: str<br />  The uuid of the request object. For example, schema id.<br />:param quality_monitor: :class:`QualityMonitor`<br /><br />:returns: :class:`QualityMonitor`
+[DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API
 
 ```sql
 REPLACE databricks_workspace.qualitymonitorv2.quality_monitor_v2
@@ -469,7 +469,7 @@ validity_check_configurations;
 >
 <TabItem value="delete">
 
-[DEPRECATED] Delete a quality monitor on UC object. Use Data Quality Monitoring API instead.<br /><br />:param object_type: str<br />  The type of the monitored object. Can be one of the following: schema.<br />:param object_id: str<br />  The uuid of the request object. For example, schema id.
+[DEPRECATED] Delete a quality monitor on UC object. Use Data Quality Monitoring API instead.
 
 ```sql
 DELETE FROM databricks_workspace.qualitymonitorv2.quality_monitor_v2

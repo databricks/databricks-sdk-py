@@ -586,35 +586,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a query.<br /><br />:param id: str<br /><br />:returns: :class:`Query`</td>
+    <td>Gets a query.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API<br />concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ListQueryObjectsResponseQuery`</td>
+    <td>Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Creates a query.<br /><br />:param auto_resolve_display_name: bool (optional)<br />  If true, automatically resolve query display name conflicts. Otherwise, fail the request if the<br />  query's display name conflicts with an existing query's display name.<br />:param query: :class:`CreateQueryRequestQuery` (optional)<br /><br />:returns: :class:`Query`</td>
+    <td>Creates a query.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__update_mask"><code>data__update_mask</code></a></td>
     <td></td>
-    <td>Updates a query.<br /><br />:param id: str<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br />:param auto_resolve_display_name: bool (optional)<br />  If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the<br />  alert's display name conflicts with an existing alert's display name.<br />:param query: :class:`UpdateQueryRequestQuery` (optional)<br /><br />:returns: :class:`Query`</td>
+    <td>Updates a query.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and<br />cannot be used for alerts. You can restore a trashed query through the UI. A trashed query is<br />permanently deleted after 30 days.<br /><br />:param id: str</td>
+    <td>Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and</td>
 </tr>
 </tbody>
 </table>
@@ -666,7 +666,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets a query.<br /><br />:param id: str<br /><br />:returns: :class:`Query`
+Gets a query.
 
 ```sql
 SELECT
@@ -695,7 +695,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API<br />concurrently 10 or more times could result in throttling, service degradation, or a temporary ban.<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`ListQueryObjectsResponseQuery`
+Gets a list of queries accessible to the user, ordered by creation time. **Warning:** Calling this API
 
 ```sql
 SELECT
@@ -736,7 +736,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a query.<br /><br />:param auto_resolve_display_name: bool (optional)<br />  If true, automatically resolve query display name conflicts. Otherwise, fail the request if the<br />  query's display name conflicts with an existing query's display name.<br />:param query: :class:`CreateQueryRequestQuery` (optional)<br /><br />:returns: :class:`Query`
+Creates a query.
 
 ```sql
 INSERT INTO databricks_workspace.sql.queries (
@@ -801,7 +801,7 @@ update_time
 >
 <TabItem value="update">
 
-Updates a query.<br /><br />:param id: str<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br />:param auto_resolve_display_name: bool (optional)<br />  If true, automatically resolve alert display name conflicts. Otherwise, fail the request if the<br />  alert's display name conflicts with an existing alert's display name.<br />:param query: :class:`UpdateQueryRequestQuery` (optional)<br /><br />:returns: :class:`Query`
+Updates a query.
 
 ```sql
 UPDATE databricks_workspace.sql.queries
@@ -846,7 +846,7 @@ update_time;
 >
 <TabItem value="delete">
 
-Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and<br />cannot be used for alerts. You can restore a trashed query through the UI. A trashed query is<br />permanently deleted after 30 days.<br /><br />:param id: str
+Moves a query to the trash. Trashed queries immediately disappear from searches and list views, and
 
 ```sql
 DELETE FROM databricks_workspace.sql.queries

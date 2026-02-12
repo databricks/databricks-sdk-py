@@ -459,7 +459,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-provider_name"><code>provider_name</code></a>, <a href="#parameter-share_name"><code>share_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-function_max_results"><code>function_max_results</code></a>, <a href="#parameter-notebook_max_results"><code>notebook_max_results</code></a>, <a href="#parameter-table_max_results"><code>table_max_results</code></a>, <a href="#parameter-volume_max_results"><code>volume_max_results</code></a></td>
-    <td>Get arrays of assets associated with a specified provider's share. The caller is the recipient of the<br />share.<br /><br />:param provider_name: str<br />  The name of the provider who owns the share.<br />:param share_name: str<br />  The name of the share.<br />:param function_max_results: int (optional)<br />  Maximum number of functions to return.<br />:param notebook_max_results: int (optional)<br />  Maximum number of notebooks to return.<br />:param table_max_results: int (optional)<br />  Maximum number of tables to return.<br />:param volume_max_results: int (optional)<br />  Maximum number of volumes to return.<br /><br />:returns: :class:`ListProviderShareAssetsResponse`</td>
+    <td>Get arrays of assets associated with a specified provider's share. The caller is the recipient of the</td>
 </tr>
 </tbody>
 </table>
@@ -525,7 +525,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="list">
 
-Get arrays of assets associated with a specified provider's share. The caller is the recipient of the<br />share.<br /><br />:param provider_name: str<br />  The name of the provider who owns the share.<br />:param share_name: str<br />  The name of the share.<br />:param function_max_results: int (optional)<br />  Maximum number of functions to return.<br />:param notebook_max_results: int (optional)<br />  Maximum number of notebooks to return.<br />:param table_max_results: int (optional)<br />  Maximum number of tables to return.<br />:param volume_max_results: int (optional)<br />  Maximum number of volumes to return.<br /><br />:returns: :class:`ListProviderShareAssetsResponse`
+Get arrays of assets associated with a specified provider's share. The caller is the recipient of the
 
 ```sql
 SELECT

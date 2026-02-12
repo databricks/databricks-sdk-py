@@ -175,12 +175,12 @@ The following fields are returned by `SELECT` queries:
             "description": "",
             "children": [
               {
-                "name": "enum_options",
+                "name": "enumOptions",
                 "type": "string",
                 "description": ""
               },
               {
-                "name": "multi_values_options",
+                "name": "multiValuesOptions",
                 "type": "object",
                 "description": "If specified, allows multiple values to be selected for this parameter. Only applies to dropdown list and query-based dropdown list parameters."
               },
@@ -190,7 +190,7 @@ The following fields are returned by `SELECT` queries:
                 "description": "The literal parameter marker that appears between double curly braces in the query text."
               },
               {
-                "name": "query_id",
+                "name": "queryId",
                 "type": "string",
                 "description": "The UUID of the query that provides the parameter values. Only applies for query-based dropdown list parameters."
               },
@@ -415,12 +415,12 @@ The following fields are returned by `SELECT` queries:
             "description": "",
             "children": [
               {
-                "name": "enum_options",
+                "name": "enumOptions",
                 "type": "string",
                 "description": ""
               },
               {
-                "name": "multi_values_options",
+                "name": "multiValuesOptions",
                 "type": "object",
                 "description": "If specified, allows multiple values to be selected for this parameter. Only applies to dropdown list and query-based dropdown list parameters."
               },
@@ -430,7 +430,7 @@ The following fields are returned by `SELECT` queries:
                 "description": "The literal parameter marker that appears between double curly braces in the query text."
               },
               {
-                "name": "query_id",
+                "name": "queryId",
                 "type": "string",
                 "description": "The UUID of the query that provides the parameter values. Only applies for query-based dropdown list parameters."
               },
@@ -541,35 +541,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets an alert.<br /><br />**Warning**: This API is deprecated. Please use :method:alerts/get instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param alert_id: str<br /><br />:returns: :class:`LegacyAlert`</td>
+    <td>Gets an alert.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets a list of alerts.<br /><br />**Warning**: This API is deprecated. Please use :method:alerts/list instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br /><br />:returns: Iterator over :class:`LegacyAlert`</td>
+    <td>Gets a list of alerts.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__options"><code>data__options</code></a>, <a href="#parameter-data__query_id"><code>data__query_id</code></a></td>
     <td></td>
-    <td>Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a<br />condition of its result, and notifies users or notification destinations if the condition was met.<br /><br />**Warning**: This API is deprecated. Please use :method:alerts/create instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param name: str<br />  Name of the alert.<br />:param options: :class:`AlertOptions`<br />  Alert configuration options.<br />:param query_id: str<br />  Query ID.<br />:param parent: str (optional)<br />  The identifier of the workspace folder containing the object.<br />:param rearm: int (optional)<br />  Number of seconds after being triggered before the alert rearms itself and can be triggered again.<br />  If `null`, alert will never be triggered again.<br /><br />:returns: :class:`LegacyAlert`</td>
+    <td>Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__options"><code>data__options</code></a>, <a href="#parameter-data__query_id"><code>data__query_id</code></a></td>
     <td></td>
-    <td>Updates an alert.<br /><br />**Warning**: This API is deprecated. Please use :method:alerts/update instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param alert_id: str<br />:param name: str<br />  Name of the alert.<br />:param options: :class:`AlertOptions`<br />  Alert configuration options.<br />:param query_id: str<br />  Query ID.<br />:param rearm: int (optional)<br />  Number of seconds after being triggered before the alert rearms itself and can be triggered again.<br />  If `null`, alert will never be triggered again.</td>
+    <td>Updates an alert.</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike<br />queries and dashboards, alerts cannot be moved to the trash.<br /><br />**Warning**: This API is deprecated. Please use :method:alerts/delete instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param alert_id: str</td>
+    <td>Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike</td>
 </tr>
 </tbody>
 </table>
@@ -611,7 +611,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets an alert.<br /><br />**Warning**: This API is deprecated. Please use :method:alerts/get instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param alert_id: str<br /><br />:returns: :class:`LegacyAlert`
+Gets an alert.
 
 ```sql
 SELECT
@@ -634,7 +634,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-Gets a list of alerts.<br /><br />**Warning**: This API is deprecated. Please use :method:alerts/list instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br /><br />:returns: Iterator over :class:`LegacyAlert`
+Gets a list of alerts.
 
 ```sql
 SELECT
@@ -668,7 +668,7 @@ WHERE deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="create">
 
-Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a<br />condition of its result, and notifies users or notification destinations if the condition was met.<br /><br />**Warning**: This API is deprecated. Please use :method:alerts/create instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param name: str<br />  Name of the alert.<br />:param options: :class:`AlertOptions`<br />  Alert configuration options.<br />:param query_id: str<br />  Query ID.<br />:param parent: str (optional)<br />  The identifier of the workspace folder containing the object.<br />:param rearm: int (optional)<br />  Number of seconds after being triggered before the alert rearms itself and can be triggered again.<br />  If `null`, alert will never be triggered again.<br /><br />:returns: :class:`LegacyAlert`
+Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a
 
 ```sql
 INSERT INTO databricks_workspace.sql.alerts_legacy (
@@ -745,7 +745,7 @@ user
 >
 <TabItem value="update">
 
-Updates an alert.<br /><br />**Warning**: This API is deprecated. Please use :method:alerts/update instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param alert_id: str<br />:param name: str<br />  Name of the alert.<br />:param options: :class:`AlertOptions`<br />  Alert configuration options.<br />:param query_id: str<br />  Query ID.<br />:param rearm: int (optional)<br />  Number of seconds after being triggered before the alert rearms itself and can be triggered again.<br />  If `null`, alert will never be triggered again.
+Updates an alert.
 
 ```sql
 REPLACE databricks_workspace.sql.alerts_legacy
@@ -775,7 +775,7 @@ AND data__query_id = '{{ query_id }}' --required;
 >
 <TabItem value="delete">
 
-Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike<br />queries and dashboards, alerts cannot be moved to the trash.<br /><br />**Warning**: This API is deprecated. Please use :method:alerts/delete instead. [Learn more]<br /><br />[Learn more]: https://docs.databricks.com/en/sql/dbsql-api-latest.html<br /><br />:param alert_id: str
+Deletes an alert. Deleted alerts are no longer accessible and cannot be restored. **Note**: Unlike
 
 ```sql
 DELETE FROM databricks_workspace.sql.alerts_legacy

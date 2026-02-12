@@ -100,7 +100,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "value",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       },
       {
         "name": "inherited_from_name",
@@ -117,7 +117,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "enable_predictive_optimization",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "owner",
@@ -212,7 +212,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "value",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
       },
       {
         "name": "inherited_from_name",
@@ -229,7 +229,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "enable_predictive_optimization",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access::<br /><br />&gt;&gt;&gt; Color.RED<br />&lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />&gt;&gt;&gt; Color(1)<br />&lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />&gt;&gt;&gt; Color['RED']<br />&lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
   },
   {
     "name": "owner",
@@ -285,35 +285,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a></td>
-    <td>Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the<br />schema, or a user that has the **USE_SCHEMA** privilege on the schema.<br /><br />:param full_name: str<br />  Full name of the schema.<br />:param include_browse: bool (optional)<br />  Whether to include schemas in the response for which the principal can only access selective<br />  metadata for<br /><br />:returns: :class:`SchemaInfo`</td>
+    <td>Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-include_browse"><code>include_browse</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the<br />owner of the parent catalog, all schemas for the catalog will be retrieved. Otherwise, only schemas<br />owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved.<br />There is no guarantee of a specific ordering of the elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param catalog_name: str<br />  Parent catalog for schemas of interest.<br />:param include_browse: bool (optional)<br />  Whether to include schemas in the response for which the principal can only access selective<br />  metadata for<br />:param max_results: int (optional)<br />  Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). -<br />  when set to a value greater than 0, the page length is the minimum of this value and a server<br />  configured value; - when set to 0, the page length is set to a server configured value<br />  (recommended); - when set to a value less than 0, an invalid parameter error is returned;<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`SchemaInfo`</td>
+    <td>Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__catalog_name"><code>data__catalog_name</code></a></td>
     <td></td>
-    <td>Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the<br />**CREATE_SCHEMA** privilege in the parent catalog.<br /><br />:param name: str<br />  Name of schema, relative to parent catalog.<br />:param catalog_name: str<br />  Name of parent catalog.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param properties: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br />:param storage_root: str (optional)<br />  Storage root URL for managed tables within schema.<br /><br />:returns: :class:`SchemaInfo`</td>
+    <td>Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If<br />the caller is a metastore admin, only the __owner__ field can be changed in the update. If the<br />__name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**<br />privilege on the parent catalog.<br /><br />:param full_name: str<br />  Full name of the schema.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)<br />  Whether predictive optimization should be enabled for this object and objects under it.<br />:param new_name: str (optional)<br />  New name for the schema.<br />:param owner: str (optional)<br />  Username of current owner of schema.<br />:param properties: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br /><br />:returns: :class:`SchemaInfo`</td>
+    <td>Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
-    <td>Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an<br />owner of the parent catalog.<br /><br />:param full_name: str<br />  Full name of the schema.<br />:param force: bool (optional)<br />  Force deletion even if the schema is not empty.</td>
+    <td>Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an</td>
 </tr>
 </tbody>
 </table>
@@ -380,7 +380,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the<br />schema, or a user that has the **USE_SCHEMA** privilege on the schema.<br /><br />:param full_name: str<br />  Full name of the schema.<br />:param include_browse: bool (optional)<br />  Whether to include schemas in the response for which the principal can only access selective<br />  metadata for<br /><br />:returns: :class:`SchemaInfo`
+Gets the specified schema within the metastore. The caller must be a metastore admin, the owner of the
 
 ```sql
 SELECT
@@ -411,7 +411,7 @@ AND include_browse = '{{ include_browse }}'
 </TabItem>
 <TabItem value="list">
 
-Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the<br />owner of the parent catalog, all schemas for the catalog will be retrieved. Otherwise, only schemas<br />owned by the caller (or for which the caller has the **USE_SCHEMA** privilege) will be retrieved.<br />There is no guarantee of a specific ordering of the elements in the array.<br /><br />NOTE: we recommend using max_results=0 to use the paginated version of this API. Unpaginated calls<br />will be deprecated soon.<br /><br />PAGINATION BEHAVIOR: When using pagination (max_results &gt;= 0), a page may contain zero results while<br />still providing a next_page_token. Clients must continue reading pages until next_page_token is<br />absent, which is the only indication that the end of results has been reached.<br /><br />:param catalog_name: str<br />  Parent catalog for schemas of interest.<br />:param include_browse: bool (optional)<br />  Whether to include schemas in the response for which the principal can only access selective<br />  metadata for<br />:param max_results: int (optional)<br />  Maximum number of schemas to return. If not set, all the schemas are returned (not recommended). -<br />  when set to a value greater than 0, the page length is the minimum of this value and a server<br />  configured value; - when set to 0, the page length is set to a server configured value<br />  (recommended); - when set to a value less than 0, an invalid parameter error is returned;<br />:param page_token: str (optional)<br />  Opaque pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`SchemaInfo`
+Gets an array of schemas for a catalog in the metastore. If the caller is the metastore admin or the
 
 ```sql
 SELECT
@@ -456,7 +456,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="create">
 
-Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the<br />**CREATE_SCHEMA** privilege in the parent catalog.<br /><br />:param name: str<br />  Name of schema, relative to parent catalog.<br />:param catalog_name: str<br />  Name of parent catalog.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param properties: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br />:param storage_root: str (optional)<br />  Storage root URL for managed tables within schema.<br /><br />:returns: :class:`SchemaInfo`
+Creates a new schema for catalog in the Metastore. The caller must be a metastore admin, or have the
 
 ```sql
 INSERT INTO databricks_workspace.catalog.schemas (
@@ -540,7 +540,7 @@ updated_by
 >
 <TabItem value="update">
 
-Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If<br />the caller is a metastore admin, only the __owner__ field can be changed in the update. If the<br />__name__ field must be updated, the caller must be a metastore admin or have the **CREATE_SCHEMA**<br />privilege on the parent catalog.<br /><br />:param full_name: str<br />  Full name of the schema.<br />:param comment: str (optional)<br />  User-provided free-form text description.<br />:param enable_predictive_optimization: :class:`EnablePredictiveOptimization` (optional)<br />  Whether predictive optimization should be enabled for this object and objects under it.<br />:param new_name: str (optional)<br />  New name for the schema.<br />:param owner: str (optional)<br />  Username of current owner of schema.<br />:param properties: Dict[str,str] (optional)<br />  A map of key-value properties attached to the securable.<br /><br />:returns: :class:`SchemaInfo`
+Updates a schema for a catalog. The caller must be the owner of the schema or a metastore admin. If
 
 ```sql
 UPDATE databricks_workspace.catalog.schemas
@@ -587,7 +587,7 @@ updated_by;
 >
 <TabItem value="delete">
 
-Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an<br />owner of the parent catalog.<br /><br />:param full_name: str<br />  Full name of the schema.<br />:param force: bool (optional)<br />  Force deletion even if the schema is not empty.
+Deletes the specified schema from the parent catalog. The caller must be the owner of the schema or an
 
 ```sql
 DELETE FROM databricks_workspace.catalog.schemas

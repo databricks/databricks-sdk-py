@@ -97,14 +97,14 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-artifact_type.value"><code>artifact_type.value</code></a>, <a href="#parameter-artifact_type"><code>artifact_type</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have<br />the **MANAGE ALLOWLIST** privilege on the metastore.<br /><br />:param artifact_type: :class:`ArtifactType`<br />  The artifact type of the allowlist.<br /><br />:returns: :class:`ArtifactAllowlistInfo`</td>
+    <td>Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-artifact_type.value"><code>artifact_type.value</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__artifact_type"><code>data__artifact_type</code></a>, <a href="#parameter-data__artifact_matchers"><code>data__artifact_matchers</code></a></td>
     <td></td>
-    <td>Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with<br />the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on<br />the metastore.<br /><br />:param artifact_type: :class:`ArtifactType`<br />  The artifact type of the allowlist.<br />:param artifact_matchers: List[:class:`ArtifactMatcher`]<br />  A list of allowed artifact match patterns.<br />:param created_at: int (optional)<br />  Time at which this artifact allowlist was set, in epoch milliseconds.<br />:param created_by: str (optional)<br />  Username of the user who set the artifact allowlist.<br />:param metastore_id: str (optional)<br />  Unique identifier of parent metastore.<br /><br />:returns: :class:`ArtifactAllowlistInfo`</td>
+    <td>Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with</td>
 </tr>
 </tbody>
 </table>
@@ -150,7 +150,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have<br />the **MANAGE ALLOWLIST** privilege on the metastore.<br /><br />:param artifact_type: :class:`ArtifactType`<br />  The artifact type of the allowlist.<br /><br />:returns: :class:`ArtifactAllowlistInfo`
+Get the artifact allowlist of a certain artifact type. The caller must be a metastore admin or have
 
 ```sql
 SELECT
@@ -178,7 +178,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 >
 <TabItem value="replace">
 
-Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with<br />the new allowlist. The caller must be a metastore admin or have the **MANAGE ALLOWLIST** privilege on<br />the metastore.<br /><br />:param artifact_type: :class:`ArtifactType`<br />  The artifact type of the allowlist.<br />:param artifact_matchers: List[:class:`ArtifactMatcher`]<br />  A list of allowed artifact match patterns.<br />:param created_at: int (optional)<br />  Time at which this artifact allowlist was set, in epoch milliseconds.<br />:param created_by: str (optional)<br />  Username of the user who set the artifact allowlist.<br />:param metastore_id: str (optional)<br />  Unique identifier of parent metastore.<br /><br />:returns: :class:`ArtifactAllowlistInfo`
+Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with
 
 ```sql
 REPLACE databricks_workspace.catalog.artifact_allowlists

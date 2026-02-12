@@ -87,21 +87,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
-    <td>Gets the default namespace setting.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`DefaultNamespaceSetting`</td>
+    <td>Gets the default namespace setting.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__allow_missing"><code>data__allow_missing</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a>, <a href="#parameter-data__field_mask"><code>data__field_mask</code></a></td>
     <td></td>
-    <td>Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`<br />requests (as part of the setting field). The etag can be retrieved by making a `GET` request before<br />the `PATCH` request. Note that if the setting does not exist, `GET` returns a NOT_FOUND error and the<br />etag is present in the error response, which should be set in the `PATCH` request. If the setting is<br />updated concurrently, `PATCH` fails with 409 and the request must be retried by using the fresh etag<br />in the 409 response.<br /><br />:param allow_missing: bool<br />  This should always be set to true for Settings API. Added for AIP compliance.<br />:param setting: :class:`DefaultNamespaceSetting`<br />:param field_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`DefaultNamespaceSetting`</td>
+    <td>Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`</td>
 </tr>
 <tr>
     <td><a href="#delete"><CopyableCode code="delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-etag"><code>etag</code></a></td>
-    <td>Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`<br />requests (as a query parameter). The etag can be retrieved by making a `GET` request before the<br />`DELETE` request. If the setting is updated/deleted concurrently, `DELETE` fails with 409 and the<br />request must be retried by using the fresh etag in the 409 response.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`DeleteDefaultNamespaceSettingResponse`</td>
+    <td>Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`</td>
 </tr>
 </tbody>
 </table>
@@ -142,7 +142,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets the default namespace setting.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`DefaultNamespaceSetting`
+Gets the default namespace setting.
 
 ```sql
 SELECT
@@ -168,7 +168,7 @@ AND etag = '{{ etag }}'
 >
 <TabItem value="update">
 
-Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`<br />requests (as part of the setting field). The etag can be retrieved by making a `GET` request before<br />the `PATCH` request. Note that if the setting does not exist, `GET` returns a NOT_FOUND error and the<br />etag is present in the error response, which should be set in the `PATCH` request. If the setting is<br />updated concurrently, `PATCH` fails with 409 and the request must be retried by using the fresh etag<br />in the 409 response.<br /><br />:param allow_missing: bool<br />  This should always be set to true for Settings API. Added for AIP compliance.<br />:param setting: :class:`DefaultNamespaceSetting`<br />:param field_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />  A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the<br />  fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API<br />  changes in the future.<br /><br />:returns: :class:`DefaultNamespaceSetting`
+Updates the default namespace setting for the workspace. A fresh etag needs to be provided in `PATCH`
 
 ```sql
 UPDATE databricks_workspace.settings.default_namespace
@@ -200,7 +200,7 @@ namespace;
 >
 <TabItem value="delete">
 
-Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`<br />requests (as a query parameter). The etag can be retrieved by making a `GET` request before the<br />`DELETE` request. If the setting is updated/deleted concurrently, `DELETE` fails with 409 and the<br />request must be retried by using the fresh etag in the 409 response.<br /><br />:param etag: str (optional)<br />  etag used for versioning. The response is at least as fresh as the eTag provided. This is used for<br />  optimistic concurrency control as a way to help prevent simultaneous writes of a setting overwriting<br />  each other. It is strongly suggested that systems make use of the etag in the read -&gt; delete pattern<br />  to perform setting deletions in order to avoid race conditions. That is, get an etag from a GET<br />  request, and pass it with the DELETE request to identify the rule set version you are deleting.<br /><br />:returns: :class:`DeleteDefaultNamespaceSettingResponse`
+Deletes the default namespace setting for the workspace. A fresh etag needs to be provided in `DELETE`
 
 ```sql
 DELETE FROM databricks_workspace.settings.default_namespace

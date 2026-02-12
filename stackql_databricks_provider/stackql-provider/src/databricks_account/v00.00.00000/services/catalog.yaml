@@ -7094,6 +7094,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.metastore_assignment
         account_metastore_assignments_list:
           operation:
             $ref: >-
@@ -7149,6 +7150,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.metastore_info
         account_metastores_update:
           operation:
             $ref: >-
@@ -7206,6 +7208,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.credential_info
         account_storage_credentials_update:
           operation:
             $ref: >-
@@ -7265,14 +7268,14 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        generate_temporary_service_credential:
+        credentials_generate_temporary_service_credential:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1temporary-service-credentials/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        validate_credential:
+        credentials_validate_credential:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1validate-credentials/post'
           response:
@@ -7287,6 +7290,10 @@ components:
         insert:
           - $ref: >-
               #/components/x-stackQL-resources/credentials/methods/create_credential
+          - $ref: >-
+              #/components/x-stackQL-resources/credentials/methods/credentials_generate_temporary_service_credential
+          - $ref: >-
+              #/components/x-stackQL-resources/credentials/methods/credentials_validate_credential
         update:
           - $ref: >-
               #/components/x-stackQL-resources/credentials/methods/update_credential

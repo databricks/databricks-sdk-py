@@ -109,7 +109,7 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-external_value"><code>external_value</code></a>, <a href="#parameter-external_viewer_id"><code>external_viewer_id</code></a></td>
-    <td>Get a required authorization details and scopes of a published dashboard to mint an OAuth token.<br /><br />:param dashboard_id: str<br />  UUID identifying the published dashboard.<br />:param external_value: str (optional)<br />  Provided external value to be included in the custom claim.<br />:param external_viewer_id: str (optional)<br />  Provided external viewer id to be included in the custom claim.<br /><br />:returns: :class:`GetPublishedDashboardTokenInfoResponse`</td>
+    <td>Get a required authorization details and scopes of a published dashboard to mint an OAuth token.</td>
 </tr>
 </tbody>
 </table>
@@ -160,7 +160,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Get a required authorization details and scopes of a published dashboard to mint an OAuth token.<br /><br />:param dashboard_id: str<br />  UUID identifying the published dashboard.<br />:param external_value: str (optional)<br />  Provided external value to be included in the custom claim.<br />:param external_viewer_id: str (optional)<br />  Provided external viewer id to be included in the custom claim.<br /><br />:returns: :class:`GetPublishedDashboardTokenInfoResponse`
+Get a required authorization details and scopes of a published dashboard to mint an OAuth token.
 
 ```sql
 SELECT

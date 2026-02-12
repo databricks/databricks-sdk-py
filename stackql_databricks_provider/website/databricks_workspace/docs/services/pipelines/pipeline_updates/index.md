@@ -1083,21 +1083,21 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-update_id"><code>update_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Gets an update from an active pipeline.<br /><br />:param pipeline_id: str<br />  The ID of the pipeline.<br />:param update_id: str<br />  The ID of the update.<br /><br />:returns: :class:`GetUpdateResponse`</td>
+    <td>Gets an update from an active pipeline.</td>
 </tr>
 <tr>
     <td><a href="#list"><CopyableCode code="list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td><a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-until_update_id"><code>until_update_id</code></a></td>
-    <td>List updates for an active pipeline.<br /><br />:param pipeline_id: str<br />  The pipeline to return updates for.<br />:param max_results: int (optional)<br />  Max number of entries to return in a single page.<br />:param page_token: str (optional)<br />  Page token returned by previous call<br />:param until_update_id: str (optional)<br />  If present, returns updates until and including this update_id.<br /><br />:returns: :class:`ListUpdatesResponse`</td>
+    <td>List updates for an active pipeline.</td>
 </tr>
 <tr>
     <td><a href="#start"><CopyableCode code="start" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-pipeline_id"><code>pipeline_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a></td>
     <td></td>
-    <td>Starts a new update for the pipeline. If there is already an active update for the pipeline, the<br />request will fail and the active update will remain running.<br /><br />:param pipeline_id: str<br />:param cause: :class:`StartUpdateCause` (optional)<br />:param full_refresh: bool (optional)<br />  If true, this update will reset all tables before running.<br />:param full_refresh_selection: List[str] (optional)<br />  A list of tables to update with fullRefresh. If both refresh_selection and full_refresh_selection<br />  are empty, this is a full graph update. Full Refresh on a table means that the states of the table<br />  will be reset before the refresh.<br />:param refresh_selection: List[str] (optional)<br />  A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection<br />  are empty, this is a full graph update. Full Refresh on a table means that the states of the table<br />  will be reset before the refresh.<br />:param rewind_spec: :class:`RewindSpec` (optional)<br />  The information about the requested rewind operation. If specified this is a rewind mode update.<br />:param validate_only: bool (optional)<br />  If true, this update only validates the correctness of pipeline source code but does not materialize<br />  or publish any datasets.<br /><br />:returns: :class:`StartUpdateResponse`</td>
+    <td>Starts a new update for the pipeline. If there is already an active update for the pipeline, the</td>
 </tr>
 </tbody>
 </table>
@@ -1159,7 +1159,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get">
 
-Gets an update from an active pipeline.<br /><br />:param pipeline_id: str<br />  The ID of the pipeline.<br />:param update_id: str<br />  The ID of the update.<br /><br />:returns: :class:`GetUpdateResponse`
+Gets an update from an active pipeline.
 
 ```sql
 SELECT
@@ -1173,7 +1173,7 @@ AND deployment_name = '{{ deployment_name }}' -- required
 </TabItem>
 <TabItem value="list">
 
-List updates for an active pipeline.<br /><br />:param pipeline_id: str<br />  The pipeline to return updates for.<br />:param max_results: int (optional)<br />  Max number of entries to return in a single page.<br />:param page_token: str (optional)<br />  Page token returned by previous call<br />:param until_update_id: str (optional)<br />  If present, returns updates until and including this update_id.<br /><br />:returns: :class:`ListUpdatesResponse`
+List updates for an active pipeline.
 
 ```sql
 SELECT
@@ -1202,7 +1202,7 @@ AND until_update_id = '{{ until_update_id }}'
 >
 <TabItem value="start">
 
-Starts a new update for the pipeline. If there is already an active update for the pipeline, the<br />request will fail and the active update will remain running.<br /><br />:param pipeline_id: str<br />:param cause: :class:`StartUpdateCause` (optional)<br />:param full_refresh: bool (optional)<br />  If true, this update will reset all tables before running.<br />:param full_refresh_selection: List[str] (optional)<br />  A list of tables to update with fullRefresh. If both refresh_selection and full_refresh_selection<br />  are empty, this is a full graph update. Full Refresh on a table means that the states of the table<br />  will be reset before the refresh.<br />:param refresh_selection: List[str] (optional)<br />  A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection<br />  are empty, this is a full graph update. Full Refresh on a table means that the states of the table<br />  will be reset before the refresh.<br />:param rewind_spec: :class:`RewindSpec` (optional)<br />  The information about the requested rewind operation. If specified this is a rewind mode update.<br />:param validate_only: bool (optional)<br />  If true, this update only validates the correctness of pipeline source code but does not materialize<br />  or publish any datasets.<br /><br />:returns: :class:`StartUpdateResponse`
+Starts a new update for the pipeline. If there is already an active update for the pipeline, the
 
 ```sql
 EXEC databricks_workspace.pipelines.pipeline_updates.start 
