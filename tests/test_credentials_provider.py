@@ -367,3 +367,209 @@ class TestDatabricksCliTokenSourceArgs:
         assert "--account-id" in cmd
         assert "test-account-id" in cmd
         assert "--workspace-id" not in cmd
+
+
+# Tests for cloud-agnostic hosts and removed cloud checks
+class TestCloudAgnosticHosts:
+    """Tests that credential providers work with cloud-agnostic hosts after removing is_azure/is_gcp checks."""
+
+    def test_azure_service_principal_with_cloud_agnostic_host(self, mocker):
+        """Test that azure_service_principal works with cloud-agnostic hosts after removing is_azure requirement."""
+        # Mock Config with cloud-agnostic host
+        mock_cfg = Mock()
+        mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
+        mock_cfg.azure_client_id = "test-azure-client-id"
+        mock_cfg.azure_client_secret = "test-azure-secret"
+        mock_cfg.azure_tenant_id = "test-tenant-id"
+        mock_cfg.azure_workspace_resource_id = None
+        mock_cfg.arm_environment = Mock()
+        mock_cfg.arm_environment.active_directory_endpoint = "https://login.microsoftonline.com/"
+        mock_cfg.arm_environment.service_management_endpoint = "https://management.core.windows.net/"
+        mock_cfg.effective_azure_login_app_id = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
+        mock_cfg.disable_async_token_refresh = True
+        mock_cfg.get_scopes_as_string = Mock(return_value="all-apis")
+        mock_cfg.authorization_details = None
+
+        # Mock ClientCredentials to avoid actual token requests
+        mock_token = oauth.Token(
+            access_token="test-access-token", token_type="Bearer", expiry=datetime.now() + timedelta(hours=1)
+        )
+        mock_token_source = Mock()
+        mock_token_source.token.return_value = mock_token
+
+        mocker.patch("databricks.sdk.credentials_provider.oauth.ClientCredentials", return_value=mock_token_source)
+        mocker.patch("databricks.sdk.credentials_provider.azure.add_workspace_id_header")
+        mocker.patch("databricks.sdk.credentials_provider.azure.add_sp_management_token")
+
+        # Should work now without is_azure check
+        provider = credentials_provider.azure_service_principal(mock_cfg)
+        assert provider is not None
+
+        headers = provider()
+        assert "Authorization" in headers
+        assert headers["Authorization"] == "Bearer test-access-token"
+
+    def test_google_credentials_with_cloud_agnostic_host(self, mocker):
+        """Test that google_credentials works with cloud-agnostic hosts after removing is_gcp check."""
+        # Mock Config with cloud-agnostic host
+        mock_cfg = Mock()
+        mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
+        mock_cfg.google_credentials = '{"type": "service_account", "project_id": "test"}'
+        mock_cfg.client_type = ClientType.WORKSPACE
+        mock_cfg.disable_async_token_refresh = True
+
+        # Mock service account credentials
+        mock_credentials = Mock()
+        mock_credentials.token = "test-google-token"
+        mock_credentials.refresh = Mock()
+
+        mocker.patch(
+            "databricks.sdk.credentials_provider.service_account.IDTokenCredentials.from_service_account_info",
+            return_value=mock_credentials,
+        )
+        mocker.patch(
+            "databricks.sdk.credentials_provider.service_account.Credentials.from_service_account_info",
+            return_value=mock_credentials,
+        )
+
+        # Should work now without is_gcp check
+        provider = credentials_provider.google_credentials(mock_cfg)
+        assert provider is not None
+
+        headers = provider()
+        assert "Authorization" in headers
+        assert headers["Authorization"] == "Bearer test-google-token"
+
+    def test_google_id_with_cloud_agnostic_host(self, mocker):
+        """Test that google_id works with cloud-agnostic hosts after removing is_gcp check."""
+        # Mock Config with cloud-agnostic host
+        mock_cfg = Mock()
+        mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
+        mock_cfg.google_service_account = "test-sa@project.iam.gserviceaccount.com"
+        mock_cfg.client_type = ClientType.WORKSPACE
+
+        # Mock google.auth.default
+        mock_source_credentials = Mock()
+        mocker.patch(
+            "databricks.sdk.credentials_provider.google.auth.default",
+            return_value=(mock_source_credentials, "test-project"),
+        )
+
+        # Mock impersonated credentials
+        mock_id_creds = Mock()
+        mock_id_creds.token = "test-google-id-token"
+        mock_id_creds.refresh = Mock()
+
+        mock_gcp_creds = Mock()
+        mock_gcp_creds.token = "test-gcp-token"
+        mock_gcp_creds.refresh = Mock()
+
+        mocker.patch("databricks.sdk.credentials_provider.impersonated_credentials.Credentials", return_value=Mock())
+        mocker.patch(
+            "databricks.sdk.credentials_provider.impersonated_credentials.IDTokenCredentials",
+            return_value=mock_id_creds,
+        )
+
+        # Should work now without is_gcp check
+        provider = credentials_provider.google_id(mock_cfg)
+        assert provider is not None
+
+        headers = provider()
+        assert "Authorization" in headers
+        assert headers["Authorization"] == "Bearer test-google-id-token"
+
+    def test_github_oidc_azure_with_cloud_agnostic_host(self, mocker):
+        """Test that github_oidc_azure works with cloud-agnostic hosts after removing is_azure check."""
+        # Set up GitHub Actions environment
+        mocker.patch.dict("os.environ", {"ACTIONS_ID_TOKEN_REQUEST_TOKEN": "test-token"})
+
+        # Mock Config with cloud-agnostic host
+        mock_cfg = Mock()
+        mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
+        mock_cfg.azure_client_id = "test-azure-client-id"
+        mock_cfg.azure_tenant_id = None  # Will be auto-detected
+        mock_cfg.arm_environment = Mock()
+        mock_cfg.arm_environment.active_directory_endpoint = "https://login.microsoftonline.com/"
+        mock_cfg.effective_azure_login_app_id = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
+        mock_cfg.disable_async_token_refresh = True
+        mock_cfg.get_scopes_as_string = Mock(return_value="all-apis")
+        mock_cfg.authorization_details = None
+
+        # Mock GitHub OIDC token supplier
+        mock_supplier = Mock()
+        mock_supplier.get_oidc_token.return_value = "test-github-oidc-token"
+        mocker.patch(
+            "databricks.sdk.credentials_provider.oidc_token_supplier.GitHubOIDCTokenSupplier",
+            return_value=mock_supplier,
+        )
+
+        # Mock Azure Entra ID endpoints
+        mock_endpoints = Mock()
+        mock_endpoints.token_endpoint = "https://login.microsoftonline.com/test-tenant-id/oauth2/token"
+        mocker.patch(
+            "databricks.sdk.credentials_provider.get_azure_entra_id_workspace_endpoints", return_value=mock_endpoints
+        )
+
+        # Mock ClientCredentials
+        mock_token = oauth.Token(
+            access_token="test-azure-token", token_type="Bearer", expiry=datetime.now() + timedelta(hours=1)
+        )
+        mock_token_source = Mock()
+        mock_token_source.token.return_value = mock_token
+        mocker.patch("databricks.sdk.credentials_provider.oauth.ClientCredentials", return_value=mock_token_source)
+
+        # Should work now without is_azure check
+        provider = credentials_provider.github_oidc_azure(mock_cfg)
+        assert provider is not None
+
+        headers = provider()
+        assert "Authorization" in headers
+        assert headers["Authorization"] == "Bearer test-azure-token"
+        # Verify tenant ID was auto-detected
+        assert mock_cfg.azure_tenant_id == "test-tenant-id"
+
+    def test_azure_cli_requires_effective_azure_login_app_id(self, mocker):
+        """Test that azure_cli now requires effective_azure_login_app_id instead of is_azure."""
+        # Mock Config with cloud-agnostic host
+        mock_cfg = Mock()
+        mock_cfg.host = "https://api.databricks.com"  # Cloud-agnostic host
+        mock_cfg.azure_tenant_id = "test-tenant-id"
+        mock_cfg.azure_workspace_resource_id = None
+        mock_cfg.effective_azure_login_app_id = "2ff814a6-3304-4ab8-85cb-cd0e6f879c1d"
+
+        # Mock load_azure_tenant_id
+        mock_cfg.load_azure_tenant_id = Mock()
+
+        # Mock AzureCliTokenSource
+        mock_token = oauth.Token(
+            access_token="test-az-cli-token", token_type="Bearer", expiry=datetime.now() + timedelta(hours=1)
+        )
+        mock_token.jwt_claims = Mock(return_value={"upn": "user@example.com"})
+
+        mock_token_source = Mock()
+        mock_token_source.token.return_value = mock_token
+        mock_token_source.is_human_user.return_value = True
+
+        mocker.patch(
+            "databricks.sdk.credentials_provider.AzureCliTokenSource.for_resource", return_value=mock_token_source
+        )
+        mocker.patch("databricks.sdk.credentials_provider.azure.add_workspace_id_header")
+
+        # Should work with effective_azure_login_app_id set
+        provider = credentials_provider.azure_cli(mock_cfg)
+        assert provider is not None
+
+        headers = provider()
+        assert "Authorization" in headers
+        assert headers["Authorization"] == "Bearer test-az-cli-token"
+
+    def test_azure_cli_returns_none_without_effective_azure_login_app_id(self):
+        """Test that azure_cli returns None when effective_azure_login_app_id is not set."""
+        # Mock Config without effective_azure_login_app_id
+        mock_cfg = Mock()
+        mock_cfg.host = "https://api.databricks.com"
+        mock_cfg.effective_azure_login_app_id = None  # Not set
+
+        # Should return None due to missing requirement
+        provider = credentials_provider.azure_cli(mock_cfg)
+        assert provider is None

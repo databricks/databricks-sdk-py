@@ -329,7 +329,7 @@ def _ensure_host_present(cfg: "Config", token_source_for: Callable[[str], oauth.
 
 @oauth_credentials_strategy(
     "azure-client-secret",
-    ["is_azure", "azure_client_id", "azure_client_secret"],
+    ["azure_client_id", "azure_client_secret"],
 )
 def azure_service_principal(cfg: "Config") -> CredentialsProvider:
     """Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
@@ -439,9 +439,9 @@ def _oidc_credentials_provider(
 
     # Determine the audience for token exchange
     audience = cfg.token_audience
-    if audience is None and cfg.client_type == ClientType.ACCOUNT:
+    if audience is None and cfg.account_id:
         audience = cfg.account_id
-    if audience is None and cfg.client_type != ClientType.ACCOUNT:
+    if audience is None and not cfg.account_id:
         audience = cfg.databricks_oidc_endpoints.token_endpoint
 
     # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
@@ -513,15 +513,12 @@ def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     )
 
 
+# Azure Client ID is the minimal thing we need, as otherwise we get AADSTS700016: Application with
+# identifier 'https://token.actions.githubusercontent.com' was not found in the directory '...'.
 @oauth_credentials_strategy("github-oidc-azure", ["host", "azure_client_id"])
 def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
     if "ACTIONS_ID_TOKEN_REQUEST_TOKEN" not in os.environ:
         # not in GitHub actions
-        return None
-
-    # Client ID is the minimal thing we need, as otherwise we get AADSTS700016: Application with
-    # identifier 'https://token.actions.githubusercontent.com' was not found in the directory '...'.
-    if not cfg.is_azure:
         return None
 
     token = oidc_token_supplier.GitHubOIDCTokenSupplier().get_oidc_token("api://AzureADTokenExchange")
@@ -572,8 +569,6 @@ GcpScopes = [
 
 @oauth_credentials_strategy("google-credentials", ["host", "google_credentials"])
 def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
-    if not cfg.is_gcp:
-        return None
     # Reads credentials as JSON. Credentials can be either a path to JSON file, or actual JSON string.
     # Obtain the id token by providing the json file path and target audience.
     if os.path.isfile(cfg.google_credentials):
@@ -598,7 +593,7 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         credentials.refresh(request)
         headers = {"Authorization": f"Bearer {credentials.token}"}
-        if cfg.client_type == ClientType.ACCOUNT:
+        if cfg.account_id:
             gcp_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_credentials.token
         return headers
@@ -608,8 +603,6 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
 
 @oauth_credentials_strategy("google-id", ["host", "google_service_account"])
 def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
-    if not cfg.is_gcp:
-        return None
     credentials, _project_id = google.auth.default()
 
     # Create the impersonated credential.
@@ -639,7 +632,7 @@ def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
     def refreshed_headers() -> Dict[str, str]:
         id_creds.refresh(request)
         headers = {"Authorization": f"Bearer {id_creds.token}"}
-        if cfg.client_type == ClientType.ACCOUNT:
+        if cfg.account_id:
             gcp_impersonated_credentials.refresh(request)
             headers["X-Databricks-GCP-SA-Access-Token"] = gcp_impersonated_credentials.token
         return headers
@@ -814,7 +807,7 @@ class AzureCliTokenSource(CliTokenSource):
         return components[2]
 
 
-@credentials_strategy("azure-cli", ["is_azure"])
+@credentials_strategy("azure-cli", ["effective_azure_login_app_id"])
 def azure_cli(cfg: "Config") -> Optional[CredentialsProvider]:
     """Adds refreshed OAuth token granted by `az login` command to every request."""
     cfg.load_azure_tenant_id()

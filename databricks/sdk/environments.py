@@ -39,16 +39,20 @@ class Cloud(Enum):
     AWS = "AWS"
     AZURE = "AZURE"
     GCP = "GCP"
+    UNKNOWN = "UNKNOWN"
 
 
 @dataclass
 class DatabricksEnvironment:
     cloud: Cloud
-    dns_zone: str
+    dns_zone: Optional[str] = None
     azure_application_id: Optional[str] = None
     azure_environment: Optional[AzureEnvironment] = None
 
     def deployment_url(self, name: str) -> str:
+        # Unified environments do not have a separate workspace host.
+        if self.dns_zone is None:
+            raise ValueError("This environment does not support deployment URLs.")
         return f"https://{name}{self.dns_zone}"
 
     @property
@@ -70,13 +74,13 @@ class DatabricksEnvironment:
         return self.azure_environment.active_directory_endpoint
 
 
-DEFAULT_ENVIRONMENT = DatabricksEnvironment(Cloud.AWS, ".cloud.databricks.com")
+DEFAULT_ENVIRONMENT = DatabricksEnvironment(Cloud.UNKNOWN, None)
 
 ALL_ENVS = [
     DatabricksEnvironment(Cloud.AWS, ".dev.databricks.com"),
     DatabricksEnvironment(Cloud.AWS, ".staging.cloud.databricks.com"),
     DatabricksEnvironment(Cloud.AWS, ".cloud.databricks.us"),
-    DEFAULT_ENVIRONMENT,
+    DatabricksEnvironment(Cloud.AWS, ".cloud.databricks.com"),
     DatabricksEnvironment(
         Cloud.AZURE,
         ".dev.azuredatabricks.net",
@@ -110,6 +114,7 @@ ALL_ENVS = [
     DatabricksEnvironment(Cloud.GCP, ".dev.gcp.databricks.com"),
     DatabricksEnvironment(Cloud.GCP, ".staging.gcp.databricks.com"),
     DatabricksEnvironment(Cloud.GCP, ".gcp.databricks.com"),
+    DEFAULT_ENVIRONMENT,
 ]
 
 
@@ -117,6 +122,6 @@ def get_environment_for_hostname(hostname: Optional[str]) -> DatabricksEnvironme
     if not hostname:
         return DEFAULT_ENVIRONMENT
     for env in ALL_ENVS:
-        if hostname.endswith(env.dns_zone):
+        if env.dns_zone and hostname.endswith(env.dns_zone):
             return env
     return DEFAULT_ENVIRONMENT

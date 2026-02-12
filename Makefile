@@ -28,6 +28,10 @@ test:
 	pytest -m 'not integration and not benchmark' --cov=databricks --cov-report html tests
 
 integration:
+	# TODO: Remove dual-run once experimental_is_unified_host flag is removed and unified mode becomes default
+	@echo "Running integration tests in unified mode..."
+	DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST=true pytest -n auto -m 'integration and not benchmark' --reruns 4 --dist loadgroup --cov=databricks --cov-append --cov-report html tests
+	@echo "Running integration tests in legacy mode..."
 	pytest -n auto -m 'integration and not benchmark' --reruns 4 --dist loadgroup --cov=databricks --cov-report html tests
 
 benchmark:
