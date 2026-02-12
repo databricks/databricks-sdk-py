@@ -9,6 +9,7 @@ from urllib.parse import parse_qs
 
 import pytest
 
+from databricks.sdk.environments import Cloud
 from databricks.sdk import AccountClient, WorkspaceClient, oauth, useragent
 from databricks.sdk.config import (ClientType, Config, HostType, with_product,
                                    with_user_agent_extra)
@@ -903,7 +904,7 @@ def test_legacy_account_profile_resolves_environment_with_unified_flag(mocker):
     assert config.environment.cloud.value == "AWS"
 
 
-def test_unified_profile_with_account_id_has_none_environment(mocker):
+def test_unified_profile_with_account_id_has_unknown_cloud(mocker):
     """Test that new unified profile with account_id has None environment (cloud-agnostic)."""
     mocker.patch("databricks.sdk.config.Config.init_auth")
 
@@ -915,8 +916,8 @@ def test_unified_profile_with_account_id_has_none_environment(mocker):
         token="test-token",
     )
 
-    # Unified hosts with account_id should NOT have environment resolved (cloud-agnostic)
-    assert config.environment is None
+    # Unified hosts with account_id should have UNKNOWN cloud
+    assert config.environment.cloud == Cloud.UNKNOWN
     # But the is_cloud properties should still work without crashing
     assert config.is_azure is False
     assert config.is_gcp is False

@@ -21,7 +21,7 @@ from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import (OidcEndpoints, Token, get_account_endpoints,
                     get_azure_entra_id_workspace_endpoints,
-                    get_unified_endpoints, get_workspace_endpoints)
+                    get_workspace_endpoints)
 
 logger = logging.getLogger("databricks.sdk")
 
@@ -289,8 +289,6 @@ class Config:
             self._load_from_env()
             self._known_file_config_loader()
             self._fix_host_if_needed()
-            # Resolve the legacy profile based on configuration just before validation.
-            self._resolve_legacy_profile()
             self._validate()
             self.init_auth()
             self._init_product(product, product_version)
@@ -360,11 +358,19 @@ class Config:
     @property
     def environment(self) -> DatabricksEnvironment:
         """Returns the environment based on configuration."""
-        if not self.experimental_is_unified_host:
-            # Preserve old behavior by default.
-            # TODO: Remove this when making the unified mode the default.
-            self._resolve_environment()
-        return self.databricks_environment
+        if self.databricks_environment:
+            return self.databricks_environment
+        if not self.host and self.azure_workspace_resource_id:
+            azure_env = self._get_azure_environment_name()
+            for environment in ALL_ENVS:
+                if environment.cloud != Cloud.AZURE:
+                    continue
+                if environment.azure_environment.name != azure_env:
+                    continue
+                if environment.dns_zone.startswith(".dev") or environment.dns_zone.startswith(".staging"):
+                    continue
+                return environment
+        return get_environment_for_hostname(self.host)
 
     @property
     def is_azure(self) -> bool:
@@ -378,7 +384,14 @@ class Config:
 
     @property
     def is_aws(self) -> bool:
-        return self.environment is not None and self.environment.cloud == Cloud.AWS
+        """
+        [Deprecated]
+        """
+        return (
+            not self.is_azure
+            and not self.is_gcp
+            and (self.environment is not None and self.environment.cloud == Cloud.AWS)
+        )
 
     @property
     def host_type(self) -> HostType:
@@ -522,11 +535,16 @@ class Config:
 
         This method discovers the OIDC endpoints for Databricks OAuth by making a request to the
         multiple paths.
-        This is not to be used for production purposes. 
+        This is not to be used for production purposes.
         It is only to be used for testing and development purposes until a unified OIDC endpoint is available.
         """
+
+        # DO NOT REMOVE THIS ERROR. THIS IS USED TO ENFORCE THAT THE EXPERIMENTAL IS UNIFIED HOST FLAG IS SET.
+        # THIS WHOLE METHOD SHOULD BE REMOVED WHEN THE EXPERIMENTAL IS UNIFIED HOST FLAG IS REMOVED.
         if not self.experimental_is_unified_host:
-            raise ValueError("experimental_oidc_discovery is only supported with the experimental_is_unified_host flag set")
+            raise ValueError(
+                "experimental_oidc_discovery is only supported with the experimental_is_unified_host flag set"
+            )
         if self.account_id:
             try:
                 return get_account_endpoints(self.host, self.account_id)
@@ -790,37 +808,6 @@ class Config:
         return copy.deepcopy(self)
 
     # The code below is used to support legacy hosts.
-    def _resolve_environment(self):
-        """Resolve the environment based on configuration."""
-        if self.databricks_environment:
-            return
-        if not self.host and self.azure_workspace_resource_id:
-            azure_env = self._get_azure_environment_name()
-            for environment in ALL_ENVS:
-                if environment.cloud != Cloud.AZURE:
-                    continue
-                if environment.azure_environment.name != azure_env:
-                    continue
-                if environment.dns_zone.startswith(".dev") or environment.dns_zone.startswith(".staging"):
-                    continue
-                self.databricks_environment = environment
-                return
-        self.databricks_environment = get_environment_for_hostname(self.host)
-
-    def _resolve_legacy_profile(self):
-        """Resolve the legacy profile based on configuration."""
-
-        # This only applies to the unified mode.
-        # TODO: Remove this when making the unified mode the default.
-        if not self.experimental_is_unified_host:
-            return
-        # New Profiles always have an account ID.
-        if not self.account_id:
-            self._resolve_environment()
-
-        if self.host and (self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")):
-            self._resolve_environment()
-
     def _fetch_workspace_id(self) -> Optional[str]:
         """Fetch the workspace ID from the host."""
         try:
