@@ -2140,6 +2140,8 @@ class GitSource:
     job_source: Optional[JobSource] = None
     """The source of the job specification in the remote repository when the job is source controlled."""
 
+    sparse_checkout: Optional[SparseCheckout] = None
+
     def as_dict(self) -> dict:
         """Serializes the GitSource into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -2157,6 +2159,8 @@ class GitSource:
             body["git_url"] = self.git_url
         if self.job_source:
             body["job_source"] = self.job_source.as_dict()
+        if self.sparse_checkout:
+            body["sparse_checkout"] = self.sparse_checkout.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -2176,6 +2180,8 @@ class GitSource:
             body["git_url"] = self.git_url
         if self.job_source:
             body["job_source"] = self.job_source
+        if self.sparse_checkout:
+            body["sparse_checkout"] = self.sparse_checkout
         return body
 
     @classmethod
@@ -2189,6 +2195,7 @@ class GitSource:
             git_tag=d.get("git_tag", None),
             git_url=d.get("git_url", None),
             job_source=_from_dict(d, "job_source", JobSource),
+            sparse_checkout=_from_dict(d, "sparse_checkout", SparseCheckout),
         )
 
 
@@ -5756,6 +5763,9 @@ class RunTask:
     description: Optional[str] = None
     """An optional description for this task."""
 
+    disable_auto_optimization: Optional[bool] = None
+    """An option to disable auto optimization in serverless"""
+
     effective_performance_target: Optional[PerformanceTarget] = None
     """The actual performance target used by the serverless run during execution. This can differ from
     the client-set performance target on the request depending on whether the performance mode is
@@ -5811,6 +5821,16 @@ class RunTask:
     """An optional list of libraries to be installed on the cluster. The default value is an empty
     list."""
 
+    max_retries: Optional[int] = None
+    """An optional maximum number of times to retry an unsuccessful run. A run is considered to be
+    unsuccessful if it completes with the `FAILED` result_state or `INTERNAL_ERROR`
+    `life_cycle_state`. The value `-1` means to retry indefinitely and the value `0` means to never
+    retry."""
+
+    min_retry_interval_millis: Optional[int] = None
+    """An optional minimal interval in milliseconds between the start of the failed run and the
+    subsequent retry run. The default behavior is that unsuccessful runs are immediately retried."""
+
     new_cluster: Optional[compute.ClusterSpec] = None
     """If new_cluster, a description of a new cluster that is created for each run."""
 
@@ -5836,6 +5856,10 @@ class RunTask:
 
     resolved_values: Optional[ResolvedValues] = None
     """Parameter values including resolved references"""
+
+    retry_on_timeout: Optional[bool] = None
+    """An optional policy to specify whether to retry a job when it times out. The default behavior is
+    to not retry on timeout."""
 
     run_duration: Optional[int] = None
     """The time in milliseconds it took the job run and all of its repairs to finish."""
@@ -5920,6 +5944,8 @@ class RunTask:
             body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
             body["description"] = self.description
+        if self.disable_auto_optimization is not None:
+            body["disable_auto_optimization"] = self.disable_auto_optimization
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target.value
         if self.email_notifications:
@@ -5942,6 +5968,10 @@ class RunTask:
             body["job_cluster_key"] = self.job_cluster_key
         if self.libraries:
             body["libraries"] = [v.as_dict() for v in self.libraries]
+        if self.max_retries is not None:
+            body["max_retries"] = self.max_retries
+        if self.min_retry_interval_millis is not None:
+            body["min_retry_interval_millis"] = self.min_retry_interval_millis
         if self.new_cluster:
             body["new_cluster"] = self.new_cluster.as_dict()
         if self.notebook_task:
@@ -5958,6 +5988,8 @@ class RunTask:
             body["queue_duration"] = self.queue_duration
         if self.resolved_values:
             body["resolved_values"] = self.resolved_values.as_dict()
+        if self.retry_on_timeout is not None:
+            body["retry_on_timeout"] = self.retry_on_timeout
         if self.run_duration is not None:
             body["run_duration"] = self.run_duration
         if self.run_id is not None:
@@ -6019,6 +6051,8 @@ class RunTask:
             body["depends_on"] = self.depends_on
         if self.description is not None:
             body["description"] = self.description
+        if self.disable_auto_optimization is not None:
+            body["disable_auto_optimization"] = self.disable_auto_optimization
         if self.effective_performance_target is not None:
             body["effective_performance_target"] = self.effective_performance_target
         if self.email_notifications:
@@ -6041,6 +6075,10 @@ class RunTask:
             body["job_cluster_key"] = self.job_cluster_key
         if self.libraries:
             body["libraries"] = self.libraries
+        if self.max_retries is not None:
+            body["max_retries"] = self.max_retries
+        if self.min_retry_interval_millis is not None:
+            body["min_retry_interval_millis"] = self.min_retry_interval_millis
         if self.new_cluster:
             body["new_cluster"] = self.new_cluster
         if self.notebook_task:
@@ -6057,6 +6095,8 @@ class RunTask:
             body["queue_duration"] = self.queue_duration
         if self.resolved_values:
             body["resolved_values"] = self.resolved_values
+        if self.retry_on_timeout is not None:
+            body["retry_on_timeout"] = self.retry_on_timeout
         if self.run_duration is not None:
             body["run_duration"] = self.run_duration
         if self.run_id is not None:
@@ -6107,6 +6147,7 @@ class RunTask:
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
+            disable_auto_optimization=d.get("disable_auto_optimization", None),
             effective_performance_target=_enum(d, "effective_performance_target", PerformanceTarget),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             end_time=d.get("end_time", None),
@@ -6118,6 +6159,8 @@ class RunTask:
             git_source=_from_dict(d, "git_source", GitSource),
             job_cluster_key=d.get("job_cluster_key", None),
             libraries=_repeated_dict(d, "libraries", compute.Library),
+            max_retries=d.get("max_retries", None),
+            min_retry_interval_millis=d.get("min_retry_interval_millis", None),
             new_cluster=_from_dict(d, "new_cluster", compute.ClusterSpec),
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
@@ -6126,6 +6169,7 @@ class RunTask:
             python_wheel_task=_from_dict(d, "python_wheel_task", PythonWheelTask),
             queue_duration=d.get("queue_duration", None),
             resolved_values=_from_dict(d, "resolved_values", ResolvedValues),
+            retry_on_timeout=d.get("retry_on_timeout", None),
             run_duration=d.get("run_duration", None),
             run_id=d.get("run_id", None),
             run_if=_enum(d, "run_if", RunIf),
@@ -6316,6 +6360,31 @@ class SparkSubmitTask:
     def from_dict(cls, d: Dict[str, Any]) -> SparkSubmitTask:
         """Deserializes the SparkSubmitTask from a dictionary."""
         return cls(parameters=d.get("parameters", None))
+
+
+@dataclass
+class SparseCheckout:
+    patterns: Optional[List[str]] = None
+    """List of patterns to include for sparse checkout."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SparseCheckout into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.patterns:
+            body["patterns"] = [v for v in self.patterns]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SparseCheckout into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.patterns:
+            body["patterns"] = self.patterns
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SparseCheckout:
+        """Deserializes the SparseCheckout from a dictionary."""
+        return cls(patterns=d.get("patterns", None))
 
 
 @dataclass
@@ -6994,6 +7063,9 @@ class SubmitTask:
     description: Optional[str] = None
     """An optional description for this task."""
 
+    disable_auto_optimization: Optional[bool] = None
+    """An option to disable auto optimization in serverless"""
+
     email_notifications: Optional[JobEmailNotifications] = None
     """An optional set of email addresses notified when the task run begins or completes. The default
     behavior is to not send any emails."""
@@ -7019,6 +7091,16 @@ class SubmitTask:
     """An optional list of libraries to be installed on the cluster. The default value is an empty
     list."""
 
+    max_retries: Optional[int] = None
+    """An optional maximum number of times to retry an unsuccessful run. A run is considered to be
+    unsuccessful if it completes with the `FAILED` result_state or `INTERNAL_ERROR`
+    `life_cycle_state`. The value `-1` means to retry indefinitely and the value `0` means to never
+    retry."""
+
+    min_retry_interval_millis: Optional[int] = None
+    """An optional minimal interval in milliseconds between the start of the failed run and the
+    subsequent retry run. The default behavior is that unsuccessful runs are immediately retried."""
+
     new_cluster: Optional[compute.ClusterSpec] = None
     """If new_cluster, a description of a new cluster that is created for each run."""
 
@@ -7038,6 +7120,10 @@ class SubmitTask:
 
     python_wheel_task: Optional[PythonWheelTask] = None
     """The task runs a Python wheel when the `python_wheel_task` field is present."""
+
+    retry_on_timeout: Optional[bool] = None
+    """An optional policy to specify whether to retry a job when it times out. The default behavior is
+    to not retry on timeout."""
 
     run_if: Optional[RunIf] = None
     """An optional value indicating the condition that determines whether the task should be run once
@@ -7091,6 +7177,8 @@ class SubmitTask:
             body["depends_on"] = [v.as_dict() for v in self.depends_on]
         if self.description is not None:
             body["description"] = self.description
+        if self.disable_auto_optimization is not None:
+            body["disable_auto_optimization"] = self.disable_auto_optimization
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications.as_dict()
         if self.environment_key is not None:
@@ -7105,6 +7193,10 @@ class SubmitTask:
             body["health"] = self.health.as_dict()
         if self.libraries:
             body["libraries"] = [v.as_dict() for v in self.libraries]
+        if self.max_retries is not None:
+            body["max_retries"] = self.max_retries
+        if self.min_retry_interval_millis is not None:
+            body["min_retry_interval_millis"] = self.min_retry_interval_millis
         if self.new_cluster:
             body["new_cluster"] = self.new_cluster.as_dict()
         if self.notebook_task:
@@ -7117,6 +7209,8 @@ class SubmitTask:
             body["power_bi_task"] = self.power_bi_task.as_dict()
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task.as_dict()
+        if self.retry_on_timeout is not None:
+            body["retry_on_timeout"] = self.retry_on_timeout
         if self.run_if is not None:
             body["run_if"] = self.run_if.value
         if self.run_job_task:
@@ -7158,6 +7252,8 @@ class SubmitTask:
             body["depends_on"] = self.depends_on
         if self.description is not None:
             body["description"] = self.description
+        if self.disable_auto_optimization is not None:
+            body["disable_auto_optimization"] = self.disable_auto_optimization
         if self.email_notifications:
             body["email_notifications"] = self.email_notifications
         if self.environment_key is not None:
@@ -7172,6 +7268,10 @@ class SubmitTask:
             body["health"] = self.health
         if self.libraries:
             body["libraries"] = self.libraries
+        if self.max_retries is not None:
+            body["max_retries"] = self.max_retries
+        if self.min_retry_interval_millis is not None:
+            body["min_retry_interval_millis"] = self.min_retry_interval_millis
         if self.new_cluster:
             body["new_cluster"] = self.new_cluster
         if self.notebook_task:
@@ -7184,6 +7284,8 @@ class SubmitTask:
             body["power_bi_task"] = self.power_bi_task
         if self.python_wheel_task:
             body["python_wheel_task"] = self.python_wheel_task
+        if self.retry_on_timeout is not None:
+            body["retry_on_timeout"] = self.retry_on_timeout
         if self.run_if is not None:
             body["run_if"] = self.run_if
         if self.run_job_task:
@@ -7217,6 +7319,7 @@ class SubmitTask:
             dbt_task=_from_dict(d, "dbt_task", DbtTask),
             depends_on=_repeated_dict(d, "depends_on", TaskDependency),
             description=d.get("description", None),
+            disable_auto_optimization=d.get("disable_auto_optimization", None),
             email_notifications=_from_dict(d, "email_notifications", JobEmailNotifications),
             environment_key=d.get("environment_key", None),
             existing_cluster_id=d.get("existing_cluster_id", None),
@@ -7224,12 +7327,15 @@ class SubmitTask:
             gen_ai_compute_task=_from_dict(d, "gen_ai_compute_task", GenAiComputeTask),
             health=_from_dict(d, "health", JobsHealthRules),
             libraries=_repeated_dict(d, "libraries", compute.Library),
+            max_retries=d.get("max_retries", None),
+            min_retry_interval_millis=d.get("min_retry_interval_millis", None),
             new_cluster=_from_dict(d, "new_cluster", compute.ClusterSpec),
             notebook_task=_from_dict(d, "notebook_task", NotebookTask),
             notification_settings=_from_dict(d, "notification_settings", TaskNotificationSettings),
             pipeline_task=_from_dict(d, "pipeline_task", PipelineTask),
             power_bi_task=_from_dict(d, "power_bi_task", PowerBiTask),
             python_wheel_task=_from_dict(d, "python_wheel_task", PythonWheelTask),
+            retry_on_timeout=d.get("retry_on_timeout", None),
             run_if=_enum(d, "run_if", RunIf),
             run_job_task=_from_dict(d, "run_job_task", RunJobTask),
             spark_jar_task=_from_dict(d, "spark_jar_task", SparkJarTask),

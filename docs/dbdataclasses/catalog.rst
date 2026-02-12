@@ -420,13 +420,16 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   Next Id: 15
+   Next Id: 16
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
 
    .. py:attribute:: BEARER_TOKEN
       :value: "BEARER_TOKEN"
+
+   .. py:attribute:: EDGEGRID_AKAMAI
+      :value: "EDGEGRID_AKAMAI"
 
    .. py:attribute:: OAUTH_ACCESS_TOKEN
       :value: "OAUTH_ACCESS_TOKEN"
@@ -1513,7 +1516,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296
+   Latest kind: CONNECTION_AKAMAI_WAF_EDGEGRID = 296; Next id: 297
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
@@ -1935,6 +1938,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: VIEW
       :value: "VIEW"
+
+.. py:class:: TagAssignmentSourceType
+
+   Enum representing the source type of a tag assignment
+
+   .. py:attribute:: TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION
+      :value: "TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION"
 
 .. autoclass:: TagKeyValue
    :members:
