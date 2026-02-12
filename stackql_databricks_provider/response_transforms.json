@@ -1,0 +1,45 @@
+{
+  "_comment": "Declarative response transforms applied to x-stackQL-resources post provider generation. Keyed by scope/service/operationId. Each entry specifies fields to merge into the method's response config in x-stackQL-resources.",
+  "transforms": {
+    "account/billing/billable_usage_download": {
+      "response": {
+        "mediaType": "text/plain",
+        "overrideMediaType": "application/json",
+        "transform": {
+          "body": "[{\"contents\": {{ toJson . }}}]",
+          "type": "golang_template_text_v0.3.0"
+        }
+      }
+    },
+    "workspace/serving/serving_endpoints_export_metrics": {
+      "response": {
+        "mediaType": "text/plain",
+        "overrideMediaType": "application/json",
+        "transform": {
+          "body": "[{\"contents\": {{ toJson . }}}]",
+          "type": "golang_template_text_v0.3.0"
+        }
+      }
+    },
+    "workspace/serving/serving_endpoints_get_open_api": {
+      "response": {
+        "mediaType": "text/plain",
+        "overrideMediaType": "application/json",
+        "transform": {
+          "body": "[{\"contents\": {{ toJson . }}}]",
+          "type": "golang_template_text_v0.3.0"
+        }
+      }
+    },
+    "workspace/serving/serving_endpoints_http_request": {
+      "response": {
+        "mediaType": "text/plain",
+        "overrideMediaType": "application/json",
+        "transform": {
+          "body": "[{\"contents\": {{ toJson . }}}]",
+          "type": "golang_template_text_v0.3.0"
+        }
+      }
+    }
+  }
+}

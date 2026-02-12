@@ -867,9 +867,10 @@
           "200": {
             "description": "Success",
             "content": {
-              "application/json": {
+              "application/octet-stream": {
                 "schema": {
-                  "$ref": "#/components/schemas/DownloadResponse"
+                  "type": "string",
+                  "format": "binary"
                 }
               }
             }

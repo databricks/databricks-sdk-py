@@ -146,7 +146,14 @@ def get_operation_details(
                 class_name, method_name, list_response, return_type,
             )
             return_type = list_response
-    operation["responses"] = _build_responses(return_type)
+
+    response_media_type = _detect_response_media_type(source)
+    if response_media_type != "application/json":
+        logger.info(
+            "%s.%s: non-JSON response media type: %s",
+            class_name, method_name, response_media_type,
+        )
+    operation["responses"] = _build_responses(return_type, response_media_type)
 
     openapi_path = _normalize_path(url_path)
     return {openapi_path: {http_method.lower(): operation}}
@@ -467,16 +474,50 @@ def _build_request_body(
     }
 
 
-def _build_responses(return_type: Optional[str]) -> Dict[str, Any]:
-    """Build OpenAPI responses object."""
+def _detect_response_media_type(source: str) -> str:
+    """Detect the Accept header from method source to determine response media type.
+
+    The SDK sets an explicit ``Accept`` header for non-JSON endpoints, e.g.::
+
+        headers = {"Accept": "text/plain"}
+
+    Returns:
+        The media type string (defaults to ``application/json``).
+    """
+    m = re.search(r'"Accept"\s*:\s*"([^"]+)"', source)
+    if m:
+        return m.group(1)
+    return "application/json"
+
+
+def _build_responses(
+    return_type: Optional[str],
+    media_type: str = "application/json",
+) -> Dict[str, Any]:
+    """Build OpenAPI responses object.
+
+    Args:
+        return_type: Schema name for the response, or None.
+        media_type: Response content type (e.g. ``text/plain``).
+    """
     responses: Dict[str, Any] = {}
 
     if return_type:
+        if media_type == "application/json":
+            content_schema: Dict[str, Any] = {
+                "$ref": f"#/components/schemas/{return_type}",
+            }
+        elif media_type == "application/octet-stream":
+            content_schema = {"type": "string", "format": "binary"}
+        else:
+            # text/plain and other non-JSON types: raw string
+            content_schema = {"type": "string"}
+
         responses["200"] = {
             "description": "Success",
             "content": {
-                "application/json": {
-                    "schema": {"$ref": f"#/components/schemas/{return_type}"},
+                media_type: {
+                    "schema": content_schema,
                 }
             },
         }

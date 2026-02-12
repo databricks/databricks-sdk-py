@@ -153,6 +153,18 @@ class TestProvenance:
                 assert operation["x-stackql-sdk-source"].endswith("API")
 
 
+class TestNonJsonMediaTypes:
+    def test_billing_download_has_text_plain_in_spec(self):
+        """The billing spec should declare text/plain for the download endpoint."""
+        spec = generate_spec_for_service("billing", "account", ["BillableUsageAPI"])
+        download_path = "/api/2.0/accounts/{account_id}/usage/download"
+        assert download_path in spec["paths"]
+        op = spec["paths"][download_path]["get"]
+        resp_200 = op["responses"]["200"]
+        assert "text/plain" in resp_200["content"]
+        assert resp_200["content"]["text/plain"]["schema"] == {"type": "string"}
+
+
 class TestSpecOverrides:
     def test_parse_json_path_simple(self):
         segments = _parse_json_path("paths./api/test.get.summary")

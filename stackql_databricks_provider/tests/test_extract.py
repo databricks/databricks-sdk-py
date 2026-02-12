@@ -344,3 +344,45 @@ class TestCrossService:
             service_name="billing", resource_snake_name="billable_usage"
         )
         assert len(details) > 0
+
+
+# ---------------------------------------------------------------------------
+# Response media type detection
+# ---------------------------------------------------------------------------
+
+class TestResponseMediaType:
+    def test_billing_download_is_text_plain(self):
+        """BillableUsageAPI.download sets Accept: text/plain."""
+        details = get_operation_details(
+            billing, "BillableUsageAPI", "download",
+            service_name="billing", resource_snake_name="billable_usage",
+        )
+        for path, methods in details.items():
+            for verb, operation in methods.items():
+                resp_200 = operation["responses"]["200"]
+                assert "text/plain" in resp_200["content"], (
+                    "BillableUsageAPI.download should have text/plain response"
+                )
+                assert "application/json" not in resp_200["content"]
+
+    def test_billing_download_text_plain_schema_is_string(self):
+        """text/plain response should use type: string, not a $ref."""
+        details = get_operation_details(
+            billing, "BillableUsageAPI", "download",
+            service_name="billing", resource_snake_name="billable_usage",
+        )
+        for path, methods in details.items():
+            for verb, operation in methods.items():
+                schema = operation["responses"]["200"]["content"]["text/plain"]["schema"]
+                assert schema == {"type": "string"}
+
+    def test_json_endpoint_still_uses_application_json(self):
+        """Normal JSON endpoints should still use application/json."""
+        details = get_operation_details(
+            billing, "BudgetPolicyAPI", "create",
+            service_name="billing", resource_snake_name="budget_policy",
+        )
+        for path, methods in details.items():
+            for verb, operation in methods.items():
+                resp_200 = operation["responses"]["200"]
+                assert "application/json" in resp_200["content"]
