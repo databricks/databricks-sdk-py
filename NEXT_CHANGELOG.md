@@ -11,6 +11,7 @@
 ### Bug Fixes
 
 * FilesExt no longer retries on 500 (Internal Server Error) responses. These errors now fail immediately or fallback to alternative upload methods as appropriate.
+* Fixed `Config` subclass attribute discovery and caching so inherited `ConfigAttribute` fields resolve correctly (addresses [#1069](https://github.com/databricks/databricks-sdk-py/issues/1069), [#1258](https://github.com/databricks/databricks-sdk-py/pull/1258)).
 
 ### Documentation
 
