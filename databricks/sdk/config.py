@@ -46,7 +46,10 @@ class ConfigAttribute:
         return cfg._inner.get(self.name, None)
 
     def __set__(self, cfg: "Config", value: any):
-        cfg._inner[self.name] = self.transform(value)
+        if value is None:
+            cfg._inner.pop(self.name, None)
+        else:
+            cfg._inner[self.name] = self.transform(value)
 
     def __repr__(self) -> str:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
@@ -280,14 +283,20 @@ class Config:
             self.databricks_environment = kwargs["databricks_environment"]
             del kwargs["databricks_environment"]
         self._clock = clock if clock is not None else RealClock()
+
         try:
             self._set_inner_config(kwargs)
             self._load_from_env()
             self._known_file_config_loader()
             self._fix_host_if_needed()
+            # Resolve the legacy profile based on configuration just before validation.
+            self._resolve_legacy_profile()
             self._validate()
             self.init_auth()
             self._init_product(product, product_version)
+            # Extract the workspace ID for legacy profiles. This is extracted from an API call.
+            if not self.workspace_id and not self.account_id and self.experimental_is_unified_host:
+                self.workspace_id = self._fetch_workspace_id()
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
@@ -351,33 +360,25 @@ class Config:
     @property
     def environment(self) -> DatabricksEnvironment:
         """Returns the environment based on configuration."""
-        if self.databricks_environment:
-            return self.databricks_environment
-        if not self.host and self.azure_workspace_resource_id:
-            azure_env = self._get_azure_environment_name()
-            for environment in ALL_ENVS:
-                if environment.cloud != Cloud.AZURE:
-                    continue
-                if environment.azure_environment.name != azure_env:
-                    continue
-                if environment.dns_zone.startswith(".dev") or environment.dns_zone.startswith(".staging"):
-                    continue
-                return environment
-        return get_environment_for_hostname(self.host)
+        if not self.experimental_is_unified_host:
+            # Preserve old behavior by default.
+            # TODO: Remove this when making the unified mode the default.
+            self._resolve_environment()
+        return self.databricks_environment
 
     @property
     def is_azure(self) -> bool:
         if self.azure_workspace_resource_id:
             return True
-        return self.environment.cloud == Cloud.AZURE
+        return self.environment is not None and self.environment.cloud == Cloud.AZURE
 
     @property
     def is_gcp(self) -> bool:
-        return self.environment.cloud == Cloud.GCP
+        return self.environment is not None and self.environment.cloud == Cloud.GCP
 
     @property
     def is_aws(self) -> bool:
-        return self.environment.cloud == Cloud.AWS
+        return self.environment is not None and self.environment.cloud == Cloud.AWS
 
     @property
     def host_type(self) -> HostType:
@@ -400,7 +401,9 @@ class Config:
 
     @property
     def client_type(self) -> ClientType:
-        """Determine the type of client configuration.
+        """
+        [Deprecated] Deprecated. Use host_type instead. Some hosts can support both account and workspace clients.
+        Determine the type of client configuration.
 
         This is separate from host_type. For example, a unified host can support both
         workspace and account client types.
@@ -419,25 +422,24 @@ class Config:
             return ClientType.WORKSPACE
 
         if host_type == HostType.UNIFIED:
-            if not self.account_id:
-                raise ValueError("Unified host requires account_id to be set")
             if self.workspace_id:
                 return ClientType.WORKSPACE
-            return ClientType.ACCOUNT
+            if self.account_id:
+                return ClientType.ACCOUNT
+            # Legacy workspace hosts don't have a workspace_id until AFTER the auth is resolved.
+            return ClientType.WORKSPACE
 
         # Default to workspace for backward compatibility
         return ClientType.WORKSPACE
 
     @property
     def is_account_client(self) -> bool:
-        """[Deprecated] Use host_type or client_type instead.
+        """[Deprecated] Use host_type instead.
 
-        Determines if this is an account client based on the host URL.
+        Determines if this config is compatible with an account client based on the host URL and account_id.
         """
         if self.experimental_is_unified_host:
-            raise ValueError(
-                "is_account_client cannot be used with unified hosts; use host_type or client_type instead"
-            )
+            return self.account_id
         if not self.host:
             return False
         return self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")
@@ -593,12 +595,9 @@ class Config:
             return None
         if self.cluster_id and self.warehouse_id:
             raise ValueError("cannot have both cluster_id and warehouse_id")
-        headers = self.authenticate()
-        headers["User-Agent"] = f"{self.user_agent} sdk-feature/sql-http-path"
         if self.cluster_id:
-            response = requests.get(f"{self.host}/api/2.0/preview/scim/v2/Me", headers=headers)
-            # get workspace ID from the response header
-            workspace_id = response.headers.get("x-databricks-org-id")
+            # Reuse cached workspace_id or fetch it
+            workspace_id = self.workspace_id or self._fetch_workspace_id()
             return f"sql/protocolv1/o/{workspace_id}/{self.cluster_id}"
         if self.warehouse_id:
             return f"/sql/1.0/warehouses/{self.warehouse_id}"
@@ -789,3 +788,48 @@ class Config:
     def deep_copy(self):
         """Creates a deep copy of the config object."""
         return copy.deepcopy(self)
+
+    # The code below is used to support legacy hosts.
+    def _resolve_environment(self):
+        """Resolve the environment based on configuration."""
+        if self.databricks_environment:
+            return
+        if not self.host and self.azure_workspace_resource_id:
+            azure_env = self._get_azure_environment_name()
+            for environment in ALL_ENVS:
+                if environment.cloud != Cloud.AZURE:
+                    continue
+                if environment.azure_environment.name != azure_env:
+                    continue
+                if environment.dns_zone.startswith(".dev") or environment.dns_zone.startswith(".staging"):
+                    continue
+                self.databricks_environment = environment
+                return
+        self.databricks_environment = get_environment_for_hostname(self.host)
+
+    def _resolve_legacy_profile(self):
+        """Resolve the legacy profile based on configuration."""
+
+        # This only applies to the unified mode.
+        # TODO: Remove this when making the unified mode the default.
+        if not self.experimental_is_unified_host:
+            return
+        # New Profiles always have an account ID.
+        if not self.account_id:
+            self._resolve_environment()
+
+        if self.host and (self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")):
+            self._resolve_environment()
+
+    def _fetch_workspace_id(self) -> Optional[str]:
+        """Fetch the workspace ID from the host."""
+        try:
+            headers = self.authenticate()
+            headers["User-Agent"] = f"{self.user_agent} sdk-feature/sql-http-path"
+            response = requests.get(f"{self.host}/api/2.0/preview/scim/v2/Me", headers=headers)
+            response.raise_for_status()
+            # get workspace ID from the response header
+            return response.headers.get("x-databricks-org-id")
+        except Exception as e:
+            logger.debug(f"Failed to fetch workspace ID: {e}")
+            return None
