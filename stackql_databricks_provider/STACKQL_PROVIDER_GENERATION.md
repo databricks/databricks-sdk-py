@@ -53,8 +53,6 @@ Generate CSV mapping files from the OpenAPI specs:
 # Sync response_object with specs (run after regenerating specs)
 python3 -m stackql_databricks_provider.inventory_gen --refresh-response-objects
 
-python3 -m stackql_databricks_provider.inventory_gen --refresh-response-objects --populate-object-keys 
-
 # Populate objectKey for Iterator list endpoints  
 python3 -m stackql_databricks_provider.inventory_gen --populate-object-keys
 
@@ -103,6 +101,12 @@ npm run generate-provider -- \
   --overwrite
 ```
 
+add any post generation response transforms:
+
+```bash
+
+```
+
 #### Workspace scope
 
 ```bash
@@ -114,6 +118,12 @@ npm run generate-provider -- \
   --servers '[{"url":"https://{deployment_name}.cloud.databricks.com","variables":{"deployment_name":{"description":"The Databricks Workspace Deployment Name","default":"dbc-abcd0123-a1bc"}}}]' \
   --provider-config '{"auth":{"type":"oauth2","client_id_env_var":"DATABRICKS_CLIENT_ID","client_secret_env_var":"DATABRICKS_CLIENT_SECRET","grant_type":"client_credentials","token_url":"https://accounts.cloud.databricks.com/oidc/accounts/{{ .__env__DATABRICKS_ACCOUNT_ID }}/v1/token","scopes":["all-apis"]}}' \
   --overwrite
+```
+
+add any post generation response transforms:
+
+```bash
+
 ```
 
 **Parameters explained:**
