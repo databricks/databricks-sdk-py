@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service._internal import _enum, _from_dict, _repeated_enum
 
 _LOG = logging.getLogger("databricks.sdk")
@@ -231,9 +232,6 @@ class State(Enum):
 class User:
     """The details of a User resource."""
 
-    username: str
-    """Username/email of the user."""
-
     account_id: Optional[str] = None
     """The accountId parent of the user in Databricks."""
 
@@ -247,6 +245,9 @@ class User:
     """Internal userId of the user in Databricks."""
 
     name: Optional[UserName] = None
+
+    username: Optional[str] = None
+    """Username/email of the user."""
 
     def as_dict(self) -> dict:
         """Serializes the User into a dictionary suitable for use as a JSON request body."""
@@ -575,6 +576,10 @@ class WorkspaceIamV2API:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.0/identity/workspaceAccessDetails/{principal_id}", query=query, headers=headers
         )
@@ -599,6 +604,10 @@ class WorkspaceIamV2API:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/identity/groups/resolveByExternalId", body=body, headers=headers)
         return ResolveGroupResponse.from_dict(res)
 
@@ -620,6 +629,10 @@ class WorkspaceIamV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "POST", "/api/2.0/identity/servicePrincipals/resolveByExternalId", body=body, headers=headers
@@ -644,6 +657,10 @@ class WorkspaceIamV2API:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", "/api/2.0/identity/users/resolveByExternalId", body=body, headers=headers)
         return ResolveUserResponse.from_dict(res)

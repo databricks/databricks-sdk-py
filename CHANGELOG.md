@@ -1,5 +1,56 @@
 # Version changelog
 
+## Release v0.87.0 (2026-02-11)
+
+### Bug Fixes
+
+* Fixed Databricks M2M OAuth to correctly use Databricks OIDC endpoints instead of incorrectly using Azure endpoints when `ARM_CLIENT_ID` is set. Added new `databricks_oidc_endpoints` property that returns only Databricks OIDC endpoints, and updated all Databricks OAuth flows to use it. The old `oidc_endpoints` property is deprecated but maintained for backward compatibility.
+
+
+## Release v0.86.0 (2026-02-10)
+
+### New Features and Improvements
+* Added `custom_headers` parameter to `WorkspaceClient` and `AccountClient` to support custom HTTP headers in all API requests ([#1245](https://github.com/databricks/databricks-sdk-py/pull/1245)).
+
+### API Changes
+* Add `id` field for `databricks.sdk.service.sharing.CreateRecipient`.
+* Add `id` field for `databricks.sdk.service.sharing.RecipientInfo`.
+* Add `id` field for `databricks.sdk.service.sharing.UpdateRecipient`.
+* Add `query_tags` field for `databricks.sdk.service.sql.ExecuteStatementRequest`.
+* Add `query_tags` field for `databricks.sdk.service.sql.QueryInfo`.
+* Add `uc_volume_misconfigured` enum value for `databricks.sdk.service.compute.EventType`.
+* Add `filters` field for `databricks.sdk.service.jobs.DashboardTask`.
+* Add `ssws_token` enum value for `databricks.sdk.service.catalog.CredentialType`.
+
+
+## Release v0.85.0 (2026-02-05)
+
+### API Changes
+* [Breaking] Change `username` field for `databricks.sdk.service.iamv2.User` to no longer be required.
+
+
+## Release v0.84.0 (2026-02-04)
+
+### API Changes
+* Add `base_environment` field for `databricks.sdk.service.compute.Environment`.
+
+
+## Release v0.83.0 (2026-02-03)
+
+### New Features and Improvements
+* Add support for single Profile for Account and Workspace operations in Unified Mode.
+
+### API Changes
+* Add `generate_download_full_query_result()` and `get_download_full_query_result()` methods for [w.genie](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/dashboards/genie.html) workspace-level service.
+* Add `active_instances` field for `databricks.sdk.service.apps.ComputeStatus`.
+* [Breaking] Change `create_role()` method for [w.postgres](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/postgres/postgres.html) workspace-level service. HTTP method/verb has changed.
+* Add `compute` field for `databricks.sdk.service.jobs.RunTask`.
+* Add `compute` field for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `compute` field for `databricks.sdk.service.jobs.Task`.
+* Add `mtls_port_connectivity_failure` enum value for `databricks.sdk.service.compute.TerminationReasonCode`.
+* Add `mtls_port_connectivity_failure` enum value for `databricks.sdk.service.sql.TerminationReasonCode`.
+
+
 ## Release v0.82.0 (2026-01-29)
 
 ### API Changes

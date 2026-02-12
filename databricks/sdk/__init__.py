@@ -225,6 +225,7 @@ class WorkspaceClient:
         config: Optional[client.Config] = None,
         scopes: Optional[List[str]] = None,
         authorization_details: Optional[List[AuthorizationDetail]] = None,
+        custom_headers: Optional[dict] = None,
     ):
         if not config:
             config = client.Config(
@@ -259,6 +260,7 @@ class WorkspaceClient:
                     if authorization_details
                     else None
                 ),
+                custom_headers=custom_headers,
             )
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
@@ -1077,6 +1079,7 @@ class AccountClient:
         credentials_provider: Optional[CredentialsStrategy] = None,
         token_audience: Optional[str] = None,
         config: Optional[client.Config] = None,
+        custom_headers: Optional[dict] = None,
     ):
         if not config:
             config = client.Config(
@@ -1105,6 +1108,7 @@ class AccountClient:
                 product=product,
                 product_version=product_version,
                 token_audience=token_audience,
+                custom_headers=custom_headers,
             )
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)
@@ -1359,6 +1363,7 @@ class AccountClient:
         config.host = config.environment.deployment_url(workspace.deployment_name)
         config.azure_workspace_resource_id = azure.get_azure_resource_id(workspace)
         config.account_id = None
+        config.workspace_id = workspace.workspace_id
         config.init_auth()
         return WorkspaceClient(config=config)
 

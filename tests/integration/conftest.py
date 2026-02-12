@@ -8,6 +8,7 @@ import sys
 import pytest
 
 from databricks.sdk import AccountClient, FilesAPI, FilesExt, WorkspaceClient
+from databricks.sdk.core import Config
 from databricks.sdk.environments import Cloud
 from databricks.sdk.service.catalog import VolumeType
 
@@ -79,6 +80,16 @@ def ucacct(env_or_skip) -> AccountClient:
     if "TEST_METASTORE_ID" not in os.environ:
         pytest.skip("not in Unity Catalog Workspace test env")
     return account_client
+
+
+@pytest.fixture(scope="session")
+def unified_config(env_or_skip) -> Config:
+    _load_debug_env_if_runs_from_ide("account")
+    env_or_skip("CLOUD_ENV")
+    config = Config()
+    config.workspace_id = env_or_skip("TEST_WORKSPACE_ID")
+    config.experimental_is_unified_host = True
+    return config
 
 
 @pytest.fixture(scope="session")

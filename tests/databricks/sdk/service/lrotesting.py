@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.common import lro
 from databricks.sdk.retries import RetryError, poll
 from databricks.sdk.service._internal import _enum, _from_dict
@@ -67,9 +68,7 @@ class DatabricksServiceExceptionWithDetailsProto:
 
 
 class ErrorCode(Enum):
-    """Legacy definition of the ErrorCode enum. Please keep in sync with
-    api-base/proto/error_code.proto (except status code mapping annotations as this file doesn't
-    have them). Will be removed eventually, pending the ScalaPB 0.4 cleanup."""
+    """Error codes returned by Databricks APIs to indicate specific failure conditions."""
 
     ABORTED = "ABORTED"
     ALREADY_EXISTS = "ALREADY_EXISTS"
@@ -300,6 +299,10 @@ class LroTestingAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do("POST", f"/api/2.0/lro-testing/operations/{name}/cancel", headers=headers)
 
     def create_test_resource(self, resource: TestResource) -> CreateTestResourceOperation:
@@ -317,6 +320,10 @@ class LroTestingAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.0/lro-testing/resources", body=body, headers=headers)
         operation = Operation.from_dict(res)
         return CreateTestResourceOperation(self, operation)
@@ -327,6 +334,10 @@ class LroTestingAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("DELETE", f"/api/2.0/lro-testing/resources/{resource_id}", headers=headers)
         operation = Operation.from_dict(res)
         return DeleteTestResourceOperation(self, operation)
@@ -336,6 +347,10 @@ class LroTestingAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lro-testing/operations/{name}", headers=headers)
         return Operation.from_dict(res)
@@ -352,6 +367,10 @@ class LroTestingAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.0/lro-testing/resources/{resource_id}", headers=headers)
         return TestResource.from_dict(res)

@@ -34,7 +34,7 @@
         :param lifetime_seconds: int (optional)
           The lifetime of the token, in seconds.
 
-          If the lifetime is not specified, this token remains valid indefinitely.
+          If the lifetime is not specified, this token remains valid for 2 years.
 
         :returns: :class:`CreateTokenResponse`
         

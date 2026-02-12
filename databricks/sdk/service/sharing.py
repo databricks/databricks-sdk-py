@@ -7,6 +7,7 @@ from dataclasses import dataclass
 from enum import Enum
 from typing import Any, Dict, Iterator, List, Optional
 
+from databricks.sdk.client_types import HostType
 from databricks.sdk.service import catalog
 from databricks.sdk.service._internal import (_enum, _from_dict,
                                               _repeated_dict, _repeated_enum)
@@ -1431,6 +1432,9 @@ class RecipientInfo:
     expiration_time: Optional[int] = None
     """Expiration timestamp of the token, in epoch milliseconds."""
 
+    id: Optional[str] = None
+    """[Create,Update:IGN] common - id of the recipient"""
+
     ip_access_list: Optional[IpAccessList] = None
     """IP Access List"""
 
@@ -1487,6 +1491,8 @@ class RecipientInfo:
             body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
         if self.expiration_time is not None:
             body["expiration_time"] = self.expiration_time
+        if self.id is not None:
+            body["id"] = self.id
         if self.ip_access_list:
             body["ip_access_list"] = self.ip_access_list.as_dict()
         if self.metastore_id is not None:
@@ -1530,6 +1536,8 @@ class RecipientInfo:
             body["data_recipient_global_metastore_id"] = self.data_recipient_global_metastore_id
         if self.expiration_time is not None:
             body["expiration_time"] = self.expiration_time
+        if self.id is not None:
+            body["id"] = self.id
         if self.ip_access_list:
             body["ip_access_list"] = self.ip_access_list
         if self.metastore_id is not None:
@@ -1565,6 +1573,7 @@ class RecipientInfo:
             created_by=d.get("created_by", None),
             data_recipient_global_metastore_id=d.get("data_recipient_global_metastore_id", None),
             expiration_time=d.get("expiration_time", None),
+            id=d.get("id", None),
             ip_access_list=_from_dict(d, "ip_access_list", IpAccessList),
             metastore_id=d.get("metastore_id", None),
             name=d.get("name", None),
@@ -2607,6 +2616,10 @@ class ProvidersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/providers", body=body, headers=headers)
         return ProviderInfo.from_dict(res)
 
@@ -2621,6 +2634,10 @@ class ProvidersAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
 
@@ -2637,6 +2654,10 @@ class ProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/providers/{name}", headers=headers)
         return ProviderInfo.from_dict(res)
@@ -2680,6 +2701,10 @@ class ProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -2734,6 +2759,10 @@ class ProvidersAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.1/data-sharing/providers/{provider_name}/shares/{share_name}", query=query, headers=headers
         )
@@ -2770,6 +2799,10 @@ class ProvidersAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -2824,6 +2857,10 @@ class ProvidersAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/providers/{name}", body=body, headers=headers)
         return ProviderInfo.from_dict(res)
 
@@ -2853,6 +2890,10 @@ class RecipientActivationAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do(
             "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}", headers=headers
         )
@@ -2869,6 +2910,10 @@ class RecipientActivationAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}", headers=headers
@@ -2937,6 +2982,10 @@ class RecipientFederationPoliciesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "POST", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies", body=body, headers=headers
         )
@@ -2958,6 +3007,10 @@ class RecipientFederationPoliciesAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         self._api.do(
             "DELETE", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}", headers=headers
         )
@@ -2977,6 +3030,10 @@ class RecipientFederationPoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "GET", f"/api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}", headers=headers
@@ -3005,6 +3062,10 @@ class RecipientFederationPoliciesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         while True:
             json = self._api.do(
@@ -3047,6 +3108,7 @@ class RecipientsAPI:
         comment: Optional[str] = None,
         data_recipient_global_metastore_id: Optional[str] = None,
         expiration_time: Optional[int] = None,
+        id: Optional[str] = None,
         ip_access_list: Optional[IpAccessList] = None,
         owner: Optional[str] = None,
         properties_kvpairs: Optional[SecurablePropertiesKvPairs] = None,
@@ -3066,6 +3128,8 @@ class RecipientsAPI:
           __cloud__:__region__:__metastore-uuid__.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
+        :param id: str (optional)
+          [Create,Update:IGN] common - id of the recipient
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param owner: str (optional)
@@ -3090,6 +3154,8 @@ class RecipientsAPI:
             body["data_recipient_global_metastore_id"] = data_recipient_global_metastore_id
         if expiration_time is not None:
             body["expiration_time"] = expiration_time
+        if id is not None:
+            body["id"] = id
         if ip_access_list is not None:
             body["ip_access_list"] = ip_access_list.as_dict()
         if name is not None:
@@ -3105,6 +3171,10 @@ class RecipientsAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/recipients", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
 
@@ -3118,6 +3188,10 @@ class RecipientsAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
 
@@ -3134,6 +3208,10 @@ class RecipientsAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/recipients/{name}", headers=headers)
         return RecipientInfo.from_dict(res)
@@ -3178,6 +3256,10 @@ class RecipientsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         if "max_results" not in query:
             query["max_results"] = 0
         while True:
@@ -3210,6 +3292,10 @@ class RecipientsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("POST", f"/api/2.1/unity-catalog/recipients/{name}/rotate-token", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
@@ -3245,6 +3331,10 @@ class RecipientsAPI:
             "Accept": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do(
             "GET", f"/api/2.1/unity-catalog/recipients/{name}/share-permissions", query=query, headers=headers
         )
@@ -3256,6 +3346,7 @@ class RecipientsAPI:
         *,
         comment: Optional[str] = None,
         expiration_time: Optional[int] = None,
+        id: Optional[str] = None,
         ip_access_list: Optional[IpAccessList] = None,
         new_name: Optional[str] = None,
         owner: Optional[str] = None,
@@ -3271,6 +3362,8 @@ class RecipientsAPI:
           Description about the recipient.
         :param expiration_time: int (optional)
           Expiration timestamp of the token, in epoch milliseconds.
+        :param id: str (optional)
+          [Create,Update:IGN] common - id of the recipient
         :param ip_access_list: :class:`IpAccessList` (optional)
           IP Access List
         :param new_name: str (optional)
@@ -3290,6 +3383,8 @@ class RecipientsAPI:
             body["comment"] = comment
         if expiration_time is not None:
             body["expiration_time"] = expiration_time
+        if id is not None:
+            body["id"] = id
         if ip_access_list is not None:
             body["ip_access_list"] = ip_access_list.as_dict()
         if new_name is not None:
@@ -3302,6 +3397,10 @@ class RecipientsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/recipients/{name}", body=body, headers=headers)
         return RecipientInfo.from_dict(res)
@@ -3342,6 +3441,10 @@ class SharesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("POST", "/api/2.1/unity-catalog/shares", body=body, headers=headers)
         return ShareInfo.from_dict(res)
 
@@ -3355,6 +3458,10 @@ class SharesAPI:
         """
 
         headers = {}
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         self._api.do("DELETE", f"/api/2.1/unity-catalog/shares/{name}", headers=headers)
 
@@ -3376,6 +3483,10 @@ class SharesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}", query=query, headers=headers)
         return ShareInfo.from_dict(res)
@@ -3409,6 +3520,10 @@ class SharesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         if "max_results" not in query:
             query["max_results"] = 0
@@ -3451,6 +3566,10 @@ class SharesAPI:
         headers = {
             "Accept": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("GET", f"/api/2.1/unity-catalog/shares/{name}/permissions", query=query, headers=headers)
         return GetSharePermissionsResponse.from_dict(res)
@@ -3513,6 +3632,10 @@ class SharesAPI:
             "Content-Type": "application/json",
         }
 
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}", body=body, headers=headers)
         return ShareInfo.from_dict(res)
 
@@ -3548,6 +3671,10 @@ class SharesAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do("PATCH", f"/api/2.1/unity-catalog/shares/{name}/permissions", body=body, headers=headers)
         return UpdateSharePermissionsResponse.from_dict(res)

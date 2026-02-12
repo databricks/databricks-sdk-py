@@ -420,7 +420,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: CredentialType
 
-   Next Id: 14
+   Next Id: 15
 
    .. py:attribute:: ANY_STATIC_CREDENTIAL
       :value: "ANY_STATIC_CREDENTIAL"
@@ -457,6 +457,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: SERVICE_CREDENTIAL
       :value: "SERVICE_CREDENTIAL"
+
+   .. py:attribute:: SSWS_TOKEN
+      :value: "SSWS_TOKEN"
 
    .. py:attribute:: UNKNOWN_CREDENTIAL_TYPE
       :value: "UNKNOWN_CREDENTIAL_TYPE"
@@ -859,6 +862,19 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: GetWorkspaceBindingsResponse
    :members:
    :undoc-members:
+
+.. py:class:: HostType
+
+   Enum representing the type of Databricks host.
+
+   .. py:attribute:: ACCOUNTS
+      :value: "ACCOUNTS"
+
+   .. py:attribute:: WORKSPACE
+      :value: "WORKSPACE"
+
+   .. py:attribute:: UNIFIED
+      :value: "UNIFIED"
 
 .. py:class:: IsolationMode
 
@@ -1497,7 +1513,7 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
 .. py:class:: SecurableKind
 
-   Latest kind: CONNECTION_WORKDAY_HCM_USERNAME_PASSWORD = 293; Next id: 294
+   Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296
 
    .. py:attribute:: TABLE_DB_STORAGE
       :value: "TABLE_DB_STORAGE"
