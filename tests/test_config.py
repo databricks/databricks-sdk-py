@@ -9,10 +9,10 @@ from urllib.parse import parse_qs
 
 import pytest
 
-from databricks.sdk.environments import Cloud
 from databricks.sdk import AccountClient, WorkspaceClient, oauth, useragent
 from databricks.sdk.config import (ClientType, Config, HostType, with_product,
                                    with_user_agent_extra)
+from databricks.sdk.environments import Cloud
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials, set_az_path, set_home

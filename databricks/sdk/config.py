@@ -384,14 +384,7 @@ class Config:
 
     @property
     def is_aws(self) -> bool:
-        """
-        [Deprecated]
-        """
-        return (
-            not self.is_azure
-            and not self.is_gcp
-            and (self.environment is not None and self.environment.cloud == Cloud.AWS)
-        )
+        return self.environment is not None and self.environment.cloud == Cloud.AWS
 
     @property
     def host_type(self) -> HostType:
