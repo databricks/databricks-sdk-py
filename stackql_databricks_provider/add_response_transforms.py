@@ -9,16 +9,25 @@ Reads a declarative config (``response_transforms.json``) and patches
 matching operations in ``x-stackQL-resources`` with the specified
 response transform configuration.
 
+Provider specs are YAML files at::
+
+    {spec_dir}/{provider}/v00.00.00000/services/{service}.yaml
+
+where ``x-stackQL-resources`` lives under ``components``.
+
 Usage::
 
     python -m stackql_databricks_provider.add_response_transforms [--spec-dir DIR] [--config FILE]
 """
 
+import glob
 import json
 import logging
 import os
 import sys
-from typing import Any, Dict, Optional
+from typing import Any, Dict, List, Optional
+
+import yaml
 
 logger = logging.getLogger(__name__)
 
@@ -27,8 +36,14 @@ TRANSFORMS_PATH = os.path.join(
 )
 
 SPEC_DIR = os.path.join(
-    os.path.dirname(os.path.abspath(__file__)), "openapi_generated"
+    os.path.dirname(os.path.abspath(__file__)), "stackql-provider", "src"
 )
+
+# Map config scope names to provider directory names
+SCOPE_TO_PROVIDER = {
+    "account": "databricks_account",
+    "workspace": "databricks_workspace",
+}
 
 
 def load_transforms(transforms_path: Optional[str] = None) -> Dict[str, Any]:
@@ -52,22 +67,78 @@ def load_transforms(transforms_path: Optional[str] = None) -> Dict[str, Any]:
     return transforms
 
 
+def _find_service_yaml(
+    spec_dir: str,
+    provider: str,
+    service: str,
+) -> Optional[str]:
+    """Find the service YAML file, handling version directories.
+
+    Searches ``{spec_dir}/{provider}/v*/services/{service}.yaml``.
+
+    Returns:
+        Path to the YAML file, or None.
+    """
+    pattern = os.path.join(spec_dir, provider, "v*", "services", f"{service}.yaml")
+    matches = glob.glob(pattern)
+    if matches:
+        # Use the latest version if multiple exist
+        matches.sort(reverse=True)
+        return matches[0]
+    return None
+
+
+def _operation_id_to_ref(spec: Dict[str, Any], operation_id: str) -> Optional[str]:
+    """Look up an operationId in the spec's paths and return the $ref string.
+
+    Walks ``spec["paths"]`` to find the operation matching the given
+    operationId, then constructs the ``$ref`` string used in
+    ``x-stackQL-resources`` (e.g.
+    ``#/paths/~1api~12.0~1usage~1download/get``).
+
+    Returns:
+        The ``$ref`` string, or None if not found.
+    """
+    for path, methods in spec.get("paths", {}).items():
+        for http_method, operation in methods.items():
+            if isinstance(operation, dict) and operation.get("operationId") == operation_id:
+                encoded_path = path.replace("/", "~1")
+                return f"#/paths/{encoded_path}/{http_method}"
+    return None
+
+
 def _find_method_in_resources(
     resources: Dict[str, Any],
     operation_id: str,
+    spec: Optional[Dict[str, Any]] = None,
 ) -> Optional[Dict[str, Any]]:
     """Find a method dict in x-stackQL-resources by operationId.
 
-    Searches all resources' methods for one whose key matches the
-    given operationId.
+    Searches all resources' methods, matching by:
+    1. Direct method key match (e.g. ``billable_usage_download``)
+    2. ``$ref`` match via operationId → path lookup (for cases where
+       ``npm run generate-provider`` remaps the method key)
 
     Returns:
         The method dict (mutable reference), or None.
     """
     for resource_name, resource in resources.items():
         methods = resource.get("methods", {})
+        # Direct key match
         if operation_id in methods:
             return methods[operation_id]
+
+    # Fallback: resolve operationId to $ref and match
+    if spec is not None:
+        target_ref = _operation_id_to_ref(spec, operation_id)
+        if target_ref:
+            for resource_name, resource in resources.items():
+                methods = resource.get("methods", {})
+                for method_name, method in methods.items():
+                    ref = method.get("operation", {}).get("$ref", "")
+                    if ref == target_ref:
+                        return method
+
     return None
 
 
@@ -75,15 +146,16 @@ def apply_transforms(
     spec_dir: Optional[str] = None,
     transforms_path: Optional[str] = None,
 ) -> Dict[str, int]:
-    """Apply response transforms to x-stackQL-resources in spec files.
+    """Apply response transforms to x-stackQL-resources in provider spec files.
 
-    For each transform entry, finds the matching spec file and operation
-    in ``x-stackQL-resources``, then deep-merges the transform config
-    into the method's ``response`` block.
+    For each transform entry, finds the matching YAML service spec and
+    operation in ``components.x-stackQL-resources``, then merges the
+    transform config into the method's ``response`` block.
 
     Args:
-        spec_dir: Root spec directory containing ``account/`` and
-            ``workspace/`` subdirectories.
+        spec_dir: Root provider spec directory (containing
+            ``databricks_account/`` and ``databricks_workspace/``).
+            Defaults to ``stackql-provider/src/``.
         transforms_path: Path to the transforms JSON config.
 
     Returns:
@@ -114,16 +186,23 @@ def apply_transforms(
 
     for file_key, entries in by_file.items():
         scope, service = file_key.split("/")
-        spec_path = os.path.join(spec_dir, scope, f"{service}.json")
+        provider = SCOPE_TO_PROVIDER.get(scope)
+        if not provider:
+            logger.warning("Unknown scope: %s", scope)
+            continue
 
-        if not os.path.exists(spec_path):
-            logger.warning("Spec file not found: %s", spec_path)
+        spec_path = _find_service_yaml(spec_dir, provider, service)
+        if spec_path is None:
+            logger.warning(
+                "Service YAML not found for %s/%s (looked in %s/%s/v*/services/%s.yaml)",
+                scope, service, spec_dir, provider, service,
+            )
             continue
 
         with open(spec_path) as f:
-            spec = json.load(f)
+            spec = yaml.safe_load(f)
 
-        resources = spec.get("x-stackQL-resources", {})
+        resources = spec.get("components", {}).get("x-stackQL-resources", {})
         if not resources:
             logger.warning(
                 "No x-stackQL-resources in %s (run npm run generate-provider first?)",
@@ -133,7 +212,7 @@ def apply_transforms(
 
         modified = False
         for operation_id, config, key in entries:
-            method = _find_method_in_resources(resources, operation_id)
+            method = _find_method_in_resources(resources, operation_id, spec)
             if method is None:
                 logger.warning("Operation not found in x-stackQL-resources: %s", key)
                 continue
@@ -150,7 +229,8 @@ def apply_transforms(
 
         if modified:
             with open(spec_path, "w") as f:
-                json.dump(spec, f, indent=2, sort_keys=False)
+                yaml.dump(spec, f, default_flow_style=False, sort_keys=False,
+                          allow_unicode=True, width=120)
             logger.info("Updated %s", spec_path)
 
     return summary
@@ -171,7 +251,10 @@ def main():
     parser.add_argument(
         "--spec-dir",
         default=None,
-        help="Directory containing account/ and workspace/ spec JSON files",
+        help=(
+            "Root provider spec directory containing databricks_account/ and "
+            "databricks_workspace/ (default: stackql-provider/src/)"
+        ),
     )
     parser.add_argument(
         "--config",
@@ -188,7 +271,10 @@ def main():
     if args.verbose:
         logging.getLogger().setLevel(logging.DEBUG)
 
+    spec_dir = args.spec_dir or SPEC_DIR
     print("Applying response transforms to x-stackQL-resources...")
+    print(f"  Spec dir: {spec_dir}")
+    print()
 
     summary = apply_transforms(args.spec_dir, args.config)
 
