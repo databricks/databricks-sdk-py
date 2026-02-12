@@ -276,6 +276,19 @@ def test_config_can_be_subclassed(fake_fs):
         DatabricksConfig()
 
 
+def test_config_subclass_inherits_attributes(monkeypatch):
+    # Force a fresh attribute resolution path on the subclass.
+    monkeypatch.delattr(Config, "_attributes", raising=False)
+
+    class DatabricksConfig(Config):
+        pass
+
+    cfg = DatabricksConfig(host="https://abc123.azuredatabricks.net", token="x")
+
+    assert cfg.host == "https://abc123.azuredatabricks.net"
+    assert cfg.token == "x"
+
+
 def test_config_parsing_non_string_env_vars(monkeypatch):
     monkeypatch.setenv("DATABRICKS_DEBUG_TRUNCATE_BYTES", "100")
     c = Config(host="http://localhost", credentials_strategy=noop_credentials)

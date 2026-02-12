@@ -596,21 +596,29 @@ class Config:
     @classmethod
     def attributes(cls) -> Iterable[ConfigAttribute]:
         """Returns a list of Databricks SDK configuration metadata"""
-        if hasattr(cls, "_attributes"):
+        if "_attributes" in cls.__dict__:
             return cls._attributes
         if sys.version_info[1] >= 10:
             import inspect
 
-            anno = inspect.get_annotations(cls)
+            get_annotations = inspect.get_annotations
         else:
             # Python 3.7 compatibility: getting type hints require extra hop, as described in
             # "Accessing The Annotations Dict Of An Object In Python 3.9 And Older" section of
             # https://docs.python.org/3/howto/annotations.html
-            anno = cls.__dict__["__annotations__"]
-        attrs = []
-        for name, v in cls.__dict__.items():
-            if type(v) != ConfigAttribute:
+            get_annotations = lambda class_obj: class_obj.__dict__.get("__annotations__", {})
+        anno = {}
+        attrs_by_name = {}
+        for class_obj in reversed(cls.mro()):
+            if class_obj is object:
                 continue
+            anno.update(get_annotations(class_obj))
+            for name, v in class_obj.__dict__.items():
+                if type(v) != ConfigAttribute:
+                    continue
+                attrs_by_name[name] = v
+        attrs = []
+        for name, v in attrs_by_name.items():
             v.name = name
             v.transform = v._custom_transform if v._custom_transform else anno.get(name, str)
             attrs.append(v)
