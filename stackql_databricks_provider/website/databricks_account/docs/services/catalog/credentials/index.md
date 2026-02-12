@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists a <code>credentials</code> resource.
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_credential"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'get_credential', value: 'get_credential' },
+        { label: 'list_credentials', value: 'list_credentials' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_credential">
 
 <SchemaTable fields={[
   {
@@ -202,7 +202,7 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="list_credentials">
 
 <SchemaTable fields={[
   {
@@ -383,53 +383,53 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#get_credential"><CopyableCode code="get_credential" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-name_arg"><code>name_arg</code></a></td>
     <td></td>
-    <td>Gets a service or storage credential from the metastore. The caller must be a metastore admin, the<br />owner of the credential, or have any permission on the credential.<br /><br />:param name_arg: str<br />  Name of the credential.<br /><br />:returns: :class:`CredentialInfo`</td>
+    <td>Gets a service or storage credential from the metastore. The caller must be a metastore admin, the</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#list_credentials"><CopyableCode code="list_credentials" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td></td>
     <td><a href="#parameter-include_unbound"><code>include_unbound</code></a>, <a href="#parameter-max_results"><code>max_results</code></a>, <a href="#parameter-page_token"><code>page_token</code></a>, <a href="#parameter-purpose"><code>purpose</code></a></td>
-    <td>Gets an array of credentials (as __CredentialInfo__ objects).<br /><br />The array is limited to only the credentials that the caller has permission to access. If the caller<br />is a metastore admin, retrieval of credentials is unrestricted. There is no guarantee of a specific<br />ordering of the elements in the array.<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param include_unbound: bool (optional)<br />  Whether to include credentials not bound to the workspace. Effective only if the user has permission<br />  to update the credential–workspace binding.<br />:param max_results: int (optional)<br />  Maximum number of credentials to return. - If not set, the default max page size is used. - When set<br />  to a value greater than 0, the page length is the minimum of this value and a server-configured<br />  value. - When set to 0, the page length is set to a server-configured value (recommended). - When<br />  set to a value less than 0, an invalid parameter error is returned.<br />:param page_token: str (optional)<br />  Opaque token to retrieve the next page of results.<br />:param purpose: :class:`CredentialPurpose` (optional)<br />  Return only credentials for the specified purpose.<br /><br />:returns: Iterator over :class:`CredentialInfo`</td>
+    <td>Gets an array of credentials (as __CredentialInfo__ objects).</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#create_credential"><CopyableCode code="create_credential" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-data__name"><code>data__name</code></a></td>
     <td></td>
-    <td>Creates a new credential. The type of credential to be created is determined by the **purpose** field,<br />which should be either **SERVICE** or **STORAGE**.<br /><br />The caller must be a metastore admin or have the metastore privilege **CREATE_STORAGE_CREDENTIAL** for<br />storage credentials, or **CREATE_SERVICE_CREDENTIAL** for service credentials.<br /><br />:param name: str<br />  The credential name. The name must be unique among storage and service credentials within the<br />  metastore.<br />:param aws_iam_role: :class:`AwsIamRole` (optional)<br />  The AWS IAM role configuration.<br />:param azure_managed_identity: :class:`AzureManagedIdentity` (optional)<br />  The Azure managed identity configuration.<br />:param azure_service_principal: :class:`AzureServicePrincipal` (optional)<br />  The Azure service principal configuration.<br />:param comment: str (optional)<br />  Comment associated with the credential.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)<br />  The Databricks managed GCP service account configuration.<br />:param purpose: :class:`CredentialPurpose` (optional)<br />  Indicates the purpose of the credential.<br />:param read_only: bool (optional)<br />  Whether the credential is usable only for read operations. Only applicable when purpose is<br />  **STORAGE**.<br />:param skip_validation: bool (optional)<br />  Optional. Supplying true to this argument skips validation of the created set of credentials.<br /><br />:returns: :class:`CredentialInfo`</td>
+    <td>Creates a new credential. The type of credential to be created is determined by the **purpose** field,</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#update_credential"><CopyableCode code="update_credential" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-name_arg"><code>name_arg</code></a></td>
     <td></td>
-    <td>Updates a service or storage credential on the metastore.<br /><br />The caller must be the owner of the credential or a metastore admin or have the `MANAGE` permission.<br />If the caller is a metastore admin, only the __owner__ field can be changed.<br /><br />:param name_arg: str<br />  Name of the credential.<br />:param aws_iam_role: :class:`AwsIamRole` (optional)<br />  The AWS IAM role configuration.<br />:param azure_managed_identity: :class:`AzureManagedIdentity` (optional)<br />  The Azure managed identity configuration.<br />:param azure_service_principal: :class:`AzureServicePrincipal` (optional)<br />  The Azure service principal configuration.<br />:param comment: str (optional)<br />  Comment associated with the credential.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)<br />  The Databricks managed GCP service account configuration.<br />:param force: bool (optional)<br />  Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent<br />  external locations and external tables (when purpose is **STORAGE**).<br />:param isolation_mode: :class:`IsolationMode` (optional)<br />  Whether the current securable is accessible from all workspaces or a specific set of workspaces.<br />:param new_name: str (optional)<br />  New name of credential.<br />:param owner: str (optional)<br />  Username of current owner of credential.<br />:param read_only: bool (optional)<br />  Whether the credential is usable only for read operations. Only applicable when purpose is<br />  **STORAGE**.<br />:param skip_validation: bool (optional)<br />  Supply true to this argument to skip validation of the updated credential.<br /><br />:returns: :class:`CredentialInfo`</td>
+    <td>Updates a service or storage credential on the metastore.</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#delete_credential"><CopyableCode code="delete_credential" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-name_arg"><code>name_arg</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
-    <td>Deletes a service or storage credential from the metastore. The caller must be an owner of the<br />credential.<br /><br />:param name_arg: str<br />  Name of the credential.<br />:param force: bool (optional)<br />  Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent<br />  external locations and external tables (when purpose is **STORAGE**).</td>
+    <td>Deletes a service or storage credential from the metastore. The caller must be an owner of the</td>
 </tr>
 <tr>
     <td><a href="#generate_temporary_service_credential"><CopyableCode code="generate_temporary_service_credential" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-credential_name"><code>credential_name</code></a></td>
     <td></td>
-    <td>Returns a set of temporary credentials generated using the specified service credential. The caller<br />must be a metastore admin or have the metastore privilege **ACCESS** on the service credential.<br /><br />:param credential_name: str<br />  The name of the service credential used to generate a temporary credential<br />:param azure_options: :class:`GenerateTemporaryServiceCredentialAzureOptions` (optional)<br />:param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)<br /><br />:returns: :class:`TemporaryCredentials`</td>
+    <td>Returns a set of temporary credentials generated using the specified service credential. The caller</td>
 </tr>
 <tr>
-    <td><a href="#validate"><CopyableCode code="validate" /></a></td>
+    <td><a href="#validate_credential"><CopyableCode code="validate_credential" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td></td>
     <td></td>
-    <td>Validates a credential.<br /><br />For service credentials (purpose is **SERVICE**), either the __credential_name__ or the cloud-specific<br />credential must be provided.<br /><br />For storage credentials (purpose is **STORAGE**), at least one of __external_location_name__ and<br />__url__ need to be provided. If only one of them is provided, it will be used for validation. And if<br />both are provided, the __url__ will be used for validation, and __external_location_name__ will be<br />ignored when checking overlapping urls. Either the __credential_name__ or the cloud-specific<br />credential must be provided.<br /><br />The caller must be a metastore admin or the credential owner or have the required permission on the<br />metastore and the credential (e.g., **CREATE_EXTERNAL_LOCATION** when purpose is **STORAGE**).<br /><br />:param aws_iam_role: :class:`AwsIamRole` (optional)<br />:param azure_managed_identity: :class:`AzureManagedIdentity` (optional)<br />:param credential_name: str (optional)<br />  Required. The name of an existing credential or long-lived cloud credential to validate.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)<br />:param external_location_name: str (optional)<br />  The name of an existing external location to validate. Only applicable for storage credentials<br />  (purpose is **STORAGE**.)<br />:param purpose: :class:`CredentialPurpose` (optional)<br />  The purpose of the credential. This should only be used when the credential is specified.<br />:param read_only: bool (optional)<br />  Whether the credential is only usable for read operations. Only applicable for storage credentials<br />  (purpose is **STORAGE**.)<br />:param url: str (optional)<br />  The external location url to validate. Only applicable when purpose is **STORAGE**.<br /><br />:returns: :class:`ValidateCredentialResponse`</td>
+    <td>Validates a credential.</td>
 </tr>
 </tbody>
 </table>
@@ -483,15 +483,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_credential"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'get_credential', value: 'get_credential' },
+        { label: 'list_credentials', value: 'list_credentials' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_credential">
 
-Gets a service or storage credential from the metastore. The caller must be a metastore admin, the<br />owner of the credential, or have any permission on the credential.<br /><br />:param name_arg: str<br />  Name of the credential.<br /><br />:returns: :class:`CredentialInfo`
+Gets a service or storage credential from the metastore. The caller must be a metastore admin, the
 
 ```sql
 SELECT
@@ -518,9 +518,9 @@ WHERE name_arg = '{{ name_arg }}' -- required
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="list_credentials">
 
-Gets an array of credentials (as __CredentialInfo__ objects).<br /><br />The array is limited to only the credentials that the caller has permission to access. If the caller<br />is a metastore admin, retrieval of credentials is unrestricted. There is no guarantee of a specific<br />ordering of the elements in the array.<br /><br />PAGINATION BEHAVIOR: The API is by default paginated, a page may contain zero results while still<br />providing a next_page_token. Clients must continue reading pages until next_page_token is absent,<br />which is the only indication that the end of results has been reached.<br /><br />:param include_unbound: bool (optional)<br />  Whether to include credentials not bound to the workspace. Effective only if the user has permission<br />  to update the credential–workspace binding.<br />:param max_results: int (optional)<br />  Maximum number of credentials to return. - If not set, the default max page size is used. - When set<br />  to a value greater than 0, the page length is the minimum of this value and a server-configured<br />  value. - When set to 0, the page length is set to a server-configured value (recommended). - When<br />  set to a value less than 0, an invalid parameter error is returned.<br />:param page_token: str (optional)<br />  Opaque token to retrieve the next page of results.<br />:param purpose: :class:`CredentialPurpose` (optional)<br />  Return only credentials for the specified purpose.<br /><br />:returns: Iterator over :class:`CredentialInfo`
+Gets an array of credentials (as __CredentialInfo__ objects).
 
 ```sql
 SELECT
@@ -556,15 +556,15 @@ AND purpose = '{{ purpose }}'
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="create_credential"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'create_credential', value: 'create_credential' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="create_credential">
 
-Creates a new credential. The type of credential to be created is determined by the **purpose** field,<br />which should be either **SERVICE** or **STORAGE**.<br /><br />The caller must be a metastore admin or have the metastore privilege **CREATE_STORAGE_CREDENTIAL** for<br />storage credentials, or **CREATE_SERVICE_CREDENTIAL** for service credentials.<br /><br />:param name: str<br />  The credential name. The name must be unique among storage and service credentials within the<br />  metastore.<br />:param aws_iam_role: :class:`AwsIamRole` (optional)<br />  The AWS IAM role configuration.<br />:param azure_managed_identity: :class:`AzureManagedIdentity` (optional)<br />  The Azure managed identity configuration.<br />:param azure_service_principal: :class:`AzureServicePrincipal` (optional)<br />  The Azure service principal configuration.<br />:param comment: str (optional)<br />  Comment associated with the credential.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)<br />  The Databricks managed GCP service account configuration.<br />:param purpose: :class:`CredentialPurpose` (optional)<br />  Indicates the purpose of the credential.<br />:param read_only: bool (optional)<br />  Whether the credential is usable only for read operations. Only applicable when purpose is<br />  **STORAGE**.<br />:param skip_validation: bool (optional)<br />  Optional. Supplying true to this argument skips validation of the created set of credentials.<br /><br />:returns: :class:`CredentialInfo`
+Creates a new credential. The type of credential to be created is determined by the **purpose** field,
 
 ```sql
 INSERT INTO databricks_account.catalog.credentials (
@@ -660,14 +660,14 @@ used_for_managed_storage
 ## `UPDATE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="update_credential"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'update_credential', value: 'update_credential' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="update_credential">
 
-Updates a service or storage credential on the metastore.<br /><br />The caller must be the owner of the credential or a metastore admin or have the `MANAGE` permission.<br />If the caller is a metastore admin, only the __owner__ field can be changed.<br /><br />:param name_arg: str<br />  Name of the credential.<br />:param aws_iam_role: :class:`AwsIamRole` (optional)<br />  The AWS IAM role configuration.<br />:param azure_managed_identity: :class:`AzureManagedIdentity` (optional)<br />  The Azure managed identity configuration.<br />:param azure_service_principal: :class:`AzureServicePrincipal` (optional)<br />  The Azure service principal configuration.<br />:param comment: str (optional)<br />  Comment associated with the credential.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)<br />  The Databricks managed GCP service account configuration.<br />:param force: bool (optional)<br />  Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent<br />  external locations and external tables (when purpose is **STORAGE**).<br />:param isolation_mode: :class:`IsolationMode` (optional)<br />  Whether the current securable is accessible from all workspaces or a specific set of workspaces.<br />:param new_name: str (optional)<br />  New name of credential.<br />:param owner: str (optional)<br />  Username of current owner of credential.<br />:param read_only: bool (optional)<br />  Whether the credential is usable only for read operations. Only applicable when purpose is<br />  **STORAGE**.<br />:param skip_validation: bool (optional)<br />  Supply true to this argument to skip validation of the updated credential.<br /><br />:returns: :class:`CredentialInfo`
+Updates a service or storage credential on the metastore.
 
 ```sql
 UPDATE databricks_account.catalog.credentials
@@ -712,14 +712,14 @@ used_for_managed_storage;
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="delete_credential"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'delete_credential', value: 'delete_credential' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="delete_credential">
 
-Deletes a service or storage credential from the metastore. The caller must be an owner of the<br />credential.<br /><br />:param name_arg: str<br />  Name of the credential.<br />:param force: bool (optional)<br />  Force an update even if there are dependent services (when purpose is **SERVICE**) or dependent<br />  external locations and external tables (when purpose is **STORAGE**).
+Deletes a service or storage credential from the metastore. The caller must be an owner of the
 
 ```sql
 DELETE FROM databricks_account.catalog.credentials
@@ -737,12 +737,12 @@ AND force = '{{ force }}'
     defaultValue="generate_temporary_service_credential"
     values={[
         { label: 'generate_temporary_service_credential', value: 'generate_temporary_service_credential' },
-        { label: 'validate', value: 'validate' }
+        { label: 'validate_credential', value: 'validate_credential' }
     ]}
 >
 <TabItem value="generate_temporary_service_credential">
 
-Returns a set of temporary credentials generated using the specified service credential. The caller<br />must be a metastore admin or have the metastore privilege **ACCESS** on the service credential.<br /><br />:param credential_name: str<br />  The name of the service credential used to generate a temporary credential<br />:param azure_options: :class:`GenerateTemporaryServiceCredentialAzureOptions` (optional)<br />:param gcp_options: :class:`GenerateTemporaryServiceCredentialGcpOptions` (optional)<br /><br />:returns: :class:`TemporaryCredentials`
+Returns a set of temporary credentials generated using the specified service credential. The caller
 
 ```sql
 EXEC databricks_account.catalog.credentials.generate_temporary_service_credential 
@@ -755,12 +755,12 @@ EXEC databricks_account.catalog.credentials.generate_temporary_service_credentia
 ;
 ```
 </TabItem>
-<TabItem value="validate">
+<TabItem value="validate_credential">
 
-Validates a credential.<br /><br />For service credentials (purpose is **SERVICE**), either the __credential_name__ or the cloud-specific<br />credential must be provided.<br /><br />For storage credentials (purpose is **STORAGE**), at least one of __external_location_name__ and<br />__url__ need to be provided. If only one of them is provided, it will be used for validation. And if<br />both are provided, the __url__ will be used for validation, and __external_location_name__ will be<br />ignored when checking overlapping urls. Either the __credential_name__ or the cloud-specific<br />credential must be provided.<br /><br />The caller must be a metastore admin or the credential owner or have the required permission on the<br />metastore and the credential (e.g., **CREATE_EXTERNAL_LOCATION** when purpose is **STORAGE**).<br /><br />:param aws_iam_role: :class:`AwsIamRole` (optional)<br />:param azure_managed_identity: :class:`AzureManagedIdentity` (optional)<br />:param credential_name: str (optional)<br />  Required. The name of an existing credential or long-lived cloud credential to validate.<br />:param databricks_gcp_service_account: :class:`DatabricksGcpServiceAccount` (optional)<br />:param external_location_name: str (optional)<br />  The name of an existing external location to validate. Only applicable for storage credentials<br />  (purpose is **STORAGE**.)<br />:param purpose: :class:`CredentialPurpose` (optional)<br />  The purpose of the credential. This should only be used when the credential is specified.<br />:param read_only: bool (optional)<br />  Whether the credential is only usable for read operations. Only applicable for storage credentials<br />  (purpose is **STORAGE**.)<br />:param url: str (optional)<br />  The external location url to validate. Only applicable when purpose is **STORAGE**.<br /><br />:returns: :class:`ValidateCredentialResponse`
+Validates a credential.
 
 ```sql
-EXEC databricks_account.catalog.credentials.validate 
+EXEC databricks_account.catalog.credentials.validate_credential 
 @@json=
 '{
 "aws_iam_role": "{{ aws_iam_role }}", 

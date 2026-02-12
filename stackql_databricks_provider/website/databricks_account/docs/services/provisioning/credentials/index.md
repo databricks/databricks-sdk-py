@@ -149,28 +149,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-credentials_id"><code>credentials_id</code></a></td>
     <td></td>
-    <td>Gets a Databricks credential configuration object for an account, both specified by ID.<br /><br />:param credentials_id: str<br />  Credential configuration ID<br /><br />:returns: :class:`Credential`</td>
+    <td>Gets a Databricks credential configuration object for an account, both specified by ID.</td>
 </tr>
 <tr>
     <td><a href="#credentials_list"><CopyableCode code="credentials_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>List Databricks credential configuration objects for an account, specified by ID.<br /><br /><br />:returns: Iterator over :class:`Credential`</td>
+    <td>List Databricks credential configuration objects for an account, specified by ID.</td>
 </tr>
 <tr>
     <td><a href="#credentials_create"><CopyableCode code="credentials_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__credentials_name"><code>data__credentials_name</code></a>, <a href="#parameter-data__aws_credentials"><code>data__aws_credentials</code></a></td>
     <td></td>
-    <td>Creates a Databricks credential configuration that represents cloud cross-account credentials for a<br />specified account. Databricks uses this to set up network infrastructure properly to host Databricks<br />clusters. For your AWS IAM role, you need to trust the External ID (the Databricks Account API account<br />ID) in the returned credential object, and configure the required access policy.<br /><br />Save the response's `credentials_id` field, which is the ID for your new credential configuration<br />object.<br /><br />For information about how to create a new workspace with this API, see [Create a new workspace using<br />the Account API]<br /><br />[Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html<br /><br />:param credentials_name: str<br />  The human-readable name of the credential configuration object.<br />:param aws_credentials: :class:`CreateCredentialAwsCredentials`<br /><br />:returns: :class:`Credential`</td>
+    <td>Creates a Databricks credential configuration that represents cloud cross-account credentials for a</td>
 </tr>
 <tr>
     <td><a href="#credentials_delete"><CopyableCode code="credentials_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-credentials_id"><code>credentials_id</code></a></td>
     <td></td>
-    <td>Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot<br />delete a credential that is associated with any workspace.<br /><br />:param credentials_id: str<br />  Databricks Account API credential configuration ID<br /><br />:returns: :class:`Credential`</td>
+    <td>Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot</td>
 </tr>
 </tbody>
 </table>
@@ -212,7 +212,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="credentials_get">
 
-Gets a Databricks credential configuration object for an account, both specified by ID.<br /><br />:param credentials_id: str<br />  Credential configuration ID<br /><br />:returns: :class:`Credential`
+Gets a Databricks credential configuration object for an account, both specified by ID.
 
 ```sql
 SELECT
@@ -229,7 +229,7 @@ AND credentials_id = '{{ credentials_id }}' -- required
 </TabItem>
 <TabItem value="credentials_list">
 
-List Databricks credential configuration objects for an account, specified by ID.<br /><br /><br />:returns: Iterator over :class:`Credential`
+List Databricks credential configuration objects for an account, specified by ID.
 
 ```sql
 SELECT
@@ -257,7 +257,7 @@ WHERE account_id = '{{ account_id }}' -- required
 >
 <TabItem value="credentials_create">
 
-Creates a Databricks credential configuration that represents cloud cross-account credentials for a<br />specified account. Databricks uses this to set up network infrastructure properly to host Databricks<br />clusters. For your AWS IAM role, you need to trust the External ID (the Databricks Account API account<br />ID) in the returned credential object, and configure the required access policy.<br /><br />Save the response's `credentials_id` field, which is the ID for your new credential configuration<br />object.<br /><br />For information about how to create a new workspace with this API, see [Create a new workspace using<br />the Account API]<br /><br />[Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html<br /><br />:param credentials_name: str<br />  The human-readable name of the credential configuration object.<br />:param aws_credentials: :class:`CreateCredentialAwsCredentials`<br /><br />:returns: :class:`Credential`
+Creates a Databricks credential configuration that represents cloud cross-account credentials for a
 
 ```sql
 INSERT INTO databricks_account.provisioning.credentials (
@@ -310,7 +310,7 @@ creation_time
 >
 <TabItem value="credentials_delete">
 
-Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot<br />delete a credential that is associated with any workspace.<br /><br />:param credentials_id: str<br />  Databricks Account API credential configuration ID<br /><br />:returns: :class:`Credential`
+Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot
 
 ```sql
 DELETE FROM databricks_account.provisioning.credentials

@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks files service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.files
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -67,6 +70,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbfsAPI
   /api/2.0/dbfs/close:
     post:
       operationId: dbfs_close
@@ -110,6 +114,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbfsAPI
   /api/2.0/dbfs/create:
     post:
       operationId: dbfs_create
@@ -181,6 +186,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbfsAPI
   /api/2.0/dbfs/delete:
     post:
       operationId: dbfs_delete
@@ -266,6 +272,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbfsAPI
   /api/2.0/dbfs/get-status:
     get:
       operationId: dbfs_get_status
@@ -313,6 +320,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbfsAPI
   /api/2.0/dbfs/list:
     get:
       operationId: dbfs_list
@@ -366,7 +374,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FileInfo'
+                $ref: '#/components/schemas/ListStatusResponse'
         default:
           description: Error response
           content:
@@ -378,6 +386,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbfsAPI
   /api/2.0/dbfs/mkdirs:
     post:
       operationId: dbfs_mkdirs
@@ -429,6 +438,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbfsAPI
   /api/2.0/dbfs/move:
     post:
       operationId: dbfs_move
@@ -488,6 +498,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbfsAPI
   /api/2.0/dbfs/put:
     post:
       operationId: dbfs_put
@@ -563,6 +574,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbfsAPI
   /api/2.0/dbfs/read:
     get:
       operationId: dbfs_read
@@ -641,6 +653,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbfsAPI
   /api/2.0/fs/directories{directory_path}:
     put:
       operationId: files_create_directory
@@ -683,6 +696,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FilesAPI
     delete:
       operationId: files_delete_directory
       summary: Deletes an empty directory.
@@ -721,6 +735,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FilesAPI
     head:
       operationId: files_get_directory_metadata
       summary: >-
@@ -769,6 +784,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FilesAPI
     get:
       operationId: files_list_directory_contents
       summary: >-
@@ -845,7 +861,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DirectoryEntry'
+                $ref: '#/components/schemas/ListDirectoryResponse'
         default:
           description: Error response
           content:
@@ -857,6 +873,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FilesAPI
   /api/2.0/fs/files{file_path}:
     delete:
       operationId: files_delete
@@ -889,6 +906,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FilesAPI
     get:
       operationId: files_download
       summary: >-
@@ -932,6 +950,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FilesAPI
     head:
       operationId: files_get_metadata
       summary: >-
@@ -973,6 +992,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FilesAPI
     put:
       operationId: files_upload
       summary: >-
@@ -1040,6 +1060,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FilesAPI
 components:
   schemas:
     AddBlockResponse:
@@ -1082,12 +1103,12 @@ components:
       properties:
         content_length:
           type: integer
-        content_type:
+        content-type:
           type: string
         contents:
           type: string
           format: binary
-        last_modified:
+        last-modified:
           type: string
           description: The last modified time of the file in HTTP-date (RFC 7231) format.
     FileInfo:
@@ -1109,9 +1130,9 @@ components:
       properties:
         content_length:
           type: integer
-        content_type:
+        content-type:
           type: string
-        last_modified:
+        last-modified:
           type: string
           description: The last modified time of the file in HTTP-date (RFC 7231) format.
     ListDirectoryResponse:
@@ -1192,6 +1213,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.files
         mkdirs:
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1mkdirs/post'
@@ -1248,6 +1270,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.contents
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1fs~1files{file_path}/delete'

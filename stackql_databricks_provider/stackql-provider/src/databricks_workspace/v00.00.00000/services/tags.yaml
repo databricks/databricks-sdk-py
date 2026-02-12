@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks tags service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.tags
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -71,6 +74,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TagPoliciesAPI
     get:
       operationId: tag_policies_list_tag_policies
       summary: >-
@@ -129,7 +133,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TagPolicy'
+                $ref: '#/components/schemas/ListTagPoliciesResponse'
         default:
           description: Error response
           content:
@@ -141,6 +145,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TagPoliciesAPI
   /api/2.1/tag-policies/{tag_key}:
     delete:
       operationId: tag_policies_delete_tag_policy
@@ -183,6 +188,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TagPoliciesAPI
     get:
       operationId: tag_policies_get_tag_policy
       summary: >-
@@ -237,6 +243,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TagPoliciesAPI
     patch:
       operationId: tag_policies_update_tag_policy
       summary: >-
@@ -329,6 +336,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TagPoliciesAPI
   /api/2.0/entity-tag-assignments:
     post:
       operationId: workspace_entity_tag_assignments_create_tag_assignment
@@ -371,6 +379,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceEntityTagAssignmentsAPI
   /api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags/{tag_key}:
     delete:
       operationId: workspace_entity_tag_assignments_delete_tag_assignment
@@ -424,6 +433,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceEntityTagAssignmentsAPI
     get:
       operationId: workspace_entity_tag_assignments_get_tag_assignment
       summary: Get a tag assignment
@@ -482,6 +492,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceEntityTagAssignmentsAPI
     patch:
       operationId: workspace_entity_tag_assignments_update_tag_assignment
       summary: Update a tag assignment
@@ -579,6 +590,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceEntityTagAssignmentsAPI
   /api/2.0/entity-tag-assignments/{entity_type}/{entity_id}/tags:
     get:
       operationId: workspace_entity_tag_assignments_list_tag_assignments
@@ -636,7 +648,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TagAssignment'
+                $ref: '#/components/schemas/ListTagAssignmentsResponse'
         default:
           description: Error response
           content:
@@ -648,6 +660,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceEntityTagAssignmentsAPI
 components:
   schemas:
     ListTagAssignmentsResponse:
@@ -734,6 +747,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.tag_policies
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1tag-policies~1{tag_key}/delete'
@@ -802,6 +816,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.tag_assignments
       sqlVerbs:
         select:
           - $ref: >-

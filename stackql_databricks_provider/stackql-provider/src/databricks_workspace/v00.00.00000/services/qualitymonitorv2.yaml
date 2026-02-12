@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks qualitymonitorv2 service
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.qualitymonitorv2
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -59,6 +62,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorV2API
     get:
       operationId: quality_monitor_v2_list_quality_monitor
       summary: >-
@@ -96,7 +100,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QualityMonitor'
+                $ref: '#/components/schemas/ListQualityMonitorResponse'
         default:
           description: Error response
           content:
@@ -108,6 +112,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorV2API
   /api/2.0/quality-monitors/{object_type}/{object_id}:
     delete:
       operationId: quality_monitor_v2_delete_quality_monitor
@@ -155,6 +160,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorV2API
     get:
       operationId: quality_monitor_v2_get_quality_monitor
       summary: >-
@@ -207,6 +213,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorV2API
     put:
       operationId: quality_monitor_v2_update_quality_monitor
       summary: >-
@@ -274,6 +281,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorV2API
 components:
   schemas:
     AnomalyDetectionConfig:
@@ -387,6 +395,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.quality_monitors
         delete:
           operation:
             $ref: >-

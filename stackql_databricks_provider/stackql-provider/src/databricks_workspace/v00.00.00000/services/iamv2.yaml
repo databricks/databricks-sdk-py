@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks iamv2 service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.iamv2
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -77,6 +80,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceIamV2API
   /api/2.0/identity/groups/resolveByExternalId:
     post:
       operationId: workspace_iam_v2_resolve_group_proxy
@@ -131,6 +135,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceIamV2API
   /api/2.0/identity/servicePrincipals/resolveByExternalId:
     post:
       operationId: workspace_iam_v2_resolve_service_principal_proxy
@@ -185,6 +190,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceIamV2API
   /api/2.0/identity/users/resolveByExternalId:
     post:
       operationId: workspace_iam_v2_resolve_user_proxy
@@ -237,6 +243,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceIamV2API
 components:
   schemas:
     Group:

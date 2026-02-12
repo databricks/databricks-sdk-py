@@ -337,28 +337,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_id"><code>network_id</code></a></td>
     <td></td>
-    <td>Gets a Databricks network configuration, which represents a cloud VPC and its resources.<br /><br />:param network_id: str<br />  Databricks Account API network configuration ID.<br /><br />:returns: :class:`Network`</td>
+    <td>Gets a Databricks network configuration, which represents a cloud VPC and its resources.</td>
 </tr>
 <tr>
     <td><a href="#networks_list"><CopyableCode code="networks_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Lists Databricks network configurations for an account.<br /><br /><br />:returns: Iterator over :class:`Network`</td>
+    <td>Lists Databricks network configurations for an account.</td>
 </tr>
 <tr>
     <td><a href="#networks_create"><CopyableCode code="networks_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be<br />used for new Databricks clusters. This requires a pre-existing VPC and subnets.<br /><br />:param gcp_network_info: :class:`GcpNetworkInfo` (optional)<br />:param network_name: str (optional)<br />  The human-readable name of the network configuration.<br />:param security_group_ids: List[str] (optional)<br />  IDs of one to five security groups associated with this network. Security group IDs **cannot** be<br />  used in multiple network configurations.<br />:param subnet_ids: List[str] (optional)<br />  IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in multiple<br />  network configurations.<br />:param vpc_endpoints: :class:`NetworkVpcEndpoints` (optional)<br />:param vpc_id: str (optional)<br />  The ID of the VPC associated with this network configuration. VPC IDs can be used in multiple<br />  networks.<br /><br />:returns: :class:`Network`</td>
+    <td>Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be</td>
 </tr>
 <tr>
     <td><a href="#networks_delete"><CopyableCode code="networks_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_id"><code>network_id</code></a></td>
     <td></td>
-    <td>Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot<br />delete a network that is associated with a workspace.<br /><br />This operation is available only if your account is on the E2 version of the platform.<br /><br />:param network_id: str<br />  Databricks Account API network configuration ID.<br /><br />:returns: :class:`Network`</td>
+    <td>Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot</td>
 </tr>
 </tbody>
 </table>
@@ -400,7 +400,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="networks_get">
 
-Gets a Databricks network configuration, which represents a cloud VPC and its resources.<br /><br />:param network_id: str<br />  Databricks Account API network configuration ID.<br /><br />:returns: :class:`Network`
+Gets a Databricks network configuration, which represents a cloud VPC and its resources.
 
 ```sql
 SELECT
@@ -425,7 +425,7 @@ AND network_id = '{{ network_id }}' -- required
 </TabItem>
 <TabItem value="networks_list">
 
-Lists Databricks network configurations for an account.<br /><br /><br />:returns: Iterator over :class:`Network`
+Lists Databricks network configurations for an account.
 
 ```sql
 SELECT
@@ -461,7 +461,7 @@ WHERE account_id = '{{ account_id }}' -- required
 >
 <TabItem value="networks_create">
 
-Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be<br />used for new Databricks clusters. This requires a pre-existing VPC and subnets.<br /><br />:param gcp_network_info: :class:`GcpNetworkInfo` (optional)<br />:param network_name: str (optional)<br />  The human-readable name of the network configuration.<br />:param security_group_ids: List[str] (optional)<br />  IDs of one to five security groups associated with this network. Security group IDs **cannot** be<br />  used in multiple network configurations.<br />:param subnet_ids: List[str] (optional)<br />  IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in multiple<br />  network configurations.<br />:param vpc_endpoints: :class:`NetworkVpcEndpoints` (optional)<br />:param vpc_id: str (optional)<br />  The ID of the VPC associated with this network configuration. VPC IDs can be used in multiple<br />  networks.<br /><br />:returns: :class:`Network`
+Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be
 
 ```sql
 INSERT INTO databricks_account.provisioning.networks (
@@ -542,7 +542,7 @@ warning_messages
 >
 <TabItem value="networks_delete">
 
-Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot<br />delete a network that is associated with a workspace.<br /><br />This operation is available only if your account is on the E2 version of the platform.<br /><br />:param network_id: str<br />  Databricks Account API network configuration ID.<br /><br />:returns: :class:`Network`
+Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot
 
 ```sql
 DELETE FROM databricks_account.provisioning.networks

@@ -33,12 +33,12 @@ Creates, updates, deletes, gets or lists a <code>workspace_permissions</code> re
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="workspace_assignment_get"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'workspace_assignment_get', value: 'workspace_assignment_get' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="workspace_assignment_get">
 
 <SchemaTable fields={[
   {
@@ -78,11 +78,11 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#workspace_assignment_get"><CopyableCode code="workspace_assignment_get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a></td>
     <td></td>
-    <td>Get an array of workspace permissions for the specified account and workspace.<br /><br />:param workspace_id: int<br />  The workspace ID.<br /><br />:returns: :class:`WorkspacePermissions`</td>
+    <td>Get an array of workspace permissions for the specified account and workspace.</td>
 </tr>
 </tbody>
 </table>
@@ -116,14 +116,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="workspace_assignment_get"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'workspace_assignment_get', value: 'workspace_assignment_get' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="workspace_assignment_get">
 
-Get an array of workspace permissions for the specified account and workspace.<br /><br />:param workspace_id: int<br />  The workspace ID.<br /><br />:returns: :class:`WorkspacePermissions`
+Get an array of workspace permissions for the specified account and workspace.
 
 ```sql
 SELECT

@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks iamv2 service (account-level APIs),
     generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.iamv2
 servers:
   - url: https://accounts.cloud.databricks.com
 paths:
@@ -88,6 +91,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountIamV2API
   /api/2.0/identity/accounts/{account_id}/groups/resolveByExternalId:
     post:
       operationId: account_iam_v2_resolve_group
@@ -148,6 +152,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountIamV2API
   /api/2.0/identity/accounts/{account_id}/servicePrincipals/resolveByExternalId:
     post:
       operationId: account_iam_v2_resolve_service_principal
@@ -208,6 +213,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountIamV2API
   /api/2.0/identity/accounts/{account_id}/users/resolveByExternalId:
     post:
       operationId: account_iam_v2_resolve_user
@@ -266,6 +272,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountIamV2API
 components:
   schemas:
     Group:
@@ -416,10 +423,10 @@ components:
         - USER_PERMISSION
       description: The type of permission a principal has to a workspace (admin/user).
   x-stackQL-resources:
-    account_iam_v2:
-      id: databricks_account.iamv2.account_iam_v2
-      name: account_iam_v2
-      title: Account Iam V2
+    account_iam:
+      id: databricks_account.iamv2.account_iam
+      name: account_iam
+      title: Account Iam
       methods:
         get_workspace_access_detail:
           operation:
@@ -452,7 +459,7 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/account_iam_v2/methods/get_workspace_access_detail
+              #/components/x-stackQL-resources/account_iam/methods/get_workspace_access_detail
         insert: []
         update: []
         delete: []

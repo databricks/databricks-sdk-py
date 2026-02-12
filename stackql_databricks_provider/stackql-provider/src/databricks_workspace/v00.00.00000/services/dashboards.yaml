@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks dashboards service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.dashboards
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -82,6 +85,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
     get:
       operationId: genie_list_conversation_messages
       summary: List messages in a conversation
@@ -146,6 +150,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces:
     post:
       operationId: genie_create_space
@@ -219,6 +224,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
     get:
       operationId: genie_list_spaces
       summary: Get list of Genie Spaces.
@@ -265,6 +271,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}:
     delete:
       operationId: genie_delete_conversation
@@ -308,6 +315,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}:
     delete:
       operationId: genie_delete_conversation_message
@@ -357,6 +365,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
     get:
       operationId: genie_get_message
       summary: Get message from conversation.
@@ -415,6 +424,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/execute-query:
     post:
       operationId: genie_execute_message_attachment_query
@@ -484,6 +494,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/execute-query:
     post:
       operationId: genie_execute_message_query
@@ -545,6 +556,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads:
     post:
       operationId: genie_generate_download_full_query_result
@@ -653,6 +665,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/downloads/{download_id}:
     get:
       operationId: genie_get_download_full_query_result
@@ -783,6 +796,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/attachments/{attachment_id}/query-result:
     get:
       operationId: genie_get_message_attachment_query_result
@@ -853,6 +867,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/query-result:
     get:
       operationId: genie_get_message_query_result
@@ -914,6 +929,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/query-result/{attachment_id}:
     get:
       operationId: genie_get_message_query_result_by_attachment
@@ -983,6 +999,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}:
     get:
       operationId: genie_get_space
@@ -1033,6 +1050,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
     delete:
       operationId: genie_trash_space
       summary: Move a Genie Space to the trash.
@@ -1065,6 +1083,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
     patch:
       operationId: genie_update_space
       summary: Updates a Genie space with a serialized payload.
@@ -1138,6 +1157,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations:
     get:
       operationId: genie_list_conversations
@@ -1204,6 +1224,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/conversations/{conversation_id}/messages/{message_id}/feedback:
     post:
       operationId: genie_send_message_feedback
@@ -1266,6 +1287,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/genie/spaces/{space_id}/start-conversation:
     post:
       operationId: genie_start_conversation
@@ -1322,6 +1344,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GenieAPI
   /api/2.0/lakeview/dashboards:
     post:
       operationId: lakeview_create
@@ -1393,6 +1416,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
     get:
       operationId: lakeview_list
       summary: List dashboards.
@@ -1451,7 +1475,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Dashboard'
+                $ref: '#/components/schemas/ListDashboardsResponse'
         default:
           description: Error response
           content:
@@ -1463,6 +1487,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
   /api/2.0/lakeview/dashboards/{dashboard_id}/schedules:
     post:
       operationId: lakeview_create_schedule
@@ -1517,6 +1542,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
     get:
       operationId: lakeview_list_schedules
       summary: List dashboard schedules.
@@ -1562,7 +1588,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Schedule'
+                $ref: '#/components/schemas/ListSchedulesResponse'
         default:
           description: Error response
           content:
@@ -1574,6 +1600,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
   /api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}/subscriptions:
     post:
       operationId: lakeview_create_subscription
@@ -1636,6 +1663,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
     get:
       operationId: lakeview_list_subscriptions
       summary: List schedule subscriptions.
@@ -1689,7 +1717,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Subscription'
+                $ref: '#/components/schemas/ListSubscriptionsResponse'
         default:
           description: Error response
           content:
@@ -1701,6 +1729,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
   /api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}:
     delete:
       operationId: lakeview_delete_schedule
@@ -1753,6 +1782,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
     get:
       operationId: lakeview_get_schedule
       summary: Get dashboard schedule.
@@ -1799,6 +1829,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
     put:
       operationId: lakeview_update_schedule
       summary: Update dashboard schedule.
@@ -1858,6 +1889,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
   /api/2.0/lakeview/dashboards/{dashboard_id}/schedules/{schedule_id}/subscriptions/{subscription_id}:
     delete:
       operationId: lakeview_delete_subscription
@@ -1918,6 +1950,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
     get:
       operationId: lakeview_get_subscription
       summary: Get schedule subscription.
@@ -1972,6 +2005,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
   /api/2.0/lakeview/dashboards/{dashboard_id}:
     get:
       operationId: lakeview_get
@@ -2011,6 +2045,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
     delete:
       operationId: lakeview_trash
       summary: Trash a dashboard.
@@ -2043,6 +2078,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
     patch:
       operationId: lakeview_update
       summary: Update a draft dashboard.
@@ -2121,6 +2157,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
   /api/2.0/lakeview/dashboards/{dashboard_id}/published:
     get:
       operationId: lakeview_get_published
@@ -2160,6 +2197,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
     post:
       operationId: lakeview_publish
       summary: Publish the current draft dashboard.
@@ -2221,6 +2259,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
     delete:
       operationId: lakeview_unpublish
       summary: Unpublish the dashboard.
@@ -2253,6 +2292,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
   /api/2.0/lakeview/dashboards/migrate:
     post:
       operationId: lakeview_migrate
@@ -2317,6 +2357,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewAPI
   /api/2.0/lakeview/dashboards/{dashboard_id}/published/tokeninfo:
     get:
       operationId: lakeview_embedded_get_published_dashboard_token_info
@@ -2376,6 +2417,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LakeviewEmbeddedAPI
 components:
   schemas:
     AuthorizationDetails:
@@ -3443,6 +3485,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.dashboards
         update:
           operation:
             $ref: '#/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}/patch'
@@ -3498,6 +3541,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.schedules
         delete:
           operation:
             $ref: >-
@@ -3541,6 +3585,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.subscriptions
         delete:
           operation:
             $ref: >-

@@ -33,12 +33,12 @@ Creates, updates, deletes, gets or lists an <code>account_user_preferences_metad
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="list"
+    defaultValue="list_account_user_preferences_metadata"
     values={[
-        { label: 'list', value: 'list' }
+        { label: 'list_account_user_preferences_metadata', value: 'list_account_user_preferences_metadata' }
     ]}
 >
-<TabItem value="list">
+<TabItem value="list_account_user_preferences_metadata">
 
 <SchemaTable fields={[
   {
@@ -81,11 +81,11 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#list_account_user_preferences_metadata"><CopyableCode code="list_account_user_preferences_metadata" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-user_id"><code>user_id</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List valid user preferences and their metadata for a specific user. User preferences are personal<br />settings that allow individual customization without affecting other users. These settings are<br />available to be referenced via GET :method:settingsv2/getpublicaccountuserpreference and PATCH<br />:method:settingsv2/patchpublicaccountuserpreference APIs<br /><br />:param user_id: str<br />  User ID of the user whose settings metadata is being retrieved.<br />:param page_size: int (optional)<br />  The maximum number of settings to return. The service may return fewer than this value. If<br />  unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000<br />  will be coerced to 1000.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListAccountUserPreferencesMetadataRequest` call. Provide<br />  this to retrieve the subsequent page.<br /><br />  When paginating, all other parameters provided to `ListAccountUserPreferencesMetadataRequest` must<br />  match the call that provided the page token.<br /><br />:returns: Iterator over :class:`SettingsMetadata`</td>
+    <td>List valid user preferences and their metadata for a specific user. User preferences are personal</td>
 </tr>
 </tbody>
 </table>
@@ -129,14 +129,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="list"
+    defaultValue="list_account_user_preferences_metadata"
     values={[
-        { label: 'list', value: 'list' }
+        { label: 'list_account_user_preferences_metadata', value: 'list_account_user_preferences_metadata' }
     ]}
 >
-<TabItem value="list">
+<TabItem value="list_account_user_preferences_metadata">
 
-List valid user preferences and their metadata for a specific user. User preferences are personal<br />settings that allow individual customization without affecting other users. These settings are<br />available to be referenced via GET :method:settingsv2/getpublicaccountuserpreference and PATCH<br />:method:settingsv2/patchpublicaccountuserpreference APIs<br /><br />:param user_id: str<br />  User ID of the user whose settings metadata is being retrieved.<br />:param page_size: int (optional)<br />  The maximum number of settings to return. The service may return fewer than this value. If<br />  unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000<br />  will be coerced to 1000.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListAccountUserPreferencesMetadataRequest` call. Provide<br />  this to retrieve the subsequent page.<br /><br />  When paginating, all other parameters provided to `ListAccountUserPreferencesMetadataRequest` must<br />  match the call that provided the page token.<br /><br />:returns: Iterator over :class:`SettingsMetadata`
+List valid user preferences and their metadata for a specific user. User preferences are personal
 
 ```sql
 SELECT

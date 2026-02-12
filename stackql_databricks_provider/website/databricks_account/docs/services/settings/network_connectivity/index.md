@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists a <code>network_connectivity</code> res
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_network_connectivity_configuration"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'get_network_connectivity_configuration', value: 'get_network_connectivity_configuration' },
+        { label: 'list_network_connectivity_configurations', value: 'list_network_connectivity_configurations' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_network_connectivity_configuration">
 
 <SchemaTable fields={[
   {
@@ -273,7 +273,7 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="list_network_connectivity_configurations">
 
 <SchemaTable fields={[
   {
@@ -525,32 +525,32 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#get_network_connectivity_configuration"><CopyableCode code="get_network_connectivity_configuration" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a></td>
     <td></td>
-    <td>Gets a network connectivity configuration.<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectivity Configuration ID.<br /><br />:returns: :class:`NetworkConnectivityConfiguration`</td>
+    <td>Gets a network connectivity configuration.</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#list_network_connectivity_configurations"><CopyableCode code="list_network_connectivity_configurations" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td><a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of network connectivity configurations.<br /><br />:param page_token: str (optional)<br />  Pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`NetworkConnectivityConfiguration`</td>
+    <td>Gets an array of network connectivity configurations.</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#create_network_connectivity_configuration"><CopyableCode code="create_network_connectivity_configuration" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__network_connectivity_config"><code>data__network_connectivity_config</code></a></td>
     <td></td>
-    <td>Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when<br />accessing your Azure Storage accounts. You can also use a network connectivity configuration to create<br />Databricks managed private endpoints so that Databricks serverless compute resources privately access<br />your resources.<br /><br />**IMPORTANT**: After you create the network connectivity configuration, you must assign one or more<br />workspaces to the new network connectivity configuration. You can share one network connectivity<br />configuration with multiple workspaces from the same Azure region within the same Databricks account.<br />See [configure serverless secure connectivity].<br /><br />[configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security<br /><br />:param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`<br /><br />:returns: :class:`NetworkConnectivityConfiguration`</td>
+    <td>Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#delete_network_connectivity_configuration"><CopyableCode code="delete_network_connectivity_configuration" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a></td>
     <td></td>
-    <td>Deletes a network connectivity configuration.<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectivity Configuration ID.</td>
+    <td>Deletes a network connectivity configuration.</td>
 </tr>
 </tbody>
 </table>
@@ -589,15 +589,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_network_connectivity_configuration"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'get_network_connectivity_configuration', value: 'get_network_connectivity_configuration' },
+        { label: 'list_network_connectivity_configurations', value: 'list_network_connectivity_configurations' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_network_connectivity_configuration">
 
-Gets a network connectivity configuration.<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectivity Configuration ID.<br /><br />:returns: :class:`NetworkConnectivityConfiguration`
+Gets a network connectivity configuration.
 
 ```sql
 SELECT
@@ -614,9 +614,9 @@ AND network_connectivity_config_id = '{{ network_connectivity_config_id }}' -- r
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="list_network_connectivity_configurations">
 
-Gets an array of network connectivity configurations.<br /><br />:param page_token: str (optional)<br />  Pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`NetworkConnectivityConfiguration`
+Gets an array of network connectivity configurations.
 
 ```sql
 SELECT
@@ -639,15 +639,15 @@ AND page_token = '{{ page_token }}'
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="create_network_connectivity_configuration"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'create_network_connectivity_configuration', value: 'create_network_connectivity_configuration' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="create_network_connectivity_configuration">
 
-Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when<br />accessing your Azure Storage accounts. You can also use a network connectivity configuration to create<br />Databricks managed private endpoints so that Databricks serverless compute resources privately access<br />your resources.<br /><br />**IMPORTANT**: After you create the network connectivity configuration, you must assign one or more<br />workspaces to the new network connectivity configuration. You can share one network connectivity<br />configuration with multiple workspaces from the same Azure region within the same Databricks account.<br />See [configure serverless secure connectivity].<br /><br />[configure serverless secure connectivity]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security<br /><br />:param network_connectivity_config: :class:`CreateNetworkConnectivityConfiguration`<br /><br />:returns: :class:`NetworkConnectivityConfiguration`
+Creates a network connectivity configuration (NCC), which provides stable Azure service subnets when
 
 ```sql
 INSERT INTO databricks_account.settings.network_connectivity (
@@ -689,14 +689,14 @@ updated_time
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="delete_network_connectivity_configuration"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'delete_network_connectivity_configuration', value: 'delete_network_connectivity_configuration' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="delete_network_connectivity_configuration">
 
-Deletes a network connectivity configuration.<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectivity Configuration ID.
+Deletes a network connectivity configuration.
 
 ```sql
 DELETE FROM databricks_account.settings.network_connectivity

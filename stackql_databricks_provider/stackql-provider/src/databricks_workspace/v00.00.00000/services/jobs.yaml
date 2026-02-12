@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks jobs service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.jobs
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -61,6 +64,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/runs/cancel:
     post:
       operationId: jobs_cancel_run
@@ -111,6 +115,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/create:
     post:
       operationId: jobs_create
@@ -425,6 +430,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/delete:
     post:
       operationId: jobs_delete
@@ -463,6 +469,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/runs/delete:
     post:
       operationId: jobs_delete_run
@@ -499,6 +506,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/runs/export:
     get:
       operationId: jobs_export_run
@@ -545,6 +553,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/get:
     get:
       operationId: jobs_get
@@ -615,6 +624,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.0/permissions/jobs/{job_id}/permissionLevels:
     get:
       operationId: jobs_get_permission_levels
@@ -653,6 +663,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.0/permissions/jobs/{job_id}:
     get:
       operationId: jobs_get_permissions
@@ -695,6 +706,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
     put:
       operationId: jobs_set_permissions
       summary: >-
@@ -751,6 +763,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
     patch:
       operationId: jobs_update_permissions
       summary: >-
@@ -804,6 +817,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/runs/get:
     get:
       operationId: jobs_get_run
@@ -890,6 +904,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/runs/get-output:
     get:
       operationId: jobs_get_run_output
@@ -950,6 +965,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/list:
     get:
       operationId: jobs_list
@@ -1023,7 +1039,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BaseJob'
+                $ref: '#/components/schemas/ListJobsResponse'
         default:
           description: Error response
           content:
@@ -1035,6 +1051,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/runs/list:
     get:
       operationId: jobs_list_runs
@@ -1172,7 +1189,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BaseRun'
+                $ref: '#/components/schemas/ListRunsResponse'
         default:
           description: Error response
           content:
@@ -1184,6 +1201,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/runs/repair:
     post:
       operationId: jobs_repair_run
@@ -1456,6 +1474,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/reset:
     post:
       operationId: jobs_reset
@@ -1514,6 +1533,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/run-now:
     post:
       operationId: jobs_run_now
@@ -1787,6 +1807,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/runs/submit:
     post:
       operationId: jobs_submit
@@ -1990,6 +2011,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.2/jobs/update:
     post:
       operationId: jobs_update
@@ -2066,6 +2088,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: JobsAPI
   /api/2.0/policies/jobs/enforce-compliance:
     post:
       operationId: policy_compliance_for_jobs_enforce_compliance
@@ -2125,6 +2148,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PolicyComplianceForJobsAPI
   /api/2.0/policies/jobs/get-compliance:
     get:
       operationId: policy_compliance_for_jobs_get_compliance
@@ -2173,6 +2197,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PolicyComplianceForJobsAPI
   /api/2.0/policies/jobs/list-compliance:
     get:
       operationId: policy_compliance_for_jobs_list_compliance
@@ -2232,7 +2257,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/JobCompliance'
+                $ref: '#/components/schemas/ListJobComplianceForPolicyResponse'
         default:
           description: Error response
           content:
@@ -2244,6 +2269,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PolicyComplianceForJobsAPI
 components:
   schemas:
     BaseJob:
@@ -6808,6 +6834,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.runs
         repair:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1repair/post'
@@ -6859,6 +6886,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.jobs
         reset:
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1reset/post'
@@ -6981,6 +7009,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.jobs
       sqlVerbs:
         select:
           - $ref: >-

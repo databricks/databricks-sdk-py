@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks marketplace service
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.marketplace
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -51,7 +54,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SharedDataObject'
+                $ref: '#/components/schemas/GetListingContentMetadataResponse'
         default:
           description: Error response
           content:
@@ -63,6 +66,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerFulfillmentsAPI
   /api/2.1/marketplace-consumer/listings/{listing_id}/fulfillments:
     get:
       operationId: consumer_fulfillments_list
@@ -117,7 +121,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListingFulfillment'
+                $ref: '#/components/schemas/ListFulfillmentsResponse'
         default:
           description: Error response
           content:
@@ -129,6 +133,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerFulfillmentsAPI
   /api/2.1/marketplace-consumer/listings/{listing_id}/installations:
     post:
       operationId: consumer_installations_create
@@ -194,6 +199,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerInstallationsAPI
     get:
       operationId: consumer_installations_list_listing_installations
       summary: List all installations for a particular listing.
@@ -232,7 +238,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InstallationDetail'
+                $ref: '#/components/schemas/ListAllInstallationsResponse'
         default:
           description: Error response
           content:
@@ -244,6 +250,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerInstallationsAPI
   /api/2.1/marketplace-consumer/listings/{listing_id}/installations/{installation_id}:
     delete:
       operationId: consumer_installations_delete
@@ -287,6 +294,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerInstallationsAPI
     put:
       operationId: consumer_installations_update
       summary: >-
@@ -361,6 +369,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerInstallationsAPI
   /api/2.1/marketplace-consumer/installations:
     get:
       operationId: consumer_installations_list
@@ -393,7 +402,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InstallationDetail'
+                $ref: '#/components/schemas/ListAllInstallationsResponse'
         default:
           description: Error response
           content:
@@ -405,6 +414,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerInstallationsAPI
   /api/2.1/marketplace-consumer/listings:batchGet:
     get:
       operationId: consumer_listings_batch_get
@@ -448,6 +458,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerListingsAPI
   /api/2.1/marketplace-consumer/listings/{id}:
     get:
       operationId: consumer_listings_get
@@ -491,6 +502,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerListingsAPI
   /api/2.1/marketplace-consumer/listings:
     get:
       operationId: consumer_listings_list
@@ -585,7 +597,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Listing'
+                $ref: '#/components/schemas/BatchGetListingsResponse'
         default:
           description: Error response
           content:
@@ -597,6 +609,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerListingsAPI
   /api/2.1/marketplace-consumer/search-listings:
     get:
       operationId: consumer_listings_search
@@ -685,7 +698,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Listing'
+                $ref: '#/components/schemas/BatchGetListingsResponse'
         default:
           description: Error response
           content:
@@ -697,6 +710,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerListingsAPI
   /api/2.1/marketplace-consumer/listings/{listing_id}/personalization-requests:
     post:
       operationId: consumer_personalization_requests_create
@@ -772,6 +786,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerPersonalizationRequestsAPI
     get:
       operationId: consumer_personalization_requests_get
       summary: >-
@@ -816,6 +831,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerPersonalizationRequestsAPI
   /api/2.1/marketplace-consumer/personalization-requests:
     get:
       operationId: consumer_personalization_requests_list
@@ -848,7 +864,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonalizationRequest'
+                $ref: '#/components/schemas/GetPersonalizationRequestResponse'
         default:
           description: Error response
           content:
@@ -860,6 +876,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerPersonalizationRequestsAPI
   /api/2.1/marketplace-consumer/providers:batchGet:
     get:
       operationId: consumer_providers_batch_get
@@ -903,6 +920,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerProvidersAPI
   /api/2.1/marketplace-consumer/providers/{id}:
     get:
       operationId: consumer_providers_get
@@ -946,6 +964,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerProvidersAPI
   /api/2.1/marketplace-consumer/providers:
     get:
       operationId: consumer_providers_list
@@ -992,7 +1011,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProviderInfo'
+                $ref: '#/components/schemas/BatchGetProvidersResponse'
         default:
           description: Error response
           content:
@@ -1004,6 +1023,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConsumerProvidersAPI
   /api/2.0/marketplace-exchange/filters:
     post:
       operationId: provider_exchange_filters_create
@@ -1046,6 +1066,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangeFiltersAPI
     get:
       operationId: provider_exchange_filters_list
       summary: List exchange filter
@@ -1084,7 +1105,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExchangeFilter'
+                $ref: '#/components/schemas/ListExchangeFiltersResponse'
         default:
           description: Error response
           content:
@@ -1096,6 +1117,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangeFiltersAPI
   /api/2.0/marketplace-exchange/filters/{id}:
     delete:
       operationId: provider_exchange_filters_delete
@@ -1128,6 +1150,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangeFiltersAPI
     put:
       operationId: provider_exchange_filters_update
       summary: Update an exchange filter.
@@ -1176,6 +1199,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangeFiltersAPI
   /api/2.0/marketplace-exchange/exchanges-for-listing:
     post:
       operationId: provider_exchanges_add_listing_to_exchange
@@ -1222,6 +1246,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangesAPI
     get:
       operationId: provider_exchanges_list_exchanges_for_listing
       summary: List exchanges associated with a listing
@@ -1260,7 +1285,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExchangeListing'
+                $ref: '#/components/schemas/ListExchangesForListingResponse'
         default:
           description: Error response
           content:
@@ -1272,6 +1297,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangesAPI
   /api/2.0/marketplace-exchange/exchanges:
     post:
       operationId: provider_exchanges_create
@@ -1314,6 +1340,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangesAPI
     get:
       operationId: provider_exchanges_list
       summary: List exchanges visible to provider
@@ -1345,7 +1372,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Exchange'
+                $ref: '#/components/schemas/ListExchangesResponse'
         default:
           description: Error response
           content:
@@ -1357,6 +1384,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangesAPI
   /api/2.0/marketplace-exchange/exchanges/{id}:
     delete:
       operationId: provider_exchanges_delete
@@ -1389,6 +1417,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangesAPI
     get:
       operationId: provider_exchanges_get
       summary: Get an exchange.
@@ -1426,6 +1455,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangesAPI
     put:
       operationId: provider_exchanges_update
       summary: Update an exchange
@@ -1474,6 +1504,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangesAPI
   /api/2.0/marketplace-exchange/exchanges-for-listing/{id}:
     delete:
       operationId: provider_exchanges_delete_listing_from_exchange
@@ -1506,6 +1537,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangesAPI
   /api/2.0/marketplace-exchange/listings-for-exchange:
     get:
       operationId: provider_exchanges_list_listings_for_exchange
@@ -1545,7 +1577,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExchangeListing'
+                $ref: '#/components/schemas/ListExchangesForListingResponse'
         default:
           description: Error response
           content:
@@ -1557,6 +1589,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderExchangesAPI
   /api/2.0/marketplace-provider/files:
     post:
       operationId: provider_files_create
@@ -1619,6 +1652,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderFilesAPI
     get:
       operationId: provider_files_list
       summary: List files attached to a parent entity.
@@ -1657,7 +1691,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FileInfo'
+                $ref: '#/components/schemas/ListFilesResponse'
         default:
           description: Error response
           content:
@@ -1669,6 +1703,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderFilesAPI
   /api/2.0/marketplace-provider/files/{file_id}:
     delete:
       operationId: provider_files_delete
@@ -1701,6 +1736,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderFilesAPI
     get:
       operationId: provider_files_get
       summary: Get a file
@@ -1738,6 +1774,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderFilesAPI
   /api/2.0/marketplace-provider/listing:
     post:
       operationId: provider_listings_create
@@ -1780,6 +1817,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderListingsAPI
   /api/2.0/marketplace-provider/listings/{id}:
     delete:
       operationId: provider_listings_delete
@@ -1812,6 +1850,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderListingsAPI
     get:
       operationId: provider_listings_get
       summary: Get a listing
@@ -1849,6 +1888,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderListingsAPI
     put:
       operationId: provider_listings_update
       summary: Update a listing
@@ -1897,6 +1937,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderListingsAPI
   /api/2.0/marketplace-provider/listings:
     get:
       operationId: provider_listings_list
@@ -1929,7 +1970,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Listing'
+                $ref: '#/components/schemas/BatchGetListingsResponse'
         default:
           description: Error response
           content:
@@ -1941,6 +1982,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderListingsAPI
   /api/2.0/marketplace-provider/personalization-requests:
     get:
       operationId: provider_personalization_requests_list
@@ -1981,7 +2023,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PersonalizationRequest'
+                $ref: '#/components/schemas/GetPersonalizationRequestResponse'
         default:
           description: Error response
           content:
@@ -1993,6 +2035,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderPersonalizationRequestsAPI
   /api/2.0/marketplace-provider/listings/{listing_id}/personalization-requests/{request_id}/request-status:
     put:
       operationId: provider_personalization_requests_update
@@ -2065,6 +2108,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderPersonalizationRequestsAPI
   /api/2.0/marketplace-provider/analytics_dashboard:
     post:
       operationId: provider_provider_analytics_dashboards_create
@@ -2101,6 +2145,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderProviderAnalyticsDashboardsAPI
     get:
       operationId: provider_provider_analytics_dashboards_get
       summary: Get provider analytics dashboard.
@@ -2130,6 +2175,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderProviderAnalyticsDashboardsAPI
   /api/2.0/marketplace-provider/analytics_dashboard/latest:
     get:
       operationId: provider_provider_analytics_dashboards_get_latest_version
@@ -2161,6 +2207,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderProviderAnalyticsDashboardsAPI
   /api/2.0/marketplace-provider/analytics_dashboard/{id}:
     put:
       operationId: provider_provider_analytics_dashboards_update
@@ -2215,6 +2262,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderProviderAnalyticsDashboardsAPI
   /api/2.0/marketplace-provider/provider:
     post:
       operationId: provider_providers_create
@@ -2257,6 +2305,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderProvidersAPI
   /api/2.0/marketplace-provider/providers/{id}:
     delete:
       operationId: provider_providers_delete
@@ -2289,6 +2338,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderProvidersAPI
     get:
       operationId: provider_providers_get
       summary: Get provider profile
@@ -2326,6 +2376,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderProvidersAPI
     put:
       operationId: provider_providers_update
       summary: Update provider profile
@@ -2374,6 +2425,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderProvidersAPI
   /api/2.0/marketplace-provider/providers:
     get:
       operationId: provider_providers_list
@@ -2406,7 +2458,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProviderInfo'
+                $ref: '#/components/schemas/BatchGetProvidersResponse'
         default:
           description: Error response
           content:
@@ -2418,6 +2470,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProviderProvidersAPI
 components:
   schemas:
     AddExchangeForListingResponse:
@@ -2934,7 +2987,7 @@ components:
       properties:
         name:
           type: string
-        listing_type:
+        listingType:
           $ref: '#/components/schemas/ListingType'
         categories:
           type: array
@@ -2979,7 +3032,7 @@ components:
           type: integer
       required:
         - name
-        - listing_type
+        - listingType
     ListingTag:
       type: object
       properties:
@@ -3138,13 +3191,13 @@ components:
     TokenDetail:
       type: object
       properties:
-        bearer_token:
+        bearerToken:
           type: string
         endpoint:
           type: string
-        expiration_time:
+        expirationTime:
           type: string
-        share_credentials_version:
+        shareCredentialsVersion:
           type: integer
           description: >-
             These field names must follow the delta sharing protocol. Original
@@ -3951,6 +4004,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.shared_data_objects
       sqlVerbs:
         select:
           - $ref: >-
@@ -3971,6 +4025,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.fulfillments
       sqlVerbs:
         select:
           - $ref: >-
@@ -3998,6 +4053,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.installations
         delete:
           operation:
             $ref: >-
@@ -4018,6 +4074,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.installations
       sqlVerbs:
         select:
           - $ref: >-
@@ -4057,12 +4114,14 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.listings
         search:
           operation:
             $ref: '#/paths/~1api~12.1~1marketplace-consumer~1search-listings/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.listings
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/consumer_listings/methods/get'
@@ -4097,6 +4156,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.personalization_requests
       sqlVerbs:
         select:
           - $ref: >-
@@ -4132,6 +4192,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.providers
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/consumer_providers/methods/get'
@@ -4157,6 +4218,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.filters
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-exchange~1filters~1{id}/delete'
@@ -4202,6 +4264,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.exchange_listing
         delete:
           operation:
             $ref: >-
@@ -4216,6 +4279,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.exchange_listings
       sqlVerbs:
         select:
           - $ref: >-
@@ -4247,6 +4311,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.exchanges
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges~1{id}/delete'
@@ -4293,6 +4358,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.file_infos
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1files~1{file_id}/delete'
@@ -4350,6 +4416,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.listings
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/provider_listings/methods/get'
@@ -4373,6 +4440,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.personalization_requests
         update:
           operation:
             $ref: >-
@@ -4468,6 +4536,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.providers
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/provider_providers/methods/get'

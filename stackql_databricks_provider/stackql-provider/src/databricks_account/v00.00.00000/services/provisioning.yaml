@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks provisioning service (account-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.provisioning
 servers:
   - url: https://accounts.cloud.databricks.com
 paths:
@@ -94,6 +97,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
     get:
       operationId: credentials_list
       summary: >-
@@ -133,6 +137,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
   /api/2.0/accounts/{account_id}/credentials/{credentials_id}:
     delete:
       operationId: credentials_delete
@@ -183,6 +188,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
     get:
       operationId: credentials_get
       summary: >-
@@ -230,6 +236,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
   /api/2.0/accounts/{account_id}/customer-managed-keys:
     post:
       operationId: encryption_keys_create
@@ -322,6 +329,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EncryptionKeysAPI
     get:
       operationId: encryption_keys_list
       summary: Lists Databricks customer-managed key configurations for an account.
@@ -357,6 +365,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EncryptionKeysAPI
   /api/2.0/accounts/{account_id}/customer-managed-keys/{customer_managed_key_id}:
     delete:
       operationId: encryption_keys_delete
@@ -407,6 +416,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EncryptionKeysAPI
     get:
       operationId: encryption_keys_get
       summary: >-
@@ -481,6 +491,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EncryptionKeysAPI
   /api/2.0/accounts/{account_id}/networks:
     post:
       operationId: networks_create
@@ -572,6 +583,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworksAPI
     get:
       operationId: networks_list
       summary: Lists Databricks network configurations for an account.
@@ -607,6 +619,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworksAPI
   /api/2.0/accounts/{account_id}/networks/{network_id}:
     delete:
       operationId: networks_delete
@@ -661,6 +674,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworksAPI
     get:
       operationId: networks_get
       summary: >-
@@ -708,6 +722,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworksAPI
   /api/2.0/accounts/{account_id}/private-access-settings:
     post:
       operationId: private_access_create
@@ -825,6 +840,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PrivateAccessAPI
     get:
       operationId: private_access_list
       summary: Lists Databricks private access settings for an account.
@@ -860,6 +876,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PrivateAccessAPI
   /api/2.0/accounts/{account_id}/private-access-settings/{private_access_settings_id}:
     delete:
       operationId: private_access_delete
@@ -908,6 +925,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PrivateAccessAPI
     get:
       operationId: private_access_get
       summary: >-
@@ -955,6 +973,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PrivateAccessAPI
     put:
       operationId: private_access_replace
       summary: >-
@@ -1043,6 +1062,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PrivateAccessAPI
   /api/2.0/accounts/{account_id}/storage-configurations:
     post:
       operationId: storage_create
@@ -1115,6 +1135,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StorageAPI
     get:
       operationId: storage_list
       summary: Lists Databricks storage configurations for an account, specified by ID.
@@ -1150,6 +1171,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StorageAPI
   /api/2.0/accounts/{account_id}/storage-configurations/{storage_configuration_id}:
     delete:
       operationId: storage_delete
@@ -1200,6 +1222,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StorageAPI
     get:
       operationId: storage_get
       summary: >-
@@ -1247,6 +1270,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StorageAPI
   /api/2.0/accounts/{account_id}/vpc-endpoints:
     post:
       operationId: vpc_endpoints_create
@@ -1337,6 +1361,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VpcEndpointsAPI
     get:
       operationId: vpc_endpoints_list
       summary: Lists Databricks VPC endpoint configurations for an account.
@@ -1372,6 +1397,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VpcEndpointsAPI
   /api/2.0/accounts/{account_id}/vpc-endpoints/{vpc_endpoint_id}:
     delete:
       operationId: vpc_endpoints_delete
@@ -1422,6 +1448,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VpcEndpointsAPI
     get:
       operationId: vpc_endpoints_get
       summary: >-
@@ -1477,6 +1504,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VpcEndpointsAPI
   /api/2.0/accounts/{account_id}/workspaces:
     post:
       operationId: workspaces_create
@@ -1788,6 +1816,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspacesAPI
     get:
       operationId: workspaces_list
       summary: Lists Databricks workspaces for an account.
@@ -1823,6 +1852,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspacesAPI
   /api/2.0/accounts/{account_id}/workspaces/{workspace_id}:
     delete:
       operationId: workspaces_delete
@@ -1866,6 +1896,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspacesAPI
     get:
       operationId: workspaces_get
       summary: >-
@@ -1931,6 +1962,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspacesAPI
     patch:
       operationId: workspaces_update
       summary: Updates a workspace.
@@ -2015,6 +2047,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspacesAPI
 components:
   schemas:
     AwsCredentials:

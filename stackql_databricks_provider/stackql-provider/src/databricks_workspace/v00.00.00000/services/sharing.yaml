@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks sharing service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.sharing
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -81,6 +84,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProvidersAPI
     get:
       operationId: providers_list
       summary: >-
@@ -155,7 +159,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProviderInfo'
+                $ref: '#/components/schemas/ListProvidersResponse'
         default:
           description: Error response
           content:
@@ -167,6 +171,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProvidersAPI
   /api/2.1/unity-catalog/providers/{name}:
     delete:
       operationId: providers_delete
@@ -206,6 +211,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProvidersAPI
     get:
       operationId: providers_get
       summary: >-
@@ -250,6 +256,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProvidersAPI
     patch:
       operationId: providers_update
       summary: >-
@@ -326,6 +333,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProvidersAPI
   /api/2.1/data-sharing/providers/{provider_name}/shares/{share_name}:
     get:
       operationId: providers_list_provider_share_assets
@@ -411,6 +419,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProvidersAPI
   /api/2.1/unity-catalog/providers/{name}/shares:
     get:
       operationId: providers_list_shares
@@ -476,7 +485,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ProviderShare'
+                $ref: '#/components/schemas/ListProviderSharesResponse'
         default:
           description: Error response
           content:
@@ -488,6 +497,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ProvidersAPI
   /api/2.1/unity-catalog/public/data_sharing_activation_info/{activation_url}:
     get:
       operationId: recipient_activation_get_activation_url_info
@@ -521,6 +531,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientActivationAPI
   /api/2.1/unity-catalog/public/data_sharing_activation/{activation_url}:
     get:
       operationId: recipient_activation_retrieve_token
@@ -564,6 +575,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientActivationAPI
   /api/2.0/data-sharing/recipients/{recipient_name}/federation-policies:
     post:
       operationId: recipient_federation_policies_create
@@ -673,6 +685,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientFederationPoliciesAPI
     get:
       operationId: recipient_federation_policies_list
       summary: >-
@@ -723,7 +736,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FederationPolicy'
+                $ref: '#/components/schemas/ListFederationPoliciesResponse'
         default:
           description: Error response
           content:
@@ -735,6 +748,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientFederationPoliciesAPI
   /api/2.0/data-sharing/recipients/{recipient_name}/federation-policies/{name}:
     delete:
       operationId: recipient_federation_policies_delete
@@ -784,6 +798,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientFederationPoliciesAPI
     get:
       operationId: recipient_federation_policies_get_federation_policy
       summary: >-
@@ -839,6 +854,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientFederationPoliciesAPI
   /api/2.1/unity-catalog/recipients:
     post:
       operationId: recipients_create
@@ -953,6 +969,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientsAPI
     get:
       operationId: recipients_list
       summary: >-
@@ -1024,7 +1041,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RecipientInfo'
+                $ref: '#/components/schemas/ListRecipientsResponse'
         default:
           description: Error response
           content:
@@ -1036,6 +1053,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientsAPI
   /api/2.1/unity-catalog/recipients/{name}:
     delete:
       operationId: recipients_delete
@@ -1073,6 +1091,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientsAPI
     get:
       operationId: recipients_get
       summary: >-
@@ -1118,6 +1137,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientsAPI
     patch:
       operationId: recipients_update
       summary: >-
@@ -1213,6 +1233,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientsAPI
   /api/2.1/unity-catalog/recipients/{name}/rotate-token:
     post:
       operationId: recipients_rotate_token
@@ -1278,6 +1299,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientsAPI
   /api/2.1/unity-catalog/recipients/{name}/share-permissions:
     get:
       operationId: recipients_share_permissions
@@ -1355,6 +1377,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RecipientsAPI
   /api/2.1/unity-catalog/shares:
     post:
       operationId: shares_create
@@ -1415,6 +1438,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SharesAPI
     get:
       operationId: shares_list_shares
       summary: >-
@@ -1473,7 +1497,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ShareInfo'
+                $ref: '#/components/schemas/ListSharesResponse'
         default:
           description: Error response
           content:
@@ -1485,6 +1509,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SharesAPI
   /api/2.1/unity-catalog/shares/{name}:
     delete:
       operationId: shares_delete
@@ -1522,6 +1547,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SharesAPI
     get:
       operationId: shares_get
       summary: >-
@@ -1574,6 +1600,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SharesAPI
     patch:
       operationId: shares_update
       summary: >-
@@ -1675,6 +1702,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SharesAPI
   /api/2.1/unity-catalog/shares/{name}/permissions:
     get:
       operationId: shares_share_permissions
@@ -1752,6 +1780,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SharesAPI
     patch:
       operationId: shares_update_permissions
       summary: >-
@@ -1821,6 +1850,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SharesAPI
 components:
   schemas:
     DeltaSharingDependency:
@@ -2414,15 +2444,15 @@ components:
     RetrieveTokenResponse:
       type: object
       properties:
-        bearer_token:
+        bearerToken:
           type: string
         endpoint:
           type: string
           description: The endpoint for the share to be used by the recipient.
-        expiration_time:
+        expirationTime:
           type: string
           description: Expiration timestamp of the token in epoch milliseconds.
-        share_credentials_version:
+        shareCredentialsVersion:
           type: integer
           description: These field names must follow the delta sharing protocol.
     SecurablePropertiesKvPairs:
@@ -3227,6 +3257,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.providers
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1providers~1{name}/delete'
@@ -3287,6 +3318,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.shares
       sqlVerbs:
         select:
           - $ref: >-
@@ -3339,6 +3371,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.policies
         delete:
           operation:
             $ref: >-
@@ -3384,6 +3417,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.recipients
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1recipients~1{name}/delete'
@@ -3458,6 +3492,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.shares
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1shares~1{name}/delete'

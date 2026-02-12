@@ -1,9 +1,9 @@
 ---
-title: account_groups_v2
+title: account_groups
 hide_title: false
 hide_table_of_contents: false
 keywords:
-  - account_groups_v2
+  - account_groups
   - iam
   - databricks_account
   - infrastructure-as-code
@@ -19,13 +19,13 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
 
-Creates, updates, deletes, gets or lists an <code>account_groups_v2</code> resource.
+Creates, updates, deletes, gets or lists an <code>account_groups</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_groups_v2</code></td></tr>
+<tr><td><b>Name</b></td><td><code>account_groups</code></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
-<tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iam.account_groups_v2" /></td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iam.account_groups" /></td></tr>
 </tbody></table>
 
 ## Fields
@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists an <code>account_groups_v2</code> resou
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_groups_v2_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_groups_v2_get', value: 'account_groups_v2_get' },
+        { label: 'account_groups_v2_list', value: 'account_groups_v2_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_groups_v2_get">
 
 <SchemaTable fields={[
   {
@@ -53,14 +53,14 @@ The following fields are returned by `SELECT` queries:
     "description": ""
   },
   {
-    "name": "external_id",
-    "type": "string",
-    "description": "external_id should be unique for identifying groups"
-  },
-  {
-    "name": "display_name",
+    "name": "displayName",
     "type": "string",
     "description": "String that represents a human-readable group name"
+  },
+  {
+    "name": "externalId",
+    "type": "string",
+    "description": "external_id should be unique for identifying groups"
   },
   {
     "name": "members",
@@ -78,7 +78,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -100,7 +100,7 @@ The following fields are returned by `SELECT` queries:
     "description": "Container for the group identifier. Workspace local versus account.",
     "children": [
       {
-        "name": "resource_type",
+        "name": "resourceType",
         "type": "string",
         "description": ""
       }
@@ -122,7 +122,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -140,7 +140,7 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_groups_v2_list">
 
 <SchemaTable fields={[
   {
@@ -154,14 +154,14 @@ The following fields are returned by `SELECT` queries:
     "description": ""
   },
   {
-    "name": "external_id",
-    "type": "string",
-    "description": "external_id should be unique for identifying groups"
-  },
-  {
-    "name": "display_name",
+    "name": "displayName",
     "type": "string",
     "description": "String that represents a human-readable group name"
+  },
+  {
+    "name": "externalId",
+    "type": "string",
+    "description": "external_id should be unique for identifying groups"
   },
   {
     "name": "members",
@@ -179,7 +179,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -201,7 +201,7 @@ The following fields are returned by `SELECT` queries:
     "description": "Container for the group identifier. Workspace local versus account.",
     "children": [
       {
-        "name": "resource_type",
+        "name": "resourceType",
         "type": "string",
         "description": ""
       }
@@ -223,7 +223,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -259,46 +259,46 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#account_groups_v2_get"><CopyableCode code="account_groups_v2_get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
-    <td>Gets the information for a specific group in the Databricks account.<br /><br />:param id: str<br />  Unique ID for a group in the Databricks account.<br /><br />:returns: :class:`AccountGroup`</td>
+    <td>Gets the information for a specific group in the Databricks account.</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#account_groups_v2_list"><CopyableCode code="account_groups_v2_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td><a href="#parameter-attributes"><code>attributes</code></a>, <a href="#parameter-count"><code>count</code></a>, <a href="#parameter-excluded_attributes"><code>excluded_attributes</code></a>, <a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-sort_by"><code>sort_by</code></a>, <a href="#parameter-sort_order"><code>sort_order</code></a>, <a href="#parameter-start_index"><code>start_index</code></a></td>
-    <td>Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint<br />will no longer return members. Instead, members should be retrieved by iterating through `Get group<br />details`. Existing accounts that rely on this attribute will not be impacted and will continue<br />receiving member data as before.<br /><br />:param attributes: str (optional)<br />  Comma-separated list of attributes to return in response.<br />:param count: int (optional)<br />  Desired number of results per page. Default is 10000.<br />:param excluded_attributes: str (optional)<br />  Comma-separated list of attributes to exclude in response.<br />:param filter: str (optional)<br />  Query by which the results have to be filtered. Supported operators are equals(`eq`),<br />  contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be<br />  formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently<br />  only support simple expressions.<br /><br />  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2<br />:param sort_by: str (optional)<br />  Attribute to sort the results.<br />:param sort_order: :class:`ListSortOrder` (optional)<br />  The order to sort the results.<br />:param start_index: int (optional)<br />  Specifies the index of the first result. First item is number 1.<br /><br />:returns: Iterator over :class:`AccountGroup`</td>
+    <td>Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#account_groups_v2_create"><CopyableCode code="account_groups_v2_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Creates a group in the Databricks account with a unique name, using the supplied group details.<br /><br />:param display_name: str (optional)<br />  String that represents a human-readable group name<br />:param external_id: str (optional)<br />:param id: str (optional)<br />  Databricks group ID<br />:param members: List[:class:`ComplexValue`] (optional)<br />:param meta: :class:`ResourceMeta` (optional)<br />  Container for the group identifier. Workspace local versus account.<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Indicates if the group has the admin role.<br /><br />:returns: :class:`AccountGroup`</td>
+    <td>Creates a group in the Databricks account with a unique name, using the supplied group details.</td>
 </tr>
 <tr>
-    <td><a href="#patch"><CopyableCode code="patch" /></a></td>
+    <td><a href="#account_groups_v2_patch"><CopyableCode code="account_groups_v2_patch" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
-    <td>Partially updates the details of a group.<br /><br />:param id: str<br />  Unique ID in the Databricks workspace.<br />:param operations: List[:class:`Patch`] (optional)<br />:param schemas: List[:class:`PatchSchema`] (optional)<br />  The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].</td>
+    <td>Partially updates the details of a group.</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#account_groups_v2_update"><CopyableCode code="account_groups_v2_update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
-    <td>Updates the details of a group by replacing the entire group entity.<br /><br />:param id: str<br />  Databricks group ID<br />:param display_name: str (optional)<br />  String that represents a human-readable group name<br />:param external_id: str (optional)<br />:param members: List[:class:`ComplexValue`] (optional)<br />:param meta: :class:`ResourceMeta` (optional)<br />  Container for the group identifier. Workspace local versus account.<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Indicates if the group has the admin role.</td>
+    <td>Updates the details of a group by replacing the entire group entity.</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#account_groups_v2_delete"><CopyableCode code="account_groups_v2_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
-    <td>Deletes a group from the Databricks account.<br /><br />:param id: str<br />  Unique ID for a group in the Databricks account.</td>
+    <td>Deletes a group from the Databricks account.</td>
 </tr>
 </tbody>
 </table>
@@ -367,45 +367,45 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_groups_v2_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_groups_v2_get', value: 'account_groups_v2_get' },
+        { label: 'account_groups_v2_list', value: 'account_groups_v2_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_groups_v2_get">
 
-Gets the information for a specific group in the Databricks account.<br /><br />:param id: str<br />  Unique ID for a group in the Databricks account.<br /><br />:returns: :class:`AccountGroup`
+Gets the information for a specific group in the Databricks account.
 
 ```sql
 SELECT
 id,
 account_id,
-external_id,
-display_name,
+displayName,
+externalId,
 members,
 meta,
 roles
-FROM databricks_account.iam.account_groups_v2
+FROM databricks_account.iam.account_groups
 WHERE account_id = '{{ account_id }}' -- required
 AND id = '{{ id }}' -- required
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_groups_v2_list">
 
-Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint<br />will no longer return members. Instead, members should be retrieved by iterating through `Get group<br />details`. Existing accounts that rely on this attribute will not be impacted and will continue<br />receiving member data as before.<br /><br />:param attributes: str (optional)<br />  Comma-separated list of attributes to return in response.<br />:param count: int (optional)<br />  Desired number of results per page. Default is 10000.<br />:param excluded_attributes: str (optional)<br />  Comma-separated list of attributes to exclude in response.<br />:param filter: str (optional)<br />  Query by which the results have to be filtered. Supported operators are equals(`eq`),<br />  contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be<br />  formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently<br />  only support simple expressions.<br /><br />  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2<br />:param sort_by: str (optional)<br />  Attribute to sort the results.<br />:param sort_order: :class:`ListSortOrder` (optional)<br />  The order to sort the results.<br />:param start_index: int (optional)<br />  Specifies the index of the first result. First item is number 1.<br /><br />:returns: Iterator over :class:`AccountGroup`
+Gets all details of the groups associated with the Databricks account. As of 08/22/2025, this endpoint
 
 ```sql
 SELECT
 id,
 account_id,
-external_id,
-display_name,
+displayName,
+externalId,
 members,
 meta,
 roles
-FROM databricks_account.iam.account_groups_v2
+FROM databricks_account.iam.account_groups
 WHERE account_id = '{{ account_id }}' -- required
 AND attributes = '{{ attributes }}'
 AND count = '{{ count }}'
@@ -423,18 +423,18 @@ AND start_index = '{{ start_index }}'
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="account_groups_v2_create"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'account_groups_v2_create', value: 'account_groups_v2_create' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="account_groups_v2_create">
 
-Creates a group in the Databricks account with a unique name, using the supplied group details.<br /><br />:param display_name: str (optional)<br />  String that represents a human-readable group name<br />:param external_id: str (optional)<br />:param id: str (optional)<br />  Databricks group ID<br />:param members: List[:class:`ComplexValue`] (optional)<br />:param meta: :class:`ResourceMeta` (optional)<br />  Container for the group identifier. Workspace local versus account.<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Indicates if the group has the admin role.<br /><br />:returns: :class:`AccountGroup`
+Creates a group in the Databricks account with a unique name, using the supplied group details.
 
 ```sql
-INSERT INTO databricks_account.iam.account_groups_v2 (
+INSERT INTO databricks_account.iam.account_groups (
 data__display_name,
 data__external_id,
 data__id,
@@ -454,8 +454,8 @@ SELECT
 RETURNING
 id,
 account_id,
-external_id,
-display_name,
+displayName,
+externalId,
 members,
 meta,
 roles
@@ -466,11 +466,11 @@ roles
 
 ```yaml
 # Description fields are for documentation purposes
-- name: account_groups_v2
+- name: account_groups
   props:
     - name: account_id
       value: string
-      description: Required parameter for the account_groups_v2 resource.
+      description: Required parameter for the account_groups resource.
     - name: display_name
       value: string
       description: |
@@ -499,17 +499,17 @@ roles
 ## `UPDATE` examples
 
 <Tabs
-    defaultValue="patch"
+    defaultValue="account_groups_v2_patch"
     values={[
-        { label: 'patch', value: 'patch' }
+        { label: 'account_groups_v2_patch', value: 'account_groups_v2_patch' }
     ]}
 >
-<TabItem value="patch">
+<TabItem value="account_groups_v2_patch">
 
-Partially updates the details of a group.<br /><br />:param id: str<br />  Unique ID in the Databricks workspace.<br />:param operations: List[:class:`Patch`] (optional)<br />:param schemas: List[:class:`PatchSchema`] (optional)<br />  The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+Partially updates the details of a group.
 
 ```sql
-UPDATE databricks_account.iam.account_groups_v2
+UPDATE databricks_account.iam.account_groups
 SET 
 data__operations = '{{ operations }}',
 data__schemas = '{{ schemas }}'
@@ -524,17 +524,17 @@ AND id = '{{ id }}' --required;
 ## `REPLACE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="account_groups_v2_update"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'account_groups_v2_update', value: 'account_groups_v2_update' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="account_groups_v2_update">
 
-Updates the details of a group by replacing the entire group entity.<br /><br />:param id: str<br />  Databricks group ID<br />:param display_name: str (optional)<br />  String that represents a human-readable group name<br />:param external_id: str (optional)<br />:param members: List[:class:`ComplexValue`] (optional)<br />:param meta: :class:`ResourceMeta` (optional)<br />  Container for the group identifier. Workspace local versus account.<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Indicates if the group has the admin role.
+Updates the details of a group by replacing the entire group entity.
 
 ```sql
-REPLACE databricks_account.iam.account_groups_v2
+REPLACE databricks_account.iam.account_groups
 SET 
 data__display_name = '{{ display_name }}',
 data__external_id = '{{ external_id }}',
@@ -552,17 +552,17 @@ AND id = '{{ id }}' --required;
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="account_groups_v2_delete"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'account_groups_v2_delete', value: 'account_groups_v2_delete' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="account_groups_v2_delete">
 
-Deletes a group from the Databricks account.<br /><br />:param id: str<br />  Unique ID for a group in the Databricks account.
+Deletes a group from the Databricks account.
 
 ```sql
-DELETE FROM databricks_account.iam.account_groups_v2
+DELETE FROM databricks_account.iam.account_groups
 WHERE account_id = '{{ account_id }}' --required
 AND id = '{{ id }}' --required
 ;

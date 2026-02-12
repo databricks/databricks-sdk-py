@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks billing service (account-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.billing
 servers:
   - url: https://accounts.cloud.databricks.com
 paths:
@@ -93,7 +96,7 @@ paths:
         '200':
           description: Success
           content:
-            application/json:
+            text/plain:
               schema:
                 $ref: '#/components/schemas/DownloadResponse'
         default:
@@ -107,6 +110,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BillableUsageAPI
   /api/2.1/accounts/{account_id}/budget-policies:
     post:
       operationId: budget_policy_create
@@ -169,6 +173,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BudgetPolicyAPI
     get:
       operationId: budget_policy_list
       summary: >-
@@ -241,7 +246,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BudgetPolicy'
+                $ref: '#/components/schemas/ListBudgetPoliciesResponse'
         default:
           description: Error response
           content:
@@ -253,6 +258,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BudgetPolicyAPI
   /api/2.1/accounts/{account_id}/budget-policies/{policy_id}:
     delete:
       operationId: budget_policy_delete
@@ -291,6 +297,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BudgetPolicyAPI
     get:
       operationId: budget_policy_get
       summary: Retrieves a policy by it's ID.
@@ -334,6 +341,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BudgetPolicyAPI
     patch:
       operationId: budget_policy_update
       summary: Updates a policy
@@ -407,6 +415,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BudgetPolicyAPI
   /api/2.1/accounts/{account_id}/budgets:
     post:
       operationId: budgets_create
@@ -457,6 +466,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BudgetsAPI
     get:
       operationId: budgets_list
       summary: Gets all budgets associated with this account.
@@ -492,7 +502,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/BudgetConfiguration'
+                $ref: '#/components/schemas/ListBudgetConfigurationsResponse'
         default:
           description: Error response
           content:
@@ -504,6 +514,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BudgetsAPI
   /api/2.1/accounts/{account_id}/budgets/{budget_id}:
     delete:
       operationId: budgets_delete
@@ -548,6 +559,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BudgetsAPI
     get:
       operationId: budgets_get
       summary: >-
@@ -595,6 +607,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BudgetsAPI
     put:
       operationId: budgets_update
       summary: >-
@@ -659,6 +672,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: BudgetsAPI
   /api/2.0/accounts/{account_id}/log-delivery:
     post:
       operationId: log_delivery_create
@@ -759,6 +773,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LogDeliveryAPI
     get:
       operationId: log_delivery_list
       summary: >-
@@ -822,7 +837,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LogDeliveryConfiguration'
+                $ref: '#/components/schemas/WrappedLogDeliveryConfigurations'
         default:
           description: Error response
           content:
@@ -834,6 +849,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LogDeliveryAPI
   /api/2.0/accounts/{account_id}/log-delivery/{log_delivery_configuration_id}:
     get:
       operationId: log_delivery_get
@@ -882,6 +898,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LogDeliveryAPI
     patch:
       operationId: log_delivery_patch_status
       summary: >-
@@ -954,6 +971,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LogDeliveryAPI
   /api/2.0/accounts/{account_id}/dashboard:
     post:
       operationId: usage_dashboards_create
@@ -1023,6 +1041,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsageDashboardsAPI
     get:
       operationId: usage_dashboards_get
       summary: >-
@@ -1084,6 +1103,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsageDashboardsAPI
 components:
   schemas:
     ActionConfiguration:
@@ -2058,14 +2078,20 @@ components:
       name: billable_usage
       title: Billable Usage
       methods:
-        download:
+        billable_usage_download:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1usage~1download/get'
           response:
-            mediaType: application/json
+            mediaType: text/plain
             openAPIDocKey: '200'
+            overrideMediaType: "application/json"
+            transform: 
+              body: "[{\"contents\": {{ toJson . }}}]"
+              type: "golang_template_text_v0.3.0"
       sqlVerbs:
-        select: []
+        select:
+          - $ref: >-
+              #/components/x-stackQL-resources/billable_usage/methods/billable_usage_download
         insert: []
         update: []
         delete: []
@@ -2075,33 +2101,34 @@ components:
       name: budget_policy
       title: Budget Policy
       methods:
-        create:
+        budget_policy_create:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1budget-policies/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        budget_policy_list:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1budget-policies/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        delete:
+            objectKey: $.policies
+        budget_policy_delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budget-policies~1{policy_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        budget_policy_get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budget-policies~1{policy_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        update:
+        budget_policy_update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budget-policies~1{policy_id}/patch
@@ -2110,48 +2137,53 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/budget_policy/methods/get'
-          - $ref: '#/components/x-stackQL-resources/budget_policy/methods/list'
+          - $ref: >-
+              #/components/x-stackQL-resources/budget_policy/methods/budget_policy_get
+          - $ref: >-
+              #/components/x-stackQL-resources/budget_policy/methods/budget_policy_list
         insert:
-          - $ref: '#/components/x-stackQL-resources/budget_policy/methods/create'
+          - $ref: >-
+              #/components/x-stackQL-resources/budget_policy/methods/budget_policy_create
         update:
-          - $ref: '#/components/x-stackQL-resources/budget_policy/methods/update'
+          - $ref: >-
+              #/components/x-stackQL-resources/budget_policy/methods/budget_policy_update
         delete:
-          - $ref: '#/components/x-stackQL-resources/budget_policy/methods/delete'
+          - $ref: >-
+              #/components/x-stackQL-resources/budget_policy/methods/budget_policy_delete
         replace: []
     budgets:
       id: databricks_account.billing.budgets
       name: budgets
       title: Budgets
       methods:
-        create:
+        budgets_create:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1budgets/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        budgets_list:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1budgets/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        delete:
+            objectKey: $.budgets
+        budgets_delete:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budgets~1{budget_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        budgets_get:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budgets~1{budget_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-            objectKey: $.budget
-        update:
+        budgets_update:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1budgets~1{budget_id}/put
@@ -2160,41 +2192,41 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/budgets/methods/get'
-          - $ref: '#/components/x-stackQL-resources/budgets/methods/list'
+          - $ref: '#/components/x-stackQL-resources/budgets/methods/budgets_get'
+          - $ref: '#/components/x-stackQL-resources/budgets/methods/budgets_list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/budgets/methods/create'
+          - $ref: '#/components/x-stackQL-resources/budgets/methods/budgets_create'
         update: []
         delete:
-          - $ref: '#/components/x-stackQL-resources/budgets/methods/delete'
+          - $ref: '#/components/x-stackQL-resources/budgets/methods/budgets_delete'
         replace:
-          - $ref: '#/components/x-stackQL-resources/budgets/methods/update'
+          - $ref: '#/components/x-stackQL-resources/budgets/methods/budgets_update'
     log_delivery:
       id: databricks_account.billing.log_delivery
       name: log_delivery
       title: Log Delivery
       methods:
-        create:
+        log_delivery_create:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1log-delivery/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        log_delivery_list:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1log-delivery/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+            objectKey: $.log_delivery_configurations
+        log_delivery_get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1log-delivery~1{log_delivery_configuration_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-            objectKey: $.log_delivery_configuration
-        patch_status:
+        log_delivery_patch_status:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1log-delivery~1{log_delivery_configuration_id}/patch
@@ -2203,11 +2235,16 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/log_delivery/methods/get'
-          - $ref: '#/components/x-stackQL-resources/log_delivery/methods/list'
+          - $ref: >-
+              #/components/x-stackQL-resources/log_delivery/methods/log_delivery_get
+          - $ref: >-
+              #/components/x-stackQL-resources/log_delivery/methods/log_delivery_list
         insert:
-          - $ref: '#/components/x-stackQL-resources/log_delivery/methods/create'
-        update: []
+          - $ref: >-
+              #/components/x-stackQL-resources/log_delivery/methods/log_delivery_create
+        update:
+          - $ref: >-
+              #/components/x-stackQL-resources/log_delivery/methods/log_delivery_patch_status
         delete: []
         replace: []
     usage_dashboards:
@@ -2215,13 +2252,13 @@ components:
       name: usage_dashboards
       title: Usage Dashboards
       methods:
-        create:
+        usage_dashboards_create:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1dashboard/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        usage_dashboards_get:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1dashboard/get'
           response:
@@ -2229,9 +2266,11 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/usage_dashboards/methods/get'
+          - $ref: >-
+              #/components/x-stackQL-resources/usage_dashboards/methods/usage_dashboards_get
         insert:
-          - $ref: '#/components/x-stackQL-resources/usage_dashboards/methods/create'
+          - $ref: >-
+              #/components/x-stackQL-resources/usage_dashboards/methods/usage_dashboards_create
         update: []
         delete: []
         replace: []

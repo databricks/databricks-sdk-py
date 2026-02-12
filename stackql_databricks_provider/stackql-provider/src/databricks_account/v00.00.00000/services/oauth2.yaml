@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks oauth2 service (account-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.oauth2
 servers:
   - url: https://accounts.cloud.databricks.com
 paths:
@@ -69,6 +72,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountFederationPolicyAPI
     get:
       operationId: account_federation_policy_list
       summary: List account federation policies.
@@ -105,7 +109,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FederationPolicy'
+                $ref: '#/components/schemas/ListFederationPoliciesResponse'
         default:
           description: Error response
           content:
@@ -117,6 +121,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountFederationPolicyAPI
   /api/2.0/accounts/{account_id}/federationPolicies/{policy_id}:
     delete:
       operationId: account_federation_policy_delete
@@ -155,6 +160,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountFederationPolicyAPI
     get:
       operationId: account_federation_policy_get
       summary: Get account federation policy.
@@ -198,6 +204,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountFederationPolicyAPI
     patch:
       operationId: account_federation_policy_update
       summary: Update account federation policy.
@@ -273,6 +280,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountFederationPolicyAPI
   /api/2.0/accounts/{account_id}/oauth2/custom-app-integrations:
     post:
       operationId: custom_app_integration_create
@@ -359,6 +367,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CustomAppIntegrationAPI
     get:
       operationId: custom_app_integration_list
       summary: >-
@@ -409,7 +418,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetCustomAppIntegrationOutput'
+                $ref: '#/components/schemas/GetCustomAppIntegrationsOutput'
         default:
           description: Error response
           content:
@@ -421,6 +430,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CustomAppIntegrationAPI
   /api/2.0/accounts/{account_id}/oauth2/custom-app-integrations/{integration_id}:
     delete:
       operationId: custom_app_integration_delete
@@ -464,6 +474,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CustomAppIntegrationAPI
     get:
       operationId: custom_app_integration_get
       summary: Gets the Custom OAuth App Integration for the given integration id.
@@ -507,6 +518,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CustomAppIntegrationAPI
     patch:
       operationId: custom_app_integration_update
       summary: >-
@@ -587,6 +599,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CustomAppIntegrationAPI
   /api/2.0/accounts/{account_id}/oauth2/published-apps:
     get:
       operationId: o_auth_published_apps_list
@@ -627,7 +640,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PublishedAppOutput'
+                $ref: '#/components/schemas/GetPublishedAppsOutput'
         default:
           description: Error response
           content:
@@ -639,6 +652,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: OAuthPublishedAppsAPI
   /api/2.0/accounts/{account_id}/oauth2/published-app-integrations:
     post:
       operationId: published_app_integration_create
@@ -698,6 +712,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PublishedAppIntegrationAPI
     get:
       operationId: published_app_integration_list
       summary: >-
@@ -740,7 +755,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GetPublishedAppIntegrationOutput'
+                $ref: '#/components/schemas/GetPublishedAppIntegrationsOutput'
         default:
           description: Error response
           content:
@@ -752,6 +767,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PublishedAppIntegrationAPI
   /api/2.0/accounts/{account_id}/oauth2/published-app-integrations/{integration_id}:
     delete:
       operationId: published_app_integration_delete
@@ -795,6 +811,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PublishedAppIntegrationAPI
     get:
       operationId: published_app_integration_get
       summary: Gets the Published OAuth App Integration for the given integration id.
@@ -837,6 +854,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PublishedAppIntegrationAPI
     patch:
       operationId: published_app_integration_update
       summary: >-
@@ -893,6 +911,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PublishedAppIntegrationAPI
   /api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/federationPolicies:
     post:
       operationId: service_principal_federation_policy_create
@@ -962,6 +981,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalFederationPolicyAPI
     get:
       operationId: service_principal_federation_policy_list
       summary: List account federation policies.
@@ -1006,7 +1026,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FederationPolicy'
+                $ref: '#/components/schemas/ListFederationPoliciesResponse'
         default:
           description: Error response
           content:
@@ -1018,6 +1038,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalFederationPolicyAPI
   /api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/federationPolicies/{policy_id}:
     delete:
       operationId: service_principal_federation_policy_delete
@@ -1064,6 +1085,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalFederationPolicyAPI
     get:
       operationId: service_principal_federation_policy_get
       summary: Get account federation policy.
@@ -1115,6 +1137,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalFederationPolicyAPI
     patch:
       operationId: service_principal_federation_policy_update
       summary: Update account federation policy.
@@ -1198,6 +1221,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalFederationPolicyAPI
   /api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/credentials/secrets:
     post:
       operationId: service_principal_secrets_create
@@ -1257,6 +1281,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalSecretsAPI
     get:
       operationId: service_principal_secrets_list
       summary: >-
@@ -1324,7 +1349,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SecretInfo'
+                $ref: '#/components/schemas/ListServicePrincipalSecretsResponse'
         default:
           description: Error response
           content:
@@ -1336,6 +1361,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalSecretsAPI
   /api/2.0/accounts/{account_id}/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}:
     delete:
       operationId: service_principal_secrets_delete
@@ -1382,6 +1408,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalSecretsAPI
 components:
   schemas:
     CreateCustomAppIntegrationOutput:
@@ -1731,6 +1758,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.policies
         account_federation_policy_delete:
           operation:
             $ref: >-
@@ -1787,6 +1815,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.apps
         custom_app_integration_delete:
           operation:
             $ref: >-
@@ -1824,22 +1853,23 @@ components:
           - $ref: >-
               #/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_delete
         replace: []
-    o_auth_published_apps:
-      id: databricks_account.oauth2.o_auth_published_apps
-      name: o_auth_published_apps
-      title: O Auth Published Apps
+    oauth_published_apps:
+      id: databricks_account.oauth2.oauth_published_apps
+      name: oauth_published_apps
+      title: Oauth Published Apps
       methods:
-        o_auth_published_apps_list:
+        oauth_published_apps_list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-apps/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.apps
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/o_auth_published_apps/methods/o_auth_published_apps_list
+              #/components/x-stackQL-resources/oauth_published_apps/methods/oauth_published_apps_list
         insert: []
         update: []
         delete: []
@@ -1863,6 +1893,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.apps
         published_app_integration_delete:
           operation:
             $ref: >-
@@ -1919,6 +1950,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.policies
         service_principal_federation_policy_delete:
           operation:
             $ref: >-
@@ -1975,6 +2007,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.secrets
         service_principal_secrets_delete:
           operation:
             $ref: >-

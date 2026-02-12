@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks settings service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.settings
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -69,6 +72,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AibiDashboardEmbeddingAccessPolicyAPI
     get:
       operationId: aibi_dashboard_embedding_access_policy_get
       summary: >-
@@ -125,6 +129,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AibiDashboardEmbeddingAccessPolicyAPI
     patch:
       operationId: aibi_dashboard_embedding_access_policy_update
       summary: >-
@@ -204,6 +209,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AibiDashboardEmbeddingAccessPolicyAPI
   /api/2.0/settings/types/aibi_dash_embed_ws_apprvd_domains/names/default:
     delete:
       operationId: aibi_dashboard_embedding_approved_domains_delete
@@ -263,6 +269,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AibiDashboardEmbeddingApprovedDomainsAPI
     get:
       operationId: aibi_dashboard_embedding_approved_domains_get
       summary: >-
@@ -318,6 +325,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AibiDashboardEmbeddingApprovedDomainsAPI
     patch:
       operationId: aibi_dashboard_embedding_approved_domains_update
       summary: >-
@@ -400,6 +408,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AibiDashboardEmbeddingApprovedDomainsAPI
   /api/2.0/settings/types/automatic_cluster_update/names/default:
     get:
       operationId: automatic_cluster_update_get
@@ -451,6 +460,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AutomaticClusterUpdateAPI
     patch:
       operationId: automatic_cluster_update_update
       summary: >-
@@ -538,6 +548,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AutomaticClusterUpdateAPI
   /api/2.0/settings/types/shield_csp_enablement_ws_db/names/default:
     get:
       operationId: compliance_security_profile_get
@@ -589,6 +600,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ComplianceSecurityProfileAPI
     patch:
       operationId: compliance_security_profile_update
       summary: >-
@@ -676,6 +688,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ComplianceSecurityProfileAPI
   /api/2.0/credentials-manager/exchange-tokens/token:
     post:
       operationId: credentials_manager_exchange_token
@@ -737,6 +750,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsManagerAPI
   /api/2.0/accounts/{account_id}/settings/types/shield_csp_enablement_ac/names/default:
     get:
       operationId: csp_enablement_account_get
@@ -793,6 +807,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CspEnablementAccountAPI
     patch:
       operationId: csp_enablement_account_update
       summary: >-
@@ -878,6 +893,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CspEnablementAccountAPI
   /api/2.0/settings/types/dashboard_email_subscriptions/names/default:
     delete:
       operationId: dashboard_email_subscriptions_delete
@@ -929,6 +945,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardEmailSubscriptionsAPI
     get:
       operationId: dashboard_email_subscriptions_get
       summary: Gets the Dashboard Email Subscriptions setting.
@@ -979,6 +996,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardEmailSubscriptionsAPI
     patch:
       operationId: dashboard_email_subscriptions_update
       summary: Updates the Dashboard Email Subscriptions setting.
@@ -1053,6 +1071,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardEmailSubscriptionsAPI
   /api/2.0/settings/types/default_namespace_ws/names/default:
     delete:
       operationId: default_namespace_delete
@@ -1116,6 +1135,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DefaultNamespaceAPI
     get:
       operationId: default_namespace_get
       summary: Gets the default namespace setting.
@@ -1166,6 +1186,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DefaultNamespaceAPI
     patch:
       operationId: default_namespace_update
       summary: >-
@@ -1259,6 +1280,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DefaultNamespaceAPI
   /api/2.0/settings/types/default_warehouse_id/names/default:
     delete:
       operationId: default_warehouse_id_delete
@@ -1310,6 +1332,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DefaultWarehouseIdAPI
     get:
       operationId: default_warehouse_id_get
       summary: Gets the Default Warehouse Id setting.
@@ -1360,6 +1383,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DefaultWarehouseIdAPI
     patch:
       operationId: default_warehouse_id_update
       summary: Updates the Default Warehouse Id setting.
@@ -1434,6 +1458,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DefaultWarehouseIdAPI
   /api/2.0/settings/types/disable_legacy_access/names/default:
     delete:
       operationId: disable_legacy_access_delete
@@ -1485,6 +1510,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DisableLegacyAccessAPI
     get:
       operationId: disable_legacy_access_get
       summary: Retrieves legacy access disablement Status.
@@ -1535,6 +1561,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DisableLegacyAccessAPI
     patch:
       operationId: disable_legacy_access_update
       summary: Updates legacy access disablement status.
@@ -1609,6 +1636,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DisableLegacyAccessAPI
   /api/2.0/settings/types/disable_legacy_dbfs/names/default:
     delete:
       operationId: disable_legacy_dbfs_delete
@@ -1664,6 +1692,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DisableLegacyDbfsAPI
     get:
       operationId: disable_legacy_dbfs_get
       summary: Gets the disable legacy DBFS setting.
@@ -1714,6 +1743,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DisableLegacyDbfsAPI
     patch:
       operationId: disable_legacy_dbfs_update
       summary: Updates the disable legacy DBFS setting for the workspace.
@@ -1788,6 +1818,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DisableLegacyDbfsAPI
   /api/2.0/accounts/{account_id}/settings/types/disable_legacy_features/names/default:
     delete:
       operationId: disable_legacy_features_delete
@@ -1844,6 +1875,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DisableLegacyFeaturesAPI
     get:
       operationId: disable_legacy_features_get
       summary: Gets the value of the disable legacy features setting.
@@ -1899,6 +1931,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DisableLegacyFeaturesAPI
     patch:
       operationId: disable_legacy_features_update
       summary: Updates the value of the disable legacy features setting.
@@ -1979,6 +2012,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DisableLegacyFeaturesAPI
   /api/2.0/settings/types/enable-export-notebook/names/default:
     get:
       operationId: enable_export_notebook_get_enable_export_notebook
@@ -2009,6 +2043,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnableExportNotebookAPI
     patch:
       operationId: enable_export_notebook_patch_enable_export_notebook
       summary: >-
@@ -2091,6 +2126,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnableExportNotebookAPI
   /api/2.0/accounts/{account_id}/settings/types/acct_ip_acl_enable/names/default:
     delete:
       operationId: enable_ip_access_lists_delete
@@ -2151,6 +2187,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnableIpAccessListsAPI
     get:
       operationId: enable_ip_access_lists_get
       summary: Gets the value of the account IP access toggle setting.
@@ -2206,6 +2243,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnableIpAccessListsAPI
     patch:
       operationId: enable_ip_access_lists_update
       summary: Updates the value of the account IP access toggle setting.
@@ -2286,6 +2324,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnableIpAccessListsAPI
   /api/2.0/settings/types/enable-notebook-table-clipboard/names/default:
     get:
       operationId: enable_notebook_table_clipboard_get_enable_notebook_table_clipboard
@@ -2316,6 +2355,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnableNotebookTableClipboardAPI
     patch:
       operationId: enable_notebook_table_clipboard_patch_enable_notebook_table_clipboard
       summary: >-
@@ -2398,6 +2438,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnableNotebookTableClipboardAPI
   /api/2.0/settings/types/enable-results-downloading/names/default:
     get:
       operationId: enable_results_downloading_get_enable_results_downloading
@@ -2428,6 +2469,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnableResultsDownloadingAPI
     patch:
       operationId: enable_results_downloading_patch_enable_results_downloading
       summary: >-
@@ -2509,6 +2551,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnableResultsDownloadingAPI
   /api/2.0/settings/types/shield_esm_enablement_ws_db/names/default:
     get:
       operationId: enhanced_security_monitoring_get
@@ -2560,6 +2603,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnhancedSecurityMonitoringAPI
     patch:
       operationId: enhanced_security_monitoring_update
       summary: >-
@@ -2647,6 +2691,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EnhancedSecurityMonitoringAPI
   /api/2.0/accounts/{account_id}/settings/types/shield_esm_enablement_ac/names/default:
     get:
       operationId: esm_enablement_account_get
@@ -2703,6 +2748,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EsmEnablementAccountAPI
     patch:
       operationId: esm_enablement_account_update
       summary: >-
@@ -2788,6 +2834,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EsmEnablementAccountAPI
   /api/2.0/ip-access-lists:
     post:
       operationId: ip_access_lists_create
@@ -2869,6 +2916,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: IpAccessListsAPI
     get:
       operationId: ip_access_lists_list
       summary: Gets all IP access lists for the specified workspace.
@@ -2886,7 +2934,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IpAccessListInfo'
+                $ref: '#/components/schemas/GetIpAccessListsResponse'
         default:
           description: Error response
           content:
@@ -2898,6 +2946,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: IpAccessListsAPI
   /api/2.0/ip-access-lists/{ip_access_list_id}:
     delete:
       operationId: ip_access_lists_delete
@@ -2931,6 +2980,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: IpAccessListsAPI
     get:
       operationId: ip_access_lists_get
       summary: Gets an IP access list, specified by its list ID.
@@ -2969,6 +3019,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: IpAccessListsAPI
     put:
       operationId: ip_access_lists_replace
       summary: Replaces an IP access list, specified by its ID.
@@ -3056,6 +3107,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: IpAccessListsAPI
     patch:
       operationId: ip_access_lists_update
       summary: Updates an existing IP access list, specified by its ID.
@@ -3143,6 +3195,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: IpAccessListsAPI
   /api/2.0/accounts/{account_id}/settings/types/llm_proxy_partner_powered/names/default:
     get:
       operationId: llm_proxy_partner_powered_account_get
@@ -3199,6 +3252,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LlmProxyPartnerPoweredAccountAPI
     patch:
       operationId: llm_proxy_partner_powered_account_update
       summary: Updates the enable partner powered AI features account setting.
@@ -3279,6 +3333,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LlmProxyPartnerPoweredAccountAPI
   /api/2.0/accounts/{account_id}/settings/types/llm_proxy_partner_powered_enforce/names/default:
     get:
       operationId: llm_proxy_partner_powered_enforce_get
@@ -3339,6 +3394,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LlmProxyPartnerPoweredEnforceAPI
     patch:
       operationId: llm_proxy_partner_powered_enforce_update
       summary: >-
@@ -3424,6 +3480,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LlmProxyPartnerPoweredEnforceAPI
   /api/2.0/settings/types/llm_proxy_partner_powered/names/default:
     delete:
       operationId: llm_proxy_partner_powered_workspace_delete
@@ -3480,6 +3537,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LlmProxyPartnerPoweredWorkspaceAPI
     get:
       operationId: llm_proxy_partner_powered_workspace_get
       summary: Gets the enable partner powered AI features workspace setting.
@@ -3530,6 +3588,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LlmProxyPartnerPoweredWorkspaceAPI
     patch:
       operationId: llm_proxy_partner_powered_workspace_update
       summary: Updates the enable partner powered AI features workspace setting.
@@ -3604,6 +3663,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LlmProxyPartnerPoweredWorkspaceAPI
   /api/2.0/notification-destinations:
     post:
       operationId: notification_destinations_create
@@ -3656,6 +3716,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NotificationDestinationsAPI
     get:
       operationId: notification_destinations_list
       summary: Lists notification destinations.
@@ -3687,7 +3748,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListNotificationDestinationsResult'
+                $ref: '#/components/schemas/ListNotificationDestinationsResponse'
         default:
           description: Error response
           content:
@@ -3699,6 +3760,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NotificationDestinationsAPI
   /api/2.0/notification-destinations/{id}:
     delete:
       operationId: notification_destinations_delete
@@ -3735,6 +3797,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NotificationDestinationsAPI
     get:
       operationId: notification_destinations_get
       summary: Gets a notification destination.
@@ -3772,6 +3835,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NotificationDestinationsAPI
     patch:
       operationId: notification_destinations_update
       summary: >-
@@ -3834,6 +3898,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NotificationDestinationsAPI
   /api/2.0/accounts/{account_id}/settings/types/dcp_acct_enable/names/default:
     delete:
       operationId: personal_compute_delete
@@ -3890,6 +3955,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PersonalComputeAPI
     get:
       operationId: personal_compute_get
       summary: Gets the value of the Personal Compute setting.
@@ -3945,6 +4011,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PersonalComputeAPI
     patch:
       operationId: personal_compute_update
       summary: Updates the value of the Personal Compute setting.
@@ -4025,6 +4092,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PersonalComputeAPI
   /api/2.0/settings/types/restrict_workspace_admins/names/default:
     delete:
       operationId: restrict_workspace_admins_delete
@@ -4090,6 +4158,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RestrictWorkspaceAdminsAPI
     get:
       operationId: restrict_workspace_admins_get
       summary: Gets the restrict workspace admins setting.
@@ -4140,6 +4209,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RestrictWorkspaceAdminsAPI
     patch:
       operationId: restrict_workspace_admins_update
       summary: >-
@@ -4227,6 +4297,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RestrictWorkspaceAdminsAPI
   /api/2.0/settings/types/sql_results_download/names/default:
     delete:
       operationId: sql_results_download_delete
@@ -4278,6 +4349,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SqlResultsDownloadAPI
     get:
       operationId: sql_results_download_get
       summary: Gets the SQL Results Download setting.
@@ -4328,6 +4400,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SqlResultsDownloadAPI
     patch:
       operationId: sql_results_download_update
       summary: Updates the SQL Results Download setting.
@@ -4402,6 +4475,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SqlResultsDownloadAPI
   /api/2.0/token-management/on-behalf-of/tokens:
     post:
       operationId: token_management_create_obo_token
@@ -4455,6 +4529,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokenManagementAPI
   /api/2.0/token-management/tokens/{token_id}:
     delete:
       operationId: token_management_delete
@@ -4488,6 +4563,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokenManagementAPI
     get:
       operationId: token_management_get
       summary: Gets information about a token, specified by its ID.
@@ -4526,6 +4602,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokenManagementAPI
   /api/2.0/permissions/authorization/tokens/permissionLevels:
     get:
       operationId: token_management_get_permission_levels
@@ -4556,6 +4633,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokenManagementAPI
   /api/2.0/permissions/authorization/tokens:
     get:
       operationId: token_management_get_permissions
@@ -4590,6 +4668,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokenManagementAPI
     put:
       operationId: token_management_set_permissions
       summary: >-
@@ -4638,6 +4717,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokenManagementAPI
     patch:
       operationId: token_management_update_permissions
       summary: >-
@@ -4683,6 +4763,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokenManagementAPI
   /api/2.0/token-management/tokens:
     get:
       operationId: token_management_list
@@ -4718,7 +4799,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TokenInfo'
+                $ref: '#/components/schemas/ListTokensResponse'
         default:
           description: Error response
           content:
@@ -4730,6 +4811,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokenManagementAPI
   /api/2.0/token/create:
     post:
       operationId: tokens_create
@@ -4789,6 +4871,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokensAPI
   /api/2.0/token/delete:
     post:
       operationId: tokens_delete
@@ -4831,6 +4914,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokensAPI
   /api/2.0/token/list:
     get:
       operationId: tokens_list
@@ -4849,7 +4933,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PublicTokenInfo'
+                $ref: '#/components/schemas/ListPublicTokensResponse'
         default:
           description: Error response
           content:
@@ -4861,6 +4945,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TokensAPI
   /api/2.0/workspace-conf:
     get:
       operationId: workspace_conf_get_status
@@ -4899,6 +4984,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceConfAPI
     patch:
       operationId: workspace_conf_set_status
       summary: >-
@@ -4934,6 +5020,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceConfAPI
 components:
   schemas:
     AccountIpAccessEnable:
@@ -6049,12 +6136,12 @@ components:
         credential:
           type: string
           description: The requested token.
-        credential_eol_time:
+        credentialEolTime:
           type: integer
           description: >-
             The end-of-life timestamp of the token. The value is in milliseconds
             since the Unix epoch.
-        owner_id:
+        ownerId:
           type: integer
           description: User ID of the user that owns this token.
         scopes:
@@ -6062,7 +6149,7 @@ components:
           items:
             type: string
           description: The scopes of access granted in the token.
-        token_type:
+        tokenType:
           $ref: '#/components/schemas/TokenType'
           description: The type of this exchange token
       description: The exchange token is the result of the token exchange with the IdP
@@ -6667,7 +6754,7 @@ components:
     PartitionId:
       type: object
       properties:
-        workspace_id:
+        workspaceId:
           type: integer
           description: The ID of the workspace.
       description: Partition by workspace or account
@@ -8320,6 +8407,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.ip_access_lists
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1ip-access-lists~1{ip_access_list_id}/delete'
@@ -8469,6 +8557,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.results
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1notification-destinations~1{id}/delete'
@@ -8642,6 +8731,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.token_infos
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/token_management/methods/get'
@@ -8727,6 +8817,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.token_infos
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/tokens/methods/list'

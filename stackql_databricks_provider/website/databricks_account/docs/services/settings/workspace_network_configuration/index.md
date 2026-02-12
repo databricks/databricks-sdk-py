@@ -33,12 +33,12 @@ Creates, updates, deletes, gets or lists a <code>workspace_network_configuration
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_workspace_network_option_rpc"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'get_workspace_network_option_rpc', value: 'get_workspace_network_option_rpc' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_workspace_network_option_rpc">
 
 <SchemaTable fields={[
   {
@@ -71,18 +71,18 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#get_workspace_network_option_rpc"><CopyableCode code="get_workspace_network_option_rpc" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a></td>
     <td></td>
-    <td>Gets the network option for a workspace. Every workspace has exactly one network policy binding, with<br />'default-policy' used if no explicit assignment exists.<br /><br />:param workspace_id: int<br />  The workspace ID.<br /><br />:returns: :class:`WorkspaceNetworkOption`</td>
+    <td>Gets the network option for a workspace. Every workspace has exactly one network policy binding, with</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#update_workspace_network_option_rpc"><CopyableCode code="update_workspace_network_option_rpc" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-data__workspace_network_option"><code>data__workspace_network_option</code></a></td>
     <td></td>
-    <td>Updates the network option for a workspace. This operation associates the workspace with the specified<br />network policy. To revert to the default policy, specify 'default-policy' as the network_policy_id.<br /><br />:param workspace_id: int<br />  The workspace ID.<br />:param workspace_network_option: :class:`WorkspaceNetworkOption`<br />  The network option details for the workspace.<br /><br />:returns: :class:`WorkspaceNetworkOption`</td>
+    <td>Updates the network option for a workspace. This operation associates the workspace with the specified</td>
 </tr>
 </tbody>
 </table>
@@ -116,14 +116,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_workspace_network_option_rpc"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'get_workspace_network_option_rpc', value: 'get_workspace_network_option_rpc' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_workspace_network_option_rpc">
 
-Gets the network option for a workspace. Every workspace has exactly one network policy binding, with<br />'default-policy' used if no explicit assignment exists.<br /><br />:param workspace_id: int<br />  The workspace ID.<br /><br />:returns: :class:`WorkspaceNetworkOption`
+Gets the network option for a workspace. Every workspace has exactly one network policy binding, with
 
 ```sql
 SELECT
@@ -141,14 +141,14 @@ AND workspace_id = '{{ workspace_id }}' -- required
 ## `REPLACE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="update_workspace_network_option_rpc"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'update_workspace_network_option_rpc', value: 'update_workspace_network_option_rpc' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="update_workspace_network_option_rpc">
 
-Updates the network option for a workspace. This operation associates the workspace with the specified<br />network policy. To revert to the default policy, specify 'default-policy' as the network_policy_id.<br /><br />:param workspace_id: int<br />  The workspace ID.<br />:param workspace_network_option: :class:`WorkspaceNetworkOption`<br />  The network option details for the workspace.<br /><br />:returns: :class:`WorkspaceNetworkOption`
+Updates the network option for a workspace. This operation associates the workspace with the specified
 
 ```sql
 REPLACE databricks_account.settings.workspace_network_configuration

@@ -33,12 +33,12 @@ Creates, updates, deletes, gets or lists an <code>account_user_preferences</code
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_public_account_user_preference"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'get_public_account_user_preference', value: 'get_public_account_user_preference' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_public_account_user_preference">
 
 <SchemaTable fields={[
   {
@@ -119,18 +119,18 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#get_public_account_user_preference"><CopyableCode code="get_public_account_user_preference" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-user_id"><code>user_id</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
-    <td>Get a user preference for a specific user. User preferences are personal settings that allow<br />individual customization without affecting other users. See<br />:method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via<br />public APIs.<br /><br />:param user_id: str<br />  User ID of the user whose setting is being retrieved.<br />:param name: str<br />  User Setting name.<br /><br />:returns: :class:`UserPreference`</td>
+    <td>Get a user preference for a specific user. User preferences are personal settings that allow</td>
 </tr>
 <tr>
-    <td><a href="#patch"><CopyableCode code="patch" /></a></td>
+    <td><a href="#patch_public_account_user_preference"><CopyableCode code="patch_public_account_user_preference" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-user_id"><code>user_id</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a></td>
     <td></td>
-    <td>Update a user preference for a specific user. User preferences are personal settings that allow<br />individual customization without affecting other users. See<br />:method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via<br />public APIs.<br /><br />Note: Page refresh is required for changes to take effect in UI.<br /><br />:param user_id: str<br />  User ID of the user whose setting is being updated.<br />:param name: str<br />:param setting: :class:`UserPreference`<br /><br />:returns: :class:`UserPreference`</td>
+    <td>Update a user preference for a specific user. User preferences are personal settings that allow</td>
 </tr>
 </tbody>
 </table>
@@ -169,14 +169,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_public_account_user_preference"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'get_public_account_user_preference', value: 'get_public_account_user_preference' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_public_account_user_preference">
 
-Get a user preference for a specific user. User preferences are personal settings that allow<br />individual customization without affecting other users. See<br />:method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via<br />public APIs.<br /><br />:param user_id: str<br />  User ID of the user whose setting is being retrieved.<br />:param name: str<br />  User Setting name.<br /><br />:returns: :class:`UserPreference`
+Get a user preference for a specific user. User preferences are personal settings that allow
 
 ```sql
 SELECT
@@ -199,14 +199,14 @@ AND name = '{{ name }}' -- required
 ## `UPDATE` examples
 
 <Tabs
-    defaultValue="patch"
+    defaultValue="patch_public_account_user_preference"
     values={[
-        { label: 'patch', value: 'patch' }
+        { label: 'patch_public_account_user_preference', value: 'patch_public_account_user_preference' }
     ]}
 >
-<TabItem value="patch">
+<TabItem value="patch_public_account_user_preference">
 
-Update a user preference for a specific user. User preferences are personal settings that allow<br />individual customization without affecting other users. See<br />:method:settingsv2/listaccountuserpreferencesmetadata for list of user preferences available via<br />public APIs.<br /><br />Note: Page refresh is required for changes to take effect in UI.<br /><br />:param user_id: str<br />  User ID of the user whose setting is being updated.<br />:param name: str<br />:param setting: :class:`UserPreference`<br /><br />:returns: :class:`UserPreference`
+Update a user preference for a specific user. User preferences are personal settings that allow
 
 ```sql
 UPDATE databricks_account.settingsv2.account_user_preferences

@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks settingsv2 service (account-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.settingsv2
 servers:
   - url: https://accounts.cloud.databricks.com
 paths:
@@ -58,6 +61,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountSettingsV2API
     patch:
       operationId: account_settings_v2_patch_public_account_setting
       summary: >-
@@ -127,6 +131,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountSettingsV2API
   /api/2.1/accounts/{account_id}/users/{user_id}/settings/{name}:
     get:
       operationId: account_settings_v2_get_public_account_user_preference
@@ -190,6 +195,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountSettingsV2API
     patch:
       operationId: account_settings_v2_patch_public_account_user_preference
       summary: >-
@@ -267,6 +273,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountSettingsV2API
   /api/2.1/accounts/{account_id}/settings-metadata:
     get:
       operationId: account_settings_v2_list_account_settings_metadata
@@ -329,7 +336,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SettingsMetadata'
+                $ref: '#/components/schemas/ListAccountSettingsMetadataResponse'
         default:
           description: Error response
           content:
@@ -341,6 +348,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountSettingsV2API
   /api/2.1/accounts/{account_id}/users/{user_id}/settings-metadata:
     get:
       operationId: account_settings_v2_list_account_user_preferences_metadata
@@ -416,7 +424,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SettingsMetadata'
+                $ref: '#/components/schemas/ListAccountSettingsMetadataResponse'
         default:
           description: Error response
           content:
@@ -428,6 +436,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountSettingsV2API
 components:
   schemas:
     AibiDashboardEmbeddingAccessPolicy:
@@ -898,36 +907,40 @@ components:
         Methods can be added to enumerations, and members can have their own
         attributes -- see the documentation for details.
   x-stackQL-resources:
-    account_settings_v2:
-      id: databricks_account.settingsv2.account_settings_v2
-      name: account_settings_v2
-      title: Account Settings V2
+    account_settings:
+      id: databricks_account.settingsv2.account_settings
+      name: account_settings
+      title: Account Settings
       methods:
-        get:
+        get_public_account_setting:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1settings~1{name}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        patch:
+        patch_public_account_setting:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1settings~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        list_account_settings_metadata:
           operation:
             $ref: '#/paths/~1api~12.1~1accounts~1{account_id}~1settings-metadata/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.settings_metadata
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/account_settings_v2/methods/get'
-          - $ref: '#/components/x-stackQL-resources/account_settings_v2/methods/list'
+          - $ref: >-
+              #/components/x-stackQL-resources/account_settings/methods/get_public_account_setting
+          - $ref: >-
+              #/components/x-stackQL-resources/account_settings/methods/list_account_settings_metadata
         insert: []
         update:
-          - $ref: '#/components/x-stackQL-resources/account_settings_v2/methods/patch'
+          - $ref: >-
+              #/components/x-stackQL-resources/account_settings/methods/patch_public_account_setting
         delete: []
         replace: []
     account_user_preferences:
@@ -935,14 +948,14 @@ components:
       name: account_user_preferences
       title: Account User Preferences
       methods:
-        get:
+        get_public_account_user_preference:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1users~1{user_id}~1settings~1{name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        patch:
+        patch_public_account_user_preference:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1users~1{user_id}~1settings~1{name}/patch
@@ -952,11 +965,11 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/account_user_preferences/methods/get
+              #/components/x-stackQL-resources/account_user_preferences/methods/get_public_account_user_preference
         insert: []
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/account_user_preferences/methods/patch
+              #/components/x-stackQL-resources/account_user_preferences/methods/patch_public_account_user_preference
         delete: []
         replace: []
     account_user_preferences_metadata:
@@ -964,17 +977,18 @@ components:
       name: account_user_preferences_metadata
       title: Account User Preferences Metadata
       methods:
-        list:
+        list_account_user_preferences_metadata:
           operation:
             $ref: >-
               #/paths/~1api~12.1~1accounts~1{account_id}~1users~1{user_id}~1settings-metadata/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.settings_metadata
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/account_user_preferences_metadata/methods/list
+              #/components/x-stackQL-resources/account_user_preferences_metadata/methods/list_account_user_preferences_metadata
         insert: []
         update: []
         delete: []

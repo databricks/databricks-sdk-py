@@ -26,12 +26,12 @@ total resources: __7__
 <div class="row">
 <div class="providerDocColumn">
 <a href="/services/iam/account_assignable_roles/">account_assignable_roles</a><br />
-<a href="/services/iam/account_groups_v2/">account_groups_v2</a><br />
+<a href="/services/iam/account_groups/">account_groups</a><br />
 <a href="/services/iam/account_rule_sets/">account_rule_sets</a><br />
-<a href="/services/iam/account_service_principals_v2/">account_service_principals_v2</a>
+<a href="/services/iam/account_service_principals/">account_service_principals</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/iam/account_users_v2/">account_users_v2</a><br />
+<a href="/services/iam/account_users/">account_users</a><br />
 <a href="/services/iam/workspace_assignment/">workspace_assignment</a><br />
 <a href="/services/iam/workspace_permissions/">workspace_permissions</a>
 </div>

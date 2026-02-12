@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists an <code>account_metastore_assignments<
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_metastore_assignments_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_metastore_assignments_get', value: 'account_metastore_assignments_get' },
+        { label: 'account_metastore_assignments_list', value: 'account_metastore_assignments_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_metastore_assignments_get">
 
 <SchemaTable fields={[
   {
@@ -66,9 +66,15 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_metastore_assignments_list">
 
-<SchemaTable fields={[]} />
+<SchemaTable fields={[
+  {
+    "name": "workspaces",
+    "type": "array",
+    "description": ""
+  }
+]} />
 </TabItem>
 </Tabs>
 
@@ -88,39 +94,39 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#account_metastore_assignments_get"><CopyableCode code="account_metastore_assignments_get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a></td>
     <td></td>
-    <td>Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned<br />a metastore, the mapping will be returned. If no metastore is assigned to the workspace, the<br />assignment will not be found and a 404 returned.<br /><br />:param workspace_id: int<br />  Workspace ID.<br /><br />:returns: :class:`AccountsMetastoreAssignment`</td>
+    <td>Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#account_metastore_assignments_list"><CopyableCode code="account_metastore_assignments_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a></td>
     <td></td>
-    <td>Gets a list of all Databricks workspace IDs that have been assigned to given metastore.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br /><br />:returns: Iterator over int</td>
+    <td>Gets a list of all Databricks workspace IDs that have been assigned to given metastore.</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#account_metastore_assignments_create"><CopyableCode code="account_metastore_assignments_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a></td>
     <td></td>
-    <td>Creates an assignment to a metastore for a workspace<br /><br />:param workspace_id: int<br />  Workspace ID.<br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)<br /><br />:returns: :class:`AccountsCreateMetastoreAssignmentResponse`</td>
+    <td>Creates an assignment to a metastore for a workspace</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#account_metastore_assignments_update"><CopyableCode code="account_metastore_assignments_update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a></td>
     <td></td>
-    <td>Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be<br />updated.<br /><br />:param workspace_id: int<br />  Workspace ID.<br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)<br /><br />:returns: :class:`AccountsUpdateMetastoreAssignmentResponse`</td>
+    <td>Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#account_metastore_assignments_delete"><CopyableCode code="account_metastore_assignments_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a></td>
     <td></td>
-    <td>Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.<br /><br />:param workspace_id: int<br />  Workspace ID.<br />:param metastore_id: str<br />  Unity Catalog metastore ID<br /><br />:returns: :class:`AccountsDeleteMetastoreAssignmentResponse`</td>
+    <td>Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.</td>
 </tr>
 </tbody>
 </table>
@@ -159,15 +165,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_metastore_assignments_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_metastore_assignments_get', value: 'account_metastore_assignments_get' },
+        { label: 'account_metastore_assignments_list', value: 'account_metastore_assignments_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_metastore_assignments_get">
 
-Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned<br />a metastore, the mapping will be returned. If no metastore is assigned to the workspace, the<br />assignment will not be found and a 404 returned.<br /><br />:param workspace_id: int<br />  Workspace ID.<br /><br />:returns: :class:`AccountsMetastoreAssignment`
+Gets the metastore assignment, if any, for the workspace specified by ID. If the workspace is assigned
 
 ```sql
 SELECT
@@ -178,13 +184,13 @@ AND workspace_id = '{{ workspace_id }}' -- required
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_metastore_assignments_list">
 
-Gets a list of all Databricks workspace IDs that have been assigned to given metastore.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br /><br />:returns: Iterator over int
+Gets a list of all Databricks workspace IDs that have been assigned to given metastore.
 
 ```sql
 SELECT
-*
+workspaces
 FROM databricks_account.catalog.account_metastore_assignments
 WHERE account_id = '{{ account_id }}' -- required
 AND metastore_id = '{{ metastore_id }}' -- required
@@ -197,15 +203,15 @@ AND metastore_id = '{{ metastore_id }}' -- required
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="account_metastore_assignments_create"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'account_metastore_assignments_create', value: 'account_metastore_assignments_create' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="account_metastore_assignments_create">
 
-Creates an assignment to a metastore for a workspace<br /><br />:param workspace_id: int<br />  Workspace ID.<br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param metastore_assignment: :class:`CreateMetastoreAssignment` (optional)<br /><br />:returns: :class:`AccountsCreateMetastoreAssignmentResponse`
+Creates an assignment to a metastore for a workspace
 
 ```sql
 INSERT INTO databricks_account.catalog.account_metastore_assignments (
@@ -249,14 +255,14 @@ SELECT
 ## `REPLACE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="account_metastore_assignments_update"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'account_metastore_assignments_update', value: 'account_metastore_assignments_update' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="account_metastore_assignments_update">
 
-Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be<br />updated.<br /><br />:param workspace_id: int<br />  Workspace ID.<br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param metastore_assignment: :class:`UpdateMetastoreAssignment` (optional)<br /><br />:returns: :class:`AccountsUpdateMetastoreAssignmentResponse`
+Updates an assignment to a metastore for a workspace. Currently, only the default catalog may be
 
 ```sql
 REPLACE databricks_account.catalog.account_metastore_assignments
@@ -274,14 +280,14 @@ AND metastore_id = '{{ metastore_id }}' --required;
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="account_metastore_assignments_delete"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'account_metastore_assignments_delete', value: 'account_metastore_assignments_delete' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="account_metastore_assignments_delete">
 
-Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.<br /><br />:param workspace_id: int<br />  Workspace ID.<br />:param metastore_id: str<br />  Unity Catalog metastore ID<br /><br />:returns: :class:`AccountsDeleteMetastoreAssignmentResponse`
+Deletes a metastore assignment to a workspace, leaving the workspace with no metastore.
 
 ```sql
 DELETE FROM databricks_account.catalog.account_metastore_assignments

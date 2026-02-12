@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists an <code>account_metastores</code> reso
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_metastores_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_metastores_get', value: 'account_metastores_get' },
+        { label: 'account_metastores_list', value: 'account_metastores_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_metastores_get">
 
 <SchemaTable fields={[
   {
@@ -146,7 +146,7 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_metastores_list">
 
 <SchemaTable fields={[
   {
@@ -264,39 +264,39 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#account_metastores_get"><CopyableCode code="account_metastores_get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a></td>
     <td></td>
-    <td>Gets a Unity Catalog metastore from an account, both specified by ID.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br /><br />:returns: :class:`AccountsGetMetastoreResponse`</td>
+    <td>Gets a Unity Catalog metastore from an account, both specified by ID.</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#account_metastores_list"><CopyableCode code="account_metastores_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Gets all Unity Catalog metastores associated with an account specified by ID.<br /><br /><br />:returns: Iterator over :class:`MetastoreInfo`</td>
+    <td>Gets all Unity Catalog metastores associated with an account specified by ID.</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#account_metastores_create"><CopyableCode code="account_metastores_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Creates a Unity Catalog metastore.<br /><br />:param metastore_info: :class:`CreateAccountsMetastore` (optional)<br /><br />:returns: :class:`AccountsCreateMetastoreResponse`</td>
+    <td>Creates a Unity Catalog metastore.</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#account_metastores_update"><CopyableCode code="account_metastores_update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a></td>
     <td></td>
-    <td>Updates an existing Unity Catalog metastore.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param metastore_info: :class:`UpdateAccountsMetastore` (optional)<br />  Properties of the metastore to change.<br /><br />:returns: :class:`AccountsUpdateMetastoreResponse`</td>
+    <td>Updates an existing Unity Catalog metastore.</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#account_metastores_delete"><CopyableCode code="account_metastores_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
-    <td>Deletes a Unity Catalog metastore for an account, both specified by ID.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param force: bool (optional)<br />  Force deletion even if the metastore is not empty. Default is false.<br /><br />:returns: :class:`AccountsDeleteMetastoreResponse`</td>
+    <td>Deletes a Unity Catalog metastore for an account, both specified by ID.</td>
 </tr>
 </tbody>
 </table>
@@ -335,15 +335,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_metastores_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_metastores_get', value: 'account_metastores_get' },
+        { label: 'account_metastores_list', value: 'account_metastores_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_metastores_get">
 
-Gets a Unity Catalog metastore from an account, both specified by ID.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br /><br />:returns: :class:`AccountsGetMetastoreResponse`
+Gets a Unity Catalog metastore from an account, both specified by ID.
 
 ```sql
 SELECT
@@ -354,9 +354,9 @@ AND metastore_id = '{{ metastore_id }}' -- required
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_metastores_list">
 
-Gets all Unity Catalog metastores associated with an account specified by ID.<br /><br /><br />:returns: Iterator over :class:`MetastoreInfo`
+Gets all Unity Catalog metastores associated with an account specified by ID.
 
 ```sql
 SELECT
@@ -390,15 +390,15 @@ WHERE account_id = '{{ account_id }}' -- required
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="account_metastores_create"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'account_metastores_create', value: 'account_metastores_create' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="account_metastores_create">
 
-Creates a Unity Catalog metastore.<br /><br />:param metastore_info: :class:`CreateAccountsMetastore` (optional)<br /><br />:returns: :class:`AccountsCreateMetastoreResponse`
+Creates a Unity Catalog metastore.
 
 ```sql
 INSERT INTO databricks_account.catalog.account_metastores (
@@ -434,14 +434,14 @@ metastore_info
 ## `REPLACE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="account_metastores_update"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'account_metastores_update', value: 'account_metastores_update' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="account_metastores_update">
 
-Updates an existing Unity Catalog metastore.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param metastore_info: :class:`UpdateAccountsMetastore` (optional)<br />  Properties of the metastore to change.<br /><br />:returns: :class:`AccountsUpdateMetastoreResponse`
+Updates an existing Unity Catalog metastore.
 
 ```sql
 REPLACE databricks_account.catalog.account_metastores
@@ -460,14 +460,14 @@ metastore_info;
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="account_metastores_delete"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'account_metastores_delete', value: 'account_metastores_delete' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="account_metastores_delete">
 
-Deletes a Unity Catalog metastore for an account, both specified by ID.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param force: bool (optional)<br />  Force deletion even if the metastore is not empty. Default is false.<br /><br />:returns: :class:`AccountsDeleteMetastoreResponse`
+Deletes a Unity Catalog metastore for an account, both specified by ID.
 
 ```sql
 DELETE FROM databricks_account.catalog.account_metastores

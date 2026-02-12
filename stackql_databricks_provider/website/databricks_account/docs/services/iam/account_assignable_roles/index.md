@@ -33,12 +33,12 @@ Creates, updates, deletes, gets or lists an <code>account_assignable_roles</code
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_assignable_roles_for_resource"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'get_assignable_roles_for_resource', value: 'get_assignable_roles_for_resource' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_assignable_roles_for_resource">
 
 <SchemaTable fields={[
   {
@@ -73,11 +73,11 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#get_assignable_roles_for_resource"><CopyableCode code="get_assignable_roles_for_resource" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-resource"><code>resource</code></a></td>
     <td></td>
-    <td>Gets all the roles that can be granted on an account level resource. A role is grantable if the rule<br />set on the resource can contain an access rule of the role.<br /><br />:param resource: str<br />  The resource name for which assignable roles will be listed.<br /><br />  Examples | Summary :--- | :--- `resource=accounts/<ACCOUNT_ID>` | A resource name for the account.<br />  `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for the group.<br />  `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A resource name for the service<br />  principal. `resource=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>` | A resource name for the<br />  tag policy.<br /><br />:returns: :class:`GetAssignableRolesForResourceResponse`</td>
+    <td>Gets all the roles that can be granted on an account level resource. A role is grantable if the rule</td>
 </tr>
 </tbody>
 </table>
@@ -111,14 +111,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_assignable_roles_for_resource"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'get_assignable_roles_for_resource', value: 'get_assignable_roles_for_resource' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_assignable_roles_for_resource">
 
-Gets all the roles that can be granted on an account level resource. A role is grantable if the rule<br />set on the resource can contain an access rule of the role.<br /><br />:param resource: str<br />  The resource name for which assignable roles will be listed.<br /><br />  Examples | Summary :--- | :--- `resource=accounts/<ACCOUNT_ID>` | A resource name for the account.<br />  `resource=accounts/<ACCOUNT_ID>/groups/<GROUP_ID>` | A resource name for the group.<br />  `resource=accounts/<ACCOUNT_ID>/servicePrincipals/<SP_ID>` | A resource name for the service<br />  principal. `resource=accounts/<ACCOUNT_ID>/tagPolicies/<TAG_POLICY_ID>` | A resource name for the<br />  tag policy.<br /><br />:returns: :class:`GetAssignableRolesForResourceResponse`
+Gets all the roles that can be granted on an account level resource. A role is grantable if the rule
 
 ```sql
 SELECT

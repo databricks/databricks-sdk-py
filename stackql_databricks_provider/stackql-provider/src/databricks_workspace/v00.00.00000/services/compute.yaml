@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks compute service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.compute
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -122,6 +125,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClusterPoliciesAPI
   /api/2.0/policies/clusters/delete:
     post:
       operationId: cluster_policies_delete
@@ -163,6 +167,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClusterPoliciesAPI
   /api/2.0/policies/clusters/edit:
     post:
       operationId: cluster_policies_edit
@@ -280,6 +285,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClusterPoliciesAPI
   /api/2.0/policies/clusters/get:
     get:
       operationId: cluster_policies_get
@@ -323,6 +329,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClusterPoliciesAPI
   /api/2.0/permissions/cluster-policies/{cluster_policy_id}/permissionLevels:
     get:
       operationId: cluster_policies_get_permission_levels
@@ -362,6 +369,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClusterPoliciesAPI
   /api/2.0/permissions/cluster-policies/{cluster_policy_id}:
     get:
       operationId: cluster_policies_get_permissions
@@ -407,6 +415,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClusterPoliciesAPI
     put:
       operationId: cluster_policies_set_permissions
       summary: >-
@@ -464,6 +473,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClusterPoliciesAPI
     patch:
       operationId: cluster_policies_update_permissions
       summary: >-
@@ -520,6 +530,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClusterPoliciesAPI
   /api/2.0/policies/clusters/list:
     get:
       operationId: cluster_policies_list
@@ -563,7 +574,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Policy'
+                $ref: '#/components/schemas/ListPoliciesResponse'
         default:
           description: Error response
           content:
@@ -575,6 +586,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClusterPoliciesAPI
   /api/2.1/clusters/change-owner:
     post:
       operationId: clusters_change_owner
@@ -628,6 +640,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/create:
     post:
       operationId: clusters_create
@@ -1073,6 +1086,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/delete:
     post:
       operationId: clusters_delete
@@ -1127,6 +1141,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/edit:
     post:
       operationId: clusters_edit
@@ -1562,6 +1577,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/events:
     post:
       operationId: clusters_events
@@ -1676,7 +1692,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClusterEvent'
+                $ref: '#/components/schemas/GetEventsResponse'
         default:
           description: Error response
           content:
@@ -1688,6 +1704,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/get:
     get:
       operationId: clusters_get
@@ -1733,6 +1750,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.0/permissions/clusters/{cluster_id}/permissionLevels:
     get:
       operationId: clusters_get_permission_levels
@@ -1772,6 +1790,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.0/permissions/clusters/{cluster_id}:
     get:
       operationId: clusters_get_permissions
@@ -1815,6 +1834,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
     put:
       operationId: clusters_set_permissions
       summary: >-
@@ -1872,6 +1892,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
     patch:
       operationId: clusters_update_permissions
       summary: >-
@@ -1926,6 +1947,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/list:
     get:
       operationId: clusters_list
@@ -1990,7 +2012,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClusterDetails'
+                $ref: '#/components/schemas/ListClustersResponse'
         default:
           description: Error response
           content:
@@ -2002,6 +2024,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/list-node-types:
     get:
       operationId: clusters_list_node_types
@@ -2036,6 +2059,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/list-zones:
     get:
       operationId: clusters_list_zones
@@ -2072,6 +2096,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/permanent-delete:
     post:
       operationId: clusters_permanent_delete
@@ -2121,6 +2146,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/pin:
     post:
       operationId: clusters_pin
@@ -2164,6 +2190,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/resize:
     post:
       operationId: clusters_resize
@@ -2246,6 +2273,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/restart:
     post:
       operationId: clusters_restart
@@ -2305,6 +2333,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/spark-versions:
     get:
       operationId: clusters_spark_versions
@@ -2339,6 +2368,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/start:
     post:
       operationId: clusters_start
@@ -2399,6 +2429,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/unpin:
     post:
       operationId: clusters_unpin
@@ -2444,6 +2475,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/2.1/clusters/update:
     post:
       operationId: clusters_update
@@ -2548,6 +2580,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ClustersAPI
   /api/1.2/commands/cancel:
     post:
       operationId: command_execution_cancel
@@ -2603,6 +2636,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CommandExecutionAPI
   /api/1.2/commands/status:
     get:
       operationId: command_execution_command_status
@@ -2664,6 +2698,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CommandExecutionAPI
   /api/1.2/contexts/status:
     get:
       operationId: command_execution_context_status
@@ -2708,6 +2743,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CommandExecutionAPI
   /api/1.2/contexts/create:
     post:
       operationId: command_execution_create
@@ -2761,6 +2797,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CommandExecutionAPI
   /api/1.2/contexts/destroy:
     post:
       operationId: command_execution_destroy
@@ -2801,6 +2838,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CommandExecutionAPI
   /api/1.2/commands/execute:
     post:
       operationId: command_execution_execute
@@ -2871,6 +2909,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CommandExecutionAPI
   /api/2.0/global-init-scripts:
     post:
       operationId: global_init_scripts_create
@@ -2952,6 +2991,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GlobalInitScriptsAPI
     get:
       operationId: global_init_scripts_list
       summary: >-
@@ -2978,7 +3018,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/GlobalInitScriptDetails'
+                $ref: '#/components/schemas/ListGlobalInitScriptsResponse'
         default:
           description: Error response
           content:
@@ -2990,6 +3030,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GlobalInitScriptsAPI
   /api/2.0/global-init-scripts/{script_id}:
     delete:
       operationId: global_init_scripts_delete
@@ -3023,6 +3064,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GlobalInitScriptsAPI
     get:
       operationId: global_init_scripts_get
       summary: Gets all the details of a script, including its Base64-encoded contents.
@@ -3061,6 +3103,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GlobalInitScriptsAPI
     patch:
       operationId: global_init_scripts_update
       summary: >-
@@ -3149,6 +3192,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GlobalInitScriptsAPI
   /api/2.0/instance-pools/create:
     post:
       operationId: instance_pools_create
@@ -3344,6 +3388,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstancePoolsAPI
   /api/2.0/instance-pools/delete:
     post:
       operationId: instance_pools_delete
@@ -3385,6 +3430,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstancePoolsAPI
   /api/2.0/instance-pools/edit:
     post:
       operationId: instance_pools_edit
@@ -3516,6 +3562,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstancePoolsAPI
   /api/2.0/instance-pools/get:
     get:
       operationId: instance_pools_get
@@ -3555,6 +3602,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstancePoolsAPI
   /api/2.0/permissions/instance-pools/{instance_pool_id}/permissionLevels:
     get:
       operationId: instance_pools_get_permission_levels
@@ -3594,6 +3642,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstancePoolsAPI
   /api/2.0/permissions/instance-pools/{instance_pool_id}:
     get:
       operationId: instance_pools_get_permissions
@@ -3639,6 +3688,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstancePoolsAPI
     put:
       operationId: instance_pools_set_permissions
       summary: >-
@@ -3696,6 +3746,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstancePoolsAPI
     patch:
       operationId: instance_pools_update_permissions
       summary: >-
@@ -3752,6 +3803,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstancePoolsAPI
   /api/2.0/instance-pools/list:
     get:
       operationId: instance_pools_list
@@ -3770,7 +3822,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InstancePoolAndStats'
+                $ref: '#/components/schemas/ListInstancePools'
         default:
           description: Error response
           content:
@@ -3782,6 +3834,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstancePoolsAPI
   /api/2.0/instance-profiles/add:
     post:
       operationId: instance_profiles_add
@@ -3879,6 +3932,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstanceProfilesAPI
   /api/2.0/instance-profiles/edit:
     post:
       operationId: instance_profiles_edit
@@ -3978,6 +4032,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstanceProfilesAPI
   /api/2.0/instance-profiles/list:
     get:
       operationId: instance_profiles_list
@@ -4003,7 +4058,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/InstanceProfile'
+                $ref: '#/components/schemas/ListInstanceProfilesResponse'
         default:
           description: Error response
           content:
@@ -4015,6 +4070,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstanceProfilesAPI
   /api/2.0/instance-profiles/remove:
     post:
       operationId: instance_profiles_remove
@@ -4063,6 +4119,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: InstanceProfilesAPI
   /api/2.0/libraries/all-cluster-statuses:
     get:
       operationId: libraries_all_cluster_statuses
@@ -4087,7 +4144,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClusterLibraryStatuses'
+                $ref: '#/components/schemas/ListAllClusterLibraryStatusesResponse'
         default:
           description: Error response
           content:
@@ -4099,6 +4156,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LibrariesAPI
   /api/2.0/libraries/cluster-status:
     get:
       operationId: libraries_cluster_status
@@ -4141,7 +4199,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LibraryFullStatus'
+                $ref: '#/components/schemas/ClusterLibraryStatuses'
         default:
           description: Error response
           content:
@@ -4153,6 +4211,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LibrariesAPI
   /api/2.0/libraries/install:
     post:
       operationId: libraries_install
@@ -4204,6 +4263,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LibrariesAPI
   /api/2.0/libraries/uninstall:
     post:
       operationId: libraries_uninstall
@@ -4256,6 +4316,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: LibrariesAPI
   /api/2.0/policies/clusters/enforce-compliance:
     post:
       operationId: policy_compliance_for_clusters_enforce_compliance
@@ -4334,6 +4395,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PolicyComplianceForClustersAPI
   /api/2.0/policies/clusters/get-compliance:
     get:
       operationId: policy_compliance_for_clusters_get_compliance
@@ -4379,6 +4441,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PolicyComplianceForClustersAPI
   /api/2.0/policies/clusters/list-compliance:
     get:
       operationId: policy_compliance_for_clusters_list_compliance
@@ -4436,7 +4499,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ClusterCompliance'
+                $ref: '#/components/schemas/ListClusterCompliancesResponse'
         default:
           description: Error response
           content:
@@ -4448,6 +4511,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PolicyComplianceForClustersAPI
   /api/2.0/policy-families/{policy_family_id}:
     get:
       operationId: policy_families_get
@@ -4501,6 +4565,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PolicyFamiliesAPI
   /api/2.0/policy-families:
     get:
       operationId: policy_families_list
@@ -4542,7 +4607,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PolicyFamily'
+                $ref: '#/components/schemas/ListPolicyFamiliesResponse'
         default:
           description: Error response
           content:
@@ -4554,6 +4619,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PolicyFamiliesAPI
 components:
   schemas:
     AddResponse:
@@ -6380,7 +6446,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InitScriptInfoAndExecutionDetails'
-        global_:
+        global:
           type: array
           items:
             $ref: '#/components/schemas/InitScriptInfoAndExecutionDetails'
@@ -7332,7 +7398,7 @@ components:
           type: string
         data:
           type: object
-        file_name:
+        fileName:
           type: string
           description: >-
             The image data in one of the following formats: 1. A Data URL with
@@ -7340,14 +7406,14 @@ components:
             Example: `data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUA...` 2.
             A FileStore file path for large images: `/plots/{filename}.png`.
             Example: `/plots/b6a7ad70-fb2c-4353-8aed-3f1e015174a4.png`
-        file_names:
+        fileNames:
           type: array
           items:
             type: string
           description: >-
             List of image data for multiple images. Each element follows the
             same format as file_name.
-        is_json_schema:
+        isJsonSchema:
           type: boolean
           description: >-
             true if a JSON schema is returned instead of a string representation
@@ -7355,7 +7421,7 @@ components:
         pos:
           type: integer
           description: internal field used by SDK
-        result_type:
+        resultType:
           $ref: '#/components/schemas/ResultType'
         schema:
           type: array
@@ -8866,6 +8932,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.policies
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/cluster_policies/methods/get'
@@ -8982,6 +9049,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.clusters
         permanent_delete:
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1permanent-delete/post'
@@ -9219,6 +9287,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.scripts
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1global-init-scripts~1{script_id}/delete'
@@ -9286,6 +9355,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.instance_pools
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/instance_pools/methods/get'
@@ -9378,6 +9448,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.instance_profiles
         remove:
           operation:
             $ref: '#/paths/~1api~12.0~1instance-profiles~1remove/post'
@@ -9405,6 +9476,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.statuses
       sqlVerbs:
         select:
           - $ref: >-
@@ -9424,6 +9496,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.library_statuses
         install:
           operation:
             $ref: '#/paths/~1api~12.0~1libraries~1install/post'
@@ -9467,6 +9540,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.clusters
       sqlVerbs:
         select:
           - $ref: >-
@@ -9496,6 +9570,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.policy_families
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/policy_families/methods/get'

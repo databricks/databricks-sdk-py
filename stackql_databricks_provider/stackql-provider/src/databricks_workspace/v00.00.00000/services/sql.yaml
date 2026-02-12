@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks sql service (workspace-level APIs),
     generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.sql
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -61,6 +64,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsAPI
     get:
       operationId: alerts_list
       summary: >-
@@ -101,7 +105,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListAlertsResponseAlert'
+                $ref: '#/components/schemas/ListAlertsResponse'
         default:
           description: Error response
           content:
@@ -113,6 +117,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsAPI
   /api/2.0/sql/alerts/{id}:
     delete:
       operationId: alerts_delete
@@ -154,6 +159,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsAPI
     get:
       operationId: alerts_get
       summary: Gets an alert.
@@ -191,6 +197,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsAPI
     patch:
       operationId: alerts_update
       summary: Updates an alert.
@@ -271,6 +278,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsAPI
   /api/2.0/preview/sql/alerts:
     post:
       operationId: alerts_legacy_create
@@ -356,6 +364,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsLegacyAPI
     get:
       operationId: alerts_legacy_list
       summary: Gets a list of alerts.
@@ -393,6 +402,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsLegacyAPI
   /api/2.0/preview/sql/alerts/{alert_id}:
     delete:
       operationId: alerts_legacy_delete
@@ -438,6 +448,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsLegacyAPI
     get:
       operationId: alerts_legacy_get
       summary: Gets an alert.
@@ -484,6 +495,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsLegacyAPI
     put:
       operationId: alerts_legacy_update
       summary: Updates an alert.
@@ -557,6 +569,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsLegacyAPI
   /api/2.0/alerts:
     post:
       operationId: alerts_v2_create_alert
@@ -599,6 +612,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsV2API
     get:
       operationId: alerts_v2_list_alerts
       summary: Gets a list of alerts accessible to the user, ordered by creation time.
@@ -630,7 +644,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AlertV2'
+                $ref: '#/components/schemas/ListAlertsV2Response'
         default:
           description: Error response
           content:
@@ -642,6 +656,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsV2API
   /api/2.0/alerts/{id}:
     get:
       operationId: alerts_v2_get_alert
@@ -680,6 +695,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsV2API
     delete:
       operationId: alerts_v2_trash_alert
       summary: >-
@@ -730,6 +746,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsV2API
     patch:
       operationId: alerts_v2_update_alert
       summary: Update alert
@@ -807,6 +824,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AlertsV2API
   /api/2.0/preview/sql/widgets:
     post:
       operationId: dashboard_widgets_create
@@ -876,6 +894,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardWidgetsAPI
   /api/2.0/preview/sql/widgets/{id}:
     delete:
       operationId: dashboard_widgets_delete
@@ -909,6 +928,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardWidgetsAPI
     post:
       operationId: dashboard_widgets_update
       summary: Updates an existing widget
@@ -986,6 +1006,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardWidgetsAPI
   /api/2.0/preview/sql/dashboards/{dashboard_id}:
     delete:
       operationId: dashboards_delete
@@ -1024,6 +1045,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardsAPI
     get:
       operationId: dashboards_get
       summary: >-
@@ -1066,6 +1088,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardsAPI
     post:
       operationId: dashboards_update
       summary: >-
@@ -1139,6 +1162,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardsAPI
   /api/2.0/preview/sql/dashboards:
     get:
       operationId: dashboards_list
@@ -1197,7 +1221,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Dashboard'
+                $ref: '#/components/schemas/ListResponse'
         default:
           description: Error response
           content:
@@ -1209,6 +1233,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardsAPI
   /api/2.0/preview/sql/dashboards/trash/{dashboard_id}:
     post:
       operationId: dashboards_restore
@@ -1245,6 +1270,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DashboardsAPI
   /api/2.0/preview/sql/data_sources:
     get:
       operationId: data_sources_list
@@ -1291,6 +1317,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataSourcesAPI
   /api/2.0/preview/sql/permissions/{object_type.value}/{object_id}:
     get:
       operationId: dbsql_permissions_get
@@ -1354,6 +1381,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbsqlPermissionsAPI
     post:
       operationId: dbsql_permissions_set
       summary: >-
@@ -1430,6 +1458,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbsqlPermissionsAPI
   /api/2.0/preview/sql/permissions/{object_type.value}/{object_id}/transfer:
     post:
       operationId: dbsql_permissions_transfer_ownership
@@ -1507,6 +1536,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DbsqlPermissionsAPI
   /api/2.0/sql/queries:
     post:
       operationId: queries_create
@@ -1556,6 +1586,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesAPI
     get:
       operationId: queries_list
       summary: >-
@@ -1596,7 +1627,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ListQueryObjectsResponseQuery'
+                $ref: '#/components/schemas/ListQueryObjectsResponse'
         default:
           description: Error response
           content:
@@ -1608,6 +1639,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesAPI
   /api/2.0/sql/queries/{id}:
     delete:
       operationId: queries_delete
@@ -1649,6 +1681,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesAPI
     get:
       operationId: queries_get
       summary: Gets a query.
@@ -1686,6 +1719,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesAPI
     patch:
       operationId: queries_update
       summary: Updates a query.
@@ -1766,6 +1800,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesAPI
   /api/2.0/sql/queries/{id}/visualizations:
     get:
       operationId: queries_list_visualizations
@@ -1805,7 +1840,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Visualization'
+                $ref: '#/components/schemas/ListVisualizationsForQueryResponse'
         default:
           description: Error response
           content:
@@ -1817,6 +1852,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesAPI
   /api/2.0/preview/sql/queries:
     post:
       operationId: queries_legacy_create
@@ -1941,6 +1977,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesLegacyAPI
     get:
       operationId: queries_legacy_list
       summary: >-
@@ -2028,7 +2065,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/LegacyQuery'
+                $ref: '#/components/schemas/QueryList'
         default:
           description: Error response
           content:
@@ -2040,6 +2077,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesLegacyAPI
   /api/2.0/preview/sql/queries/{query_id}:
     delete:
       operationId: queries_legacy_delete
@@ -2085,6 +2123,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesLegacyAPI
     get:
       operationId: queries_legacy_get
       summary: >-
@@ -2136,6 +2175,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesLegacyAPI
     post:
       operationId: queries_legacy_update
       summary: Modify this query definition.
@@ -2246,6 +2286,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesLegacyAPI
   /api/2.0/preview/sql/queries/trash/{query_id}:
     post:
       operationId: queries_legacy_restore
@@ -2291,6 +2332,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueriesLegacyAPI
   /api/2.0/sql/history/queries:
     get:
       operationId: query_history_list
@@ -2384,6 +2426,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueryHistoryAPI
   /api/2.0/sql/visualizations:
     post:
       operationId: query_visualizations_create
@@ -2427,6 +2470,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueryVisualizationsAPI
   /api/2.0/sql/visualizations/{id}:
     delete:
       operationId: query_visualizations_delete
@@ -2459,6 +2503,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueryVisualizationsAPI
     patch:
       operationId: query_visualizations_update
       summary: Updates a visualization.
@@ -2534,6 +2579,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueryVisualizationsAPI
   /api/2.0/preview/sql/visualizations:
     post:
       operationId: query_visualizations_legacy_create
@@ -2619,6 +2665,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueryVisualizationsLegacyAPI
   /api/2.0/preview/sql/visualizations/{id}:
     delete:
       operationId: query_visualizations_legacy_delete
@@ -2662,6 +2709,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueryVisualizationsLegacyAPI
     post:
       operationId: query_visualizations_legacy_update
       summary: Updates visualization in the query.
@@ -2759,6 +2807,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QueryVisualizationsLegacyAPI
   /api/2.0/redash-v2/config:
     get:
       operationId: redash_config_get_config
@@ -2789,6 +2838,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RedashConfigAPI
   /api/2.0/sql/statements/{statement_id}/cancel:
     post:
       operationId: statement_execution_cancel_execution
@@ -2832,6 +2882,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StatementExecutionAPI
   /api/2.0/sql/statements:
     post:
       operationId: statement_execution_execute_statement
@@ -3272,6 +3323,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StatementExecutionAPI
   /api/2.0/sql/statements/{statement_id}:
     get:
       operationId: statement_execution_get_statement
@@ -3336,6 +3388,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StatementExecutionAPI
   /api/2.0/sql/statements/{statement_id}/result/chunks/{chunk_index}:
     get:
       operationId: statement_execution_get_statement_result_chunk_n
@@ -3407,6 +3460,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StatementExecutionAPI
   /api/2.0/sql/warehouses:
     post:
       operationId: warehouses_create
@@ -3578,6 +3632,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
     get:
       operationId: warehouses_list
       summary: Lists all SQL warehouses that a user has access to.
@@ -3632,7 +3687,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EndpointInfo'
+                $ref: '#/components/schemas/ListWarehousesResponse'
         default:
           description: Error response
           content:
@@ -3644,6 +3699,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
   /api/warehouses/v1/default-warehouse-overrides:
     post:
       operationId: warehouses_create_default_warehouse_override
@@ -3706,6 +3762,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
     get:
       operationId: warehouses_list_default_warehouse_overrides
       summary: >-
@@ -3761,7 +3818,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/DefaultWarehouseOverride'
+                $ref: '#/components/schemas/ListDefaultWarehouseOverridesResponse'
         default:
           description: Error response
           content:
@@ -3773,6 +3830,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
   /api/2.0/sql/warehouses/{id}:
     delete:
       operationId: warehouses_delete
@@ -3806,6 +3864,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
     get:
       operationId: warehouses_get
       summary: Gets the information for a single SQL warehouse.
@@ -3844,6 +3903,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
   /api/warehouses/v1/{name}:
     delete:
       operationId: warehouses_delete_default_warehouse_override
@@ -3891,6 +3951,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
     get:
       operationId: warehouses_get_default_warehouse_override
       summary: >-
@@ -3945,6 +4006,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
     patch:
       operationId: warehouses_update_default_warehouse_override
       summary: >-
@@ -4038,6 +4100,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
   /api/2.0/sql/warehouses/{id}/edit:
     post:
       operationId: warehouses_edit
@@ -4218,6 +4281,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
   /api/2.0/permissions/warehouses/{warehouse_id}/permissionLevels:
     get:
       operationId: warehouses_get_permission_levels
@@ -4257,6 +4321,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
   /api/2.0/permissions/warehouses/{warehouse_id}:
     get:
       operationId: warehouses_get_permissions
@@ -4302,6 +4367,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
     put:
       operationId: warehouses_set_permissions
       summary: >-
@@ -4359,6 +4425,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
     patch:
       operationId: warehouses_update_permissions
       summary: >-
@@ -4415,6 +4482,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
   /api/2.0/sql/config/warehouses:
     get:
       operationId: warehouses_get_workspace_warehouse_config
@@ -4449,6 +4517,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
     put:
       operationId: warehouses_set_workspace_warehouse_config
       summary: >-
@@ -4554,6 +4623,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
   /api/2.0/sql/warehouses/{id}/start:
     post:
       operationId: warehouses_start
@@ -4595,6 +4665,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
   /api/2.0/sql/warehouses/{id}/stop:
     post:
       operationId: warehouses_stop
@@ -4636,6 +4707,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WarehousesAPI
 components:
   schemas:
     AccessControl:
@@ -6250,9 +6322,9 @@ components:
     Parameter:
       type: object
       properties:
-        enum_options:
+        enumOptions:
           type: string
-        multi_values_options:
+        multiValuesOptions:
           $ref: '#/components/schemas/MultiValuesOptions'
           description: >-
             If specified, allows multiple values to be selected for this
@@ -6263,7 +6335,7 @@ components:
           description: >-
             The literal parameter marker that appears between double curly
             braces in the query text.
-        query_id:
+        queryId:
           type: string
           description: >-
             The UUID of the query that provides the parameter values. Only
@@ -7194,10 +7266,10 @@ components:
         description:
           type: string
           description: Custom description of the widget
-        is_hidden:
+        isHidden:
           type: boolean
           description: Whether this widget is hidden on the dashboard.
-        parameter_mappings:
+        parameterMappings:
           type: object
           description: >-
             How parameters used by the visualization in this widget relate to
@@ -7217,7 +7289,7 @@ components:
     WidgetPosition:
       type: object
       properties:
-        auto_height:
+        autoHeight:
           type: boolean
           description: reserved for internal use
         col:
@@ -7226,10 +7298,10 @@ components:
         row:
           type: integer
           description: row in the dashboard grid. Values start with 0
-        size_x:
+        sizeX:
           type: integer
           description: width of the widget measured in dashboard grid cells
-        size_y:
+        sizeY:
           type: integer
           description: height of the widget measured in dashboard grid cells
       description: >-
@@ -8951,6 +9023,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.results
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1alerts~1{id}/delete'
@@ -9043,6 +9116,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.alerts
         get:
           operation:
             $ref: '#/paths/~1api~12.0~1alerts~1{id}/get'
@@ -9134,6 +9208,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.results
         restore:
           operation:
             $ref: >-
@@ -9220,6 +9295,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.results
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1queries~1{id}/delete'
@@ -9260,6 +9336,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.results
         create:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1visualizations/post'
@@ -9308,6 +9385,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.results
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1queries~1{query_id}/delete'
@@ -9474,6 +9552,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.warehouses
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1warehouses~1{id}/delete'
@@ -9532,6 +9611,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.default_warehouse_overrides
         delete:
           operation:
             $ref: '#/paths/~1api~1warehouses~1v1~1{name}/delete'

@@ -31,7 +31,8 @@ async function generateDocs() {
       providerName,
       providerDir,
       outputDir,
-      providerDataDir
+      providerDataDir,
+      succinct: true,  // use summary for method descriptions
     });
     
     console.log('Documentation generated successfully:', result);

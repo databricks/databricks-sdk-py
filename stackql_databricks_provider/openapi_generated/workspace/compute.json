@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks compute service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-11",
+    "x-stackql-date-generated": "2026-02-12",
     "x-stackql-sdk-namespace": "databricks.sdk.service.compute"
   },
   "servers": [

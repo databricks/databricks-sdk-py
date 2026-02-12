@@ -1,9 +1,9 @@
 ---
-title: account_service_principals_v2
+title: account_service_principals
 hide_title: false
 hide_table_of_contents: false
 keywords:
-  - account_service_principals_v2
+  - account_service_principals
   - iam
   - databricks_account
   - infrastructure-as-code
@@ -19,13 +19,13 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
 
-Creates, updates, deletes, gets or lists an <code>account_service_principals_v2</code> resource.
+Creates, updates, deletes, gets or lists an <code>account_service_principals</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_service_principals_v2</code></td></tr>
+<tr><td><b>Name</b></td><td><code>account_service_principals</code></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
-<tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iam.account_service_principals_v2" /></td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iam.account_service_principals" /></td></tr>
 </tbody></table>
 
 ## Fields
@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists an <code>account_service_principals_v2<
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_service_principals_v2_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_service_principals_v2_get', value: 'account_service_principals_v2_get' },
+        { label: 'account_service_principals_v2_list', value: 'account_service_principals_v2_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_service_principals_v2_get">
 
 <SchemaTable fields={[
   {
@@ -53,24 +53,24 @@ The following fields are returned by `SELECT` queries:
     "description": ""
   },
   {
-    "name": "application_id",
+    "name": "active",
+    "type": "boolean",
+    "description": "If this user is active"
+  },
+  {
+    "name": "applicationId",
     "type": "string",
     "description": "UUID relating to the service principal"
   },
   {
-    "name": "external_id",
-    "type": "string",
-    "description": ""
-  },
-  {
-    "name": "display_name",
+    "name": "displayName",
     "type": "string",
     "description": "String that represents a concatenation of given and family names."
   },
   {
-    "name": "active",
-    "type": "boolean",
-    "description": "If this user is active"
+    "name": "externalId",
+    "type": "string",
+    "description": ""
   },
   {
     "name": "roles",
@@ -88,7 +88,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -106,7 +106,7 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_service_principals_v2_list">
 
 <SchemaTable fields={[
   {
@@ -120,24 +120,24 @@ The following fields are returned by `SELECT` queries:
     "description": ""
   },
   {
-    "name": "application_id",
+    "name": "active",
+    "type": "boolean",
+    "description": "If this user is active"
+  },
+  {
+    "name": "applicationId",
     "type": "string",
     "description": "UUID relating to the service principal"
   },
   {
-    "name": "external_id",
-    "type": "string",
-    "description": ""
-  },
-  {
-    "name": "display_name",
+    "name": "displayName",
     "type": "string",
     "description": "String that represents a concatenation of given and family names."
   },
   {
-    "name": "active",
-    "type": "boolean",
-    "description": "If this user is active"
+    "name": "externalId",
+    "type": "string",
+    "description": ""
   },
   {
     "name": "roles",
@@ -155,7 +155,7 @@ The following fields are returned by `SELECT` queries:
         "description": ""
       },
       {
-        "name": "ref",
+        "name": "$ref",
         "type": "string",
         "description": ""
       },
@@ -191,46 +191,46 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#account_service_principals_v2_get"><CopyableCode code="account_service_principals_v2_get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
-    <td>Gets the details for a single service principal define in the Databricks account.<br /><br />:param id: str<br />  Unique ID for a service principal in the Databricks account.<br /><br />:returns: :class:`AccountServicePrincipal`</td>
+    <td>Gets the details for a single service principal define in the Databricks account.</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#account_service_principals_v2_list"><CopyableCode code="account_service_principals_v2_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td><a href="#parameter-attributes"><code>attributes</code></a>, <a href="#parameter-count"><code>count</code></a>, <a href="#parameter-excluded_attributes"><code>excluded_attributes</code></a>, <a href="#parameter-filter"><code>filter</code></a>, <a href="#parameter-sort_by"><code>sort_by</code></a>, <a href="#parameter-sort_order"><code>sort_order</code></a>, <a href="#parameter-start_index"><code>start_index</code></a></td>
-    <td>Gets the set of service principals associated with a Databricks account.<br /><br />:param attributes: str (optional)<br />  Comma-separated list of attributes to return in response.<br />:param count: int (optional)<br />  Desired number of results per page. Default is 10000.<br />:param excluded_attributes: str (optional)<br />  Comma-separated list of attributes to exclude in response.<br />:param filter: str (optional)<br />  Query by which the results have to be filtered. Supported operators are equals(`eq`),<br />  contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be<br />  formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently<br />  only support simple expressions.<br /><br />  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2<br />:param sort_by: str (optional)<br />  Attribute to sort the results.<br />:param sort_order: :class:`ListSortOrder` (optional)<br />  The order to sort the results.<br />:param start_index: int (optional)<br />  Specifies the index of the first result. First item is number 1.<br /><br />:returns: Iterator over :class:`AccountServicePrincipal`</td>
+    <td>Gets the set of service principals associated with a Databricks account.</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#account_service_principals_v2_create"><CopyableCode code="account_service_principals_v2_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Creates a new service principal in the Databricks account.<br /><br />:param active: bool (optional)<br />  If this user is active<br />:param application_id: str (optional)<br />  UUID relating to the service principal<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names.<br />:param external_id: str (optional)<br />:param id: str (optional)<br />  Databricks service principal ID.<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Indicates if the group has the admin role.<br /><br />:returns: :class:`AccountServicePrincipal`</td>
+    <td>Creates a new service principal in the Databricks account.</td>
 </tr>
 <tr>
-    <td><a href="#patch"><CopyableCode code="patch" /></a></td>
+    <td><a href="#account_service_principals_v2_patch"><CopyableCode code="account_service_principals_v2_patch" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
-    <td>Partially updates the details of a single service principal in the Databricks account.<br /><br />:param id: str<br />  Unique ID in the Databricks workspace.<br />:param operations: List[:class:`Patch`] (optional)<br />:param schemas: List[:class:`PatchSchema`] (optional)<br />  The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].</td>
+    <td>Partially updates the details of a single service principal in the Databricks account.</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#account_service_principals_v2_update"><CopyableCode code="account_service_principals_v2_update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
-    <td>Updates the details of a single service principal.<br /><br />This action replaces the existing service principal with the same name.<br /><br />:param id: str<br />  Databricks service principal ID.<br />:param active: bool (optional)<br />  If this user is active<br />:param application_id: str (optional)<br />  UUID relating to the service principal<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names.<br />:param external_id: str (optional)<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Indicates if the group has the admin role.</td>
+    <td>Updates the details of a single service principal.</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#account_service_principals_v2_delete"><CopyableCode code="account_service_principals_v2_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
-    <td>Delete a single service principal in the Databricks account.<br /><br />:param id: str<br />  Unique ID for a service principal in the Databricks account.</td>
+    <td>Delete a single service principal in the Databricks account.</td>
 </tr>
 </tbody>
 </table>
@@ -299,45 +299,45 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_service_principals_v2_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_service_principals_v2_get', value: 'account_service_principals_v2_get' },
+        { label: 'account_service_principals_v2_list', value: 'account_service_principals_v2_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_service_principals_v2_get">
 
-Gets the details for a single service principal define in the Databricks account.<br /><br />:param id: str<br />  Unique ID for a service principal in the Databricks account.<br /><br />:returns: :class:`AccountServicePrincipal`
+Gets the details for a single service principal define in the Databricks account.
 
 ```sql
 SELECT
 id,
 account_id,
-application_id,
-external_id,
-display_name,
 active,
+applicationId,
+displayName,
+externalId,
 roles
-FROM databricks_account.iam.account_service_principals_v2
+FROM databricks_account.iam.account_service_principals
 WHERE account_id = '{{ account_id }}' -- required
 AND id = '{{ id }}' -- required
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_service_principals_v2_list">
 
-Gets the set of service principals associated with a Databricks account.<br /><br />:param attributes: str (optional)<br />  Comma-separated list of attributes to return in response.<br />:param count: int (optional)<br />  Desired number of results per page. Default is 10000.<br />:param excluded_attributes: str (optional)<br />  Comma-separated list of attributes to exclude in response.<br />:param filter: str (optional)<br />  Query by which the results have to be filtered. Supported operators are equals(`eq`),<br />  contains(`co`), starts with(`sw`) and not equals(`ne`). Additionally, simple expressions can be<br />  formed using logical operators - `and` and `or`. The [SCIM RFC] has more details but we currently<br />  only support simple expressions.<br /><br />  [SCIM RFC]: https://tools.ietf.org/html/rfc7644#section-3.4.2.2<br />:param sort_by: str (optional)<br />  Attribute to sort the results.<br />:param sort_order: :class:`ListSortOrder` (optional)<br />  The order to sort the results.<br />:param start_index: int (optional)<br />  Specifies the index of the first result. First item is number 1.<br /><br />:returns: Iterator over :class:`AccountServicePrincipal`
+Gets the set of service principals associated with a Databricks account.
 
 ```sql
 SELECT
 id,
 account_id,
-application_id,
-external_id,
-display_name,
 active,
+applicationId,
+displayName,
+externalId,
 roles
-FROM databricks_account.iam.account_service_principals_v2
+FROM databricks_account.iam.account_service_principals
 WHERE account_id = '{{ account_id }}' -- required
 AND attributes = '{{ attributes }}'
 AND count = '{{ count }}'
@@ -355,18 +355,18 @@ AND start_index = '{{ start_index }}'
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="account_service_principals_v2_create"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'account_service_principals_v2_create', value: 'account_service_principals_v2_create' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="account_service_principals_v2_create">
 
-Creates a new service principal in the Databricks account.<br /><br />:param active: bool (optional)<br />  If this user is active<br />:param application_id: str (optional)<br />  UUID relating to the service principal<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names.<br />:param external_id: str (optional)<br />:param id: str (optional)<br />  Databricks service principal ID.<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Indicates if the group has the admin role.<br /><br />:returns: :class:`AccountServicePrincipal`
+Creates a new service principal in the Databricks account.
 
 ```sql
-INSERT INTO databricks_account.iam.account_service_principals_v2 (
+INSERT INTO databricks_account.iam.account_service_principals (
 data__active,
 data__application_id,
 data__display_name,
@@ -386,10 +386,10 @@ SELECT
 RETURNING
 id,
 account_id,
-application_id,
-external_id,
-display_name,
 active,
+applicationId,
+displayName,
+externalId,
 roles
 ;
 ```
@@ -398,11 +398,11 @@ roles
 
 ```yaml
 # Description fields are for documentation purposes
-- name: account_service_principals_v2
+- name: account_service_principals
   props:
     - name: account_id
       value: string
-      description: Required parameter for the account_service_principals_v2 resource.
+      description: Required parameter for the account_service_principals resource.
     - name: active
       value: string
       description: |
@@ -433,17 +433,17 @@ roles
 ## `UPDATE` examples
 
 <Tabs
-    defaultValue="patch"
+    defaultValue="account_service_principals_v2_patch"
     values={[
-        { label: 'patch', value: 'patch' }
+        { label: 'account_service_principals_v2_patch', value: 'account_service_principals_v2_patch' }
     ]}
 >
-<TabItem value="patch">
+<TabItem value="account_service_principals_v2_patch">
 
-Partially updates the details of a single service principal in the Databricks account.<br /><br />:param id: str<br />  Unique ID in the Databricks workspace.<br />:param operations: List[:class:`Patch`] (optional)<br />:param schemas: List[:class:`PatchSchema`] (optional)<br />  The schema of the patch request. Must be ["urn:ietf:params:scim:api:messages:2.0:PatchOp"].
+Partially updates the details of a single service principal in the Databricks account.
 
 ```sql
-UPDATE databricks_account.iam.account_service_principals_v2
+UPDATE databricks_account.iam.account_service_principals
 SET 
 data__operations = '{{ operations }}',
 data__schemas = '{{ schemas }}'
@@ -458,17 +458,17 @@ AND id = '{{ id }}' --required;
 ## `REPLACE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="account_service_principals_v2_update"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'account_service_principals_v2_update', value: 'account_service_principals_v2_update' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="account_service_principals_v2_update">
 
-Updates the details of a single service principal.<br /><br />This action replaces the existing service principal with the same name.<br /><br />:param id: str<br />  Databricks service principal ID.<br />:param active: bool (optional)<br />  If this user is active<br />:param application_id: str (optional)<br />  UUID relating to the service principal<br />:param display_name: str (optional)<br />  String that represents a concatenation of given and family names.<br />:param external_id: str (optional)<br />:param roles: List[:class:`ComplexValue`] (optional)<br />  Indicates if the group has the admin role.
+Updates the details of a single service principal.
 
 ```sql
-REPLACE databricks_account.iam.account_service_principals_v2
+REPLACE databricks_account.iam.account_service_principals
 SET 
 data__active = '{{ active }}',
 data__application_id = '{{ application_id }}',
@@ -486,17 +486,17 @@ AND id = '{{ id }}' --required;
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="account_service_principals_v2_delete"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'account_service_principals_v2_delete', value: 'account_service_principals_v2_delete' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="account_service_principals_v2_delete">
 
-Delete a single service principal in the Databricks account.<br /><br />:param id: str<br />  Unique ID for a service principal in the Databricks account.
+Delete a single service principal in the Databricks account.
 
 ```sql
-DELETE FROM databricks_account.iam.account_service_principals_v2
+DELETE FROM databricks_account.iam.account_service_principals
 WHERE account_id = '{{ account_id }}' --required
 AND id = '{{ id }}' --required
 ;

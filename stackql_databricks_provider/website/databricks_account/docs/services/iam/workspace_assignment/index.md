@@ -33,12 +33,12 @@ Creates, updates, deletes, gets or lists a <code>workspace_assignment</code> res
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="list"
+    defaultValue="workspace_assignment_list"
     values={[
-        { label: 'list', value: 'list' }
+        { label: 'workspace_assignment_list', value: 'workspace_assignment_list' }
     ]}
 >
-<TabItem value="list">
+<TabItem value="workspace_assignment_list">
 
 <SchemaTable fields={[
   {
@@ -103,25 +103,25 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#workspace_assignment_list"><CopyableCode code="workspace_assignment_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a></td>
     <td></td>
-    <td>Get the permission assignments for the specified Databricks account and Databricks workspace.<br /><br />:param workspace_id: int<br />  The workspace ID for the account.<br /><br />:returns: Iterator over :class:`PermissionAssignment`</td>
+    <td>Get the permission assignments for the specified Databricks account and Databricks workspace.</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#workspace_assignment_update"><CopyableCode code="workspace_assignment_update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-principal_id"><code>principal_id</code></a></td>
     <td></td>
-    <td>Creates or updates the workspace permissions assignment in a given account and workspace for the<br />specified principal.<br /><br />:param workspace_id: int<br />  The workspace ID.<br />:param principal_id: int<br />  The ID of the user, service principal, or group.<br />:param permissions: List[:class:`WorkspacePermission`] (optional)<br />  Array of permissions assignments to update on the workspace. Valid values are "USER" and "ADMIN"<br />  (case-sensitive). If both "USER" and "ADMIN" are provided, "ADMIN" takes precedence. Other values<br />  will be ignored. Note that excluding this field, or providing unsupported values, will have the same<br />  effect as providing an empty list, which will result in the deletion of all permissions for the<br />  principal.<br /><br />:returns: :class:`PermissionAssignment`</td>
+    <td>Creates or updates the workspace permissions assignment in a given account and workspace for the</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#workspace_assignment_delete"><CopyableCode code="workspace_assignment_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-principal_id"><code>principal_id</code></a></td>
     <td></td>
-    <td>Deletes the workspace permissions assignment in a given account and workspace for the specified<br />principal.<br /><br />:param workspace_id: int<br />  The workspace ID for the account.<br />:param principal_id: int<br />  The ID of the user, service principal, or group.</td>
+    <td>Deletes the workspace permissions assignment in a given account and workspace for the specified</td>
 </tr>
 </tbody>
 </table>
@@ -160,14 +160,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="list"
+    defaultValue="workspace_assignment_list"
     values={[
-        { label: 'list', value: 'list' }
+        { label: 'workspace_assignment_list', value: 'workspace_assignment_list' }
     ]}
 >
-<TabItem value="list">
+<TabItem value="workspace_assignment_list">
 
-Get the permission assignments for the specified Databricks account and Databricks workspace.<br /><br />:param workspace_id: int<br />  The workspace ID for the account.<br /><br />:returns: Iterator over :class:`PermissionAssignment`
+Get the permission assignments for the specified Databricks account and Databricks workspace.
 
 ```sql
 SELECT
@@ -186,14 +186,14 @@ AND workspace_id = '{{ workspace_id }}' -- required
 ## `REPLACE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="workspace_assignment_update"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'workspace_assignment_update', value: 'workspace_assignment_update' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="workspace_assignment_update">
 
-Creates or updates the workspace permissions assignment in a given account and workspace for the<br />specified principal.<br /><br />:param workspace_id: int<br />  The workspace ID.<br />:param principal_id: int<br />  The ID of the user, service principal, or group.<br />:param permissions: List[:class:`WorkspacePermission`] (optional)<br />  Array of permissions assignments to update on the workspace. Valid values are "USER" and "ADMIN"<br />  (case-sensitive). If both "USER" and "ADMIN" are provided, "ADMIN" takes precedence. Other values<br />  will be ignored. Note that excluding this field, or providing unsupported values, will have the same<br />  effect as providing an empty list, which will result in the deletion of all permissions for the<br />  principal.<br /><br />:returns: :class:`PermissionAssignment`
+Creates or updates the workspace permissions assignment in a given account and workspace for the
 
 ```sql
 REPLACE databricks_account.iam.workspace_assignment
@@ -215,14 +215,14 @@ principal;
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="workspace_assignment_delete"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'workspace_assignment_delete', value: 'workspace_assignment_delete' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="workspace_assignment_delete">
 
-Deletes the workspace permissions assignment in a given account and workspace for the specified<br />principal.<br /><br />:param workspace_id: int<br />  The workspace ID for the account.<br />:param principal_id: int<br />  The ID of the user, service principal, or group.
+Deletes the workspace permissions assignment in a given account and workspace for the specified
 
 ```sql
 DELETE FROM databricks_account.iam.workspace_assignment

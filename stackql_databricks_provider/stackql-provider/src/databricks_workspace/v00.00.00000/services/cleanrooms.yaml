@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks cleanrooms service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.cleanrooms
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -82,6 +85,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAssetRevisionsAPI
   /api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/revisions:
     get:
       operationId: clean_room_asset_revisions_list
@@ -148,7 +152,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CleanRoomAsset'
+                $ref: '#/components/schemas/ListCleanRoomAssetRevisionsResponse'
         default:
           description: Error response
           content:
@@ -160,6 +164,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAssetRevisionsAPI
   /api/2.0/clean-rooms/{clean_room_name}/assets:
     post:
       operationId: clean_room_assets_create
@@ -229,6 +234,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAssetsAPI
     get:
       operationId: clean_room_assets_list
       summary: List assets.
@@ -263,7 +269,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CleanRoomAsset'
+                $ref: '#/components/schemas/ListCleanRoomAssetRevisionsResponse'
         default:
           description: Error response
           content:
@@ -275,6 +281,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAssetsAPI
   /api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}/reviews:
     post:
       operationId: clean_room_assets_create_clean_room_asset_review
@@ -344,6 +351,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAssetsAPI
   /api/2.0/clean-rooms/{clean_room_name}/assets/{asset_type.value}/{name}:
     delete:
       operationId: clean_room_assets_delete
@@ -400,6 +408,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAssetsAPI
     get:
       operationId: clean_room_assets_get
       summary: Get the details of a clean room asset by its type and full name.
@@ -461,6 +470,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAssetsAPI
     patch:
       operationId: clean_room_assets_update
       summary: >-
@@ -553,6 +563,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAssetsAPI
   /api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules:
     post:
       operationId: clean_room_auto_approval_rules_create
@@ -604,6 +615,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAutoApprovalRulesAPI
     get:
       operationId: clean_room_auto_approval_rules_list
       summary: List all auto-approval rules for the caller
@@ -646,7 +658,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CleanRoomAutoApprovalRule'
+                $ref: '#/components/schemas/ListCleanRoomAutoApprovalRulesResponse'
         default:
           description: Error response
           content:
@@ -658,6 +670,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAutoApprovalRulesAPI
   /api/2.0/clean-rooms/{clean_room_name}/auto-approval-rules/{rule_id}:
     delete:
       operationId: clean_room_auto_approval_rules_delete
@@ -696,6 +709,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAutoApprovalRulesAPI
     get:
       operationId: clean_room_auto_approval_rules_get
       summary: Get a auto-approval rule by rule ID
@@ -739,6 +753,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAutoApprovalRulesAPI
     patch:
       operationId: clean_room_auto_approval_rules_update
       summary: Update a auto-approval rule by rule ID
@@ -800,6 +815,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomAutoApprovalRulesAPI
   /api/2.0/clean-rooms/{clean_room_name}/runs:
     get:
       operationId: clean_room_task_runs_list
@@ -853,7 +869,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CleanRoomNotebookTaskRun'
+                $ref: '#/components/schemas/ListCleanRoomNotebookTaskRunsResponse'
         default:
           description: Error response
           content:
@@ -865,6 +881,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomTaskRunsAPI
   /api/2.0/clean-rooms:
     post:
       operationId: clean_rooms_create
@@ -932,6 +949,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomsAPI
     get:
       operationId: clean_rooms_list
       summary: >-
@@ -974,7 +992,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CleanRoom'
+                $ref: '#/components/schemas/ListCleanRoomsResponse'
         default:
           description: Error response
           content:
@@ -986,6 +1004,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomsAPI
   /api/2.0/clean-rooms/{clean_room_name}/output-catalogs:
     post:
       operationId: clean_rooms_create_output_catalog
@@ -1037,6 +1056,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomsAPI
   /api/2.0/clean-rooms/{name}:
     delete:
       operationId: clean_rooms_delete
@@ -1080,6 +1100,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomsAPI
     get:
       operationId: clean_rooms_get
       summary: Get the details of a clean room given its name.
@@ -1117,6 +1138,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomsAPI
     patch:
       operationId: clean_rooms_update
       summary: >-
@@ -1176,6 +1198,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CleanRoomsAPI
 components:
   schemas:
     CleanRoom:
@@ -2015,6 +2038,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.revisions
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/asset_revisions/methods/get'
@@ -2040,6 +2064,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.assets
         review:
           operation:
             $ref: >-
@@ -2098,6 +2123,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.rules
         delete:
           operation:
             $ref: >-
@@ -2144,6 +2170,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.runs
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/task_runs/methods/list'
@@ -2168,6 +2195,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.clean_rooms
         create_output_catalog:
           operation:
             $ref: >-

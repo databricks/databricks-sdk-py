@@ -145,28 +145,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-storage_configuration_id"><code>storage_configuration_id</code></a></td>
     <td></td>
-    <td>Gets a Databricks storage configuration for an account, both specified by ID.<br /><br />:param storage_configuration_id: str<br /><br />:returns: :class:`StorageConfiguration`</td>
+    <td>Gets a Databricks storage configuration for an account, both specified by ID.</td>
 </tr>
 <tr>
     <td><a href="#storage_list"><CopyableCode code="storage_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Lists Databricks storage configurations for an account, specified by ID.<br /><br /><br />:returns: Iterator over :class:`StorageConfiguration`</td>
+    <td>Lists Databricks storage configurations for an account, specified by ID.</td>
 </tr>
 <tr>
     <td><a href="#storage_create"><CopyableCode code="storage_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__storage_configuration_name"><code>data__storage_configuration_name</code></a>, <a href="#parameter-data__root_bucket_info"><code>data__root_bucket_info</code></a></td>
     <td></td>
-    <td>Creates a Databricks storage configuration for an account.<br /><br />:param storage_configuration_name: str<br />  The human-readable name of the storage configuration.<br />:param root_bucket_info: :class:`RootBucketInfo`<br />  Root S3 bucket information.<br />:param role_arn: str (optional)<br />  Optional IAM role that is used to access the workspace catalog which is created during workspace<br />  creation for UC by Default. If a storage configuration with this field populated is used to create a<br />  workspace, then a workspace catalog is created together with the workspace. The workspace catalog<br />  shares the root bucket with internal workspace storage (including DBFS root) but uses a dedicated<br />  bucket path prefix.<br /><br />:returns: :class:`StorageConfiguration`</td>
+    <td>Creates a Databricks storage configuration for an account.</td>
 </tr>
 <tr>
     <td><a href="#storage_delete"><CopyableCode code="storage_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-storage_configuration_id"><code>storage_configuration_id</code></a></td>
     <td></td>
-    <td>Deletes a Databricks storage configuration. You cannot delete a storage configuration that is<br />associated with any workspace.<br /><br />:param storage_configuration_id: str<br /><br />:returns: :class:`StorageConfiguration`</td>
+    <td>Deletes a Databricks storage configuration. You cannot delete a storage configuration that is</td>
 </tr>
 </tbody>
 </table>
@@ -208,7 +208,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="storage_get">
 
-Gets a Databricks storage configuration for an account, both specified by ID.<br /><br />:param storage_configuration_id: str<br /><br />:returns: :class:`StorageConfiguration`
+Gets a Databricks storage configuration for an account, both specified by ID.
 
 ```sql
 SELECT
@@ -226,7 +226,7 @@ AND storage_configuration_id = '{{ storage_configuration_id }}' -- required
 </TabItem>
 <TabItem value="storage_list">
 
-Lists Databricks storage configurations for an account, specified by ID.<br /><br /><br />:returns: Iterator over :class:`StorageConfiguration`
+Lists Databricks storage configurations for an account, specified by ID.
 
 ```sql
 SELECT
@@ -255,7 +255,7 @@ WHERE account_id = '{{ account_id }}' -- required
 >
 <TabItem value="storage_create">
 
-Creates a Databricks storage configuration for an account.<br /><br />:param storage_configuration_name: str<br />  The human-readable name of the storage configuration.<br />:param root_bucket_info: :class:`RootBucketInfo`<br />  Root S3 bucket information.<br />:param role_arn: str (optional)<br />  Optional IAM role that is used to access the workspace catalog which is created during workspace<br />  creation for UC by Default. If a storage configuration with this field populated is used to create a<br />  workspace, then a workspace catalog is created together with the workspace. The workspace catalog<br />  shares the root bucket with internal workspace storage (including DBFS root) but uses a dedicated<br />  bucket path prefix.<br /><br />:returns: :class:`StorageConfiguration`
+Creates a Databricks storage configuration for an account.
 
 ```sql
 INSERT INTO databricks_account.provisioning.storage (
@@ -315,7 +315,7 @@ root_bucket_info
 >
 <TabItem value="storage_delete">
 
-Deletes a Databricks storage configuration. You cannot delete a storage configuration that is<br />associated with any workspace.<br /><br />:param storage_configuration_id: str<br /><br />:returns: :class:`StorageConfiguration`
+Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
 
 ```sql
 DELETE FROM databricks_account.provisioning.storage

@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks postgres service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.postgres
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -81,6 +84,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
     get:
       operationId: postgres_list_branches
       summary: Returns a paginated list of database branches in the project.
@@ -126,7 +130,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Branch'
+                $ref: '#/components/schemas/ListBranchesResponse'
         default:
           description: Error response
           content:
@@ -138,6 +142,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
   /api/2.0/postgres/{parent}/endpoints:
     post:
       operationId: postgres_create_endpoint
@@ -207,6 +212,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
     get:
       operationId: postgres_list_endpoints
       summary: Returns a paginated list of compute endpoints in the branch.
@@ -253,7 +259,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Endpoint'
+                $ref: '#/components/schemas/ListEndpointsResponse'
         default:
           description: Error response
           content:
@@ -265,6 +271,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
   /api/2.0/postgres/projects:
     post:
       operationId: postgres_create_project
@@ -329,6 +336,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
     get:
       operationId: postgres_list_projects
       summary: >-
@@ -368,7 +376,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Project'
+                $ref: '#/components/schemas/ListProjectsResponse'
         default:
           description: Error response
           content:
@@ -380,6 +388,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
   /api/2.0/postgres/{parent}/roles:
     post:
       operationId: postgres_create_role
@@ -452,6 +461,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
     get:
       operationId: postgres_list_roles
       summary: Returns a paginated list of Postgres roles in the branch.
@@ -497,7 +507,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Role'
+                $ref: '#/components/schemas/ListRolesResponse'
         default:
           description: Error response
           content:
@@ -509,6 +519,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
   /api/2.0/postgres/{name}:
     delete:
       operationId: postgres_delete_role
@@ -570,6 +581,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
     get:
       operationId: postgres_get_role
       summary: >-
@@ -616,6 +628,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
     patch:
       operationId: postgres_update_project
       summary: Updates the specified database project.
@@ -683,6 +696,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
   /api/2.0/postgres/credentials:
     post:
       operationId: postgres_generate_database_credential
@@ -736,6 +750,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PostgresAPI
 components:
   schemas:
     Branch:
@@ -1444,6 +1459,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.branches
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/postgres_branches/methods/list'
@@ -1469,6 +1485,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.endpoints
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/postgres_endpoints/methods/list'
@@ -1494,6 +1511,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.projects
         update:
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{name}/patch'
@@ -1526,6 +1544,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.roles
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{name}/delete'

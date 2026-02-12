@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks oauth2 service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.oauth2
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -66,6 +69,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalSecretsProxyAPI
     get:
       operationId: service_principal_secrets_proxy_list
       summary: >-
@@ -128,7 +132,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SecretInfo'
+                $ref: '#/components/schemas/ListServicePrincipalSecretsResponse'
         default:
           description: Error response
           content:
@@ -140,6 +144,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalSecretsProxyAPI
   /api/2.0/accounts/servicePrincipals/{service_principal_id}/credentials/secrets/{secret_id}:
     delete:
       operationId: service_principal_secrets_proxy_delete
@@ -181,6 +186,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalSecretsProxyAPI
 components:
   schemas:
     CreateCustomAppIntegrationOutput:
@@ -531,6 +537,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.secrets
         delete:
           operation:
             $ref: >-

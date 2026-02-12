@@ -33,12 +33,12 @@ Creates, updates, deletes, gets or lists a <code>usage_dashboards</code> resourc
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="usage_dashboards_get"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'usage_dashboards_get', value: 'usage_dashboards_get' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="usage_dashboards_get">
 
 <SchemaTable fields={[
   {
@@ -71,18 +71,18 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#usage_dashboards_get"><CopyableCode code="usage_dashboards_get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td><a href="#parameter-dashboard_type"><code>dashboard_type</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a></td>
-    <td>Get a usage dashboard specified by workspaceId, accountId, and dashboard type.<br /><br />:param dashboard_type: :class:`UsageDashboardType` (optional)<br />  Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage<br />  dashboard shows usage data for all workspaces in the account.<br />:param workspace_id: int (optional)<br />  The workspace ID of the workspace in which the usage dashboard is created.<br /><br />:returns: :class:`GetBillingUsageDashboardResponse`</td>
+    <td>Get a usage dashboard specified by workspaceId, accountId, and dashboard type.</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#usage_dashboards_create"><CopyableCode code="usage_dashboards_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Create a usage dashboard specified by workspaceId, accountId, and dashboard type.<br /><br />:param dashboard_type: :class:`UsageDashboardType` (optional)<br />  Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage<br />  dashboard shows usage data for all workspaces in the account.<br />:param major_version: :class:`UsageDashboardMajorVersion` (optional)<br />  The major version of the usage dashboard template to use. Defaults to VERSION_1.<br />:param workspace_id: int (optional)<br />  The workspace ID of the workspace in which the usage dashboard is created.<br /><br />:returns: :class:`CreateBillingUsageDashboardResponse`</td>
+    <td>Create a usage dashboard specified by workspaceId, accountId, and dashboard type.</td>
 </tr>
 </tbody>
 </table>
@@ -121,14 +121,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="usage_dashboards_get"
     values={[
-        { label: 'get', value: 'get' }
+        { label: 'usage_dashboards_get', value: 'usage_dashboards_get' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="usage_dashboards_get">
 
-Get a usage dashboard specified by workspaceId, accountId, and dashboard type.<br /><br />:param dashboard_type: :class:`UsageDashboardType` (optional)<br />  Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage<br />  dashboard shows usage data for all workspaces in the account.<br />:param workspace_id: int (optional)<br />  The workspace ID of the workspace in which the usage dashboard is created.<br /><br />:returns: :class:`GetBillingUsageDashboardResponse`
+Get a usage dashboard specified by workspaceId, accountId, and dashboard type.
 
 ```sql
 SELECT
@@ -147,15 +147,15 @@ AND workspace_id = '{{ workspace_id }}'
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="usage_dashboards_create"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'usage_dashboards_create', value: 'usage_dashboards_create' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="usage_dashboards_create">
 
-Create a usage dashboard specified by workspaceId, accountId, and dashboard type.<br /><br />:param dashboard_type: :class:`UsageDashboardType` (optional)<br />  Workspace level usage dashboard shows usage data for the specified workspace ID. Global level usage<br />  dashboard shows usage data for all workspaces in the account.<br />:param major_version: :class:`UsageDashboardMajorVersion` (optional)<br />  The major version of the usage dashboard template to use. Defaults to VERSION_1.<br />:param workspace_id: int (optional)<br />  The workspace ID of the workspace in which the usage dashboard is created.<br /><br />:returns: :class:`CreateBillingUsageDashboardResponse`
+Create a usage dashboard specified by workspaceId, accountId, and dashboard type.
 
 ```sql
 INSERT INTO databricks_account.billing.usage_dashboards (

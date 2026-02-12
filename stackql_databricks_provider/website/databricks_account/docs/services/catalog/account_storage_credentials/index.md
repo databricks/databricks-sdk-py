@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists an <code>account_storage_credentials</c
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_storage_credentials_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_storage_credentials_get', value: 'account_storage_credentials_get' },
+        { label: 'account_storage_credentials_list', value: 'account_storage_credentials_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_storage_credentials_get">
 
 <SchemaTable fields={[
   {
@@ -221,7 +221,7 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_storage_credentials_list">
 
 <SchemaTable fields={[
   {
@@ -414,39 +414,39 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#account_storage_credentials_get"><CopyableCode code="account_storage_credentials_get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-storage_credential_name"><code>storage_credential_name</code></a></td>
     <td></td>
-    <td>Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the<br />storage credential, or have a level of privilege on the storage credential.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param storage_credential_name: str<br />  Required. Name of the storage credential.<br /><br />:returns: :class:`AccountsStorageCredentialInfo`</td>
+    <td>Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#account_storage_credentials_list"><CopyableCode code="account_storage_credentials_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a></td>
     <td></td>
-    <td>Gets a list of all storage credentials that have been assigned to given metastore.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br /><br />:returns: Iterator over :class:`StorageCredentialInfo`</td>
+    <td>Gets a list of all storage credentials that have been assigned to given metastore.</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#account_storage_credentials_create"><CopyableCode code="account_storage_credentials_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a></td>
     <td></td>
-    <td>Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for<br />AWS credentials - **AzureServicePrincipal** for Azure credentials - **GcpServiceAccountKey** for GCP<br />credentials<br /><br />The caller must be a metastore admin and have the `CREATE_STORAGE_CREDENTIAL` privilege on the<br />metastore.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param credential_info: :class:`CreateAccountsStorageCredential` (optional)<br />:param skip_validation: bool (optional)<br />  Optional, default false. Supplying true to this argument skips validation of the created set of<br />  credentials.<br /><br />:returns: :class:`AccountsCreateStorageCredentialInfo`</td>
+    <td>Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#account_storage_credentials_update"><CopyableCode code="account_storage_credentials_update" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-storage_credential_name"><code>storage_credential_name</code></a></td>
     <td></td>
-    <td>Updates a storage credential on the metastore. The caller must be the owner of the storage credential.<br />If the caller is a metastore admin, only the **owner** credential can be changed.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param storage_credential_name: str<br />  Name of the storage credential.<br />:param credential_info: :class:`UpdateAccountsStorageCredential` (optional)<br />:param skip_validation: bool (optional)<br />  Optional. Supplying true to this argument skips validation of the updated set of credentials.<br /><br />:returns: :class:`AccountsUpdateStorageCredentialResponse`</td>
+    <td>Updates a storage credential on the metastore. The caller must be the owner of the storage credential.</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#account_storage_credentials_delete"><CopyableCode code="account_storage_credentials_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-storage_credential_name"><code>storage_credential_name</code></a></td>
     <td><a href="#parameter-force"><code>force</code></a></td>
-    <td>Deletes a storage credential from the metastore. The caller must be an owner of the storage<br />credential.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param storage_credential_name: str<br />  Name of the storage credential.<br />:param force: bool (optional)<br />  Force deletion even if the Storage Credential is not empty. Default is false.<br /><br />:returns: :class:`AccountsDeleteStorageCredentialResponse`</td>
+    <td>Deletes a storage credential from the metastore. The caller must be an owner of the storage</td>
 </tr>
 </tbody>
 </table>
@@ -490,15 +490,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_storage_credentials_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_storage_credentials_get', value: 'account_storage_credentials_get' },
+        { label: 'account_storage_credentials_list', value: 'account_storage_credentials_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_storage_credentials_get">
 
-Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the<br />storage credential, or have a level of privilege on the storage credential.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param storage_credential_name: str<br />  Required. Name of the storage credential.<br /><br />:returns: :class:`AccountsStorageCredentialInfo`
+Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
 
 ```sql
 SELECT
@@ -510,9 +510,9 @@ AND storage_credential_name = '{{ storage_credential_name }}' -- required
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_storage_credentials_list">
 
-Gets a list of all storage credentials that have been assigned to given metastore.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br /><br />:returns: Iterator over :class:`StorageCredentialInfo`
+Gets a list of all storage credentials that have been assigned to given metastore.
 
 ```sql
 SELECT
@@ -546,15 +546,15 @@ AND metastore_id = '{{ metastore_id }}' -- required
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="account_storage_credentials_create"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'account_storage_credentials_create', value: 'account_storage_credentials_create' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="account_storage_credentials_create">
 
-Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for<br />AWS credentials - **AzureServicePrincipal** for Azure credentials - **GcpServiceAccountKey** for GCP<br />credentials<br /><br />The caller must be a metastore admin and have the `CREATE_STORAGE_CREDENTIAL` privilege on the<br />metastore.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param credential_info: :class:`CreateAccountsStorageCredential` (optional)<br />:param skip_validation: bool (optional)<br />  Optional, default false. Supplying true to this argument skips validation of the created set of<br />  credentials.<br /><br />:returns: :class:`AccountsCreateStorageCredentialInfo`
+Creates a new storage credential. The request object is specific to the cloud: - **AwsIamRole** for
 
 ```sql
 INSERT INTO databricks_account.catalog.account_storage_credentials (
@@ -599,14 +599,14 @@ credential_info
 ## `REPLACE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="account_storage_credentials_update"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'account_storage_credentials_update', value: 'account_storage_credentials_update' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="account_storage_credentials_update">
 
-Updates a storage credential on the metastore. The caller must be the owner of the storage credential.<br />If the caller is a metastore admin, only the **owner** credential can be changed.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param storage_credential_name: str<br />  Name of the storage credential.<br />:param credential_info: :class:`UpdateAccountsStorageCredential` (optional)<br />:param skip_validation: bool (optional)<br />  Optional. Supplying true to this argument skips validation of the updated set of credentials.<br /><br />:returns: :class:`AccountsUpdateStorageCredentialResponse`
+Updates a storage credential on the metastore. The caller must be the owner of the storage credential.
 
 ```sql
 REPLACE databricks_account.catalog.account_storage_credentials
@@ -627,14 +627,14 @@ credential_info;
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="account_storage_credentials_delete"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'account_storage_credentials_delete', value: 'account_storage_credentials_delete' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="account_storage_credentials_delete">
 
-Deletes a storage credential from the metastore. The caller must be an owner of the storage<br />credential.<br /><br />:param metastore_id: str<br />  Unity Catalog metastore ID<br />:param storage_credential_name: str<br />  Name of the storage credential.<br />:param force: bool (optional)<br />  Force deletion even if the Storage Credential is not empty. Default is false.<br /><br />:returns: :class:`AccountsDeleteStorageCredentialResponse`
+Deletes a storage credential from the metastore. The caller must be an owner of the storage
 
 ```sql
 DELETE FROM databricks_account.catalog.account_storage_credentials

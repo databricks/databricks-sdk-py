@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks serving service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.serving
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -63,6 +66,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints:
     post:
       operationId: serving_endpoints_create
@@ -165,6 +169,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
     get:
       operationId: serving_endpoints_list
       summary: Get all serving endpoints.
@@ -182,7 +187,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ServingEndpoint'
+                $ref: '#/components/schemas/ListEndpointsResponse'
         default:
           description: Error response
           content:
@@ -194,6 +199,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/pt:
     post:
       operationId: serving_endpoints_create_provisioned_throughput_endpoint
@@ -272,6 +278,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/{name}:
     delete:
       operationId: serving_endpoints_delete
@@ -304,6 +311,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
     get:
       operationId: serving_endpoints_get
       summary: Retrieves the details for a single serving endpoint.
@@ -342,6 +350,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/{name}/metrics:
     get:
       operationId: serving_endpoints_export_metrics
@@ -389,6 +398,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/{name}/openapi:
     get:
       operationId: serving_endpoints_get_open_api
@@ -436,6 +446,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/permissions/serving-endpoints/{serving_endpoint_id}/permissionLevels:
     get:
       operationId: serving_endpoints_get_permission_levels
@@ -476,6 +487,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/permissions/serving-endpoints/{serving_endpoint_id}:
     get:
       operationId: serving_endpoints_get_permissions
@@ -521,6 +533,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
     put:
       operationId: serving_endpoints_set_permissions
       summary: >-
@@ -578,6 +591,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
     patch:
       operationId: serving_endpoints_update_permissions
       summary: >-
@@ -634,6 +648,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/external-function:
     post:
       operationId: serving_endpoints_http_request
@@ -708,6 +723,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/{name}/served-models/{served_model_name}/logs:
     get:
       operationId: serving_endpoints_logs
@@ -759,6 +775,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/{name}/tags:
     patch:
       operationId: serving_endpoints_patch
@@ -820,6 +837,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/{name}/rate-limits:
     put:
       operationId: serving_endpoints_put
@@ -872,6 +890,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/{name}/ai-gateway:
     put:
       operationId: serving_endpoints_put_ai_gateway
@@ -969,6 +988,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /serving-endpoints/{name}/invocations:
     post:
       operationId: serving_endpoints_query
@@ -1150,6 +1170,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/{name}/config:
     put:
       operationId: serving_endpoints_update_config
@@ -1243,6 +1264,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/{name}/notifications:
     patch:
       operationId: serving_endpoints_update_notifications
@@ -1299,6 +1321,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
   /api/2.0/serving-endpoints/pt/{name}/config:
     put:
       operationId: serving_endpoints_update_provisioned_throughput_endpoint_config
@@ -1366,6 +1389,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServingEndpointsAPI
 components:
   schemas:
     Ai21LabsConfig:
@@ -2286,7 +2310,7 @@ components:
           items:
             type: object
           description: The predictions returned by the serving endpoint.
-        served_model_name:
+        served-model-name:
           type: string
           description: >-
             The name of the served model that served the request. This is useful
@@ -2923,7 +2947,7 @@ components:
     V1ResponseChoiceElement:
       type: object
       properties:
-        finish_reason:
+        finishReason:
           type: string
         index:
           type: integer
@@ -3550,6 +3574,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.endpoints
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}/delete'

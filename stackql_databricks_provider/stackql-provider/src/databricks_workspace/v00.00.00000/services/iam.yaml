@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks iam service (workspace-level APIs),
     generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.iam
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -89,6 +92,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccessControlAPI
   /api/2.0/preview/accounts/access-control/assignable-roles:
     get:
       operationId: account_access_control_proxy_get_assignable_roles_for_resource
@@ -149,6 +153,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountAccessControlProxyAPI
   /api/2.0/preview/accounts/access-control/rule-sets:
     get:
       operationId: account_access_control_proxy_get_rule_set
@@ -242,6 +247,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountAccessControlProxyAPI
     put:
       operationId: account_access_control_proxy_update_rule_set
       summary: >-
@@ -297,6 +303,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountAccessControlProxyAPI
   /api/2.0/preview/scim/v2/Me:
     get:
       operationId: current_user_me
@@ -327,6 +334,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CurrentUserAPI
   /api/2.0/preview/scim/v2/Groups:
     post:
       operationId: groups_v2_create
@@ -419,6 +427,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GroupsV2API
     get:
       operationId: groups_v2_list
       summary: Gets all details of the groups associated with the Databricks workspace.
@@ -504,7 +513,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Group'
+                $ref: '#/components/schemas/ListGroupsResponse'
         default:
           description: Error response
           content:
@@ -516,6 +525,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GroupsV2API
   /api/2.0/preview/scim/v2/Groups/{id}:
     delete:
       operationId: groups_v2_delete
@@ -549,6 +559,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GroupsV2API
     get:
       operationId: groups_v2_get
       summary: Gets the information for a specific group in the Databricks workspace.
@@ -587,6 +598,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GroupsV2API
     patch:
       operationId: groups_v2_patch
       summary: Partially updates the details of a group.
@@ -636,6 +648,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GroupsV2API
     put:
       operationId: groups_v2_update
       summary: Updates the details of a group by replacing the entire group entity.
@@ -718,6 +731,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GroupsV2API
   /api/2.0/permissionmigration:
     post:
       operationId: permission_migration_migrate_permissions
@@ -784,6 +798,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PermissionMigrationAPI
   /api/2.0/permissions/{request_object_type}/{request_object_id}:
     get:
       operationId: permissions_get
@@ -845,6 +860,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PermissionsAPI
     put:
       operationId: permissions_set
       summary: >-
@@ -920,6 +936,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PermissionsAPI
     patch:
       operationId: permissions_update
       summary: >-
@@ -992,6 +1009,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PermissionsAPI
   /api/2.0/permissions/{request_object_type}/{request_object_id}/permissionLevels:
     get:
       operationId: permissions_get_permission_levels
@@ -1046,6 +1064,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PermissionsAPI
   /api/2.0/preview/scim/v2/ServicePrincipals:
     post:
       operationId: service_principals_v2_create
@@ -1133,6 +1152,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalsV2API
     get:
       operationId: service_principals_v2_list
       summary: >-
@@ -1222,7 +1242,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ServicePrincipal'
+                $ref: '#/components/schemas/ListServicePrincipalResponse'
         default:
           description: Error response
           content:
@@ -1234,6 +1254,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalsV2API
   /api/2.0/preview/scim/v2/ServicePrincipals/{id}:
     delete:
       operationId: service_principals_v2_delete
@@ -1267,6 +1288,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalsV2API
     get:
       operationId: service_principals_v2_get
       summary: >-
@@ -1309,6 +1331,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalsV2API
     patch:
       operationId: service_principals_v2_patch
       summary: >-
@@ -1363,6 +1386,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalsV2API
     put:
       operationId: service_principals_v2_update
       summary: Updates the details of a single service principal.
@@ -1449,6 +1473,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ServicePrincipalsV2API
   /api/2.0/preview/scim/v2/Users:
     post:
       operationId: users_v2_create
@@ -1564,6 +1589,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsersV2API
     get:
       operationId: users_v2_list
       summary: Gets details for all the users associated with a Databricks workspace.
@@ -1652,7 +1678,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/User'
+                $ref: '#/components/schemas/ListUsersResponse'
         default:
           description: Error response
           content:
@@ -1664,6 +1690,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsersV2API
   /api/2.0/preview/scim/v2/Users/{id}:
     delete:
       operationId: users_v2_delete
@@ -1703,6 +1730,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsersV2API
     get:
       operationId: users_v2_get
       summary: Gets information for a specific user in Databricks workspace.
@@ -1811,6 +1839,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsersV2API
     patch:
       operationId: users_v2_patch
       summary: >-
@@ -1865,6 +1894,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsersV2API
     put:
       operationId: users_v2_update
       summary: Replaces a user's information with the data supplied in request.
@@ -1968,6 +1998,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsersV2API
   /api/2.0/permissions/authorization/passwords/permissionLevels:
     get:
       operationId: users_v2_get_permission_levels
@@ -1998,6 +2029,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsersV2API
   /api/2.0/permissions/authorization/passwords:
     get:
       operationId: users_v2_get_permissions
@@ -2032,6 +2064,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsersV2API
     put:
       operationId: users_v2_set_permissions
       summary: >-
@@ -2080,6 +2113,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsersV2API
     patch:
       operationId: users_v2_update_permissions
       summary: >-
@@ -2125,6 +2159,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: UsersV2API
 components:
   schemas:
     AccessControlRequest:
@@ -2164,10 +2199,10 @@ components:
       properties:
         account_id:
           type: string
-        display_name:
+        displayName:
           type: string
           description: String that represents a human-readable group name
-        external_id:
+        externalId:
           type: string
           description: external_id should be unique for identifying groups
         id:
@@ -2193,13 +2228,13 @@ components:
         active:
           type: boolean
           description: If this user is active
-        application_id:
+        applicationId:
           type: string
           description: UUID relating to the service principal
-        display_name:
+        displayName:
           type: string
           description: String that represents a concatenation of given and family names.
-        external_id:
+        externalId:
           type: string
         id:
           type: string
@@ -2217,7 +2252,7 @@ components:
         active:
           type: boolean
           description: If this user is active
-        display_name:
+        displayName:
           type: string
           description: >-
             String that represents a concatenation of given and family names.
@@ -2227,7 +2262,7 @@ components:
           items:
             $ref: '#/components/schemas/ComplexValue'
           description: All the emails associated with the Databricks user.
-        external_id:
+        externalId:
           type: string
           description: >-
             External ID is not currently supported. It is reserved for future
@@ -2242,7 +2277,7 @@ components:
           items:
             $ref: '#/components/schemas/ComplexValue'
           description: Indicates if the group has the admin role.
-        user_name:
+        userName:
           type: string
           description: Email address of the Databricks user.
     Actor:
@@ -2270,7 +2305,7 @@ components:
           type: string
         primary:
           type: boolean
-        ref:
+        $ref:
           type: string
         type:
           type: string
@@ -2327,7 +2362,7 @@ components:
     Group:
       type: object
       properties:
-        display_name:
+        displayName:
           type: string
         entitlements:
           type: array
@@ -2337,7 +2372,7 @@ components:
             Entitlements assigned to the group. See [assigning entitlements] for
             a full list of supported values. [assigning entitlements]:
             https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
-        external_id:
+        externalId:
           type: string
           description: external_id should be unique for identifying groups
         groups:
@@ -2367,63 +2402,63 @@ components:
     ListAccountGroupsResponse:
       type: object
       properties:
-        items_per_page:
+        itemsPerPage:
           type: integer
-        resources:
+        Resources:
           type: array
           items:
             $ref: '#/components/schemas/AccountGroup'
           description: User objects returned in the response.
-        start_index:
+        startIndex:
           type: integer
           description: >-
             Starting index of all the results that matched the request filters.
             First item is number 1.
-        total_results:
+        totalResults:
           type: integer
           description: Total results that match the request filters.
     ListAccountServicePrincipalsResponse:
       type: object
       properties:
-        items_per_page:
+        itemsPerPage:
           type: integer
-        resources:
+        Resources:
           type: array
           items:
             $ref: '#/components/schemas/AccountServicePrincipal'
           description: User objects returned in the response.
-        start_index:
+        startIndex:
           type: integer
           description: >-
             Starting index of all the results that matched the request filters.
             First item is number 1.
-        total_results:
+        totalResults:
           type: integer
           description: Total results that match the request filters.
     ListAccountUsersResponse:
       type: object
       properties:
-        items_per_page:
+        itemsPerPage:
           type: integer
-        resources:
+        Resources:
           type: array
           items:
             $ref: '#/components/schemas/AccountUser'
           description: User objects returned in the response.
-        start_index:
+        startIndex:
           type: integer
           description: >-
             Starting index of all the results that matched the request filters.
             First item is number 1.
-        total_results:
+        totalResults:
           type: integer
           description: Total results that match the request filters.
     ListGroupsResponse:
       type: object
       properties:
-        items_per_page:
+        itemsPerPage:
           type: integer
-        resources:
+        Resources:
           type: array
           items:
             $ref: '#/components/schemas/Group'
@@ -2433,20 +2468,20 @@ components:
           items:
             $ref: '#/components/schemas/ListResponseSchema'
           description: The schema of the service principal.
-        start_index:
+        startIndex:
           type: integer
           description: >-
             Starting index of all the results that matched the request filters.
             First item is number 1.
-        total_results:
+        totalResults:
           type: integer
           description: Total results that match the request filters.
     ListServicePrincipalResponse:
       type: object
       properties:
-        items_per_page:
+        itemsPerPage:
           type: integer
-        resources:
+        Resources:
           type: array
           items:
             $ref: '#/components/schemas/ServicePrincipal'
@@ -2456,20 +2491,20 @@ components:
           items:
             $ref: '#/components/schemas/ListResponseSchema'
           description: The schema of the List response.
-        start_index:
+        startIndex:
           type: integer
           description: >-
             Starting index of all the results that matched the request filters.
             First item is number 1.
-        total_results:
+        totalResults:
           type: integer
           description: Total results that match the request filters.
     ListUsersResponse:
       type: object
       properties:
-        items_per_page:
+        itemsPerPage:
           type: integer
-        resources:
+        Resources:
           type: array
           items:
             $ref: '#/components/schemas/User'
@@ -2479,12 +2514,12 @@ components:
           items:
             $ref: '#/components/schemas/ListResponseSchema'
           description: The schema of the List response.
-        start_index:
+        startIndex:
           type: integer
           description: >-
             Starting index of all the results that matched the request filters.
             First item is number 1.
-        total_results:
+        totalResults:
           type: integer
           description: Total results that match the request filters.
     MigratePermissionsResponse:
@@ -2495,9 +2530,9 @@ components:
     Name:
       type: object
       properties:
-        family_name:
+        familyName:
           type: string
-        given_name:
+        givenName:
           type: string
           description: Given name of the Databricks user.
     ObjectPermissions:
@@ -2679,7 +2714,7 @@ components:
     ResourceMeta:
       type: object
       properties:
-        resource_type:
+        resourceType:
           type: string
     Role:
       type: object
@@ -2741,10 +2776,10 @@ components:
       properties:
         active:
           type: boolean
-        application_id:
+        applicationId:
           type: string
           description: UUID relating to the service principal
-        display_name:
+        displayName:
           type: string
           description: String that represents a concatenation of given and family names.
         entitlements:
@@ -2756,7 +2791,7 @@ components:
             entitlements] for a full list of supported values. [assigning
             entitlements]:
             https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
-        external_id:
+        externalId:
           type: string
         groups:
           type: array
@@ -2780,7 +2815,7 @@ components:
       properties:
         active:
           type: boolean
-        display_name:
+        displayName:
           type: string
           description: >-
             String that represents a concatenation of given and family names.
@@ -2802,7 +2837,7 @@ components:
             Entitlements assigned to the user. See [assigning entitlements] for
             a full list of supported values. [assigning entitlements]:
             https://docs.databricks.com/administration-guide/users-groups/index.html#assigning-entitlements
-        external_id:
+        externalId:
           type: string
           description: >-
             External ID is not currently supported. It is reserved for future
@@ -2826,7 +2861,7 @@ components:
           items:
             $ref: '#/components/schemas/UserSchema'
           description: The schema of the user.
-        user_name:
+        userName:
           type: string
           description: Email address of the Databricks user.
     WorkspacePermissions:
@@ -3314,6 +3349,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.Resources
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Groups~1{id}/delete'
@@ -3440,6 +3476,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.Resources
         delete:
           operation:
             $ref: >-
@@ -3500,6 +3537,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.Resources
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1scim~1v2~1Users~1{id}/delete'

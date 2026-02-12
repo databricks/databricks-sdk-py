@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks vectorsearch service
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.vectorsearch
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -68,6 +71,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchEndpointsAPI
     get:
       operationId: vector_search_endpoints_list_endpoints
       summary: List all vector search endpoints in the workspace.
@@ -94,7 +98,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EndpointInfo'
+                $ref: '#/components/schemas/ListEndpointResponse'
         default:
           description: Error response
           content:
@@ -106,6 +110,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchEndpointsAPI
   /api/2.0/vector-search/endpoints/{endpoint_name}:
     delete:
       operationId: vector_search_endpoints_delete_endpoint
@@ -139,6 +144,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchEndpointsAPI
     get:
       operationId: vector_search_endpoints_get_endpoint
       summary: Get details for a single vector search endpoint.
@@ -177,6 +183,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchEndpointsAPI
   /api/2.0/vector-search/endpoints/{name}/metrics:
     post:
       operationId: vector_search_endpoints_retrieve_user_visible_metrics
@@ -247,6 +254,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchEndpointsAPI
   /api/2.0/vector-search/endpoints/{endpoint_name}/budget-policy:
     patch:
       operationId: vector_search_endpoints_update_endpoint_budget_policy
@@ -299,6 +307,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchEndpointsAPI
   /api/2.0/vector-search/endpoints/{endpoint_name}/tags:
     patch:
       operationId: vector_search_endpoints_update_endpoint_custom_tags
@@ -351,6 +360,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchEndpointsAPI
   /api/2.0/vector-search/indexes:
     post:
       operationId: vector_search_indexes_create_index
@@ -430,6 +440,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchIndexesAPI
     get:
       operationId: vector_search_indexes_list_indexes
       summary: List all indexes in the given endpoint.
@@ -464,7 +475,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MiniVectorIndex'
+                $ref: '#/components/schemas/ListVectorIndexesResponse'
         default:
           description: Error response
           content:
@@ -476,6 +487,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchIndexesAPI
   /api/2.0/vector-search/indexes/{index_name}/delete-data:
     delete:
       operationId: vector_search_indexes_delete_data_vector_index
@@ -525,6 +537,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchIndexesAPI
   /api/2.0/vector-search/indexes/{index_name}:
     delete:
       operationId: vector_search_indexes_delete_index
@@ -558,6 +571,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchIndexesAPI
     get:
       operationId: vector_search_indexes_get_index
       summary: Get an index.
@@ -611,6 +625,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchIndexesAPI
   /api/2.0/vector-search/indexes/{index_name}/query:
     post:
       operationId: vector_search_indexes_query_index
@@ -736,6 +751,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchIndexesAPI
   /api/2.0/vector-search/indexes/{index_name}/query-next-page:
     post:
       operationId: vector_search_indexes_query_next_page
@@ -799,6 +815,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchIndexesAPI
   /api/2.0/vector-search/indexes/{index_name}/scan:
     post:
       operationId: vector_search_indexes_scan_index
@@ -860,6 +877,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchIndexesAPI
   /api/2.0/vector-search/indexes/{index_name}/sync:
     post:
       operationId: vector_search_indexes_sync_index
@@ -893,6 +911,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchIndexesAPI
   /api/2.0/vector-search/indexes/{index_name}/upsert-data:
     post:
       operationId: vector_search_indexes_upsert_data_vector_index
@@ -947,6 +966,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VectorSearchIndexesAPI
 components:
   schemas:
     ColumnInfo:
@@ -1582,6 +1602,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.endpoints
         delete:
           operation:
             $ref: >-
@@ -1642,6 +1663,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.vector_indexes
         delete_data_vector_index:
           operation:
             $ref: >-

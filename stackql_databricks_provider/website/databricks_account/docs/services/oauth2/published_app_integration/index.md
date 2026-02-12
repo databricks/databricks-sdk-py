@@ -175,35 +175,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-integration_id"><code>integration_id</code></a></td>
     <td></td>
-    <td>Gets the Published OAuth App Integration for the given integration id.<br /><br />:param integration_id: str<br /><br />:returns: :class:`GetPublishedAppIntegrationOutput`</td>
+    <td>Gets the Published OAuth App Integration for the given integration id.</td>
 </tr>
 <tr>
     <td><a href="#published_app_integration_list"><CopyableCode code="published_app_integration_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Get the list of published OAuth app integrations for the specified Databricks account<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`GetPublishedAppIntegrationOutput`</td>
+    <td>Get the list of published OAuth app integrations for the specified Databricks account</td>
 </tr>
 <tr>
     <td><a href="#published_app_integration_create"><CopyableCode code="published_app_integration_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Create Published OAuth App Integration.<br /><br />You can retrieve the published OAuth app integration via :method:PublishedAppIntegration/get.<br /><br />:param app_id: str (optional)<br />  App id of the OAuth published app integration. For example power-bi, tableau-deskop<br />:param token_access_policy: :class:`TokenAccessPolicy` (optional)<br />  Token access policy<br /><br />:returns: :class:`CreatePublishedAppIntegrationOutput`</td>
+    <td>Create Published OAuth App Integration.</td>
 </tr>
 <tr>
     <td><a href="#published_app_integration_update"><CopyableCode code="published_app_integration_update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-integration_id"><code>integration_id</code></a></td>
     <td></td>
-    <td>Updates an existing published OAuth App Integration. You can retrieve the published OAuth app<br />integration via :method:PublishedAppIntegration/get.<br /><br />:param integration_id: str<br />:param token_access_policy: :class:`TokenAccessPolicy` (optional)<br />  Token access policy to be updated in the published OAuth app integration</td>
+    <td>Updates an existing published OAuth App Integration. You can retrieve the published OAuth app</td>
 </tr>
 <tr>
     <td><a href="#published_app_integration_delete"><CopyableCode code="published_app_integration_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-integration_id"><code>integration_id</code></a></td>
     <td></td>
-    <td>Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app<br />integration via :method:PublishedAppIntegration/get.<br /><br />:param integration_id: str</td>
+    <td>Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app</td>
 </tr>
 </tbody>
 </table>
@@ -255,7 +255,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="published_app_integration_get">
 
-Gets the Published OAuth App Integration for the given integration id.<br /><br />:param integration_id: str<br /><br />:returns: :class:`GetPublishedAppIntegrationOutput`
+Gets the Published OAuth App Integration for the given integration id.
 
 ```sql
 SELECT
@@ -273,7 +273,7 @@ AND integration_id = '{{ integration_id }}' -- required
 </TabItem>
 <TabItem value="published_app_integration_list">
 
-Get the list of published OAuth app integrations for the specified Databricks account<br /><br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
+Get the list of published OAuth app integrations for the specified Databricks account
 
 ```sql
 SELECT
@@ -304,7 +304,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="published_app_integration_create">
 
-Create Published OAuth App Integration.<br /><br />You can retrieve the published OAuth app integration via :method:PublishedAppIntegration/get.<br /><br />:param app_id: str (optional)<br />  App id of the OAuth published app integration. For example power-bi, tableau-deskop<br />:param token_access_policy: :class:`TokenAccessPolicy` (optional)<br />  Token access policy<br /><br />:returns: :class:`CreatePublishedAppIntegrationOutput`
+Create Published OAuth App Integration.
 
 ```sql
 INSERT INTO databricks_account.oauth2.published_app_integration (
@@ -353,7 +353,7 @@ integration_id
 >
 <TabItem value="published_app_integration_update">
 
-Updates an existing published OAuth App Integration. You can retrieve the published OAuth app<br />integration via :method:PublishedAppIntegration/get.<br /><br />:param integration_id: str<br />:param token_access_policy: :class:`TokenAccessPolicy` (optional)<br />  Token access policy to be updated in the published OAuth app integration
+Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
 
 ```sql
 UPDATE databricks_account.oauth2.published_app_integration
@@ -377,7 +377,7 @@ AND integration_id = '{{ integration_id }}' --required;
 >
 <TabItem value="published_app_integration_delete">
 
-Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app<br />integration via :method:PublishedAppIntegration/get.<br /><br />:param integration_id: str
+Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app
 
 ```sql
 DELETE FROM databricks_account.oauth2.published_app_integration

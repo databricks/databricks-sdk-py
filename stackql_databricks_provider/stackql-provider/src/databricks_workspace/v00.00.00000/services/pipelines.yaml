@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks pipelines service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.pipelines
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -273,6 +276,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
   /api/2.0/pipelines:
     post:
       operationId: pipelines_create
@@ -514,6 +518,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
     get:
       operationId: pipelines_list_pipelines
       summary: Lists pipelines defined in the Spark Declarative Pipelines system.
@@ -587,7 +592,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PipelineStateInfo'
+                $ref: '#/components/schemas/ListPipelinesResponse'
         default:
           description: Error response
           content:
@@ -599,6 +604,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
   /api/2.0/pipelines/{pipeline_id}:
     delete:
       operationId: pipelines_delete
@@ -649,6 +655,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
     get:
       operationId: pipelines_get
       summary: Get a pipeline.
@@ -685,6 +692,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
     put:
       operationId: pipelines_update
       summary: Updates a pipeline with the supplied configuration.
@@ -928,6 +936,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
   /api/2.0/permissions/pipelines/{pipeline_id}/permissionLevels:
     get:
       operationId: pipelines_get_permission_levels
@@ -966,6 +975,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
   /api/2.0/permissions/pipelines/{pipeline_id}:
     get:
       operationId: pipelines_get_permissions
@@ -1008,6 +1018,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
     put:
       operationId: pipelines_set_permissions
       summary: >-
@@ -1064,6 +1075,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
     patch:
       operationId: pipelines_update_permissions
       summary: >-
@@ -1117,6 +1129,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
   /api/2.0/pipelines/{pipeline_id}/updates/{update_id}:
     get:
       operationId: pipelines_get_update
@@ -1163,6 +1176,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
   /api/2.0/pipelines/{pipeline_id}/events:
     get:
       operationId: pipelines_list_pipeline_events
@@ -1248,7 +1262,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PipelineEvent'
+                $ref: '#/components/schemas/ListPipelineEventsResponse'
         default:
           description: Error response
           content:
@@ -1260,6 +1274,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
   /api/2.0/pipelines/{pipeline_id}/updates:
     get:
       operationId: pipelines_list_updates
@@ -1322,6 +1337,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
     post:
       operationId: pipelines_start_update
       summary: >-
@@ -1418,6 +1434,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
   /api/2.0/pipelines/{pipeline_id}/stop:
     post:
       operationId: pipelines_stop
@@ -1467,6 +1484,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PipelinesAPI
 components:
   schemas:
     AutoFullRefreshPolicy:
@@ -3047,6 +3065,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.statuses
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}/delete'
@@ -3178,6 +3197,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.events
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/pipeline_events/methods/list'

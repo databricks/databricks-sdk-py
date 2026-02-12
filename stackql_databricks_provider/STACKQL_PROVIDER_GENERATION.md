@@ -42,7 +42,7 @@ This produces JSON specs under `stackql_databricks_provider/openapi_generated/{a
 To regenerate a single service:
 
 ```bash
-python -m stackql_databricks_provider.generate -s compute
+python3 -m stackql_databricks_provider.generate -s compute
 ```
 
 ### 2. Generate CSV Operation Inventories
@@ -50,7 +50,16 @@ python -m stackql_databricks_provider.generate -s compute
 Generate CSV mapping files from the OpenAPI specs:
 
 ```bash
-python -m stackql_databricks_provider.inventory_gen
+# Sync response_object with specs (run after regenerating specs)
+python3 -m stackql_databricks_provider.inventory_gen --refresh-response-objects
+
+python3 -m stackql_databricks_provider.inventory_gen --refresh-response-objects --populate-object-keys 
+
+# Populate objectKey for Iterator list endpoints  
+python3 -m stackql_databricks_provider.inventory_gen --populate-object-keys
+
+# Regenerate CSVs from scratch (preserves manual edits to other columns)
+python3 -m stackql_databricks_provider.inventory_gen
 ```
 
 This produces:

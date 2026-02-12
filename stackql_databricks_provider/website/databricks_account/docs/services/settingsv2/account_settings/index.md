@@ -1,9 +1,9 @@
 ---
-title: account_settings_v2
+title: account_settings
 hide_title: false
 hide_table_of_contents: false
 keywords:
-  - account_settings_v2
+  - account_settings
   - settingsv2
   - databricks_account
   - infrastructure-as-code
@@ -19,13 +19,13 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
 
-Creates, updates, deletes, gets or lists an <code>account_settings_v2</code> resource.
+Creates, updates, deletes, gets or lists an <code>account_settings</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_settings_v2</code></td></tr>
+<tr><td><b>Name</b></td><td><code>account_settings</code></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
-<tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.settingsv2.account_settings_v2" /></td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.settingsv2.account_settings" /></td></tr>
 </tbody></table>
 
 ## Fields
@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists an <code>account_settings_v2</code> res
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_public_account_setting"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'get_public_account_setting', value: 'get_public_account_setting' },
+        { label: 'list_account_settings_metadata', value: 'list_account_settings_metadata' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_public_account_setting">
 
 <SchemaTable fields={[
   {
@@ -363,7 +363,7 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="list_account_settings_metadata">
 
 <SchemaTable fields={[
   {
@@ -406,25 +406,25 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#get_public_account_setting"><CopyableCode code="get_public_account_setting" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
-    <td>Get a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of<br />setting available via public APIs at account level.<br /><br />:param name: str<br /><br />:returns: :class:`Setting`</td>
+    <td>Get a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#list_account_settings_metadata"><CopyableCode code="list_account_settings_metadata" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List valid setting keys and metadata. These settings are available to be referenced via GET<br />:method:settingsv2/getpublicaccountsetting and PATCH :method:settingsv2/patchpublicaccountsetting APIs<br /><br />:param page_size: int (optional)<br />  The maximum number of settings to return. The service may return fewer than this value. If<br />  unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000<br />  will be coerced to 1000.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListAccountSettingsMetadataRequest` call. Provide this to<br />  retrieve the subsequent page.<br /><br />  When paginating, all other parameters provided to `ListAccountSettingsMetadataRequest` must match<br />  the call that provided the page token.<br /><br />:returns: Iterator over :class:`SettingsMetadata`</td>
+    <td>List valid setting keys and metadata. These settings are available to be referenced via GET</td>
 </tr>
 <tr>
-    <td><a href="#patch"><CopyableCode code="patch" /></a></td>
+    <td><a href="#patch_public_account_setting"><CopyableCode code="patch_public_account_setting" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a></td>
     <td></td>
-    <td>Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of<br />setting available via public APIs at account level. To determine the correct field to include in a<br />patch request, refer to the type field of the setting returned in the<br />:method:settingsv2/listaccountsettingsmetadata response.<br /><br />Note: Page refresh is required for changes to take effect in UI.<br /><br />:param name: str<br />:param setting: :class:`Setting`<br /><br />:returns: :class:`Setting`</td>
+    <td>Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of</td>
 </tr>
 </tbody>
 </table>
@@ -468,15 +468,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_public_account_setting"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'get_public_account_setting', value: 'get_public_account_setting' },
+        { label: 'list_account_settings_metadata', value: 'list_account_settings_metadata' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_public_account_setting">
 
-Get a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of<br />setting available via public APIs at account level.<br /><br />:param name: str<br /><br />:returns: :class:`Setting`
+Get a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of
 
 ```sql
 SELECT
@@ -497,15 +497,15 @@ integer_val,
 personal_compute,
 restrict_workspace_admins,
 string_val
-FROM databricks_account.settingsv2.account_settings_v2
+FROM databricks_account.settingsv2.account_settings
 WHERE account_id = '{{ account_id }}' -- required
 AND name = '{{ name }}' -- required
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="list_account_settings_metadata">
 
-List valid setting keys and metadata. These settings are available to be referenced via GET<br />:method:settingsv2/getpublicaccountsetting and PATCH :method:settingsv2/patchpublicaccountsetting APIs<br /><br />:param page_size: int (optional)<br />  The maximum number of settings to return. The service may return fewer than this value. If<br />  unspecified, at most 200 settings will be returned. The maximum value is 1000; values above 1000<br />  will be coerced to 1000.<br />:param page_token: str (optional)<br />  A page token, received from a previous `ListAccountSettingsMetadataRequest` call. Provide this to<br />  retrieve the subsequent page.<br /><br />  When paginating, all other parameters provided to `ListAccountSettingsMetadataRequest` must match<br />  the call that provided the page token.<br /><br />:returns: Iterator over :class:`SettingsMetadata`
+List valid setting keys and metadata. These settings are available to be referenced via GET
 
 ```sql
 SELECT
@@ -513,7 +513,7 @@ name,
 description,
 docs_link,
 type
-FROM databricks_account.settingsv2.account_settings_v2
+FROM databricks_account.settingsv2.account_settings
 WHERE account_id = '{{ account_id }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'
@@ -526,17 +526,17 @@ AND page_token = '{{ page_token }}'
 ## `UPDATE` examples
 
 <Tabs
-    defaultValue="patch"
+    defaultValue="patch_public_account_setting"
     values={[
-        { label: 'patch', value: 'patch' }
+        { label: 'patch_public_account_setting', value: 'patch_public_account_setting' }
     ]}
 >
-<TabItem value="patch">
+<TabItem value="patch_public_account_setting">
 
-Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of<br />setting available via public APIs at account level. To determine the correct field to include in a<br />patch request, refer to the type field of the setting returned in the<br />:method:settingsv2/listaccountsettingsmetadata response.<br /><br />Note: Page refresh is required for changes to take effect in UI.<br /><br />:param name: str<br />:param setting: :class:`Setting`<br /><br />:returns: :class:`Setting`
+Patch a setting value at account level. See :method:settingsv2/listaccountsettingsmetadata for list of
 
 ```sql
-UPDATE databricks_account.settingsv2.account_settings_v2
+UPDATE databricks_account.settingsv2.account_settings
 SET 
 data__setting = '{{ setting }}'
 WHERE 

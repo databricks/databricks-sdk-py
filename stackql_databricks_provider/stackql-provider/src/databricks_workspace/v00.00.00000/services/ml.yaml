@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks ml service (workspace-level APIs),
     generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.ml
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -91,6 +94,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/logged-models:
     post:
       operationId: experiments_create_logged_model
@@ -163,6 +167,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/create:
     post:
       operationId: experiments_create_run
@@ -237,6 +242,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/experiments/delete:
     post:
       operationId: experiments_delete_experiment
@@ -281,6 +287,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/logged-models/{model_id}:
     delete:
       operationId: experiments_delete_logged_model
@@ -314,6 +321,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
     patch:
       operationId: experiments_finalize_logged_model
       summary: Finalize a logged model.
@@ -369,6 +377,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
     get:
       operationId: experiments_get_logged_model
       summary: Get a logged model.
@@ -407,6 +416,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/logged-models/{model_id}/tags/{tag_key}:
     delete:
       operationId: experiments_delete_logged_model_tag
@@ -448,6 +458,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/delete:
     post:
       operationId: experiments_delete_run
@@ -485,6 +496,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/databricks/runs/delete-runs:
     post:
       operationId: experiments_delete_runs
@@ -556,6 +568,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/delete-tag:
     post:
       operationId: experiments_delete_tag
@@ -609,6 +622,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/experiments/get-by-name:
     get:
       operationId: experiments_get_by_name
@@ -662,6 +676,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/experiments/get:
     get:
       operationId: experiments_get_experiment
@@ -705,6 +720,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/metrics/get-history:
     get:
       operationId: experiments_get_history
@@ -772,7 +788,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Metric'
+                $ref: '#/components/schemas/GetMetricHistoryResponse'
         default:
           description: Error response
           content:
@@ -784,6 +800,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/permissions/experiments/{experiment_id}/permissionLevels:
     get:
       operationId: experiments_get_permission_levels
@@ -823,6 +840,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/permissions/experiments/{experiment_id}:
     get:
       operationId: experiments_get_permissions
@@ -866,6 +884,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
     put:
       operationId: experiments_set_permissions
       summary: >-
@@ -923,6 +942,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
     patch:
       operationId: experiments_update_permissions
       summary: >-
@@ -977,6 +997,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/get:
     get:
       operationId: experiments_get_run
@@ -1038,6 +1059,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/artifacts/list:
     get:
       operationId: experiments_list_artifacts
@@ -1118,7 +1140,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FileInfo'
+                $ref: '#/components/schemas/ListArtifactsResponse'
         default:
           description: Error response
           content:
@@ -1130,6 +1152,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/experiments/list:
     get:
       operationId: experiments_list_experiments
@@ -1182,7 +1205,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Experiment'
+                $ref: '#/components/schemas/ListExperimentsResponse'
         default:
           description: Error response
           content:
@@ -1194,6 +1217,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/log-batch:
     post:
       operationId: experiments_log_batch
@@ -1332,6 +1356,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/log-inputs:
     post:
       operationId: experiments_log_inputs
@@ -1379,6 +1404,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/logged-models/{model_id}/params:
     post:
       operationId: experiments_log_logged_model_params
@@ -1433,6 +1459,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/log-metric:
     post:
       operationId: experiments_log_metric
@@ -1538,6 +1565,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/log-model:
     post:
       operationId: experiments_log_model
@@ -1587,6 +1615,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/outputs:
     post:
       operationId: experiments_log_outputs
@@ -1629,6 +1658,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/log-parameter:
     post:
       operationId: experiments_log_param
@@ -1699,6 +1729,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/experiments/restore:
     post:
       operationId: experiments_restore_experiment
@@ -1749,6 +1780,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/restore:
     post:
       operationId: experiments_restore_run
@@ -1794,6 +1826,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/databricks/runs/restore-runs:
     post:
       operationId: experiments_restore_runs
@@ -1865,6 +1898,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/experiments/search:
     post:
       operationId: experiments_search_experiments
@@ -1926,7 +1960,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Experiment'
+                $ref: '#/components/schemas/ListExperimentsResponse'
         default:
           description: Error response
           content:
@@ -1938,6 +1972,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/logged-models/search:
     post:
       operationId: experiments_search_logged_models
@@ -2029,6 +2064,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/search:
     post:
       operationId: experiments_search_runs
@@ -2118,7 +2154,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Run'
+                $ref: '#/components/schemas/SearchRunsResponse'
         default:
           description: Error response
           content:
@@ -2130,6 +2166,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/experiments/set-experiment-tag:
     post:
       operationId: experiments_set_experiment_tag
@@ -2187,6 +2224,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/logged-models/{model_id}/tags:
     patch:
       operationId: experiments_set_logged_model_tags
@@ -2231,6 +2269,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/set-tag:
     post:
       operationId: experiments_set_tag
@@ -2294,6 +2333,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/experiments/update:
     post:
       operationId: experiments_update_experiment
@@ -2338,6 +2378,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/mlflow/runs/update:
     post:
       operationId: experiments_update_run
@@ -2402,6 +2443,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExperimentsAPI
   /api/2.0/feature-engineering/materialized-features:batchCreate:
     post:
       operationId: feature_engineering_batch_create_materialized_features
@@ -2445,6 +2487,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
   /api/2.0/feature-engineering/features:
     post:
       operationId: feature_engineering_create_feature
@@ -2488,6 +2531,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
     get:
       operationId: feature_engineering_list_features
       summary: List Features.
@@ -2522,7 +2566,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Feature'
+                $ref: '#/components/schemas/ListFeaturesResponse'
         default:
           description: Error response
           content:
@@ -2534,6 +2578,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
   /api/2.0/feature-engineering/features/kafka-configs:
     post:
       operationId: feature_engineering_create_kafka_config
@@ -2584,6 +2629,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
     get:
       operationId: feature_engineering_list_kafka_configs
       summary: >-
@@ -2624,7 +2670,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/KafkaConfig'
+                $ref: '#/components/schemas/ListKafkaConfigsResponse'
         default:
           description: Error response
           content:
@@ -2636,6 +2682,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
   /api/2.0/feature-engineering/materialized-features:
     post:
       operationId: feature_engineering_create_materialized_feature
@@ -2679,6 +2726,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
     get:
       operationId: feature_engineering_list_materialized_features
       summary: List materialized features.
@@ -2727,7 +2775,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MaterializedFeature'
+                $ref: '#/components/schemas/BatchCreateMaterializedFeaturesResponse'
         default:
           description: Error response
           content:
@@ -2739,6 +2787,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
   /api/2.0/feature-engineering/features/{full_name}:
     delete:
       operationId: feature_engineering_delete_feature
@@ -2772,6 +2821,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
     get:
       operationId: feature_engineering_get_feature
       summary: Get a Feature.
@@ -2810,6 +2860,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
     patch:
       operationId: feature_engineering_update_feature
       summary: Update a Feature.
@@ -2869,6 +2920,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
   /api/2.0/feature-engineering/features/kafka-configs/{name}:
     delete:
       operationId: feature_engineering_delete_kafka_config
@@ -2909,6 +2961,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
     get:
       operationId: feature_engineering_get_kafka_config
       summary: >-
@@ -2953,6 +3006,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
     patch:
       operationId: feature_engineering_update_kafka_config
       summary: >-
@@ -3025,6 +3079,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
   /api/2.0/feature-engineering/materialized-features/{materialized_feature_id}:
     delete:
       operationId: feature_engineering_delete_materialized_feature
@@ -3058,6 +3113,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
     get:
       operationId: feature_engineering_get_materialized_feature
       summary: Get a materialized feature.
@@ -3096,6 +3152,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
     patch:
       operationId: feature_engineering_update_materialized_feature
       summary: Update a materialized feature (pause/resume).
@@ -3158,6 +3215,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureEngineeringAPI
   /api/2.0/feature-store/online-stores:
     post:
       operationId: feature_store_create_online_store
@@ -3201,6 +3259,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureStoreAPI
     get:
       operationId: feature_store_list_online_stores
       summary: List Online Feature Stores.
@@ -3237,7 +3296,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/OnlineStore'
+                $ref: '#/components/schemas/ListOnlineStoresResponse'
         default:
           description: Error response
           content:
@@ -3249,6 +3308,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureStoreAPI
   /api/2.0/feature-store/online-stores/{name}:
     delete:
       operationId: feature_store_delete_online_store
@@ -3282,6 +3342,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureStoreAPI
     get:
       operationId: feature_store_get_online_store
       summary: Get an Online Feature Store.
@@ -3320,6 +3381,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureStoreAPI
     patch:
       operationId: feature_store_update_online_store
       summary: Update an Online Feature Store.
@@ -3381,6 +3443,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureStoreAPI
   /api/2.0/feature-store/online-tables/{online_table_name}:
     delete:
       operationId: feature_store_delete_online_table
@@ -3416,6 +3479,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureStoreAPI
   /api/2.0/feature-store/tables/{source_table_name}/publish:
     post:
       operationId: feature_store_publish_table
@@ -3472,6 +3536,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FeatureStoreAPI
   /api/2.0/automl/create-forecasting-experiment:
     post:
       operationId: forecasting_create_experiment
@@ -3663,6 +3728,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ForecastingAPI
   /api/2.0/automl/get-forecasting-experiment/{experiment_id}:
     get:
       operationId: forecasting_get_experiment
@@ -3702,6 +3768,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ForecastingAPI
   /api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags:
     post:
       operationId: materialized_features_create_feature_tag
@@ -3758,6 +3825,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MaterializedFeaturesAPI
     get:
       operationId: materialized_features_list_feature_tags
       summary: Lists FeatureTags.
@@ -3805,7 +3873,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FeatureTag'
+                $ref: '#/components/schemas/ListFeatureTagsResponse'
         default:
           description: Error response
           content:
@@ -3817,6 +3885,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MaterializedFeaturesAPI
   /api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/tags/{key}:
     delete:
       operationId: materialized_features_delete_feature_tag
@@ -3866,6 +3935,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MaterializedFeaturesAPI
     get:
       operationId: materialized_features_get_feature_tag
       summary: Gets a FeatureTag.
@@ -3916,6 +3986,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MaterializedFeaturesAPI
     patch:
       operationId: materialized_features_update_feature_tag
       summary: Updates a FeatureTag.
@@ -3985,6 +4056,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MaterializedFeaturesAPI
   /api/2.0/feature-store/feature-tables/{table_name}/features/{feature_name}/lineage:
     get:
       operationId: materialized_features_get_feature_lineage
@@ -4032,6 +4104,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MaterializedFeaturesAPI
   /api/2.0/mlflow/transition-requests/approve:
     post:
       operationId: model_registry_approve_transition_request
@@ -4112,6 +4185,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/comments/create:
     post:
       operationId: model_registry_create_comment
@@ -4174,6 +4248,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registered-models/create:
     post:
       operationId: model_registry_create_model
@@ -4234,6 +4309,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/model-versions/create:
     post:
       operationId: model_registry_create_model_version
@@ -4310,6 +4386,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/transition-requests/create:
     post:
       operationId: model_registry_create_transition_request
@@ -4382,6 +4459,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registry-webhooks/create:
     post:
       operationId: model_registry_create_webhook
@@ -4522,6 +4600,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/comments/delete:
     delete:
       operationId: model_registry_delete_comment
@@ -4555,6 +4634,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registered-models/delete:
     delete:
       operationId: model_registry_delete_model
@@ -4588,6 +4668,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registered-models/delete-tag:
     delete:
       operationId: model_registry_delete_model_tag
@@ -4632,6 +4713,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/model-versions/delete:
     delete:
       operationId: model_registry_delete_model_version
@@ -4673,6 +4755,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/model-versions/delete-tag:
     delete:
       operationId: model_registry_delete_model_version_tag
@@ -4725,6 +4808,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/transition-requests/delete:
     delete:
       operationId: model_registry_delete_transition_request
@@ -4812,6 +4896,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registry-webhooks/delete:
     delete:
       operationId: model_registry_delete_webhook
@@ -4849,6 +4934,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registered-models/get-latest-versions:
     post:
       operationId: model_registry_get_latest_versions
@@ -4885,7 +4971,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ModelVersion'
+                $ref: '#/components/schemas/GetLatestVersionsResponse'
         default:
           description: Error response
           content:
@@ -4897,6 +4983,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/databricks/registered-models/get:
     get:
       operationId: model_registry_get_model
@@ -4949,6 +5036,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/model-versions/get:
     get:
       operationId: model_registry_get_model_version
@@ -4996,6 +5084,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/model-versions/get-download-uri:
     get:
       operationId: model_registry_get_model_version_download_uri
@@ -5043,6 +5132,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/permissions/registered-models/{registered_model_id}/permissionLevels:
     get:
       operationId: model_registry_get_permission_levels
@@ -5083,6 +5173,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/permissions/registered-models/{registered_model_id}:
     get:
       operationId: model_registry_get_permissions
@@ -5128,6 +5219,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
     put:
       operationId: model_registry_set_permissions
       summary: >-
@@ -5185,6 +5277,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
     patch:
       operationId: model_registry_update_permissions
       summary: >-
@@ -5241,6 +5334,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registered-models/list:
     get:
       operationId: model_registry_list_models
@@ -5280,7 +5374,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Model'
+                $ref: '#/components/schemas/ListModelsResponse'
         default:
           description: Error response
           content:
@@ -5292,6 +5386,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/transition-requests/list:
     get:
       operationId: model_registry_list_transition_requests
@@ -5327,7 +5422,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Activity'
+                $ref: '#/components/schemas/ListTransitionRequestsResponse'
         default:
           description: Error response
           content:
@@ -5339,6 +5434,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registry-webhooks/list:
     get:
       operationId: model_registry_list_webhooks
@@ -5451,7 +5547,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegistryWebhook'
+                $ref: '#/components/schemas/ListRegistryWebhooks'
         default:
           description: Error response
           content:
@@ -5463,6 +5559,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/transition-requests/reject:
     post:
       operationId: model_registry_reject_transition_request
@@ -5535,6 +5632,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registered-models/rename:
     post:
       operationId: model_registry_rename_model
@@ -5583,6 +5681,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/model-versions/search:
     get:
       operationId: model_registry_search_model_versions
@@ -5644,7 +5743,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ModelVersion'
+                $ref: '#/components/schemas/GetLatestVersionsResponse'
         default:
           description: Error response
           content:
@@ -5656,6 +5755,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registered-models/search:
     get:
       operationId: model_registry_search_models
@@ -5723,7 +5823,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Model'
+                $ref: '#/components/schemas/ListModelsResponse'
         default:
           description: Error response
           content:
@@ -5735,6 +5835,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registered-models/set-tag:
     post:
       operationId: model_registry_set_model_tag
@@ -5795,6 +5896,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/model-versions/set-tag:
     post:
       operationId: model_registry_set_model_version_tag
@@ -5861,6 +5963,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registry-webhooks/test:
     post:
       operationId: model_registry_test_registry_webhook
@@ -5913,6 +6016,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/databricks/model-versions/transition-stage:
     post:
       operationId: model_registry_transition_stage
@@ -6004,6 +6108,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/comments/update:
     patch:
       operationId: model_registry_update_comment
@@ -6053,6 +6158,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registered-models/update:
     patch:
       operationId: model_registry_update_model
@@ -6103,6 +6209,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/model-versions/update:
     patch:
       operationId: model_registry_update_model_version
@@ -6159,6 +6266,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
   /api/2.0/mlflow/registry-webhooks/update:
     patch:
       operationId: model_registry_update_webhook
@@ -6280,6 +6388,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelRegistryAPI
 components:
   schemas:
     Activity:
@@ -8727,6 +8836,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.experiments
         restore:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1restore/post'
@@ -8945,6 +9055,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.metrics
       sqlVerbs:
         select:
           - $ref: >-
@@ -9020,6 +9131,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.files
       sqlVerbs:
         select:
           - $ref: >-
@@ -9053,6 +9165,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.materialized_features
         delete:
           operation:
             $ref: >-
@@ -9105,6 +9218,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.features
         delete:
           operation:
             $ref: >-
@@ -9158,6 +9272,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.kafka_configs
         delete:
           operation:
             $ref: >-
@@ -9211,6 +9326,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.online_stores
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1feature-store~1online-stores~1{name}/delete'
@@ -9303,6 +9419,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.feature_tags
         delete:
           operation:
             $ref: >-
@@ -9387,6 +9504,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.requests
         reject:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1transition-requests~1reject/post'
@@ -9478,6 +9596,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.registered_models
         rename:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1rename/post'
@@ -9490,6 +9609,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.registered_models
         set_tag:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1set-tag/post'
@@ -9556,6 +9676,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.model_versions
         set_tag:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1set-tag/post'
@@ -9605,6 +9726,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.webhooks
         test:
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1test/post'

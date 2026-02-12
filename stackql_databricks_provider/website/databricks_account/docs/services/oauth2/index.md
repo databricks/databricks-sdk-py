@@ -27,7 +27,7 @@ total resources: __6__
 <div class="providerDocColumn">
 <a href="/services/oauth2/account_federation_policy/">account_federation_policy</a><br />
 <a href="/services/oauth2/custom_app_integration/">custom_app_integration</a><br />
-<a href="/services/oauth2/o_auth_published_apps/">o_auth_published_apps</a>
+<a href="/services/oauth2/oauth_published_apps/">oauth_published_apps</a>
 </div>
 <div class="providerDocColumn">
 <a href="/services/oauth2/published_app_integration/">published_app_integration</a><br />

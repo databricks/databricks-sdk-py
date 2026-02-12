@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks catalog service (account-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.catalog
 servers:
   - url: https://accounts.cloud.databricks.com
 paths:
@@ -73,6 +76,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountMetastoreAssignmentsAPI
     delete:
       operationId: account_metastore_assignments_delete
       summary: >-
@@ -128,6 +132,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountMetastoreAssignmentsAPI
     put:
       operationId: account_metastore_assignments_update
       summary: >-
@@ -197,6 +202,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountMetastoreAssignmentsAPI
   /api/2.0/accounts/{account_id}/workspaces/{workspace_id}/metastore:
     get:
       operationId: account_metastore_assignments_get
@@ -250,6 +256,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountMetastoreAssignmentsAPI
   /api/2.0/accounts/{account_id}/metastores/{metastore_id}/workspaces:
     get:
       operationId: account_metastore_assignments_list
@@ -286,7 +293,7 @@ paths:
           content:
             application/json:
               schema:
-                type: object
+                $ref: '#/components/schemas/GetCatalogWorkspaceBindingsResponse'
         default:
           description: Error response
           content:
@@ -298,6 +305,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountMetastoreAssignmentsAPI
   /api/2.0/accounts/{account_id}/metastores:
     post:
       operationId: account_metastores_create
@@ -344,6 +352,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountMetastoresAPI
     get:
       operationId: account_metastores_list
       summary: >-
@@ -371,7 +380,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MetastoreInfo'
+                $ref: '#/components/schemas/AccountsListMetastoresResponse'
         default:
           description: Error response
           content:
@@ -383,6 +392,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountMetastoresAPI
   /api/2.0/accounts/{account_id}/metastores/{metastore_id}:
     delete:
       operationId: account_metastores_delete
@@ -435,6 +445,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountMetastoresAPI
     get:
       operationId: account_metastores_get
       summary: Gets a Unity Catalog metastore from an account, both specified by ID.
@@ -478,6 +489,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountMetastoresAPI
     put:
       operationId: account_metastores_update
       summary: Updates an existing Unity Catalog metastore.
@@ -532,6 +544,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountMetastoresAPI
   /api/2.0/accounts/{account_id}/metastores/{metastore_id}/storage-credentials:
     post:
       operationId: account_storage_credentials_create
@@ -611,6 +624,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountStorageCredentialsAPI
     get:
       operationId: account_storage_credentials_list
       summary: >-
@@ -646,7 +660,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StorageCredentialInfo'
+                $ref: '#/components/schemas/ListAccountStorageCredentialsResponse'
         default:
           description: Error response
           content:
@@ -658,6 +672,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountStorageCredentialsAPI
   /api/2.0/accounts/{account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}:
     delete:
       operationId: account_storage_credentials_delete
@@ -726,6 +741,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountStorageCredentialsAPI
     get:
       operationId: account_storage_credentials_get
       summary: >-
@@ -784,6 +800,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountStorageCredentialsAPI
     put:
       operationId: account_storage_credentials_update
       summary: >-
@@ -861,6 +878,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountStorageCredentialsAPI
   /api/2.1/unity-catalog/credentials:
     post:
       operationId: credentials_create_credential
@@ -967,6 +985,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
     get:
       operationId: credentials_list_credentials
       summary: Gets an array of credentials (as __CredentialInfo__ objects).
@@ -1049,7 +1068,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CredentialInfo'
+                $ref: '#/components/schemas/ListCredentialsResponse'
         default:
           description: Error response
           content:
@@ -1061,6 +1080,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
   /api/2.1/unity-catalog/credentials/{name_arg}:
     delete:
       operationId: credentials_delete_credential
@@ -1112,6 +1132,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
     get:
       operationId: credentials_get_credential
       summary: >-
@@ -1156,6 +1177,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
     patch:
       operationId: credentials_update_credential
       summary: Updates a service or storage credential on the metastore.
@@ -1276,6 +1298,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
   /api/2.1/unity-catalog/temporary-service-credentials:
     post:
       operationId: credentials_generate_temporary_service_credential
@@ -1342,6 +1365,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
   /api/2.1/unity-catalog/validate-credentials:
     post:
       operationId: credentials_validate_credential
@@ -1462,6 +1486,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CredentialsAPI
 components:
   schemas:
     AccessRequestDestinations:
@@ -5071,7 +5096,7 @@ components:
     ValidateCredentialResponse:
       type: object
       properties:
-        is_dir:
+        isDir:
           type: boolean
         results:
           type: array
@@ -5081,7 +5106,7 @@ components:
     ValidateStorageCredentialResponse:
       type: object
       properties:
-        is_dir:
+        isDir:
           type: boolean
         results:
           type: array
@@ -7041,35 +7066,35 @@ components:
       name: account_metastore_assignments
       title: Account Metastore Assignments
       methods:
-        create:
+        account_metastore_assignments_create:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1metastores~1{metastore_id}/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        delete:
+        account_metastore_assignments_delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1metastores~1{metastore_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        update:
+        account_metastore_assignments_update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1metastores~1{metastore_id}/put
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        account_metastore_assignments_get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1metastore/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        account_metastore_assignments_list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1metastores~1{metastore_id}~1workspaces/get
@@ -7079,51 +7104,52 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/account_metastore_assignments/methods/get
+              #/components/x-stackQL-resources/account_metastore_assignments/methods/account_metastore_assignments_get
           - $ref: >-
-              #/components/x-stackQL-resources/account_metastore_assignments/methods/list
+              #/components/x-stackQL-resources/account_metastore_assignments/methods/account_metastore_assignments_list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/account_metastore_assignments/methods/create
+              #/components/x-stackQL-resources/account_metastore_assignments/methods/account_metastore_assignments_create
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/account_metastore_assignments/methods/delete
+              #/components/x-stackQL-resources/account_metastore_assignments/methods/account_metastore_assignments_delete
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/account_metastore_assignments/methods/update
+              #/components/x-stackQL-resources/account_metastore_assignments/methods/account_metastore_assignments_update
     account_metastores:
       id: databricks_account.catalog.account_metastores
       name: account_metastores
       title: Account Metastores
       methods:
-        create:
+        account_metastores_create:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1metastores/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        account_metastores_list:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1metastores/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        delete:
+            objectKey: $.metastores
+        account_metastores_delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1metastores~1{metastore_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        account_metastores_get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1metastores~1{metastore_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        update:
+        account_metastores_update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1metastores~1{metastore_id}/put
@@ -7132,49 +7158,55 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/account_metastores/methods/get'
-          - $ref: '#/components/x-stackQL-resources/account_metastores/methods/list'
+          - $ref: >-
+              #/components/x-stackQL-resources/account_metastores/methods/account_metastores_get
+          - $ref: >-
+              #/components/x-stackQL-resources/account_metastores/methods/account_metastores_list
         insert:
-          - $ref: '#/components/x-stackQL-resources/account_metastores/methods/create'
+          - $ref: >-
+              #/components/x-stackQL-resources/account_metastores/methods/account_metastores_create
         update: []
         delete:
-          - $ref: '#/components/x-stackQL-resources/account_metastores/methods/delete'
+          - $ref: >-
+              #/components/x-stackQL-resources/account_metastores/methods/account_metastores_delete
         replace:
-          - $ref: '#/components/x-stackQL-resources/account_metastores/methods/update'
+          - $ref: >-
+              #/components/x-stackQL-resources/account_metastores/methods/account_metastores_update
     account_storage_credentials:
       id: databricks_account.catalog.account_storage_credentials
       name: account_storage_credentials
       title: Account Storage Credentials
       methods:
-        create:
+        account_storage_credentials_create:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1metastores~1{metastore_id}~1storage-credentials/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        account_storage_credentials_list:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1metastores~1{metastore_id}~1storage-credentials/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        delete:
+            objectKey: $.storage_credentials
+        account_storage_credentials_delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1metastores~1{metastore_id}~1storage-credentials~1{storage_credential_name}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        account_storage_credentials_get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1metastores~1{metastore_id}~1storage-credentials~1{storage_credential_name}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        update:
+        account_storage_credentials_update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1metastores~1{metastore_id}~1storage-credentials~1{storage_credential_name}/put
@@ -7184,49 +7216,50 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/account_storage_credentials/methods/get
+              #/components/x-stackQL-resources/account_storage_credentials/methods/account_storage_credentials_get
           - $ref: >-
-              #/components/x-stackQL-resources/account_storage_credentials/methods/list
+              #/components/x-stackQL-resources/account_storage_credentials/methods/account_storage_credentials_list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/account_storage_credentials/methods/create
+              #/components/x-stackQL-resources/account_storage_credentials/methods/account_storage_credentials_create
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/account_storage_credentials/methods/delete
+              #/components/x-stackQL-resources/account_storage_credentials/methods/account_storage_credentials_delete
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/account_storage_credentials/methods/update
+              #/components/x-stackQL-resources/account_storage_credentials/methods/account_storage_credentials_update
     credentials:
       id: databricks_account.catalog.credentials
       name: credentials
       title: Credentials
       methods:
-        create:
+        create_credential:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1credentials/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        list_credentials:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1credentials/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        delete:
+            objectKey: $.credentials
+        delete_credential:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1credentials~1{name_arg}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        get_credential:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1credentials~1{name_arg}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        update:
+        update_credential:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1credentials~1{name_arg}/patch'
           response:
@@ -7239,7 +7272,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        validate:
+        validate_credential:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1validate-credentials/post'
           response:
@@ -7247,12 +7280,17 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/credentials/methods/get'
-          - $ref: '#/components/x-stackQL-resources/credentials/methods/list'
+          - $ref: >-
+              #/components/x-stackQL-resources/credentials/methods/get_credential
+          - $ref: >-
+              #/components/x-stackQL-resources/credentials/methods/list_credentials
         insert:
-          - $ref: '#/components/x-stackQL-resources/credentials/methods/create'
+          - $ref: >-
+              #/components/x-stackQL-resources/credentials/methods/create_credential
         update:
-          - $ref: '#/components/x-stackQL-resources/credentials/methods/update'
+          - $ref: >-
+              #/components/x-stackQL-resources/credentials/methods/update_credential
         delete:
-          - $ref: '#/components/x-stackQL-resources/credentials/methods/delete'
+          - $ref: >-
+              #/components/x-stackQL-resources/credentials/methods/delete_credential
         replace: []

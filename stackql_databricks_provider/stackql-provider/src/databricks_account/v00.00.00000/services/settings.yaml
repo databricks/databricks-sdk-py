@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks settings service (account-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.settings
 servers:
   - url: https://accounts.cloud.databricks.com
 paths:
@@ -92,6 +95,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountIpAccessListsAPI
     get:
       operationId: account_ip_access_lists_list
       summary: Gets all IP access lists for the specified account.
@@ -115,7 +119,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/IpAccessListInfo'
+                $ref: '#/components/schemas/GetIpAccessListsResponse'
         default:
           description: Error response
           content:
@@ -127,6 +131,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountIpAccessListsAPI
   /api/2.0/accounts/{account_id}/ip-access-lists/{ip_access_list_id}:
     delete:
       operationId: account_ip_access_lists_delete
@@ -165,6 +170,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountIpAccessListsAPI
     get:
       operationId: account_ip_access_lists_get
       summary: Gets an IP access list, specified by its list ID.
@@ -208,6 +214,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountIpAccessListsAPI
     put:
       operationId: account_ip_access_lists_replace
       summary: Replaces an IP access list, specified by its ID.
@@ -297,6 +304,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountIpAccessListsAPI
     patch:
       operationId: account_ip_access_lists_update
       summary: Updates an existing IP access list, specified by its ID.
@@ -385,6 +393,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AccountIpAccessListsAPI
   /api/2.0/accounts/{account_id}/network-connectivity-configs:
     post:
       operationId: network_connectivity_create_network_connectivity_configuration
@@ -463,6 +472,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkConnectivityAPI
     get:
       operationId: network_connectivity_list_network_connectivity_configurations
       summary: Gets an array of network connectivity configurations.
@@ -494,7 +504,8 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NetworkConnectivityConfiguration'
+                $ref: >-
+                  #/components/schemas/ListNetworkConnectivityConfigurationsResponse
         default:
           description: Error response
           content:
@@ -506,6 +517,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkConnectivityAPI
   /api/2.0/accounts/{account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules:
     post:
       operationId: network_connectivity_create_private_endpoint_rule
@@ -585,6 +597,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkConnectivityAPI
     get:
       operationId: network_connectivity_list_private_endpoint_rules
       summary: Gets an array of private endpoint rules.
@@ -624,7 +637,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/NccPrivateEndpointRule'
+                $ref: '#/components/schemas/ListPrivateEndpointRulesResponse'
         default:
           description: Error response
           content:
@@ -636,6 +649,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkConnectivityAPI
   /api/2.0/accounts/{account_id}/network-connectivity-configs/{network_connectivity_config_id}:
     delete:
       operationId: network_connectivity_delete_network_connectivity_configuration
@@ -674,6 +688,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkConnectivityAPI
     get:
       operationId: network_connectivity_get_network_connectivity_configuration
       summary: Gets a network connectivity configuration.
@@ -717,6 +732,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkConnectivityAPI
   /api/2.0/accounts/{account_id}/network-connectivity-configs/{network_connectivity_config_id}/private-endpoint-rules/{private_endpoint_rule_id}:
     delete:
       operationId: network_connectivity_delete_private_endpoint_rule
@@ -782,6 +798,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkConnectivityAPI
     get:
       operationId: network_connectivity_get_private_endpoint_rule
       summary: Gets the private endpoint rule.
@@ -833,6 +850,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkConnectivityAPI
     patch:
       operationId: network_connectivity_update_private_endpoint_rule
       summary: >-
@@ -925,6 +943,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkConnectivityAPI
   /api/2.0/accounts/{account_id}/network-policies:
     post:
       operationId: network_policies_create_network_policy_rpc
@@ -980,6 +999,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkPoliciesAPI
     get:
       operationId: network_policies_list_network_policies_rpc
       summary: Gets an array of network policies.
@@ -1011,7 +1031,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AccountNetworkPolicy'
+                $ref: '#/components/schemas/ListNetworkPoliciesResponse'
         default:
           description: Error response
           content:
@@ -1023,6 +1043,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkPoliciesAPI
   /api/2.0/accounts/{account_id}/network-policies/{network_policy_id}:
     delete:
       operationId: network_policies_delete_network_policy_rpc
@@ -1061,6 +1082,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkPoliciesAPI
     get:
       operationId: network_policies_get_network_policy_rpc
       summary: Gets a network policy.
@@ -1104,6 +1126,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkPoliciesAPI
     put:
       operationId: network_policies_update_network_policy_rpc
       summary: >-
@@ -1164,6 +1187,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: NetworkPoliciesAPI
   /api/2.0/accounts/{account_id}/workspaces/{workspace_id}/network:
     get:
       operationId: workspace_network_configuration_get_workspace_network_option_rpc
@@ -1214,6 +1238,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceNetworkConfigurationAPI
     put:
       operationId: workspace_network_configuration_update_workspace_network_option_rpc
       summary: >-
@@ -1277,6 +1302,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceNetworkConfigurationAPI
 components:
   schemas:
     AccountIpAccessEnable:
@@ -2392,12 +2418,12 @@ components:
         credential:
           type: string
           description: The requested token.
-        credential_eol_time:
+        credentialEolTime:
           type: integer
           description: >-
             The end-of-life timestamp of the token. The value is in milliseconds
             since the Unix epoch.
-        owner_id:
+        ownerId:
           type: integer
           description: User ID of the user that owns this token.
         scopes:
@@ -2405,7 +2431,7 @@ components:
           items:
             type: string
           description: The scopes of access granted in the token.
-        token_type:
+        tokenType:
           $ref: '#/components/schemas/TokenType'
           description: The type of this exchange token
       description: The exchange token is the result of the token exchange with the IdP
@@ -3010,7 +3036,7 @@ components:
     PartitionId:
       type: object
       properties:
-        workspace_id:
+        workspaceId:
           type: integer
           description: The ID of the workspace.
       description: Partition by workspace or account
@@ -4063,40 +4089,41 @@ components:
       name: account_ip_access_lists
       title: Account Ip Access Lists
       methods:
-        create:
+        account_ip_access_lists_create:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        account_ip_access_lists_list:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        delete:
+            objectKey: $.ip_access_lists
+        account_ip_access_lists_delete:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists~1{ip_access_list_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        account_ip_access_lists_get:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists~1{ip_access_list_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        replace:
+        account_ip_access_lists_replace:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists~1{ip_access_list_id}/put
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        update:
+        account_ip_access_lists_update:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1ip-access-lists~1{ip_access_list_id}/patch
@@ -4106,48 +4133,49 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/account_ip_access_lists/methods/get
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_get
           - $ref: >-
-              #/components/x-stackQL-resources/account_ip_access_lists/methods/list
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_list
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/account_ip_access_lists/methods/create
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_create
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/account_ip_access_lists/methods/update
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_update
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/account_ip_access_lists/methods/delete
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_delete
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/account_ip_access_lists/methods/replace
+              #/components/x-stackQL-resources/account_ip_access_lists/methods/account_ip_access_lists_replace
     network_connectivity:
       id: databricks_account.settings.network_connectivity
       name: network_connectivity
       title: Network Connectivity
       methods:
-        create:
+        create_network_connectivity_configuration:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        list_network_connectivity_configurations:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        delete:
+            objectKey: $.items
+        delete_network_connectivity_configuration:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        get_network_connectivity_configuration:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}/get
@@ -4156,50 +4184,53 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/network_connectivity/methods/get'
-          - $ref: '#/components/x-stackQL-resources/network_connectivity/methods/list'
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/get_network_connectivity_configuration
+          - $ref: >-
+              #/components/x-stackQL-resources/network_connectivity/methods/list_network_connectivity_configurations
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/network_connectivity/methods/create
+              #/components/x-stackQL-resources/network_connectivity/methods/create_network_connectivity_configuration
         update: []
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/network_connectivity/methods/delete
+              #/components/x-stackQL-resources/network_connectivity/methods/delete_network_connectivity_configuration
         replace: []
     private_endpoint_rules:
       id: databricks_account.settings.private_endpoint_rules
       name: private_endpoint_rules
       title: Private Endpoint Rules
       methods:
-        create:
+        create_private_endpoint_rule:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}~1private-endpoint-rules/post
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        list_private_endpoint_rules:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}~1private-endpoint-rules/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        delete:
+            objectKey: $.items
+        delete_private_endpoint_rule:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}~1private-endpoint-rules~1{private_endpoint_rule_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        get_private_endpoint_rule:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}~1private-endpoint-rules~1{private_endpoint_rule_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        update:
+        update_private_endpoint_rule:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-connectivity-configs~1{network_connectivity_config_id}~1private-endpoint-rules~1{private_endpoint_rule_id}/patch
@@ -4209,51 +4240,52 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/private_endpoint_rules/methods/get
+              #/components/x-stackQL-resources/private_endpoint_rules/methods/get_private_endpoint_rule
           - $ref: >-
-              #/components/x-stackQL-resources/private_endpoint_rules/methods/list
+              #/components/x-stackQL-resources/private_endpoint_rules/methods/list_private_endpoint_rules
         insert:
           - $ref: >-
-              #/components/x-stackQL-resources/private_endpoint_rules/methods/create
+              #/components/x-stackQL-resources/private_endpoint_rules/methods/create_private_endpoint_rule
         update:
           - $ref: >-
-              #/components/x-stackQL-resources/private_endpoint_rules/methods/update
+              #/components/x-stackQL-resources/private_endpoint_rules/methods/update_private_endpoint_rule
         delete:
           - $ref: >-
-              #/components/x-stackQL-resources/private_endpoint_rules/methods/delete
+              #/components/x-stackQL-resources/private_endpoint_rules/methods/delete_private_endpoint_rule
         replace: []
     network_policies:
       id: databricks_account.settings.network_policies
       name: network_policies
       title: Network Policies
       methods:
-        create:
+        create_network_policy_rpc:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1network-policies/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        list:
+        list_network_policies_rpc:
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1network-policies/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        delete:
+            objectKey: $.items
+        delete_network_policy_rpc:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-policies~1{network_policy_id}/delete
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        get:
+        get_network_policy_rpc:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-policies~1{network_policy_id}/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        update:
+        update_network_policy_rpc:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1network-policies~1{network_policy_id}/put
@@ -4262,28 +4294,33 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/network_policies/methods/get'
-          - $ref: '#/components/x-stackQL-resources/network_policies/methods/list'
+          - $ref: >-
+              #/components/x-stackQL-resources/network_policies/methods/get_network_policy_rpc
+          - $ref: >-
+              #/components/x-stackQL-resources/network_policies/methods/list_network_policies_rpc
         insert:
-          - $ref: '#/components/x-stackQL-resources/network_policies/methods/create'
+          - $ref: >-
+              #/components/x-stackQL-resources/network_policies/methods/create_network_policy_rpc
         update: []
         delete:
-          - $ref: '#/components/x-stackQL-resources/network_policies/methods/delete'
+          - $ref: >-
+              #/components/x-stackQL-resources/network_policies/methods/delete_network_policy_rpc
         replace:
-          - $ref: '#/components/x-stackQL-resources/network_policies/methods/update'
+          - $ref: >-
+              #/components/x-stackQL-resources/network_policies/methods/update_network_policy_rpc
     workspace_network_configuration:
       id: databricks_account.settings.workspace_network_configuration
       name: workspace_network_configuration
       title: Workspace Network Configuration
       methods:
-        get:
+        get_workspace_network_option_rpc:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1network/get
           response:
             mediaType: application/json
             openAPIDocKey: '200'
-        update:
+        update_workspace_network_option_rpc:
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}~1network/put
@@ -4293,10 +4330,10 @@ components:
       sqlVerbs:
         select:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace_network_configuration/methods/get
+              #/components/x-stackQL-resources/workspace_network_configuration/methods/get_workspace_network_option_rpc
         insert: []
         update: []
         delete: []
         replace:
           - $ref: >-
-              #/components/x-stackQL-resources/workspace_network_configuration/methods/update
+              #/components/x-stackQL-resources/workspace_network_configuration/methods/update_workspace_network_option_rpc

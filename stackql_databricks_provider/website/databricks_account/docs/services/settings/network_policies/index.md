@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists a <code>network_policies</code> resourc
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_network_policy_rpc"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'get_network_policy_rpc', value: 'get_network_policy_rpc' },
+        { label: 'list_network_policies_rpc', value: 'list_network_policies_rpc' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_network_policy_rpc">
 
 <SchemaTable fields={[
   {
@@ -139,7 +139,7 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="list_network_policies_rpc">
 
 <SchemaTable fields={[
   {
@@ -257,39 +257,39 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#get_network_policy_rpc"><CopyableCode code="get_network_policy_rpc" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_policy_id"><code>network_policy_id</code></a></td>
     <td></td>
-    <td>Gets a network policy.<br /><br />:param network_policy_id: str<br />  The unique identifier of the network policy to retrieve.<br /><br />:returns: :class:`AccountNetworkPolicy`</td>
+    <td>Gets a network policy.</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#list_network_policies_rpc"><CopyableCode code="list_network_policies_rpc" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td><a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of network policies.<br /><br />:param page_token: str (optional)<br />  Pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`AccountNetworkPolicy`</td>
+    <td>Gets an array of network policies.</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#create_network_policy_rpc"><CopyableCode code="create_network_policy_rpc" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__network_policy"><code>data__network_policy</code></a></td>
     <td></td>
-    <td>Creates a new network policy to manage which network destinations can be accessed from the Databricks<br />environment.<br /><br />:param network_policy: :class:`AccountNetworkPolicy`<br />  Network policy configuration details.<br /><br />:returns: :class:`AccountNetworkPolicy`</td>
+    <td>Creates a new network policy to manage which network destinations can be accessed from the Databricks</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#update_network_policy_rpc"><CopyableCode code="update_network_policy_rpc" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_policy_id"><code>network_policy_id</code></a>, <a href="#parameter-data__network_policy"><code>data__network_policy</code></a></td>
     <td></td>
-    <td>Updates a network policy. This allows you to modify the configuration of a network policy.<br /><br />:param network_policy_id: str<br />  The unique identifier for the network policy.<br />:param network_policy: :class:`AccountNetworkPolicy`<br />  Updated network policy configuration details.<br /><br />:returns: :class:`AccountNetworkPolicy`</td>
+    <td>Updates a network policy. This allows you to modify the configuration of a network policy.</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#delete_network_policy_rpc"><CopyableCode code="delete_network_policy_rpc" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_policy_id"><code>network_policy_id</code></a></td>
     <td></td>
-    <td>Deletes a network policy. Cannot be called on 'default-policy'.<br /><br />:param network_policy_id: str<br />  The unique identifier of the network policy to delete.</td>
+    <td>Deletes a network policy. Cannot be called on 'default-policy'.</td>
 </tr>
 </tbody>
 </table>
@@ -328,15 +328,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_network_policy_rpc"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'get_network_policy_rpc', value: 'get_network_policy_rpc' },
+        { label: 'list_network_policies_rpc', value: 'list_network_policies_rpc' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_network_policy_rpc">
 
-Gets a network policy.<br /><br />:param network_policy_id: str<br />  The unique identifier of the network policy to retrieve.<br /><br />:returns: :class:`AccountNetworkPolicy`
+Gets a network policy.
 
 ```sql
 SELECT
@@ -349,9 +349,9 @@ AND network_policy_id = '{{ network_policy_id }}' -- required
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="list_network_policies_rpc">
 
-Gets an array of network policies.<br /><br />:param page_token: str (optional)<br />  Pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`AccountNetworkPolicy`
+Gets an array of network policies.
 
 ```sql
 SELECT
@@ -370,15 +370,15 @@ AND page_token = '{{ page_token }}'
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="create_network_policy_rpc"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'create_network_policy_rpc', value: 'create_network_policy_rpc' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="create_network_policy_rpc">
 
-Creates a new network policy to manage which network destinations can be accessed from the Databricks<br />environment.<br /><br />:param network_policy: :class:`AccountNetworkPolicy`<br />  Network policy configuration details.<br /><br />:returns: :class:`AccountNetworkPolicy`
+Creates a new network policy to manage which network destinations can be accessed from the Databricks
 
 ```sql
 INSERT INTO databricks_account.settings.network_policies (
@@ -416,14 +416,14 @@ egress
 ## `REPLACE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="update_network_policy_rpc"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'update_network_policy_rpc', value: 'update_network_policy_rpc' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="update_network_policy_rpc">
 
-Updates a network policy. This allows you to modify the configuration of a network policy.<br /><br />:param network_policy_id: str<br />  The unique identifier for the network policy.<br />:param network_policy: :class:`AccountNetworkPolicy`<br />  Updated network policy configuration details.<br /><br />:returns: :class:`AccountNetworkPolicy`
+Updates a network policy. This allows you to modify the configuration of a network policy.
 
 ```sql
 REPLACE databricks_account.settings.network_policies
@@ -445,14 +445,14 @@ egress;
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="delete_network_policy_rpc"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'delete_network_policy_rpc', value: 'delete_network_policy_rpc' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="delete_network_policy_rpc">
 
-Deletes a network policy. Cannot be called on 'default-policy'.<br /><br />:param network_policy_id: str<br />  The unique identifier of the network policy to delete.
+Deletes a network policy. Cannot be called on 'default-policy'.
 
 ```sql
 DELETE FROM databricks_account.settings.network_policies

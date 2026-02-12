@@ -215,35 +215,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-policy_id"><code>policy_id</code></a></td>
     <td></td>
-    <td>Get account federation policy.<br /><br />:param service_principal_id: int<br />  The service principal id for the federation policy.<br />:param policy_id: str<br />  The identifier for the federation policy.<br /><br />:returns: :class:`FederationPolicy`</td>
+    <td>Get account federation policy.</td>
 </tr>
 <tr>
     <td><a href="#service_principal_federation_policy_list"><CopyableCode code="service_principal_federation_policy_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-service_principal_id"><code>service_principal_id</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>List account federation policies.<br /><br />:param service_principal_id: int<br />  The service principal id for the federation policy.<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`FederationPolicy`</td>
+    <td>List account federation policies.</td>
 </tr>
 <tr>
     <td><a href="#service_principal_federation_policy_create"><CopyableCode code="service_principal_federation_policy_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-data__policy"><code>data__policy</code></a></td>
     <td><a href="#parameter-policy_id"><code>policy_id</code></a></td>
-    <td>Create account federation policy.<br /><br />:param service_principal_id: int<br />  The service principal id for the federation policy.<br />:param policy: :class:`FederationPolicy`<br />:param policy_id: str (optional)<br />  The identifier for the federation policy. The identifier must contain only lowercase alphanumeric<br />  characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.<br /><br />:returns: :class:`FederationPolicy`</td>
+    <td>Create account federation policy.</td>
 </tr>
 <tr>
     <td><a href="#service_principal_federation_policy_update"><CopyableCode code="service_principal_federation_policy_update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-data__policy"><code>data__policy</code></a></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a></td>
-    <td>Update account federation policy.<br /><br />:param service_principal_id: int<br />  The service principal id for the federation policy.<br />:param policy_id: str<br />  The identifier for the federation policy.<br />:param policy: :class:`FederationPolicy`<br />:param update_mask: str (optional)<br />  The field mask specifies which fields of the policy to update. To specify multiple fields in the<br />  field mask, use comma as the separator (no space). The special value '*' indicates that all fields<br />  should be updated (full replacement). If unspecified, all fields that are set in the policy provided<br />  in the update request will overwrite the corresponding fields in the existing policy. Example value:<br />  'description,oidc_policy.audiences'.<br /><br />:returns: :class:`FederationPolicy`</td>
+    <td>Update account federation policy.</td>
 </tr>
 <tr>
     <td><a href="#service_principal_federation_policy_delete"><CopyableCode code="service_principal_federation_policy_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-service_principal_id"><code>service_principal_id</code></a>, <a href="#parameter-policy_id"><code>policy_id</code></a></td>
     <td></td>
-    <td>Delete account federation policy.<br /><br />:param service_principal_id: int<br />  The service principal id for the federation policy.<br />:param policy_id: str<br />  The identifier for the federation policy.</td>
+    <td>Delete account federation policy.</td>
 </tr>
 </tbody>
 </table>
@@ -310,7 +310,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="service_principal_federation_policy_get">
 
-Get account federation policy.<br /><br />:param service_principal_id: int<br />  The service principal id for the federation policy.<br />:param policy_id: str<br />  The identifier for the federation policy.<br /><br />:returns: :class:`FederationPolicy`
+Get account federation policy.
 
 ```sql
 SELECT
@@ -331,7 +331,7 @@ AND policy_id = '{{ policy_id }}' -- required
 </TabItem>
 <TabItem value="service_principal_federation_policy_list">
 
-List account federation policies.<br /><br />:param service_principal_id: int<br />  The service principal id for the federation policy.<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`FederationPolicy`
+List account federation policies.
 
 ```sql
 SELECT
@@ -365,7 +365,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="service_principal_federation_policy_create">
 
-Create account federation policy.<br /><br />:param service_principal_id: int<br />  The service principal id for the federation policy.<br />:param policy: :class:`FederationPolicy`<br />:param policy_id: str (optional)<br />  The identifier for the federation policy. The identifier must contain only lowercase alphanumeric<br />  characters, numbers, hyphens, and slashes. If unspecified, the id will be assigned by Databricks.<br /><br />:returns: :class:`FederationPolicy`
+Create account federation policy.
 
 ```sql
 INSERT INTO databricks_account.oauth2.service_principal_federation_policy (
@@ -424,7 +424,7 @@ update_time
 >
 <TabItem value="service_principal_federation_policy_update">
 
-Update account federation policy.<br /><br />:param service_principal_id: int<br />  The service principal id for the federation policy.<br />:param policy_id: str<br />  The identifier for the federation policy.<br />:param policy: :class:`FederationPolicy`<br />:param update_mask: str (optional)<br />  The field mask specifies which fields of the policy to update. To specify multiple fields in the<br />  field mask, use comma as the separator (no space). The special value '*' indicates that all fields<br />  should be updated (full replacement). If unspecified, all fields that are set in the policy provided<br />  in the update request will overwrite the corresponding fields in the existing policy. Example value:<br />  'description,oidc_policy.audiences'.<br /><br />:returns: :class:`FederationPolicy`
+Update account federation policy.
 
 ```sql
 UPDATE databricks_account.oauth2.service_principal_federation_policy
@@ -460,7 +460,7 @@ update_time;
 >
 <TabItem value="service_principal_federation_policy_delete">
 
-Delete account federation policy.<br /><br />:param service_principal_id: int<br />  The service principal id for the federation policy.<br />:param policy_id: str<br />  The identifier for the federation policy.
+Delete account federation policy.
 
 ```sql
 DELETE FROM databricks_account.oauth2.service_principal_federation_policy

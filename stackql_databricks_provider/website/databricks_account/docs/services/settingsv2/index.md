@@ -25,7 +25,7 @@ total resources: __3__
 ## Resources
 <div class="row">
 <div class="providerDocColumn">
-<a href="/services/settingsv2/account_settings_v2/">account_settings_v2</a><br />
+<a href="/services/settingsv2/account_settings/">account_settings</a><br />
 <a href="/services/settingsv2/account_user_preferences/">account_user_preferences</a>
 </div>
 <div class="providerDocColumn">

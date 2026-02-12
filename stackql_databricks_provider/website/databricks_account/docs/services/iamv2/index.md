@@ -25,7 +25,7 @@ total resources: __1__
 ## Resources
 <div class="row">
 <div class="providerDocColumn">
-<a href="/services/iamv2/account_iam_v2/">account_iam_v2</a>
+<a href="/services/iamv2/account_iam/">account_iam</a>
 </div>
 <div class="providerDocColumn">
 

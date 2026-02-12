@@ -141,35 +141,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-private_access_settings_id"><code>private_access_settings_id</code></a></td>
     <td></td>
-    <td>Gets a Databricks private access settings configuration, both specified by ID.<br /><br />:param private_access_settings_id: str<br /><br />:returns: :class:`PrivateAccessSettings`</td>
+    <td>Gets a Databricks private access settings configuration, both specified by ID.</td>
 </tr>
 <tr>
     <td><a href="#private_access_list"><CopyableCode code="private_access_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Lists Databricks private access settings for an account.<br /><br /><br />:returns: Iterator over :class:`PrivateAccessSettings`</td>
+    <td>Lists Databricks private access settings for an account.</td>
 </tr>
 <tr>
     <td><a href="#private_access_create"><CopyableCode code="private_access_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Creates a private access settings configuration, which represents network access restrictions for<br />workspace resources. Private access settings configure whether workspaces can be accessed from the<br />public internet or only from private endpoints.<br /><br />:param allowed_vpc_endpoint_ids: List[str] (optional)<br />  An array of Databricks VPC endpoint IDs. This is the Databricks ID returned when registering the VPC<br />  endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in AWS.<br />  Only used when private_access_level is set to ENDPOINT. This is an allow list of VPC endpoints<br />  registered in your Databricks account that can connect to your workspace over AWS PrivateLink. Note:<br />  If hybrid access to your workspace is enabled by setting public_access_enabled to true, this control<br />  only works for PrivateLink connections. To control how your workspace is accessed via public<br />  internet, see IP access lists.<br />:param private_access_level: :class:`PrivateAccessLevel` (optional)<br />  The private access level controls which VPC endpoints can connect to the UI or API of any workspace<br />  that attaches this private access settings object. `ACCOUNT` level access (the default) allows only<br />  VPC endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT`<br />  level access allows only specified VPC endpoints connect to your workspace. For details, see<br />  allowed_vpc_endpoint_ids.<br />:param private_access_settings_name: str (optional)<br />  The human-readable name of the private access settings object.<br />:param public_access_enabled: bool (optional)<br />  Determines if the workspace can be accessed over public internet. For fully private workspaces, you<br />  can optionally specify false, but only if you implement both the front-end and the back-end<br />  PrivateLink connections. Otherwise, specify true, which means that public access is enabled.<br />:param region: str (optional)<br />  The AWS region for workspaces attached to this private access settings object.<br /><br />:returns: :class:`PrivateAccessSettings`</td>
+    <td>Creates a private access settings configuration, which represents network access restrictions for</td>
 </tr>
 <tr>
     <td><a href="#private_access_replace"><CopyableCode code="private_access_replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-private_access_settings_id"><code>private_access_settings_id</code></a>, <a href="#parameter-data__customer_facing_private_access_settings"><code>data__customer_facing_private_access_settings</code></a></td>
     <td></td>
-    <td>Updates an existing private access settings object, which specifies how your workspace is accessed<br />over AWS PrivateLink. To use AWS PrivateLink, a workspace must have a private access settings object<br />referenced by ID in the workspace's private_access_settings_id property. This operation completely<br />overwrites your existing private access settings object attached to your workspaces. All workspaces<br />attached to the private access settings are affected by any change. If public_access_enabled,<br />private_access_level, or allowed_vpc_endpoint_ids are updated, effects of these changes might take<br />several minutes to propagate to the workspace API. You can share one private access settings object<br />with multiple workspaces in a single account. However, private access settings are specific to AWS<br />regions, so only workspaces in the same AWS region can use a given private access settings object.<br />Before configuring PrivateLink, read the Databricks article about PrivateLink.<br /><br />:param private_access_settings_id: str<br />  Databricks private access settings ID.<br />:param customer_facing_private_access_settings: :class:`PrivateAccessSettings`<br />  Properties of the new private access settings object.<br /><br />:returns: :class:`PrivateAccessSettings`</td>
+    <td>Updates an existing private access settings object, which specifies how your workspace is accessed</td>
 </tr>
 <tr>
     <td><a href="#private_access_delete"><CopyableCode code="private_access_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-private_access_settings_id"><code>private_access_settings_id</code></a></td>
     <td></td>
-    <td>Deletes a Databricks private access settings configuration, both specified by ID.<br /><br />:param private_access_settings_id: str<br /><br />:returns: :class:`PrivateAccessSettings`</td>
+    <td>Deletes a Databricks private access settings configuration, both specified by ID.</td>
 </tr>
 </tbody>
 </table>
@@ -211,7 +211,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="private_access_get">
 
-Gets a Databricks private access settings configuration, both specified by ID.<br /><br />:param private_access_settings_id: str<br /><br />:returns: :class:`PrivateAccessSettings`
+Gets a Databricks private access settings configuration, both specified by ID.
 
 ```sql
 SELECT
@@ -230,7 +230,7 @@ AND private_access_settings_id = '{{ private_access_settings_id }}' -- required
 </TabItem>
 <TabItem value="private_access_list">
 
-Lists Databricks private access settings for an account.<br /><br /><br />:returns: Iterator over :class:`PrivateAccessSettings`
+Lists Databricks private access settings for an account.
 
 ```sql
 SELECT
@@ -260,7 +260,7 @@ WHERE account_id = '{{ account_id }}' -- required
 >
 <TabItem value="private_access_create">
 
-Creates a private access settings configuration, which represents network access restrictions for<br />workspace resources. Private access settings configure whether workspaces can be accessed from the<br />public internet or only from private endpoints.<br /><br />:param allowed_vpc_endpoint_ids: List[str] (optional)<br />  An array of Databricks VPC endpoint IDs. This is the Databricks ID returned when registering the VPC<br />  endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in AWS.<br />  Only used when private_access_level is set to ENDPOINT. This is an allow list of VPC endpoints<br />  registered in your Databricks account that can connect to your workspace over AWS PrivateLink. Note:<br />  If hybrid access to your workspace is enabled by setting public_access_enabled to true, this control<br />  only works for PrivateLink connections. To control how your workspace is accessed via public<br />  internet, see IP access lists.<br />:param private_access_level: :class:`PrivateAccessLevel` (optional)<br />  The private access level controls which VPC endpoints can connect to the UI or API of any workspace<br />  that attaches this private access settings object. `ACCOUNT` level access (the default) allows only<br />  VPC endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT`<br />  level access allows only specified VPC endpoints connect to your workspace. For details, see<br />  allowed_vpc_endpoint_ids.<br />:param private_access_settings_name: str (optional)<br />  The human-readable name of the private access settings object.<br />:param public_access_enabled: bool (optional)<br />  Determines if the workspace can be accessed over public internet. For fully private workspaces, you<br />  can optionally specify false, but only if you implement both the front-end and the back-end<br />  PrivateLink connections. Otherwise, specify true, which means that public access is enabled.<br />:param region: str (optional)<br />  The AWS region for workspaces attached to this private access settings object.<br /><br />:returns: :class:`PrivateAccessSettings`
+Creates a private access settings configuration, which represents network access restrictions for
 
 ```sql
 INSERT INTO databricks_account.provisioning.private_access (
@@ -333,7 +333,7 @@ region
 >
 <TabItem value="private_access_replace">
 
-Updates an existing private access settings object, which specifies how your workspace is accessed<br />over AWS PrivateLink. To use AWS PrivateLink, a workspace must have a private access settings object<br />referenced by ID in the workspace's private_access_settings_id property. This operation completely<br />overwrites your existing private access settings object attached to your workspaces. All workspaces<br />attached to the private access settings are affected by any change. If public_access_enabled,<br />private_access_level, or allowed_vpc_endpoint_ids are updated, effects of these changes might take<br />several minutes to propagate to the workspace API. You can share one private access settings object<br />with multiple workspaces in a single account. However, private access settings are specific to AWS<br />regions, so only workspaces in the same AWS region can use a given private access settings object.<br />Before configuring PrivateLink, read the Databricks article about PrivateLink.<br /><br />:param private_access_settings_id: str<br />  Databricks private access settings ID.<br />:param customer_facing_private_access_settings: :class:`PrivateAccessSettings`<br />  Properties of the new private access settings object.<br /><br />:returns: :class:`PrivateAccessSettings`
+Updates an existing private access settings object, which specifies how your workspace is accessed
 
 ```sql
 REPLACE databricks_account.provisioning.private_access
@@ -366,7 +366,7 @@ region;
 >
 <TabItem value="private_access_delete">
 
-Deletes a Databricks private access settings configuration, both specified by ID.<br /><br />:param private_access_settings_id: str<br /><br />:returns: :class:`PrivateAccessSettings`
+Deletes a Databricks private access settings configuration, both specified by ID.
 
 ```sql
 DELETE FROM databricks_account.provisioning.private_access

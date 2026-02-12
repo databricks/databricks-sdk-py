@@ -16,3 +16,8 @@ SELECT u.id, displayName, userName, active FROM databricks_account.iam.users u, 
 SELECT id, name, account_id, external_id, display_name, user_name, active, emails, roles FROM databricks_account.iam.account_users_v2 WHERE id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
 SELECT id, name, account_id, external_id, display_name, user_name, active, emails, roles FROM databricks_account.iam.account_users_v2 WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
 SELECT * FROM databricks_account.iam.account_users_v2 WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
+SHOW EXTENDED METHODS IN databricks_account.catalog.account_metastore_assignments;
+SELECT contents FROM databricks_account.billing.billable_usage WHERE start_month = '2025-12' AND end_month = '2026-01' AND account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
+SELECT * FROM databricks_account.billing.billable_usage WHERE start_month = '2025-12' AND end_month = '2026-01' AND account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
+SELECT column_anon  FROM databricks_account.billing.billable_usage WHERE start_month = '2025-12' AND end_month = '2026-01' AND account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
+SELECT * FROM databricks_account.billing.billable_usage WHERE start_month = '2025-12' AND end_month = '2026-01' AND account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';

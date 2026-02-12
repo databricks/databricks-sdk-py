@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists an <code>account_ip_access_lists</code>
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_ip_access_lists_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_ip_access_lists_get', value: 'account_ip_access_lists_get' },
+        { label: 'account_ip_access_lists_list', value: 'account_ip_access_lists_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_ip_access_lists_get">
 
 <SchemaTable fields={[
   {
@@ -101,7 +101,7 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_ip_access_lists_list">
 
 <SchemaTable fields={[
   {
@@ -174,46 +174,46 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#account_ip_access_lists_get"><CopyableCode code="account_ip_access_lists_get" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a></td>
     <td></td>
-    <td>Gets an IP access list, specified by its list ID.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br /><br />:returns: :class:`GetIpAccessListResponse`</td>
+    <td>Gets an IP access list, specified by its list ID.</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#account_ip_access_lists_list"><CopyableCode code="account_ip_access_lists_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Gets all IP access lists for the specified account.<br /><br /><br />:returns: Iterator over :class:`IpAccessListInfo`</td>
+    <td>Gets all IP access lists for the specified account.</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#account_ip_access_lists_create"><CopyableCode code="account_ip_access_lists_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__label"><code>data__label</code></a>, <a href="#parameter-data__list_type"><code>data__list_type</code></a></td>
     <td></td>
-    <td>Creates an IP access list for the account.<br /><br />A list can be an allow list or a block list. See the top of this file for a description of how the<br />server treats allow lists and block lists at runtime.<br /><br />When creating or updating an IP access list:<br /><br />* For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,<br />where one CIDR counts as a single value. Attempts to exceed that number return error 400 with<br />`error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,<br />error 400 is returned with `error_code` value `INVALID_STATE`.<br /><br />It can take a few minutes for the changes to take effect.<br /><br />:param label: str<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType`<br />:param ip_addresses: List[str] (optional)<br /><br />:returns: :class:`CreateIpAccessListResponse`</td>
+    <td>Creates an IP access list for the account.</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#account_ip_access_lists_update"><CopyableCode code="account_ip_access_lists_update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a></td>
     <td></td>
-    <td>Updates an existing IP access list, specified by its ID.<br /><br />A list can include allow lists and block lists. See the top of this file for a description of how the<br />server treats allow lists and block lists at run time.<br /><br />When updating an IP access list:<br /><br />* For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,<br />where one CIDR counts as a single value. Attempts to exceed that number return error 400 with<br />`error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,<br />error 400 is returned with `error_code` value `INVALID_STATE`.<br /><br />It can take a few minutes for the changes to take effect.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br />:param enabled: bool (optional)<br />  Specifies whether this IP access list is enabled.<br />:param ip_addresses: List[str] (optional)<br />:param label: str (optional)<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType` (optional)</td>
+    <td>Updates an existing IP access list, specified by its ID.</td>
 </tr>
 <tr>
-    <td><a href="#replace"><CopyableCode code="replace" /></a></td>
+    <td><a href="#account_ip_access_lists_replace"><CopyableCode code="account_ip_access_lists_replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-data__label"><code>data__label</code></a>, <a href="#parameter-data__list_type"><code>data__list_type</code></a>, <a href="#parameter-data__enabled"><code>data__enabled</code></a></td>
     <td></td>
-    <td>Replaces an IP access list, specified by its ID.<br /><br />A list can include allow lists and block lists. See the top of this file for a description of how the<br />server treats allow lists and block lists at run time. When replacing an IP access list: * For all<br />allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values, where one<br />CIDR counts as a single value. Attempts to exceed that number return error 400 with `error_code` value<br />`QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is<br />returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take<br />effect.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br />:param label: str<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType`<br />:param enabled: bool<br />  Specifies whether this IP access list is enabled.<br />:param ip_addresses: List[str] (optional)</td>
+    <td>Replaces an IP access list, specified by its ID.</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#account_ip_access_lists_delete"><CopyableCode code="account_ip_access_lists_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a></td>
     <td></td>
-    <td>Deletes an IP access list, specified by its list ID.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list</td>
+    <td>Deletes an IP access list, specified by its list ID.</td>
 </tr>
 </tbody>
 </table>
@@ -247,15 +247,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="account_ip_access_lists_get"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'account_ip_access_lists_get', value: 'account_ip_access_lists_get' },
+        { label: 'account_ip_access_lists_list', value: 'account_ip_access_lists_list' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="account_ip_access_lists_get">
 
-Gets an IP access list, specified by its list ID.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br /><br />:returns: :class:`GetIpAccessListResponse`
+Gets an IP access list, specified by its list ID.
 
 ```sql
 SELECT
@@ -266,9 +266,9 @@ AND ip_access_list_id = '{{ ip_access_list_id }}' -- required
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="account_ip_access_lists_list">
 
-Gets all IP access lists for the specified account.<br /><br /><br />:returns: Iterator over :class:`IpAccessListInfo`
+Gets all IP access lists for the specified account.
 
 ```sql
 SELECT
@@ -293,15 +293,15 @@ WHERE account_id = '{{ account_id }}' -- required
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="account_ip_access_lists_create"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'account_ip_access_lists_create', value: 'account_ip_access_lists_create' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="account_ip_access_lists_create">
 
-Creates an IP access list for the account.<br /><br />A list can be an allow list or a block list. See the top of this file for a description of how the<br />server treats allow lists and block lists at runtime.<br /><br />When creating or updating an IP access list:<br /><br />* For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,<br />where one CIDR counts as a single value. Attempts to exceed that number return error 400 with<br />`error_code` value `QUOTA_EXCEEDED`. * If the new list would block the calling user's current IP,<br />error 400 is returned with `error_code` value `INVALID_STATE`.<br /><br />It can take a few minutes for the changes to take effect.<br /><br />:param label: str<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType`<br />:param ip_addresses: List[str] (optional)<br /><br />:returns: :class:`CreateIpAccessListResponse`
+Creates an IP access list for the account.
 
 ```sql
 INSERT INTO databricks_account.settings.account_ip_access_lists (
@@ -347,14 +347,14 @@ ip_access_list
 ## `UPDATE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="account_ip_access_lists_update"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'account_ip_access_lists_update', value: 'account_ip_access_lists_update' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="account_ip_access_lists_update">
 
-Updates an existing IP access list, specified by its ID.<br /><br />A list can include allow lists and block lists. See the top of this file for a description of how the<br />server treats allow lists and block lists at run time.<br /><br />When updating an IP access list:<br /><br />* For all allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values,<br />where one CIDR counts as a single value. Attempts to exceed that number return error 400 with<br />`error_code` value `QUOTA_EXCEEDED`. * If the updated list would block the calling user's current IP,<br />error 400 is returned with `error_code` value `INVALID_STATE`.<br /><br />It can take a few minutes for the changes to take effect.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br />:param enabled: bool (optional)<br />  Specifies whether this IP access list is enabled.<br />:param ip_addresses: List[str] (optional)<br />:param label: str (optional)<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType` (optional)
+Updates an existing IP access list, specified by its ID.
 
 ```sql
 UPDATE databricks_account.settings.account_ip_access_lists
@@ -374,14 +374,14 @@ AND ip_access_list_id = '{{ ip_access_list_id }}' --required;
 ## `REPLACE` examples
 
 <Tabs
-    defaultValue="replace"
+    defaultValue="account_ip_access_lists_replace"
     values={[
-        { label: 'replace', value: 'replace' }
+        { label: 'account_ip_access_lists_replace', value: 'account_ip_access_lists_replace' }
     ]}
 >
-<TabItem value="replace">
+<TabItem value="account_ip_access_lists_replace">
 
-Replaces an IP access list, specified by its ID.<br /><br />A list can include allow lists and block lists. See the top of this file for a description of how the<br />server treats allow lists and block lists at run time. When replacing an IP access list: * For all<br />allow lists and block lists combined, the API supports a maximum of 1000 IP/CIDR values, where one<br />CIDR counts as a single value. Attempts to exceed that number return error 400 with `error_code` value<br />`QUOTA_EXCEEDED`. * If the resulting list would block the calling user's current IP, error 400 is<br />returned with `error_code` value `INVALID_STATE`. It can take a few minutes for the changes to take<br />effect.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list<br />:param label: str<br />  Label for the IP access list. This **cannot** be empty.<br />:param list_type: :class:`ListType`<br />:param enabled: bool<br />  Specifies whether this IP access list is enabled.<br />:param ip_addresses: List[str] (optional)
+Replaces an IP access list, specified by its ID.
 
 ```sql
 REPLACE databricks_account.settings.account_ip_access_lists
@@ -404,14 +404,14 @@ AND data__enabled = {{ enabled }} --required;
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="account_ip_access_lists_delete"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'account_ip_access_lists_delete', value: 'account_ip_access_lists_delete' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="account_ip_access_lists_delete">
 
-Deletes an IP access list, specified by its list ID.<br /><br />:param ip_access_list_id: str<br />  The ID for the corresponding IP access list
+Deletes an IP access list, specified by its list ID.
 
 ```sql
 DELETE FROM databricks_account.settings.account_ip_access_lists

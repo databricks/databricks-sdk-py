@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks apps service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.apps
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -65,6 +68,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
     get:
       operationId: apps_list
       summary: Lists all apps in the workspace.
@@ -100,7 +104,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/App'
+                $ref: '#/components/schemas/ListAppsResponse'
         default:
           description: Error response
           content:
@@ -112,6 +116,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
   /api/2.0/apps/{app_name}/update:
     post:
       operationId: apps_create_update
@@ -196,6 +201,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
     get:
       operationId: apps_get_update
       summary: Gets the status of an app update.
@@ -233,6 +239,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
   /api/2.0/apps/{name}:
     delete:
       operationId: apps_delete
@@ -271,6 +278,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
     get:
       operationId: apps_get
       summary: Retrieves information for the app with the supplied name.
@@ -308,6 +316,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
     patch:
       operationId: apps_update
       summary: Updates the app with the supplied name.
@@ -361,6 +370,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
   /api/2.0/apps/{app_name}/deployments:
     post:
       operationId: apps_deploy
@@ -414,6 +424,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
     get:
       operationId: apps_list_deployments
       summary: Lists all app deployments for the app with the supplied name.
@@ -457,7 +468,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/AppDeployment'
+                $ref: '#/components/schemas/ListAppDeploymentsResponse'
         default:
           description: Error response
           content:
@@ -469,6 +480,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
   /api/2.0/apps/{app_name}/deployments/{deployment_id}:
     get:
       operationId: apps_get_deployment
@@ -519,6 +531,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
   /api/2.0/permissions/apps/{app_name}/permissionLevels:
     get:
       operationId: apps_get_permission_levels
@@ -557,6 +570,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
   /api/2.0/permissions/apps/{app_name}:
     get:
       operationId: apps_get_permissions
@@ -599,6 +613,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
     put:
       operationId: apps_set_permissions
       summary: >-
@@ -655,6 +670,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
     patch:
       operationId: apps_update_permissions
       summary: >-
@@ -708,6 +724,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
   /api/2.0/apps/{name}/start:
     post:
       operationId: apps_start
@@ -748,6 +765,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
   /api/2.0/apps/{name}/stop:
     post:
       operationId: apps_stop
@@ -788,6 +806,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsAPI
   /api/2.0/apps-settings/templates:
     post:
       operationId: apps_settings_create_custom_template
@@ -830,6 +849,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsSettingsAPI
     get:
       operationId: apps_settings_list_custom_templates
       summary: Lists all custom templates in the workspace.
@@ -866,7 +886,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CustomTemplate'
+                $ref: '#/components/schemas/ListCustomTemplatesResponse'
         default:
           description: Error response
           content:
@@ -878,6 +898,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsSettingsAPI
   /api/2.0/apps-settings/templates/{name}:
     delete:
       operationId: apps_settings_delete_custom_template
@@ -917,6 +938,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsSettingsAPI
     get:
       operationId: apps_settings_get_custom_template
       summary: Gets the custom template with the specified name.
@@ -955,6 +977,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsSettingsAPI
     put:
       operationId: apps_settings_update_custom_template
       summary: >-
@@ -1014,6 +1037,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: AppsSettingsAPI
 components:
   schemas:
     App:
@@ -2552,6 +2576,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.apps
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1apps~1{name}/delete'
@@ -2635,6 +2660,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.app_deployments
         get:
           operation:
             $ref: >-
@@ -2719,6 +2745,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.templates
         delete:
           operation:
             $ref: '#/paths/~1api~12.0~1apps-settings~1templates~1{name}/delete'

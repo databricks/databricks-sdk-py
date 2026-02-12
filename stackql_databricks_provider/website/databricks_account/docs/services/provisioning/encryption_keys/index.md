@@ -301,28 +301,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-customer_managed_key_id"><code>customer_managed_key_id</code></a></td>
     <td></td>
-    <td>Gets a customer-managed key configuration object for an account, specified by ID. This operation<br />uploads a reference to a customer-managed key to Databricks. If assigned as a workspace's<br />customer-managed key for managed services, Databricks uses the key to encrypt the workspaces notebooks<br />and secrets in the control plane, in addition to Databricks SQL queries and query history. If it is<br />specified as a workspace's customer-managed key for storage, the key encrypts the workspace's root S3<br />bucket (which contains the workspace's root DBFS and system data) and, optionally, cluster EBS volume<br />data.<br /><br />**Important**: Customer-managed keys are supported only for some deployment types, subscription types,<br />and AWS regions.<br /><br />This operation is available only if your account is on the E2 version of the platform.",<br /><br />:param customer_managed_key_id: str<br />  Databricks encryption key configuration ID.<br /><br />:returns: :class:`CustomerManagedKey`</td>
+    <td>Gets a customer-managed key configuration object for an account, specified by ID. This operation</td>
 </tr>
 <tr>
     <td><a href="#encryption_keys_list"><CopyableCode code="encryption_keys_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Lists Databricks customer-managed key configurations for an account.<br /><br /><br />:returns: Iterator over :class:`CustomerManagedKey`</td>
+    <td>Lists Databricks customer-managed key configurations for an account.</td>
 </tr>
 <tr>
     <td><a href="#encryption_keys_create"><CopyableCode code="encryption_keys_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__use_cases"><code>data__use_cases</code></a></td>
     <td></td>
-    <td>Creates a customer-managed key configuration object for an account, specified by ID. This operation<br />uploads a reference to a customer-managed key to Databricks. If the key is assigned as a workspace's<br />customer-managed key for managed services, Databricks uses the key to encrypt the workspaces notebooks<br />and secrets in the control plane, in addition to Databricks SQL queries and query history. If it is<br />specified as a workspace's customer-managed key for workspace storage, the key encrypts the<br />workspace's root S3 bucket (which contains the workspace's root DBFS and system data) and, optionally,<br />cluster EBS volume data.<br /><br />**Important**: Customer-managed keys are supported only for some deployment types, subscription types,<br />and AWS regions that currently support creation of Databricks workspaces.<br /><br />This operation is available only if your account is on the E2 version of the platform or on a select<br />custom plan that allows multiple workspaces per account.<br /><br />:param use_cases: List[:class:`KeyUseCase`]<br />  The cases that the key can be used for.<br />:param aws_key_info: :class:`CreateAwsKeyInfo` (optional)<br />:param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)<br /><br />:returns: :class:`CustomerManagedKey`</td>
+    <td>Creates a customer-managed key configuration object for an account, specified by ID. This operation</td>
 </tr>
 <tr>
     <td><a href="#encryption_keys_delete"><CopyableCode code="encryption_keys_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-customer_managed_key_id"><code>customer_managed_key_id</code></a></td>
     <td></td>
-    <td>Deletes a customer-managed key configuration object for an account. You cannot delete a configuration<br />that is associated with a running workspace.<br /><br />:param customer_managed_key_id: str<br />  Databricks encryption key configuration ID.<br /><br />:returns: :class:`CustomerManagedKey`</td>
+    <td>Deletes a customer-managed key configuration object for an account. You cannot delete a configuration</td>
 </tr>
 </tbody>
 </table>
@@ -364,7 +364,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="encryption_keys_get">
 
-Gets a customer-managed key configuration object for an account, specified by ID. This operation<br />uploads a reference to a customer-managed key to Databricks. If assigned as a workspace's<br />customer-managed key for managed services, Databricks uses the key to encrypt the workspaces notebooks<br />and secrets in the control plane, in addition to Databricks SQL queries and query history. If it is<br />specified as a workspace's customer-managed key for storage, the key encrypts the workspace's root S3<br />bucket (which contains the workspace's root DBFS and system data) and, optionally, cluster EBS volume<br />data.<br /><br />**Important**: Customer-managed keys are supported only for some deployment types, subscription types,<br />and AWS regions.<br /><br />This operation is available only if your account is on the E2 version of the platform.",<br /><br />:param customer_managed_key_id: str<br />  Databricks encryption key configuration ID.<br /><br />:returns: :class:`CustomerManagedKey`
+Gets a customer-managed key configuration object for an account, specified by ID. This operation
 
 ```sql
 SELECT
@@ -383,7 +383,7 @@ AND customer_managed_key_id = '{{ customer_managed_key_id }}' -- required
 </TabItem>
 <TabItem value="encryption_keys_list">
 
-Lists Databricks customer-managed key configurations for an account.<br /><br /><br />:returns: Iterator over :class:`CustomerManagedKey`
+Lists Databricks customer-managed key configurations for an account.
 
 ```sql
 SELECT
@@ -413,7 +413,7 @@ WHERE account_id = '{{ account_id }}' -- required
 >
 <TabItem value="encryption_keys_create">
 
-Creates a customer-managed key configuration object for an account, specified by ID. This operation<br />uploads a reference to a customer-managed key to Databricks. If the key is assigned as a workspace's<br />customer-managed key for managed services, Databricks uses the key to encrypt the workspaces notebooks<br />and secrets in the control plane, in addition to Databricks SQL queries and query history. If it is<br />specified as a workspace's customer-managed key for workspace storage, the key encrypts the<br />workspace's root S3 bucket (which contains the workspace's root DBFS and system data) and, optionally,<br />cluster EBS volume data.<br /><br />**Important**: Customer-managed keys are supported only for some deployment types, subscription types,<br />and AWS regions that currently support creation of Databricks workspaces.<br /><br />This operation is available only if your account is on the E2 version of the platform or on a select<br />custom plan that allows multiple workspaces per account.<br /><br />:param use_cases: List[:class:`KeyUseCase`]<br />  The cases that the key can be used for.<br />:param aws_key_info: :class:`CreateAwsKeyInfo` (optional)<br />:param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)<br /><br />:returns: :class:`CustomerManagedKey`
+Creates a customer-managed key configuration object for an account, specified by ID. This operation
 
 ```sql
 INSERT INTO databricks_account.provisioning.encryption_keys (
@@ -472,7 +472,7 @@ use_cases
 >
 <TabItem value="encryption_keys_delete">
 
-Deletes a customer-managed key configuration object for an account. You cannot delete a configuration<br />that is associated with a running workspace.<br /><br />:param customer_managed_key_id: str<br />  Databricks encryption key configuration ID.<br /><br />:returns: :class:`CustomerManagedKey`
+Deletes a customer-managed key configuration object for an account. You cannot delete a configuration
 
 ```sql
 DELETE FROM databricks_account.provisioning.encryption_keys

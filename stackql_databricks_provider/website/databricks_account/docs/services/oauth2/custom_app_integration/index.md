@@ -225,35 +225,35 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-integration_id"><code>integration_id</code></a></td>
     <td></td>
-    <td>Gets the Custom OAuth App Integration for the given integration id.<br /><br />:param integration_id: str<br />  The OAuth app integration ID.<br /><br />:returns: :class:`GetCustomAppIntegrationOutput`</td>
+    <td>Gets the Custom OAuth App Integration for the given integration id.</td>
 </tr>
 <tr>
     <td><a href="#custom_app_integration_list"><CopyableCode code="custom_app_integration_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td><a href="#parameter-include_creator_username"><code>include_creator_username</code></a>, <a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Get the list of custom OAuth app integrations for the specified Databricks account<br /><br />:param include_creator_username: bool (optional)<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`GetCustomAppIntegrationOutput`</td>
+    <td>Get the list of custom OAuth app integrations for the specified Databricks account</td>
 </tr>
 <tr>
     <td><a href="#custom_app_integration_create"><CopyableCode code="custom_app_integration_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Create Custom OAuth App Integration.<br /><br />You can retrieve the custom OAuth app integration via :method:CustomAppIntegration/get.<br /><br />:param confidential: bool (optional)<br />  This field indicates whether an OAuth client secret is required to authenticate this client.<br />:param name: str (optional)<br />  Name of the custom OAuth app<br />:param redirect_urls: List[str] (optional)<br />  List of OAuth redirect urls<br />:param scopes: List[str] (optional)<br />  OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access, openid,<br />  profile, email.<br />:param token_access_policy: :class:`TokenAccessPolicy` (optional)<br />  Token access policy<br />:param user_authorized_scopes: List[str] (optional)<br />  Scopes that will need to be consented by end user to mint the access token. If the user does not<br />  authorize the access token will not be minted. Must be a subset of scopes.<br /><br />:returns: :class:`CreateCustomAppIntegrationOutput`</td>
+    <td>Create Custom OAuth App Integration.</td>
 </tr>
 <tr>
     <td><a href="#custom_app_integration_update"><CopyableCode code="custom_app_integration_update" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-integration_id"><code>integration_id</code></a></td>
     <td></td>
-    <td>Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration<br />via :method:CustomAppIntegration/get.<br /><br />:param integration_id: str<br />:param redirect_urls: List[str] (optional)<br />  List of OAuth redirect urls to be updated in the custom OAuth app integration<br />:param scopes: List[str] (optional)<br />  List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect URIs<br />  this will fully replace the existing values instead of appending<br />:param token_access_policy: :class:`TokenAccessPolicy` (optional)<br />  Token access policy to be updated in the custom OAuth app integration<br />:param user_authorized_scopes: List[str] (optional)<br />  Scopes that will need to be consented by end user to mint the access token. If the user does not<br />  authorize the access token will not be minted. Must be a subset of scopes.</td>
+    <td>Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration</td>
 </tr>
 <tr>
     <td><a href="#custom_app_integration_delete"><CopyableCode code="custom_app_integration_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-integration_id"><code>integration_id</code></a></td>
     <td></td>
-    <td>Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via<br />:method:CustomAppIntegration/get.<br /><br />:param integration_id: str</td>
+    <td>Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via</td>
 </tr>
 </tbody>
 </table>
@@ -310,7 +310,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="custom_app_integration_get">
 
-Gets the Custom OAuth App Integration for the given integration id.<br /><br />:param integration_id: str<br />  The OAuth app integration ID.<br /><br />:returns: :class:`GetCustomAppIntegrationOutput`
+Gets the Custom OAuth App Integration for the given integration id.
 
 ```sql
 SELECT
@@ -333,7 +333,7 @@ AND integration_id = '{{ integration_id }}' -- required
 </TabItem>
 <TabItem value="custom_app_integration_list">
 
-Get the list of custom OAuth app integrations for the specified Databricks account<br /><br />:param include_creator_username: bool (optional)<br />:param page_size: int (optional)<br />:param page_token: str (optional)<br /><br />:returns: Iterator over :class:`GetCustomAppIntegrationOutput`
+Get the list of custom OAuth app integrations for the specified Databricks account
 
 ```sql
 SELECT
@@ -370,7 +370,7 @@ AND page_token = '{{ page_token }}'
 >
 <TabItem value="custom_app_integration_create">
 
-Create Custom OAuth App Integration.<br /><br />You can retrieve the custom OAuth app integration via :method:CustomAppIntegration/get.<br /><br />:param confidential: bool (optional)<br />  This field indicates whether an OAuth client secret is required to authenticate this client.<br />:param name: str (optional)<br />  Name of the custom OAuth app<br />:param redirect_urls: List[str] (optional)<br />  List of OAuth redirect urls<br />:param scopes: List[str] (optional)<br />  OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access, openid,<br />  profile, email.<br />:param token_access_policy: :class:`TokenAccessPolicy` (optional)<br />  Token access policy<br />:param user_authorized_scopes: List[str] (optional)<br />  Scopes that will need to be consented by end user to mint the access token. If the user does not<br />  authorize the access token will not be minted. Must be a subset of scopes.<br /><br />:returns: :class:`CreateCustomAppIntegrationOutput`
+Create Custom OAuth App Integration.
 
 ```sql
 INSERT INTO databricks_account.oauth2.custom_app_integration (
@@ -445,7 +445,7 @@ client_secret
 >
 <TabItem value="custom_app_integration_update">
 
-Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration<br />via :method:CustomAppIntegration/get.<br /><br />:param integration_id: str<br />:param redirect_urls: List[str] (optional)<br />  List of OAuth redirect urls to be updated in the custom OAuth app integration<br />:param scopes: List[str] (optional)<br />  List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect URIs<br />  this will fully replace the existing values instead of appending<br />:param token_access_policy: :class:`TokenAccessPolicy` (optional)<br />  Token access policy to be updated in the custom OAuth app integration<br />:param user_authorized_scopes: List[str] (optional)<br />  Scopes that will need to be consented by end user to mint the access token. If the user does not<br />  authorize the access token will not be minted. Must be a subset of scopes.
+Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration
 
 ```sql
 UPDATE databricks_account.oauth2.custom_app_integration
@@ -472,7 +472,7 @@ AND integration_id = '{{ integration_id }}' --required;
 >
 <TabItem value="custom_app_integration_delete">
 
-Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via<br />:method:CustomAppIntegration/get.<br /><br />:param integration_id: str
+Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via
 
 ```sql
 DELETE FROM databricks_account.oauth2.custom_app_integration

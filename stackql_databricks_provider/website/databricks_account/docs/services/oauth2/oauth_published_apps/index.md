@@ -1,9 +1,9 @@
 ---
-title: o_auth_published_apps
+title: oauth_published_apps
 hide_title: false
 hide_table_of_contents: false
 keywords:
-  - o_auth_published_apps
+  - oauth_published_apps
   - oauth2
   - databricks_account
   - infrastructure-as-code
@@ -19,13 +19,13 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
 
-Creates, updates, deletes, gets or lists an <code>o_auth_published_apps</code> resource.
+Creates, updates, deletes, gets or lists an <code>oauth_published_apps</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>o_auth_published_apps</code></td></tr>
+<tr><td><b>Name</b></td><td><code>oauth_published_apps</code></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
-<tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.oauth2.o_auth_published_apps" /></td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.oauth2.oauth_published_apps" /></td></tr>
 </tbody></table>
 
 ## Fields
@@ -33,12 +33,12 @@ Creates, updates, deletes, gets or lists an <code>o_auth_published_apps</code> r
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="o_auth_published_apps_list"
+    defaultValue="oauth_published_apps_list"
     values={[
-        { label: 'o_auth_published_apps_list', value: 'o_auth_published_apps_list' }
+        { label: 'oauth_published_apps_list', value: 'oauth_published_apps_list' }
     ]}
 >
-<TabItem value="o_auth_published_apps_list">
+<TabItem value="oauth_published_apps_list">
 
 <SchemaTable fields={[
   {
@@ -96,11 +96,11 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#o_auth_published_apps_list"><CopyableCode code="o_auth_published_apps_list" /></a></td>
+    <td><a href="#oauth_published_apps_list"><CopyableCode code="oauth_published_apps_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td><a href="#parameter-page_size"><code>page_size</code></a>, <a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Get all the available published OAuth apps in Databricks.<br /><br />:param page_size: int (optional)<br />  The max number of OAuth published apps to return in one page.<br />:param page_token: str (optional)<br />  A token that can be used to get the next page of results.<br /><br />:returns: Iterator over :class:`PublishedAppOutput`</td>
+    <td>Get all the available published OAuth apps in Databricks.</td>
 </tr>
 </tbody>
 </table>
@@ -139,14 +139,14 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="o_auth_published_apps_list"
+    defaultValue="oauth_published_apps_list"
     values={[
-        { label: 'o_auth_published_apps_list', value: 'o_auth_published_apps_list' }
+        { label: 'oauth_published_apps_list', value: 'oauth_published_apps_list' }
     ]}
 >
-<TabItem value="o_auth_published_apps_list">
+<TabItem value="oauth_published_apps_list">
 
-Get all the available published OAuth apps in Databricks.<br /><br />:param page_size: int (optional)<br />  The max number of OAuth published apps to return in one page.<br />:param page_token: str (optional)<br />  A token that can be used to get the next page of results.<br /><br />:returns: Iterator over :class:`PublishedAppOutput`
+Get all the available published OAuth apps in Databricks.
 
 ```sql
 SELECT
@@ -157,7 +157,7 @@ description,
 is_confidential_client,
 redirect_urls,
 scopes
-FROM databricks_account.oauth2.o_auth_published_apps
+FROM databricks_account.oauth2.oauth_published_apps
 WHERE account_id = '{{ account_id }}' -- required
 AND page_size = '{{ page_size }}'
 AND page_token = '{{ page_token }}'

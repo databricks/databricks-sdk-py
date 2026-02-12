@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks dataquality service
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.dataquality
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -110,6 +113,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
   /api/data-quality/v1/monitors:
     post:
       operationId: data_quality_create_monitor
@@ -191,6 +195,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
     get:
       operationId: data_quality_list_monitor
       summary: (Unimplemented) List data quality monitors.
@@ -222,7 +227,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Monitor'
+                $ref: '#/components/schemas/ListMonitorResponse'
         default:
           description: Error response
           content:
@@ -234,6 +239,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
   /api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes:
     post:
       operationId: data_quality_create_refresh
@@ -336,6 +342,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
     get:
       operationId: data_quality_list_refresh
       summary: >-
@@ -436,7 +443,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/Refresh'
+                $ref: '#/components/schemas/ListRefreshResponse'
         default:
           description: Error response
           content:
@@ -448,6 +455,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
   /api/data-quality/v1/monitors/{object_type}/{object_id}:
     delete:
       operationId: data_quality_delete_monitor
@@ -541,6 +549,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
     get:
       operationId: data_quality_get_monitor
       summary: Read a data quality monitor on a Unity Catalog object.
@@ -643,6 +652,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
     patch:
       operationId: data_quality_update_monitor
       summary: Update a data quality monitor on Unity Catalog object.
@@ -760,6 +770,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
   /api/data-quality/v1/monitors/{object_type}/{object_id}/refreshes/{refresh_id}:
     delete:
       operationId: data_quality_delete_refresh
@@ -832,6 +843,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
     get:
       operationId: data_quality_get_refresh
       summary: >-
@@ -937,6 +949,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
     patch:
       operationId: data_quality_update_refresh
       summary: (Unimplemented) Update a refresh
@@ -1035,6 +1048,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: DataQualityAPI
 components:
   schemas:
     AnomalyDetectionConfig:
@@ -1478,6 +1492,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.refreshes
         delete:
           operation:
             $ref: >-
@@ -1532,6 +1547,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.monitors
         delete:
           operation:
             $ref: >-

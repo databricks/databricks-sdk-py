@@ -33,13 +33,13 @@ Creates, updates, deletes, gets or lists a <code>private_endpoint_rules</code> r
 The following fields are returned by `SELECT` queries:
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_private_endpoint_rule"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'get_private_endpoint_rule', value: 'get_private_endpoint_rule' },
+        { label: 'list_private_endpoint_rules', value: 'list_private_endpoint_rules' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_private_endpoint_rule">
 
 <SchemaTable fields={[
   {
@@ -129,7 +129,7 @@ The following fields are returned by `SELECT` queries:
   }
 ]} />
 </TabItem>
-<TabItem value="list">
+<TabItem value="list_private_endpoint_rules">
 
 <SchemaTable fields={[
   {
@@ -237,39 +237,39 @@ The following methods are available for this resource:
 </thead>
 <tbody>
 <tr>
-    <td><a href="#get"><CopyableCode code="get" /></a></td>
+    <td><a href="#get_private_endpoint_rule"><CopyableCode code="get_private_endpoint_rule" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a>, <a href="#parameter-private_endpoint_rule_id"><code>private_endpoint_rule_id</code></a></td>
     <td></td>
-    <td>Gets the private endpoint rule.<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectvity Configuration ID.<br />:param private_endpoint_rule_id: str<br />  Your private endpoint rule ID.<br /><br />:returns: :class:`NccPrivateEndpointRule`</td>
+    <td>Gets the private endpoint rule.</td>
 </tr>
 <tr>
-    <td><a href="#list"><CopyableCode code="list" /></a></td>
+    <td><a href="#list_private_endpoint_rules"><CopyableCode code="list_private_endpoint_rules" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a></td>
     <td><a href="#parameter-page_token"><code>page_token</code></a></td>
-    <td>Gets an array of private endpoint rules.<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectvity Configuration ID.<br />:param page_token: str (optional)<br />  Pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`NccPrivateEndpointRule`</td>
+    <td>Gets an array of private endpoint rules.</td>
 </tr>
 <tr>
-    <td><a href="#create"><CopyableCode code="create" /></a></td>
+    <td><a href="#create_private_endpoint_rule"><CopyableCode code="create_private_endpoint_rule" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a>, <a href="#parameter-data__private_endpoint_rule"><code>data__private_endpoint_rule</code></a></td>
     <td></td>
-    <td>Create a private endpoint rule for the specified network connectivity config object. Once the object<br />is created, Databricks asynchronously provisions a new Azure private endpoint to your specified Azure<br />resource.<br /><br />**IMPORTANT**: You must use Azure portal or other Azure tools to approve the private endpoint to<br />complete the connection. To get the information of the private endpoint created, make a `GET` request<br />on the new private endpoint rule. See [serverless private link].<br /><br />[serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectivity Configuration ID.<br />:param private_endpoint_rule: :class:`CreatePrivateEndpointRule`<br /><br />:returns: :class:`NccPrivateEndpointRule`</td>
+    <td>Create a private endpoint rule for the specified network connectivity config object. Once the object</td>
 </tr>
 <tr>
-    <td><a href="#update"><CopyableCode code="update" /></a></td>
+    <td><a href="#update_private_endpoint_rule"><CopyableCode code="update_private_endpoint_rule" /></a></td>
     <td><CopyableCode code="update" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a>, <a href="#parameter-private_endpoint_rule_id"><code>private_endpoint_rule_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-data__private_endpoint_rule"><code>data__private_endpoint_rule</code></a></td>
     <td></td>
-    <td>Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources<br />is allowed to be updated.<br /><br />:param network_connectivity_config_id: str<br />  The ID of a network connectivity configuration, which is the parent resource of this private<br />  endpoint rule object.<br />:param private_endpoint_rule_id: str<br />  Your private endpoint rule ID.<br />:param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />:returns: :class:`NccPrivateEndpointRule`</td>
+    <td>Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources</td>
 </tr>
 <tr>
-    <td><a href="#delete"><CopyableCode code="delete" /></a></td>
+    <td><a href="#delete_private_endpoint_rule"><CopyableCode code="delete_private_endpoint_rule" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a>, <a href="#parameter-private_endpoint_rule_id"><code>private_endpoint_rule_id</code></a></td>
     <td></td>
-    <td>Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private<br />endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted<br />after seven days of deactivation. When a private endpoint is deactivated, the `deactivated` field is<br />set to `true` and the private endpoint is not available to your serverless compute resources.<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectvity Configuration ID.<br />:param private_endpoint_rule_id: str<br />  Your private endpoint rule ID.<br /><br />:returns: :class:`NccPrivateEndpointRule`</td>
+    <td>Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private</td>
 </tr>
 </tbody>
 </table>
@@ -318,15 +318,15 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 ## `SELECT` examples
 
 <Tabs
-    defaultValue="get"
+    defaultValue="get_private_endpoint_rule"
     values={[
-        { label: 'get', value: 'get' },
-        { label: 'list', value: 'list' }
+        { label: 'get_private_endpoint_rule', value: 'get_private_endpoint_rule' },
+        { label: 'list_private_endpoint_rules', value: 'list_private_endpoint_rules' }
     ]}
 >
-<TabItem value="get">
+<TabItem value="get_private_endpoint_rule">
 
-Gets the private endpoint rule.<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectvity Configuration ID.<br />:param private_endpoint_rule_id: str<br />  Your private endpoint rule ID.<br /><br />:returns: :class:`NccPrivateEndpointRule`
+Gets the private endpoint rule.
 
 ```sql
 SELECT
@@ -354,9 +354,9 @@ AND private_endpoint_rule_id = '{{ private_endpoint_rule_id }}' -- required
 ;
 ```
 </TabItem>
-<TabItem value="list">
+<TabItem value="list_private_endpoint_rules">
 
-Gets an array of private endpoint rules.<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectvity Configuration ID.<br />:param page_token: str (optional)<br />  Pagination token to go to next page based on previous query.<br /><br />:returns: Iterator over :class:`NccPrivateEndpointRule`
+Gets an array of private endpoint rules.
 
 ```sql
 SELECT
@@ -390,15 +390,15 @@ AND page_token = '{{ page_token }}'
 ## `INSERT` examples
 
 <Tabs
-    defaultValue="create"
+    defaultValue="create_private_endpoint_rule"
     values={[
-        { label: 'create', value: 'create' },
+        { label: 'create_private_endpoint_rule', value: 'create_private_endpoint_rule' },
         { label: 'Manifest', value: 'manifest' }
     ]}
 >
-<TabItem value="create">
+<TabItem value="create_private_endpoint_rule">
 
-Create a private endpoint rule for the specified network connectivity config object. Once the object<br />is created, Databricks asynchronously provisions a new Azure private endpoint to your specified Azure<br />resource.<br /><br />**IMPORTANT**: You must use Azure portal or other Azure tools to approve the private endpoint to<br />complete the connection. To get the information of the private endpoint created, make a `GET` request<br />on the new private endpoint rule. See [serverless private link].<br /><br />[serverless private link]: https://learn.microsoft.com/azure/databricks/security/network/serverless-network-security/serverless-private-link<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectivity Configuration ID.<br />:param private_endpoint_rule: :class:`CreatePrivateEndpointRule`<br /><br />:returns: :class:`NccPrivateEndpointRule`
+Create a private endpoint rule for the specified network connectivity config object. Once the object
 
 ```sql
 INSERT INTO databricks_account.settings.private_endpoint_rules (
@@ -455,14 +455,14 @@ updated_time
 ## `UPDATE` examples
 
 <Tabs
-    defaultValue="update"
+    defaultValue="update_private_endpoint_rule"
     values={[
-        { label: 'update', value: 'update' }
+        { label: 'update_private_endpoint_rule', value: 'update_private_endpoint_rule' }
     ]}
 >
-<TabItem value="update">
+<TabItem value="update_private_endpoint_rule">
 
-Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources<br />is allowed to be updated.<br /><br />:param network_connectivity_config_id: str<br />  The ID of a network connectivity configuration, which is the parent resource of this private<br />  endpoint rule object.<br />:param private_endpoint_rule_id: str<br />  Your private endpoint rule ID.<br />:param private_endpoint_rule: :class:`UpdatePrivateEndpointRule`<br />:param update_mask: str<br />  The field mask must be a single string, with multiple fields separated by commas (no spaces). The<br />  field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,<br />  `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only<br />  the entire collection field can be specified. Field names must exactly match the resource field<br />  names.<br /><br />:returns: :class:`NccPrivateEndpointRule`
+Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources
 
 ```sql
 UPDATE databricks_account.settings.private_endpoint_rules
@@ -500,14 +500,14 @@ updated_time;
 ## `DELETE` examples
 
 <Tabs
-    defaultValue="delete"
+    defaultValue="delete_private_endpoint_rule"
     values={[
-        { label: 'delete', value: 'delete' }
+        { label: 'delete_private_endpoint_rule', value: 'delete_private_endpoint_rule' }
     ]}
 >
-<TabItem value="delete">
+<TabItem value="delete_private_endpoint_rule">
 
-Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private<br />endpoint is immediately deleted. Otherwise, the private endpoint is deactivated and will be deleted<br />after seven days of deactivation. When a private endpoint is deactivated, the `deactivated` field is<br />set to `true` and the private endpoint is not available to your serverless compute resources.<br /><br />:param network_connectivity_config_id: str<br />  Your Network Connectvity Configuration ID.<br />:param private_endpoint_rule_id: str<br />  Your private endpoint rule ID.<br /><br />:returns: :class:`NccPrivateEndpointRule`
+Initiates deleting a private endpoint rule. If the connection state is PENDING or EXPIRED, the private
 
 ```sql
 DELETE FROM databricks_account.settings.private_endpoint_rules

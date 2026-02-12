@@ -1,9 +1,9 @@
 ---
-title: account_iam_v2
+title: account_iam
 hide_title: false
 hide_table_of_contents: false
 keywords:
-  - account_iam_v2
+  - account_iam
   - iamv2
   - databricks_account
   - infrastructure-as-code
@@ -19,13 +19,13 @@ import Tabs from '@theme/Tabs';
 import TabItem from '@theme/TabItem';
 import SchemaTable from '@site/src/components/SchemaTable/SchemaTable';
 
-Creates, updates, deletes, gets or lists an <code>account_iam_v2</code> resource.
+Creates, updates, deletes, gets or lists an <code>account_iam</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_iam_v2</code></td></tr>
+<tr><td><b>Name</b></td><td><code>account_iam</code></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
-<tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iamv2.account_iam_v2" /></td></tr>
+<tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iamv2.account_iam" /></td></tr>
 </tbody></table>
 
 ## Fields
@@ -100,28 +100,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-principal_id"><code>principal_id</code></a></td>
     <td><a href="#parameter-view"><code>view</code></a></td>
-    <td>Returns the access details for a principal in a workspace. Allows for checking access details for any<br />provisioned principal (user, service principal, or group) in a workspace. * Provisioned principal here<br />refers to one that has been synced into Databricks from the customer's IdP or added explicitly to<br />Databricks via SCIM/UI. Allows for passing in a "view" parameter to control what fields are returned<br />(BASIC by default or FULL).<br /><br />:param workspace_id: int<br />  Required. The workspace ID for which the access details are being requested.<br />:param principal_id: int<br />  Required. The internal ID of the principal (user/sp/group) for which the access details are being<br />  requested.<br />:param view: :class:`WorkspaceAccessDetailView` (optional)<br />  Controls what fields are returned.<br /><br />:returns: :class:`WorkspaceAccessDetail`</td>
+    <td>Returns the access details for a principal in a workspace. Allows for checking access details for any</td>
 </tr>
 <tr>
     <td><a href="#resolve_group"><CopyableCode code="resolve_group" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-external_id"><code>external_id</code></a></td>
     <td></td>
-    <td>Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it<br />will be created in the account. If the customer is not onboarded onto Automatic Identity Management<br />(AIM), this will return an error.<br /><br />:param external_id: str<br />  Required. The external ID of the group in the customer's IdP.<br /><br />:returns: :class:`ResolveGroupResponse`</td>
+    <td>Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it</td>
 </tr>
 <tr>
     <td><a href="#resolve_service_principal"><CopyableCode code="resolve_service_principal" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-external_id"><code>external_id</code></a></td>
     <td></td>
-    <td>Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will<br />be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will<br />return an error.<br /><br />:param external_id: str<br />  Required. The external ID of the service principal in the customer's IdP.<br /><br />:returns: :class:`ResolveServicePrincipalResponse`</td>
+    <td>Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will</td>
 </tr>
 <tr>
     <td><a href="#resolve_user"><CopyableCode code="resolve_user" /></a></td>
     <td><CopyableCode code="exec" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-external_id"><code>external_id</code></a></td>
     <td></td>
-    <td>Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it<br />will be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will<br />return an error.<br /><br />:param external_id: str<br />  Required. The external ID of the user in the customer's IdP.<br /><br />:returns: :class:`ResolveUserResponse`</td>
+    <td>Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it</td>
 </tr>
 </tbody>
 </table>
@@ -172,7 +172,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="get_workspace_access_detail">
 
-Returns the access details for a principal in a workspace. Allows for checking access details for any<br />provisioned principal (user, service principal, or group) in a workspace. * Provisioned principal here<br />refers to one that has been synced into Databricks from the customer's IdP or added explicitly to<br />Databricks via SCIM/UI. Allows for passing in a "view" parameter to control what fields are returned<br />(BASIC by default or FULL).<br /><br />:param workspace_id: int<br />  Required. The workspace ID for which the access details are being requested.<br />:param principal_id: int<br />  Required. The internal ID of the principal (user/sp/group) for which the access details are being<br />  requested.<br />:param view: :class:`WorkspaceAccessDetailView` (optional)<br />  Controls what fields are returned.<br /><br />:returns: :class:`WorkspaceAccessDetail`
+Returns the access details for a principal in a workspace. Allows for checking access details for any
 
 ```sql
 SELECT
@@ -183,7 +183,7 @@ access_type,
 permissions,
 principal_type,
 status
-FROM databricks_account.iamv2.account_iam_v2
+FROM databricks_account.iamv2.account_iam
 WHERE account_id = '{{ account_id }}' -- required
 AND workspace_id = '{{ workspace_id }}' -- required
 AND principal_id = '{{ principal_id }}' -- required
@@ -206,10 +206,10 @@ AND view = '{{ view }}'
 >
 <TabItem value="resolve_group">
 
-Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it<br />will be created in the account. If the customer is not onboarded onto Automatic Identity Management<br />(AIM), this will return an error.<br /><br />:param external_id: str<br />  Required. The external ID of the group in the customer's IdP.<br /><br />:returns: :class:`ResolveGroupResponse`
+Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
 
 ```sql
-EXEC databricks_account.iamv2.account_iam_v2.resolve_group 
+EXEC databricks_account.iamv2.account_iam.resolve_group 
 @account_id='{{ account_id }}' --required 
 @@json=
 '{
@@ -220,10 +220,10 @@ EXEC databricks_account.iamv2.account_iam_v2.resolve_group
 </TabItem>
 <TabItem value="resolve_service_principal">
 
-Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will<br />be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will<br />return an error.<br /><br />:param external_id: str<br />  Required. The external ID of the service principal in the customer's IdP.<br /><br />:returns: :class:`ResolveServicePrincipalResponse`
+Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will
 
 ```sql
-EXEC databricks_account.iamv2.account_iam_v2.resolve_service_principal 
+EXEC databricks_account.iamv2.account_iam.resolve_service_principal 
 @account_id='{{ account_id }}' --required 
 @@json=
 '{
@@ -234,10 +234,10 @@ EXEC databricks_account.iamv2.account_iam_v2.resolve_service_principal
 </TabItem>
 <TabItem value="resolve_user">
 
-Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it<br />will be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will<br />return an error.<br /><br />:param external_id: str<br />  Required. The external ID of the user in the customer's IdP.<br /><br />:returns: :class:`ResolveUserResponse`
+Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it
 
 ```sql
-EXEC databricks_account.iamv2.account_iam_v2.resolve_user 
+EXEC databricks_account.iamv2.account_iam.resolve_user 
 @account_id='{{ account_id }}' --required 
 @@json=
 '{

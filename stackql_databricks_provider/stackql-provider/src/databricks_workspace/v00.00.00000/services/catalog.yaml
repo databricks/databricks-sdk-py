@@ -5,6 +5,9 @@ info:
     OpenAPI specification for the Databricks catalog service (workspace-level
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
+  x-stackql-sdk-version: 0.86.0
+  x-stackql-date-generated: '2026-02-12'
+  x-stackql-sdk-namespace: databricks.sdk.service.catalog
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
     variables:
@@ -62,6 +65,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ArtifactAllowlistsAPI
     put:
       operationId: artifact_allowlists_update
       summary: >-
@@ -142,6 +146,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ArtifactAllowlistsAPI
   /api/2.1/unity-catalog/catalogs:
     post:
       operationId: catalogs_create
@@ -231,6 +236,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CatalogsAPI
     get:
       operationId: catalogs_list
       summary: >-
@@ -332,7 +338,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/CatalogInfo'
+                $ref: '#/components/schemas/ListCatalogsResponse'
         default:
           description: Error response
           content:
@@ -344,6 +350,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CatalogsAPI
   /api/2.1/unity-catalog/catalogs/{name}:
     delete:
       operationId: catalogs_delete
@@ -391,6 +398,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CatalogsAPI
     get:
       operationId: catalogs_get
       summary: >-
@@ -447,6 +455,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CatalogsAPI
     patch:
       operationId: catalogs_update
       summary: >-
@@ -538,6 +547,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: CatalogsAPI
   /api/2.1/unity-catalog/connections:
     post:
       operationId: connections_create
@@ -615,6 +625,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConnectionsAPI
     get:
       operationId: connections_list
       summary: List all connections.
@@ -675,7 +686,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ConnectionInfo'
+                $ref: '#/components/schemas/ListConnectionsResponse'
         default:
           description: Error response
           content:
@@ -687,6 +698,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConnectionsAPI
   /api/2.1/unity-catalog/connections/{name}:
     delete:
       operationId: connections_delete
@@ -720,6 +732,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConnectionsAPI
     get:
       operationId: connections_get
       summary: Gets a connection from it's name.
@@ -758,6 +771,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConnectionsAPI
     patch:
       operationId: connections_update
       summary: Updates the connection that matches the supplied name.
@@ -819,6 +833,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ConnectionsAPI
   /api/2.1/unity-catalog/entity-tag-assignments:
     post:
       operationId: entity_tag_assignments_create
@@ -882,6 +897,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EntityTagAssignmentsAPI
   /api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags/{tag_key}:
     delete:
       operationId: entity_tag_assignments_delete
@@ -954,6 +970,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EntityTagAssignmentsAPI
     get:
       operationId: entity_tag_assignments_get
       summary: Gets a tag assignment for an Unity Catalog entity by tag key.
@@ -1011,6 +1028,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EntityTagAssignmentsAPI
     patch:
       operationId: entity_tag_assignments_update
       summary: Updates an existing tag assignment for an Unity Catalog entity.
@@ -1128,6 +1146,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EntityTagAssignmentsAPI
   /api/2.1/unity-catalog/entity-tag-assignments/{entity_type}/{entity_name}/tags:
     get:
       operationId: entity_tag_assignments_list
@@ -1194,7 +1213,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/EntityTagAssignment'
+                $ref: '#/components/schemas/ListEntityTagAssignmentsResponse'
         default:
           description: Error response
           content:
@@ -1206,6 +1225,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: EntityTagAssignmentsAPI
   /api/2.0/lineage-tracking/external-lineage:
     post:
       operationId: external_lineage_create_external_lineage_relationship
@@ -1256,6 +1276,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalLineageAPI
     delete:
       operationId: external_lineage_delete_external_lineage_relationship
       summary: >-
@@ -1294,6 +1315,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalLineageAPI
     get:
       operationId: external_lineage_list_external_lineage_relationships
       summary: >-
@@ -1360,7 +1382,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExternalLineageInfo'
+                $ref: '#/components/schemas/ListExternalLineageRelationshipsResponse'
         default:
           description: Error response
           content:
@@ -1372,6 +1394,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalLineageAPI
     patch:
       operationId: external_lineage_update_external_lineage_relationship
       summary: >-
@@ -1449,6 +1472,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalLineageAPI
   /api/2.1/unity-catalog/external-locations:
     post:
       operationId: external_locations_create
@@ -1562,6 +1586,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalLocationsAPI
     get:
       operationId: external_locations_list
       summary: >-
@@ -1654,7 +1679,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExternalLocationInfo'
+                $ref: '#/components/schemas/ListExternalLocationsResponse'
         default:
           description: Error response
           content:
@@ -1666,6 +1691,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalLocationsAPI
   /api/2.1/unity-catalog/external-locations/{name}:
     delete:
       operationId: external_locations_delete
@@ -1715,6 +1741,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalLocationsAPI
     get:
       operationId: external_locations_get
       summary: >-
@@ -1771,6 +1798,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalLocationsAPI
     patch:
       operationId: external_locations_update
       summary: >-
@@ -1906,6 +1934,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalLocationsAPI
   /api/2.0/lineage-tracking/external-metadata:
     post:
       operationId: external_metadata_create_external_metadata
@@ -1958,6 +1987,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalMetadataAPI
     get:
       operationId: external_metadata_list_external_metadata
       summary: >-
@@ -2007,7 +2037,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ExternalMetadata'
+                $ref: '#/components/schemas/ListExternalMetadataResponse'
         default:
           description: Error response
           content:
@@ -2019,6 +2049,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalMetadataAPI
   /api/2.0/lineage-tracking/external-metadata/{name}:
     delete:
       operationId: external_metadata_delete_external_metadata
@@ -2058,6 +2089,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalMetadataAPI
     get:
       operationId: external_metadata_get_external_metadata
       summary: >-
@@ -2103,6 +2135,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalMetadataAPI
     patch:
       operationId: external_metadata_update_external_metadata
       summary: >-
@@ -2193,6 +2226,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ExternalMetadataAPI
   /api/2.1/unity-catalog/functions:
     post:
       operationId: functions_create
@@ -2251,6 +2285,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FunctionsAPI
     get:
       operationId: functions_list
       summary: >-
@@ -2352,7 +2387,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/FunctionInfo'
+                $ref: '#/components/schemas/ListFunctionsResponse'
         default:
           description: Error response
           content:
@@ -2364,6 +2399,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FunctionsAPI
   /api/2.1/unity-catalog/functions/{name}:
     delete:
       operationId: functions_delete
@@ -2423,6 +2459,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FunctionsAPI
     get:
       operationId: functions_get
       summary: >-
@@ -2493,6 +2530,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FunctionsAPI
     patch:
       operationId: functions_update
       summary: >-
@@ -2563,6 +2601,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: FunctionsAPI
   /api/2.1/unity-catalog/permissions/{securable_type}/{full_name}:
     get:
       operationId: grants_get
@@ -2675,6 +2714,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GrantsAPI
     patch:
       operationId: grants_update
       summary: Updates the permissions for a securable.
@@ -2732,6 +2772,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GrantsAPI
   /api/2.1/unity-catalog/effective-permissions/{securable_type}/{full_name}:
     get:
       operationId: grants_get_effective
@@ -2848,6 +2889,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: GrantsAPI
   /api/2.1/unity-catalog/workspaces/{workspace_id}/metastore:
     put:
       operationId: metastores_assign
@@ -2913,6 +2955,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MetastoresAPI
     delete:
       operationId: metastores_unassign
       summary: >-
@@ -2957,6 +3000,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MetastoresAPI
     patch:
       operationId: metastores_update_assignment
       summary: >-
@@ -3021,6 +3065,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MetastoresAPI
   /api/2.1/unity-catalog/metastores:
     post:
       operationId: metastores_create
@@ -3095,6 +3140,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MetastoresAPI
     get:
       operationId: metastores_list
       summary: >-
@@ -3168,7 +3214,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/MetastoreInfo'
+                $ref: '#/components/schemas/AccountsListMetastoresResponse'
         default:
           description: Error response
           content:
@@ -3180,6 +3226,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MetastoresAPI
   /api/2.1/unity-catalog/current-metastore-assignment:
     get:
       operationId: metastores_current
@@ -3210,6 +3257,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MetastoresAPI
   /api/2.1/unity-catalog/metastores/{id}:
     delete:
       operationId: metastores_delete
@@ -3251,6 +3299,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MetastoresAPI
     get:
       operationId: metastores_get
       summary: >-
@@ -3295,6 +3344,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MetastoresAPI
     patch:
       operationId: metastores_update
       summary: >-
@@ -3396,6 +3446,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MetastoresAPI
   /api/2.1/unity-catalog/metastore_summary:
     get:
       operationId: metastores_summary
@@ -3432,6 +3483,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: MetastoresAPI
   /api/2.1/unity-catalog/models/{full_name}/versions/{version}:
     delete:
       operationId: model_versions_delete
@@ -3488,6 +3540,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelVersionsAPI
     get:
       operationId: model_versions_get
       summary: Get a model version.
@@ -3566,6 +3619,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelVersionsAPI
     patch:
       operationId: model_versions_update
       summary: Updates the specified model version.
@@ -3744,6 +3798,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelVersionsAPI
   /api/2.1/unity-catalog/models/{full_name}/aliases/{alias}:
     get:
       operationId: model_versions_get_by_alias
@@ -3812,6 +3867,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelVersionsAPI
     delete:
       operationId: registered_models_delete_alias
       summary: Deletes a registered model alias.
@@ -3862,6 +3918,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RegisteredModelsAPI
     put:
       operationId: registered_models_set_alias
       summary: Set an alias on the specified registered model.
@@ -3933,6 +3990,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RegisteredModelsAPI
   /api/2.1/unity-catalog/models/{full_name}/versions:
     get:
       operationId: model_versions_list
@@ -4037,7 +4095,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/ModelVersionInfo'
+                $ref: '#/components/schemas/ListModelVersionsResponse'
         default:
           description: Error response
           content:
@@ -4049,6 +4107,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ModelVersionsAPI
   /api/2.0/online-tables:
     post:
       operationId: online_tables_create
@@ -4094,6 +4153,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: OnlineTablesAPI
   /api/2.0/online-tables/{name}:
     delete:
       operationId: online_tables_delete
@@ -4136,6 +4196,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: OnlineTablesAPI
     get:
       operationId: online_tables_get
       summary: Get information about an existing online table and its status.
@@ -4174,6 +4235,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: OnlineTablesAPI
   /api/2.1/unity-catalog/policies:
     post:
       operationId: policies_create_policy
@@ -4221,6 +4283,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PoliciesAPI
   /api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}/{name}:
     delete:
       operationId: policies_delete_policy
@@ -4278,6 +4341,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PoliciesAPI
     get:
       operationId: policies_get_policy
       summary: Get the policy definition on a securable
@@ -4334,6 +4398,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PoliciesAPI
     patch:
       operationId: policies_update_policy
       summary: Update an ABAC policy on a securable.
@@ -4429,6 +4494,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PoliciesAPI
   /api/2.1/unity-catalog/policies/{on_securable_type}/{on_securable_fullname}:
     get:
       operationId: policies_list_policies
@@ -4517,7 +4583,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/PolicyInfo'
+                $ref: '#/components/schemas/ListPoliciesResponse'
         default:
           description: Error response
           content:
@@ -4529,6 +4595,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: PoliciesAPI
   /api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}/cancel:
     post:
       operationId: quality_monitors_cancel_refresh
@@ -4578,6 +4645,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorsAPI
   /api/2.1/unity-catalog/tables/{table_name}/monitor:
     post:
       operationId: quality_monitors_create
@@ -4762,6 +4830,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorsAPI
     delete:
       operationId: quality_monitors_delete
       summary: >-
@@ -4831,6 +4900,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorsAPI
     get:
       operationId: quality_monitors_get
       summary: >-
@@ -4899,6 +4969,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorsAPI
     put:
       operationId: quality_monitors_update
       summary: >-
@@ -5067,6 +5138,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorsAPI
   /api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes/{refresh_id}:
     get:
       operationId: quality_monitors_get_refresh
@@ -5136,6 +5208,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorsAPI
   /api/2.1/unity-catalog/tables/{table_name}/monitor/refreshes:
     get:
       operationId: quality_monitors_list_refreshes
@@ -5201,6 +5274,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorsAPI
     post:
       operationId: quality_monitors_run_refresh
       summary: >-
@@ -5265,6 +5339,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorsAPI
   /api/2.1/quality-monitoring/tables/{table_name}/monitor/dashboard:
     post:
       operationId: quality_monitors_regenerate_dashboard
@@ -5347,6 +5422,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: QualityMonitorsAPI
   /api/2.1/unity-catalog/models:
     post:
       operationId: registered_models_create
@@ -5490,6 +5566,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RegisteredModelsAPI
     get:
       operationId: registered_models_list
       summary: >-
@@ -5619,7 +5696,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/RegisteredModelInfo'
+                $ref: '#/components/schemas/ListRegisteredModelsResponse'
         default:
           description: Error response
           content:
@@ -5631,6 +5708,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RegisteredModelsAPI
   /api/2.1/unity-catalog/models/{full_name}:
     delete:
       operationId: registered_models_delete
@@ -5677,6 +5755,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RegisteredModelsAPI
     get:
       operationId: registered_models_get
       summary: Get a registered model.
@@ -5745,6 +5824,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RegisteredModelsAPI
     patch:
       operationId: registered_models_update
       summary: Updates the specified registered model.
@@ -5887,6 +5967,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RegisteredModelsAPI
   /api/2.1/unity-catalog/resource-quotas/{parent_securable_type}/{parent_full_name}/{quota_name}:
     get:
       operationId: resource_quotas_get_quota
@@ -5956,6 +6037,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ResourceQuotasAPI
   /api/2.1/unity-catalog/resource-quotas/all-resource-quotas:
     get:
       operationId: resource_quotas_list_quotas
@@ -6006,7 +6088,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/QuotaInfo'
+                $ref: '#/components/schemas/ListQuotasResponse'
         default:
           description: Error response
           content:
@@ -6018,6 +6100,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: ResourceQuotasAPI
   /api/3.0/rfa/requests:
     post:
       operationId: rfa_batch_create_access_requests
@@ -6083,6 +6166,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RfaAPI
   /api/3.0/rfa/destinations/{securable_type}/{full_name}:
     get:
       operationId: rfa_get_access_request_destinations
@@ -6146,6 +6230,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RfaAPI
   /api/3.0/rfa/destinations:
     patch:
       operationId: rfa_update_access_request_destinations
@@ -6248,6 +6333,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: RfaAPI
   /api/2.1/unity-catalog/schemas:
     post:
       operationId: schemas_create
@@ -6318,6 +6404,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SchemasAPI
     get:
       operationId: schemas_list
       summary: >-
@@ -6409,7 +6496,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SchemaInfo'
+                $ref: '#/components/schemas/ListSchemasResponse'
         default:
           description: Error response
           content:
@@ -6421,6 +6508,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SchemasAPI
   /api/2.1/unity-catalog/schemas/{full_name}:
     delete:
       operationId: schemas_delete
@@ -6468,6 +6556,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SchemasAPI
     get:
       operationId: schemas_get
       summary: >-
@@ -6523,6 +6612,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SchemasAPI
     patch:
       operationId: schemas_update
       summary: >-
@@ -6607,6 +6697,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SchemasAPI
   /api/2.1/unity-catalog/storage-credentials:
     post:
       operationId: storage_credentials_create
@@ -6708,6 +6799,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StorageCredentialsAPI
     get:
       operationId: storage_credentials_list
       summary: >-
@@ -6792,7 +6884,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/StorageCredentialInfo'
+                $ref: '#/components/schemas/ListAccountStorageCredentialsResponse'
         default:
           description: Error response
           content:
@@ -6804,6 +6896,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StorageCredentialsAPI
   /api/2.1/unity-catalog/storage-credentials/{name}:
     delete:
       operationId: storage_credentials_delete
@@ -6855,6 +6948,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StorageCredentialsAPI
     get:
       operationId: storage_credentials_get
       summary: >-
@@ -6899,6 +6993,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StorageCredentialsAPI
     patch:
       operationId: storage_credentials_update
       summary: Updates a storage credential on the metastore.
@@ -7022,6 +7117,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StorageCredentialsAPI
   /api/2.1/unity-catalog/validate-storage-credentials:
     post:
       operationId: storage_credentials_validate
@@ -7133,6 +7229,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: StorageCredentialsAPI
   /api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas/{schema_name}:
     delete:
       operationId: system_schemas_disable
@@ -7180,6 +7277,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SystemSchemasAPI
     put:
       operationId: system_schemas_enable
       summary: >-
@@ -7237,6 +7335,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SystemSchemasAPI
   /api/2.1/unity-catalog/metastores/{metastore_id}/systemschemas:
     get:
       operationId: system_schemas_list
@@ -7311,7 +7410,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/SystemSchemaInfo'
+                $ref: '#/components/schemas/ListSystemSchemasResponse'
         default:
           description: Error response
           content:
@@ -7323,6 +7422,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: SystemSchemasAPI
   /api/2.1/unity-catalog/constraints:
     post:
       operationId: table_constraints_create
@@ -7391,6 +7491,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TableConstraintsAPI
   /api/2.1/unity-catalog/constraints/{full_name}:
     delete:
       operationId: table_constraints_delete
@@ -7463,6 +7564,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TableConstraintsAPI
   /api/2.1/unity-catalog/tables:
     post:
       operationId: tables_create
@@ -7593,6 +7695,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TablesAPI
     get:
       operationId: tables_list
       summary: >-
@@ -7737,7 +7840,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TableInfo'
+                $ref: '#/components/schemas/ListTablesResponse'
         default:
           description: Error response
           content:
@@ -7749,6 +7852,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TablesAPI
   /api/2.1/unity-catalog/tables/{full_name}:
     delete:
       operationId: tables_delete
@@ -7794,6 +7898,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TablesAPI
     get:
       operationId: tables_get
       summary: >-
@@ -7877,6 +7982,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TablesAPI
     patch:
       operationId: tables_update
       summary: >-
@@ -7932,6 +8038,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TablesAPI
   /api/2.1/unity-catalog/tables/{full_name}/exists:
     get:
       operationId: tables_exists
@@ -7990,6 +8097,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TablesAPI
   /api/2.1/unity-catalog/table-summaries:
     get:
       operationId: tables_list_summaries
@@ -8108,7 +8216,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/TableSummary'
+                $ref: '#/components/schemas/ListTableSummariesResponse'
         default:
           description: Error response
           content:
@@ -8120,6 +8228,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TablesAPI
   /api/2.0/unity-catalog/temporary-path-credentials:
     post:
       operationId: temporary_path_credentials_generate_temporary_path_credentials
@@ -8204,6 +8313,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TemporaryPathCredentialsAPI
   /api/2.0/unity-catalog/temporary-table-credentials:
     post:
       operationId: temporary_table_credentials_generate_temporary_table_credentials
@@ -8267,6 +8377,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: TemporaryTableCredentialsAPI
   /api/2.1/unity-catalog/volumes:
     post:
       operationId: volumes_create
@@ -8383,6 +8494,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VolumesAPI
     get:
       operationId: volumes_list
       summary: >-
@@ -8499,7 +8611,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/VolumeInfo'
+                $ref: '#/components/schemas/ListVolumesResponseContent'
         default:
           description: Error response
           content:
@@ -8511,6 +8623,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VolumesAPI
   /api/2.1/unity-catalog/volumes/{name}:
     delete:
       operationId: volumes_delete
@@ -8554,6 +8667,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VolumesAPI
     get:
       operationId: volumes_read
       summary: Gets a volume from the metastore for a specific catalog and schema.
@@ -8614,6 +8728,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VolumesAPI
     patch:
       operationId: volumes_update
       summary: >-
@@ -8690,6 +8805,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: VolumesAPI
   /api/2.1/unity-catalog/workspace-bindings/catalogs/{name}:
     get:
       operationId: workspace_bindings_get
@@ -8735,6 +8851,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceBindingsAPI
     patch:
       operationId: workspace_bindings_update
       summary: >-
@@ -8795,6 +8912,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceBindingsAPI
   /api/2.1/unity-catalog/bindings/{securable_type}/{securable_name}:
     get:
       operationId: workspace_bindings_get_bindings
@@ -8880,7 +8998,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: '#/components/schemas/WorkspaceBinding'
+                $ref: '#/components/schemas/GetWorkspaceBindingsResponse'
         default:
           description: Error response
           content:
@@ -8892,6 +9010,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceBindingsAPI
     patch:
       operationId: workspace_bindings_update_bindings
       summary: >-
@@ -8969,6 +9088,7 @@ paths:
                     type: string
                   message:
                     type: string
+      x-stackql-sdk-source: WorkspaceBindingsAPI
 components:
   schemas:
     AccessRequestDestinations:
@@ -12578,7 +12698,7 @@ components:
     ValidateCredentialResponse:
       type: object
       properties:
-        is_dir:
+        isDir:
           type: boolean
         results:
           type: array
@@ -12588,7 +12708,7 @@ components:
     ValidateStorageCredentialResponse:
       type: object
       properties:
-        is_dir:
+        isDir:
           type: boolean
         results:
           type: array
@@ -14588,6 +14708,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.catalogs
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1catalogs~1{name}/delete'
@@ -14634,6 +14755,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.connections
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1connections~1{name}/delete'
@@ -14702,6 +14824,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.tag_assignments
       sqlVerbs:
         select:
           - $ref: >-
@@ -14741,6 +14864,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.external_lineage_relationships
         update:
           operation:
             $ref: '#/paths/~1api~12.0~1lineage-tracking~1external-lineage/patch'
@@ -14774,6 +14898,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.external_locations
         delete:
           operation:
             $ref: >-
@@ -14822,6 +14947,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.external_metadata
         delete:
           operation:
             $ref: >-
@@ -14871,6 +14997,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.functions
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1functions~1{name}/delete'
@@ -14984,6 +15111,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.metastores
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores~1{id}/delete'
@@ -15095,6 +15223,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.model_versions
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/model_versions/methods/get'
@@ -15138,6 +15267,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.registered_models
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1models~1{full_name}/delete'
@@ -15242,6 +15372,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.policies
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/policies/methods/get'
@@ -15365,6 +15496,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.quotas
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/resource_quotas/methods/get'
@@ -15423,6 +15555,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.schemas
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1schemas~1{full_name}/delete'
@@ -15469,6 +15602,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.storage_credentials
         delete:
           operation:
             $ref: >-
@@ -15536,6 +15670,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.schemas
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/system_schemas/methods/list'
@@ -15587,6 +15722,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.tables
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1tables~1{full_name}/delete'
@@ -15633,6 +15769,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.tables
       sqlVerbs:
         select:
           - $ref: '#/components/x-stackQL-resources/table_summaries/methods/list'
@@ -15696,6 +15833,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.volumes
         delete:
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1volumes~1{name}/delete'
@@ -15751,6 +15889,7 @@ components:
           response:
             mediaType: application/json
             openAPIDocKey: '200'
+            objectKey: $.bindings
         update_bindings:
           operation:
             $ref: >-

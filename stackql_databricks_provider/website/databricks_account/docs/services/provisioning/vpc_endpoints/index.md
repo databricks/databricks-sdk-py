@@ -225,28 +225,28 @@ The following methods are available for this resource:
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-vpc_endpoint_id"><code>vpc_endpoint_id</code></a></td>
     <td></td>
-    <td>Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate<br />privately with Databricks over [AWS PrivateLink].<br /><br />[AWS PrivateLink]: https://aws.amazon.com/privatelink<br />[VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html<br /><br />:param vpc_endpoint_id: str<br />  Databricks VPC endpoint ID.<br /><br />:returns: :class:`VpcEndpoint`</td>
+    <td>Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate</td>
 </tr>
 <tr>
     <td><a href="#vpc_endpoints_list"><CopyableCode code="vpc_endpoints_list" /></a></td>
     <td><CopyableCode code="select" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Lists Databricks VPC endpoint configurations for an account.<br /><br /><br />:returns: Iterator over :class:`VpcEndpoint`</td>
+    <td>Lists Databricks VPC endpoint configurations for an account.</td>
 </tr>
 <tr>
     <td><a href="#vpc_endpoints_create"><CopyableCode code="vpc_endpoints_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a></td>
     <td></td>
-    <td>Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to<br />communicate privately with Databricks over [AWS PrivateLink].<br /><br />After you create the VPC endpoint configuration, the Databricks [endpoint service] automatically<br />accepts the VPC endpoint.<br /><br />Before configuring PrivateLink, read the [Databricks article about PrivateLink].<br /><br />[AWS PrivateLink]: https://aws.amazon.com/privatelink<br />[Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html<br />[VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html<br />[endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html<br /><br />:param aws_vpc_endpoint_id: str (optional)<br />  The ID of the VPC endpoint object in AWS.<br />:param gcp_vpc_endpoint_info: :class:`GcpVpcEndpointInfo` (optional)<br />  The cloud info of this vpc endpoint.<br />:param region: str (optional)<br />  The region in which this VPC endpoint object exists.<br />:param vpc_endpoint_name: str (optional)<br />  The human-readable name of the storage configuration.<br /><br />:returns: :class:`VpcEndpoint`</td>
+    <td>Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to</td>
 </tr>
 <tr>
     <td><a href="#vpc_endpoints_delete"><CopyableCode code="vpc_endpoints_delete" /></a></td>
     <td><CopyableCode code="delete" /></td>
     <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-vpc_endpoint_id"><code>vpc_endpoint_id</code></a></td>
     <td></td>
-    <td>Deletes a Databricks VPC endpoint configuration. You cannot delete a VPC endpoint configuration that<br />is associated with any workspace.<br /><br />:param vpc_endpoint_id: str<br /><br />:returns: :class:`VpcEndpoint`</td>
+    <td>Deletes a Databricks VPC endpoint configuration. You cannot delete a VPC endpoint configuration that</td>
 </tr>
 </tbody>
 </table>
@@ -288,7 +288,7 @@ Parameters can be passed in the `WHERE` clause of a query. Check the [Methods](#
 >
 <TabItem value="vpc_endpoints_get">
 
-Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate<br />privately with Databricks over [AWS PrivateLink].<br /><br />[AWS PrivateLink]: https://aws.amazon.com/privatelink<br />[VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html<br /><br />:param vpc_endpoint_id: str<br />  Databricks VPC endpoint ID.<br /><br />:returns: :class:`VpcEndpoint`
+Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate
 
 ```sql
 SELECT
@@ -310,7 +310,7 @@ AND vpc_endpoint_id = '{{ vpc_endpoint_id }}' -- required
 </TabItem>
 <TabItem value="vpc_endpoints_list">
 
-Lists Databricks VPC endpoint configurations for an account.<br /><br /><br />:returns: Iterator over :class:`VpcEndpoint`
+Lists Databricks VPC endpoint configurations for an account.
 
 ```sql
 SELECT
@@ -343,7 +343,7 @@ WHERE account_id = '{{ account_id }}' -- required
 >
 <TabItem value="vpc_endpoints_create">
 
-Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to<br />communicate privately with Databricks over [AWS PrivateLink].<br /><br />After you create the VPC endpoint configuration, the Databricks [endpoint service] automatically<br />accepts the VPC endpoint.<br /><br />Before configuring PrivateLink, read the [Databricks article about PrivateLink].<br /><br />[AWS PrivateLink]: https://aws.amazon.com/privatelink<br />[Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html<br />[VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html<br />[endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html<br /><br />:param aws_vpc_endpoint_id: str (optional)<br />  The ID of the VPC endpoint object in AWS.<br />:param gcp_vpc_endpoint_info: :class:`GcpVpcEndpointInfo` (optional)<br />  The cloud info of this vpc endpoint.<br />:param region: str (optional)<br />  The region in which this VPC endpoint object exists.<br />:param vpc_endpoint_name: str (optional)<br />  The human-readable name of the storage configuration.<br /><br />:returns: :class:`VpcEndpoint`
+Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
 
 ```sql
 INSERT INTO databricks_account.provisioning.vpc_endpoints (
@@ -413,7 +413,7 @@ use_case
 >
 <TabItem value="vpc_endpoints_delete">
 
-Deletes a Databricks VPC endpoint configuration. You cannot delete a VPC endpoint configuration that<br />is associated with any workspace.<br /><br />:param vpc_endpoint_id: str<br /><br />:returns: :class:`VpcEndpoint`
+Deletes a Databricks VPC endpoint configuration. You cannot delete a VPC endpoint configuration that
 
 ```sql
 DELETE FROM databricks_account.provisioning.vpc_endpoints
