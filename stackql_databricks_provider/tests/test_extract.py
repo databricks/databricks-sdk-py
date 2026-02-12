@@ -365,8 +365,8 @@ class TestResponseMediaType:
                 )
                 assert "application/json" not in resp_200["content"]
 
-    def test_billing_download_text_plain_schema_is_string(self):
-        """text/plain response should use type: string, not a $ref."""
+    def test_billing_download_text_plain_schema_has_contents_property(self):
+        """text/plain response should use object with contents property."""
         details = get_operation_details(
             billing, "BillableUsageAPI", "download",
             service_name="billing", resource_snake_name="billable_usage",
@@ -374,7 +374,9 @@ class TestResponseMediaType:
         for path, methods in details.items():
             for verb, operation in methods.items():
                 schema = operation["responses"]["200"]["content"]["text/plain"]["schema"]
-                assert schema == {"type": "string"}
+                assert schema["type"] == "object"
+                assert "contents" in schema["properties"]
+                assert schema["properties"]["contents"]["type"] == "string"
 
     def test_json_endpoint_still_uses_application_json(self):
         """Normal JSON endpoints should still use application/json."""

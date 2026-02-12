@@ -162,7 +162,9 @@ class TestNonJsonMediaTypes:
         op = spec["paths"][download_path]["get"]
         resp_200 = op["responses"]["200"]
         assert "text/plain" in resp_200["content"]
-        assert resp_200["content"]["text/plain"]["schema"] == {"type": "string"}
+        schema = resp_200["content"]["text/plain"]["schema"]
+        assert schema["type"] == "object"
+        assert schema["properties"]["contents"]["type"] == "string"
 
 
 class TestSpecOverrides:

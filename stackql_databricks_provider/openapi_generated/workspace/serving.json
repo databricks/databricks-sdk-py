@@ -418,7 +418,12 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "string"
+                  "type": "object",
+                  "properties": {
+                    "contents": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -471,7 +476,12 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "string"
+                  "type": "object",
+                  "properties": {
+                    "contents": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
@@ -787,7 +797,12 @@
             "content": {
               "text/plain": {
                 "schema": {
-                  "type": "string"
+                  "type": "object",
+                  "properties": {
+                    "contents": {
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
