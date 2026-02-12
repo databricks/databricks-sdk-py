@@ -509,8 +509,16 @@ def _build_responses(
             }
         elif media_type == "application/octet-stream":
             content_schema = {"type": "string", "format": "binary"}
+        elif media_type == "text/plain":
+            # text/plain: wrap in object with contents property so StackQL
+            # has a named column to project the raw response into.
+            content_schema = {
+                "type": "object",
+                "properties": {
+                    "contents": {"type": "string"},
+                },
+            }
         else:
-            # text/plain and other non-JSON types: raw string
             content_schema = {"type": "string"}
 
         responses["200"] = {
