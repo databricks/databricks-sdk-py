@@ -917,6 +917,12 @@ class DatabricksCliTokenSource(CliTokenSource):
         raise err
 
 
+_ERR_CUSTOM_SCOPES_NOT_SUPPORTED = (
+    "custom scopes are not supported with databricks-cli auth; "
+    "scopes are determined by what was last used when logging in with `databricks auth login`"
+)
+
+
 @oauth_credentials_strategy("databricks-cli", ["host"])
 def databricks_cli(cfg: "Config") -> Optional[CredentialsProvider]:
     try:
@@ -934,6 +940,9 @@ def databricks_cli(cfg: "Config") -> Optional[CredentialsProvider]:
         raise e
 
     logger.info("Using Databricks CLI authentication")
+
+    if cfg.scopes and cfg._scopes_explicitly_set:
+        raise ValueError(_ERR_CUSTOM_SCOPES_NOT_SUPPORTED)
 
     def inner() -> Dict[str, str]:
         token = token_source.token()

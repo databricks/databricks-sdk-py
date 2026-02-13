@@ -14,6 +14,7 @@ from databricks.sdk.credentials_provider import (CliTokenSource,
                                                  CredentialsProvider,
                                                  CredentialsStrategy,
                                                  DatabricksCliTokenSource,
+                                                 _ERR_CUSTOM_SCOPES_NOT_SUPPORTED,
                                                  databricks_cli)
 from databricks.sdk.environments import (ENVIRONMENTS, AzureEnvironment, Cloud,
                                          DatabricksEnvironment)
@@ -22,7 +23,7 @@ from databricks.sdk.service.catalog import PermissionsChange
 from databricks.sdk.service.iam import AccessControlRequest
 from databricks.sdk.version import __version__
 
-from .conftest import noop_credentials
+from .conftest import noop_credentials, set_home
 from .fixture_server import http_fixture_server
 
 
@@ -179,6 +180,62 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
 
     assert databricks_cli(config) is not None
     assert get_mock.call_count == 1
+
+
+def test_databricks_cli_errors_when_scopes_explicitly_set(monkeypatch, mocker, tmp_path):
+    mocker.patch(
+        "databricks.sdk.credentials_provider.CliTokenSource.refresh",
+        return_value=Token(
+            access_token="token",
+            token_type="Bearer",
+            expiry=datetime(2023, 5, 22, 0, 0, 0),
+        ),
+    )
+    write_large_dummy_executable(tmp_path)
+    path = str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]])
+    monkeypatch.setenv("PATH", path)
+    config_with_scopes = Config(
+        host="http://localhost",
+        credentials_strategy=noop_credentials,
+        scopes=["sql"],
+    )
+    with pytest.raises(ValueError, match=_ERR_CUSTOM_SCOPES_NOT_SUPPORTED):
+        databricks_cli(config_with_scopes)
+
+
+def test_databricks_cli_returns_none_when_scopes_set_but_cli_not_installed(monkeypatch):
+    """When scopes are explicitly set but the CLI is not installed, return None to allow fallback."""
+    monkeypatch.setenv("PATH", "whatever")
+    config_with_scopes = Config(
+        host="http://localhost",
+        credentials_strategy=noop_credentials,
+        scopes=["sql"],
+    )
+    assert databricks_cli(config_with_scopes) is None
+
+
+def test_databricks_cli_no_error_when_scopes_from_profile(monkeypatch, mocker, tmp_path):
+    """Scopes loaded from a config file profile should not trigger the error."""
+    get_mock = mocker.patch(
+        "databricks.sdk.credentials_provider.CliTokenSource.refresh",
+        return_value=Token(
+            access_token="token",
+            token_type="Bearer",
+            expiry=datetime(2023, 5, 22, 0, 0, 0),
+        ),
+    )
+    write_large_dummy_executable(tmp_path)
+    path = str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]])
+    monkeypatch.setenv("PATH", path)
+    set_home(monkeypatch, "/testdata")
+    config = Config(profile="scope-single")
+    assert config.scopes == ["clusters"]
+    assert databricks_cli(config) is not None
+
+
+def test_databricks_cli_no_error_when_no_scopes(config, monkeypatch):
+    monkeypatch.setenv("PATH", "whatever")
+    assert databricks_cli(config) is None  # None because CLI isn't installed, but no scope error
 
 
 def test_extra_and_upstream_user_agent(monkeypatch):
