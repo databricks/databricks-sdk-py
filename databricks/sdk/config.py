@@ -267,6 +267,7 @@ class Config:
         self._header_factory = None
         self._inner = {}
         self._user_agent_other_info = []
+        self._scopes_explicitly_set = "scopes" in kwargs
         self._custom_headers = custom_headers or {}
         if credentials_strategy and credentials_provider:
             raise ValueError("When providing `credentials_strategy` field, `credential_provider` cannot be specified.")
