@@ -626,7 +626,7 @@ class Config:
         """[Internal] Load the Azure tenant ID from the Azure Databricks login page.
 
         If the tenant ID is already set, this method does nothing."""
-        if not self.is_azure or self.azure_tenant_id is not None or self.host is None:
+        if self.azure_tenant_id is not None or self.host is None:
             return
         login_url = f"{self.host}/aad/auth"
         logger.debug(f"Loading tenant ID from {login_url}")
