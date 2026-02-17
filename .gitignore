@@ -13,3 +13,7 @@ databricks-sdk-py.iml
 htmlcov
 node_modules
 .env
+.stackql/
+stackql
+stackql-*.sh
+stackql-server.log

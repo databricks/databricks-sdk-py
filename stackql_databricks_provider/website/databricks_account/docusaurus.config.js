@@ -95,6 +95,10 @@ const config = {
   tagline: `Query and Provision ${providerTitle} Resources using StackQL`,
   favicon: 'img/favicon.ico',
   staticDirectories: ['static'],
+  customFields: {
+    providerName,
+  },
+
   // Future flags, see https://docusaurus.io/docs/api/docusaurus-config#future
   future: {
     v4: true, // Improve compatibility with the upcoming Docusaurus v4
