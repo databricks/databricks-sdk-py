@@ -177,15 +177,53 @@ REG_STR='{"url": "file://'${PROVIDER_REGISTRY_ROOT_DIR}'", "localDocRoot": "'${P
 Example queries:
 
 ```sql
--- List workspace clusters
-SELECT *
-FROM databricks_workspace.compute.clusters
-WHERE deployment_name = 'dbc-abcd1234-1234';
+-- List workspaces in an account
+SELECT
+  workspace_id,
+  workspace_name,
+  workspace_status,
+  aws_region,
+  compute_mode,
+  deployment_name,
+  datetime(creation_time/1000, 'unixepoch') as creation_date_time
+FROM databricks_account.provisioning.workspaces
+WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
 
--- List account users
-SELECT *
-FROM databricks_account.iam.users
-WHERE account_id = '12345678-1234-1234-1234-123456789012';
+-- Query account users and roles
+SELECT
+  id as user_id,
+  displayName as display_name,
+  userName as user_name,
+  active,
+  IIF(JSON_EXTRACT(roles,'$[0].value') = 'account_admin', 'true', 'false') as is_account_admin
+FROM databricks_account.iam.account_users
+WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
+
+--List catalogs in a workspace
+SELECT
+  full_name,
+  catalog_type,
+  comment,
+  datetime(created_at/1000, 'unixepoch') as created_at,
+  created_by,
+  datetime(updated_at/1000, 'unixepoch') as updated_at,
+  updated_by,
+  enable_predictive_optimization
+FROM databricks_workspace.catalog.catalogs
+WHERE deployment_name = 'dbc-36ff48e3-4a69';
+```
+
+```bash
+# Download billable usage to CSV
+./stackql exec \
+  -o text \
+  --hideheaders \
+  -f billable_usage.csv \
+  "SELECT contents
+  FROM databricks_account.billing.billable_usage
+  WHERE start_month = '2025-12'
+  AND end_month = '2026-01'
+  AND account_id = 'your-account-id'"
 ```
 
 ### 6. Publish the Provider
@@ -229,17 +267,15 @@ python -m add_doc_examples --doc-dir website
 ```
 ### 8. Authentication
 
-Databricks uses personal access tokens (PAT) for authentication. Set the token in your environment:
+Both providers authenticate using OAuth2 with a Databricks service principal. Set the following environment variables:
 
 ```bash
-export DATABRICKS_TOKEN="dapi1234567890abcdef"
+export DATABRICKS_ACCOUNT_ID="your-account-id"
+export DATABRICKS_CLIENT_ID="your-client-id"
+export DATABRICKS_CLIENT_SECRET="your-client-secret"
 ```
 
-For account-level operations you may also need:
-
-```bash
-export DATABRICKS_ACCOUNT_ID="12345678-1234-1234-1234-123456789012"
-```
+These are the same variables used by Terraform, the Databricks SDKs, and the Databricks CLI.
 
 ## Quick Reference
 
