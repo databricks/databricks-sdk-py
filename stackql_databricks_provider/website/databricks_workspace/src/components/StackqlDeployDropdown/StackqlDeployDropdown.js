@@ -151,6 +151,17 @@ function parseSelectSQL(sql) {
   return { fields, table, where };
 }
 
+// Parses column names from an INSERT INTO ... (...) statement
+// and returns the base field names (stripping data__ prefix).
+function parseInsertColumns(sql) {
+  const match = sql.match(/INSERT\s+INTO\s+\S+\s*\(([\s\S]+?)\)/i);
+  if (!match) return [];
+  return match[1]
+    .split(',')
+    .map(c => c.trim().replace(/^data__/, ''))
+    .filter(Boolean);
+}
+
 // Builds an "exists" hint query - a simplified count query using only the
 // original WHERE params (required parameters from the page).
 function buildExistsQuery(parsed) {
@@ -207,8 +218,25 @@ function buildTemplate(sections) {
   }
 
   if (parsed) {
-    parts.push(`/*+ statecheck, retries=5, retry_delay=10 */\n${buildStatecheckQuery(parsed)}`);
-    parts.push(`/*+ exports */\n${sections.select}`);
+    // If INSERT exists, narrow to mutable fields only (skip created_at, etc.)
+    let mutableParsed = parsed;
+    if (sections.insert) {
+      const insertColSet = new Set(parseInsertColumns(sections.insert));
+      const mutableFields = parsed.fields.filter(f => insertColSet.has(f));
+      if (mutableFields.length > 0) {
+        mutableParsed = { ...parsed, fields: mutableFields };
+      }
+    }
+
+    parts.push(`/*+ statecheck, retries=5, retry_delay=10 */\n${buildStatecheckQuery(mutableParsed)}`);
+
+    // Build exports SELECT with only mutable fields
+    let exportsSql = `SELECT ${mutableParsed.fields.join(',\n')}\nFROM ${parsed.table}`;
+    if (parsed.where) {
+      exportsSql += `\nWHERE ${parsed.where}`;
+    }
+    exportsSql += '\n;';
+    parts.push(`/*+ exports */\n${exportsSql}`);
   }
 
   if (sections.delete) {
