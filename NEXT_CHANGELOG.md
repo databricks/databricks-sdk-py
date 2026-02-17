@@ -26,3 +26,8 @@
 * Add `budget_policy_id` and `custom_tags` fields for `databricks.sdk.service.postgres.ProjectSpec`.
 * Add `budget_policy_id` and `custom_tags` fields for `databricks.sdk.service.postgres.ProjectStatus`.
 * Add `edgegrid_akamai` enum value for `databricks.sdk.service.catalog.CredentialType`.
+* Add `using_arguments` field for `databricks.sdk.service.catalog.ColumnMask`.
+* Add `effective_enable_file_events` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+* Add `effective_enable_file_events` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+* Add `input_arguments` field for `databricks.sdk.service.catalog.TableRowFilter`.
+* Add `effective_enable_file_events` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
