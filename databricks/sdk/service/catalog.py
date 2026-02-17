@@ -1445,6 +1445,11 @@ class ColumnMask:
     function_name: Optional[str] = None
     """The full name of the column mask SQL UDF."""
 
+    using_arguments: Optional[List[PolicyFunctionArgument]] = None
+    """The list of additional table columns or literals to be passed as additional arguments to a
+    column mask function. This is the replacement of the deprecated using_column_names field and
+    carries information about the types (alias or constant) of the arguments to the mask function."""
+
     using_column_names: Optional[List[str]] = None
     """The list of additional table columns to be passed as input to the column mask function. The
     first arg of the mask function should be of the type of the column being masked and the types of
@@ -1455,6 +1460,8 @@ class ColumnMask:
         body = {}
         if self.function_name is not None:
             body["function_name"] = self.function_name
+        if self.using_arguments:
+            body["using_arguments"] = [v.as_dict() for v in self.using_arguments]
         if self.using_column_names:
             body["using_column_names"] = [v for v in self.using_column_names]
         return body
@@ -1464,6 +1471,8 @@ class ColumnMask:
         body = {}
         if self.function_name is not None:
             body["function_name"] = self.function_name
+        if self.using_arguments:
+            body["using_arguments"] = self.using_arguments
         if self.using_column_names:
             body["using_column_names"] = self.using_column_names
         return body
@@ -1471,7 +1480,11 @@ class ColumnMask:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ColumnMask:
         """Deserializes the ColumnMask from a dictionary."""
-        return cls(function_name=d.get("function_name", None), using_column_names=d.get("using_column_names", None))
+        return cls(
+            function_name=d.get("function_name", None),
+            using_arguments=_repeated_dict(d, "using_arguments", PolicyFunctionArgument),
+            using_column_names=d.get("using_column_names", None),
+        )
 
 
 @dataclass
@@ -3895,9 +3908,13 @@ class ExternalLocationInfo:
     credential_name: Optional[str] = None
     """Name of the storage credential used with this location."""
 
+    effective_enable_file_events: Optional[bool] = None
+    """The effective value of `enable_file_events` after applying server-side defaults."""
+
     enable_file_events: Optional[bool] = None
     """Whether to enable file events on this external location. Default to `true`. Set to `false` to
-    disable file events."""
+    disable file events. The actual applied value may differ due to server-side defaults; check
+    `effective_enable_file_events` for the effective state."""
 
     encryption_details: Optional[EncryptionDetails] = None
 
@@ -3948,6 +3965,8 @@ class ExternalLocationInfo:
             body["credential_id"] = self.credential_id
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.effective_enable_file_events is not None:
+            body["effective_enable_file_events"] = self.effective_enable_file_events
         if self.enable_file_events is not None:
             body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
@@ -3989,6 +4008,8 @@ class ExternalLocationInfo:
             body["credential_id"] = self.credential_id
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.effective_enable_file_events is not None:
+            body["effective_enable_file_events"] = self.effective_enable_file_events
         if self.enable_file_events is not None:
             body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
@@ -4025,6 +4046,7 @@ class ExternalLocationInfo:
             created_by=d.get("created_by", None),
             credential_id=d.get("credential_id", None),
             credential_name=d.get("credential_name", None),
+            effective_enable_file_events=d.get("effective_enable_file_events", None),
             enable_file_events=d.get("enable_file_events", None),
             encryption_details=_from_dict(d, "encryption_details", EncryptionDetails),
             fallback=d.get("fallback", None),
@@ -7808,6 +7830,41 @@ class PipelineProgress:
 
 
 @dataclass
+class PolicyFunctionArgument:
+    """A positional argument passed to a row filter or column mask function. Distinguishes between
+    column references and literals."""
+
+    column: Optional[str] = None
+    """A column reference."""
+
+    constant: Optional[str] = None
+    """A constant literal."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PolicyFunctionArgument into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column is not None:
+            body["column"] = self.column
+        if self.constant is not None:
+            body["constant"] = self.constant
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PolicyFunctionArgument into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column is not None:
+            body["column"] = self.column
+        if self.constant is not None:
+            body["constant"] = self.constant
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PolicyFunctionArgument:
+        """Deserializes the PolicyFunctionArgument from a dictionary."""
+        return cls(column=d.get("column", None), constant=d.get("constant", None))
+
+
+@dataclass
 class PolicyInfo:
     to_principals: List[str]
     """List of user or group names that the policy applies to. Required on create and optional on
@@ -9684,11 +9741,18 @@ class TableRowFilter:
     """The list of table columns to be passed as input to the row filter function. The column types
     should match the types of the filter function arguments."""
 
+    input_arguments: Optional[List[PolicyFunctionArgument]] = None
+    """The list of additional table columns or literals to be passed as additional arguments to a row
+    filter function. This is the replacement of the deprecated input_column_names field and carries
+    information about the types (alias or constant) of the arguments to the filter function."""
+
     def as_dict(self) -> dict:
         """Serializes the TableRowFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.function_name is not None:
             body["function_name"] = self.function_name
+        if self.input_arguments:
+            body["input_arguments"] = [v.as_dict() for v in self.input_arguments]
         if self.input_column_names:
             body["input_column_names"] = [v for v in self.input_column_names]
         return body
@@ -9698,6 +9762,8 @@ class TableRowFilter:
         body = {}
         if self.function_name is not None:
             body["function_name"] = self.function_name
+        if self.input_arguments:
+            body["input_arguments"] = self.input_arguments
         if self.input_column_names:
             body["input_column_names"] = self.input_column_names
         return body
@@ -9705,7 +9771,11 @@ class TableRowFilter:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TableRowFilter:
         """Deserializes the TableRowFilter from a dictionary."""
-        return cls(function_name=d.get("function_name", None), input_column_names=d.get("input_column_names", None))
+        return cls(
+            function_name=d.get("function_name", None),
+            input_arguments=_repeated_dict(d, "input_arguments", PolicyFunctionArgument),
+            input_column_names=d.get("input_column_names", None),
+        )
 
 
 @dataclass
@@ -12357,6 +12427,7 @@ class ExternalLocationsAPI:
         credential_name: str,
         *,
         comment: Optional[str] = None,
+        effective_enable_file_events: Optional[bool] = None,
         enable_file_events: Optional[bool] = None,
         encryption_details: Optional[EncryptionDetails] = None,
         fallback: Optional[bool] = None,
@@ -12376,9 +12447,12 @@ class ExternalLocationsAPI:
           Name of the storage credential used with this location.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param effective_enable_file_events: bool (optional)
+          The effective value of `enable_file_events` after applying server-side defaults.
         :param enable_file_events: bool (optional)
           Whether to enable file events on this external location. Default to `true`. Set to `false` to
-          disable file events.
+          disable file events. The actual applied value may differ due to server-side defaults; check
+          `effective_enable_file_events` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
@@ -12400,6 +12474,8 @@ class ExternalLocationsAPI:
             body["comment"] = comment
         if credential_name is not None:
             body["credential_name"] = credential_name
+        if effective_enable_file_events is not None:
+            body["effective_enable_file_events"] = effective_enable_file_events
         if enable_file_events is not None:
             body["enable_file_events"] = enable_file_events
         if encryption_details is not None:
@@ -12550,6 +12626,7 @@ class ExternalLocationsAPI:
         *,
         comment: Optional[str] = None,
         credential_name: Optional[str] = None,
+        effective_enable_file_events: Optional[bool] = None,
         enable_file_events: Optional[bool] = None,
         encryption_details: Optional[EncryptionDetails] = None,
         fallback: Optional[bool] = None,
@@ -12572,9 +12649,12 @@ class ExternalLocationsAPI:
           User-provided free-form text description.
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
+        :param effective_enable_file_events: bool (optional)
+          The effective value of `enable_file_events` after applying server-side defaults.
         :param enable_file_events: bool (optional)
           Whether to enable file events on this external location. Default to `true`. Set to `false` to
-          disable file events.
+          disable file events. The actual applied value may differ due to server-side defaults; check
+          `effective_enable_file_events` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
@@ -12605,6 +12685,8 @@ class ExternalLocationsAPI:
             body["comment"] = comment
         if credential_name is not None:
             body["credential_name"] = credential_name
+        if effective_enable_file_events is not None:
+            body["effective_enable_file_events"] = effective_enable_file_events
         if enable_file_events is not None:
             body["enable_file_events"] = enable_file_events
         if encryption_details is not None:
