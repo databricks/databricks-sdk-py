@@ -10,9 +10,12 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from google.protobuf.timestamp_pb2 import Timestamp
+
 from databricks.sdk.client_types import HostType
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+                                              _repeated_dict, _repeated_enum,
+                                              _timestamp)
 
 from ..errors import OperationFailed
 
@@ -2582,10 +2585,11 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 15"""
+    """Next Id: 16"""
 
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
+    EDGEGRID_AKAMAI = "EDGEGRID_AKAMAI"
     OAUTH_ACCESS_TOKEN = "OAUTH_ACCESS_TOKEN"
     OAUTH_M2M = "OAUTH_M2M"
     OAUTH_MTLS = "OAUTH_MTLS"
@@ -3268,8 +3272,17 @@ class EntityTagAssignment:
     """The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas,
     tables, columns, volumes."""
 
+    source_type: Optional[TagAssignmentSourceType] = None
+    """The source type of the tag assignment, e.g., user-assigned or system-assigned"""
+
     tag_value: Optional[str] = None
     """The value of the tag"""
+
+    update_time: Optional[Timestamp] = None
+    """The timestamp when the tag assignment was last updated"""
+
+    updated_by: Optional[str] = None
+    """The user or principal who updated the tag assignment"""
 
     def as_dict(self) -> dict:
         """Serializes the EntityTagAssignment into a dictionary suitable for use as a JSON request body."""
@@ -3278,10 +3291,16 @@ class EntityTagAssignment:
             body["entity_name"] = self.entity_name
         if self.entity_type is not None:
             body["entity_type"] = self.entity_type
+        if self.source_type is not None:
+            body["source_type"] = self.source_type.value
         if self.tag_key is not None:
             body["tag_key"] = self.tag_key
         if self.tag_value is not None:
             body["tag_value"] = self.tag_value
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3291,10 +3310,16 @@ class EntityTagAssignment:
             body["entity_name"] = self.entity_name
         if self.entity_type is not None:
             body["entity_type"] = self.entity_type
+        if self.source_type is not None:
+            body["source_type"] = self.source_type
         if self.tag_key is not None:
             body["tag_key"] = self.tag_key
         if self.tag_value is not None:
             body["tag_value"] = self.tag_value
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     @classmethod
@@ -3303,8 +3328,11 @@ class EntityTagAssignment:
         return cls(
             entity_name=d.get("entity_name", None),
             entity_type=d.get("entity_type", None),
+            source_type=_enum(d, "source_type", TagAssignmentSourceType),
             tag_key=d.get("tag_key", None),
             tag_value=d.get("tag_value", None),
+            update_time=_timestamp(d, "update_time"),
+            updated_by=d.get("updated_by", None),
         )
 
 
@@ -8786,7 +8814,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296"""
+    """Latest kind: CONNECTION_JDBC_OAUTH_M2M = 298; Next id: 299"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -9733,6 +9761,12 @@ class TableType(Enum):
     METRIC_VIEW = "METRIC_VIEW"
     STREAMING_TABLE = "STREAMING_TABLE"
     VIEW = "VIEW"
+
+
+class TagAssignmentSourceType(Enum):
+    """Enum representing the source type of a tag assignment"""
+
+    TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION = "TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION"
 
 
 @dataclass

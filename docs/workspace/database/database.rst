@@ -223,7 +223,7 @@
         List Database Instances.
 
         :param page_size: int (optional)
-          Upper bound for items returned.
+          Upper bound for items returned. The maximum value is 100.
         :param page_token: str (optional)
           Pagination token to go to the next page of Database Instances. Requests first page if absent.
 

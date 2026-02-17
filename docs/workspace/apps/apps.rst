@@ -23,6 +23,15 @@
     .. py:method:: create_and_wait(app: App [, no_compute: Optional[bool], timeout: datetime.timedelta = 0:20:00]) -> App
 
 
+    .. py:method:: create_space(space: Space) -> CreateSpaceOperation
+
+        Creates a new app space.
+
+        :param space: :class:`Space`
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: create_update(app_name: str, update_mask: str [, app: Optional[App]]) -> Wait[AppUpdate]
 
         Creates an app update and starts the update process. The update process is asynchronous and the status
@@ -57,6 +66,16 @@
           The name of the app.
 
         :returns: :class:`App`
+        
+
+    .. py:method:: delete_space(name: str) -> DeleteSpaceOperation
+
+        Deletes an app space.
+
+        :param name: str
+          The name of the app space.
+
+        :returns: :class:`Operation`
         
 
     .. py:method:: deploy(app_name: str, app_deployment: AppDeployment) -> Wait[AppDeployment]
@@ -118,6 +137,26 @@
         :returns: :class:`AppPermissions`
         
 
+    .. py:method:: get_space(name: str) -> Space
+
+        Retrieves information for the app space with the supplied name.
+
+        :param name: str
+          The name of the app space.
+
+        :returns: :class:`Space`
+        
+
+    .. py:method:: get_space_operation(name: str) -> Operation
+
+        Gets the status of an app space update operation.
+
+        :param name: str
+          The name of the operation resource.
+
+        :returns: :class:`Operation`
+        
+
     .. py:method:: get_update(app_name: str) -> AppUpdate
 
         Gets the status of an app update.
@@ -128,7 +167,7 @@
         :returns: :class:`AppUpdate`
         
 
-    .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[App]
+    .. py:method:: list( [, page_size: Optional[int], page_token: Optional[str], space: Optional[str]]) -> Iterator[App]
 
         Lists all apps in the workspace.
 
@@ -136,6 +175,8 @@
           Upper bound for items returned.
         :param page_token: str (optional)
           Pagination token to go to the next page of apps. Requests first page if absent.
+        :param space: str (optional)
+          Filter apps by app space name. When specified, only apps belonging to this space are returned.
 
         :returns: Iterator over :class:`App`
         
@@ -152,6 +193,18 @@
           Pagination token to go to the next page of apps. Requests first page if absent.
 
         :returns: Iterator over :class:`AppDeployment`
+        
+
+    .. py:method:: list_spaces( [, page_size: Optional[int], page_token: Optional[str]]) -> Iterator[Space]
+
+        Lists all app spaces in the workspace.
+
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of app spaces. Requests first page if absent.
+
+        :returns: Iterator over :class:`Space`
         
 
     .. py:method:: set_permissions(app_name: str [, access_control_list: Optional[List[AppAccessControlRequest]]]) -> AppPermissions
@@ -217,6 +270,29 @@
         :param access_control_list: List[:class:`AppAccessControlRequest`] (optional)
 
         :returns: :class:`AppPermissions`
+        
+
+    .. py:method:: update_space(name: str, space: Space, update_mask: FieldMask) -> UpdateSpaceOperation
+
+        Updates an app space. The update process is asynchronous and the status of the update can be checked
+        with the GetSpaceOperation method.
+
+        :param name: str
+          The name of the app space. The name must contain only lowercase alphanumeric characters and hyphens.
+          It must be unique within the workspace.
+        :param space: :class:`Space`
+        :param update_mask: FieldMask
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`Operation`
         
 
     .. py:method:: wait_get_app_active(name: str, timeout: datetime.timedelta = 0:20:00, callback: Optional[Callable[[App], None]]) -> App
