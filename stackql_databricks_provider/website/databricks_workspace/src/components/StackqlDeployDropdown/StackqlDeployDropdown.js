@@ -151,10 +151,8 @@ function parseSelectSQL(sql) {
   return { fields, table, where };
 }
 
-/**
- * Builds /*+ exists */ - a simplified count query using only the
- * original WHERE params (required parameters from the page).
- */
+// Builds an "exists" hint query - a simplified count query using only the
+// original WHERE params (required parameters from the page).
 function buildExistsQuery(parsed) {
   let sql = `SELECT count(*) as count\nFROM ${parsed.table}`;
   if (parsed.where) {
@@ -164,10 +162,8 @@ function buildExistsQuery(parsed) {
   return sql;
 }
 
-/**
- * Builds /*+ statecheck */ - a count query where SELECT fields become
- * equality checks in the WHERE clause, followed by the original WHERE params.
- */
+// Builds a "statecheck" hint query - a count query where SELECT fields become
+// equality checks in the WHERE clause, followed by the original WHERE params.
 function buildStatecheckQuery(parsed) {
   const fieldConditions = parsed.fields
     .map(f => `${f} = {{ ${f} }}`)
