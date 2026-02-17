@@ -24,6 +24,20 @@ function getElementsBetweenHeadings(heading) {
 }
 
 /**
+ * Extracts text from a <code> element, preserving newlines.
+ * prism-react-renderer wraps each line in a child element (div or span),
+ * and textContent concatenates them without newlines, so we join manually.
+ */
+function getCodeText(codeEl) {
+  if (codeEl.children.length > 0) {
+    return Array.from(codeEl.children)
+      .map(line => line.textContent.replace(/\n$/, ''))
+      .join('\n');
+  }
+  return codeEl.textContent;
+}
+
+/**
  * Extracts the text content of a code block from within a set of elements.
  * If preferredTab is provided, looks for a tab with that label first.
  */
@@ -36,7 +50,7 @@ function extractCodeFromElements(elements, preferredTab) {
         const tabLabel = tabs[i].textContent.trim().toLowerCase();
         if (tabLabel === preferredTab.toLowerCase() && panels[i]) {
           const codeEl = panels[i].querySelector('pre code');
-          if (codeEl) return codeEl.textContent;
+          if (codeEl) return getCodeText(codeEl);
         }
       }
     }
@@ -44,7 +58,7 @@ function extractCodeFromElements(elements, preferredTab) {
   // Fallback: first code block in the section
   for (const el of elements) {
     const codeEl = el.querySelector('pre code');
-    if (codeEl) return codeEl.textContent;
+    if (codeEl) return getCodeText(codeEl);
   }
   return null;
 }
