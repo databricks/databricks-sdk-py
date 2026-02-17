@@ -128,11 +128,79 @@ function extractTemplateFromPage() {
 }
 
 /**
+ * Parses a SELECT SQL string into its components:
+ *   fields  – column names from the SELECT list
+ *   table   – fully-qualified table reference after FROM
+ *   where   – the raw WHERE clause (conditions only, no leading WHERE)
+ */
+function parseSelectSQL(sql) {
+  const selectFromMatch = sql.match(/SELECT\s+([\s\S]+?)\s+FROM\s+/i);
+  const fromMatch = sql.match(/FROM\s+(\S+)/i);
+  const whereMatch = sql.match(/WHERE\s+([\s\S]+?)(?:\s*;\s*$|$)/i);
+
+  const fields = selectFromMatch
+    ? selectFromMatch[1]
+        .split(',')
+        .map(f => f.trim())
+        .filter(f => f && f !== '*')
+    : [];
+
+  const table = fromMatch ? fromMatch[1] : '';
+  const where = whereMatch ? whereMatch[1].trim().replace(/;\s*$/, '').trim() : '';
+
+  return { fields, table, where };
+}
+
+/**
+ * Builds /*+ exists */ – a simplified count query using only the
+ * original WHERE params (required parameters from the page).
+ */
+function buildExistsQuery(parsed) {
+  let sql = `SELECT count(*) as count\nFROM ${parsed.table}`;
+  if (parsed.where) {
+    sql += `\nWHERE ${parsed.where}`;
+  }
+  sql += '\n;';
+  return sql;
+}
+
+/**
+ * Builds /*+ statecheck */ – a count query where SELECT fields become
+ * equality checks in the WHERE clause, followed by the original WHERE params.
+ */
+function buildStatecheckQuery(parsed) {
+  const fieldConditions = parsed.fields
+    .map(f => `${f} = {{ ${f} }}`)
+    .join(' AND\n');
+
+  let whereClause = fieldConditions;
+  if (parsed.where) {
+    if (whereClause) {
+      whereClause += ' AND\n';
+    }
+    whereClause += parsed.where;
+  }
+
+  let sql = `SELECT count(*) as count\nFROM ${parsed.table}`;
+  if (whereClause) {
+    sql += `\nWHERE \n${whereClause}`;
+  }
+  sql += '\n;';
+  return sql;
+}
+
+/**
  * Builds the stackql-deploy IQL template from extracted sections.
  * Only includes anchors for operations that actually exist on the page.
  */
 function buildTemplate(sections) {
   const parts = [];
+  let parsed = null;
+
+  if (sections.select) {
+    parsed = parseSelectSQL(sections.select);
+    parts.push(`/*+ exists */\n${buildExistsQuery(parsed)}`);
+  }
 
   if (sections.insert) {
     parts.push(`/*+ createorupdate */\n${sections.insert}`);
@@ -142,8 +210,8 @@ function buildTemplate(sections) {
     parts.push(`/*+ createorupdate */\n${sections.replace}`);
   }
 
-  if (sections.select) {
-    parts.push(`/*+ statecheck, retries=5, retry_delay=10 */\n${sections.select}`);
+  if (parsed) {
+    parts.push(`/*+ statecheck, retries=5, retry_delay=10 */\n${buildStatecheckQuery(parsed)}`);
     parts.push(`/*+ exports */\n${sections.select}`);
   }
 
