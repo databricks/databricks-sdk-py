@@ -10,6 +10,7 @@
 ### Bug Fixes
 
 ### Documentation
+* Unified Private Link error messages across all clouds. Private Link validation errors now provide guidance for AWS, Azure, and GCP in a single message.
 
 ### Internal Changes
 

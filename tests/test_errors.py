@@ -54,8 +54,8 @@ def fake_valid_response(
 
 def make_private_link_response() -> requests.Response:
     resp = requests.Response()
-    resp.url = "https://databricks.com/login.html?error=private-link-validation-error"
-    resp.request = requests.Request("GET", "https://databricks.com/api/2.0/service").prepare()
+    resp.url = "https://cloud.databricks.com/login.html?error=private-link-validation-error"
+    resp.request = requests.Request("GET", "https://cloud.databricks.com/api/2.0/service").prepare()
     resp._content = b"{}"
     resp.status_code = 200
     return resp
@@ -277,10 +277,15 @@ _test_case_other_errors = [
         response=make_private_link_response(),
         want_err_type=errors.PrivateLinkValidationError,
         want_message=(
-            "The requested workspace has AWS PrivateLink enabled and is not accessible from the current network. "
-            "Ensure that AWS PrivateLink is properly configured and that your device has access to the AWS VPC "
-            "endpoint. For more information, see "
-            "https://docs.databricks.com/en/security/network/classic/privatelink.html."
+            "The requested workspace has Private Link enabled and is not accessible from the current network. "
+            "Ensure that Private Link is properly configured for your cloud provider and that your device has "
+            "access to the appropriate endpoint:\n\n"
+            "  • AWS: Ensure AWS PrivateLink is configured and you have access to the AWS VPC endpoint. "
+            "See https://docs.databricks.com/en/security/network/classic/privatelink.html\n"
+            "  • Azure: Ensure Azure Private Link is configured and you have access to the Azure Private Link endpoint. "
+            "See https://learn.microsoft.com/en-us/azure/databricks/security/network/classic/private-link-standard#authentication-troubleshooting\n"
+            "  • GCP: Ensure Private Service Connect is configured and you have access to the GCP VPC endpoint. "
+            "See https://docs.gcp.databricks.com/en/security/network/classic/private-service-connect.html"
         ),
     ),
     TestCase(
