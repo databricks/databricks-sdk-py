@@ -1,0 +1,12 @@
+/* Only show on md+ viewports (Docusaurus default breakpoint: 996px) */
+.dropdownWrapper {
+  display: none;
+  flex-shrink: 0;
+}
+
+@media screen and (min-width: 997px) {
+  .dropdownWrapper {
+    display: flex;
+    align-items: center;
+  }
+}
