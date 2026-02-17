@@ -11,6 +11,7 @@ These APIs are available from AccountClient
    catalog/index
    iam/index
    iamv2/index
+   networking/index
    oauth2/index
    provisioning/index
    settings/index

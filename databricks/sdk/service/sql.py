@@ -2459,7 +2459,7 @@ class EndpointInfo:
     please tune max_num_clusters.
     
     Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large
-    - 4X-Large"""
+    - 4X-Large - 5X-Large"""
 
     creator_name: Optional[str] = None
     """warehouse creator name"""
@@ -3076,7 +3076,7 @@ class GetWarehouseResponse:
     please tune max_num_clusters.
     
     Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large
-    - 4X-Large"""
+    - 4X-Large - 5X-Large"""
 
     creator_name: Optional[str] = None
     """warehouse creator name"""
@@ -9787,7 +9787,7 @@ class WarehousesAPI:
           max_num_clusters.
 
           Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
-          4X-Large
+          4X-Large - 5X-Large
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
@@ -10020,7 +10020,7 @@ class WarehousesAPI:
           max_num_clusters.
 
           Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
-          4X-Large
+          4X-Large - 5X-Large
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)

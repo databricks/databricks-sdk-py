@@ -30,13 +30,13 @@
             
             w = WorkspaceClient()
             
-            credential = w.storage_credentials.create(
+            created = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
             # cleanup
-            w.storage_credentials.delete(name=credential.name)
+            w.storage_credentials.delete(delete=created.name)
 
         Creates a new storage credential.
 
@@ -98,13 +98,13 @@
             
             created = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
-            by_name = w.storage_credentials.get(get=created.name)
+            by_name = w.storage_credentials.get(name=created.name)
             
             # cleanup
-            w.storage_credentials.delete(delete=created.name)
+            w.storage_credentials.delete(name=created.name)
 
         Gets a storage credential from the metastore. The caller must be a metastore admin, the owner of the
         storage credential, or have some permission on the storage credential.
@@ -123,11 +123,10 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            all = w.storage_credentials.list(catalog.ListStorageCredentialsRequest())
+            all = w.storage_credentials.list()
 
         Gets an array of storage credentials (as __StorageCredentialInfo__ objects). The array is limited to
         only those storage credentials the caller has permission to access. If the caller is a metastore
@@ -173,17 +172,17 @@
             
             created = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
             _ = w.storage_credentials.update(
                 name=created.name,
                 comment=f"sdk-{time.time_ns()}",
-                aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                aws_iam_role=catalog.AwsIamRole(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
             )
             
             # cleanup
-            w.storage_credentials.delete(name=created.name)
+            w.storage_credentials.delete(delete=created.name)
 
         Updates a storage credential on the metastore.
 

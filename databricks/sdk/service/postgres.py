@@ -1074,6 +1074,38 @@ class Project:
 
 
 @dataclass
+class ProjectCustomTag:
+    key: Optional[str] = None
+    """The key of the custom tag."""
+
+    value: Optional[str] = None
+    """The value of the custom tag."""
+
+    def as_dict(self) -> dict:
+        """Serializes the ProjectCustomTag into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ProjectCustomTag into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.key is not None:
+            body["key"] = self.key
+        if self.value is not None:
+            body["value"] = self.value
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ProjectCustomTag:
+        """Deserializes the ProjectCustomTag from a dictionary."""
+        return cls(key=d.get("key", None), value=d.get("value", None))
+
+
+@dataclass
 class ProjectDefaultEndpointSettings:
     """A collection of settings for a compute endpoint."""
 
@@ -1156,6 +1188,17 @@ class ProjectOperationMetadata:
 
 @dataclass
 class ProjectSpec:
+    budget_policy_id: Optional[str] = None
+    """The desired budget policy to associate with the project. See status.budget_policy_id for the
+    policy that is actually applied to the project."""
+
+    custom_tags: Optional[List[ProjectCustomTag]] = None
+    """Custom tags to associate with the project. Forwarded to LBM for billing and cost tracking. To
+    update tags, provide the new tag list and include "spec.custom_tags" in the update_mask. To
+    clear all tags, provide an empty list and include "spec.custom_tags" in the update_mask. To
+    preserve existing tags, omit this field from the update_mask (or use wildcard "*" which
+    auto-excludes empty tags)."""
+
     default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
 
     display_name: Optional[str] = None
@@ -1171,6 +1214,10 @@ class ProjectSpec:
     def as_dict(self) -> dict:
         """Serializes the ProjectSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.custom_tags:
+            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
         if self.default_endpoint_settings:
             body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
         if self.display_name is not None:
@@ -1184,6 +1231,10 @@ class ProjectSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the ProjectSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
         if self.default_endpoint_settings:
             body["default_endpoint_settings"] = self.default_endpoint_settings
         if self.display_name is not None:
@@ -1198,6 +1249,8 @@ class ProjectSpec:
     def from_dict(cls, d: Dict[str, Any]) -> ProjectSpec:
         """Deserializes the ProjectSpec from a dictionary."""
         return cls(
+            budget_policy_id=d.get("budget_policy_id", None),
+            custom_tags=_repeated_dict(d, "custom_tags", ProjectCustomTag),
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
             display_name=d.get("display_name", None),
             history_retention_duration=_duration(d, "history_retention_duration"),
@@ -1209,6 +1262,12 @@ class ProjectSpec:
 class ProjectStatus:
     branch_logical_size_limit_bytes: Optional[int] = None
     """The logical size limit for a branch."""
+
+    budget_policy_id: Optional[str] = None
+    """The budget policy that is applied to the project."""
+
+    custom_tags: Optional[List[ProjectCustomTag]] = None
+    """The effective custom tags associated with the project."""
 
     default_endpoint_settings: Optional[ProjectDefaultEndpointSettings] = None
     """The effective default endpoint settings."""
@@ -1233,6 +1292,10 @@ class ProjectStatus:
         body = {}
         if self.branch_logical_size_limit_bytes is not None:
             body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.custom_tags:
+            body["custom_tags"] = [v.as_dict() for v in self.custom_tags]
         if self.default_endpoint_settings:
             body["default_endpoint_settings"] = self.default_endpoint_settings.as_dict()
         if self.display_name is not None:
@@ -1252,6 +1315,10 @@ class ProjectStatus:
         body = {}
         if self.branch_logical_size_limit_bytes is not None:
             body["branch_logical_size_limit_bytes"] = self.branch_logical_size_limit_bytes
+        if self.budget_policy_id is not None:
+            body["budget_policy_id"] = self.budget_policy_id
+        if self.custom_tags:
+            body["custom_tags"] = self.custom_tags
         if self.default_endpoint_settings:
             body["default_endpoint_settings"] = self.default_endpoint_settings
         if self.display_name is not None:
@@ -1271,6 +1338,8 @@ class ProjectStatus:
         """Deserializes the ProjectStatus from a dictionary."""
         return cls(
             branch_logical_size_limit_bytes=d.get("branch_logical_size_limit_bytes", None),
+            budget_policy_id=d.get("budget_policy_id", None),
+            custom_tags=_repeated_dict(d, "custom_tags", ProjectCustomTag),
             default_endpoint_settings=_from_dict(d, "default_endpoint_settings", ProjectDefaultEndpointSettings),
             display_name=d.get("display_name", None),
             history_retention_duration=_duration(d, "history_retention_duration"),
@@ -2019,7 +2088,7 @@ class PostgresAPI:
         """Returns a paginated list of database projects in the workspace that the user has permission to access.
 
         :param page_size: int (optional)
-          Upper bound for items returned. Cannot be negative.
+          Upper bound for items returned. Cannot be negative. The maximum value is 100.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 
