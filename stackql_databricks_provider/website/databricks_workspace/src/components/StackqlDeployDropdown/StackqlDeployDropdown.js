@@ -129,9 +129,9 @@ function extractTemplateFromPage() {
 
 /**
  * Parses a SELECT SQL string into its components:
- *   fields  – column names from the SELECT list
- *   table   – fully-qualified table reference after FROM
- *   where   – the raw WHERE clause (conditions only, no leading WHERE)
+ *   fields  - column names from the SELECT list
+ *   table   - fully-qualified table reference after FROM
+ *   where   - the raw WHERE clause (conditions only, no leading WHERE)
  */
 function parseSelectSQL(sql) {
   const selectFromMatch = sql.match(/SELECT\s+([\s\S]+?)\s+FROM\s+/i);
@@ -152,7 +152,7 @@ function parseSelectSQL(sql) {
 }
 
 /**
- * Builds /*+ exists */ – a simplified count query using only the
+ * Builds /*+ exists */ - a simplified count query using only the
  * original WHERE params (required parameters from the page).
  */
 function buildExistsQuery(parsed) {
@@ -165,7 +165,7 @@ function buildExistsQuery(parsed) {
 }
 
 /**
- * Builds /*+ statecheck */ – a count query where SELECT fields become
+ * Builds /*+ statecheck */ - a count query where SELECT fields become
  * equality checks in the WHERE clause, followed by the original WHERE params.
  */
 function buildStatecheckQuery(parsed) {
