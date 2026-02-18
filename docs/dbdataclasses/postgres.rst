@@ -415,6 +415,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RoleAttributes
+   :members:
+   :undoc-members:
+
 .. py:class:: RoleAuthMethod
 
    How the role is authenticated when connecting to Postgres.
@@ -440,6 +444,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: USER
       :value: "USER"
+
+.. py:class:: RoleMembershipRole
+
+   Roles that the DatabaseInstanceRole can be a member of.
+
+   .. py:attribute:: DATABRICKS_SUPERUSER
+      :value: "DATABRICKS_SUPERUSER"
 
 .. autoclass:: RoleOperationMetadata
    :members:

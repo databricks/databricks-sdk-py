@@ -800,12 +800,12 @@ class WorkspaceClient:
 
     @property
     def quality_monitor_v2(self) -> pkg_qualitymonitorv2.QualityMonitorV2API:
-        """[DEPRECATED] This API is deprecated."""
+        """Deprecated: Please use the Data Quality Monitoring API instead (REST: /api/data-quality/v1/monitors)."""
         return self._quality_monitor_v2
 
     @property
     def quality_monitors(self) -> pkg_catalog.QualityMonitorsAPI:
-        """[DEPRECATED] This API is deprecated."""
+        """Deprecated: Please use the Data Quality Monitors API instead (REST: /api/data-quality/v1/monitors), which manages both Data Profiling and Anomaly Detection."""
         return self._quality_monitors
 
     @property
