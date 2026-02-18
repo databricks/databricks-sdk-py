@@ -263,7 +263,7 @@ def get_schema_from_enum(enum_cls: Type) -> Dict[str, Any]:
     values = [e.value for e in enum_cls]
     schema: Dict[str, Any] = {
         "type": "string",
-        "enum": values,
+        "x-enum": values,
     }
     doc = inspect.getdoc(enum_cls)
     if doc:

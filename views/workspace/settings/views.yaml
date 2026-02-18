@@ -1,0 +1,123 @@
+    vw_all_settings:
+      name: vw_all_settings
+      id: databricks_workspace.settings.vw_all_settings
+      config:
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT property, value FROM
+              (
+              WITH src AS (
+              SELECT
+               *
+              FROM databricks_workspace.settings.workspace_config
+              WHERE keys='enableWebTerminal,enableTokensConfig,maxTokenLifetimeDays,enableWorkspaceFilesystem,enableExportNotebook,enableNotebookTableClipboard,enableResultsDownloading,enableDcs,enableGp3,mlflowRunArtifactDownloadEnabled,enableUploadDataUis,storeInteractiveNotebookResultsInCustomerAccount,enableDeprecatedGlobalInitScripts,rStudioUserDefaultHomeBase,enforceUserIsolation,enableProjectsAllowList,projectsAllowListPermissions,projectsAllowList,reposIpynbResultsExportPermissions,enableDbfsFileBrowser,enableDatabricksAutologgingAdminConf,mlflowModelServingEndpointCreationEnabled,enableVerboseAuditLogs,enableFileStoreEndpoint,loginLogo,productName,homePageLogo,homePageLogoWidth,homePageWelcomeMessage,sidebarLogoText,sidebarLogoActive,sidebarLogoInactive,customReferences,loginLogoWidth,enforceWorkspaceViewAcls,enforceClusterViewAcls,enableJobViewAcls,enableHlsRuntime,enableEnforceImdsV2,enableJobsEmailsV2,enableProjectTypeInWorkspace,mlflowModelRegistryEmailNotificationsEnabled,heapAnalyticsAdminConsent,jobsListBackendPaginationEnabled,jobsListBackendPaginationOptOut'
+              AND deployment_name='{{ deployment_name }}'
+              )
+              SELECT 'customReferences' as property, customReferences as value FROM src
+              UNION ALL SELECT 'enableDatabricksAutologgingAdminConf', enableDatabricksAutologgingAdminConf FROM src
+              UNION ALL SELECT 'enableDcs', enableDcs FROM src
+              UNION ALL SELECT 'enableDbfsFileBrowser', enableDbfsFileBrowser FROM src
+              UNION ALL SELECT 'enableDeprecatedGlobalInitScripts', enableDeprecatedGlobalInitScripts FROM src
+              UNION ALL SELECT 'enableEnforceImdsV2', enableEnforceImdsV2 FROM src
+              UNION ALL SELECT 'enableExportNotebook', enableExportNotebook FROM src
+              UNION ALL SELECT 'enableFileStoreEndpoint', enableFileStoreEndpoint FROM src
+              UNION ALL SELECT 'enableGp3', enableGp3 FROM src
+              UNION ALL SELECT 'enableHlsRuntime', enableHlsRuntime FROM src
+              UNION ALL SELECT 'enableJobViewAcls', enableJobViewAcls FROM src
+              UNION ALL SELECT 'enableJobsEmailsV2', enableJobsEmailsV2 FROM src
+              UNION ALL SELECT 'enableNotebookTableClipboard', enableNotebookTableClipboard FROM src
+              UNION ALL SELECT 'enableProjectTypeInWorkspace', enableProjectTypeInWorkspace FROM src
+              UNION ALL SELECT 'enableProjectsAllowList', enableProjectsAllowList FROM src
+              UNION ALL SELECT 'enableResultsDownloading', enableResultsDownloading FROM src
+              UNION ALL SELECT 'enableTokensConfig', enableTokensConfig FROM src
+              UNION ALL SELECT 'enableUploadDataUis', enableUploadDataUis FROM src
+              UNION ALL SELECT 'enableVerboseAuditLogs', enableVerboseAuditLogs FROM src
+              UNION ALL SELECT 'enableWebTerminal', enableWebTerminal FROM src
+              UNION ALL SELECT 'enableWorkspaceFilesystem', enableWorkspaceFilesystem FROM src
+              UNION ALL SELECT 'enforceClusterViewAcls', enforceClusterViewAcls FROM src
+              UNION ALL SELECT 'enforceUserIsolation', enforceUserIsolation FROM src
+              UNION ALL SELECT 'enforceWorkspaceViewAcls', enforceWorkspaceViewAcls FROM src
+              UNION ALL SELECT 'heapAnalyticsAdminConsent', heapAnalyticsAdminConsent FROM src
+              UNION ALL SELECT 'homePageLogo', homePageLogo FROM src
+              UNION ALL SELECT 'homePageLogoWidth', homePageLogoWidth FROM src
+              UNION ALL SELECT 'homePageWelcomeMessage', homePageWelcomeMessage FROM src
+              UNION ALL SELECT 'jobsListBackendPaginationEnabled', jobsListBackendPaginationEnabled FROM src
+              UNION ALL SELECT 'jobsListBackendPaginationOptOut', jobsListBackendPaginationOptOut FROM src
+              UNION ALL SELECT 'loginLogo', loginLogo FROM src
+              UNION ALL SELECT 'loginLogoWidth', loginLogoWidth FROM src
+              UNION ALL SELECT 'maxTokenLifetimeDays', maxTokenLifetimeDays FROM src
+              UNION ALL SELECT 'mlflowModelRegistryEmailNotificationsEnabled', mlflowModelRegistryEmailNotificationsEnabled FROM src
+              UNION ALL SELECT 'mlflowModelServingEndpointCreationEnabled', mlflowModelServingEndpointCreationEnabled FROM src
+              UNION ALL SELECT 'mlflowRunArtifactDownloadEnabled', mlflowRunArtifactDownloadEnabled FROM src
+              UNION ALL SELECT 'productName', productName FROM src
+              UNION ALL SELECT 'projectsAllowList', projectsAllowList FROM src
+              UNION ALL SELECT 'projectsAllowListPermissions', projectsAllowListPermissions FROM src
+              UNION ALL SELECT 'rStudioUserDefaultHomeBase', rStudioUserDefaultHomeBase FROM src
+              UNION ALL SELECT 'reposIpynbResultsExportPermissions', reposIpynbResultsExportPermissions FROM src
+              UNION ALL SELECT 'sidebarLogoActive', sidebarLogoActive FROM src
+              UNION ALL SELECT 'sidebarLogoInactive', sidebarLogoInactive FROM src
+              UNION ALL SELECT 'sidebarLogoText', sidebarLogoText FROM src
+              UNION ALL SELECT 'storeInteractiveNotebookResultsInCustomerAccount', storeInteractiveNotebookResultsInCustomerAccount FROM src
+              ) t WHERE value IS NOT NULL
+              ;
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT property, value FROM
+                (
+                WITH src AS (
+                SELECT
+                 *
+                FROM databricks_workspace.settings.workspace_config
+                WHERE keys='enableWebTerminal,enableTokensConfig,maxTokenLifetimeDays,enableWorkspaceFilesystem,enableExportNotebook,enableNotebookTableClipboard,enableResultsDownloading,enableDcs,enableGp3,mlflowRunArtifactDownloadEnabled,enableUploadDataUis,storeInteractiveNotebookResultsInCustomerAccount,enableDeprecatedGlobalInitScripts,rStudioUserDefaultHomeBase,enforceUserIsolation,enableProjectsAllowList,projectsAllowListPermissions,projectsAllowList,reposIpynbResultsExportPermissions,enableDbfsFileBrowser,enableDatabricksAutologgingAdminConf,mlflowModelServingEndpointCreationEnabled,enableVerboseAuditLogs,enableFileStoreEndpoint,loginLogo,productName,homePageLogo,homePageLogoWidth,homePageWelcomeMessage,sidebarLogoText,sidebarLogoActive,sidebarLogoInactive,customReferences,loginLogoWidth,enforceWorkspaceViewAcls,enforceClusterViewAcls,enableJobViewAcls,enableHlsRuntime,enableEnforceImdsV2,enableJobsEmailsV2,enableProjectTypeInWorkspace,mlflowModelRegistryEmailNotificationsEnabled,heapAnalyticsAdminConsent,jobsListBackendPaginationEnabled,jobsListBackendPaginationOptOut'
+                AND deployment_name='{{ deployment_name }}'
+                )
+                SELECT 'customReferences' as property, customReferences as value FROM src
+                UNION ALL SELECT 'enableDatabricksAutologgingAdminConf', enableDatabricksAutologgingAdminConf FROM src
+                UNION ALL SELECT 'enableDcs', enableDcs FROM src
+                UNION ALL SELECT 'enableDbfsFileBrowser', enableDbfsFileBrowser FROM src
+                UNION ALL SELECT 'enableDeprecatedGlobalInitScripts', enableDeprecatedGlobalInitScripts FROM src
+                UNION ALL SELECT 'enableEnforceImdsV2', enableEnforceImdsV2 FROM src
+                UNION ALL SELECT 'enableExportNotebook', enableExportNotebook FROM src
+                UNION ALL SELECT 'enableFileStoreEndpoint', enableFileStoreEndpoint FROM src
+                UNION ALL SELECT 'enableGp3', enableGp3 FROM src
+                UNION ALL SELECT 'enableHlsRuntime', enableHlsRuntime FROM src
+                UNION ALL SELECT 'enableJobViewAcls', enableJobViewAcls FROM src
+                UNION ALL SELECT 'enableJobsEmailsV2', enableJobsEmailsV2 FROM src
+                UNION ALL SELECT 'enableNotebookTableClipboard', enableNotebookTableClipboard FROM src
+                UNION ALL SELECT 'enableProjectTypeInWorkspace', enableProjectTypeInWorkspace FROM src
+                UNION ALL SELECT 'enableProjectsAllowList', enableProjectsAllowList FROM src
+                UNION ALL SELECT 'enableResultsDownloading', enableResultsDownloading FROM src
+                UNION ALL SELECT 'enableTokensConfig', enableTokensConfig FROM src
+                UNION ALL SELECT 'enableUploadDataUis', enableUploadDataUis FROM src
+                UNION ALL SELECT 'enableVerboseAuditLogs', enableVerboseAuditLogs FROM src
+                UNION ALL SELECT 'enableWebTerminal', enableWebTerminal FROM src
+                UNION ALL SELECT 'enableWorkspaceFilesystem', enableWorkspaceFilesystem FROM src
+                UNION ALL SELECT 'enforceClusterViewAcls', enforceClusterViewAcls FROM src
+                UNION ALL SELECT 'enforceUserIsolation', enforceUserIsolation FROM src
+                UNION ALL SELECT 'enforceWorkspaceViewAcls', enforceWorkspaceViewAcls FROM src
+                UNION ALL SELECT 'heapAnalyticsAdminConsent', heapAnalyticsAdminConsent FROM src
+                UNION ALL SELECT 'homePageLogo', homePageLogo FROM src
+                UNION ALL SELECT 'homePageLogoWidth', homePageLogoWidth FROM src
+                UNION ALL SELECT 'homePageWelcomeMessage', homePageWelcomeMessage FROM src
+                UNION ALL SELECT 'jobsListBackendPaginationEnabled', jobsListBackendPaginationEnabled FROM src
+                UNION ALL SELECT 'jobsListBackendPaginationOptOut', jobsListBackendPaginationOptOut FROM src
+                UNION ALL SELECT 'loginLogo', loginLogo FROM src
+                UNION ALL SELECT 'loginLogoWidth', loginLogoWidth FROM src
+                UNION ALL SELECT 'maxTokenLifetimeDays', maxTokenLifetimeDays FROM src
+                UNION ALL SELECT 'mlflowModelRegistryEmailNotificationsEnabled', mlflowModelRegistryEmailNotificationsEnabled FROM src
+                UNION ALL SELECT 'mlflowModelServingEndpointCreationEnabled', mlflowModelServingEndpointCreationEnabled FROM src
+                UNION ALL SELECT 'mlflowRunArtifactDownloadEnabled', mlflowRunArtifactDownloadEnabled FROM src
+                UNION ALL SELECT 'productName', productName FROM src
+                UNION ALL SELECT 'projectsAllowList', projectsAllowList FROM src
+                UNION ALL SELECT 'projectsAllowListPermissions', projectsAllowListPermissions FROM src
+                UNION ALL SELECT 'rStudioUserDefaultHomeBase', rStudioUserDefaultHomeBase FROM src
+                UNION ALL SELECT 'reposIpynbResultsExportPermissions', reposIpynbResultsExportPermissions FROM src
+                UNION ALL SELECT 'sidebarLogoActive', sidebarLogoActive FROM src
+                UNION ALL SELECT 'sidebarLogoInactive', sidebarLogoInactive FROM src
+                UNION ALL SELECT 'sidebarLogoText', sidebarLogoText FROM src
+                UNION ALL SELECT 'storeInteractiveNotebookResultsInCustomerAccount', storeInteractiveNotebookResultsInCustomerAccount FROM src
+                ) t WHERE value IS NOT NULL
+                ;
