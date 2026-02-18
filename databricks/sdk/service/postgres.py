@@ -15,7 +15,8 @@ from databricks.sdk.common import lro
 from databricks.sdk.common.types.fieldmask import FieldMask
 from databricks.sdk.retries import RetryError, poll
 from databricks.sdk.service._internal import (_duration, _enum, _from_dict,
-                                              _repeated_dict, _timestamp)
+                                              _repeated_dict, _repeated_enum,
+                                              _timestamp)
 
 _LOG = logging.getLogger("databricks.sdk")
 
@@ -1489,6 +1490,49 @@ class Role:
         )
 
 
+@dataclass
+class RoleAttributes:
+    """Attributes that can be granted to a Postgres role. We are only implementing a subset for now,
+    see xref: https://www.postgresql.org/docs/16/sql-createrole.html The values follow Postgres
+    keyword naming e.g. CREATEDB, BYPASSRLS, etc. which is why they don't include typical
+    underscores between words."""
+
+    bypassrls: Optional[bool] = None
+
+    createdb: Optional[bool] = None
+
+    createrole: Optional[bool] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the RoleAttributes into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.bypassrls is not None:
+            body["bypassrls"] = self.bypassrls
+        if self.createdb is not None:
+            body["createdb"] = self.createdb
+        if self.createrole is not None:
+            body["createrole"] = self.createrole
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the RoleAttributes into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.bypassrls is not None:
+            body["bypassrls"] = self.bypassrls
+        if self.createdb is not None:
+            body["createdb"] = self.createdb
+        if self.createrole is not None:
+            body["createrole"] = self.createrole
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> RoleAttributes:
+        """Deserializes the RoleAttributes from a dictionary."""
+        return cls(
+            bypassrls=d.get("bypassrls", None), createdb=d.get("createdb", None), createrole=d.get("createrole", None)
+        )
+
+
 class RoleAuthMethod(Enum):
     """How the role is authenticated when connecting to Postgres."""
 
@@ -1504,6 +1548,12 @@ class RoleIdentityType(Enum):
     GROUP = "GROUP"
     SERVICE_PRINCIPAL = "SERVICE_PRINCIPAL"
     USER = "USER"
+
+
+class RoleMembershipRole(Enum):
+    """Roles that the DatabaseInstanceRole can be a member of."""
+
+    DATABRICKS_SUPERUSER = "DATABRICKS_SUPERUSER"
 
 
 @dataclass
@@ -1526,6 +1576,9 @@ class RoleOperationMetadata:
 
 @dataclass
 class RoleRoleSpec:
+    attributes: Optional[RoleAttributes] = None
+    """The desired API-exposed Postgres role attribute to associate with the role. Optional."""
+
     auth_method: Optional[RoleAuthMethod] = None
     """If auth_method is left unspecified, a meaningful authentication method is derived from the
     identity_type: * For the managed identities, OAUTH is used. * For the regular postgres roles,
@@ -1538,6 +1591,9 @@ class RoleRoleSpec:
     """The type of role. When specifying a managed-identity, the chosen role_id must be a valid:
     
     * application ID for SERVICE_PRINCIPAL * user email for USER * group name for GROUP"""
+
+    membership_roles: Optional[List[RoleMembershipRole]] = None
+    """An enum value for a standard role that this role is a member of."""
 
     postgres_role: Optional[str] = None
     """The name of the Postgres role.
@@ -1556,10 +1612,14 @@ class RoleRoleSpec:
     def as_dict(self) -> dict:
         """Serializes the RoleRoleSpec into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.attributes:
+            body["attributes"] = self.attributes.as_dict()
         if self.auth_method is not None:
             body["auth_method"] = self.auth_method.value
         if self.identity_type is not None:
             body["identity_type"] = self.identity_type.value
+        if self.membership_roles:
+            body["membership_roles"] = [v.value for v in self.membership_roles]
         if self.postgres_role is not None:
             body["postgres_role"] = self.postgres_role
         return body
@@ -1567,10 +1627,14 @@ class RoleRoleSpec:
     def as_shallow_dict(self) -> dict:
         """Serializes the RoleRoleSpec into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.attributes:
+            body["attributes"] = self.attributes
         if self.auth_method is not None:
             body["auth_method"] = self.auth_method
         if self.identity_type is not None:
             body["identity_type"] = self.identity_type
+        if self.membership_roles:
+            body["membership_roles"] = self.membership_roles
         if self.postgres_role is not None:
             body["postgres_role"] = self.postgres_role
         return body
@@ -1579,8 +1643,10 @@ class RoleRoleSpec:
     def from_dict(cls, d: Dict[str, Any]) -> RoleRoleSpec:
         """Deserializes the RoleRoleSpec from a dictionary."""
         return cls(
+            attributes=_from_dict(d, "attributes", RoleAttributes),
             auth_method=_enum(d, "auth_method", RoleAuthMethod),
             identity_type=_enum(d, "identity_type", RoleIdentityType),
+            membership_roles=_repeated_enum(d, "membership_roles", RoleMembershipRole),
             postgres_role=d.get("postgres_role", None),
         )
 
@@ -1592,6 +1658,9 @@ class RoleRoleStatus:
     identity_type: Optional[RoleIdentityType] = None
     """The type of the role."""
 
+    membership_roles: Optional[List[RoleMembershipRole]] = None
+    """An enum value for a standard role that this role is a member of."""
+
     postgres_role: Optional[str] = None
     """The name of the Postgres role."""
 
@@ -1602,6 +1671,8 @@ class RoleRoleStatus:
             body["auth_method"] = self.auth_method.value
         if self.identity_type is not None:
             body["identity_type"] = self.identity_type.value
+        if self.membership_roles:
+            body["membership_roles"] = [v.value for v in self.membership_roles]
         if self.postgres_role is not None:
             body["postgres_role"] = self.postgres_role
         return body
@@ -1613,6 +1684,8 @@ class RoleRoleStatus:
             body["auth_method"] = self.auth_method
         if self.identity_type is not None:
             body["identity_type"] = self.identity_type
+        if self.membership_roles:
+            body["membership_roles"] = self.membership_roles
         if self.postgres_role is not None:
             body["postgres_role"] = self.postgres_role
         return body
@@ -1623,6 +1696,7 @@ class RoleRoleStatus:
         return cls(
             auth_method=_enum(d, "auth_method", RoleAuthMethod),
             identity_type=_enum(d, "identity_type", RoleIdentityType),
+            membership_roles=_repeated_enum(d, "membership_roles", RoleMembershipRole),
             postgres_role=d.get("postgres_role", None),
         )
 

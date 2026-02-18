@@ -75,6 +75,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: DATAPLANE_RELAY_ACCESS
       :value: "DATAPLANE_RELAY_ACCESS"
 
+   .. py:attribute:: GENERAL_ACCESS
+      :value: "GENERAL_ACCESS"
+
    .. py:attribute:: WORKSPACE_ACCESS
       :value: "WORKSPACE_ACCESS"
 
