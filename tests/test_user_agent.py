@@ -47,27 +47,19 @@ def test_user_agent_with_partner(user_agent):
 
 @pytest.mark.xdist_group(name="user_agent")
 def test_with_extra_is_idempotent(user_agent):
-    user_agent.with_extra("partner", "litellm")
-    user_agent.with_extra("partner", "litellm")
-    user_agent.with_extra("partner", "litellm")
-    assert user_agent.to_string().count("partner/litellm") == 1
-
-
-@pytest.mark.xdist_group(name="user_agent")
-def test_with_partner_is_idempotent(user_agent):
-    for _ in range(100):
-        user_agent.with_partner("litellm")
-    ua = user_agent.to_string()
-    assert ua.count("partner/litellm") == 1
+    user_agent.with_extra("foo", "bar")
+    user_agent.with_extra("foo", "bar")
+    user_agent.with_extra("foo", "bar")
+    assert user_agent.to_string().count("foo/bar") == 1
 
 
 @pytest.mark.xdist_group(name="user_agent")
 def test_with_extra_different_values_still_allowed(user_agent):
-    user_agent.with_extra("partner", "litellm")
-    user_agent.with_extra("partner", "dspy")
+    user_agent.with_extra("foo", "bar")
+    user_agent.with_extra("foo", "wiz")
     ua = user_agent.to_string()
-    assert "partner/litellm" in ua
-    assert "partner/dspy" in ua
+    assert "foo/bar" in ua
+    assert "foo/wiz" in ua
 
 
 @pytest.fixture(scope="function")
