@@ -7,6 +7,7 @@
 ### Security
 
 ### Bug Fixes
+* Make `useragent.with_extra()` idempotent to prevent User-Agent header growth in long-lived processes.
 
 ### Documentation
 
