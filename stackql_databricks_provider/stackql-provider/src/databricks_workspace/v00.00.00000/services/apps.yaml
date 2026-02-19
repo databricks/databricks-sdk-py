@@ -2804,6 +2804,10 @@ components:
           - name: pending_deployment_message
             type: string
             description: Human-readable status message for the pending deployment.
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -2965,6 +2969,10 @@ components:
           - name: uc_securable_permission
             type: string
             description: Permission level granted to the app on the Unity Catalog securable (UC_SECURABLE type only).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"

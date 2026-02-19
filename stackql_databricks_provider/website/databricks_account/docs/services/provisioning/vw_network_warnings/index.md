@@ -74,6 +74,41 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Databricks account ID used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  account_id,
+  network_id,
+  network_name,
+  vpc_status,
+  warning_type,
+  warning_message
+FROM databricks_account.provisioning.vw_network_warnings
+WHERE account_id = '{{ account_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

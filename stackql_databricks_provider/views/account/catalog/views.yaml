@@ -85,6 +85,13 @@
           - name: cloud_type
             type: string
             description: Derived cloud provider type - one of AWS, AZURE_MANAGED_IDENTITY, AZURE_SERVICE_PRINCIPAL, CLOUDFLARE, GCP, or UNKNOWN.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: metastore_id
+            type: string
+            description: Metastore ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"

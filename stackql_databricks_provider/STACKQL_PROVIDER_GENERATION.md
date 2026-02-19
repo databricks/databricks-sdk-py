@@ -203,6 +203,14 @@ SELECT
 FROM databricks_account.provisioning.workspaces
 WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
 
+-- Fuzzy match workspaces
+SELECT
+  workspace_id,
+  workspace_name
+FROM databricks_account.provisioning.workspaces
+WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce'
+AND workspace_name LIKE '%stackql-test%';
+
 -- Query account users and roles
 SELECT
   id as user_id,
@@ -237,6 +245,7 @@ WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
 
 ```bash
 # Download billable usage to CSV
+rm -rf billable_usage.csv
 ./stackql exec \
   --registry="${REG_STR}" \
   -o text \
@@ -247,6 +256,8 @@ WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
   WHERE start_month = '2025-12'
   AND end_month = '2026-01'
   AND account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce'"
+head billable_usage.csv
+rm -rf billable_usage.csv
 ```
 
 ### 6. Publish the Provider

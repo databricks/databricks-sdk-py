@@ -124,6 +124,51 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Databricks account ID used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  account_id,
+  network_connectivity_config_id,
+  ncc_name,
+  region,
+  rule_id,
+  rule_ncc_id,
+  connection_state,
+  endpoint_service,
+  vpc_endpoint_id,
+  enabled,
+  deactivated,
+  resource_names,
+  domain_names,
+  error_message,
+  creation_time,
+  updated_time
+FROM databricks_account.settings.vw_ncc_aws_private_endpoint_rules
+WHERE account_id = '{{ account_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

@@ -3446,6 +3446,10 @@ components:
           - name: is_primary
             type: boolean
             description: Whether this email address is the user's primary email.
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -3504,6 +3508,10 @@ components:
           - name: role
             type: string
             description: Role assigned to the user (one row per role assignment).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -3551,6 +3559,10 @@ components:
             type: string
             description: Entitlement granted to the user (one row per entitlement, e.g. workspace-access, databricks-sql-access,
               allow-cluster-create).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -3606,6 +3618,10 @@ components:
           - name: group_type
             type: string
             description: Type of the group resource (typically Group).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -3664,6 +3680,10 @@ components:
           - name: member_type
             type: string
             description: Type of the member resource (e.g. User, Group, ServicePrincipal).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -3712,6 +3732,10 @@ components:
             type: string
             description: Entitlement granted to the group (one row per entitlement, e.g. workspace-access, databricks-sql-access,
               allow-cluster-create).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -3753,6 +3777,10 @@ components:
           - name: role
             type: string
             description: Role assigned to the group (one row per role assignment).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -3801,6 +3829,10 @@ components:
             type: string
             description: Entitlement granted to the service principal (one row per entitlement, e.g. workspace-access, databricks-sql-access,
               allow-cluster-create).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -3852,6 +3884,10 @@ components:
           - name: role
             type: string
             description: Role assigned to the service principal (one row per role assignment).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -3922,6 +3958,16 @@ components:
           - name: inherited_from_object
             type: array
             description: List of parent object paths from which this permission is inherited.
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: request_object_type
+            type: string
+            description: Object type used to scope the permissions query (e.g. clusters, jobs, notebooks, directories).
+          - name: request_object_id
+            type: string
+            description: Object ID used to scope the permissions query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -3988,6 +4034,16 @@ components:
           - name: principal
             type: string
             description: Principal granted the role (e.g. users/alice@example.com, groups/analysts).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: name
+            type: string
+            description: Fully qualified name of the rule set (e.g. accounts/accountId/servicePrincipals/spId/ruleSets/default).
+          - name: etag
+            type: string
+            description: ETag of the rule set for optimistic concurrency control.
         views:
           select:
             predicate: sqlDialect == "sqlite3"

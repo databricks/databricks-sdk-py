@@ -169,6 +169,60 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Workspace deployment name used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  deployment_name,
+  app_name,
+  app_id,
+  resource_name,
+  resource_description,
+  resource_type,
+  job_id,
+  job_permission,
+  sql_warehouse_id,
+  sql_warehouse_permission,
+  serving_endpoint_name,
+  serving_endpoint_permission,
+  secret_scope,
+  secret_key,
+  secret_permission,
+  experiment_id,
+  experiment_permission,
+  database_instance,
+  database_name,
+  database_permission,
+  genie_space_id,
+  genie_space_permission,
+  uc_securable_name,
+  uc_securable_type,
+  uc_securable_permission
+FROM databricks_workspace.apps.vw_app_resources
+WHERE deployment_name = '{{ deployment_name }}';
+```
+
 ## SQL Definition
 
 <Tabs

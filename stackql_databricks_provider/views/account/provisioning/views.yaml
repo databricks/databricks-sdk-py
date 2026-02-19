@@ -91,6 +91,10 @@
           - name: gke_master_ip_range
             type: string
             description: CIDR range for the GKE control plane (GCP only).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -220,6 +224,10 @@
           - name: vpc_endpoint_dataplane_relay_ids
             type: array
             description: List of VPC endpoint IDs used for dataplane relay private connectivity (AWS only).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -292,6 +300,10 @@
           - name: error_message
             type: string
             description: Human-readable description of the network validation error.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -344,6 +356,10 @@
           - name: warning_message
             type: string
             description: Human-readable description of the network validation warning.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -423,6 +439,10 @@
           - name: cloud_type
             type: string
             description: Derived cloud provider for this key configuration - one of AWS, AZURE, GCP, or UNKNOWN.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -500,6 +520,10 @@
           - name: aws_role_arn
             type: string
             description: ARN of the AWS IAM role Databricks uses to manage resources in the customer account (AWS only).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -548,6 +572,10 @@
           - name: root_bucket_name
             type: string
             description: Name of the S3 bucket used as the workspace root storage (AWS only).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -625,6 +653,10 @@
           - name: cloud_type
             type: string
             description: Derived cloud provider for this VPC endpoint - one of AWS, GCP, or UNKNOWN.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"

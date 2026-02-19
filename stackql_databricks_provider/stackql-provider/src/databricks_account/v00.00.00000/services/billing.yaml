@@ -2029,6 +2029,10 @@ components:
           - name: binding_workspace_id
             type: string
             description: ID of a workspace bound to this budget policy (one row per workspace).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -2102,6 +2106,10 @@ components:
           - name: action_configurations
             type: array
             description: List of actions to execute when the alert fires.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -2175,6 +2183,10 @@ components:
           - name: action_target
             type: string
             description: Target for the action, such as an email address or webhook URL.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -2265,6 +2277,10 @@ components:
           - name: workspace_ids_filter
             type: array
             description: List of workspace IDs to include in log delivery; empty means all workspaces.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -2339,6 +2355,10 @@ components:
           - name: workspace_id
             type: string
             description: ID of a workspace included in the delivery filter (one row per workspace).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -2392,6 +2412,10 @@ components:
           - name: tag_values
             type: array
             description: List of tag values matched by the operator for this tag key.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"

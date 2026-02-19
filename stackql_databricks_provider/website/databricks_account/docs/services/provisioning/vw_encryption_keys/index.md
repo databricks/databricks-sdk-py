@@ -119,6 +119,50 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Databricks account ID used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  account_id,
+  customer_managed_key_id,
+  creation_time,
+  use_case,
+  aws_key_arn,
+  aws_key_region,
+  aws_key_alias,
+  aws_reuse_key_for_volumes,
+  azure_key_name,
+  azure_key_vault_uri,
+  azure_tenant_id,
+  azure_key_version,
+  azure_disk_encryption_set_id,
+  gcp_kms_key_id,
+  cloud_type
+FROM databricks_account.provisioning.vw_encryption_keys
+WHERE account_id = '{{ account_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

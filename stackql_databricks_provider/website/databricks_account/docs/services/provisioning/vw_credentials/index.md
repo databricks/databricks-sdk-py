@@ -69,6 +69,40 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Databricks account ID used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  account_id,
+  credentials_id,
+  credentials_name,
+  creation_time,
+  aws_role_arn
+FROM databricks_account.provisioning.vw_credentials
+WHERE account_id = '{{ account_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

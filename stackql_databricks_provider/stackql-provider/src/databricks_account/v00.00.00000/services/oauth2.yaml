@@ -1925,6 +1925,10 @@ components:
           - name: oidc_jwks_json
             type: string
             description: Inline JWKS JSON used to verify the OIDC token signature (alternative to jwks_uri).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -2017,6 +2021,10 @@ components:
           - name: single_use_refresh_tokens
             type: boolean
             description: Whether refresh tokens are single-use (rotated on each use).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -2096,6 +2104,10 @@ components:
           - name: single_use_refresh_tokens
             type: boolean
             description: Whether refresh tokens are single-use and rotated on each use (1 = true, 0 = false).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"

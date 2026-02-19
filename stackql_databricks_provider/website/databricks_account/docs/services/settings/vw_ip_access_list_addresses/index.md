@@ -99,6 +99,46 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Databricks account ID used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  account_id,
+  list_id,
+  label,
+  list_type,
+  enabled,
+  address_count,
+  created_at,
+  created_by,
+  updated_at,
+  updated_by,
+  ip_address
+FROM databricks_account.settings.vw_ip_access_list_addresses
+WHERE account_id = '{{ account_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

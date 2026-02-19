@@ -28,6 +28,13 @@
           - name: permission
             type: string
             description: Permission level granted to the principal on the workspace (one row per permission, e.g. USER, ADMIN).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: principal_id
+            type: string
+            description: Unique identifier of the principal whose workspace access is being queried.
         views:
           select:
             predicate: sqlDialect == "sqlite3"

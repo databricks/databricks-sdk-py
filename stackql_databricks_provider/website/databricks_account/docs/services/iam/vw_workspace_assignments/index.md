@@ -84,6 +84,49 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Databricks account ID used to scope the query.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="workspace_id" /></td>
+    <td><CopyableCode code="integer" /></td>
+    <td>Numeric ID of the workspace used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  account_id,
+  workspace_id,
+  principal_id,
+  display_name,
+  user_name,
+  group_name,
+  service_principal_name,
+  permission
+FROM databricks_account.iam.vw_workspace_assignments
+WHERE account_id = '{{ account_id }}'
+  AND workspace_id = '{{ workspace_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

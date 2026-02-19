@@ -19,6 +19,10 @@
           - name: role
             type: string
             description: Role assigned to the user (one row per role assignment).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -72,6 +76,10 @@
           - name: member_type
             type: string
             description: Type of the member resource (e.g. User, Group, ServicePrincipal).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -120,6 +128,10 @@
           - name: role
             type: string
             description: Role assigned to the group (one row per role assignment).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -168,6 +180,10 @@
           - name: role
             type: string
             description: Role assigned to the service principal (one row per role assignment).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -226,6 +242,13 @@
           - name: permission
             type: string
             description: Permission level granted to the principal on the workspace (one row per permission, e.g. USER, ADMIN).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: workspace_id
+            type: integer
+            description: Numeric ID of the workspace used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"

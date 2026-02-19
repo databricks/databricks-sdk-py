@@ -37,6 +37,10 @@
           - name: ip_address
             type: string
             description: Individual IP address or CIDR range entry from the list (one row per entry).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -111,6 +115,10 @@
           - name: azure_svc_endpoint_services
             type: array
             description: List of Azure services targeted by the default service endpoint rule (Azure only).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -199,6 +207,10 @@
           - name: updated_time
             type: integer
             description: Unix timestamp (ms) when the rule was last updated.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -298,6 +310,10 @@
           - name: updated_time
             type: integer
             description: Unix timestamp (ms) when the rule was last updated.
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -368,6 +384,10 @@
           - name: destination_type
             type: string
             description: Classification of the allowed internet destination (e.g. PUBLIC).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"
@@ -429,6 +449,10 @@
           - name: azure_storage_service
             type: string
             description: Azure storage service type for this destination (e.g. blob, dfs) (Azure only).
+          requiredParams:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"

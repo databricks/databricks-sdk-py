@@ -119,6 +119,50 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Databricks account ID used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  account_id,
+  integration_id,
+  client_id,
+  name,
+  confidential,
+  creator_username,
+  created_by,
+  create_time,
+  redirect_urls,
+  scopes,
+  user_authorized_scopes,
+  access_token_ttl_minutes,
+  refresh_token_ttl_minutes,
+  session_lifetime_minutes,
+  single_use_refresh_tokens
+FROM databricks_account.oauth2.vw_custom_app_integrations
+WHERE account_id = '{{ account_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

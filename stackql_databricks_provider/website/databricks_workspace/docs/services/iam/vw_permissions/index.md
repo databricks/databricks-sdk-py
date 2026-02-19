@@ -104,6 +104,59 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Workspace deployment name used to scope the query.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="request_object_type" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Object type used to scope the permissions query (e.g. clusters, jobs, notebooks, directories).</td>
+</tr>
+<tr>
+    <td><CopyableCode code="request_object_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Object ID used to scope the permissions query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  deployment_name,
+  request_object_type,
+  request_object_id,
+  object_id,
+  object_type,
+  display_name,
+  user_name,
+  group_name,
+  service_principal_name,
+  permission_level,
+  inherited,
+  inherited_from_object
+FROM databricks_workspace.iam.vw_permissions
+WHERE deployment_name = '{{ deployment_name }}'
+  AND request_object_type = '{{ request_object_type }}'
+  AND request_object_id = '{{ request_object_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

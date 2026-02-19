@@ -69,6 +69,52 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Workspace deployment name used to scope the query.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="name" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Fully qualified name of the rule set (e.g. accounts/accountId/servicePrincipals/spId/ruleSets/default).</td>
+</tr>
+<tr>
+    <td><CopyableCode code="etag" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>ETag of the rule set for optimistic concurrency control.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  deployment_name,
+  rule_set_name,
+  etag,
+  role,
+  principal
+FROM databricks_workspace.iam.vw_rule_set_grant_principals
+WHERE deployment_name = '{{ deployment_name }}'
+  AND name = '{{ name }}'
+  AND etag = '{{ etag }}';
+```
+
 ## SQL Definition
 
 <Tabs

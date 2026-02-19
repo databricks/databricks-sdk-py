@@ -8019,6 +8019,10 @@ components:
           - name: value
             type: string
             description: The value of the workspace setting (only non-null values are included).
+          requiredParams:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
         views:
           select:
             predicate: sqlDialect == "sqlite3"

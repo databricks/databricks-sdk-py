@@ -209,6 +209,68 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Workspace deployment name used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  deployment_name,
+  name,
+  id,
+  description,
+  url,
+  creator,
+  create_time,
+  updater,
+  update_time,
+  compute_size,
+  budget_policy_id,
+  effective_budget_policy_id,
+  service_principal_id,
+  service_principal_name,
+  service_principal_client_id,
+  default_source_code_path,
+  app_state,
+  app_status_message,
+  compute_state,
+  compute_status_message,
+  compute_active_instances,
+  git_repo_url,
+  git_repo_provider,
+  active_deployment_id,
+  active_deployment_source_path,
+  active_deployment_mode,
+  active_deployment_state,
+  active_deployment_message,
+  active_deployment_creator,
+  active_deployment_create_time,
+  pending_deployment_id,
+  pending_deployment_state,
+  pending_deployment_message
+FROM databricks_workspace.apps.vw_apps
+WHERE deployment_name = '{{ deployment_name }}';
+```
+
 ## SQL Definition
 
 <Tabs

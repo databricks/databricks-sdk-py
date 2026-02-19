@@ -129,6 +129,52 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Databricks account ID used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  account_id,
+  config_id,
+  config_name,
+  log_type,
+  output_format,
+  credentials_id,
+  storage_configuration_id,
+  delivery_path_prefix,
+  delivery_start_time,
+  status,
+  creation_time,
+  update_time,
+  delivery_status,
+  delivery_status_message,
+  last_attempt_time,
+  last_successful_attempt_time,
+  workspace_ids_filter
+FROM databricks_account.billing.vw_log_delivery_configurations
+WHERE account_id = '{{ account_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

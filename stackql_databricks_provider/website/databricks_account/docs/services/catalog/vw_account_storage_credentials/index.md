@@ -179,6 +179,68 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Databricks account ID used to scope the query.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="metastore_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Metastore ID used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  account_id,
+  metastore_id,
+  id,
+  name,
+  full_name,
+  owner,
+  read_only,
+  used_for_managed_storage,
+  isolation_mode,
+  created_at,
+  created_by,
+  updated_at,
+  updated_by,
+  comment,
+  aws_role_arn,
+  aws_external_id,
+  aws_unity_catalog_iam_arn,
+  azure_access_connector_id,
+  azure_credential_id,
+  azure_managed_identity_id,
+  azure_directory_id,
+  azure_application_id,
+  cloudflare_access_key_id,
+  cloudflare_account_id,
+  gcp_credential_id,
+  gcp_service_account_email,
+  cloud_type
+FROM databricks_account.catalog.vw_account_storage_credentials
+WHERE account_id = '{{ account_id }}'
+  AND metastore_id = '{{ metastore_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

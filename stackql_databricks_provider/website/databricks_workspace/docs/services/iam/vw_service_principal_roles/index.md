@@ -74,6 +74,41 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Workspace deployment name used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  deployment_name,
+  id,
+  displayName,
+  applicationId,
+  active,
+  role
+FROM databricks_workspace.iam.vw_service_principal_roles
+WHERE deployment_name = '{{ deployment_name }}';
+```
+
 ## SQL Definition
 
 <Tabs

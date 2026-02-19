@@ -189,6 +189,64 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="account_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Databricks account ID used to scope the query.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  account_id,
+  workspace_id,
+  workspace_name,
+  workspace_status,
+  workspace_status_message,
+  cloud,
+  aws_region,
+  location,
+  deployment_name,
+  pricing_tier,
+  compute_mode,
+  storage_mode,
+  credentials_id,
+  storage_configuration_id,
+  network_id,
+  network_connectivity_config_id,
+  managed_services_customer_managed_key_id,
+  storage_customer_managed_key_id,
+  private_access_settings_id,
+  creation_time,
+  custom_tags,
+  azure_subscription_id,
+  azure_resource_group,
+  gcp_project_id,
+  gcp_subnet_cidr,
+  gcp_pod_ip_range,
+  gcp_service_ip_range,
+  gke_connectivity_type,
+  gke_master_ip_range
+FROM databricks_account.provisioning.vw_workspaces
+WHERE account_id = '{{ account_id }}';
+```
+
 ## SQL Definition
 
 <Tabs

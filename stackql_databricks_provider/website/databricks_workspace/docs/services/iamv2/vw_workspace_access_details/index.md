@@ -84,6 +84,49 @@ The following fields are returned by this view:
 </tbody>
 </table>
 
+## Required Parameters
+
+The following parameters are required by this view:
+
+<table>
+<thead>
+    <tr>
+    <th>Name</th>
+    <th>Datatype</th>
+    <th>Description</th>
+    </tr>
+</thead>
+<tbody>
+<tr>
+    <td><CopyableCode code="deployment_name" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Workspace deployment name used to scope the query.</td>
+</tr>
+<tr>
+    <td><CopyableCode code="principal_id" /></td>
+    <td><CopyableCode code="string" /></td>
+    <td>Unique identifier of the principal whose workspace access is being queried.</td>
+</tr>
+</tbody>
+</table>
+
+## `SELECT` Examples
+
+```sql
+SELECT
+  deployment_name,
+  principal_id,
+  principal_type,
+  access_type,
+  status,
+  account_id,
+  workspace_id,
+  permission
+FROM databricks_workspace.iamv2.vw_workspace_access_details
+WHERE deployment_name = '{{ deployment_name }}'
+  AND principal_id = '{{ principal_id }}';
+```
+
 ## SQL Definition
 
 <Tabs
