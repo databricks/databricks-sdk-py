@@ -238,6 +238,14 @@ class Config:
     # is hit first will stop the retry loop.
     experimental_files_ext_cloud_api_max_retries: int = 3
 
+    # Storage-proxy hostname used for data plane file operations.
+    # When running inside a Databricks cluster/notebook, the storage proxy can handle
+    # file operations directly without presigned URLs.
+    files_ext_storage_proxy_hostname: str = "http://storage-proxy.databricks.com"
+
+    # Timeout in seconds for the storage-proxy health check probe.
+    files_ext_storage_proxy_probe_timeout: float = 3.0
+
     def __init__(
         self,
         *,
