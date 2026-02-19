@@ -125,6 +125,14 @@ add any post generation response transforms:
 python -m add_response_transforms
 ```
 
+merge view definitions into the provider service specs (final post-gen step):
+
+```bash
+python -m merge_views
+```
+
+View definitions live in ``views/{account,workspace}/{service}/views.yaml`` and are injected into ``components.x-stackQL-resources`` of the matching service YAML.
+
 **Parameters explained:**
 
 - `--provider-name` - The StackQL provider identifier
@@ -290,6 +298,8 @@ python -m stackql_databricks_provider.generate          # Step 1: OpenAPI specs
 python -m stackql_databricks_provider.inventory_gen      # Step 2: CSV inventories
 # Step 3: Edit CSVs as needed
 npm run generate-provider -- ...                         # Step 4: Generate provider (run for each scope)
+python -m stackql_databricks_provider.add_response_transforms  # Step 4a: Response transforms
+python -m stackql_databricks_provider.merge_views              # Step 4b: Merge view definitions (final)
 
 # Testing
 python -m pytest stackql_databricks_provider/tests/ -v   # Unit tests
