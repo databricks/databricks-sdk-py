@@ -44,7 +44,7 @@ REGISTRY PULL databricks_workspace;
 
 ## Authentication  
 
-To use the databricks_workspace provider, you can authenticate using one of the following methods:
+To use the `databricks_workspace` provider, you can authenticate using one of the following methods:
 
 ### OAuth2 (Service Principal) [Default]
 

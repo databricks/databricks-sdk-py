@@ -7,12 +7,32 @@ See also:
 REGISTRY PULL databricks_account;
 ```
 
-## Authentication
+## Authentication  
 
-To use the databricks_account, set the following environment variables:
+To use the `databricks_account` provider, you can authenticate using one of the following methods:
+
+### OAuth2 (Service Principal) [Default]
+
+Set the following environment variables:
 
 - <CopyableCode code="DATABRICKS_ACCOUNT_ID" /> - a uuid representing your Databricks account id, you can get this from the Databricks UI (see <a href="https://docs.databricks.com/en/admin/account-settings/index.html#locate-your-account-id">Locate your account id</a>)
 - <CopyableCode code="DATABRICKS_CLIENT_ID" /> - obtained after creating a service principal through the Databricks UI (see <a href="https://docs.databricks.com/en/dev-tools/auth/oauth-m2m.html">Authenticate access to Databricks with a service principal using OAuth</a>)
 - <CopyableCode code="DATABRICKS_CLIENT_SECRET" /> - obtained after creating a service principal secret through the Databricks UI, using the "Generate Secret" function (see <a href="https://docs.databricks.com/en/dev-tools/auth/oauth-m2m.html">Authenticate access to Databricks with a service principal using OAuth</a>)
 
 These are the same variables that Terraform, the Databricks SDKs, and CLI use.  
+
+### Personal Access Token (Bearer)
+
+Alternatively, set <CopyableCode code="DATABRICKS_TOKEN" /> to a Databricks personal access token (see <a href="https://docs.databricks.com/en/dev-tools/auth/pat.html">Databricks personal access tokens</a>), then supply the auth config when starting the shell:
+```bash
+export DATABRICKS_TOKEN=xxx
+
+# Linux/Mac
+AUTH='{ "databricks_account": { "type": "bearer", "credentialsenvvar": "DATABRICKS_TOKEN" }}'
+./stackql shell --auth="${AUTH}"
+```
+```powershell
+# PowerShell
+$Auth = "{ 'databricks_account': { 'type': 'bearer', 'credentialsenvvar': 'DATABRICKS_TOKEN' }}"
+stackql.exe shell --auth=$Auth
+```
