@@ -2498,6 +2498,10 @@ class ResumableUploadTestCase(UploadTestCase):
 
             content_range_header = request.headers["Content-range"]
             is_status_check_request = re.match("bytes \\*/\\*", content_range_header)
+            # Verify that headers from the resumable upload URL response are forwarded
+            # on actual data upload requests (status check requests use minimal headers).
+            if not is_status_check_request:
+                assert request.headers.get("name1") == "value1"
             if is_status_check_request:
                 assert not request.body
                 response_customizer = self.custom_response_on_status_check
@@ -2533,6 +2537,8 @@ class ResumableUploadTestCase(UploadTestCase):
         ):
 
             assert not UploadTestCase.is_auth_header_present(request)
+            # Verify that headers from the resumable upload URL response are forwarded.
+            assert request.headers.get("name1") == "value1"
             url_path = request.url[len(ResumableUploadServerState.resumable_upload_url_prefix) :]
             assert url_path == self.path
 
