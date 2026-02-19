@@ -2031,9 +2031,7 @@ class FilesExt(files.FilesAPI):
             raise ValueError(f"Unexpected server response: {resumable_upload_url_response}")
 
         required_headers = resumable_upload_url_node.get("headers", [])
-        # Convert the list of {"name": ..., "value": ...} dicts to a flat dict once,
-        # instead of rebuilding it on every loop iteration and in the abort handler.
-        base_headers: dict = {"Content-Type": "application/octet-stream"}
+        base_headers: dict = {}
         for h in required_headers:
             base_headers[h["name"]] = h["value"]
 
@@ -2068,7 +2066,7 @@ class FilesExt(files.FilesAPI):
                     actual_chunk_length = ctx.part_size
                     file_size = "*"
 
-                headers: dict = dict(base_headers)
+                headers: dict = {"Content-Type": "application/octet-stream", **base_headers}
 
                 chunk_last_byte_offset = chunk_offset + actual_chunk_length - 1
                 content_range_header = f"bytes {chunk_offset}-{chunk_last_byte_offset}/{file_size}"
