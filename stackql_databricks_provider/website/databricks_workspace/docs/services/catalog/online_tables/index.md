@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>online_tables</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>online_tables</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="online_tables" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.online_tables" /></td></tr>
 </tbody></table>
@@ -145,7 +145,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "detailed_state",
         "type": "string",
-        "description": "The state of the online table."
+        "description": "The state of the online table. (OFFLINE, OFFLINE_FAILED, ONLINE, ONLINE_CONTINUOUS_UPDATE, ONLINE_NO_PENDING_UPDATE, ONLINE_PIPELINE_FAILED, ONLINE_TRIGGERED_UPDATE, ONLINE_UPDATING_PIPELINE_RESOURCES, PROVISIONING, PROVISIONING_INITIAL_SNAPSHOT, PROVISIONING_PIPELINE_RESOURCES)"
       },
       {
         "name": "failed_status",
@@ -267,7 +267,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "unity_catalog_provisioning_state",
     "type": "string",
-    "description": "The provisioning state of the online table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in \"ACTIVE\" but the pipeline may be in \"PROVISIONING\" as it runs asynchronously)."
+    "description": "The provisioning state of the online table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in \"ACTIVE\" but the pipeline may be in \"PROVISIONING\" as it runs asynchronously). (ACTIVE, DEGRADED, DELETING, FAILED, PROVISIONING, UPDATING)"
   }
 ]} />
 </TabItem>
@@ -298,7 +298,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__table"><code>data__table</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-table"><code>table</code></a></td>
     <td></td>
     <td>Create a new Online Table.</td>
 </tr>
@@ -381,7 +381,7 @@ Create a new Online Table.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.online_tables (
-data__table,
+table,
 deployment_name
 )
 SELECT 

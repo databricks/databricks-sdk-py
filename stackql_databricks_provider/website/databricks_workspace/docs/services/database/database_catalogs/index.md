@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>database_catalogs</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>database_catalogs</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="database_catalogs" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.database.database_catalogs" /></td></tr>
 </tbody></table>
@@ -133,14 +133,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__catalog"><code>data__catalog</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-catalog"><code>catalog</code></a></td>
     <td></td>
     <td>Create a Database Catalog.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__database_catalog"><code>data__database_catalog</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-database_catalog"><code>database_catalog</code></a></td>
     <td></td>
     <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
@@ -263,7 +263,7 @@ Create a Database Catalog.
 
 ```sql
 INSERT INTO databricks_workspace.database.database_catalogs (
-data__catalog,
+catalog,
 deployment_name
 )
 SELECT 
@@ -311,12 +311,12 @@ This API is currently unimplemented, but exposed for Terraform support.
 ```sql
 UPDATE databricks_workspace.database.database_catalogs
 SET 
-data__database_catalog = '{{ database_catalog }}'
+database_catalog = '{{ database_catalog }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__database_catalog = '{{ database_catalog }}' --required
+AND database_catalog = '{{ database_catalog }}' --required
 RETURNING
 name,
 database_instance_name,

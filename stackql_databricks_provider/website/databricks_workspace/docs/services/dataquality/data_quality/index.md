@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>data_quality</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>data_quality</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="data_quality" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.dataquality.data_quality" /></td></tr>
 </tbody></table>
@@ -107,7 +107,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type",
             "type": "string",
-            "description": "The type of the custom metric."
+            "description": "The type of the custom metric. (DATA_PROFILING_CUSTOM_METRIC_TYPE_AGGREGATE, DATA_PROFILING_CUSTOM_METRIC_TYPE_DERIVED, DATA_PROFILING_CUSTOM_METRIC_TYPE_DRIFT)"
           }
         ]
       },
@@ -134,7 +134,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "problem_type",
             "type": "string",
-            "description": "Problem type the model aims to solve."
+            "description": "Problem type the model aims to solve. (INFERENCE_PROBLEM_TYPE_CLASSIFICATION, INFERENCE_PROBLEM_TYPE_REGRESSION)"
           },
           {
             "name": "timestamp_column",
@@ -220,7 +220,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "pause_status",
             "type": "string",
-            "description": "Read only field that indicates whether the schedule is paused or not."
+            "description": "Read only field that indicates whether the schedule is paused or not. (CRON_SCHEDULE_PAUSE_STATUS_PAUSED, CRON_SCHEDULE_PAUSE_STATUS_UNPAUSED)"
           }
         ]
       },
@@ -242,7 +242,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "The data profiling monitor status."
+        "description": "The data profiling monitor status. (DATA_PROFILING_STATUS_ACTIVE, DATA_PROFILING_STATUS_DELETE_PENDING, DATA_PROFILING_STATUS_ERROR, DATA_PROFILING_STATUS_FAILED, DATA_PROFILING_STATUS_PENDING)"
       },
       {
         "name": "time_series",
@@ -343,7 +343,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type",
             "type": "string",
-            "description": "The type of the custom metric."
+            "description": "The type of the custom metric. (DATA_PROFILING_CUSTOM_METRIC_TYPE_AGGREGATE, DATA_PROFILING_CUSTOM_METRIC_TYPE_DERIVED, DATA_PROFILING_CUSTOM_METRIC_TYPE_DRIFT)"
           }
         ]
       },
@@ -370,7 +370,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "problem_type",
             "type": "string",
-            "description": "Problem type the model aims to solve."
+            "description": "Problem type the model aims to solve. (INFERENCE_PROBLEM_TYPE_CLASSIFICATION, INFERENCE_PROBLEM_TYPE_REGRESSION)"
           },
           {
             "name": "timestamp_column",
@@ -456,7 +456,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "pause_status",
             "type": "string",
-            "description": "Read only field that indicates whether the schedule is paused or not."
+            "description": "Read only field that indicates whether the schedule is paused or not. (CRON_SCHEDULE_PAUSE_STATUS_PAUSED, CRON_SCHEDULE_PAUSE_STATUS_UNPAUSED)"
           }
         ]
       },
@@ -478,7 +478,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "The data profiling monitor status."
+        "description": "The data profiling monitor status. (DATA_PROFILING_STATUS_ACTIVE, DATA_PROFILING_STATUS_DELETE_PENDING, DATA_PROFILING_STATUS_ERROR, DATA_PROFILING_STATUS_FAILED, DATA_PROFILING_STATUS_PENDING)"
       },
       {
         "name": "time_series",
@@ -545,14 +545,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__monitor"><code>data__monitor</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-monitor"><code>monitor</code></a></td>
     <td></td>
     <td>Create a data quality monitor on a Unity Catalog object. The caller must provide either</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__monitor"><code>data__monitor</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-monitor"><code>monitor</code></a></td>
     <td></td>
     <td>Update a data quality monitor on Unity Catalog object.</td>
 </tr>
@@ -673,7 +673,7 @@ Create a data quality monitor on a Unity Catalog object. The caller must provide
 
 ```sql
 INSERT INTO databricks_workspace.dataquality.data_quality (
-data__monitor,
+monitor,
 deployment_name
 )
 SELECT 
@@ -720,13 +720,13 @@ Update a data quality monitor on Unity Catalog object.
 ```sql
 UPDATE databricks_workspace.dataquality.data_quality
 SET 
-data__monitor = '{{ monitor }}'
+monitor = '{{ monitor }}'
 WHERE 
 object_type = '{{ object_type }}' --required
 AND object_id = '{{ object_id }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__monitor = '{{ monitor }}' --required
+AND monitor = '{{ monitor }}' --required
 RETURNING
 object_id,
 anomaly_detection_config,

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>workspace_assignment</code> res
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>workspace_assignment</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="workspace_assignment" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iam.workspace_assignment" /></td></tr>
 </tbody></table>
@@ -198,7 +198,7 @@ Creates or updates the workspace permissions assignment in a given account and w
 ```sql
 REPLACE databricks_account.iam.workspace_assignment
 SET 
-data__permissions = '{{ permissions }}'
+permissions = '{{ permissions }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND workspace_id = '{{ workspace_id }}' --required

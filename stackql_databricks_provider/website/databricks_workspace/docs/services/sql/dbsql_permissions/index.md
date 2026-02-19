@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>dbsql_permissions</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>dbsql_permissions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="dbsql_permissions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.dbsql_permissions" /></td></tr>
 </tbody></table>
@@ -59,7 +59,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "permission_level",
         "type": "string",
-        "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+        "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query (CAN_EDIT, CAN_MANAGE, CAN_RUN, CAN_VIEW)"
       },
       {
         "name": "user_name",
@@ -71,7 +71,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "object_type",
     "type": "string",
-    "description": "A singular noun object type."
+    "description": "A singular noun object type. (alert, dashboard, data_source, query)"
   }
 ]} />
 </TabItem>
@@ -102,7 +102,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#set"><CopyableCode code="set" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__object_type"><code>data__object_type</code></a></td>
+    <td><a href="#parameter-object_type.value"><code>object_type.value</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-object_type"><code>object_type</code></a></td>
     <td></td>
     <td>Sets the access control list (ACL) for a specified object. This operation will complete rewrite the</td>
 </tr>
@@ -195,8 +195,8 @@ Sets the access control list (ACL) for a specified object. This operation will c
 
 ```sql
 INSERT INTO databricks_workspace.sql.dbsql_permissions (
-data__object_type,
-data__access_control_list,
+object_type,
+access_control_list,
 object_type.value,
 object_id,
 deployment_name

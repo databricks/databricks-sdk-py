@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>oauth_published_apps</code> re
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>oauth_published_apps</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="oauth_published_apps" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.oauth2.oauth_published_apps" /></td></tr>
 </tbody></table>

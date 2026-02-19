@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_storage_credentials</c
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_storage_credentials</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_storage_credentials" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.catalog.account_storage_credentials" /></td></tr>
 </tbody></table>
@@ -185,7 +185,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces."
+    "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -360,7 +360,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces."
+    "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -568,8 +568,8 @@ Creates a new storage credential. The request object is specific to the cloud: -
 
 ```sql
 INSERT INTO databricks_account.catalog.account_storage_credentials (
-data__credential_info,
-data__skip_validation,
+credential_info,
+skip_validation,
 account_id,
 metastore_id
 )
@@ -621,8 +621,8 @@ Updates a storage credential on the metastore. The caller must be the owner of t
 ```sql
 REPLACE databricks_account.catalog.account_storage_credentials
 SET 
-data__credential_info = '{{ credential_info }}',
-data__skip_validation = '{{ skip_validation }}'
+credential_info = '{{ credential_info }}',
+skip_validation = '{{ skip_validation }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND metastore_id = '{{ metastore_id }}' --required

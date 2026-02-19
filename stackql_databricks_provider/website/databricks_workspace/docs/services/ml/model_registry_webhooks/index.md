@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>model_registry_webhooks</code> 
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>model_registry_webhooks</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="model_registry_webhooks" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.model_registry_webhooks" /></td></tr>
 </tbody></table>
@@ -108,7 +108,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Enable or disable triggering the webhook, or put the webhook into test mode. The default is<br />`ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.<br /><br />* `DISABLED`: Webhook is not triggered.<br /><br />* `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a<br />real event."
+    "description": "Enable or disable triggering the webhook, or put the webhook into test mode. The default is<br />`ACTIVE`: * `ACTIVE`: Webhook is triggered when an associated event happens.<br /><br />* `DISABLED`: Webhook is not triggered.<br /><br />* `TEST_MODE`: Webhook can be triggered through the test endpoint, but is not triggered on a<br />real event. (ACTIVE, DISABLED, TEST_MODE)"
   }
 ]} />
 </TabItem>
@@ -139,14 +139,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__events"><code>data__events</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-events"><code>events</code></a></td>
     <td></td>
     <td>**NOTE:** This endpoint is in Public Preview. Creates a registry webhook.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__id"><code>data__id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-id"><code>id</code></a></td>
     <td></td>
     <td>**NOTE:** This endpoint is in Public Preview. Updates a registry webhook.</td>
 </tr>
@@ -263,12 +263,12 @@ AND page_token = '{{ page_token }}'
 
 ```sql
 INSERT INTO databricks_workspace.ml.model_registry_webhooks (
-data__events,
-data__description,
-data__http_url_spec,
-data__job_spec,
-data__model_name,
-data__status,
+events,
+description,
+http_url_spec,
+job_spec,
+model_name,
+status,
 deployment_name
 )
 SELECT 
@@ -337,15 +337,15 @@ webhook
 ```sql
 UPDATE databricks_workspace.ml.model_registry_webhooks
 SET 
-data__id = '{{ id }}',
-data__description = '{{ description }}',
-data__events = '{{ events }}',
-data__http_url_spec = '{{ http_url_spec }}',
-data__job_spec = '{{ job_spec }}',
-data__status = '{{ status }}'
+id = '{{ id }}',
+description = '{{ description }}',
+events = '{{ events }}',
+http_url_spec = '{{ http_url_spec }}',
+job_spec = '{{ job_spec }}',
+status = '{{ status }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__id = '{{ id }}' --required
+AND id = '{{ id }}' --required
 RETURNING
 webhook;
 ```

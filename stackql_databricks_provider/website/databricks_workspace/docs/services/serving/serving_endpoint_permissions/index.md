@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>serving_endpoint_permissions</c
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>serving_endpoint_permissions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="serving_endpoint_permissions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.serving.serving_endpoint_permissions" /></td></tr>
 </tbody></table>
@@ -69,7 +69,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "permission_level",
             "type": "string",
-            "description": "Permission level"
+            "description": "Permission level (CAN_MANAGE, CAN_QUERY, CAN_VIEW)"
           }
         ]
       },
@@ -210,7 +210,7 @@ Updates the permissions on a serving endpoint. Serving endpoints can inherit per
 ```sql
 UPDATE databricks_workspace.serving.serving_endpoint_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 serving_endpoint_id = '{{ serving_endpoint_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
@@ -238,7 +238,7 @@ Sets permissions on an object, replacing existing permissions if they exist. Del
 ```sql
 REPLACE databricks_workspace.serving.serving_endpoint_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 serving_endpoint_id = '{{ serving_endpoint_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

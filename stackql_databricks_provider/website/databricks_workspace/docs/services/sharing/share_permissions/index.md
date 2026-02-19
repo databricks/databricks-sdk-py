@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>share_permissions</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>share_permissions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="share_permissions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sharing.share_permissions" /></td></tr>
 </tbody></table>
@@ -177,8 +177,8 @@ Updates the permissions for a data share in the metastore. The caller must have 
 ```sql
 UPDATE databricks_workspace.sharing.share_permissions
 SET 
-data__changes = '{{ changes }}',
-data__omit_permissions_list = '{{ omit_permissions_list }}'
+changes = '{{ changes }}',
+omit_permissions_list = '{{ omit_permissions_list }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

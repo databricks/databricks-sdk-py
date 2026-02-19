@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>private_access</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>private_access</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="private_access" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.provisioning.private_access" /></td></tr>
 </tbody></table>
@@ -65,7 +65,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "private_access_level",
     "type": "string",
-    "description": "The private access level controls which VPC endpoints can connect to the UI or API of any workspace that attaches this private access settings object. `ACCOUNT` level access (the default) allows only VPC endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details, see allowed_vpc_endpoint_ids."
+    "description": "The private access level controls which VPC endpoints can connect to the UI or API of any workspace that attaches this private access settings object. `ACCOUNT` level access (the default) allows only VPC endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details, see allowed_vpc_endpoint_ids. (ACCOUNT, ENDPOINT)"
   },
   {
     "name": "public_access_enabled",
@@ -105,7 +105,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "private_access_level",
     "type": "string",
-    "description": "The private access level controls which VPC endpoints can connect to the UI or API of any workspace that attaches this private access settings object. `ACCOUNT` level access (the default) allows only VPC endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details, see allowed_vpc_endpoint_ids."
+    "description": "The private access level controls which VPC endpoints can connect to the UI or API of any workspace that attaches this private access settings object. `ACCOUNT` level access (the default) allows only VPC endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT` level access allows only specified VPC endpoints connect to your workspace. For details, see allowed_vpc_endpoint_ids. (ACCOUNT, ENDPOINT)"
   },
   {
     "name": "public_access_enabled",
@@ -160,7 +160,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#private_access_replace"><CopyableCode code="private_access_replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-private_access_settings_id"><code>private_access_settings_id</code></a>, <a href="#parameter-data__customer_facing_private_access_settings"><code>data__customer_facing_private_access_settings</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-private_access_settings_id"><code>private_access_settings_id</code></a>, <a href="#parameter-customer_facing_private_access_settings"><code>customer_facing_private_access_settings</code></a></td>
     <td></td>
     <td>Updates an existing private access settings object, which specifies how your workspace is accessed</td>
 </tr>
@@ -264,11 +264,11 @@ Creates a private access settings configuration, which represents network access
 
 ```sql
 INSERT INTO databricks_account.provisioning.private_access (
-data__allowed_vpc_endpoint_ids,
-data__private_access_level,
-data__private_access_settings_name,
-data__public_access_enabled,
-data__region,
+allowed_vpc_endpoint_ids,
+private_access_level,
+private_access_settings_name,
+public_access_enabled,
+region,
 account_id
 )
 SELECT 
@@ -338,11 +338,11 @@ Updates an existing private access settings object, which specifies how your wor
 ```sql
 REPLACE databricks_account.provisioning.private_access
 SET 
-data__customer_facing_private_access_settings = '{{ customer_facing_private_access_settings }}'
+customer_facing_private_access_settings = '{{ customer_facing_private_access_settings }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND private_access_settings_id = '{{ private_access_settings_id }}' --required
-AND data__customer_facing_private_access_settings = '{{ customer_facing_private_access_settings }}' --required
+AND customer_facing_private_access_settings = '{{ customer_facing_private_access_settings }}' --required
 RETURNING
 account_id,
 private_access_settings_id,

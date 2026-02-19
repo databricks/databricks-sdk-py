@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>current_user</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>current_user</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="current_user" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.current_user" /></td></tr>
 </tbody></table>

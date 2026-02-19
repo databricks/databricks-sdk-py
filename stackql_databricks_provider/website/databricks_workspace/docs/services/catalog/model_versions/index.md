@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>model_versions</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>model_versions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="model_versions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.model_versions" /></td></tr>
 </tbody></table>
@@ -200,7 +200,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Current status of the model version. Newly created model versions start in PENDING_REGISTRATION status, then move to READY status once the model version files are uploaded and the model version is finalized. Only model versions in READY status can be loaded for inference or served."
+    "description": "Current status of the model version. Newly created model versions start in PENDING_REGISTRATION status, then move to READY status once the model version files are uploaded and the model version is finalized. Only model versions in READY status can be loaded for inference or served. (FAILED_REGISTRATION, MODEL_VERSION_STATUS_UNKNOWN, PENDING_REGISTRATION, READY)"
   },
   {
     "name": "storage_location",
@@ -384,7 +384,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Current status of the model version. Newly created model versions start in PENDING_REGISTRATION status, then move to READY status once the model version files are uploaded and the model version is finalized. Only model versions in READY status can be loaded for inference or served."
+    "description": "Current status of the model version. Newly created model versions start in PENDING_REGISTRATION status, then move to READY status once the model version files are uploaded and the model version is finalized. Only model versions in READY status can be loaded for inference or served. (FAILED_REGISTRATION, MODEL_VERSION_STATUS_UNKNOWN, PENDING_REGISTRATION, READY)"
   },
   {
     "name": "storage_location",
@@ -568,7 +568,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Current status of the model version. Newly created model versions start in PENDING_REGISTRATION status, then move to READY status once the model version files are uploaded and the model version is finalized. Only model versions in READY status can be loaded for inference or served."
+    "description": "Current status of the model version. Newly created model versions start in PENDING_REGISTRATION status, then move to READY status once the model version files are uploaded and the model version is finalized. Only model versions in READY status can be loaded for inference or served. (FAILED_REGISTRATION, MODEL_VERSION_STATUS_UNKNOWN, PENDING_REGISTRATION, READY)"
   },
   {
     "name": "storage_location",
@@ -829,23 +829,23 @@ Updates the specified model version.
 ```sql
 UPDATE databricks_workspace.catalog.model_versions
 SET 
-data__aliases = '{{ aliases }}',
-data__catalog_name = '{{ catalog_name }}',
-data__comment = '{{ comment }}',
-data__created_at = '{{ created_at }}',
-data__created_by = '{{ created_by }}',
-data__id = '{{ id }}',
-data__metastore_id = '{{ metastore_id }}',
-data__model_name = '{{ model_name }}',
-data__model_version_dependencies = '{{ model_version_dependencies }}',
-data__run_id = '{{ run_id }}',
-data__run_workspace_id = '{{ run_workspace_id }}',
-data__schema_name = '{{ schema_name }}',
-data__source = '{{ source }}',
-data__status = '{{ status }}',
-data__storage_location = '{{ storage_location }}',
-data__updated_at = '{{ updated_at }}',
-data__updated_by = '{{ updated_by }}'
+aliases = '{{ aliases }}',
+catalog_name = '{{ catalog_name }}',
+comment = '{{ comment }}',
+created_at = '{{ created_at }}',
+created_by = '{{ created_by }}',
+id = '{{ id }}',
+metastore_id = '{{ metastore_id }}',
+model_name = '{{ model_name }}',
+model_version_dependencies = '{{ model_version_dependencies }}',
+run_id = '{{ run_id }}',
+run_workspace_id = '{{ run_workspace_id }}',
+schema_name = '{{ schema_name }}',
+source = '{{ source }}',
+status = '{{ status }}',
+storage_location = '{{ storage_location }}',
+updated_at = '{{ updated_at }}',
+updated_by = '{{ updated_by }}'
 WHERE 
 full_name = '{{ full_name }}' --required
 AND version = '{{ version }}' --required

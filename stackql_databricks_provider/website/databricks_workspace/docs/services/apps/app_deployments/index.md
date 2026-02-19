@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>app_deployments</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>app_deployments</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="app_deployments" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.apps.app_deployments" /></td></tr>
 </tbody></table>
@@ -148,7 +148,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "mode",
     "type": "string",
-    "description": "The mode of which the deployment will manage the source code."
+    "description": "The mode of which the deployment will manage the source code. (AUTO_SYNC, SNAPSHOT)"
   },
   {
     "name": "source_code_path",
@@ -168,7 +168,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "State of the deployment."
+        "description": "State of the deployment. (CANCELLED, FAILED, IN_PROGRESS, SUCCEEDED)"
       }
     ]
   },
@@ -288,7 +288,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "mode",
     "type": "string",
-    "description": "The mode of which the deployment will manage the source code."
+    "description": "The mode of which the deployment will manage the source code. (AUTO_SYNC, SNAPSHOT)"
   },
   {
     "name": "source_code_path",
@@ -308,7 +308,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "State of the deployment."
+        "description": "State of the deployment. (CANCELLED, FAILED, IN_PROGRESS, SUCCEEDED)"
       }
     ]
   },
@@ -353,7 +353,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__app_deployment"><code>data__app_deployment</code></a></td>
+    <td><a href="#parameter-app_name"><code>app_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-app_deployment"><code>app_deployment</code></a></td>
     <td></td>
     <td>Creates an app deployment for the app with the supplied name.</td>
 </tr>
@@ -477,7 +477,7 @@ Creates an app deployment for the app with the supplied name.
 
 ```sql
 INSERT INTO databricks_workspace.apps.app_deployments (
-data__app_deployment,
+app_deployment,
 app_name,
 deployment_name
 )

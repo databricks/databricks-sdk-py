@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.tags
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -736,6 +736,9 @@ components:
       title: Tag Policies
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1tag-policies/post'
           response:
@@ -761,6 +764,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1tag-policies~1{tag_key}/patch'
           response:
@@ -783,6 +789,9 @@ components:
       title: Workspace Entity Tag Assignments
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1entity-tag-assignments/post'
           response:
@@ -803,6 +812,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1entity-tag-assignments~1{entity_type}~1{entity_id}~1tags~1{tag_key}/patch
@@ -833,3 +845,11 @@ components:
           - $ref: >-
               #/components/x-stackQL-resources/workspace_entity_tag_assignments/methods/delete
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

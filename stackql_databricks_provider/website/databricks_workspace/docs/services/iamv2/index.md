@@ -18,16 +18,16 @@ iamv2 service documentation.
 
 :::info[Service Summary]
 
-total resources: __1__  
+total resources: __2__  
 
 :::
 
 ## Resources
 <div class="row">
 <div class="providerDocColumn">
-<a href="/services/iamv2/workspace_iam_v2/">workspace_iam_v2</a>
+<a href="/services/iamv2/vw_workspace_access_details/">vw_workspace_access_details</a>
 </div>
 <div class="providerDocColumn">
-
+<a href="/services/iamv2/workspace_iam_v2/">workspace_iam_v2</a>
 </div>
 </div>

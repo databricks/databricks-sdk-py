@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>instance_pool_permissions</cod
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>instance_pool_permissions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="instance_pool_permissions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.instance_pool_permissions" /></td></tr>
 </tbody></table>
@@ -69,7 +69,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "permission_level",
             "type": "string",
-            "description": "Permission level"
+            "description": "Permission level (CAN_ATTACH_TO, CAN_MANAGE)"
           }
         ]
       },
@@ -210,7 +210,7 @@ Updates the permissions on an instance pool. Instance pools can inherit permissi
 ```sql
 UPDATE databricks_workspace.compute.instance_pool_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 instance_pool_id = '{{ instance_pool_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
@@ -238,7 +238,7 @@ Sets permissions on an object, replacing existing permissions if they exist. Del
 ```sql
 REPLACE databricks_workspace.compute.instance_pool_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 instance_pool_id = '{{ instance_pool_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

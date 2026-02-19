@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>secret_scopes</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>secret_scopes</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="secret_scopes" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.workspace.secret_scopes" /></td></tr>
 </tbody></table>
@@ -49,7 +49,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "backend_type",
     "type": "string",
-    "description": "The type of secret scope backend."
+    "description": "The type of secret scope backend. (AZURE_KEYVAULT, DATABRICKS)"
   },
   {
     "name": "keyvault_metadata",
@@ -97,7 +97,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__scope"><code>data__scope</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a></td>
     <td></td>
     <td>Creates a new secret scope.</td>
 </tr>
@@ -172,10 +172,10 @@ Creates a new secret scope.
 
 ```sql
 INSERT INTO databricks_workspace.workspace.secret_scopes (
-data__scope,
-data__backend_azure_keyvault,
-data__initial_manage_principal,
-data__scope_backend_type,
+scope,
+backend_azure_keyvault,
+initial_manage_principal,
+scope_backend_type,
 deployment_name
 )
 SELECT 

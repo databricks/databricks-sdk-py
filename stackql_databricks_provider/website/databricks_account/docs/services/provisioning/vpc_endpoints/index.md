@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>vpc_endpoints</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>vpc_endpoints</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="vpc_endpoints" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.provisioning.vpc_endpoints" /></td></tr>
 </tbody></table>
@@ -117,7 +117,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "use_case",
     "type": "string",
-    "description": "This enumeration represents the type of Databricks VPC endpoint service that was used when creating this VPC endpoint. If the VPC endpoint connects to the Databricks control plane for either the front-end connection or the back-end REST API connection, the value is WORKSPACE_ACCESS. If the VPC endpoint connects to the Databricks workspace for the back-end secure cluster connectivity relay, the value is DATAPLANE_RELAY_ACCESS."
+    "description": "This enumeration represents the type of Databricks VPC endpoint service that was used when creating this VPC endpoint. If the VPC endpoint connects to the Databricks control plane for either the front-end connection or the back-end REST API connection, the value is WORKSPACE_ACCESS. If the VPC endpoint connects to the Databricks workspace for the back-end secure cluster connectivity relay, the value is DATAPLANE_RELAY_ACCESS. (DATAPLANE_RELAY_ACCESS, WORKSPACE_ACCESS)"
   }
 ]} />
 </TabItem>
@@ -199,7 +199,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "use_case",
     "type": "string",
-    "description": "This enumeration represents the type of Databricks VPC endpoint service that was used when creating this VPC endpoint. If the VPC endpoint connects to the Databricks control plane for either the front-end connection or the back-end REST API connection, the value is WORKSPACE_ACCESS. If the VPC endpoint connects to the Databricks workspace for the back-end secure cluster connectivity relay, the value is DATAPLANE_RELAY_ACCESS."
+    "description": "This enumeration represents the type of Databricks VPC endpoint service that was used when creating this VPC endpoint. If the VPC endpoint connects to the Databricks control plane for either the front-end connection or the back-end REST API connection, the value is WORKSPACE_ACCESS. If the VPC endpoint connects to the Databricks workspace for the back-end secure cluster connectivity relay, the value is DATAPLANE_RELAY_ACCESS. (DATAPLANE_RELAY_ACCESS, WORKSPACE_ACCESS)"
   }
 ]} />
 </TabItem>
@@ -347,10 +347,10 @@ Creates a VPC endpoint configuration, which represents a [VPC endpoint] object i
 
 ```sql
 INSERT INTO databricks_account.provisioning.vpc_endpoints (
-data__aws_vpc_endpoint_id,
-data__gcp_vpc_endpoint_info,
-data__region,
-data__vpc_endpoint_name,
+aws_vpc_endpoint_id,
+gcp_vpc_endpoint_info,
+region,
+vpc_endpoint_name,
 account_id
 )
 SELECT 

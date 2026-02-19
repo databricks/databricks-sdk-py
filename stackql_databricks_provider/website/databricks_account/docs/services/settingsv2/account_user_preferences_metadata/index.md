@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_user_preferences_metad
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_user_preferences_metadata</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_user_preferences_metadata" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.settingsv2.account_user_preferences_metadata" /></td></tr>
 </tbody></table>

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>serving_endpoints_pt</code> res
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>serving_endpoints_pt</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="serving_endpoints_pt" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.serving.serving_endpoints_pt" /></td></tr>
 </tbody></table>
@@ -53,14 +53,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__config"><code>data__config</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-config"><code>config</code></a></td>
     <td></td>
     <td>Create a new PT serving endpoint.</td>
 </tr>
 <tr>
     <td><a href="#update_config"><CopyableCode code="update_config" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__config"><code>data__config</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-config"><code>config</code></a></td>
     <td></td>
     <td>Updates any combination of the pt endpoint's served entities, the compute configuration of those</td>
 </tr>
@@ -108,12 +108,12 @@ Create a new PT serving endpoint.
 
 ```sql
 INSERT INTO databricks_workspace.serving.serving_endpoints_pt (
-data__name,
-data__config,
-data__ai_gateway,
-data__budget_policy_id,
-data__email_notifications,
-data__tags,
+name,
+config,
+ai_gateway,
+budget_policy_id,
+email_notifications,
+tags,
 deployment_name
 )
 SELECT 
@@ -199,11 +199,11 @@ Updates any combination of the pt endpoint's served entities, the compute config
 ```sql
 REPLACE databricks_workspace.serving.serving_endpoints_pt
 SET 
-data__config = '{{ config }}'
+config = '{{ config }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__config = '{{ config }}' --required
+AND config = '{{ config }}' --required
 RETURNING
 id,
 name,

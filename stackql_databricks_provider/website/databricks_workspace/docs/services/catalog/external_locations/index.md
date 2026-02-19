@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>external_locations</code> reso
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>external_locations</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="external_locations" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.external_locations" /></td></tr>
 </tbody></table>
@@ -100,7 +100,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "algorithm",
             "type": "string",
-            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request."
+            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request. (AWS_SSE_KMS, AWS_SSE_S3)"
           },
           {
             "name": "aws_kms_key_arn",
@@ -248,7 +248,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -338,7 +338,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "algorithm",
             "type": "string",
-            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request."
+            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request. (AWS_SSE_KMS, AWS_SSE_S3)"
           },
           {
             "name": "aws_kms_key_arn",
@@ -486,7 +486,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -549,7 +549,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__url"><code>data__url</code></a>, <a href="#parameter-data__credential_name"><code>data__credential_name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-credential_name"><code>credential_name</code></a></td>
     <td></td>
     <td>Creates a new external location entry in the metastore. The caller must be a metastore admin or have</td>
 </tr>
@@ -712,16 +712,16 @@ Creates a new external location entry in the metastore. The caller must be a met
 
 ```sql
 INSERT INTO databricks_workspace.catalog.external_locations (
-data__name,
-data__url,
-data__credential_name,
-data__comment,
-data__enable_file_events,
-data__encryption_details,
-data__fallback,
-data__file_event_queue,
-data__read_only,
-data__skip_validation,
+name,
+url,
+credential_name,
+comment,
+enable_file_events,
+encryption_details,
+fallback,
+file_event_queue,
+read_only,
+skip_validation,
 deployment_name
 )
 SELECT 
@@ -825,19 +825,19 @@ Updates an external location in the metastore. The caller must be the owner of t
 ```sql
 UPDATE databricks_workspace.catalog.external_locations
 SET 
-data__comment = '{{ comment }}',
-data__credential_name = '{{ credential_name }}',
-data__enable_file_events = '{{ enable_file_events }}',
-data__encryption_details = '{{ encryption_details }}',
-data__fallback = '{{ fallback }}',
-data__file_event_queue = '{{ file_event_queue }}',
-data__force = '{{ force }}',
-data__isolation_mode = '{{ isolation_mode }}',
-data__new_name = '{{ new_name }}',
-data__owner = '{{ owner }}',
-data__read_only = '{{ read_only }}',
-data__skip_validation = '{{ skip_validation }}',
-data__url = '{{ url }}'
+comment = '{{ comment }}',
+credential_name = '{{ credential_name }}',
+enable_file_events = '{{ enable_file_events }}',
+encryption_details = '{{ encryption_details }}',
+fallback = '{{ fallback }}',
+file_event_queue = '{{ file_event_queue }}',
+force = '{{ force }}',
+isolation_mode = '{{ isolation_mode }}',
+new_name = '{{ new_name }}',
+owner = '{{ owner }}',
+read_only = '{{ read_only }}',
+skip_validation = '{{ skip_validation }}',
+url = '{{ url }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>object_permissions</code> reso
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>object_permissions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="object_permissions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.workspace.object_permissions" /></td></tr>
 </tbody></table>
@@ -69,7 +69,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "permission_level",
             "type": "string",
-            "description": "Permission level"
+            "description": "Permission level (CAN_EDIT, CAN_MANAGE, CAN_READ, CAN_RUN)"
           }
         ]
       },
@@ -216,7 +216,7 @@ Updates the permissions on a workspace object. Workspace objects can inherit per
 ```sql
 UPDATE databricks_workspace.workspace.object_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 workspace_object_type = '{{ workspace_object_type }}' --required
 AND workspace_object_id = '{{ workspace_object_id }}' --required
@@ -245,7 +245,7 @@ Sets permissions on an object, replacing existing permissions if they exist. Del
 ```sql
 REPLACE databricks_workspace.workspace.object_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 workspace_object_type = '{{ workspace_object_type }}' --required
 AND workspace_object_id = '{{ workspace_object_id }}' --required

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>token_management</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>token_management</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="token_management" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.settings.token_management" /></td></tr>
 </tbody></table>
@@ -180,7 +180,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__application_id"><code>data__application_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-application_id"><code>application_id</code></a></td>
     <td></td>
     <td>Creates a token on behalf of a service principal.</td>
 </tr>
@@ -292,9 +292,9 @@ Creates a token on behalf of a service principal.
 
 ```sql
 INSERT INTO databricks_workspace.settings.token_management (
-data__application_id,
-data__comment,
-data__lifetime_seconds,
+application_id,
+comment,
+lifetime_seconds,
 deployment_name
 )
 SELECT 

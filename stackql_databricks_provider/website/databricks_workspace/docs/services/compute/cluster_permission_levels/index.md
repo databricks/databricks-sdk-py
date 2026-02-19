@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>cluster_permission_levels</code
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>cluster_permission_levels</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="cluster_permission_levels" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.cluster_permission_levels" /></td></tr>
 </tbody></table>
@@ -54,7 +54,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "permission_level",
         "type": "string",
-        "description": "Permission level"
+        "description": "Permission level (CAN_ATTACH_TO, CAN_MANAGE, CAN_RESTART)"
       }
     ]
   }

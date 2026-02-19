@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>tables</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>tables</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="tables" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.tables" /></td></tr>
 </tbody></table>
@@ -157,7 +157,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "type_name",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, GEOGRAPHY, GEOMETRY, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TABLE_TYPE, TIMESTAMP, TIMESTAMP_NTZ, USER_DEFINED_TYPE, VARIANT)"
       },
       {
         "name": "type_precision",
@@ -194,7 +194,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "data_source_format",
     "type": "string",
-    "description": "Data source format"
+    "description": "Data source format (AVRO, BIGQUERY_FORMAT, CSV, DATABRICKS_FORMAT, DATABRICKS_ROW_STORE_FORMAT, DELTA, DELTASHARING, DELTA_UNIFORM_HUDI, DELTA_UNIFORM_ICEBERG, HIVE, ICEBERG, JSON, MONGODB_FORMAT, MYSQL_FORMAT, NETSUITE_FORMAT, ORACLE_FORMAT, ORC, PARQUET, POSTGRESQL_FORMAT, REDSHIFT_FORMAT, SALESFORCE_DATA_CLOUD_FORMAT, SALESFORCE_FORMAT, SNOWFLAKE_FORMAT, SQLDW_FORMAT, SQLSERVER_FORMAT, TERADATA_FORMAT, TEXT, UNITY_CATALOG, VECTOR_INDEX_FORMAT, WORKDAY_RAAS_FORMAT)"
   },
   {
     "name": "deleted_at",
@@ -221,7 +221,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "value",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (DISABLE, ENABLE, INHERIT)"
       },
       {
         "name": "inherited_from_name",
@@ -231,14 +231,14 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "inherited_from_type",
         "type": "string",
-        "description": "The type of the object from which the flag was inherited. If there was no inheritance, this field is left blank."
+        "description": "The type of the object from which the flag was inherited. If there was no inheritance, this field is left blank. (CATALOG, SCHEMA)"
       }
     ]
   },
   {
     "name": "enable_predictive_optimization",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (DISABLE, ENABLE, INHERIT)"
   },
   {
     "name": "encryption_details",
@@ -253,7 +253,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "algorithm",
             "type": "string",
-            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request."
+            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request. (AWS_SSE_KMS, AWS_SSE_S3)"
           },
           {
             "name": "aws_kms_key_arn",
@@ -374,24 +374,24 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "oauth_stage",
             "type": "string",
-            "description": "Specifies when the option value is displayed on the UI within the OAuth flow."
+            "description": "Specifies when the option value is displayed on the UI within the OAuth flow. (BEFORE_ACCESS_TOKEN, BEFORE_AUTHORIZATION_CODE)"
           },
           {
             "name": "type",
             "type": "string",
-            "description": "The type of the option."
+            "description": "The type of the option. (OPTION_BIGINT, OPTION_BOOLEAN, OPTION_ENUM, OPTION_MULTILINE_STRING, OPTION_NUMBER, OPTION_SERVICE_CREDENTIAL, OPTION_STRING)"
           }
         ]
       },
       {
         "name": "securable_kind",
         "type": "string",
-        "description": "Securable kind to get manifest of."
+        "description": "Securable kind to get manifest of. (TABLE_DB_STORAGE, TABLE_DELTA, TABLE_DELTASHARING, TABLE_DELTASHARING_MUTABLE, TABLE_DELTASHARING_OPEN_DIR_BASED, TABLE_DELTA_EXTERNAL, TABLE_DELTA_ICEBERG_DELTASHARING, TABLE_DELTA_ICEBERG_MANAGED, TABLE_DELTA_UNIFORM_HUDI_EXTERNAL, TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL, TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING, TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL, TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED, TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE, TABLE_EXTERNAL, TABLE_FEATURE_STORE, TABLE_FEATURE_STORE_EXTERNAL, TABLE_FOREIGN_BIGQUERY, TABLE_FOREIGN_DATABRICKS, TABLE_FOREIGN_DELTASHARING, TABLE_FOREIGN_HIVE_METASTORE, TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL, TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED, TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL, TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED, TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW, TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL, TABLE_FOREIGN_HIVE_METASTORE_MANAGED, TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL, TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED, TABLE_FOREIGN_HIVE_METASTORE_VIEW, TABLE_FOREIGN_MONGODB, TABLE_FOREIGN_MYSQL, TABLE_FOREIGN_NETSUITE, TABLE_FOREIGN_ORACLE, TABLE_FOREIGN_POSTGRESQL, TABLE_FOREIGN_REDSHIFT, TABLE_FOREIGN_SALESFORCE, TABLE_FOREIGN_SALESFORCE_DATA_CLOUD, TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING, TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW, TABLE_FOREIGN_SNOWFLAKE, TABLE_FOREIGN_SQLDW, TABLE_FOREIGN_SQLSERVER, TABLE_FOREIGN_TERADATA, TABLE_FOREIGN_WORKDAY_RAAS, TABLE_ICEBERG_UNIFORM_MANAGED, TABLE_INTERNAL, TABLE_MANAGED_POSTGRESQL, TABLE_MATERIALIZED_VIEW, TABLE_MATERIALIZED_VIEW_DELTASHARING, TABLE_METRIC_VIEW, TABLE_METRIC_VIEW_DELTASHARING, TABLE_ONLINE_VECTOR_INDEX_DIRECT, TABLE_ONLINE_VECTOR_INDEX_REPLICA, TABLE_ONLINE_VIEW, TABLE_STANDARD, TABLE_STREAMING_LIVE_TABLE, TABLE_STREAMING_LIVE_TABLE_DELTASHARING, TABLE_SYSTEM, TABLE_SYSTEM_DELTASHARING, TABLE_VIEW, TABLE_VIEW_DELTASHARING)"
       },
       {
         "name": "securable_type",
         "type": "string",
-        "description": "The type of Unity Catalog securable."
+        "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
       }
     ]
   },
@@ -486,7 +486,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "table_type",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (EXTERNAL, EXTERNAL_SHALLOW_CLONE, FOREIGN, MANAGED, MANAGED_SHALLOW_CLONE, MATERIALIZED_VIEW, METRIC_VIEW, STREAMING_TABLE, VIEW)"
   },
   {
     "name": "updated_at",
@@ -685,7 +685,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "type_name",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, GEOGRAPHY, GEOMETRY, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TABLE_TYPE, TIMESTAMP, TIMESTAMP_NTZ, USER_DEFINED_TYPE, VARIANT)"
       },
       {
         "name": "type_precision",
@@ -722,7 +722,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "data_source_format",
     "type": "string",
-    "description": "Data source format"
+    "description": "Data source format (AVRO, BIGQUERY_FORMAT, CSV, DATABRICKS_FORMAT, DATABRICKS_ROW_STORE_FORMAT, DELTA, DELTASHARING, DELTA_UNIFORM_HUDI, DELTA_UNIFORM_ICEBERG, HIVE, ICEBERG, JSON, MONGODB_FORMAT, MYSQL_FORMAT, NETSUITE_FORMAT, ORACLE_FORMAT, ORC, PARQUET, POSTGRESQL_FORMAT, REDSHIFT_FORMAT, SALESFORCE_DATA_CLOUD_FORMAT, SALESFORCE_FORMAT, SNOWFLAKE_FORMAT, SQLDW_FORMAT, SQLSERVER_FORMAT, TERADATA_FORMAT, TEXT, UNITY_CATALOG, VECTOR_INDEX_FORMAT, WORKDAY_RAAS_FORMAT)"
   },
   {
     "name": "deleted_at",
@@ -749,7 +749,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "value",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (DISABLE, ENABLE, INHERIT)"
       },
       {
         "name": "inherited_from_name",
@@ -759,14 +759,14 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "inherited_from_type",
         "type": "string",
-        "description": "The type of the object from which the flag was inherited. If there was no inheritance, this field is left blank."
+        "description": "The type of the object from which the flag was inherited. If there was no inheritance, this field is left blank. (CATALOG, SCHEMA)"
       }
     ]
   },
   {
     "name": "enable_predictive_optimization",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (DISABLE, ENABLE, INHERIT)"
   },
   {
     "name": "encryption_details",
@@ -781,7 +781,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "algorithm",
             "type": "string",
-            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request."
+            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request. (AWS_SSE_KMS, AWS_SSE_S3)"
           },
           {
             "name": "aws_kms_key_arn",
@@ -902,24 +902,24 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "oauth_stage",
             "type": "string",
-            "description": "Specifies when the option value is displayed on the UI within the OAuth flow."
+            "description": "Specifies when the option value is displayed on the UI within the OAuth flow. (BEFORE_ACCESS_TOKEN, BEFORE_AUTHORIZATION_CODE)"
           },
           {
             "name": "type",
             "type": "string",
-            "description": "The type of the option."
+            "description": "The type of the option. (OPTION_BIGINT, OPTION_BOOLEAN, OPTION_ENUM, OPTION_MULTILINE_STRING, OPTION_NUMBER, OPTION_SERVICE_CREDENTIAL, OPTION_STRING)"
           }
         ]
       },
       {
         "name": "securable_kind",
         "type": "string",
-        "description": "Securable kind to get manifest of."
+        "description": "Securable kind to get manifest of. (TABLE_DB_STORAGE, TABLE_DELTA, TABLE_DELTASHARING, TABLE_DELTASHARING_MUTABLE, TABLE_DELTASHARING_OPEN_DIR_BASED, TABLE_DELTA_EXTERNAL, TABLE_DELTA_ICEBERG_DELTASHARING, TABLE_DELTA_ICEBERG_MANAGED, TABLE_DELTA_UNIFORM_HUDI_EXTERNAL, TABLE_DELTA_UNIFORM_ICEBERG_EXTERNAL, TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_DELTASHARING, TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_EXTERNAL, TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_HIVE_METASTORE_MANAGED, TABLE_DELTA_UNIFORM_ICEBERG_FOREIGN_SNOWFLAKE, TABLE_EXTERNAL, TABLE_FEATURE_STORE, TABLE_FEATURE_STORE_EXTERNAL, TABLE_FOREIGN_BIGQUERY, TABLE_FOREIGN_DATABRICKS, TABLE_FOREIGN_DELTASHARING, TABLE_FOREIGN_HIVE_METASTORE, TABLE_FOREIGN_HIVE_METASTORE_DBFS_EXTERNAL, TABLE_FOREIGN_HIVE_METASTORE_DBFS_MANAGED, TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_EXTERNAL, TABLE_FOREIGN_HIVE_METASTORE_DBFS_SHALLOW_CLONE_MANAGED, TABLE_FOREIGN_HIVE_METASTORE_DBFS_VIEW, TABLE_FOREIGN_HIVE_METASTORE_EXTERNAL, TABLE_FOREIGN_HIVE_METASTORE_MANAGED, TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_EXTERNAL, TABLE_FOREIGN_HIVE_METASTORE_SHALLOW_CLONE_MANAGED, TABLE_FOREIGN_HIVE_METASTORE_VIEW, TABLE_FOREIGN_MONGODB, TABLE_FOREIGN_MYSQL, TABLE_FOREIGN_NETSUITE, TABLE_FOREIGN_ORACLE, TABLE_FOREIGN_POSTGRESQL, TABLE_FOREIGN_REDSHIFT, TABLE_FOREIGN_SALESFORCE, TABLE_FOREIGN_SALESFORCE_DATA_CLOUD, TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING, TABLE_FOREIGN_SALESFORCE_DATA_CLOUD_FILE_SHARING_VIEW, TABLE_FOREIGN_SNOWFLAKE, TABLE_FOREIGN_SQLDW, TABLE_FOREIGN_SQLSERVER, TABLE_FOREIGN_TERADATA, TABLE_FOREIGN_WORKDAY_RAAS, TABLE_ICEBERG_UNIFORM_MANAGED, TABLE_INTERNAL, TABLE_MANAGED_POSTGRESQL, TABLE_MATERIALIZED_VIEW, TABLE_MATERIALIZED_VIEW_DELTASHARING, TABLE_METRIC_VIEW, TABLE_METRIC_VIEW_DELTASHARING, TABLE_ONLINE_VECTOR_INDEX_DIRECT, TABLE_ONLINE_VECTOR_INDEX_REPLICA, TABLE_ONLINE_VIEW, TABLE_STANDARD, TABLE_STREAMING_LIVE_TABLE, TABLE_STREAMING_LIVE_TABLE_DELTASHARING, TABLE_SYSTEM, TABLE_SYSTEM_DELTASHARING, TABLE_VIEW, TABLE_VIEW_DELTASHARING)"
       },
       {
         "name": "securable_type",
         "type": "string",
-        "description": "The type of Unity Catalog securable."
+        "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
       }
     ]
   },
@@ -1014,7 +1014,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "table_type",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (EXTERNAL, EXTERNAL_SHALLOW_CLONE, FOREIGN, MANAGED, MANAGED_SHALLOW_CLONE, MATERIALIZED_VIEW, METRIC_VIEW, STREAMING_TABLE, VIEW)"
   },
   {
     "name": "updated_at",
@@ -1129,7 +1129,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__catalog_name"><code>data__catalog_name</code></a>, <a href="#parameter-data__schema_name"><code>data__schema_name</code></a>, <a href="#parameter-data__table_type"><code>data__table_type</code></a>, <a href="#parameter-data__data_source_format"><code>data__data_source_format</code></a>, <a href="#parameter-data__storage_location"><code>data__storage_location</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-table_type"><code>table_type</code></a>, <a href="#parameter-data_source_format"><code>data_source_format</code></a>, <a href="#parameter-storage_location"><code>storage_location</code></a></td>
     <td></td>
     <td>Creates a new table in the specified catalog and schema.</td>
 </tr>
@@ -1361,14 +1361,14 @@ Creates a new table in the specified catalog and schema.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.tables (
-data__name,
-data__catalog_name,
-data__schema_name,
-data__table_type,
-data__data_source_format,
-data__storage_location,
-data__columns,
-data__properties,
+name,
+catalog_name,
+schema_name,
+table_type,
+data_source_format,
+storage_location,
+columns,
+properties,
 deployment_name
 )
 SELECT 
@@ -1477,7 +1477,7 @@ Change the owner of the table. The caller must be the owner of the parent catalo
 ```sql
 UPDATE databricks_workspace.catalog.tables
 SET 
-data__owner = '{{ owner }}'
+owner = '{{ owner }}'
 WHERE 
 full_name = '{{ full_name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required;

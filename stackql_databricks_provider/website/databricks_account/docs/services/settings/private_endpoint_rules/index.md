@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>private_endpoint_rules</code> r
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>private_endpoint_rules</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="private_endpoint_rules" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.settings.private_endpoint_rules" /></td></tr>
 </tbody></table>
@@ -80,7 +80,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "connection_state",
     "type": "string",
-    "description": "The current status of this private endpoint. The private endpoint rules are effective only if the connection state is ESTABLISHED. Remember that you must approve new endpoints on your resources in the Cloud console before they take effect. The possible values are: - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was removed by the private link resource owner, the private endpoint becomes informative and should be deleted for clean-up. - EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED. - CREATING: The endpoint creation is in progress. Once successfully created, the state will transition to PENDING. - CREATE_FAILED: The endpoint creation failed. You can check the error_message field for more details."
+    "description": "The current status of this private endpoint. The private endpoint rules are effective only if the connection state is ESTABLISHED. Remember that you must approve new endpoints on your resources in the Cloud console before they take effect. The possible values are: - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was removed by the private link resource owner, the private endpoint becomes informative and should be deleted for clean-up. - EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED. - CREATING: The endpoint creation is in progress. Once successfully created, the state will transition to PENDING. - CREATE_FAILED: The endpoint creation failed. You can check the error_message field for more details. (CREATE_FAILED, CREATING, DISCONNECTED, ESTABLISHED, EXPIRED, PENDING, REJECTED)"
   },
   {
     "name": "creation_time",
@@ -170,7 +170,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "connection_state",
     "type": "string",
-    "description": "The current status of this private endpoint. The private endpoint rules are effective only if the connection state is ESTABLISHED. Remember that you must approve new endpoints on your resources in the Cloud console before they take effect. The possible values are: - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was removed by the private link resource owner, the private endpoint becomes informative and should be deleted for clean-up. - EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED. - CREATING: The endpoint creation is in progress. Once successfully created, the state will transition to PENDING. - CREATE_FAILED: The endpoint creation failed. You can check the error_message field for more details."
+    "description": "The current status of this private endpoint. The private endpoint rules are effective only if the connection state is ESTABLISHED. Remember that you must approve new endpoints on your resources in the Cloud console before they take effect. The possible values are: - PENDING: The endpoint has been created and pending approval. - ESTABLISHED: The endpoint has been approved and is ready to use in your serverless compute resources. - REJECTED: Connection was rejected by the private link resource owner. - DISCONNECTED: Connection was removed by the private link resource owner, the private endpoint becomes informative and should be deleted for clean-up. - EXPIRED: If the endpoint was created but not approved in 14 days, it will be EXPIRED. - CREATING: The endpoint creation is in progress. Once successfully created, the state will transition to PENDING. - CREATE_FAILED: The endpoint creation failed. You can check the error_message field for more details. (CREATE_FAILED, CREATING, DISCONNECTED, ESTABLISHED, EXPIRED, PENDING, REJECTED)"
   },
   {
     "name": "creation_time",
@@ -253,14 +253,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create_private_endpoint_rule"><CopyableCode code="create_private_endpoint_rule" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a>, <a href="#parameter-data__private_endpoint_rule"><code>data__private_endpoint_rule</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a>, <a href="#parameter-private_endpoint_rule"><code>private_endpoint_rule</code></a></td>
     <td></td>
     <td>Create a private endpoint rule for the specified network connectivity config object. Once the object</td>
 </tr>
 <tr>
     <td><a href="#update_private_endpoint_rule"><CopyableCode code="update_private_endpoint_rule" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a>, <a href="#parameter-private_endpoint_rule_id"><code>private_endpoint_rule_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-data__private_endpoint_rule"><code>data__private_endpoint_rule</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_connectivity_config_id"><code>network_connectivity_config_id</code></a>, <a href="#parameter-private_endpoint_rule_id"><code>private_endpoint_rule_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-private_endpoint_rule"><code>private_endpoint_rule</code></a></td>
     <td></td>
     <td>Updates a private endpoint rule. Currently only a private endpoint rule to customer-managed resources</td>
 </tr>
@@ -402,7 +402,7 @@ Create a private endpoint rule for the specified network connectivity config obj
 
 ```sql
 INSERT INTO databricks_account.settings.private_endpoint_rules (
-data__private_endpoint_rule,
+private_endpoint_rule,
 account_id,
 network_connectivity_config_id
 )
@@ -467,13 +467,13 @@ Updates a private endpoint rule. Currently only a private endpoint rule to custo
 ```sql
 UPDATE databricks_account.settings.private_endpoint_rules
 SET 
-data__private_endpoint_rule = '{{ private_endpoint_rule }}'
+private_endpoint_rule = '{{ private_endpoint_rule }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND network_connectivity_config_id = '{{ network_connectivity_config_id }}' --required
 AND private_endpoint_rule_id = '{{ private_endpoint_rule_id }}' --required
 AND update_mask = '{{ update_mask }}' --required
-AND data__private_endpoint_rule = '{{ private_endpoint_rule }}' --required
+AND private_endpoint_rule = '{{ private_endpoint_rule }}' --required
 RETURNING
 account_id,
 group_id,

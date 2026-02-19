@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_ip_access_lists</code>
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_ip_access_lists</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_ip_access_lists" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.settings.account_ip_access_lists" /></td></tr>
 </tbody></table>
@@ -80,7 +80,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "list_type",
     "type": "string",
-    "description": "Type of IP access list. Valid values are as follows and are case-sensitive:<br /><br />* `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or<br />range. IP addresses in the block list are excluded even if they are included in an allow list."
+    "description": "Type of IP access list. Valid values are as follows and are case-sensitive:<br /><br />* `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or<br />range. IP addresses in the block list are excluded even if they are included in an allow list. (ALLOW, BLOCK)"
   },
   {
     "name": "updated_at",
@@ -135,7 +135,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "list_type",
     "type": "string",
-    "description": "Type of IP access list. Valid values are as follows and are case-sensitive:<br /><br />* `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or<br />range. IP addresses in the block list are excluded even if they are included in an allow list."
+    "description": "Type of IP access list. Valid values are as follows and are case-sensitive:<br /><br />* `ALLOW`: An allow list. Include this IP or range. * `BLOCK`: A block list. Exclude this IP or<br />range. IP addresses in the block list are excluded even if they are included in an allow list. (ALLOW, BLOCK)"
   },
   {
     "name": "updated_at",
@@ -183,7 +183,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#account_ip_access_lists_create"><CopyableCode code="account_ip_access_lists_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__label"><code>data__label</code></a>, <a href="#parameter-data__list_type"><code>data__list_type</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-label"><code>label</code></a>, <a href="#parameter-list_type"><code>list_type</code></a></td>
     <td></td>
     <td>Creates an IP access list for the account.</td>
 </tr>
@@ -197,7 +197,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#account_ip_access_lists_replace"><CopyableCode code="account_ip_access_lists_replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-data__label"><code>data__label</code></a>, <a href="#parameter-data__list_type"><code>data__list_type</code></a>, <a href="#parameter-data__enabled"><code>data__enabled</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-ip_access_list_id"><code>ip_access_list_id</code></a>, <a href="#parameter-label"><code>label</code></a>, <a href="#parameter-list_type"><code>list_type</code></a>, <a href="#parameter-enabled"><code>enabled</code></a></td>
     <td></td>
     <td>Replaces an IP access list, specified by its ID.</td>
 </tr>
@@ -307,9 +307,9 @@ Creates an IP access list for the account.
 
 ```sql
 INSERT INTO databricks_account.settings.account_ip_access_lists (
-data__label,
-data__list_type,
-data__ip_addresses,
+label,
+list_type,
+ip_addresses,
 account_id
 )
 SELECT 
@@ -361,10 +361,10 @@ Updates an existing IP access list, specified by its ID.
 ```sql
 UPDATE databricks_account.settings.account_ip_access_lists
 SET 
-data__enabled = '{{ enabled }}',
-data__ip_addresses = '{{ ip_addresses }}',
-data__label = '{{ label }}',
-data__list_type = '{{ list_type }}'
+enabled = '{{ enabled }}',
+ip_addresses = '{{ ip_addresses }}',
+label = '{{ label }}',
+list_type = '{{ list_type }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND ip_access_list_id = '{{ ip_access_list_id }}' --required;
@@ -388,16 +388,16 @@ Replaces an IP access list, specified by its ID.
 ```sql
 REPLACE databricks_account.settings.account_ip_access_lists
 SET 
-data__label = '{{ label }}',
-data__list_type = '{{ list_type }}',
-data__enabled = {{ enabled }},
-data__ip_addresses = '{{ ip_addresses }}'
+label = '{{ label }}',
+list_type = '{{ list_type }}',
+enabled = {{ enabled }},
+ip_addresses = '{{ ip_addresses }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND ip_access_list_id = '{{ ip_access_list_id }}' --required
-AND data__label = '{{ label }}' --required
-AND data__list_type = '{{ list_type }}' --required
-AND data__enabled = {{ enabled }} --required;
+AND label = '{{ label }}' --required
+AND list_type = '{{ list_type }}' --required
+AND enabled = {{ enabled }} --required;
 ```
 </TabItem>
 </Tabs>

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>consumer_listing_content</code>
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>consumer_listing_content</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="consumer_listing_content" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.marketplace.consumer_listing_content" /></td></tr>
 </tbody></table>

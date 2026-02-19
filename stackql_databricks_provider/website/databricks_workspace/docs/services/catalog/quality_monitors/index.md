@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>quality_monitors</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>quality_monitors</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="quality_monitors" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.quality_monitors" /></td></tr>
 </tbody></table>
@@ -104,7 +104,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "type",
         "type": "string",
-        "description": "Can only be one of ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"``, ``\"CUSTOM_METRIC_TYPE_DERIVED\"``, or ``\"CUSTOM_METRIC_TYPE_DRIFT\"``. The ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"`` and ``\"CUSTOM_METRIC_TYPE_DERIVED\"`` metrics are computed on a single table, whereas the ``\"CUSTOM_METRIC_TYPE_DRIFT\"`` compare metrics across baseline and input table, or across the two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics"
+        "description": "Can only be one of ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"``, ``\"CUSTOM_METRIC_TYPE_DERIVED\"``, or ``\"CUSTOM_METRIC_TYPE_DRIFT\"``. The ``\"CUSTOM_METRIC_TYPE_AGGREGATE\"`` and ``\"CUSTOM_METRIC_TYPE_DERIVED\"`` metrics are computed on a single table, whereas the ``\"CUSTOM_METRIC_TYPE_DRIFT\"`` compare metrics across baseline and input table, or across the two consecutive time windows. - CUSTOM_METRIC_TYPE_AGGREGATE: only depend on the existing columns in your table - CUSTOM_METRIC_TYPE_DERIVED: depend on previously computed aggregate metrics - CUSTOM_METRIC_TYPE_DRIFT: depend on previously computed aggregate or derived metrics (CUSTOM_METRIC_TYPE_AGGREGATE, CUSTOM_METRIC_TYPE_DERIVED, CUSTOM_METRIC_TYPE_DRIFT)"
       }
     ]
   },
@@ -128,7 +128,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "problem_type",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (PROBLEM_TYPE_CLASSIFICATION, PROBLEM_TYPE_REGRESSION)"
       },
       {
         "name": "timestamp_col",
@@ -221,7 +221,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "pause_status",
         "type": "string",
-        "description": "Read only field that indicates whether a schedule is paused or not."
+        "description": "Read only field that indicates whether a schedule is paused or not. (PAUSED, UNPAUSED, UNSPECIFIED)"
       }
     ]
   },
@@ -238,7 +238,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "[Create:ERR Update:IGN] The monitor status."
+    "description": "[Create:ERR Update:IGN] The monitor status. (MONITOR_STATUS_ACTIVE, MONITOR_STATUS_DELETE_PENDING, MONITOR_STATUS_ERROR, MONITOR_STATUS_FAILED, MONITOR_STATUS_PENDING)"
   },
   {
     "name": "time_series",
@@ -286,14 +286,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__output_schema_name"><code>data__output_schema_name</code></a>, <a href="#parameter-data__assets_dir"><code>data__assets_dir</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-output_schema_name"><code>output_schema_name</code></a>, <a href="#parameter-assets_dir"><code>assets_dir</code></a></td>
     <td></td>
     <td>[DEPRECATED] Creates a new monitor for the specified table. Use Data Quality Monitors API instead</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__output_schema_name"><code>data__output_schema_name</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-output_schema_name"><code>output_schema_name</code></a></td>
     <td></td>
     <td>[DEPRECATED] Updates a monitor for the specified table. Use Data Quality Monitors API instead</td>
 </tr>
@@ -408,20 +408,20 @@ AND deployment_name = '{{ deployment_name }}' -- required
 
 ```sql
 INSERT INTO databricks_workspace.catalog.quality_monitors (
-data__output_schema_name,
-data__assets_dir,
-data__baseline_table_name,
-data__custom_metrics,
-data__data_classification_config,
-data__inference_log,
-data__latest_monitor_failure_msg,
-data__notifications,
-data__schedule,
-data__skip_builtin_dashboard,
-data__slicing_exprs,
-data__snapshot,
-data__time_series,
-data__warehouse_id,
+output_schema_name,
+assets_dir,
+baseline_table_name,
+custom_metrics,
+data_classification_config,
+inference_log,
+latest_monitor_failure_msg,
+notifications,
+schedule,
+skip_builtin_dashboard,
+slicing_exprs,
+snapshot,
+time_series,
+warehouse_id,
 table_name,
 deployment_name
 )
@@ -550,22 +550,22 @@ time_series
 ```sql
 REPLACE databricks_workspace.catalog.quality_monitors
 SET 
-data__output_schema_name = '{{ output_schema_name }}',
-data__baseline_table_name = '{{ baseline_table_name }}',
-data__custom_metrics = '{{ custom_metrics }}',
-data__dashboard_id = '{{ dashboard_id }}',
-data__data_classification_config = '{{ data_classification_config }}',
-data__inference_log = '{{ inference_log }}',
-data__latest_monitor_failure_msg = '{{ latest_monitor_failure_msg }}',
-data__notifications = '{{ notifications }}',
-data__schedule = '{{ schedule }}',
-data__slicing_exprs = '{{ slicing_exprs }}',
-data__snapshot = '{{ snapshot }}',
-data__time_series = '{{ time_series }}'
+output_schema_name = '{{ output_schema_name }}',
+baseline_table_name = '{{ baseline_table_name }}',
+custom_metrics = '{{ custom_metrics }}',
+dashboard_id = '{{ dashboard_id }}',
+data_classification_config = '{{ data_classification_config }}',
+inference_log = '{{ inference_log }}',
+latest_monitor_failure_msg = '{{ latest_monitor_failure_msg }}',
+notifications = '{{ notifications }}',
+schedule = '{{ schedule }}',
+slicing_exprs = '{{ slicing_exprs }}',
+snapshot = '{{ snapshot }}',
+time_series = '{{ time_series }}'
 WHERE 
 table_name = '{{ table_name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__output_schema_name = '{{ output_schema_name }}' --required
+AND output_schema_name = '{{ output_schema_name }}' --required
 RETURNING
 dashboard_id,
 baseline_table_name,

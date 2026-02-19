@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_federation_policy</cod
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_federation_policy</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_federation_policy" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.oauth2.account_federation_policy" /></td></tr>
 </tbody></table>
@@ -227,14 +227,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#account_federation_policy_create"><CopyableCode code="account_federation_policy_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__policy"><code>data__policy</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-policy"><code>policy</code></a></td>
     <td><a href="#parameter-policy_id"><code>policy_id</code></a></td>
     <td>Create account federation policy.</td>
 </tr>
 <tr>
     <td><a href="#account_federation_policy_update"><CopyableCode code="account_federation_policy_update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-data__policy"><code>data__policy</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-policy"><code>policy</code></a></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td>Update account federation policy.</td>
 </tr>
@@ -362,7 +362,7 @@ Create account federation policy.
 
 ```sql
 INSERT INTO databricks_account.oauth2.account_federation_policy (
-data__policy,
+policy,
 account_id,
 policy_id
 )
@@ -417,11 +417,11 @@ Update account federation policy.
 ```sql
 UPDATE databricks_account.oauth2.account_federation_policy
 SET 
-data__policy = '{{ policy }}'
+policy = '{{ policy }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND policy_id = '{{ policy_id }}' --required
-AND data__policy = '{{ policy }}' --required
+AND policy = '{{ policy }}' --required
 AND update_mask = '{{ update_mask}}'
 RETURNING
 name,

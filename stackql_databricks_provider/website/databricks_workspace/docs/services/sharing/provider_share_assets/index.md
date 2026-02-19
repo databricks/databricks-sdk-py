@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>provider_share_assets</code> re
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>provider_share_assets</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="provider_share_assets" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sharing.provider_share_assets" /></td></tr>
 </tbody></table>
@@ -71,7 +71,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "data_type",
         "type": "string",
-        "description": "The data type of the function."
+        "description": "The data type of the function. (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TABLE_TYPE, TIMESTAMP, TIMESTAMP_NTZ, USER_DEFINED_TYPE, VARIANT)"
       },
       {
         "name": "dependency_list",
@@ -135,12 +135,12 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "parameter_mode",
                 "type": "string",
-                "description": "The mode of the function parameter."
+                "description": "The mode of the function parameter. (IN, INOUT, OUT)"
               },
               {
                 "name": "parameter_type",
                 "type": "string",
-                "description": "The type of the function parameter."
+                "description": "The type of the function parameter. (COLUMN, PARAM)"
               },
               {
                 "name": "position",
@@ -160,7 +160,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "type_name",
                 "type": "string",
-                "description": "The type of the parameter in Enum format."
+                "description": "The type of the parameter in Enum format. (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TABLE_TYPE, TIMESTAMP, TIMESTAMP_NTZ, USER_DEFINED_TYPE, VARIANT)"
               },
               {
                 "name": "type_precision",
@@ -204,7 +204,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "securable_kind",
         "type": "string",
-        "description": "The securable kind of the function."
+        "description": "The securable kind of the function. (FUNCTION_FEATURE_SPEC, FUNCTION_REGISTERED_MODEL, FUNCTION_STANDARD)"
       },
       {
         "name": "share",
@@ -330,7 +330,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type",
             "type": "string",
-            "description": "The type of the shared table."
+            "description": "The type of the shared table. (DELTA_ICEBERG_TABLE, DIRECTORY_BASED_TABLE, FILE_BASED_TABLE, FOREIGN_ICEBERG_TABLE, FOREIGN_TABLE, MATERIALIZED_VIEW, METRIC_VIEW, STREAMING_TABLE, VIEW)"
           },
           {
             "name": "view_definition",

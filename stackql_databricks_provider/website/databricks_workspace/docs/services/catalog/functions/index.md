@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>functions</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>functions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="functions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.functions" /></td></tr>
 </tbody></table>
@@ -105,7 +105,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "data_type",
     "type": "string",
-    "description": "Scalar function return data type."
+    "description": "Scalar function return data type. (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, GEOGRAPHY, GEOMETRY, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TABLE_TYPE, TIMESTAMP, TIMESTAMP_NTZ, USER_DEFINED_TYPE, VARIANT)"
   },
   {
     "name": "external_language",
@@ -140,7 +140,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type_name",
             "type": "string",
-            "description": "Name of type (INT, STRUCT, MAP, etc.)"
+            "description": "Name of type (INT, STRUCT, MAP, etc.) (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, GEOGRAPHY, GEOMETRY, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TABLE_TYPE, TIMESTAMP, TIMESTAMP_NTZ, USER_DEFINED_TYPE, VARIANT)"
           },
           {
             "name": "position",
@@ -160,12 +160,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "parameter_mode",
             "type": "string",
-            "description": "Function parameter mode."
+            "description": "Function parameter mode. (IN)"
           },
           {
             "name": "parameter_type",
             "type": "string",
-            "description": "Function parameter type."
+            "description": "Function parameter type. (COLUMN, PARAM)"
           },
           {
             "name": "type_interval_type",
@@ -209,7 +209,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "parameter_style",
     "type": "string",
-    "description": "Function parameter style. **S** is the value for SQL."
+    "description": "Function parameter style. **S** is the value for SQL. (S)"
   },
   {
     "name": "properties",
@@ -239,7 +239,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type_name",
             "type": "string",
-            "description": "Name of type (INT, STRUCT, MAP, etc.)"
+            "description": "Name of type (INT, STRUCT, MAP, etc.) (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, GEOGRAPHY, GEOMETRY, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TABLE_TYPE, TIMESTAMP, TIMESTAMP_NTZ, USER_DEFINED_TYPE, VARIANT)"
           },
           {
             "name": "position",
@@ -259,12 +259,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "parameter_mode",
             "type": "string",
-            "description": "Function parameter mode."
+            "description": "Function parameter mode. (IN)"
           },
           {
             "name": "parameter_type",
             "type": "string",
-            "description": "Function parameter type."
+            "description": "Function parameter type. (COLUMN, PARAM)"
           },
           {
             "name": "type_interval_type",
@@ -293,7 +293,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "routine_body",
     "type": "string",
-    "description": "Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the **external_language** field, and the **return_params** of the function cannot be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be **NO_SQL**."
+    "description": "Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the **external_language** field, and the **return_params** of the function cannot be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be **NO_SQL**. (EXTERNAL, SQL)"
   },
   {
     "name": "routine_definition",
@@ -365,12 +365,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "security_type",
     "type": "string",
-    "description": "Function security type."
+    "description": "Function security type. (DEFINER)"
   },
   {
     "name": "sql_data_access",
     "type": "string",
-    "description": "Function SQL data access."
+    "description": "Function SQL data access. (CONTAINS_SQL, NO_SQL, READS_SQL_DATA)"
   },
   {
     "name": "sql_path",
@@ -455,7 +455,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "data_type",
     "type": "string",
-    "description": "Scalar function return data type."
+    "description": "Scalar function return data type. (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, GEOGRAPHY, GEOMETRY, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TABLE_TYPE, TIMESTAMP, TIMESTAMP_NTZ, USER_DEFINED_TYPE, VARIANT)"
   },
   {
     "name": "external_language",
@@ -490,7 +490,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type_name",
             "type": "string",
-            "description": "Name of type (INT, STRUCT, MAP, etc.)"
+            "description": "Name of type (INT, STRUCT, MAP, etc.) (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, GEOGRAPHY, GEOMETRY, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TABLE_TYPE, TIMESTAMP, TIMESTAMP_NTZ, USER_DEFINED_TYPE, VARIANT)"
           },
           {
             "name": "position",
@@ -510,12 +510,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "parameter_mode",
             "type": "string",
-            "description": "Function parameter mode."
+            "description": "Function parameter mode. (IN)"
           },
           {
             "name": "parameter_type",
             "type": "string",
-            "description": "Function parameter type."
+            "description": "Function parameter type. (COLUMN, PARAM)"
           },
           {
             "name": "type_interval_type",
@@ -559,7 +559,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "parameter_style",
     "type": "string",
-    "description": "Function parameter style. **S** is the value for SQL."
+    "description": "Function parameter style. **S** is the value for SQL. (S)"
   },
   {
     "name": "properties",
@@ -589,7 +589,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type_name",
             "type": "string",
-            "description": "Name of type (INT, STRUCT, MAP, etc.)"
+            "description": "Name of type (INT, STRUCT, MAP, etc.) (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, GEOGRAPHY, GEOMETRY, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TABLE_TYPE, TIMESTAMP, TIMESTAMP_NTZ, USER_DEFINED_TYPE, VARIANT)"
           },
           {
             "name": "position",
@@ -609,12 +609,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "parameter_mode",
             "type": "string",
-            "description": "Function parameter mode."
+            "description": "Function parameter mode. (IN)"
           },
           {
             "name": "parameter_type",
             "type": "string",
-            "description": "Function parameter type."
+            "description": "Function parameter type. (COLUMN, PARAM)"
           },
           {
             "name": "type_interval_type",
@@ -643,7 +643,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "routine_body",
     "type": "string",
-    "description": "Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the **external_language** field, and the **return_params** of the function cannot be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be **NO_SQL**."
+    "description": "Function language. When **EXTERNAL** is used, the language of the routine function should be specified in the **external_language** field, and the **return_params** of the function cannot be used (as **TABLE** return type is not supported), and the **sql_data_access** field must be **NO_SQL**. (EXTERNAL, SQL)"
   },
   {
     "name": "routine_definition",
@@ -715,12 +715,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "security_type",
     "type": "string",
-    "description": "Function security type."
+    "description": "Function security type. (DEFINER)"
   },
   {
     "name": "sql_data_access",
     "type": "string",
-    "description": "Function SQL data access."
+    "description": "Function SQL data access. (CONTAINS_SQL, NO_SQL, READS_SQL_DATA)"
   },
   {
     "name": "sql_path",
@@ -773,7 +773,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__function_info"><code>data__function_info</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-function_info"><code>function_info</code></a></td>
     <td></td>
     <td>**WARNING: This API is experimental and will change in future versions**</td>
 </tr>
@@ -966,7 +966,7 @@ AND page_token = '{{ page_token }}'
 
 ```sql
 INSERT INTO databricks_workspace.catalog.functions (
-data__function_info,
+function_info,
 deployment_name
 )
 SELECT 
@@ -1039,7 +1039,7 @@ Updates the function that matches the supplied name. Only the owner of the funct
 ```sql
 UPDATE databricks_workspace.catalog.functions
 SET 
-data__owner = '{{ owner }}'
+owner = '{{ owner }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

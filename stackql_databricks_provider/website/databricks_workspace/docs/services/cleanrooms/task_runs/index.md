@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>task_runs</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>task_runs</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="task_runs" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.cleanrooms.task_runs" /></td></tr>
 </tbody></table>

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>registered_models</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>registered_models</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="registered_models" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.registered_models" /></td></tr>
 </tbody></table>
@@ -301,7 +301,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#set_alias"><CopyableCode code="set_alias" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-alias"><code>alias</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__version_num"><code>data__version_num</code></a></td>
+    <td><a href="#parameter-full_name"><code>full_name</code></a>, <a href="#parameter-alias"><code>alias</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-version_num"><code>version_num</code></a></td>
     <td></td>
     <td>Set an alias on the specified registered model.</td>
 </tr>
@@ -468,20 +468,20 @@ Creates a new registered model in Unity Catalog.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.registered_models (
-data__aliases,
-data__browse_only,
-data__catalog_name,
-data__comment,
-data__created_at,
-data__created_by,
-data__full_name,
-data__metastore_id,
-data__name,
-data__owner,
-data__schema_name,
-data__storage_location,
-data__updated_at,
-data__updated_by,
+aliases,
+browse_only,
+catalog_name,
+comment,
+created_at,
+created_by,
+full_name,
+metastore_id,
+name,
+owner,
+schema_name,
+storage_location,
+updated_at,
+updated_by,
 deployment_name
 )
 SELECT 
@@ -603,20 +603,20 @@ Updates the specified registered model.
 ```sql
 UPDATE databricks_workspace.catalog.registered_models
 SET 
-data__aliases = '{{ aliases }}',
-data__browse_only = '{{ browse_only }}',
-data__catalog_name = '{{ catalog_name }}',
-data__comment = '{{ comment }}',
-data__created_at = '{{ created_at }}',
-data__created_by = '{{ created_by }}',
-data__metastore_id = '{{ metastore_id }}',
-data__name = '{{ name }}',
-data__new_name = '{{ new_name }}',
-data__owner = '{{ owner }}',
-data__schema_name = '{{ schema_name }}',
-data__storage_location = '{{ storage_location }}',
-data__updated_at = '{{ updated_at }}',
-data__updated_by = '{{ updated_by }}'
+aliases = '{{ aliases }}',
+browse_only = '{{ browse_only }}',
+catalog_name = '{{ catalog_name }}',
+comment = '{{ comment }}',
+created_at = '{{ created_at }}',
+created_by = '{{ created_by }}',
+metastore_id = '{{ metastore_id }}',
+name = '{{ name }}',
+new_name = '{{ new_name }}',
+owner = '{{ owner }}',
+schema_name = '{{ schema_name }}',
+storage_location = '{{ storage_location }}',
+updated_at = '{{ updated_at }}',
+updated_by = '{{ updated_by }}'
 WHERE 
 full_name = '{{ full_name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
@@ -655,12 +655,12 @@ Set an alias on the specified registered model.
 ```sql
 REPLACE databricks_workspace.catalog.registered_models
 SET 
-data__version_num = {{ version_num }}
+version_num = {{ version_num }}
 WHERE 
 full_name = '{{ full_name }}' --required
 AND alias = '{{ alias }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__version_num = '{{ version_num }}' --required
+AND version_num = '{{ version_num }}' --required
 RETURNING
 id,
 alias_name,

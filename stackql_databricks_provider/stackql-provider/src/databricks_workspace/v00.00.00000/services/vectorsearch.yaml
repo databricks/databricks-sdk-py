@@ -6,7 +6,7 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.vectorsearch
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -1447,7 +1447,7 @@ components:
           description: Whether the index is ready for search
     DeleteDataStatus:
       type: string
-      enum:
+      x-enum:
         - FAILURE
         - PARTIAL_SUCCESS
         - SUCCESS
@@ -1490,7 +1490,7 @@ components:
         attributes -- see the documentation for details.
     EndpointStatusState:
       type: string
-      enum:
+      x-enum:
         - DELETED
         - OFFLINE
         - ONLINE
@@ -1500,12 +1500,12 @@ components:
       description: Current state of the endpoint
     EndpointType:
       type: string
-      enum:
+      x-enum:
         - STANDARD
       description: Type of endpoint.
     PipelineType:
       type: string
-      enum:
+      x-enum:
         - CONTINUOUS
         - TRIGGERED
       description: >-
@@ -1524,7 +1524,7 @@ components:
         arrives in the source table to keep vector index fresh.
     UpsertDataStatus:
       type: string
-      enum:
+      x-enum:
         - FAILURE
         - PARTIAL_SUCCESS
         - SUCCESS
@@ -1567,7 +1567,7 @@ components:
         attributes -- see the documentation for details.
     VectorIndexType:
       type: string
-      enum:
+      x-enum:
         - DELTA_SYNC
         - DIRECT_ACCESS
       description: >-
@@ -1591,6 +1591,9 @@ components:
       title: Endpoints
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1endpoints/post'
           response:
@@ -1617,12 +1620,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         retrieve_user_visible_metrics:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1endpoints~1{name}~1metrics/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update_endpoint_budget_policy:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1endpoints~1{endpoint_name}~1budget-policy/patch
@@ -1630,6 +1639,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update_endpoint_custom_tags:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1endpoints~1{endpoint_name}~1tags/patch
@@ -1652,6 +1664,9 @@ components:
       title: Indexes
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1vector-search~1indexes/post'
           response:
@@ -1684,6 +1699,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         query_index:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1query/post
@@ -1691,6 +1709,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         query_next_page:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1query-next-page/post
@@ -1698,6 +1719,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         scan_index:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1scan/post
@@ -1712,6 +1736,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         upsert_data_vector_index:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1vector-search~1indexes~1{index_name}~1upsert-data/post
@@ -1728,3 +1755,11 @@ components:
         delete:
           - $ref: '#/components/x-stackQL-resources/indexes/methods/delete'
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

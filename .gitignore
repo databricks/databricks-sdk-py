@@ -18,3 +18,4 @@ stackql
 stackql-*.sh
 stackql-server.log
 stackql-zip
+billable_usage.csv

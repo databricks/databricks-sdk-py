@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>temporary_path_credentials</cod
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>temporary_path_credentials</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="temporary_path_credentials" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.temporary_path_credentials" /></td></tr>
 </tbody></table>
@@ -53,7 +53,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#generate"><CopyableCode code="generate" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__url"><code>data__url</code></a>, <a href="#parameter-data__operation"><code>data__operation</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-operation"><code>operation</code></a></td>
     <td></td>
     <td>Get a short-lived credential for directly accessing cloud storage locations registered in Databricks.</td>
 </tr>
@@ -96,9 +96,9 @@ Get a short-lived credential for directly accessing cloud storage locations regi
 
 ```sql
 INSERT INTO databricks_workspace.catalog.temporary_path_credentials (
-data__url,
-data__operation,
-data__dry_run,
+url,
+operation,
+dry_run,
 deployment_name
 )
 SELECT 

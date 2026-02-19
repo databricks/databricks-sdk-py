@@ -1,0 +1,416 @@
+    vw_budget_policies:
+      name: vw_budget_policies
+      id: databricks_account.billing.vw_budget_policies
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: policy_id
+            type: string
+            description: Unique identifier for the budget policy.
+          - name: policy_name
+            type: string
+            description: Display name of the budget policy.
+          - name: custom_tags
+            type: object
+            description: Key-value custom tags associated with the budget policy.
+          - name: binding_workspace_id
+            type: string
+            description: ID of a workspace bound to this budget policy (one row per workspace).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                p.account_id,
+                p.policy_id,
+                p.policy_name,
+                p.custom_tags,
+                w.value AS binding_workspace_id
+              FROM databricks_account.billing.budget_policy p,
+                   JSON_EACH(p.binding_workspace_ids) w
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  p.account_id,
+                  p.policy_id,
+                  p.policy_name,
+                  p.custom_tags,
+                  w.value AS binding_workspace_id
+                FROM databricks_account.billing.budget_policy p,
+                     jsonb_array_elements(p.binding_workspace_ids::jsonb) AS w
+                WHERE account_id = '{{ account_id }}'
+
+    vw_budgets:
+      name: vw_budgets
+      id: databricks_account.billing.vw_budgets
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: budget_configuration_id
+            type: string
+            description: Unique identifier for the budget configuration.
+          - name: display_name
+            type: string
+            description: Human-readable name of the budget.
+          - name: create_time
+            type: string
+            description: Timestamp when the budget was created (ISO 8601).
+          - name: update_time
+            type: string
+            description: Timestamp when the budget was last updated (ISO 8601).
+          - name: filter_workspace_operator
+            type: string
+            description: Comparison operator applied to the workspace ID filter (e.g. IN, NOT_IN).
+          - name: filter_workspace_ids
+            type: array
+            description: List of workspace IDs used in the budget filter.
+          - name: filter_tags
+            type: array
+            description: Tag-based filter criteria applied to this budget.
+          - name: alert_configuration_id
+            type: string
+            description: Unique identifier for the alert configuration (one row per alert).
+          - name: quantity_threshold
+            type: string
+            description: Threshold value that triggers the alert.
+          - name: quantity_type
+            type: string
+            description: Unit of the threshold quantity (e.g. LIST_PRICE_DOLLARS).
+          - name: time_period
+            type: string
+            description: Time window evaluated for budget alerting (e.g. MONTH).
+          - name: trigger_type
+            type: string
+            description: Condition that triggers the alert (e.g. CUMULATIVE_SPENDING_EXCEEDED).
+          - name: action_configurations
+            type: array
+            description: List of actions to execute when the alert fires.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                b.account_id,
+                b.budget_configuration_id,
+                b.display_name,
+                b.create_time,
+                b.update_time,
+                JSON_EXTRACT(b.filter, '$.workspace_id.operator') AS filter_workspace_operator,
+                JSON_EXTRACT(b.filter, '$.workspace_id.values') AS filter_workspace_ids,
+                JSON_EXTRACT(b.filter, '$.tags') AS filter_tags,
+                JSON_EXTRACT(ac.value, '$.alert_configuration_id') AS alert_configuration_id,
+                JSON_EXTRACT(ac.value, '$.quantity_threshold') AS quantity_threshold,
+                JSON_EXTRACT(ac.value, '$.quantity_type') AS quantity_type,
+                JSON_EXTRACT(ac.value, '$.time_period') AS time_period,
+                JSON_EXTRACT(ac.value, '$.trigger_type') AS trigger_type,
+                JSON_EXTRACT(ac.value, '$.action_configurations') AS action_configurations
+              FROM databricks_account.billing.budgets b,
+                   JSON_EACH(b.alert_configurations) ac
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  b.account_id,
+                  b.budget_configuration_id,
+                  b.display_name,
+                  b.create_time,
+                  b.update_time,
+                  b.filter->'workspace_id'->>'operator' AS filter_workspace_operator,
+                  b.filter->'workspace_id'->'values' AS filter_workspace_ids,
+                  b.filter->'tags' AS filter_tags,
+                  ac.value->>'alert_configuration_id' AS alert_configuration_id,
+                  ac.value->>'quantity_threshold' AS quantity_threshold,
+                  ac.value->>'quantity_type' AS quantity_type,
+                  ac.value->>'time_period' AS time_period,
+                  ac.value->>'trigger_type' AS trigger_type,
+                  ac.value->'action_configurations' AS action_configurations
+                FROM databricks_account.billing.budgets b,
+                     jsonb_array_elements(b.alert_configurations::jsonb) AS ac
+                WHERE account_id = '{{ account_id }}'
+
+    vw_budget_alert_actions:
+      name: vw_budget_alert_actions
+      id: databricks_account.billing.vw_budget_alert_actions
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: budget_configuration_id
+            type: string
+            description: Unique identifier for the budget configuration.
+          - name: display_name
+            type: string
+            description: Human-readable name of the budget.
+          - name: alert_configuration_id
+            type: string
+            description: Unique identifier for the alert configuration this action belongs to.
+          - name: quantity_threshold
+            type: string
+            description: Threshold value that triggers the parent alert.
+          - name: action_configuration_id
+            type: string
+            description: Unique identifier for this action configuration (one row per action).
+          - name: action_type
+            type: string
+            description: Type of action to perform when the alert fires (e.g. EMAIL_NOTIFICATION).
+          - name: action_target
+            type: string
+            description: Target for the action, such as an email address or webhook URL.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                b.account_id,
+                b.budget_configuration_id,
+                b.display_name,
+                JSON_EXTRACT(ac.value, '$.alert_configuration_id') AS alert_configuration_id,
+                JSON_EXTRACT(ac.value, '$.quantity_threshold') AS quantity_threshold,
+                JSON_EXTRACT(act.value, '$.action_configuration_id') AS action_configuration_id,
+                JSON_EXTRACT(act.value, '$.action_type') AS action_type,
+                JSON_EXTRACT(act.value, '$.target') AS action_target
+              FROM databricks_account.billing.budgets b,
+                   JSON_EACH(b.alert_configurations) ac,
+                   JSON_EACH(JSON_EXTRACT(ac.value, '$.action_configurations')) act
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  b.account_id,
+                  b.budget_configuration_id,
+                  b.display_name,
+                  ac.value->>'alert_configuration_id' AS alert_configuration_id,
+                  ac.value->>'quantity_threshold' AS quantity_threshold,
+                  act.value->>'action_configuration_id' AS action_configuration_id,
+                  act.value->>'action_type' AS action_type,
+                  act.value->>'target' AS action_target
+                FROM databricks_account.billing.budgets b,
+                     jsonb_array_elements(b.alert_configurations::jsonb) AS ac,
+                     jsonb_array_elements((ac.value->'action_configurations')::jsonb) AS act
+                WHERE account_id = '{{ account_id }}'
+
+    vw_log_delivery_configurations:
+      name: vw_log_delivery_configurations
+      id: databricks_account.billing.vw_log_delivery_configurations
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: config_id
+            type: string
+            description: Unique identifier for the log delivery configuration.
+          - name: config_name
+            type: string
+            description: Human-readable name of the log delivery configuration.
+          - name: log_type
+            type: string
+            description: Type of logs being delivered (e.g. BILLABLE_USAGE, AUDIT_LOGS).
+          - name: output_format
+            type: string
+            description: Format of the delivered log files (e.g. CSV, JSON).
+          - name: credentials_id
+            type: string
+            description: ID of the credentials used to write logs to the storage destination.
+          - name: storage_configuration_id
+            type: string
+            description: ID of the storage configuration that defines the delivery destination.
+          - name: delivery_path_prefix
+            type: string
+            description: Optional path prefix prepended to log file paths in the storage destination.
+          - name: delivery_start_time
+            type: string
+            description: Optional earliest date from which logs are delivered (YYYY-MM-DD).
+          - name: status
+            type: string
+            description: Enabled/disabled status of the log delivery configuration.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the configuration was created.
+          - name: update_time
+            type: integer
+            description: Unix timestamp (ms) when the configuration was last updated.
+          - name: delivery_status
+            type: string
+            description: Status of the most recent log delivery attempt.
+          - name: delivery_status_message
+            type: string
+            description: Human-readable message describing the most recent delivery attempt result.
+          - name: last_attempt_time
+            type: string
+            description: Timestamp of the most recent delivery attempt (ISO 8601).
+          - name: last_successful_attempt_time
+            type: string
+            description: Timestamp of the most recent successful delivery attempt (ISO 8601).
+          - name: workspace_ids_filter
+            type: array
+            description: List of workspace IDs to include in log delivery; empty means all workspaces.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                ld.account_id,
+                ld.config_id,
+                ld.config_name,
+                ld.log_type,
+                ld.output_format,
+                ld.credentials_id,
+                ld.storage_configuration_id,
+                ld.delivery_path_prefix,
+                ld.delivery_start_time,
+                ld.status,
+                ld.creation_time,
+                ld.update_time,
+                JSON_EXTRACT(ld.log_delivery_status, '$.status') AS delivery_status,
+                JSON_EXTRACT(ld.log_delivery_status, '$.message') AS delivery_status_message,
+                JSON_EXTRACT(ld.log_delivery_status, '$.last_attempt_time') AS last_attempt_time,
+                JSON_EXTRACT(ld.log_delivery_status, '$.last_successful_attempt_time') AS last_successful_attempt_time,
+                ld.workspace_ids_filter
+              FROM databricks_account.billing.log_delivery ld
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  ld.account_id,
+                  ld.config_id,
+                  ld.config_name,
+                  ld.log_type,
+                  ld.output_format,
+                  ld.credentials_id,
+                  ld.storage_configuration_id,
+                  ld.delivery_path_prefix,
+                  ld.delivery_start_time,
+                  ld.status,
+                  ld.creation_time,
+                  ld.update_time,
+                  ld.log_delivery_status->>'status' AS delivery_status,
+                  ld.log_delivery_status->>'message' AS delivery_status_message,
+                  ld.log_delivery_status->>'last_attempt_time' AS last_attempt_time,
+                  ld.log_delivery_status->>'last_successful_attempt_time' AS last_successful_attempt_time,
+                  ld.workspace_ids_filter
+                FROM databricks_account.billing.log_delivery ld
+                WHERE account_id = '{{ account_id }}'
+
+    vw_log_delivery_workspace_filter:
+      name: vw_log_delivery_workspace_filter
+      id: databricks_account.billing.vw_log_delivery_workspace_filter
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: config_id
+            type: string
+            description: Unique identifier for the log delivery configuration.
+          - name: config_name
+            type: string
+            description: Human-readable name of the log delivery configuration.
+          - name: log_type
+            type: string
+            description: Type of logs being delivered (e.g. BILLABLE_USAGE, AUDIT_LOGS).
+          - name: status
+            type: string
+            description: Enabled/disabled status of the log delivery configuration.
+          - name: delivery_status
+            type: string
+            description: Status of the most recent log delivery attempt.
+          - name: workspace_id
+            type: string
+            description: ID of a workspace included in the delivery filter (one row per workspace).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                ld.account_id,
+                ld.config_id,
+                ld.config_name,
+                ld.log_type,
+                ld.status,
+                JSON_EXTRACT(ld.log_delivery_status, '$.status') AS delivery_status,
+                w.value AS workspace_id
+              FROM databricks_account.billing.log_delivery ld,
+                   JSON_EACH(ld.workspace_ids_filter) w
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  ld.account_id,
+                  ld.config_id,
+                  ld.config_name,
+                  ld.log_type,
+                  ld.status,
+                  ld.log_delivery_status->>'status' AS delivery_status,
+                  w.value AS workspace_id
+                FROM databricks_account.billing.log_delivery ld,
+                     jsonb_array_elements(ld.workspace_ids_filter::jsonb) AS w
+                WHERE account_id = '{{ account_id }}'
+
+    vw_budget_filter_tags:
+      name: vw_budget_filter_tags
+      id: databricks_account.billing.vw_budget_filter_tags
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: budget_configuration_id
+            type: string
+            description: Unique identifier for the budget configuration.
+          - name: display_name
+            type: string
+            description: Human-readable name of the budget.
+          - name: tag_key
+            type: string
+            description: Tag key used in the budget filter (one row per tag entry).
+          - name: tag_operator
+            type: string
+            description: Comparison operator applied to the tag value filter (e.g. IN, NOT_IN).
+          - name: tag_values
+            type: array
+            description: List of tag values matched by the operator for this tag key.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                b.account_id,
+                b.budget_configuration_id,
+                b.display_name,
+                JSON_EXTRACT(t.value, '$.key') AS tag_key,
+                JSON_EXTRACT(t.value, '$.value.operator') AS tag_operator,
+                JSON_EXTRACT(t.value, '$.value.values') AS tag_values
+              FROM databricks_account.billing.budgets b,
+                   JSON_EACH(JSON_EXTRACT(b.filter, '$.tags')) t
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  b.account_id,
+                  b.budget_configuration_id,
+                  b.display_name,
+                  t.value->>'key' AS tag_key,
+                  t.value->'value'->>'operator' AS tag_operator,
+                  t.value->'value'->'values' AS tag_values
+                FROM databricks_account.billing.budgets b,
+                     jsonb_array_elements((b.filter->'tags')::jsonb) AS t
+                WHERE account_id = '{{ account_id }}'

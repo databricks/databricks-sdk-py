@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks provisioning service (account-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.provisioning"
   },
   "servers": [
@@ -2671,7 +2671,7 @@
       },
       "CustomerFacingComputeMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "HYBRID",
           "SERVERLESS"
         ],
@@ -2679,7 +2679,7 @@
       },
       "CustomerFacingStorageMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CUSTOMER_HOSTED",
           "DEFAULT_STORAGE"
         ],
@@ -2687,7 +2687,7 @@
       },
       "EndpointUseCase": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DATAPLANE_RELAY_ACCESS",
           "WORKSPACE_ACCESS"
         ],
@@ -2695,7 +2695,7 @@
       },
       "ErrorType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "credentials",
           "networkAcl",
           "securityGroup",
@@ -2706,7 +2706,7 @@
       },
       "GkeConfigConnectivityType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PRIVATE_NODE_PUBLIC_MASTER",
           "PUBLIC_NODE_PUBLIC_MASTER"
         ],
@@ -2714,7 +2714,7 @@
       },
       "KeyUseCase": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "MANAGED_SERVICES",
           "STORAGE"
         ],
@@ -2722,7 +2722,7 @@
       },
       "PricingTier": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "COMMUNITY_EDITION",
           "DEDICATED",
           "ENTERPRISE",
@@ -2734,7 +2734,7 @@
       },
       "PrivateAccessLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACCOUNT",
           "ENDPOINT"
         ],
@@ -2742,7 +2742,7 @@
       },
       "VpcStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BROKEN",
           "UNATTACHED",
           "VALID",
@@ -2752,7 +2752,7 @@
       },
       "WarningType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "securityGroup",
           "subnet"
         ],
@@ -2760,7 +2760,7 @@
       },
       "WorkspaceStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BANNED",
           "CANCELLING",
           "FAILED",

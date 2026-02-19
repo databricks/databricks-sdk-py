@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>serving_endpoint_notifications<
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>serving_endpoint_notifications</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="serving_endpoint_notifications" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.serving.serving_endpoint_notifications" /></td></tr>
 </tbody></table>
@@ -101,7 +101,7 @@ Updates the email and webhook notification settings for an endpoint.
 ```sql
 UPDATE databricks_workspace.serving.serving_endpoint_notifications
 SET 
-data__email_notifications = '{{ email_notifications }}'
+email_notifications = '{{ email_notifications }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

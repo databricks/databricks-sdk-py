@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>table_constraints</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>table_constraints</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="table_constraints" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.table_constraints" /></td></tr>
 </tbody></table>
@@ -53,7 +53,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__full_name_arg"><code>data__full_name_arg</code></a>, <a href="#parameter-data__constraint"><code>data__constraint</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-full_name_arg"><code>full_name_arg</code></a>, <a href="#parameter-constraint"><code>constraint</code></a></td>
     <td></td>
     <td>Creates a new table constraint.</td>
 </tr>
@@ -118,8 +118,8 @@ Creates a new table constraint.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.table_constraints (
-data__full_name_arg,
-data__constraint,
+full_name_arg,
+constraint,
 deployment_name
 )
 SELECT 

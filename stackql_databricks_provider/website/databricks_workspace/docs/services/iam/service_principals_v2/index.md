@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>service_principals_v2</code> re
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>service_principals_v2</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="service_principals_v2" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.service_principals_v2" /></td></tr>
 </tbody></table>
@@ -499,15 +499,15 @@ Creates a new service principal in the Databricks workspace.
 
 ```sql
 INSERT INTO databricks_workspace.iam.service_principals_v2 (
-data__active,
-data__application_id,
-data__display_name,
-data__entitlements,
-data__external_id,
-data__groups,
-data__id,
-data__roles,
-data__schemas,
+active,
+application_id,
+display_name,
+entitlements,
+external_id,
+groups,
+id,
+roles,
+schemas,
 deployment_name
 )
 SELECT 
@@ -597,8 +597,8 @@ Partially updates the details of a single service principal in the Databricks wo
 ```sql
 UPDATE databricks_workspace.iam.service_principals_v2
 SET 
-data__operations = '{{ operations }}',
-data__schemas = '{{ schemas }}'
+operations = '{{ operations }}',
+schemas = '{{ schemas }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required;
@@ -622,14 +622,14 @@ Updates the details of a single service principal.
 ```sql
 REPLACE databricks_workspace.iam.service_principals_v2
 SET 
-data__active = '{{ active }}',
-data__application_id = '{{ application_id }}',
-data__display_name = '{{ display_name }}',
-data__entitlements = '{{ entitlements }}',
-data__external_id = '{{ external_id }}',
-data__groups = '{{ groups }}',
-data__roles = '{{ roles }}',
-data__schemas = '{{ schemas }}'
+active = '{{ active }}',
+application_id = '{{ application_id }}',
+display_name = '{{ display_name }}',
+entitlements = '{{ entitlements }}',
+external_id = '{{ external_id }}',
+groups = '{{ groups }}',
+roles = '{{ roles }}',
+schemas = '{{ schemas }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required;

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>policy_families</code> resource
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>policy_families</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="policy_families" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.policy_families" /></td></tr>
 </tbody></table>

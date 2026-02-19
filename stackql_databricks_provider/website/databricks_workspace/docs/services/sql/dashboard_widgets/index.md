@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>dashboard_widgets</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>dashboard_widgets</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="dashboard_widgets" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.dashboard_widgets" /></td></tr>
 </tbody></table>
@@ -53,14 +53,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__dashboard_id"><code>data__dashboard_id</code></a>, <a href="#parameter-data__options"><code>data__options</code></a>, <a href="#parameter-data__width"><code>data__width</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-width"><code>width</code></a></td>
     <td></td>
     <td>Updates an existing widget</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__dashboard_id"><code>data__dashboard_id</code></a>, <a href="#parameter-data__options"><code>data__options</code></a>, <a href="#parameter-data__width"><code>data__width</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-width"><code>width</code></a></td>
     <td></td>
     <td>Adds a widget to a dashboard</td>
 </tr>
@@ -116,11 +116,11 @@ Updates an existing widget
 
 ```sql
 INSERT INTO databricks_workspace.sql.dashboard_widgets (
-data__dashboard_id,
-data__options,
-data__width,
-data__text,
-data__visualization_id,
+dashboard_id,
+options,
+width,
+text,
+visualization_id,
 id,
 deployment_name
 )
@@ -146,11 +146,11 @@ Adds a widget to a dashboard
 
 ```sql
 INSERT INTO databricks_workspace.sql.dashboard_widgets (
-data__dashboard_id,
-data__options,
-data__width,
-data__text,
-data__visualization_id,
+dashboard_id,
+options,
+width,
+text,
+visualization_id,
 deployment_name
 )
 SELECT 

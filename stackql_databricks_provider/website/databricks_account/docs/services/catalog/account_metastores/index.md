@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_metastores</code> reso
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_metastores</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_metastores" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.catalog.account_metastores" /></td></tr>
 </tbody></table>
@@ -100,7 +100,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "delta_sharing_scope",
     "type": "string",
-    "description": "The scope of Delta Sharing enabled for the metastore."
+    "description": "The scope of Delta Sharing enabled for the metastore. (INTERNAL, INTERNAL_AND_EXTERNAL)"
   },
   {
     "name": "external_access_enabled",
@@ -200,7 +200,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "delta_sharing_scope",
     "type": "string",
-    "description": "The scope of Delta Sharing enabled for the metastore."
+    "description": "The scope of Delta Sharing enabled for the metastore. (INTERNAL, INTERNAL_AND_EXTERNAL)"
   },
   {
     "name": "external_access_enabled",
@@ -413,7 +413,7 @@ Creates a Unity Catalog metastore.
 
 ```sql
 INSERT INTO databricks_account.catalog.account_metastores (
-data__metastore_info,
+metastore_info,
 account_id
 )
 SELECT 
@@ -457,7 +457,7 @@ Updates an existing Unity Catalog metastore.
 ```sql
 REPLACE databricks_account.catalog.account_metastores
 SET 
-data__metastore_info = '{{ metastore_info }}'
+metastore_info = '{{ metastore_info }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND metastore_id = '{{ metastore_id }}' --required

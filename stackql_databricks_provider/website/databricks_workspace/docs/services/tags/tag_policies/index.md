@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>tag_policies</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>tag_policies</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="tag_policies" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.tags.tag_policies" /></td></tr>
 </tbody></table>
@@ -157,14 +157,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_policy"><code>data__tag_policy</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-tag_policy"><code>tag_policy</code></a></td>
     <td></td>
     <td>Creates a new tag policy, making the associated tag key governed. For Terraform usage, see the [Tag</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_policy"><code>data__tag_policy</code></a></td>
+    <td><a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-tag_policy"><code>tag_policy</code></a></td>
     <td></td>
     <td>Updates an existing tag policy for a single governed tag. For Terraform usage, see the [Tag Policy</td>
 </tr>
@@ -283,7 +283,7 @@ Creates a new tag policy, making the associated tag key governed. For Terraform 
 
 ```sql
 INSERT INTO databricks_workspace.tags.tag_policies (
-data__tag_policy,
+tag_policy,
 deployment_name
 )
 SELECT 
@@ -332,12 +332,12 @@ Updates an existing tag policy for a single governed tag. For Terraform usage, s
 ```sql
 UPDATE databricks_workspace.tags.tag_policies
 SET 
-data__tag_policy = '{{ tag_policy }}'
+tag_policy = '{{ tag_policy }}'
 WHERE 
 tag_key = '{{ tag_key }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__tag_policy = '{{ tag_policy }}' --required
+AND tag_policy = '{{ tag_policy }}' --required
 RETURNING
 id,
 create_time,

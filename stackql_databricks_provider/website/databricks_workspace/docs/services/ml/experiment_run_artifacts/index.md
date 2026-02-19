@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>experiment_run_artifacts</code
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>experiment_run_artifacts</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="experiment_run_artifacts" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.experiment_run_artifacts" /></td></tr>
 </tbody></table>

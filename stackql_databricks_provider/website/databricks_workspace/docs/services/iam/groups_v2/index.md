@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>groups_v2</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>groups_v2</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="groups_v2" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.groups_v2" /></td></tr>
 </tbody></table>
@@ -567,15 +567,15 @@ Creates a group in the Databricks workspace with a unique name, using the suppli
 
 ```sql
 INSERT INTO databricks_workspace.iam.groups_v2 (
-data__display_name,
-data__entitlements,
-data__external_id,
-data__groups,
-data__id,
-data__members,
-data__meta,
-data__roles,
-data__schemas,
+display_name,
+entitlements,
+external_id,
+groups,
+id,
+members,
+meta,
+roles,
+schemas,
 deployment_name
 )
 SELECT 
@@ -663,8 +663,8 @@ Partially updates the details of a group.
 ```sql
 UPDATE databricks_workspace.iam.groups_v2
 SET 
-data__operations = '{{ operations }}',
-data__schemas = '{{ schemas }}'
+operations = '{{ operations }}',
+schemas = '{{ schemas }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required;
@@ -688,14 +688,14 @@ Updates the details of a group by replacing the entire group entity.
 ```sql
 REPLACE databricks_workspace.iam.groups_v2
 SET 
-data__display_name = '{{ display_name }}',
-data__entitlements = '{{ entitlements }}',
-data__external_id = '{{ external_id }}',
-data__groups = '{{ groups }}',
-data__members = '{{ members }}',
-data__meta = '{{ meta }}',
-data__roles = '{{ roles }}',
-data__schemas = '{{ schemas }}'
+display_name = '{{ display_name }}',
+entitlements = '{{ entitlements }}',
+external_id = '{{ external_id }}',
+groups = '{{ groups }}',
+members = '{{ members }}',
+meta = '{{ meta }}',
+roles = '{{ roles }}',
+schemas = '{{ schemas }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required;

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>metastore_summary</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>metastore_summary</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="metastore_summary" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.metastore_summary" /></td></tr>
 </tbody></table>
@@ -99,7 +99,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "delta_sharing_scope",
     "type": "string",
-    "description": "The scope of Delta Sharing enabled for the metastore."
+    "description": "The scope of Delta Sharing enabled for the metastore. (INTERNAL, INTERNAL_AND_EXTERNAL)"
   },
   {
     "name": "external_access_enabled",

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>credentials</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>credentials</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="credentials" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.provisioning.credentials" /></td></tr>
 </tbody></table>
@@ -161,7 +161,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#credentials_create"><CopyableCode code="credentials_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__credentials_name"><code>data__credentials_name</code></a>, <a href="#parameter-data__aws_credentials"><code>data__aws_credentials</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-credentials_name"><code>credentials_name</code></a>, <a href="#parameter-aws_credentials"><code>aws_credentials</code></a></td>
     <td></td>
     <td>Creates a Databricks credential configuration that represents cloud cross-account credentials for a</td>
 </tr>
@@ -261,8 +261,8 @@ Creates a Databricks credential configuration that represents cloud cross-accoun
 
 ```sql
 INSERT INTO databricks_account.provisioning.credentials (
-data__credentials_name,
-data__aws_credentials,
+credentials_name,
+aws_credentials,
 account_id
 )
 SELECT 

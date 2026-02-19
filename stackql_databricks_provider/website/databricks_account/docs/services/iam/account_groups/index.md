@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_groups</code> resource
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_groups</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_groups" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iam.account_groups" /></td></tr>
 </tbody></table>
@@ -435,12 +435,12 @@ Creates a group in the Databricks account with a unique name, using the supplied
 
 ```sql
 INSERT INTO databricks_account.iam.account_groups (
-data__display_name,
-data__external_id,
-data__id,
-data__members,
-data__meta,
-data__roles,
+display_name,
+external_id,
+id,
+members,
+meta,
+roles,
 account_id
 )
 SELECT 
@@ -511,8 +511,8 @@ Partially updates the details of a group.
 ```sql
 UPDATE databricks_account.iam.account_groups
 SET 
-data__operations = '{{ operations }}',
-data__schemas = '{{ schemas }}'
+operations = '{{ operations }}',
+schemas = '{{ schemas }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND id = '{{ id }}' --required;
@@ -536,11 +536,11 @@ Updates the details of a group by replacing the entire group entity.
 ```sql
 REPLACE databricks_account.iam.account_groups
 SET 
-data__display_name = '{{ display_name }}',
-data__external_id = '{{ external_id }}',
-data__members = '{{ members }}',
-data__meta = '{{ meta }}',
-data__roles = '{{ roles }}'
+display_name = '{{ display_name }}',
+external_id = '{{ external_id }}',
+members = '{{ members }}',
+meta = '{{ meta }}',
+roles = '{{ roles }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND id = '{{ id }}' --required;

@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks sql service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.sql"
   },
   "servers": [
@@ -7314,7 +7314,7 @@
       },
       "Aggregation": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AVG",
           "COUNT",
           "COUNT_DISTINCT",
@@ -7328,7 +7328,7 @@
       },
       "AlertEvaluationState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ERROR",
           "OK",
           "TRIGGERED",
@@ -7338,7 +7338,7 @@
       },
       "AlertLifecycleState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "DELETED"
         ],
@@ -7346,7 +7346,7 @@
       },
       "AlertOperator": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EQUAL",
           "GREATER_THAN",
           "GREATER_THAN_OR_EQUAL",
@@ -7359,7 +7359,7 @@
       },
       "AlertOptionsEmptyResultState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ok",
           "triggered",
           "unknown"
@@ -7368,7 +7368,7 @@
       },
       "AlertState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "OK",
           "TRIGGERED",
           "UNKNOWN"
@@ -7377,7 +7377,7 @@
       },
       "ChannelName": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CHANNEL_NAME_CURRENT",
           "CHANNEL_NAME_CUSTOM",
           "CHANNEL_NAME_PREVIEW",
@@ -7387,7 +7387,7 @@
       },
       "ColumnInfoTypeName": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ARRAY",
           "BINARY",
           "BOOLEAN",
@@ -7412,7 +7412,7 @@
       },
       "ComparisonOperator": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EQUAL",
           "GREATER_THAN",
           "GREATER_THAN_OR_EQUAL",
@@ -7426,7 +7426,7 @@
       },
       "CreateWarehouseRequestWarehouseType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CLASSIC",
           "PRO",
           "TYPE_UNSPECIFIED"
@@ -7435,7 +7435,7 @@
       },
       "DatePrecision": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DAY_PRECISION",
           "MINUTE_PRECISION",
           "SECOND_PRECISION"
@@ -7444,7 +7444,7 @@
       },
       "DateRangeValueDynamicDateRange": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "LAST_12_MONTHS",
           "LAST_14_DAYS",
           "LAST_24_HOURS",
@@ -7467,7 +7467,7 @@
       },
       "DateValueDynamicDate": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "NOW",
           "YESTERDAY"
         ],
@@ -7475,7 +7475,7 @@
       },
       "DefaultWarehouseOverrideType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CUSTOM",
           "LAST_SELECTED"
         ],
@@ -7483,7 +7483,7 @@
       },
       "Disposition": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EXTERNAL_LINKS",
           "INLINE"
         ],
@@ -7491,7 +7491,7 @@
       },
       "EditWarehouseRequestWarehouseType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CLASSIC",
           "PRO",
           "TYPE_UNSPECIFIED"
@@ -7500,7 +7500,7 @@
       },
       "EndpointInfoWarehouseType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CLASSIC",
           "PRO",
           "TYPE_UNSPECIFIED"
@@ -7509,7 +7509,7 @@
       },
       "ExecuteStatementRequestOnWaitTimeout": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCEL",
           "CONTINUE"
         ],
@@ -7517,7 +7517,7 @@
       },
       "Format": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ARROW_STREAM",
           "CSV",
           "JSON_ARRAY"
@@ -7526,7 +7526,7 @@
       },
       "GetWarehouseResponseWarehouseType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CLASSIC",
           "PRO",
           "TYPE_UNSPECIFIED"
@@ -7535,7 +7535,7 @@
       },
       "GetWorkspaceWarehouseConfigResponseSecurityPolicy": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DATA_ACCESS_CONTROL",
           "NONE",
           "PASSTHROUGH"
@@ -7544,7 +7544,7 @@
       },
       "LegacyAlertState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ok",
           "triggered",
           "unknown"
@@ -7553,7 +7553,7 @@
       },
       "LifecycleState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "TRASHED"
         ],
@@ -7561,7 +7561,7 @@
       },
       "ListOrder": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "created_at",
           "name"
         ],
@@ -7569,7 +7569,7 @@
       },
       "ObjectType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "alert",
           "dashboard",
           "data_source",
@@ -7579,7 +7579,7 @@
       },
       "ObjectTypePlural": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "alerts",
           "dashboards",
           "data_sources",
@@ -7589,7 +7589,7 @@
       },
       "OwnableObjectType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "alert",
           "dashboard",
           "query"
@@ -7598,7 +7598,7 @@
       },
       "ParameterType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "datetime",
           "enum",
           "number",
@@ -7609,7 +7609,7 @@
       },
       "PermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_EDIT",
           "CAN_MANAGE",
           "CAN_RUN",
@@ -7619,7 +7619,7 @@
       },
       "PlansState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EMPTY",
           "EXISTS",
           "IGNORED_LARGE_PLANS_SIZE",
@@ -7631,7 +7631,7 @@
       },
       "QueryStatementType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALTER",
           "ANALYZE",
           "COPY",
@@ -7659,7 +7659,7 @@
       },
       "QueryStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCELED",
           "COMPILED",
           "COMPILING",
@@ -7673,7 +7673,7 @@
       },
       "RunAsMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "OWNER",
           "VIEWER"
         ],
@@ -7681,7 +7681,7 @@
       },
       "RunAsRole": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "owner",
           "viewer"
         ],
@@ -7689,7 +7689,7 @@
       },
       "SchedulePauseStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PAUSED",
           "UNPAUSED"
         ],
@@ -7697,7 +7697,7 @@
       },
       "ServiceErrorCode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ABORTED",
           "ALREADY_EXISTS",
           "BAD_REQUEST",
@@ -7717,7 +7717,7 @@
       },
       "SetWorkspaceWarehouseConfigRequestSecurityPolicy": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DATA_ACCESS_CONTROL",
           "NONE",
           "PASSTHROUGH"
@@ -7726,7 +7726,7 @@
       },
       "SpotInstancePolicy": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "COST_OPTIMIZED",
           "POLICY_UNSPECIFIED",
           "RELIABILITY_OPTIMIZED"
@@ -7735,7 +7735,7 @@
       },
       "State": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELETED",
           "DELETING",
           "RUNNING",
@@ -7747,7 +7747,7 @@
       },
       "StatementState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCELED",
           "CLOSED",
           "FAILED",
@@ -7759,7 +7759,7 @@
       },
       "Status": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DEGRADED",
           "FAILED",
           "HEALTHY"
@@ -7768,14 +7768,14 @@
       },
       "SuccessMessage": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "Success"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "TerminationReasonCode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ABUSE_DETECTED",
           "ACCESS_TOKEN_FAILURE",
           "ALLOCATION_TIMEOUT",
@@ -7967,7 +7967,7 @@
       },
       "TerminationReasonType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CLIENT_ERROR",
           "CLOUD_FAILURE",
           "SERVICE_FAULT",
@@ -7977,7 +7977,7 @@
       },
       "WarehousePermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_MANAGE",
           "CAN_MONITOR",
           "CAN_USE",
@@ -7988,7 +7988,7 @@
       },
       "WarehouseTypePairWarehouseType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CLASSIC",
           "PRO",
           "TYPE_UNSPECIFIED"

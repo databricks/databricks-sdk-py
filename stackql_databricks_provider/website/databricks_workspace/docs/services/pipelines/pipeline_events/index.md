@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>pipeline_events</code> resource
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>pipeline_events</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="pipeline_events" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.pipelines.pipeline_events" /></td></tr>
 </tbody></table>
@@ -110,12 +110,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "level",
     "type": "string",
-    "description": "The severity level of the event."
+    "description": "The severity level of the event. (ERROR, INFO, METRICS, WARN)"
   },
   {
     "name": "maturity_level",
     "type": "string",
-    "description": "Maturity level for event_type."
+    "description": "Maturity level for event_type. (DEPRECATED, EVOLVING, STABLE)"
   },
   {
     "name": "message",

@@ -20,6 +20,13 @@ from typing import Any, Dict, Optional
 
 import yaml
 
+def _str_representer(dumper, data):
+    if '\n' in data:
+        return dumper.represent_scalar('tag:yaml.org,2002:str', data, style='|')
+    return dumper.represent_scalar('tag:yaml.org,2002:str', data)
+
+yaml.add_representer(str, _str_representer)
+
 logger = logging.getLogger(__name__)
 
 VIEWS_DIR = os.path.join(

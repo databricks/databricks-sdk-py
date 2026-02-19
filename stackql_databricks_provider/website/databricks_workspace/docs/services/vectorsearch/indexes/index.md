@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>indexes</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>indexes</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="indexes" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.vectorsearch.indexes" /></td></tr>
 </tbody></table>
@@ -114,7 +114,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "pipeline_type",
         "type": "string",
-        "description": "Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing after successfully refreshing the source table in the pipeline once, ensuring the table is updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it arrives in the source table to keep vector index fresh."
+        "description": "Pipeline execution mode. - `TRIGGERED`: If the pipeline uses the triggered execution mode, the system stops processing after successfully refreshing the source table in the pipeline once, ensuring the table is updated based on the data available when the update started. - `CONTINUOUS`: If the pipeline uses continuous execution, the pipeline processes new data as it arrives in the source table to keep vector index fresh. (CONTINUOUS, TRIGGERED)"
       },
       {
         "name": "source_table",
@@ -177,7 +177,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "index_type",
     "type": "string",
-    "description": "There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs<br />with a source Delta Table, automatically and incrementally updating the index as the underlying<br />data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write<br />of vectors and metadata through our REST and SDK APIs. With this model, the user manages index<br />updates."
+    "description": "There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs<br />with a source Delta Table, automatically and incrementally updating the index as the underlying<br />data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write<br />of vectors and metadata through our REST and SDK APIs. With this model, the user manages index<br />updates. (DELTA_SYNC, DIRECT_ACCESS)"
   },
   {
     "name": "primary_key",
@@ -234,7 +234,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "index_type",
     "type": "string",
-    "description": "There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs<br />with a source Delta Table, automatically and incrementally updating the index as the underlying<br />data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write<br />of vectors and metadata through our REST and SDK APIs. With this model, the user manages index<br />updates."
+    "description": "There are 2 types of Vector Search indexes: - `DELTA_SYNC`: An index that automatically syncs<br />with a source Delta Table, automatically and incrementally updating the index as the underlying<br />data in the Delta Table changes. - `DIRECT_ACCESS`: An index that supports direct read and write<br />of vectors and metadata through our REST and SDK APIs. With this model, the user manages index<br />updates. (DELTA_SYNC, DIRECT_ACCESS)"
   },
   {
     "name": "primary_key",
@@ -277,7 +277,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__endpoint_name"><code>data__endpoint_name</code></a>, <a href="#parameter-data__primary_key"><code>data__primary_key</code></a>, <a href="#parameter-data__index_type"><code>data__index_type</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-endpoint_name"><code>endpoint_name</code></a>, <a href="#parameter-primary_key"><code>primary_key</code></a>, <a href="#parameter-index_type"><code>index_type</code></a></td>
     <td></td>
     <td>Create a new index.</td>
 </tr>
@@ -445,12 +445,12 @@ Create a new index.
 
 ```sql
 INSERT INTO databricks_workspace.vectorsearch.indexes (
-data__name,
-data__endpoint_name,
-data__primary_key,
-data__index_type,
-data__delta_sync_index_spec,
-data__direct_access_index_spec,
+name,
+endpoint_name,
+primary_key,
+index_type,
+delta_sync_index_spec,
+direct_access_index_spec,
 deployment_name
 )
 SELECT 

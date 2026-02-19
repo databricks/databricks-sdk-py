@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>custom_llms</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>custom_llms</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="custom_llms" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.agentbricks.custom_llms" /></td></tr>
 </tbody></table>
@@ -113,7 +113,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "optimization_state",
     "type": "string",
-    "description": "If optimization is kicked off, tracks the state of the custom LLM"
+    "description": "If optimization is kicked off, tracks the state of the custom LLM (CANCELLED, COMPLETED, CREATED, FAILED, PENDING, RUNNING)"
   }
 ]} />
 </TabItem>
@@ -144,14 +144,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__instructions"><code>data__instructions</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-instructions"><code>instructions</code></a></td>
     <td></td>
     <td>Create a Custom LLM.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__custom_llm"><code>data__custom_llm</code></a>, <a href="#parameter-data__update_mask"><code>data__update_mask</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-custom_llm"><code>custom_llm</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td></td>
     <td>Update a Custom LLM.</td>
 </tr>
@@ -253,11 +253,11 @@ Create a Custom LLM.
 
 ```sql
 INSERT INTO databricks_workspace.agentbricks.custom_llms (
-data__name,
-data__instructions,
-data__agent_artifact_path,
-data__datasets,
-data__guidelines,
+name,
+instructions,
+agent_artifact_path,
+datasets,
+guidelines,
 deployment_name
 )
 SELECT 
@@ -330,13 +330,13 @@ Update a Custom LLM.
 ```sql
 UPDATE databricks_workspace.agentbricks.custom_llms
 SET 
-data__custom_llm = '{{ custom_llm }}',
-data__update_mask = '{{ update_mask }}'
+custom_llm = '{{ custom_llm }}',
+update_mask = '{{ update_mask }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__custom_llm = '{{ custom_llm }}' --required
-AND data__update_mask = '{{ update_mask }}' --required
+AND custom_llm = '{{ custom_llm }}' --required
+AND update_mask = '{{ update_mask }}' --required
 RETURNING
 id,
 name,

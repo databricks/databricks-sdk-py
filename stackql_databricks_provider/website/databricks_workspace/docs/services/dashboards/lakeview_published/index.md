@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>lakeview_published</code> resou
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>lakeview_published</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="lakeview_published" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.dashboards.lakeview_published" /></td></tr>
 </tbody></table>

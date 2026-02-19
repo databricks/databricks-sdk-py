@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>csp_enablement_account</code> r
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>csp_enablement_account</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="csp_enablement_account" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.settings.csp_enablement_account" /></td></tr>
 </tbody></table>
@@ -97,7 +97,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__allow_missing"><code>data__allow_missing</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a>, <a href="#parameter-data__field_mask"><code>data__field_mask</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-allow_missing"><code>allow_missing</code></a>, <a href="#parameter-setting"><code>setting</code></a>, <a href="#parameter-field_mask"><code>field_mask</code></a></td>
     <td></td>
     <td>Updates the value of the compliance security profile setting for new workspaces.</td>
 </tr>
@@ -177,15 +177,15 @@ Updates the value of the compliance security profile setting for new workspaces.
 ```sql
 UPDATE databricks_workspace.settings.csp_enablement_account
 SET 
-data__allow_missing = {{ allow_missing }},
-data__setting = '{{ setting }}',
-data__field_mask = '{{ field_mask }}'
+allow_missing = {{ allow_missing }},
+setting = '{{ setting }}',
+field_mask = '{{ field_mask }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__allow_missing = {{ allow_missing }} --required
-AND data__setting = '{{ setting }}' --required
-AND data__field_mask = '{{ field_mask }}' --required
+AND allow_missing = {{ allow_missing }} --required
+AND setting = '{{ setting }}' --required
+AND field_mask = '{{ field_mask }}' --required
 RETURNING
 setting_name,
 csp_enablement_account,

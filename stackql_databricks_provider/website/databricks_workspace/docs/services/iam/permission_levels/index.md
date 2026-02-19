@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>permission_levels</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>permission_levels</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="permission_levels" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.permission_levels" /></td></tr>
 </tbody></table>
@@ -54,7 +54,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "permission_level",
         "type": "string",
-        "description": "Permission level"
+        "description": "Permission level (CAN_ATTACH_TO, CAN_BIND, CAN_CREATE, CAN_EDIT, CAN_EDIT_METADATA, CAN_MANAGE, CAN_MANAGE_PRODUCTION_VERSIONS, CAN_MANAGE_RUN, CAN_MANAGE_STAGING_VERSIONS, CAN_MONITOR, CAN_MONITOR_ONLY, CAN_QUERY, CAN_READ, CAN_RESTART, CAN_RUN, CAN_USE, CAN_VIEW, CAN_VIEW_METADATA, IS_OWNER)"
       }
     ]
   }

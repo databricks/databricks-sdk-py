@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>jobs</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>jobs</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="jobs" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.jobs.jobs" /></td></tr>
 </tbody></table>
@@ -100,12 +100,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "pause_status",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (PAUSED, UNPAUSED)"
           },
           {
             "name": "task_retry_mode",
             "type": "string",
-            "description": "Indicate whether the continuous job is applying task level retries or not. Defaults to NEVER."
+            "description": "Indicate whether the continuous job is applying task level retries or not. Defaults to NEVER. (NEVER, ON_FAILURE)"
           }
         ]
       },
@@ -117,7 +117,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "kind",
             "type": "string",
-            "description": "* `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is<br />managed by Databricks and is read-only."
+            "description": "* `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is<br />managed by Databricks and is read-only. (BUNDLE, SYSTEM_MANAGED)"
           },
           {
             "name": "metadata_file_path",
@@ -134,7 +134,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "edit_mode",
         "type": "string",
-        "description": "Edit mode of the job. * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in an editable state and can be modified."
+        "description": "Edit mode of the job. * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in an editable state and can be modified. (EDITABLE, UI_LOCKED)"
       },
       {
         "name": "email_notifications",
@@ -193,7 +193,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "format",
         "type": "string",
-        "description": "Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When using the Jobs API 2.1 this value is always set to `\"MULTI_TASK\"`."
+        "description": "Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When using the Jobs API 2.1 this value is always set to `\"MULTI_TASK\"`. (MULTI_TASK, SINGLE_TASK)"
       },
       {
         "name": "git_source",
@@ -208,7 +208,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "git_provider",
             "type": "string",
-            "description": "Unique identifier of the service used to host the Git repository. The value is case insensitive."
+            "description": "Unique identifier of the service used to host the Git repository. The value is case insensitive. (awsCodeCommit, azureDevOpsServices, bitbucketCloud, bitbucketServer, gitHub, gitHubEnterprise, gitLab, gitLabEnterpriseEdition)"
           },
           {
             "name": "git_branch",
@@ -255,7 +255,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "dirty_state",
                 "type": "string",
-                "description": "Dirty state indicates the job is not fully synced with the job specification in the remote repository. Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job specification. Import the remote job specification from UI to make the job fully synced. * `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is allowed for live edit. Import the remote job specification again from UI to make the job fully synced."
+                "description": "Dirty state indicates the job is not fully synced with the job specification in the remote repository. Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job specification. Import the remote job specification from UI to make the job fully synced. * `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is allowed for live edit. Import the remote job specification again from UI to make the job fully synced. (DISCONNECTED, NOT_SYNCED)"
               }
             ]
           }
@@ -274,12 +274,12 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "metric",
                 "type": "string",
-                "description": "Specifies the health metric that is being evaluated for a particular health rule.<br /><br />* `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`:<br />An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric<br />is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag<br />across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate<br />of the maximum consumer delay across all streams. This metric is in Public Preview. *<br />`STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all<br />streams. This metric is in Public Preview."
+                "description": "Specifies the health metric that is being evaluated for a particular health rule.<br /><br />* `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`:<br />An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric<br />is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag<br />across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate<br />of the maximum consumer delay across all streams. This metric is in Public Preview. *<br />`STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all<br />streams. This metric is in Public Preview. (RUN_DURATION_SECONDS, STREAMING_BACKLOG_BYTES, STREAMING_BACKLOG_FILES, STREAMING_BACKLOG_RECORDS, STREAMING_BACKLOG_SECONDS)"
               },
               {
                 "name": "op",
                 "type": "string",
-                "description": "Specifies the operator used to compare the health metric value with the specified threshold."
+                "description": "Specifies the operator used to compare the health metric value with the specified threshold. (GREATER_THAN)"
               },
               {
                 "name": "value",
@@ -354,7 +354,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "performance_target",
         "type": "string",
-        "description": "PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run<br />on serverless compute should be. The performance mode on the job or pipeline should map to a<br />performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget)."
+        "description": "PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run<br />on serverless compute should be. The performance mode on the job or pipeline should map to a<br />performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget). (PERFORMANCE_OPTIMIZED, STANDARD)"
       },
       {
         "name": "queue",
@@ -408,7 +408,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "pause_status",
             "type": "string",
-            "description": "Indicate whether this schedule is paused or not."
+            "description": "Indicate whether this schedule is paused or not. (PAUSED, UNPAUSED)"
           }
         ]
       },
@@ -474,7 +474,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "op",
                 "type": "string",
-                "description": "* `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that<br />`“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`,<br />`LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.<br />`“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to<br />`false`.<br /><br />The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.<br />If a task value was set to a boolean value, it will be serialized to `“true”` or<br />`“false”` for the comparison."
+                "description": "* `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that<br />`“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`,<br />`LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.<br />`“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to<br />`false`.<br /><br />The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.<br />If a task value was set to a boolean value, it will be serialized to `“true”` or<br />`“false”` for the comparison. (EQUAL_TO, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL)"
               },
               {
                 "name": "left",
@@ -582,7 +582,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the project directory. When set to `WORKSPACE`, the project will be retrieved from the local Databricks workspace. When set to `GIT`, the project will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`: Project is located in cloud Git provider."
+                "description": "Optional location type of the project directory. When set to `WORKSPACE`, the project will be retrieved from the local Databricks workspace. When set to `GIT`, the project will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`: Project is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "warehouse_id",
@@ -720,7 +720,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the training script. When set to `WORKSPACE`, the script will be retrieved from the local Databricks workspace. When set to `GIT`, the script will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script is located in Databricks workspace. * `GIT`: Script is located in cloud Git provider."
+                "description": "Optional location type of the training script. When set to `WORKSPACE`, the script will be retrieved from the local Databricks workspace. When set to `GIT`, the script will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script is located in Databricks workspace. * `GIT`: Script is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "training_script_path",
@@ -794,7 +794,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the notebook. When set to `WORKSPACE`, the notebook will be retrieved from the local Databricks workspace. When set to `GIT`, the notebook will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Notebook is located in Databricks workspace. * `GIT`: Notebook is located in cloud Git provider."
+                "description": "Optional location type of the notebook. When set to `WORKSPACE`, the notebook will be retrieved from the local Databricks workspace. When set to `GIT`, the notebook will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Notebook is located in Databricks workspace. * `GIT`: Notebook is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "warehouse_id",
@@ -909,7 +909,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "run_if",
             "type": "string",
-            "description": "An optional value specifying the condition determining whether the task is run once its dependencies have been completed. * `ALL_SUCCESS`: All dependencies have executed and succeeded * `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded * `NONE_FAILED`: None of the dependencies have failed and at least one was executed * `ALL_DONE`: All dependencies have been completed * `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl dependencies have failed"
+            "description": "An optional value specifying the condition determining whether the task is run once its dependencies have been completed. * `ALL_SUCCESS`: All dependencies have executed and succeeded * `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded * `NONE_FAILED`: None of the dependencies have failed and at least one was executed * `ALL_DONE`: All dependencies have been completed * `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl dependencies have failed (ALL_DONE, ALL_FAILED, ALL_SUCCESS, AT_LEAST_ONE_FAILED, AT_LEAST_ONE_SUCCESS, NONE_FAILED)"
           },
           {
             "name": "run_job_task",
@@ -1013,7 +1013,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the Python file. When set to `WORKSPACE` or not specified, the file will be retrieved from the local Databricks workspace or cloud location (if the `python_file` has a URI format). When set to `GIT`, the Python file will be retrieved from a Git repository defined in `git_source`. * `WORKSPACE`: The Python file is located in a Databricks workspace or at a cloud filesystem URI. * `GIT`: The Python file is located in a remote Git repository."
+                "description": "Optional location type of the Python file. When set to `WORKSPACE` or not specified, the file will be retrieved from the local Databricks workspace or cloud location (if the `python_file` has a URI format). When set to `GIT`, the Python file will be retrieved from a Git repository defined in `git_source`. * `WORKSPACE`: The Python file is located in a Databricks workspace or at a cloud filesystem URI. * `GIT`: The Python file is located in a remote Git repository. (GIT, WORKSPACE)"
               }
             ]
           },
@@ -1145,7 +1145,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "condition",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (MODEL_ALIAS_SET, MODEL_CREATED, MODEL_VERSION_READY)"
               },
               {
                 "name": "aliases",
@@ -1172,7 +1172,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "pause_status",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (PAUSED, UNPAUSED)"
           },
           {
             "name": "periodic",
@@ -1187,7 +1187,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "unit",
                 "type": "string",
-                "description": "The unit of time for the interval."
+                "description": "The unit of time for the interval. (DAYS, HOURS, WEEKS)"
               }
             ]
           },
@@ -1204,7 +1204,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "condition",
                 "type": "string",
-                "description": "The table(s) condition based on which to trigger a job run."
+                "description": "The table(s) condition based on which to trigger a job run. (ALL_UPDATED, ANY_UPDATED)"
               },
               {
                 "name": "min_time_between_triggers_seconds",
@@ -1395,12 +1395,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "pause_status",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (PAUSED, UNPAUSED)"
           },
           {
             "name": "task_retry_mode",
             "type": "string",
-            "description": "Indicate whether the continuous job is applying task level retries or not. Defaults to NEVER."
+            "description": "Indicate whether the continuous job is applying task level retries or not. Defaults to NEVER. (NEVER, ON_FAILURE)"
           }
         ]
       },
@@ -1412,7 +1412,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "kind",
             "type": "string",
-            "description": "* `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is<br />managed by Databricks and is read-only."
+            "description": "* `BUNDLE`: The job is managed by Databricks Asset Bundle. * `SYSTEM_MANAGED`: The job is<br />managed by Databricks and is read-only. (BUNDLE, SYSTEM_MANAGED)"
           },
           {
             "name": "metadata_file_path",
@@ -1429,7 +1429,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "edit_mode",
         "type": "string",
-        "description": "Edit mode of the job. * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in an editable state and can be modified."
+        "description": "Edit mode of the job. * `UI_LOCKED`: The job is in a locked UI state and cannot be modified. * `EDITABLE`: The job is in an editable state and can be modified. (EDITABLE, UI_LOCKED)"
       },
       {
         "name": "email_notifications",
@@ -1488,7 +1488,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "format",
         "type": "string",
-        "description": "Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When using the Jobs API 2.1 this value is always set to `\"MULTI_TASK\"`."
+        "description": "Used to tell what is the format of the job. This field is ignored in Create/Update/Reset calls. When using the Jobs API 2.1 this value is always set to `\"MULTI_TASK\"`. (MULTI_TASK, SINGLE_TASK)"
       },
       {
         "name": "git_source",
@@ -1503,7 +1503,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "git_provider",
             "type": "string",
-            "description": "Unique identifier of the service used to host the Git repository. The value is case insensitive."
+            "description": "Unique identifier of the service used to host the Git repository. The value is case insensitive. (awsCodeCommit, azureDevOpsServices, bitbucketCloud, bitbucketServer, gitHub, gitHubEnterprise, gitLab, gitLabEnterpriseEdition)"
           },
           {
             "name": "git_branch",
@@ -1550,7 +1550,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "dirty_state",
                 "type": "string",
-                "description": "Dirty state indicates the job is not fully synced with the job specification in the remote repository. Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job specification. Import the remote job specification from UI to make the job fully synced. * `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is allowed for live edit. Import the remote job specification again from UI to make the job fully synced."
+                "description": "Dirty state indicates the job is not fully synced with the job specification in the remote repository. Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job specification. Import the remote job specification from UI to make the job fully synced. * `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is allowed for live edit. Import the remote job specification again from UI to make the job fully synced. (DISCONNECTED, NOT_SYNCED)"
               }
             ]
           }
@@ -1569,12 +1569,12 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "metric",
                 "type": "string",
-                "description": "Specifies the health metric that is being evaluated for a particular health rule.<br /><br />* `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`:<br />An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric<br />is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag<br />across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate<br />of the maximum consumer delay across all streams. This metric is in Public Preview. *<br />`STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all<br />streams. This metric is in Public Preview."
+                "description": "Specifies the health metric that is being evaluated for a particular health rule.<br /><br />* `RUN_DURATION_SECONDS`: Expected total time for a run in seconds. * `STREAMING_BACKLOG_BYTES`:<br />An estimate of the maximum bytes of data waiting to be consumed across all streams. This metric<br />is in Public Preview. * `STREAMING_BACKLOG_RECORDS`: An estimate of the maximum offset lag<br />across all streams. This metric is in Public Preview. * `STREAMING_BACKLOG_SECONDS`: An estimate<br />of the maximum consumer delay across all streams. This metric is in Public Preview. *<br />`STREAMING_BACKLOG_FILES`: An estimate of the maximum number of outstanding files across all<br />streams. This metric is in Public Preview. (RUN_DURATION_SECONDS, STREAMING_BACKLOG_BYTES, STREAMING_BACKLOG_FILES, STREAMING_BACKLOG_RECORDS, STREAMING_BACKLOG_SECONDS)"
               },
               {
                 "name": "op",
                 "type": "string",
-                "description": "Specifies the operator used to compare the health metric value with the specified threshold."
+                "description": "Specifies the operator used to compare the health metric value with the specified threshold. (GREATER_THAN)"
               },
               {
                 "name": "value",
@@ -1649,7 +1649,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "performance_target",
         "type": "string",
-        "description": "PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run<br />on serverless compute should be. The performance mode on the job or pipeline should map to a<br />performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget)."
+        "description": "PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run<br />on serverless compute should be. The performance mode on the job or pipeline should map to a<br />performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget). (PERFORMANCE_OPTIMIZED, STANDARD)"
       },
       {
         "name": "queue",
@@ -1703,7 +1703,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "pause_status",
             "type": "string",
-            "description": "Indicate whether this schedule is paused or not."
+            "description": "Indicate whether this schedule is paused or not. (PAUSED, UNPAUSED)"
           }
         ]
       },
@@ -1769,7 +1769,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "op",
                 "type": "string",
-                "description": "* `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that<br />`“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`,<br />`LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.<br />`“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to<br />`false`.<br /><br />The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.<br />If a task value was set to a boolean value, it will be serialized to `“true”` or<br />`“false”` for the comparison."
+                "description": "* `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that<br />`“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`,<br />`LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.<br />`“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to<br />`false`.<br /><br />The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.<br />If a task value was set to a boolean value, it will be serialized to `“true”` or<br />`“false”` for the comparison. (EQUAL_TO, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL)"
               },
               {
                 "name": "left",
@@ -1877,7 +1877,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the project directory. When set to `WORKSPACE`, the project will be retrieved from the local Databricks workspace. When set to `GIT`, the project will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`: Project is located in cloud Git provider."
+                "description": "Optional location type of the project directory. When set to `WORKSPACE`, the project will be retrieved from the local Databricks workspace. When set to `GIT`, the project will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`: Project is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "warehouse_id",
@@ -2015,7 +2015,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the training script. When set to `WORKSPACE`, the script will be retrieved from the local Databricks workspace. When set to `GIT`, the script will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script is located in Databricks workspace. * `GIT`: Script is located in cloud Git provider."
+                "description": "Optional location type of the training script. When set to `WORKSPACE`, the script will be retrieved from the local Databricks workspace. When set to `GIT`, the script will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script is located in Databricks workspace. * `GIT`: Script is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "training_script_path",
@@ -2089,7 +2089,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the notebook. When set to `WORKSPACE`, the notebook will be retrieved from the local Databricks workspace. When set to `GIT`, the notebook will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Notebook is located in Databricks workspace. * `GIT`: Notebook is located in cloud Git provider."
+                "description": "Optional location type of the notebook. When set to `WORKSPACE`, the notebook will be retrieved from the local Databricks workspace. When set to `GIT`, the notebook will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Notebook is located in Databricks workspace. * `GIT`: Notebook is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "warehouse_id",
@@ -2204,7 +2204,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "run_if",
             "type": "string",
-            "description": "An optional value specifying the condition determining whether the task is run once its dependencies have been completed. * `ALL_SUCCESS`: All dependencies have executed and succeeded * `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded * `NONE_FAILED`: None of the dependencies have failed and at least one was executed * `ALL_DONE`: All dependencies have been completed * `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl dependencies have failed"
+            "description": "An optional value specifying the condition determining whether the task is run once its dependencies have been completed. * `ALL_SUCCESS`: All dependencies have executed and succeeded * `AT_LEAST_ONE_SUCCESS`: At least one dependency has succeeded * `NONE_FAILED`: None of the dependencies have failed and at least one was executed * `ALL_DONE`: All dependencies have been completed * `AT_LEAST_ONE_FAILED`: At least one dependency failed * `ALL_FAILED`: ALl dependencies have failed (ALL_DONE, ALL_FAILED, ALL_SUCCESS, AT_LEAST_ONE_FAILED, AT_LEAST_ONE_SUCCESS, NONE_FAILED)"
           },
           {
             "name": "run_job_task",
@@ -2308,7 +2308,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the Python file. When set to `WORKSPACE` or not specified, the file will be retrieved from the local Databricks workspace or cloud location (if the `python_file` has a URI format). When set to `GIT`, the Python file will be retrieved from a Git repository defined in `git_source`. * `WORKSPACE`: The Python file is located in a Databricks workspace or at a cloud filesystem URI. * `GIT`: The Python file is located in a remote Git repository."
+                "description": "Optional location type of the Python file. When set to `WORKSPACE` or not specified, the file will be retrieved from the local Databricks workspace or cloud location (if the `python_file` has a URI format). When set to `GIT`, the Python file will be retrieved from a Git repository defined in `git_source`. * `WORKSPACE`: The Python file is located in a Databricks workspace or at a cloud filesystem URI. * `GIT`: The Python file is located in a remote Git repository. (GIT, WORKSPACE)"
               }
             ]
           },
@@ -2440,7 +2440,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "condition",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (MODEL_ALIAS_SET, MODEL_CREATED, MODEL_VERSION_READY)"
               },
               {
                 "name": "aliases",
@@ -2467,7 +2467,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "pause_status",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (PAUSED, UNPAUSED)"
           },
           {
             "name": "periodic",
@@ -2482,7 +2482,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "unit",
                 "type": "string",
-                "description": "The unit of time for the interval."
+                "description": "The unit of time for the interval. (DAYS, HOURS, WEEKS)"
               }
             ]
           },
@@ -2499,7 +2499,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "condition",
                 "type": "string",
-                "description": "The table(s) condition based on which to trigger a job run."
+                "description": "The table(s) condition based on which to trigger a job run. (ALL_UPDATED, ANY_UPDATED)"
               },
               {
                 "name": "min_time_between_triggers_seconds",
@@ -2680,14 +2680,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__job_id"><code>data__job_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-job_id"><code>job_id</code></a></td>
     <td></td>
     <td>Add, update, or remove specific settings of an existing job. Use the [_Reset_</td>
 </tr>
 <tr>
     <td><a href="#reset"><CopyableCode code="reset" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__job_id"><code>data__job_id</code></a>, <a href="#parameter-data__new_settings"><code>data__new_settings</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-job_id"><code>job_id</code></a>, <a href="#parameter-new_settings"><code>new_settings</code></a></td>
     <td></td>
     <td>Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jobs/update) to update</td>
 </tr>
@@ -2833,32 +2833,32 @@ Create a new job.
 
 ```sql
 INSERT INTO databricks_workspace.jobs.jobs (
-data__access_control_list,
-data__budget_policy_id,
-data__continuous,
-data__deployment,
-data__description,
-data__edit_mode,
-data__email_notifications,
-data__environments,
-data__format,
-data__git_source,
-data__health,
-data__job_clusters,
-data__max_concurrent_runs,
-data__name,
-data__notification_settings,
-data__parameters,
-data__performance_target,
-data__queue,
-data__run_as,
-data__schedule,
-data__tags,
-data__tasks,
-data__timeout_seconds,
-data__trigger,
-data__usage_policy_id,
-data__webhook_notifications,
+access_control_list,
+budget_policy_id,
+continuous,
+deployment,
+description,
+edit_mode,
+email_notifications,
+environments,
+format,
+git_source,
+health,
+job_clusters,
+max_concurrent_runs,
+name,
+notification_settings,
+parameters,
+performance_target,
+queue,
+run_as,
+schedule,
+tags,
+tasks,
+timeout_seconds,
+trigger,
+usage_policy_id,
+webhook_notifications,
 deployment_name
 )
 SELECT 
@@ -3025,12 +3025,12 @@ Add, update, or remove specific settings of an existing job. Use the [_Reset_
 ```sql
 UPDATE databricks_workspace.jobs.jobs
 SET 
-data__job_id = {{ job_id }},
-data__fields_to_remove = '{{ fields_to_remove }}',
-data__new_settings = '{{ new_settings }}'
+job_id = {{ job_id }},
+fields_to_remove = '{{ fields_to_remove }}',
+new_settings = '{{ new_settings }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__job_id = '{{ job_id }}' --required;
+AND job_id = '{{ job_id }}' --required;
 ```
 </TabItem>
 </Tabs>
@@ -3051,12 +3051,12 @@ Overwrite all settings for the given job. Use the [_Update_ endpoint](:method:jo
 ```sql
 REPLACE databricks_workspace.jobs.jobs
 SET 
-data__job_id = {{ job_id }},
-data__new_settings = '{{ new_settings }}'
+job_id = {{ job_id }},
+new_settings = '{{ new_settings }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__job_id = '{{ job_id }}' --required
-AND data__new_settings = '{{ new_settings }}' --required;
+AND job_id = '{{ job_id }}' --required
+AND new_settings = '{{ new_settings }}' --required;
 ```
 </TabItem>
 </Tabs>

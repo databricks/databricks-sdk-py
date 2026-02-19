@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>materialized_features</code> re
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>materialized_features</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="materialized_features" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.materialized_features" /></td></tr>
 </tbody></table>
@@ -103,14 +103,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__feature_tag"><code>data__feature_tag</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-feature_tag"><code>feature_tag</code></a></td>
     <td></td>
     <td>Creates a FeatureTag.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__feature_tag"><code>data__feature_tag</code></a></td>
+    <td><a href="#parameter-table_name"><code>table_name</code></a>, <a href="#parameter-feature_name"><code>feature_name</code></a>, <a href="#parameter-key"><code>key</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-feature_tag"><code>feature_tag</code></a></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td>Updates a FeatureTag.</td>
 </tr>
@@ -235,7 +235,7 @@ Creates a FeatureTag.
 
 ```sql
 INSERT INTO databricks_workspace.ml.materialized_features (
-data__feature_tag,
+feature_tag,
 table_name,
 feature_name,
 deployment_name
@@ -290,13 +290,13 @@ Updates a FeatureTag.
 ```sql
 UPDATE databricks_workspace.ml.materialized_features
 SET 
-data__feature_tag = '{{ feature_tag }}'
+feature_tag = '{{ feature_tag }}'
 WHERE 
 table_name = '{{ table_name }}' --required
 AND feature_name = '{{ feature_name }}' --required
 AND key = '{{ key }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__feature_tag = '{{ feature_tag }}' --required
+AND feature_tag = '{{ feature_tag }}' --required
 AND update_mask = '{{ update_mask}}'
 RETURNING
 key,

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>quality_monitor_v2</code> resou
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>quality_monitor_v2</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="quality_monitor_v2" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.qualitymonitorv2.quality_monitor_v2" /></td></tr>
 </tbody></table>
@@ -65,7 +65,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "latest_run_status",
         "type": "string",
-        "description": "The status of the last run of the workflow."
+        "description": "The status of the last run of the workflow. (ANOMALY_DETECTION_RUN_STATUS_CANCELED, ANOMALY_DETECTION_RUN_STATUS_FAILED, ANOMALY_DETECTION_RUN_STATUS_JOB_DELETED, ANOMALY_DETECTION_RUN_STATUS_PENDING, ANOMALY_DETECTION_RUN_STATUS_RUNNING, ANOMALY_DETECTION_RUN_STATUS_SUCCESS, ANOMALY_DETECTION_RUN_STATUS_UNKNOWN, ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR)"
       }
     ]
   },
@@ -165,7 +165,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "latest_run_status",
         "type": "string",
-        "description": "The status of the last run of the workflow."
+        "description": "The status of the last run of the workflow. (ANOMALY_DETECTION_RUN_STATUS_CANCELED, ANOMALY_DETECTION_RUN_STATUS_FAILED, ANOMALY_DETECTION_RUN_STATUS_JOB_DELETED, ANOMALY_DETECTION_RUN_STATUS_PENDING, ANOMALY_DETECTION_RUN_STATUS_RUNNING, ANOMALY_DETECTION_RUN_STATUS_SUCCESS, ANOMALY_DETECTION_RUN_STATUS_UNKNOWN, ANOMALY_DETECTION_RUN_STATUS_WORKSPACE_MISMATCH_ERROR)"
       }
     ]
   },
@@ -273,14 +273,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__quality_monitor"><code>data__quality_monitor</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-quality_monitor"><code>quality_monitor</code></a></td>
     <td></td>
     <td>[DEPRECATED] Create a quality monitor on UC object. Use Data Quality Monitoring API instead.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__quality_monitor"><code>data__quality_monitor</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-quality_monitor"><code>quality_monitor</code></a></td>
     <td></td>
     <td>[DEPRECATED] (Unimplemented) Update a quality monitor on UC object. Use Data Quality Monitoring API</td>
 </tr>
@@ -396,7 +396,7 @@ AND page_token = '{{ page_token }}'
 
 ```sql
 INSERT INTO databricks_workspace.qualitymonitorv2.quality_monitor_v2 (
-data__quality_monitor,
+quality_monitor,
 deployment_name
 )
 SELECT 
@@ -443,12 +443,12 @@ validity_check_configurations
 ```sql
 REPLACE databricks_workspace.qualitymonitorv2.quality_monitor_v2
 SET 
-data__quality_monitor = '{{ quality_monitor }}'
+quality_monitor = '{{ quality_monitor }}'
 WHERE 
 object_type = '{{ object_type }}' --required
 AND object_id = '{{ object_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__quality_monitor = '{{ quality_monitor }}' --required
+AND quality_monitor = '{{ quality_monitor }}' --required
 RETURNING
 object_id,
 anomaly_detection_config,

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>providers</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>providers</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="providers" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sharing.providers" /></td></tr>
 </tbody></table>
@@ -60,7 +60,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "authentication_type",
     "type": "string",
-    "description": "The delta sharing authentication type."
+    "description": "The delta sharing authentication type. (DATABRICKS, OAUTH_CLIENT_CREDENTIALS, OIDC_FEDERATION, TOKEN)"
   },
   {
     "name": "cloud",
@@ -152,7 +152,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "authentication_type",
     "type": "string",
-    "description": "The delta sharing authentication type."
+    "description": "The delta sharing authentication type. (DATABRICKS, OAUTH_CLIENT_CREDENTIALS, OIDC_FEDERATION, TOKEN)"
   },
   {
     "name": "cloud",
@@ -257,7 +257,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__authentication_type"><code>data__authentication_type</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-authentication_type"><code>authentication_type</code></a></td>
     <td></td>
     <td>Creates a new authentication provider minimally based on a name and authentication type. The caller</td>
 </tr>
@@ -400,10 +400,10 @@ Creates a new authentication provider minimally based on a name and authenticati
 
 ```sql
 INSERT INTO databricks_workspace.sharing.providers (
-data__name,
-data__authentication_type,
-data__comment,
-data__recipient_profile_str,
+name,
+authentication_type,
+comment,
+recipient_profile_str,
 deployment_name
 )
 SELECT 
@@ -473,10 +473,10 @@ Updates the information for an authentication provider, if the caller is a metas
 ```sql
 UPDATE databricks_workspace.sharing.providers
 SET 
-data__comment = '{{ comment }}',
-data__new_name = '{{ new_name }}',
-data__owner = '{{ owner }}',
-data__recipient_profile_str = '{{ recipient_profile_str }}'
+comment = '{{ comment }}',
+new_name = '{{ new_name }}',
+owner = '{{ owner }}',
+recipient_profile_str = '{{ recipient_profile_str }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

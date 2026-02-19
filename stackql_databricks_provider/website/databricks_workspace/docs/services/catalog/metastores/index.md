@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>metastores</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>metastores</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="metastores" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.metastores" /></td></tr>
 </tbody></table>
@@ -100,7 +100,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "delta_sharing_scope",
     "type": "string",
-    "description": "The scope of Delta Sharing enabled for the metastore."
+    "description": "The scope of Delta Sharing enabled for the metastore. (INTERNAL, INTERNAL_AND_EXTERNAL)"
   },
   {
     "name": "external_access_enabled",
@@ -200,7 +200,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "delta_sharing_scope",
     "type": "string",
-    "description": "The scope of Delta Sharing enabled for the metastore."
+    "description": "The scope of Delta Sharing enabled for the metastore. (INTERNAL, INTERNAL_AND_EXTERNAL)"
   },
   {
     "name": "external_access_enabled",
@@ -273,7 +273,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a new metastore based on a provided name and optional storage root path. By default (if the</td>
 </tr>
@@ -294,7 +294,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#assign"><CopyableCode code="assign" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__metastore_id"><code>data__metastore_id</code></a>, <a href="#parameter-data__default_catalog_name"><code>data__default_catalog_name</code></a></td>
+    <td><a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-metastore_id"><code>metastore_id</code></a>, <a href="#parameter-default_catalog_name"><code>default_catalog_name</code></a></td>
     <td></td>
     <td>Creates a new metastore assignment. If an assignment for the same __workspace_id__ exists, it will be</td>
 </tr>
@@ -456,10 +456,10 @@ Creates a new metastore based on a provided name and optional storage root path.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.metastores (
-data__name,
-data__external_access_enabled,
-data__region,
-data__storage_root,
+name,
+external_access_enabled,
+region,
+storage_root,
 deployment_name
 )
 SELECT 
@@ -537,8 +537,8 @@ Updates a metastore assignment. This operation can be used to update __metastore
 ```sql
 UPDATE databricks_workspace.catalog.metastores
 SET 
-data__default_catalog_name = '{{ default_catalog_name }}',
-data__metastore_id = '{{ metastore_id }}'
+default_catalog_name = '{{ default_catalog_name }}',
+metastore_id = '{{ metastore_id }}'
 WHERE 
 workspace_id = '{{ workspace_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required;
@@ -551,14 +551,14 @@ Updates information for a specific metastore. The caller must be a metastore adm
 ```sql
 UPDATE databricks_workspace.catalog.metastores
 SET 
-data__delta_sharing_organization_name = '{{ delta_sharing_organization_name }}',
-data__delta_sharing_recipient_token_lifetime_in_seconds = '{{ delta_sharing_recipient_token_lifetime_in_seconds }}',
-data__delta_sharing_scope = '{{ delta_sharing_scope }}',
-data__external_access_enabled = '{{ external_access_enabled }}',
-data__new_name = '{{ new_name }}',
-data__owner = '{{ owner }}',
-data__privilege_model_version = '{{ privilege_model_version }}',
-data__storage_root_credential_id = '{{ storage_root_credential_id }}'
+delta_sharing_organization_name = '{{ delta_sharing_organization_name }}',
+delta_sharing_recipient_token_lifetime_in_seconds = '{{ delta_sharing_recipient_token_lifetime_in_seconds }}',
+delta_sharing_scope = '{{ delta_sharing_scope }}',
+external_access_enabled = '{{ external_access_enabled }}',
+new_name = '{{ new_name }}',
+owner = '{{ owner }}',
+privilege_model_version = '{{ privilege_model_version }}',
+storage_root_credential_id = '{{ storage_root_credential_id }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
@@ -602,13 +602,13 @@ Creates a new metastore assignment. If an assignment for the same __workspace_id
 ```sql
 REPLACE databricks_workspace.catalog.metastores
 SET 
-data__metastore_id = '{{ metastore_id }}',
-data__default_catalog_name = '{{ default_catalog_name }}'
+metastore_id = '{{ metastore_id }}',
+default_catalog_name = '{{ default_catalog_name }}'
 WHERE 
 workspace_id = '{{ workspace_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__metastore_id = '{{ metastore_id }}' --required
-AND data__default_catalog_name = '{{ default_catalog_name }}' --required;
+AND metastore_id = '{{ metastore_id }}' --required
+AND default_catalog_name = '{{ default_catalog_name }}' --required;
 ```
 </TabItem>
 </Tabs>

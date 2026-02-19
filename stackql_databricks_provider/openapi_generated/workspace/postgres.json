@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks postgres service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.postgres"
   },
   "servers": [
@@ -1418,7 +1418,7 @@
       },
       "BranchStatusState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ARCHIVED",
           "IMPORTING",
           "INIT",
@@ -1429,7 +1429,7 @@
       },
       "EndpointStatusState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "IDLE",
           "INIT"
@@ -1438,7 +1438,7 @@
       },
       "EndpointType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ENDPOINT_TYPE_READ_ONLY",
           "ENDPOINT_TYPE_READ_WRITE"
         ],
@@ -1446,7 +1446,7 @@
       },
       "ErrorCode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ABORTED",
           "ALREADY_EXISTS",
           "BAD_REQUEST",
@@ -1533,14 +1533,14 @@
       },
       "RequestedClaimsPermissionSet": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "READ_ONLY"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "RoleAuthMethod": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "LAKEBASE_OAUTH_V1",
           "NO_LOGIN",
           "PG_PASSWORD_SCRAM_SHA_256"
@@ -1549,7 +1549,7 @@
       },
       "RoleIdentityType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "GROUP",
           "SERVICE_PRINCIPAL",
           "USER"

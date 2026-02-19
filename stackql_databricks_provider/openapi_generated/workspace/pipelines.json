@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks pipelines service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.pipelines"
   },
   "servers": [
@@ -2781,14 +2781,14 @@
       },
       "CloneMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "MIGRATE_TO_UC"
         ],
         "description": "Enum to specify which mode of clone to execute"
       },
       "DayOfWeek": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FRIDAY",
           "MONDAY",
           "SATURDAY",
@@ -2801,14 +2801,14 @@
       },
       "DeploymentKind": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BUNDLE"
         ],
         "description": "The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a\nDatabricks Asset Bundle."
       },
       "EventLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ERROR",
           "INFO",
           "METRICS",
@@ -2818,7 +2818,7 @@
       },
       "GetPipelineResponseHealth": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "HEALTHY",
           "UNHEALTHY"
         ],
@@ -2826,7 +2826,7 @@
       },
       "IngestionSourceType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BIGQUERY",
           "DYNAMICS365",
           "FOREIGN_CATALOG",
@@ -2847,7 +2847,7 @@
       },
       "MaturityLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DEPRECATED",
           "EVOLVING",
           "STABLE"
@@ -2856,7 +2856,7 @@
       },
       "PipelineClusterAutoscaleMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ENHANCED",
           "LEGACY"
         ],
@@ -2864,7 +2864,7 @@
       },
       "PipelinePermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_MANAGE",
           "CAN_RUN",
           "CAN_VIEW",
@@ -2874,7 +2874,7 @@
       },
       "PipelineState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELETED",
           "DEPLOYING",
           "FAILED",
@@ -2889,7 +2889,7 @@
       },
       "PipelineStateInfoHealth": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "HEALTHY",
           "UNHEALTHY"
         ],
@@ -2897,7 +2897,7 @@
       },
       "StartUpdateCause": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "API_CALL",
           "INFRASTRUCTURE_MAINTENANCE",
           "JOB_TASK",
@@ -2910,7 +2910,7 @@
       },
       "TableSpecificConfigScdType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "APPEND_ONLY",
           "SCD_TYPE_1",
           "SCD_TYPE_2"
@@ -2919,7 +2919,7 @@
       },
       "UpdateInfoCause": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "API_CALL",
           "INFRASTRUCTURE_MAINTENANCE",
           "JOB_TASK",
@@ -2932,7 +2932,7 @@
       },
       "UpdateInfoState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCELED",
           "COMPLETED",
           "CREATED",
@@ -2949,7 +2949,7 @@
       },
       "UpdateStateInfoState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCELED",
           "COMPLETED",
           "CREATED",

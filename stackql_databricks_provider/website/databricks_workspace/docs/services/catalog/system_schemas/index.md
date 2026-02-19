@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>system_schemas</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>system_schemas</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="system_schemas" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.system_schemas" /></td></tr>
 </tbody></table>
@@ -177,7 +177,7 @@ Enables the system schema and adds it to the system catalog. The caller must be 
 ```sql
 REPLACE databricks_workspace.catalog.system_schemas
 SET 
-data__catalog_name = '{{ catalog_name }}'
+catalog_name = '{{ catalog_name }}'
 WHERE 
 metastore_id = '{{ metastore_id }}' --required
 AND schema_name = '{{ schema_name }}' --required

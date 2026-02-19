@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_user_preferences</code
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_user_preferences</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_user_preferences" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.settingsv2.account_user_preferences" /></td></tr>
 </tbody></table>
@@ -128,7 +128,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#patch_public_account_user_preference"><CopyableCode code="patch_public_account_user_preference" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-user_id"><code>user_id</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-user_id"><code>user_id</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-setting"><code>setting</code></a></td>
     <td></td>
     <td>Update a user preference for a specific user. User preferences are personal settings that allow</td>
 </tr>
@@ -211,12 +211,12 @@ Update a user preference for a specific user. User preferences are personal sett
 ```sql
 UPDATE databricks_account.settingsv2.account_user_preferences
 SET 
-data__setting = '{{ setting }}'
+setting = '{{ setting }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND user_id = '{{ user_id }}' --required
 AND name = '{{ name }}' --required
-AND data__setting = '{{ setting }}' --required
+AND setting = '{{ setting }}' --required
 RETURNING
 name,
 user_id,

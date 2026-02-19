@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>feature_store</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>feature_store</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="feature_store" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.feature_store" /></td></tr>
 </tbody></table>
@@ -75,7 +75,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The current state of the online store."
+    "description": "The current state of the online store. (AVAILABLE, DELETING, FAILING_OVER, STARTING, STOPPED, UPDATING)"
   }
 ]} />
 </TabItem>
@@ -115,7 +115,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The current state of the online store."
+    "description": "The current state of the online store. (AVAILABLE, DELETING, FAILING_OVER, STARTING, STOPPED, UPDATING)"
   }
 ]} />
 </TabItem>
@@ -153,21 +153,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#publish_table"><CopyableCode code="publish_table" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-source_table_name"><code>source_table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__publish_spec"><code>data__publish_spec</code></a></td>
+    <td><a href="#parameter-source_table_name"><code>source_table_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-publish_spec"><code>publish_spec</code></a></td>
     <td></td>
     <td>Publish features.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__online_store"><code>data__online_store</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-online_store"><code>online_store</code></a></td>
     <td></td>
     <td>Create an Online Feature Store.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__online_store"><code>data__online_store</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-online_store"><code>online_store</code></a></td>
     <td></td>
     <td>Update an Online Feature Store.</td>
 </tr>
@@ -306,7 +306,7 @@ Publish features.
 
 ```sql
 INSERT INTO databricks_workspace.ml.feature_store (
-data__publish_spec,
+publish_spec,
 source_table_name,
 deployment_name
 )
@@ -326,7 +326,7 @@ Create an Online Feature Store.
 
 ```sql
 INSERT INTO databricks_workspace.ml.feature_store (
-data__online_store,
+online_store,
 deployment_name
 )
 SELECT 
@@ -383,12 +383,12 @@ Update an Online Feature Store.
 ```sql
 UPDATE databricks_workspace.ml.feature_store
 SET 
-data__online_store = '{{ online_store }}'
+online_store = '{{ online_store }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__online_store = '{{ online_store }}' --required
+AND online_store = '{{ online_store }}' --required
 RETURNING
 name,
 usage_policy_id,

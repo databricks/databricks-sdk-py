@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>volumes</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>volumes</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="volumes" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.volumes" /></td></tr>
 </tbody></table>
@@ -110,7 +110,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "algorithm",
             "type": "string",
-            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request."
+            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request. (AWS_SSE_KMS, AWS_SSE_S3)"
           },
           {
             "name": "aws_kms_key_arn",
@@ -144,7 +144,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "volume_type",
     "type": "string",
-    "description": "The type of the volume. An external volume is located in the specified external location. A managed volume is located in the default location which is specified by the parent schema, or the parent catalog, or the Metastore. [Learn more] [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"
+    "description": "The type of the volume. An external volume is located in the specified external location. A managed volume is located in the default location which is specified by the parent schema, or the parent catalog, or the Metastore. [Learn more] [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external (EXTERNAL, MANAGED)"
   }
 ]} />
 </TabItem>
@@ -219,7 +219,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "algorithm",
             "type": "string",
-            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request."
+            "description": "Sets the value of the 'x-amz-server-side-encryption' header in S3 request. (AWS_SSE_KMS, AWS_SSE_S3)"
           },
           {
             "name": "aws_kms_key_arn",
@@ -253,7 +253,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "volume_type",
     "type": "string",
-    "description": "The type of the volume. An external volume is located in the specified external location. A managed volume is located in the default location which is specified by the parent schema, or the parent catalog, or the Metastore. [Learn more] [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external"
+    "description": "The type of the volume. An external volume is located in the specified external location. A managed volume is located in the default location which is specified by the parent schema, or the parent catalog, or the Metastore. [Learn more] [Learn more]: https://docs.databricks.com/aws/en/volumes/managed-vs-external (EXTERNAL, MANAGED)"
   }
 ]} />
 </TabItem>
@@ -291,7 +291,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__catalog_name"><code>data__catalog_name</code></a>, <a href="#parameter-data__schema_name"><code>data__schema_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__volume_type"><code>data__volume_type</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-catalog_name"><code>catalog_name</code></a>, <a href="#parameter-schema_name"><code>schema_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-volume_type"><code>volume_type</code></a></td>
     <td></td>
     <td>Creates a new volume.</td>
 </tr>
@@ -453,12 +453,12 @@ Creates a new volume.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.volumes (
-data__catalog_name,
-data__schema_name,
-data__name,
-data__volume_type,
-data__comment,
-data__storage_location,
+catalog_name,
+schema_name,
+name,
+volume_type,
+comment,
+storage_location,
 deployment_name
 )
 SELECT 
@@ -543,9 +543,9 @@ Updates the specified volume under the specified parent catalog and schema.
 ```sql
 UPDATE databricks_workspace.catalog.volumes
 SET 
-data__comment = '{{ comment }}',
-data__new_name = '{{ new_name }}',
-data__owner = '{{ owner }}'
+comment = '{{ comment }}',
+new_name = '{{ new_name }}',
+owner = '{{ owner }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

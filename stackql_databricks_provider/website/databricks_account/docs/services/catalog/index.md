@@ -18,7 +18,7 @@ catalog service documentation.
 
 :::info[Service Summary]
 
-total resources: __4__  
+total resources: __5__  
 
 :::
 
@@ -26,10 +26,11 @@ total resources: __4__
 <div class="row">
 <div class="providerDocColumn">
 <a href="/services/catalog/account_metastore_assignments/">account_metastore_assignments</a><br />
-<a href="/services/catalog/account_metastores/">account_metastores</a>
+<a href="/services/catalog/account_metastores/">account_metastores</a><br />
+<a href="/services/catalog/account_storage_credentials/">account_storage_credentials</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/catalog/account_storage_credentials/">account_storage_credentials</a><br />
-<a href="/services/catalog/credentials/">credentials</a>
+<a href="/services/catalog/credentials/">credentials</a><br />
+<a href="/services/catalog/vw_account_storage_credentials/">vw_account_storage_credentials</a>
 </div>
 </div>

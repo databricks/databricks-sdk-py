@@ -6,7 +6,7 @@ info:
     generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.sql
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -7310,7 +7310,7 @@ components:
             unsupported.
     Aggregation:
       type: string
-      enum:
+      x-enum:
         - AVG
         - COUNT
         - COUNT_DISTINCT
@@ -7358,7 +7358,7 @@ components:
         attributes -- see the documentation for details.
     AlertEvaluationState:
       type: string
-      enum:
+      x-enum:
         - ERROR
         - OK
         - TRIGGERED
@@ -7373,7 +7373,7 @@ components:
         evaluation failed
     AlertLifecycleState:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - DELETED
       description: |-
@@ -7415,7 +7415,7 @@ components:
         attributes -- see the documentation for details.
     AlertOperator:
       type: string
-      enum:
+      x-enum:
         - EQUAL
         - GREATER_THAN
         - GREATER_THAN_OR_EQUAL
@@ -7462,14 +7462,14 @@ components:
         attributes -- see the documentation for details.
     AlertOptionsEmptyResultState:
       type: string
-      enum:
+      x-enum:
         - ok
         - triggered
         - unknown
       description: State that alert evaluates to when query result is empty.
     AlertState:
       type: string
-      enum:
+      x-enum:
         - OK
         - TRIGGERED
         - UNKNOWN
@@ -7512,7 +7512,7 @@ components:
         attributes -- see the documentation for details.
     ChannelName:
       type: string
-      enum:
+      x-enum:
         - CHANNEL_NAME_CURRENT
         - CHANNEL_NAME_CUSTOM
         - CHANNEL_NAME_PREVIEW
@@ -7556,7 +7556,7 @@ components:
         attributes -- see the documentation for details.
     ColumnInfoTypeName:
       type: string
-      enum:
+      x-enum:
         - ARRAY
         - BINARY
         - BOOLEAN
@@ -7583,7 +7583,7 @@ components:
         MAP or ARRAY.
     ComparisonOperator:
       type: string
-      enum:
+      x-enum:
         - EQUAL
         - GREATER_THAN
         - GREATER_THAN_OR_EQUAL
@@ -7631,7 +7631,7 @@ components:
         attributes -- see the documentation for details.
     CreateWarehouseRequestWarehouseType:
       type: string
-      enum:
+      x-enum:
         - CLASSIC
         - PRO
         - TYPE_UNSPECIFIED
@@ -7674,7 +7674,7 @@ components:
         attributes -- see the documentation for details.
     DatePrecision:
       type: string
-      enum:
+      x-enum:
         - DAY_PRECISION
         - MINUTE_PRECISION
         - SECOND_PRECISION
@@ -7717,7 +7717,7 @@ components:
         attributes -- see the documentation for details.
     DateRangeValueDynamicDateRange:
       type: string
-      enum:
+      x-enum:
         - LAST_12_MONTHS
         - LAST_14_DAYS
         - LAST_24_HOURS
@@ -7774,7 +7774,7 @@ components:
         attributes -- see the documentation for details.
     DateValueDynamicDate:
       type: string
-      enum:
+      x-enum:
         - NOW
         - YESTERDAY
       description: |-
@@ -7816,13 +7816,13 @@ components:
         attributes -- see the documentation for details.
     DefaultWarehouseOverrideType:
       type: string
-      enum:
+      x-enum:
         - CUSTOM
         - LAST_SELECTED
       description: Type of default warehouse override behavior.
     Disposition:
       type: string
-      enum:
+      x-enum:
         - EXTERNAL_LINKS
         - INLINE
       description: |-
@@ -7864,7 +7864,7 @@ components:
         attributes -- see the documentation for details.
     EditWarehouseRequestWarehouseType:
       type: string
-      enum:
+      x-enum:
         - CLASSIC
         - PRO
         - TYPE_UNSPECIFIED
@@ -7907,7 +7907,7 @@ components:
         attributes -- see the documentation for details.
     EndpointInfoWarehouseType:
       type: string
-      enum:
+      x-enum:
         - CLASSIC
         - PRO
         - TYPE_UNSPECIFIED
@@ -7950,7 +7950,7 @@ components:
         attributes -- see the documentation for details.
     ExecuteStatementRequestOnWaitTimeout:
       type: string
-      enum:
+      x-enum:
         - CANCEL
         - CONTINUE
       description: >-
@@ -7972,7 +7972,7 @@ components:
         canceled and the call returns with a `CANCELED` state.
     Format:
       type: string
-      enum:
+      x-enum:
         - ARROW_STREAM
         - CSV
         - JSON_ARRAY
@@ -8015,7 +8015,7 @@ components:
         attributes -- see the documentation for details.
     GetWarehouseResponseWarehouseType:
       type: string
-      enum:
+      x-enum:
         - CLASSIC
         - PRO
         - TYPE_UNSPECIFIED
@@ -8058,14 +8058,14 @@ components:
         attributes -- see the documentation for details.
     GetWorkspaceWarehouseConfigResponseSecurityPolicy:
       type: string
-      enum:
+      x-enum:
         - DATA_ACCESS_CONTROL
         - NONE
         - PASSTHROUGH
       description: Security policy to be used for warehouses
     LegacyAlertState:
       type: string
-      enum:
+      x-enum:
         - ok
         - triggered
         - unknown
@@ -8108,7 +8108,7 @@ components:
         attributes -- see the documentation for details.
     LifecycleState:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - TRASHED
       description: |-
@@ -8150,7 +8150,7 @@ components:
         attributes -- see the documentation for details.
     ListOrder:
       type: string
-      enum:
+      x-enum:
         - created_at
         - name
       description: |-
@@ -8192,7 +8192,7 @@ components:
         attributes -- see the documentation for details.
     ObjectType:
       type: string
-      enum:
+      x-enum:
         - alert
         - dashboard
         - data_source
@@ -8200,7 +8200,7 @@ components:
       description: A singular noun object type.
     ObjectTypePlural:
       type: string
-      enum:
+      x-enum:
         - alerts
         - dashboards
         - data_sources
@@ -8208,7 +8208,7 @@ components:
       description: Always a plural of the object type.
     OwnableObjectType:
       type: string
-      enum:
+      x-enum:
         - alert
         - dashboard
         - query
@@ -8251,7 +8251,7 @@ components:
         attributes -- see the documentation for details.
     ParameterType:
       type: string
-      enum:
+      x-enum:
         - datetime
         - enum
         - number
@@ -8296,7 +8296,7 @@ components:
         attributes -- see the documentation for details.
     PermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_EDIT
         - CAN_MANAGE
         - CAN_RUN
@@ -8308,7 +8308,7 @@ components:
         * `CAN_MANAGE`: Can manage the query
     PlansState:
       type: string
-      enum:
+      x-enum:
         - EMPTY
         - EXISTS
         - IGNORED_LARGE_PLANS_SIZE
@@ -8318,7 +8318,7 @@ components:
       description: Possible Reasons for which we have not saved plans in the database
     QueryStatementType:
       type: string
-      enum:
+      x-enum:
         - ALTER
         - ANALYZE
         - COPY
@@ -8380,7 +8380,7 @@ components:
         attributes -- see the documentation for details.
     QueryStatus:
       type: string
-      enum:
+      x-enum:
         - CANCELED
         - COMPILED
         - COMPILING
@@ -8392,7 +8392,7 @@ components:
       description: Statuses which are also used by OperationStatus in runtime
     RunAsMode:
       type: string
-      enum:
+      x-enum:
         - OWNER
         - VIEWER
       description: |-
@@ -8434,7 +8434,7 @@ components:
         attributes -- see the documentation for details.
     RunAsRole:
       type: string
-      enum:
+      x-enum:
         - owner
         - viewer
       description: |-
@@ -8476,7 +8476,7 @@ components:
         attributes -- see the documentation for details.
     SchedulePauseStatus:
       type: string
-      enum:
+      x-enum:
         - PAUSED
         - UNPAUSED
       description: |-
@@ -8518,7 +8518,7 @@ components:
         attributes -- see the documentation for details.
     ServiceErrorCode:
       type: string
-      enum:
+      x-enum:
         - ABORTED
         - ALREADY_EXISTS
         - BAD_REQUEST
@@ -8572,14 +8572,14 @@ components:
         attributes -- see the documentation for details.
     SetWorkspaceWarehouseConfigRequestSecurityPolicy:
       type: string
-      enum:
+      x-enum:
         - DATA_ACCESS_CONTROL
         - NONE
         - PASSTHROUGH
       description: Security policy to be used for warehouses
     SpotInstancePolicy:
       type: string
-      enum:
+      x-enum:
         - COST_OPTIMIZED
         - POLICY_UNSPECIFIED
         - RELIABILITY_OPTIMIZED
@@ -8617,7 +8617,7 @@ components:
         after discussion with customers per SC-48783.
     State:
       type: string
-      enum:
+      x-enum:
         - DELETED
         - DELETING
         - RUNNING
@@ -8627,7 +8627,7 @@ components:
       description: '* State of a warehouse.'
     StatementState:
       type: string
-      enum:
+      x-enum:
         - CANCELED
         - CLOSED
         - FAILED
@@ -8673,7 +8673,7 @@ components:
         attributes -- see the documentation for details.
     Status:
       type: string
-      enum:
+      x-enum:
         - DEGRADED
         - FAILED
         - HEALTHY
@@ -8716,7 +8716,7 @@ components:
         attributes -- see the documentation for details.
     SuccessMessage:
       type: string
-      enum:
+      x-enum:
         - Success
       description: |-
         Create a collection of name/value pairs.
@@ -8757,7 +8757,7 @@ components:
         attributes -- see the documentation for details.
     TerminationReasonCode:
       type: string
-      enum:
+      x-enum:
         - ABUSE_DETECTED
         - ACCESS_TOKEN_FAILURE
         - ALLOCATION_TIMEOUT
@@ -8947,7 +8947,7 @@ components:
       description: The status code indicating why the cluster was terminated
     TerminationReasonType:
       type: string
-      enum:
+      x-enum:
         - CLIENT_ERROR
         - CLOUD_FAILURE
         - SERVICE_FAULT
@@ -8955,7 +8955,7 @@ components:
       description: type of the termination
     WarehousePermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_MANAGE
         - CAN_MONITOR
         - CAN_USE
@@ -8964,7 +8964,7 @@ components:
       description: Permission level
     WarehouseTypePairWarehouseType:
       type: string
-      enum:
+      x-enum:
         - CLASSIC
         - PRO
         - TYPE_UNSPECIFIED
@@ -9012,6 +9012,9 @@ components:
       title: Alerts
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1alerts/post'
           response:
@@ -9037,6 +9040,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1alerts~1{id}/patch'
           response:
@@ -9059,6 +9065,9 @@ components:
       title: Alerts Legacy
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1alerts/post'
           response:
@@ -9083,6 +9092,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1alerts~1{alert_id}/put'
           response:
@@ -9105,6 +9117,9 @@ components:
       title: Alerts V2
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1alerts/post'
           response:
@@ -9130,6 +9145,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1alerts~1{id}/patch'
           response:
@@ -9152,6 +9170,9 @@ components:
       title: Dashboard Widgets
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1widgets/post'
           response:
@@ -9164,6 +9185,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1widgets~1{id}/post'
           response:
@@ -9197,6 +9221,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1dashboards~1{dashboard_id}/post'
           response:
@@ -9257,6 +9284,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1sql~1permissions~1{object_type.value}~1{object_id}/post
@@ -9264,6 +9294,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         transfer_ownership:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1preview~1sql~1permissions~1{object_type.value}~1{object_id}~1transfer/post
@@ -9284,6 +9317,9 @@ components:
       title: Queries
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1queries/post'
           response:
@@ -9309,6 +9345,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1queries~1{id}/patch'
           response:
@@ -9338,6 +9377,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.results
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1visualizations/post'
           response:
@@ -9350,6 +9392,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1visualizations~1{id}/patch'
           response:
@@ -9374,6 +9419,9 @@ components:
       title: Queries Legacy
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1queries/post'
           response:
@@ -9399,6 +9447,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         replace:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1queries~1{query_id}/post'
           response:
@@ -9445,6 +9496,9 @@ components:
       title: Query Visualizations Legacy
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1visualizations/post'
           response:
@@ -9457,6 +9511,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1preview~1sql~1visualizations~1{id}/post'
           response:
@@ -9504,6 +9561,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         execute:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1statements/post'
           response:
@@ -9541,6 +9601,9 @@ components:
       title: Warehouses
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1warehouses/post'
           response:
@@ -9566,6 +9629,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         edit:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1warehouses~1{id}~1edit/post'
           response:
@@ -9600,6 +9666,9 @@ components:
       title: Default Warehouse Overrides
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~1warehouses~1v1~1default-warehouse-overrides/post'
           response:
@@ -9625,6 +9694,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~1warehouses~1v1~1{name}/patch'
           response:
@@ -9678,12 +9750,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1warehouses~1{warehouse_id}/patch'
           response:
@@ -9711,6 +9789,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1sql~1config~1warehouses/put'
           response:
@@ -9726,3 +9807,11 @@ components:
         replace:
           - $ref: >-
               #/components/x-stackQL-resources/workspace_warehouse_config/methods/set
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

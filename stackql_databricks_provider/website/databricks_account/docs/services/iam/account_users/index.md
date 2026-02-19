@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_users</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_users</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_users" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iam.account_users" /></td></tr>
 </tbody></table>
@@ -476,14 +476,14 @@ Creates a new user in the Databricks account. This new user will also be added t
 
 ```sql
 INSERT INTO databricks_account.iam.account_users (
-data__active,
-data__display_name,
-data__emails,
-data__external_id,
-data__id,
-data__name,
-data__roles,
-data__user_name,
+active,
+display_name,
+emails,
+external_id,
+id,
+name,
+roles,
+user_name,
 account_id
 )
 SELECT 
@@ -568,8 +568,8 @@ Partially updates a user resource by applying the supplied operations on specifi
 ```sql
 UPDATE databricks_account.iam.account_users
 SET 
-data__operations = '{{ operations }}',
-data__schemas = '{{ schemas }}'
+operations = '{{ operations }}',
+schemas = '{{ schemas }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND id = '{{ id }}' --required;
@@ -593,13 +593,13 @@ Replaces a user's information with the data supplied in request.
 ```sql
 REPLACE databricks_account.iam.account_users
 SET 
-data__active = '{{ active }}',
-data__display_name = '{{ display_name }}',
-data__emails = '{{ emails }}',
-data__external_id = '{{ external_id }}',
-data__name = '{{ name }}',
-data__roles = '{{ roles }}',
-data__user_name = '{{ user_name }}'
+active = '{{ active }}',
+display_name = '{{ display_name }}',
+emails = '{{ emails }}',
+external_id = '{{ external_id }}',
+name = '{{ name }}',
+roles = '{{ roles }}',
+user_name = '{{ user_name }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND id = '{{ id }}' --required;

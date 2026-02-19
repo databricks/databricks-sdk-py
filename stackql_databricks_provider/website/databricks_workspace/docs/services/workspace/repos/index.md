@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>repos</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>repos</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="repos" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.workspace.repos" /></td></tr>
 </tbody></table>
@@ -167,7 +167,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__url"><code>data__url</code></a>, <a href="#parameter-data__provider"><code>data__provider</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-url"><code>url</code></a>, <a href="#parameter-provider"><code>provider</code></a></td>
     <td></td>
     <td>Creates a repo in the workspace and links it to the remote Git repo specified. Note that repos created</td>
 </tr>
@@ -290,10 +290,10 @@ Creates a repo in the workspace and links it to the remote Git repo specified. N
 
 ```sql
 INSERT INTO databricks_workspace.workspace.repos (
-data__url,
-data__provider,
-data__path,
-data__sparse_checkout,
+url,
+provider,
+path,
+sparse_checkout,
 deployment_name
 )
 SELECT 
@@ -358,9 +358,9 @@ Updates the repo to a different branch or tag, or updates the repo to the latest
 ```sql
 UPDATE databricks_workspace.workspace.repos
 SET 
-data__branch = '{{ branch }}',
-data__sparse_checkout = '{{ sparse_checkout }}',
-data__tag = '{{ tag }}'
+branch = '{{ branch }}',
+sparse_checkout = '{{ sparse_checkout }}',
+tag = '{{ tag }}'
 WHERE 
 repo_id = '{{ repo_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required;

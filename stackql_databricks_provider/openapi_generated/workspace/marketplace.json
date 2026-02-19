@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks marketplace service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.marketplace"
   },
   "servers": [
@@ -4315,7 +4315,7 @@
       },
       "AssetType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ASSET_TYPE_APP",
           "ASSET_TYPE_DATA_TABLE",
           "ASSET_TYPE_GIT_REPO",
@@ -4329,7 +4329,7 @@
       },
       "Category": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ADVERTISING_AND_MARKETING",
           "CLIMATE_AND_ENVIRONMENT",
           "COMMERCE",
@@ -4357,7 +4357,7 @@
       },
       "Cost": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FREE",
           "PAID"
         ],
@@ -4365,7 +4365,7 @@
       },
       "DataRefresh": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DAILY",
           "HOURLY",
           "MINUTE",
@@ -4380,7 +4380,7 @@
       },
       "DeltaSharingRecipientType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS",
           "DELTA_SHARING_RECIPIENT_TYPE_OPEN"
         ],
@@ -4388,14 +4388,14 @@
       },
       "ExchangeFilterType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "GLOBAL_METASTORE_ID"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FileParentType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "LISTING",
           "LISTING_RESOURCE",
           "PROVIDER"
@@ -4404,7 +4404,7 @@
       },
       "FileStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FILE_STATUS_PUBLISHED",
           "FILE_STATUS_SANITIZATION_FAILED",
           "FILE_STATUS_SANITIZING",
@@ -4414,7 +4414,7 @@
       },
       "FulfillmentType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "INSTALL",
           "REQUEST_ACCESS"
         ],
@@ -4422,7 +4422,7 @@
       },
       "InstallationStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAILED",
           "INSTALLED"
         ],
@@ -4430,7 +4430,7 @@
       },
       "ListingShareType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FULL",
           "SAMPLE"
         ],
@@ -4438,7 +4438,7 @@
       },
       "ListingStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DRAFT",
           "PENDING",
           "PUBLISHED",
@@ -4448,7 +4448,7 @@
       },
       "ListingTagType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "LISTING_TAG_TYPE_LANGUAGE",
           "LISTING_TAG_TYPE_TASK"
         ],
@@ -4456,7 +4456,7 @@
       },
       "ListingType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PERSONALIZED",
           "STANDARD"
         ],
@@ -4464,7 +4464,7 @@
       },
       "MarketplaceFileType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "APP",
           "EMBEDDED_NOTEBOOK",
           "PROVIDER_ICON"
@@ -4473,7 +4473,7 @@
       },
       "PersonalizationRequestStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DENIED",
           "FULFILLED",
           "NEW",
@@ -4483,7 +4483,7 @@
       },
       "Visibility": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PRIVATE",
           "PUBLIC"
         ],

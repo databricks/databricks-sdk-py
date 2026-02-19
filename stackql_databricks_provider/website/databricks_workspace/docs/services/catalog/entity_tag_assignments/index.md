@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>entity_tag_assignments</code> 
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>entity_tag_assignments</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="entity_tag_assignments" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.entity_tag_assignments" /></td></tr>
 </tbody></table>
@@ -123,14 +123,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_assignment"><code>data__tag_assignment</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-tag_assignment"><code>tag_assignment</code></a></td>
     <td></td>
     <td>Creates a tag assignment for an Unity Catalog entity.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_assignment"><code>data__tag_assignment</code></a></td>
+    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_name"><code>entity_name</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-tag_assignment"><code>tag_assignment</code></a></td>
     <td></td>
     <td>Updates an existing tag assignment for an Unity Catalog entity.</td>
 </tr>
@@ -259,7 +259,7 @@ Creates a tag assignment for an Unity Catalog entity.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.entity_tag_assignments (
-data__tag_assignment,
+tag_assignment,
 deployment_name
 )
 SELECT 
@@ -306,14 +306,14 @@ Updates an existing tag assignment for an Unity Catalog entity.
 ```sql
 UPDATE databricks_workspace.catalog.entity_tag_assignments
 SET 
-data__tag_assignment = '{{ tag_assignment }}'
+tag_assignment = '{{ tag_assignment }}'
 WHERE 
 entity_type = '{{ entity_type }}' --required
 AND entity_name = '{{ entity_name }}' --required
 AND tag_key = '{{ tag_key }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__tag_assignment = '{{ tag_assignment }}' --required
+AND tag_assignment = '{{ tag_assignment }}' --required
 RETURNING
 entity_name,
 entity_type,

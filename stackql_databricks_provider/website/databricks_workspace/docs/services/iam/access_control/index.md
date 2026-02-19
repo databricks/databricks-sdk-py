@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>access_control</code> resource
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>access_control</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="access_control" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.access_control" /></td></tr>
 </tbody></table>

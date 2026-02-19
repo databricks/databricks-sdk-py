@@ -6,7 +6,7 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.marketplace
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -3275,7 +3275,7 @@ components:
           $ref: '#/components/schemas/ProviderInfo'
     AssetType:
       type: string
-      enum:
+      x-enum:
         - ASSET_TYPE_APP
         - ASSET_TYPE_DATA_TABLE
         - ASSET_TYPE_GIT_REPO
@@ -3323,7 +3323,7 @@ components:
         attributes -- see the documentation for details.
     Category:
       type: string
-      enum:
+      x-enum:
         - ADVERTISING_AND_MARKETING
         - CLIMATE_AND_ENVIRONMENT
         - COMMERCE
@@ -3385,7 +3385,7 @@ components:
         attributes -- see the documentation for details.
     Cost:
       type: string
-      enum:
+      x-enum:
         - FREE
         - PAID
       description: |-
@@ -3427,7 +3427,7 @@ components:
         attributes -- see the documentation for details.
     DataRefresh:
       type: string
-      enum:
+      x-enum:
         - DAILY
         - HOURLY
         - MINUTE
@@ -3476,7 +3476,7 @@ components:
         attributes -- see the documentation for details.
     DeltaSharingRecipientType:
       type: string
-      enum:
+      x-enum:
         - DELTA_SHARING_RECIPIENT_TYPE_DATABRICKS
         - DELTA_SHARING_RECIPIENT_TYPE_OPEN
       description: |-
@@ -3518,7 +3518,7 @@ components:
         attributes -- see the documentation for details.
     ExchangeFilterType:
       type: string
-      enum:
+      x-enum:
         - GLOBAL_METASTORE_ID
       description: |-
         Create a collection of name/value pairs.
@@ -3559,7 +3559,7 @@ components:
         attributes -- see the documentation for details.
     FileParentType:
       type: string
-      enum:
+      x-enum:
         - LISTING
         - LISTING_RESOURCE
         - PROVIDER
@@ -3602,7 +3602,7 @@ components:
         attributes -- see the documentation for details.
     FileStatus:
       type: string
-      enum:
+      x-enum:
         - FILE_STATUS_PUBLISHED
         - FILE_STATUS_SANITIZATION_FAILED
         - FILE_STATUS_SANITIZING
@@ -3646,7 +3646,7 @@ components:
         attributes -- see the documentation for details.
     FulfillmentType:
       type: string
-      enum:
+      x-enum:
         - INSTALL
         - REQUEST_ACCESS
       description: |-
@@ -3688,7 +3688,7 @@ components:
         attributes -- see the documentation for details.
     InstallationStatus:
       type: string
-      enum:
+      x-enum:
         - FAILED
         - INSTALLED
       description: |-
@@ -3730,7 +3730,7 @@ components:
         attributes -- see the documentation for details.
     ListingShareType:
       type: string
-      enum:
+      x-enum:
         - FULL
         - SAMPLE
       description: |-
@@ -3772,7 +3772,7 @@ components:
         attributes -- see the documentation for details.
     ListingStatus:
       type: string
-      enum:
+      x-enum:
         - DRAFT
         - PENDING
         - PUBLISHED
@@ -3780,7 +3780,7 @@ components:
       description: Enums
     ListingTagType:
       type: string
-      enum:
+      x-enum:
         - LISTING_TAG_TYPE_LANGUAGE
         - LISTING_TAG_TYPE_TASK
       description: |-
@@ -3822,7 +3822,7 @@ components:
         attributes -- see the documentation for details.
     ListingType:
       type: string
-      enum:
+      x-enum:
         - PERSONALIZED
         - STANDARD
       description: |-
@@ -3864,7 +3864,7 @@ components:
         attributes -- see the documentation for details.
     MarketplaceFileType:
       type: string
-      enum:
+      x-enum:
         - APP
         - EMBEDDED_NOTEBOOK
         - PROVIDER_ICON
@@ -3907,7 +3907,7 @@ components:
         attributes -- see the documentation for details.
     PersonalizationRequestStatus:
       type: string
-      enum:
+      x-enum:
         - DENIED
         - FULFILLED
         - NEW
@@ -3951,7 +3951,7 @@ components:
         attributes -- see the documentation for details.
     Visibility:
       type: string
-      enum:
+      x-enum:
         - PRIVATE
         - PUBLIC
       description: |-
@@ -4040,6 +4040,9 @@ components:
       title: Consumer Installations
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1installations/post
@@ -4062,6 +4065,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1installations~1{installation_id}/put
@@ -4136,6 +4142,9 @@ components:
       title: Consumer Personalization Requests
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1marketplace-consumer~1listings~1{listing_id}~1personalization-requests/post
@@ -4207,6 +4216,9 @@ components:
       title: Provider Exchange Filters
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-exchange~1filters/post'
           response:
@@ -4226,6 +4238,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-exchange~1filters~1{id}/put'
           response:
@@ -4251,6 +4266,9 @@ components:
       title: Provider Exchange Listings
       methods:
         add:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-exchange~1exchanges-for-listing/post
@@ -4300,6 +4318,9 @@ components:
       title: Provider Exchanges
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges/post'
           response:
@@ -4325,6 +4346,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-exchange~1exchanges~1{id}/put'
           response:
@@ -4347,6 +4371,9 @@ components:
       title: Provider Files
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1files/post'
           response:
@@ -4387,6 +4414,9 @@ components:
       title: Provider Listings
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1listing/post'
           response:
@@ -4405,6 +4435,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1listings~1{id}/put'
           response:
@@ -4442,6 +4475,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.personalization_requests
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-provider~1listings~1{listing_id}~1personalization-requests~1{request_id}~1request-status/put
@@ -4483,6 +4519,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1marketplace-provider~1analytics_dashboard~1{id}/put
@@ -4507,6 +4546,9 @@ components:
       title: Provider Providers
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1provider/post'
           response:
@@ -4525,6 +4567,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1marketplace-provider~1providers~1{id}/put'
           response:
@@ -4548,3 +4593,11 @@ components:
           - $ref: '#/components/x-stackQL-resources/provider_providers/methods/delete'
         replace:
           - $ref: '#/components/x-stackQL-resources/provider_providers/methods/update'
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

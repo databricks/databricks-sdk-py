@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>libraries</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>libraries</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="libraries" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.libraries" /></td></tr>
 </tbody></table>
@@ -137,7 +137,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Status of installing the library on the cluster."
+    "description": "Status of installing the library on the cluster. (FAILED, INSTALLED, INSTALLING, PENDING, RESOLVING, RESTORED, SKIPPED, UNINSTALL_ON_RESTART)"
   }
 ]} />
 </TabItem>
@@ -168,7 +168,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#install"><CopyableCode code="install" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__cluster_id"><code>data__cluster_id</code></a>, <a href="#parameter-data__libraries"><code>data__libraries</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a>, <a href="#parameter-libraries"><code>libraries</code></a></td>
     <td></td>
     <td>Add libraries to install on a cluster. The installation is asynchronous; it happens in the background</td>
 </tr>
@@ -250,8 +250,8 @@ Add libraries to install on a cluster. The installation is asynchronous; it happ
 
 ```sql
 INSERT INTO databricks_workspace.compute.libraries (
-data__cluster_id,
-data__libraries,
+cluster_id,
+libraries,
 deployment_name
 )
 SELECT 

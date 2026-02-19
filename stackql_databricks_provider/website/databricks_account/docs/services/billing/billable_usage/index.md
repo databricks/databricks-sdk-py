@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>billable_usage</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>billable_usage</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="billable_usage" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.billing.billable_usage" /></td></tr>
 </tbody></table>

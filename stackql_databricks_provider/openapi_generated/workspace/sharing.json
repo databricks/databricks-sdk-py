@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks sharing service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.sharing"
   },
   "servers": [
@@ -2847,7 +2847,7 @@
       },
       "AuthenticationType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DATABRICKS",
           "OAUTH_CLIENT_CREDENTIALS",
           "OIDC_FEDERATION",
@@ -2857,7 +2857,7 @@
       },
       "ColumnTypeName": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ARRAY",
           "BINARY",
           "BOOLEAN",
@@ -2885,7 +2885,7 @@
       },
       "FunctionParameterMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "IN",
           "INOUT",
           "OUT"
@@ -2894,7 +2894,7 @@
       },
       "FunctionParameterType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "COLUMN",
           "PARAM"
         ],
@@ -2902,7 +2902,7 @@
       },
       "PartitionValueOp": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EQUAL",
           "LIKE"
         ],
@@ -2910,7 +2910,7 @@
       },
       "Privilege": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACCESS",
           "ALL_PRIVILEGES",
           "APPLY_TAG",
@@ -2961,7 +2961,7 @@
       },
       "SharedDataObjectDataObjectType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FEATURE_SPEC",
           "FOREIGN_TABLE",
           "FUNCTION",
@@ -2978,7 +2978,7 @@
       },
       "SharedDataObjectHistoryDataSharingStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DISABLED",
           "ENABLED"
         ],
@@ -2986,7 +2986,7 @@
       },
       "SharedDataObjectStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "PERMISSION_DENIED"
         ],
@@ -2994,7 +2994,7 @@
       },
       "SharedDataObjectUpdateAction": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ADD",
           "REMOVE",
           "UPDATE"
@@ -3003,7 +3003,7 @@
       },
       "SharedSecurableKind": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FUNCTION_FEATURE_SPEC",
           "FUNCTION_REGISTERED_MODEL",
           "FUNCTION_STANDARD"
@@ -3012,7 +3012,7 @@
       },
       "TableInternalAttributesSharedTableType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELTA_ICEBERG_TABLE",
           "DIRECTORY_BASED_TABLE",
           "FILE_BASED_TABLE",

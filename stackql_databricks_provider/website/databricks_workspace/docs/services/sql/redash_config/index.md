@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>redash_config</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>redash_config</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="redash_config" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.redash_config" /></td></tr>
 </tbody></table>

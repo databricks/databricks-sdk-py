@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>lakeview_schedules</code> resou
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>lakeview_schedules</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="lakeview_schedules" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.dashboards.lakeview_schedules" /></td></tr>
 </tbody></table>
@@ -92,7 +92,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "pause_status",
     "type": "string",
-    "description": "The status indicates whether this schedule is paused or not."
+    "description": "The status indicates whether this schedule is paused or not. (PAUSED, UNPAUSED)"
   },
   {
     "name": "update_time",
@@ -154,7 +154,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "pause_status",
     "type": "string",
-    "description": "The status indicates whether this schedule is paused or not."
+    "description": "The status indicates whether this schedule is paused or not. (PAUSED, UNPAUSED)"
   },
   {
     "name": "update_time",
@@ -197,7 +197,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__schedule"><code>data__schedule</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-schedule"><code>schedule</code></a></td>
     <td></td>
     <td>Create dashboard schedule.</td>
 </tr>
@@ -329,7 +329,7 @@ Create dashboard schedule.
 
 ```sql
 INSERT INTO databricks_workspace.dashboards.lakeview_schedules (
-data__schedule,
+schedule,
 dashboard_id,
 deployment_name
 )

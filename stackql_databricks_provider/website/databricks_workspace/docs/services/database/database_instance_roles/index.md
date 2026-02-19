@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>database_instance_roles</code> 
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>database_instance_roles</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="database_instance_roles" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.database.database_instance_roles" /></td></tr>
 </tbody></table>
@@ -99,12 +99,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "identity_type",
     "type": "string",
-    "description": "The type of the role."
+    "description": "The type of the role. (GROUP, PG_ONLY, SERVICE_PRINCIPAL, USER)"
   },
   {
     "name": "membership_role",
     "type": "string",
-    "description": "An enum value for a standard role that this role is a member of."
+    "description": "An enum value for a standard role that this role is a member of. (DATABRICKS_SUPERUSER)"
   }
 ]} />
 </TabItem>
@@ -168,12 +168,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "identity_type",
     "type": "string",
-    "description": "The type of the role."
+    "description": "The type of the role. (GROUP, PG_ONLY, SERVICE_PRINCIPAL, USER)"
   },
   {
     "name": "membership_role",
     "type": "string",
-    "description": "An enum value for a standard role that this role is a member of."
+    "description": "An enum value for a standard role that this role is a member of. (DATABRICKS_SUPERUSER)"
   }
 ]} />
 </TabItem>
@@ -211,7 +211,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__database_instance_role"><code>data__database_instance_role</code></a></td>
+    <td><a href="#parameter-instance_name"><code>instance_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-database_instance_role"><code>database_instance_role</code></a></td>
     <td><a href="#parameter-database_instance_name"><code>database_instance_name</code></a></td>
     <td>Create a role for a Database Instance.</td>
 </tr>
@@ -347,7 +347,7 @@ Create a role for a Database Instance.
 
 ```sql
 INSERT INTO databricks_workspace.database.database_instance_roles (
-data__database_instance_role,
+database_instance_role,
 instance_name,
 deployment_name,
 database_instance_name

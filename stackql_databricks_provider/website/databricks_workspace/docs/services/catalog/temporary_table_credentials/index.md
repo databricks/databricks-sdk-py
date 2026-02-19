@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>temporary_table_credentials</co
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>temporary_table_credentials</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="temporary_table_credentials" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.temporary_table_credentials" /></td></tr>
 </tbody></table>
@@ -96,8 +96,8 @@ Get a short-lived credential for directly accessing the table data on cloud stor
 
 ```sql
 INSERT INTO databricks_workspace.catalog.temporary_table_credentials (
-data__operation,
-data__table_id,
+operation,
+table_id,
 deployment_name
 )
 SELECT 

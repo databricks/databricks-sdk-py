@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>assignable_roles</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>assignable_roles</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="assignable_roles" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.assignable_roles" /></td></tr>
 </tbody></table>

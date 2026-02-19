@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>model_registry</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>model_registry</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="model_registry" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.model_registry" /></td></tr>
 </tbody></table>
@@ -116,7 +116,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "status",
             "type": "string",
-            "description": "Current status of `model_version`"
+            "description": "Current status of `model_version` (FAILED_REGISTRATION, PENDING_REGISTRATION, READY)"
           },
           {
             "name": "status_message",
@@ -160,7 +160,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "permission_level",
         "type": "string",
-        "description": "Permission level granted for the requesting user on this registered model"
+        "description": "Permission level granted for the requesting user on this registered model (CAN_CREATE_REGISTERED_MODEL, CAN_EDIT, CAN_MANAGE, CAN_MANAGE_PRODUCTION_VERSIONS, CAN_MANAGE_STAGING_VERSIONS, CAN_READ)"
       },
       {
         "name": "tags",
@@ -264,7 +264,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Current status of `model_version`"
+        "description": "Current status of `model_version` (FAILED_REGISTRATION, PENDING_REGISTRATION, READY)"
       },
       {
         "name": "status_message",
@@ -395,7 +395,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Current status of `model_version`"
+        "description": "Current status of `model_version` (FAILED_REGISTRATION, PENDING_REGISTRATION, READY)"
       },
       {
         "name": "status_message",
@@ -491,14 +491,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a new registered model with the name specified in the request body. Throws</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Updates a registered model.</td>
 </tr>
@@ -667,9 +667,9 @@ Creates a new registered model with the name specified in the request body. Thro
 
 ```sql
 INSERT INTO databricks_workspace.ml.model_registry (
-data__name,
-data__description,
-data__tags,
+name,
+description,
+tags,
 deployment_name
 )
 SELECT 
@@ -723,11 +723,11 @@ Updates a registered model.
 ```sql
 UPDATE databricks_workspace.ml.model_registry
 SET 
-data__name = '{{ name }}',
-data__description = '{{ description }}'
+name = '{{ name }}',
+description = '{{ description }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__name = '{{ name }}' --required
+AND name = '{{ name }}' --required
 RETURNING
 registered_model;
 ```

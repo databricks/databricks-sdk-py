@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>logged_models</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>logged_models</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="logged_models" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.logged_models" /></td></tr>
 </tbody></table>
@@ -170,7 +170,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "status",
             "type": "string",
-            "description": "The status of whether or not the model is ready for use."
+            "description": "The status of whether or not the model is ready for use. (LOGGED_MODEL_PENDING, LOGGED_MODEL_READY, LOGGED_MODEL_UPLOAD_FAILED)"
           },
           {
             "name": "status_message",
@@ -227,7 +227,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__experiment_id"><code>data__experiment_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-experiment_id"><code>experiment_id</code></a></td>
     <td></td>
     <td>Create a logged model.</td>
 </tr>
@@ -346,12 +346,12 @@ Create a logged model.
 
 ```sql
 INSERT INTO databricks_workspace.ml.logged_models (
-data__experiment_id,
-data__model_type,
-data__name,
-data__params,
-data__source_run_id,
-data__tags,
+experiment_id,
+model_type,
+name,
+params,
+source_run_id,
+tags,
 deployment_name
 )
 SELECT 

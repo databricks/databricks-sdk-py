@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>model_registry_transitions</cod
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>model_registry_transitions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="model_registry_transitions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.model_registry_transitions" /></td></tr>
 </tbody></table>
@@ -54,7 +54,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "activity_type",
     "type": "string",
-    "description": "Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage<br />transition.<br /><br />* `REQUESTED_TRANSITION`: User requested the corresponding stage transition.<br /><br />* `CANCELLED_REQUEST`: User cancelled an existing transition request.<br /><br />* `APPROVED_REQUEST`: User approved the corresponding stage transition.<br /><br />* `REJECTED_REQUEST`: User rejected the coressponding stage transition.<br /><br />* `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model<br />versions in a stage."
+    "description": "Type of activity. Valid values are: * `APPLIED_TRANSITION`: User applied the corresponding stage<br />transition.<br /><br />* `REQUESTED_TRANSITION`: User requested the corresponding stage transition.<br /><br />* `CANCELLED_REQUEST`: User cancelled an existing transition request.<br /><br />* `APPROVED_REQUEST`: User approved the corresponding stage transition.<br /><br />* `REJECTED_REQUEST`: User rejected the coressponding stage transition.<br /><br />* `SYSTEM_TRANSITION`: For events performed as a side effect, such as archiving existing model<br />versions in a stage. (APPLIED_TRANSITION, APPROVED_REQUEST, CANCELLED_REQUEST, NEW_COMMENT, REJECTED_REQUEST, REQUESTED_TRANSITION, SYSTEM_TRANSITION)"
   },
   {
     "name": "comment",
@@ -115,7 +115,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__version"><code>data__version</code></a>, <a href="#parameter-data__stage"><code>data__stage</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-stage"><code>stage</code></a></td>
     <td></td>
     <td>Creates a model version stage transition request.</td>
 </tr>
@@ -244,10 +244,10 @@ Creates a model version stage transition request.
 
 ```sql
 INSERT INTO databricks_workspace.ml.model_registry_transitions (
-data__name,
-data__version,
-data__stage,
-data__comment,
+name,
+version,
+stage,
+comment,
 deployment_name
 )
 SELECT 

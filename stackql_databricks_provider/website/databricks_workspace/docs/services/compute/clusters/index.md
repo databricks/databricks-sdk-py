@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>clusters</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>clusters</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="clusters" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.clusters" /></td></tr>
 </tbody></table>
@@ -122,7 +122,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "availability",
         "type": "string",
-        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.<br /><br />Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.<br /><br />Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster. (ON_DEMAND, SPOT, SPOT_WITH_FALLBACK)"
       },
       {
         "name": "ebs_volume_count",
@@ -147,7 +147,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "ebs_volume_type",
         "type": "string",
-        "description": "The type of EBS volumes that will be launched with this cluster."
+        "description": "The type of EBS volumes that will be launched with this cluster. (GENERAL_PURPOSE_SSD, THROUGHPUT_OPTIMIZED_HDD)"
       },
       {
         "name": "first_on_demand",
@@ -179,7 +179,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "availability",
         "type": "string",
-        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster. (ON_DEMAND_AZURE, SPOT_AZURE, SPOT_WITH_FALLBACK_AZURE)"
       },
       {
         "name": "first_on_demand",
@@ -313,7 +313,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "cluster_source",
     "type": "string",
-    "description": "Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs Scheduler, or through an API request."
+    "description": "Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs Scheduler, or through an API request. (API, JOB, MODELS, PIPELINE, PIPELINE_MAINTENANCE, SQL, UI)"
   },
   {
     "name": "custom_tags",
@@ -323,7 +323,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "data_security_mode",
     "type": "string",
-    "description": "Data security mode decides what data governance model to use when accessing data from a cluster.<br /><br />The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:<br />Databricks will choose the most appropriate access mode depending on your compute configuration.<br />* `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:<br />Alias for `SINGLE_USER`.<br /><br />The following modes can be used regardless of `kind`. * `NONE`: No security isolation for<br />multiple users sharing the cluster. Data governance features are not available in this mode. *<br />`SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in<br />`single_user_name`. Most programming languages, cluster features and data governance features<br />are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple<br />users. Cluster users are fully isolated so that they cannot see each other's data and<br />credentials. Most data governance features are supported in this mode. But programming languages<br />and cluster features might be limited.<br /><br />The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for<br />future Databricks Runtime versions:<br /><br />* `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *<br />`LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high<br />concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy<br />Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that<br />doesn’t have UC nor passthrough enabled."
+    "description": "Data security mode decides what data governance model to use when accessing data from a cluster.<br /><br />The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:<br />Databricks will choose the most appropriate access mode depending on your compute configuration.<br />* `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:<br />Alias for `SINGLE_USER`.<br /><br />The following modes can be used regardless of `kind`. * `NONE`: No security isolation for<br />multiple users sharing the cluster. Data governance features are not available in this mode. *<br />`SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in<br />`single_user_name`. Most programming languages, cluster features and data governance features<br />are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple<br />users. Cluster users are fully isolated so that they cannot see each other's data and<br />credentials. Most data governance features are supported in this mode. But programming languages<br />and cluster features might be limited.<br /><br />The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for<br />future Databricks Runtime versions:<br /><br />* `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *<br />`LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high<br />concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy<br />Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that<br />doesn’t have UC nor passthrough enabled. (DATA_SECURITY_MODE_AUTO, DATA_SECURITY_MODE_DEDICATED, DATA_SECURITY_MODE_STANDARD, LEGACY_PASSTHROUGH, LEGACY_SINGLE_USER, LEGACY_SINGLE_USER_STANDARD, LEGACY_TABLE_ACL, NONE, SINGLE_USER, USER_ISOLATION)"
   },
   {
     "name": "default_tags",
@@ -487,7 +487,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "availability",
         "type": "string",
-        "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."
+        "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable. (ON_DEMAND_GCP, PREEMPTIBLE_GCP, PREEMPTIBLE_WITH_FALLBACK_GCP)"
       },
       {
         "name": "boot_disk_size",
@@ -655,7 +655,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "kind",
     "type": "string",
-    "description": "The kind of compute described by this compute specification.<br /><br />Depending on `kind`, different validations and default values will be applied.<br /><br />Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no<br />specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *<br />[use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *<br />[data_security_mode](/api/workspace/clusters/create#data_security_mode) set to<br />`DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`<br /><br />By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.<br /><br />[simple form]: https://docs.databricks.com/compute/simple-form.html"
+    "description": "The kind of compute described by this compute specification.<br /><br />Depending on `kind`, different validations and default values will be applied.<br /><br />Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no<br />specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *<br />[use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *<br />[data_security_mode](/api/workspace/clusters/create#data_security_mode) set to<br />`DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`<br /><br />By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.<br /><br />[simple form]: https://docs.databricks.com/compute/simple-form.html (CLASSIC_PREVIEW)"
   },
   {
     "name": "last_restarted_time",
@@ -680,7 +680,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "runtime_engine",
     "type": "string",
-    "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used."
+    "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used. (NULL, PHOTON, STANDARD)"
   },
   {
     "name": "spark_conf",
@@ -737,7 +737,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "availability",
             "type": "string",
-            "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.<br /><br />Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+            "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.<br /><br />Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster. (ON_DEMAND, SPOT, SPOT_WITH_FALLBACK)"
           },
           {
             "name": "ebs_volume_count",
@@ -762,7 +762,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "ebs_volume_type",
             "type": "string",
-            "description": "The type of EBS volumes that will be launched with this cluster."
+            "description": "The type of EBS volumes that will be launched with this cluster. (GENERAL_PURPOSE_SSD, THROUGHPUT_OPTIMIZED_HDD)"
           },
           {
             "name": "first_on_demand",
@@ -794,7 +794,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "availability",
             "type": "string",
-            "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+            "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster. (ON_DEMAND_AZURE, SPOT_AZURE, SPOT_WITH_FALLBACK_AZURE)"
           },
           {
             "name": "first_on_demand",
@@ -911,7 +911,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "data_security_mode",
         "type": "string",
-        "description": "Data security mode decides what data governance model to use when accessing data from a cluster.<br /><br />The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:<br />Databricks will choose the most appropriate access mode depending on your compute configuration.<br />* `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:<br />Alias for `SINGLE_USER`.<br /><br />The following modes can be used regardless of `kind`. * `NONE`: No security isolation for<br />multiple users sharing the cluster. Data governance features are not available in this mode. *<br />`SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in<br />`single_user_name`. Most programming languages, cluster features and data governance features<br />are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple<br />users. Cluster users are fully isolated so that they cannot see each other's data and<br />credentials. Most data governance features are supported in this mode. But programming languages<br />and cluster features might be limited.<br /><br />The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for<br />future Databricks Runtime versions:<br /><br />* `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *<br />`LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high<br />concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy<br />Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that<br />doesn’t have UC nor passthrough enabled."
+        "description": "Data security mode decides what data governance model to use when accessing data from a cluster.<br /><br />The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:<br />Databricks will choose the most appropriate access mode depending on your compute configuration.<br />* `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:<br />Alias for `SINGLE_USER`.<br /><br />The following modes can be used regardless of `kind`. * `NONE`: No security isolation for<br />multiple users sharing the cluster. Data governance features are not available in this mode. *<br />`SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in<br />`single_user_name`. Most programming languages, cluster features and data governance features<br />are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple<br />users. Cluster users are fully isolated so that they cannot see each other's data and<br />credentials. Most data governance features are supported in this mode. But programming languages<br />and cluster features might be limited.<br /><br />The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for<br />future Databricks Runtime versions:<br /><br />* `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *<br />`LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high<br />concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy<br />Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that<br />doesn’t have UC nor passthrough enabled. (DATA_SECURITY_MODE_AUTO, DATA_SECURITY_MODE_DEDICATED, DATA_SECURITY_MODE_STANDARD, LEGACY_PASSTHROUGH, LEGACY_SINGLE_USER, LEGACY_SINGLE_USER_STANDARD, LEGACY_TABLE_ACL, NONE, SINGLE_USER, USER_ISOLATION)"
       },
       {
         "name": "docker_image",
@@ -982,7 +982,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "availability",
             "type": "string",
-            "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."
+            "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable. (ON_DEMAND_GCP, PREEMPTIBLE_GCP, PREEMPTIBLE_WITH_FALLBACK_GCP)"
           },
           {
             "name": "boot_disk_size",
@@ -1150,7 +1150,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "kind",
         "type": "string",
-        "description": "The kind of compute described by this compute specification.<br /><br />Depending on `kind`, different validations and default values will be applied.<br /><br />Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no<br />specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *<br />[use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *<br />[data_security_mode](/api/workspace/clusters/create#data_security_mode) set to<br />`DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`<br /><br />By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.<br /><br />[simple form]: https://docs.databricks.com/compute/simple-form.html"
+        "description": "The kind of compute described by this compute specification.<br /><br />Depending on `kind`, different validations and default values will be applied.<br /><br />Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no<br />specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *<br />[use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *<br />[data_security_mode](/api/workspace/clusters/create#data_security_mode) set to<br />`DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`<br /><br />By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.<br /><br />[simple form]: https://docs.databricks.com/compute/simple-form.html (CLASSIC_PREVIEW)"
       },
       {
         "name": "node_type_id",
@@ -1175,7 +1175,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "runtime_engine",
         "type": "string",
-        "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used."
+        "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used. (NULL, PHOTON, STANDARD)"
       },
       {
         "name": "single_user_name",
@@ -1263,7 +1263,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "Current state of the cluster."
+    "description": "Current state of the cluster. (ERROR, PENDING, RESIZING, RESTARTING, RUNNING, TERMINATED, TERMINATING, UNKNOWN)"
   },
   {
     "name": "state_message",
@@ -1283,7 +1283,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "code",
         "type": "string",
-        "description": "The status code indicating why the cluster was terminated"
+        "description": "The status code indicating why the cluster was terminated (ABUSE_DETECTED, ACCESS_TOKEN_FAILURE, ALLOCATION_TIMEOUT, ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY, ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS, ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS, ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS, ALLOCATION_TIMEOUT_NO_READY_CLUSTERS, ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS, ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS, ATTACH_PROJECT_FAILURE, AWS_AUTHORIZATION_FAILURE, AWS_INACCESSIBLE_KMS_KEY_FAILURE, AWS_INSTANCE_PROFILE_UPDATE_FAILURE, AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE, AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE, AWS_INVALID_KEY_PAIR, AWS_INVALID_KMS_KEY_STATE, AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE, AWS_REQUEST_LIMIT_EXCEEDED, AWS_RESOURCE_QUOTA_EXCEEDED, AWS_UNSUPPORTED_FAILURE, AZURE_BYOK_KEY_PERMISSION_FAILURE, AZURE_EPHEMERAL_DISK_FAILURE, AZURE_INVALID_DEPLOYMENT_TEMPLATE, AZURE_OPERATION_NOT_ALLOWED_EXCEPTION, AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE, AZURE_QUOTA_EXCEEDED_EXCEPTION, AZURE_RESOURCE_MANAGER_THROTTLING, AZURE_RESOURCE_PROVIDER_THROTTLING, AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE, AZURE_VM_EXTENSION_FAILURE, AZURE_VNET_CONFIGURATION_FAILURE, BOOTSTRAP_TIMEOUT, BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION, BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG, BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED, BUDGET_POLICY_RESOLUTION_FAILURE, CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED, CLOUD_ACCOUNT_SETUP_FAILURE, CLOUD_OPERATION_CANCELLED, CLOUD_PROVIDER_DISK_SETUP_FAILURE, CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED, CLOUD_PROVIDER_LAUNCH_FAILURE, CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG, CLOUD_PROVIDER_RESOURCE_STOCKOUT, CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG, CLOUD_PROVIDER_SHUTDOWN, CLUSTER_OPERATION_THROTTLED, CLUSTER_OPERATION_TIMEOUT, COMMUNICATION_LOST, CONTAINER_LAUNCH_FAILURE, CONTROL_PLANE_CONNECTION_FAILURE, CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG, CONTROL_PLANE_REQUEST_FAILURE, CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG, DATABASE_CONNECTION_FAILURE, DATA_ACCESS_CONFIG_CHANGED, DBFS_COMPONENT_UNHEALTHY, DBR_IMAGE_RESOLUTION_FAILURE, DISASTER_RECOVERY_REPLICATION, DNS_RESOLUTION_ERROR, DOCKER_CONTAINER_CREATION_EXCEPTION, DOCKER_IMAGE_PULL_FAILURE, DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION, DOCKER_INVALID_OS_EXCEPTION, DRIVER_EVICTION, DRIVER_LAUNCH_TIMEOUT, DRIVER_NODE_UNREACHABLE, DRIVER_OUT_OF_DISK, DRIVER_OUT_OF_MEMORY, DRIVER_POD_CREATION_FAILURE, DRIVER_UNEXPECTED_FAILURE, DRIVER_UNHEALTHY, DRIVER_UNREACHABLE, DRIVER_UNRESPONSIVE, DYNAMIC_SPARK_CONF_SIZE_EXCEEDED, EOS_SPARK_IMAGE, EXECUTION_COMPONENT_UNHEALTHY, EXECUTOR_POD_UNSCHEDULED, GCP_API_RATE_QUOTA_EXCEEDED, GCP_DENIED_BY_ORG_POLICY, GCP_FORBIDDEN, GCP_IAM_TIMEOUT, GCP_INACCESSIBLE_KMS_KEY_FAILURE, GCP_INSUFFICIENT_CAPACITY, GCP_IP_SPACE_EXHAUSTED, GCP_KMS_KEY_PERMISSION_DENIED, GCP_NOT_FOUND, GCP_QUOTA_EXCEEDED, GCP_RESOURCE_QUOTA_EXCEEDED, GCP_SERVICE_ACCOUNT_ACCESS_DENIED, GCP_SERVICE_ACCOUNT_DELETED, GCP_SERVICE_ACCOUNT_NOT_FOUND, GCP_SUBNET_NOT_READY, GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED, GKE_BASED_CLUSTER_TERMINATION, GLOBAL_INIT_SCRIPT_FAILURE, HIVE_METASTORE_PROVISIONING_FAILURE, IMAGE_PULL_PERMISSION_DENIED, INACTIVITY, INIT_CONTAINER_NOT_FINISHED, INIT_SCRIPT_FAILURE, INSTANCE_POOL_CLUSTER_FAILURE, INSTANCE_POOL_MAX_CAPACITY_REACHED, INSTANCE_POOL_NOT_FOUND, INSTANCE_UNREACHABLE, INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG, INTERNAL_CAPACITY_FAILURE, INTERNAL_ERROR, INVALID_ARGUMENT, INVALID_AWS_PARAMETER, INVALID_INSTANCE_PLACEMENT_PROTOCOL, INVALID_SPARK_IMAGE, INVALID_WORKER_IMAGE_FAILURE, IN_PENALTY_BOX, IP_EXHAUSTION_FAILURE, JOB_FINISHED, K8S_ACTIVE_POD_QUOTA_EXCEEDED, K8S_AUTOSCALING_FAILURE, K8S_DBR_CLUSTER_LAUNCH_TIMEOUT, LAZY_ALLOCATION_TIMEOUT, MAINTENANCE_MODE, METASTORE_COMPONENT_UNHEALTHY, MTLS_PORT_CONNECTIVITY_FAILURE, NEPHOS_RESOURCE_MANAGEMENT, NETVISOR_SETUP_TIMEOUT, NETWORK_CHECK_CONTROL_PLANE_FAILURE, NETWORK_CHECK_CONTROL_PLANE_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_DNS_SERVER_FAILURE, NETWORK_CHECK_DNS_SERVER_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_METADATA_ENDPOINT_FAILURE, NETWORK_CHECK_METADATA_ENDPOINT_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE, NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_NIC_FAILURE, NETWORK_CHECK_NIC_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_STORAGE_FAILURE, NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG, NETWORK_CONFIGURATION_FAILURE, NFS_MOUNT_FAILURE, NO_MATCHED_K8S, NO_MATCHED_K8S_TESTING_TAG, NPIP_TUNNEL_SETUP_FAILURE, NPIP_TUNNEL_TOKEN_FAILURE, POD_ASSIGNMENT_FAILURE, POD_SCHEDULING_FAILURE, RATE_LIMITED, REQUEST_REJECTED, REQUEST_THROTTLED, RESOURCE_USAGE_BLOCKED, SECRET_CREATION_FAILURE, SECRET_PERMISSION_DENIED, SECRET_RESOLUTION_ERROR, SECURITY_DAEMON_REGISTRATION_EXCEPTION, SELF_BOOTSTRAP_FAILURE, SERVERLESS_LONG_RUNNING_TERMINATED, SKIPPED_SLOW_NODES, SLOW_IMAGE_DOWNLOAD, SPARK_ERROR, SPARK_IMAGE_DOWNLOAD_FAILURE, SPARK_IMAGE_DOWNLOAD_THROTTLED, SPARK_IMAGE_NOT_FOUND, SPARK_STARTUP_FAILURE, SPOT_INSTANCE_TERMINATION, SSH_BOOTSTRAP_FAILURE, STORAGE_DOWNLOAD_FAILURE, STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG, STORAGE_DOWNLOAD_FAILURE_SLOW, STORAGE_DOWNLOAD_FAILURE_THROTTLED, STS_CLIENT_SETUP_FAILURE, SUBNET_EXHAUSTED_FAILURE, TEMPORARILY_UNAVAILABLE, TRIAL_EXPIRED, UNEXPECTED_LAUNCH_FAILURE, UNEXPECTED_POD_RECREATION, UNKNOWN, UNSUPPORTED_INSTANCE_TYPE, UPDATE_INSTANCE_PROFILE_FAILURE, USAGE_POLICY_ENTITLEMENT_DENIED, USER_INITIATED_VM_TERMINATION, USER_REQUEST, WORKER_SETUP_FAILURE, WORKSPACE_CANCELLED_ERROR, WORKSPACE_CONFIGURATION_ERROR, WORKSPACE_UPDATE)"
       },
       {
         "name": "parameters",
@@ -1293,7 +1293,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "type",
         "type": "string",
-        "description": "type of the termination"
+        "description": "type of the termination (CLIENT_ERROR, CLOUD_FAILURE, SERVICE_FAULT, SUCCESS)"
       }
     ]
   },
@@ -1428,7 +1428,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "availability",
         "type": "string",
-        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.<br /><br />Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.<br /><br />Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster. (ON_DEMAND, SPOT, SPOT_WITH_FALLBACK)"
       },
       {
         "name": "ebs_volume_count",
@@ -1453,7 +1453,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "ebs_volume_type",
         "type": "string",
-        "description": "The type of EBS volumes that will be launched with this cluster."
+        "description": "The type of EBS volumes that will be launched with this cluster. (GENERAL_PURPOSE_SSD, THROUGHPUT_OPTIMIZED_HDD)"
       },
       {
         "name": "first_on_demand",
@@ -1485,7 +1485,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "availability",
         "type": "string",
-        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+        "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster. (ON_DEMAND_AZURE, SPOT_AZURE, SPOT_WITH_FALLBACK_AZURE)"
       },
       {
         "name": "first_on_demand",
@@ -1619,7 +1619,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "cluster_source",
     "type": "string",
-    "description": "Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs Scheduler, or through an API request."
+    "description": "Determines whether the cluster was created by a user through the UI, created by the Databricks Jobs Scheduler, or through an API request. (API, JOB, MODELS, PIPELINE, PIPELINE_MAINTENANCE, SQL, UI)"
   },
   {
     "name": "custom_tags",
@@ -1629,7 +1629,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "data_security_mode",
     "type": "string",
-    "description": "Data security mode decides what data governance model to use when accessing data from a cluster.<br /><br />The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:<br />Databricks will choose the most appropriate access mode depending on your compute configuration.<br />* `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:<br />Alias for `SINGLE_USER`.<br /><br />The following modes can be used regardless of `kind`. * `NONE`: No security isolation for<br />multiple users sharing the cluster. Data governance features are not available in this mode. *<br />`SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in<br />`single_user_name`. Most programming languages, cluster features and data governance features<br />are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple<br />users. Cluster users are fully isolated so that they cannot see each other's data and<br />credentials. Most data governance features are supported in this mode. But programming languages<br />and cluster features might be limited.<br /><br />The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for<br />future Databricks Runtime versions:<br /><br />* `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *<br />`LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high<br />concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy<br />Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that<br />doesn’t have UC nor passthrough enabled."
+    "description": "Data security mode decides what data governance model to use when accessing data from a cluster.<br /><br />The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:<br />Databricks will choose the most appropriate access mode depending on your compute configuration.<br />* `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:<br />Alias for `SINGLE_USER`.<br /><br />The following modes can be used regardless of `kind`. * `NONE`: No security isolation for<br />multiple users sharing the cluster. Data governance features are not available in this mode. *<br />`SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in<br />`single_user_name`. Most programming languages, cluster features and data governance features<br />are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple<br />users. Cluster users are fully isolated so that they cannot see each other's data and<br />credentials. Most data governance features are supported in this mode. But programming languages<br />and cluster features might be limited.<br /><br />The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for<br />future Databricks Runtime versions:<br /><br />* `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *<br />`LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high<br />concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy<br />Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that<br />doesn’t have UC nor passthrough enabled. (DATA_SECURITY_MODE_AUTO, DATA_SECURITY_MODE_DEDICATED, DATA_SECURITY_MODE_STANDARD, LEGACY_PASSTHROUGH, LEGACY_SINGLE_USER, LEGACY_SINGLE_USER_STANDARD, LEGACY_TABLE_ACL, NONE, SINGLE_USER, USER_ISOLATION)"
   },
   {
     "name": "default_tags",
@@ -1793,7 +1793,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "availability",
         "type": "string",
-        "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."
+        "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable. (ON_DEMAND_GCP, PREEMPTIBLE_GCP, PREEMPTIBLE_WITH_FALLBACK_GCP)"
       },
       {
         "name": "boot_disk_size",
@@ -1961,7 +1961,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "kind",
     "type": "string",
-    "description": "The kind of compute described by this compute specification.<br /><br />Depending on `kind`, different validations and default values will be applied.<br /><br />Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no<br />specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *<br />[use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *<br />[data_security_mode](/api/workspace/clusters/create#data_security_mode) set to<br />`DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`<br /><br />By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.<br /><br />[simple form]: https://docs.databricks.com/compute/simple-form.html"
+    "description": "The kind of compute described by this compute specification.<br /><br />Depending on `kind`, different validations and default values will be applied.<br /><br />Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no<br />specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *<br />[use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *<br />[data_security_mode](/api/workspace/clusters/create#data_security_mode) set to<br />`DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`<br /><br />By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.<br /><br />[simple form]: https://docs.databricks.com/compute/simple-form.html (CLASSIC_PREVIEW)"
   },
   {
     "name": "last_restarted_time",
@@ -1986,7 +1986,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "runtime_engine",
     "type": "string",
-    "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used."
+    "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used. (NULL, PHOTON, STANDARD)"
   },
   {
     "name": "spark_conf",
@@ -2043,7 +2043,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "availability",
             "type": "string",
-            "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.<br /><br />Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+            "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones.<br /><br />Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster. (ON_DEMAND, SPOT, SPOT_WITH_FALLBACK)"
           },
           {
             "name": "ebs_volume_count",
@@ -2068,7 +2068,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "ebs_volume_type",
             "type": "string",
-            "description": "The type of EBS volumes that will be launched with this cluster."
+            "description": "The type of EBS volumes that will be launched with this cluster. (GENERAL_PURPOSE_SSD, THROUGHPUT_OPTIMIZED_HDD)"
           },
           {
             "name": "first_on_demand",
@@ -2100,7 +2100,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "availability",
             "type": "string",
-            "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster."
+            "description": "Availability type used for all subsequent nodes past the `first_on_demand` ones. Note: If `first_on_demand` is zero, this availability type will be used for the entire cluster. (ON_DEMAND_AZURE, SPOT_AZURE, SPOT_WITH_FALLBACK_AZURE)"
           },
           {
             "name": "first_on_demand",
@@ -2217,7 +2217,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "data_security_mode",
         "type": "string",
-        "description": "Data security mode decides what data governance model to use when accessing data from a cluster.<br /><br />The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:<br />Databricks will choose the most appropriate access mode depending on your compute configuration.<br />* `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:<br />Alias for `SINGLE_USER`.<br /><br />The following modes can be used regardless of `kind`. * `NONE`: No security isolation for<br />multiple users sharing the cluster. Data governance features are not available in this mode. *<br />`SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in<br />`single_user_name`. Most programming languages, cluster features and data governance features<br />are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple<br />users. Cluster users are fully isolated so that they cannot see each other's data and<br />credentials. Most data governance features are supported in this mode. But programming languages<br />and cluster features might be limited.<br /><br />The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for<br />future Databricks Runtime versions:<br /><br />* `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *<br />`LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high<br />concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy<br />Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that<br />doesn’t have UC nor passthrough enabled."
+        "description": "Data security mode decides what data governance model to use when accessing data from a cluster.<br /><br />The following modes can only be used when `kind = CLASSIC_PREVIEW`. * `DATA_SECURITY_MODE_AUTO`:<br />Databricks will choose the most appropriate access mode depending on your compute configuration.<br />* `DATA_SECURITY_MODE_STANDARD`: Alias for `USER_ISOLATION`. * `DATA_SECURITY_MODE_DEDICATED`:<br />Alias for `SINGLE_USER`.<br /><br />The following modes can be used regardless of `kind`. * `NONE`: No security isolation for<br />multiple users sharing the cluster. Data governance features are not available in this mode. *<br />`SINGLE_USER`: A secure cluster that can only be exclusively used by a single user specified in<br />`single_user_name`. Most programming languages, cluster features and data governance features<br />are available in this mode. * `USER_ISOLATION`: A secure cluster that can be shared by multiple<br />users. Cluster users are fully isolated so that they cannot see each other's data and<br />credentials. Most data governance features are supported in this mode. But programming languages<br />and cluster features might be limited.<br /><br />The following modes are deprecated starting with Databricks Runtime 15.0 and will be removed for<br />future Databricks Runtime versions:<br /><br />* `LEGACY_TABLE_ACL`: This mode is for users migrating from legacy Table ACL clusters. *<br />`LEGACY_PASSTHROUGH`: This mode is for users migrating from legacy Passthrough on high<br />concurrency clusters. * `LEGACY_SINGLE_USER`: This mode is for users migrating from legacy<br />Passthrough on standard clusters. * `LEGACY_SINGLE_USER_STANDARD`: This mode provides a way that<br />doesn’t have UC nor passthrough enabled. (DATA_SECURITY_MODE_AUTO, DATA_SECURITY_MODE_DEDICATED, DATA_SECURITY_MODE_STANDARD, LEGACY_PASSTHROUGH, LEGACY_SINGLE_USER, LEGACY_SINGLE_USER_STANDARD, LEGACY_TABLE_ACL, NONE, SINGLE_USER, USER_ISOLATION)"
       },
       {
         "name": "docker_image",
@@ -2288,7 +2288,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "availability",
             "type": "string",
-            "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable."
+            "description": "This field determines whether the spark executors will be scheduled to run on preemptible VMs, on-demand VMs, or preemptible VMs with a fallback to on-demand VMs if the former is unavailable. (ON_DEMAND_GCP, PREEMPTIBLE_GCP, PREEMPTIBLE_WITH_FALLBACK_GCP)"
           },
           {
             "name": "boot_disk_size",
@@ -2456,7 +2456,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "kind",
         "type": "string",
-        "description": "The kind of compute described by this compute specification.<br /><br />Depending on `kind`, different validations and default values will be applied.<br /><br />Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no<br />specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *<br />[use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *<br />[data_security_mode](/api/workspace/clusters/create#data_security_mode) set to<br />`DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`<br /><br />By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.<br /><br />[simple form]: https://docs.databricks.com/compute/simple-form.html"
+        "description": "The kind of compute described by this compute specification.<br /><br />Depending on `kind`, different validations and default values will be applied.<br /><br />Clusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no<br />specified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *<br />[use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *<br />[data_security_mode](/api/workspace/clusters/create#data_security_mode) set to<br />`DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`<br /><br />By using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.<br /><br />[simple form]: https://docs.databricks.com/compute/simple-form.html (CLASSIC_PREVIEW)"
       },
       {
         "name": "node_type_id",
@@ -2481,7 +2481,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "runtime_engine",
         "type": "string",
-        "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used."
+        "description": "Determines the cluster's runtime engine, either standard or Photon. This field is not compatible with legacy `spark_version` values that contain `-photon-`. Remove `-photon-` from the `spark_version` and set `runtime_engine` to `PHOTON`. If left unspecified, the runtime engine defaults to standard unless the spark_version contains -photon-, in which case Photon will be used. (NULL, PHOTON, STANDARD)"
       },
       {
         "name": "single_user_name",
@@ -2569,7 +2569,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "Current state of the cluster."
+    "description": "Current state of the cluster. (ERROR, PENDING, RESIZING, RESTARTING, RUNNING, TERMINATED, TERMINATING, UNKNOWN)"
   },
   {
     "name": "state_message",
@@ -2589,7 +2589,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "code",
         "type": "string",
-        "description": "The status code indicating why the cluster was terminated"
+        "description": "The status code indicating why the cluster was terminated (ABUSE_DETECTED, ACCESS_TOKEN_FAILURE, ALLOCATION_TIMEOUT, ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY, ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS, ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS, ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS, ALLOCATION_TIMEOUT_NO_READY_CLUSTERS, ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS, ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS, ATTACH_PROJECT_FAILURE, AWS_AUTHORIZATION_FAILURE, AWS_INACCESSIBLE_KMS_KEY_FAILURE, AWS_INSTANCE_PROFILE_UPDATE_FAILURE, AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE, AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE, AWS_INVALID_KEY_PAIR, AWS_INVALID_KMS_KEY_STATE, AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE, AWS_REQUEST_LIMIT_EXCEEDED, AWS_RESOURCE_QUOTA_EXCEEDED, AWS_UNSUPPORTED_FAILURE, AZURE_BYOK_KEY_PERMISSION_FAILURE, AZURE_EPHEMERAL_DISK_FAILURE, AZURE_INVALID_DEPLOYMENT_TEMPLATE, AZURE_OPERATION_NOT_ALLOWED_EXCEPTION, AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE, AZURE_QUOTA_EXCEEDED_EXCEPTION, AZURE_RESOURCE_MANAGER_THROTTLING, AZURE_RESOURCE_PROVIDER_THROTTLING, AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE, AZURE_VM_EXTENSION_FAILURE, AZURE_VNET_CONFIGURATION_FAILURE, BOOTSTRAP_TIMEOUT, BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION, BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG, BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED, BUDGET_POLICY_RESOLUTION_FAILURE, CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED, CLOUD_ACCOUNT_SETUP_FAILURE, CLOUD_OPERATION_CANCELLED, CLOUD_PROVIDER_DISK_SETUP_FAILURE, CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED, CLOUD_PROVIDER_LAUNCH_FAILURE, CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG, CLOUD_PROVIDER_RESOURCE_STOCKOUT, CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG, CLOUD_PROVIDER_SHUTDOWN, CLUSTER_OPERATION_THROTTLED, CLUSTER_OPERATION_TIMEOUT, COMMUNICATION_LOST, CONTAINER_LAUNCH_FAILURE, CONTROL_PLANE_CONNECTION_FAILURE, CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG, CONTROL_PLANE_REQUEST_FAILURE, CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG, DATABASE_CONNECTION_FAILURE, DATA_ACCESS_CONFIG_CHANGED, DBFS_COMPONENT_UNHEALTHY, DBR_IMAGE_RESOLUTION_FAILURE, DISASTER_RECOVERY_REPLICATION, DNS_RESOLUTION_ERROR, DOCKER_CONTAINER_CREATION_EXCEPTION, DOCKER_IMAGE_PULL_FAILURE, DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION, DOCKER_INVALID_OS_EXCEPTION, DRIVER_EVICTION, DRIVER_LAUNCH_TIMEOUT, DRIVER_NODE_UNREACHABLE, DRIVER_OUT_OF_DISK, DRIVER_OUT_OF_MEMORY, DRIVER_POD_CREATION_FAILURE, DRIVER_UNEXPECTED_FAILURE, DRIVER_UNHEALTHY, DRIVER_UNREACHABLE, DRIVER_UNRESPONSIVE, DYNAMIC_SPARK_CONF_SIZE_EXCEEDED, EOS_SPARK_IMAGE, EXECUTION_COMPONENT_UNHEALTHY, EXECUTOR_POD_UNSCHEDULED, GCP_API_RATE_QUOTA_EXCEEDED, GCP_DENIED_BY_ORG_POLICY, GCP_FORBIDDEN, GCP_IAM_TIMEOUT, GCP_INACCESSIBLE_KMS_KEY_FAILURE, GCP_INSUFFICIENT_CAPACITY, GCP_IP_SPACE_EXHAUSTED, GCP_KMS_KEY_PERMISSION_DENIED, GCP_NOT_FOUND, GCP_QUOTA_EXCEEDED, GCP_RESOURCE_QUOTA_EXCEEDED, GCP_SERVICE_ACCOUNT_ACCESS_DENIED, GCP_SERVICE_ACCOUNT_DELETED, GCP_SERVICE_ACCOUNT_NOT_FOUND, GCP_SUBNET_NOT_READY, GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED, GKE_BASED_CLUSTER_TERMINATION, GLOBAL_INIT_SCRIPT_FAILURE, HIVE_METASTORE_PROVISIONING_FAILURE, IMAGE_PULL_PERMISSION_DENIED, INACTIVITY, INIT_CONTAINER_NOT_FINISHED, INIT_SCRIPT_FAILURE, INSTANCE_POOL_CLUSTER_FAILURE, INSTANCE_POOL_MAX_CAPACITY_REACHED, INSTANCE_POOL_NOT_FOUND, INSTANCE_UNREACHABLE, INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG, INTERNAL_CAPACITY_FAILURE, INTERNAL_ERROR, INVALID_ARGUMENT, INVALID_AWS_PARAMETER, INVALID_INSTANCE_PLACEMENT_PROTOCOL, INVALID_SPARK_IMAGE, INVALID_WORKER_IMAGE_FAILURE, IN_PENALTY_BOX, IP_EXHAUSTION_FAILURE, JOB_FINISHED, K8S_ACTIVE_POD_QUOTA_EXCEEDED, K8S_AUTOSCALING_FAILURE, K8S_DBR_CLUSTER_LAUNCH_TIMEOUT, LAZY_ALLOCATION_TIMEOUT, MAINTENANCE_MODE, METASTORE_COMPONENT_UNHEALTHY, MTLS_PORT_CONNECTIVITY_FAILURE, NEPHOS_RESOURCE_MANAGEMENT, NETVISOR_SETUP_TIMEOUT, NETWORK_CHECK_CONTROL_PLANE_FAILURE, NETWORK_CHECK_CONTROL_PLANE_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_DNS_SERVER_FAILURE, NETWORK_CHECK_DNS_SERVER_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_METADATA_ENDPOINT_FAILURE, NETWORK_CHECK_METADATA_ENDPOINT_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE, NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_NIC_FAILURE, NETWORK_CHECK_NIC_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_STORAGE_FAILURE, NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG, NETWORK_CONFIGURATION_FAILURE, NFS_MOUNT_FAILURE, NO_MATCHED_K8S, NO_MATCHED_K8S_TESTING_TAG, NPIP_TUNNEL_SETUP_FAILURE, NPIP_TUNNEL_TOKEN_FAILURE, POD_ASSIGNMENT_FAILURE, POD_SCHEDULING_FAILURE, RATE_LIMITED, REQUEST_REJECTED, REQUEST_THROTTLED, RESOURCE_USAGE_BLOCKED, SECRET_CREATION_FAILURE, SECRET_PERMISSION_DENIED, SECRET_RESOLUTION_ERROR, SECURITY_DAEMON_REGISTRATION_EXCEPTION, SELF_BOOTSTRAP_FAILURE, SERVERLESS_LONG_RUNNING_TERMINATED, SKIPPED_SLOW_NODES, SLOW_IMAGE_DOWNLOAD, SPARK_ERROR, SPARK_IMAGE_DOWNLOAD_FAILURE, SPARK_IMAGE_DOWNLOAD_THROTTLED, SPARK_IMAGE_NOT_FOUND, SPARK_STARTUP_FAILURE, SPOT_INSTANCE_TERMINATION, SSH_BOOTSTRAP_FAILURE, STORAGE_DOWNLOAD_FAILURE, STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG, STORAGE_DOWNLOAD_FAILURE_SLOW, STORAGE_DOWNLOAD_FAILURE_THROTTLED, STS_CLIENT_SETUP_FAILURE, SUBNET_EXHAUSTED_FAILURE, TEMPORARILY_UNAVAILABLE, TRIAL_EXPIRED, UNEXPECTED_LAUNCH_FAILURE, UNEXPECTED_POD_RECREATION, UNKNOWN, UNSUPPORTED_INSTANCE_TYPE, UPDATE_INSTANCE_PROFILE_FAILURE, USAGE_POLICY_ENTITLEMENT_DENIED, USER_INITIATED_VM_TERMINATION, USER_REQUEST, WORKER_SETUP_FAILURE, WORKSPACE_CANCELLED_ERROR, WORKSPACE_CONFIGURATION_ERROR, WORKSPACE_UPDATE)"
       },
       {
         "name": "parameters",
@@ -2599,7 +2599,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "type",
         "type": "string",
-        "description": "type of the termination"
+        "description": "type of the termination (CLIENT_ERROR, CLOUD_FAILURE, SERVICE_FAULT, SUCCESS)"
       }
     ]
   },
@@ -2685,7 +2685,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__spark_version"><code>data__spark_version</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-spark_version"><code>spark_version</code></a></td>
     <td></td>
     <td>Creates a new Spark cluster. This method will acquire new instances from the cloud provider if</td>
 </tr>
@@ -2973,41 +2973,41 @@ Creates a new Spark cluster. This method will acquire new instances from the clo
 
 ```sql
 INSERT INTO databricks_workspace.compute.clusters (
-data__spark_version,
-data__apply_policy_default_values,
-data__autoscale,
-data__autotermination_minutes,
-data__aws_attributes,
-data__azure_attributes,
-data__clone_from,
-data__cluster_log_conf,
-data__cluster_name,
-data__custom_tags,
-data__data_security_mode,
-data__docker_image,
-data__driver_instance_pool_id,
-data__driver_node_type_flexibility,
-data__driver_node_type_id,
-data__enable_elastic_disk,
-data__enable_local_disk_encryption,
-data__gcp_attributes,
-data__init_scripts,
-data__instance_pool_id,
-data__is_single_node,
-data__kind,
-data__node_type_id,
-data__num_workers,
-data__policy_id,
-data__remote_disk_throughput,
-data__runtime_engine,
-data__single_user_name,
-data__spark_conf,
-data__spark_env_vars,
-data__ssh_public_keys,
-data__total_initial_remote_disk_size,
-data__use_ml_runtime,
-data__worker_node_type_flexibility,
-data__workload_type,
+spark_version,
+apply_policy_default_values,
+autoscale,
+autotermination_minutes,
+aws_attributes,
+azure_attributes,
+clone_from,
+cluster_log_conf,
+cluster_name,
+custom_tags,
+data_security_mode,
+docker_image,
+driver_instance_pool_id,
+driver_node_type_flexibility,
+driver_node_type_id,
+enable_elastic_disk,
+enable_local_disk_encryption,
+gcp_attributes,
+init_scripts,
+instance_pool_id,
+is_single_node,
+kind,
+node_type_id,
+num_workers,
+policy_id,
+remote_disk_throughput,
+runtime_engine,
+single_user_name,
+spark_conf,
+spark_env_vars,
+ssh_public_keys,
+total_initial_remote_disk_size,
+use_ml_runtime,
+worker_node_type_flexibility,
+workload_type,
 deployment_name
 )
 SELECT 

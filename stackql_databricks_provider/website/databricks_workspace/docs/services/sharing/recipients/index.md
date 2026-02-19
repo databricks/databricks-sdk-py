@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>recipients</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>recipients</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="recipients" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sharing.recipients" /></td></tr>
 </tbody></table>
@@ -75,7 +75,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "authentication_type",
     "type": "string",
-    "description": "The delta sharing authentication type."
+    "description": "The delta sharing authentication type. (DATABRICKS, OAUTH_CLIENT_CREDENTIALS, OIDC_FEDERATION, TOKEN)"
   },
   {
     "name": "cloud",
@@ -231,7 +231,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "authentication_type",
     "type": "string",
-    "description": "The delta sharing authentication type."
+    "description": "The delta sharing authentication type. (DATABRICKS, OAUTH_CLIENT_CREDENTIALS, OIDC_FEDERATION, TOKEN)"
   },
   {
     "name": "cloud",
@@ -385,14 +385,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#rotate_token"><CopyableCode code="rotate_token" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__existing_token_expire_in_seconds"><code>data__existing_token_expire_in_seconds</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-existing_token_expire_in_seconds"><code>existing_token_expire_in_seconds</code></a></td>
     <td></td>
     <td>Refreshes the specified recipient's delta sharing authentication token with the provided token info.</td>
 </tr>
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__authentication_type"><code>data__authentication_type</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-authentication_type"><code>authentication_type</code></a></td>
     <td></td>
     <td>Creates a new recipient with the delta sharing authentication type in the metastore. The caller must</td>
 </tr>
@@ -548,7 +548,7 @@ Refreshes the specified recipient's delta sharing authentication token with the 
 
 ```sql
 INSERT INTO databricks_workspace.sharing.recipients (
-data__existing_token_expire_in_seconds,
+existing_token_expire_in_seconds,
 name,
 deployment_name
 )
@@ -586,16 +586,16 @@ Creates a new recipient with the delta sharing authentication type in the metast
 
 ```sql
 INSERT INTO databricks_workspace.sharing.recipients (
-data__name,
-data__authentication_type,
-data__comment,
-data__data_recipient_global_metastore_id,
-data__expiration_time,
-data__id,
-data__ip_access_list,
-data__owner,
-data__properties_kvpairs,
-data__sharing_code,
+name,
+authentication_type,
+comment,
+data_recipient_global_metastore_id,
+expiration_time,
+id,
+ip_access_list,
+owner,
+properties_kvpairs,
+sharing_code,
 deployment_name
 )
 SELECT 
@@ -708,13 +708,13 @@ Updates an existing recipient in the metastore. The caller must be a metastore a
 ```sql
 UPDATE databricks_workspace.sharing.recipients
 SET 
-data__comment = '{{ comment }}',
-data__expiration_time = '{{ expiration_time }}',
-data__id = '{{ id }}',
-data__ip_access_list = '{{ ip_access_list }}',
-data__new_name = '{{ new_name }}',
-data__owner = '{{ owner }}',
-data__properties_kvpairs = '{{ properties_kvpairs }}'
+comment = '{{ comment }}',
+expiration_time = '{{ expiration_time }}',
+id = '{{ id }}',
+ip_access_list = '{{ ip_access_list }}',
+new_name = '{{ new_name }}',
+owner = '{{ owner }}',
+properties_kvpairs = '{{ properties_kvpairs }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

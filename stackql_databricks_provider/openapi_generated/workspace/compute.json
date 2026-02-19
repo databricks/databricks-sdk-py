@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks compute service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.compute"
   },
   "servers": [
@@ -7036,7 +7036,7 @@
       },
       "AwsAvailability": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ON_DEMAND",
           "SPOT",
           "SPOT_WITH_FALLBACK"
@@ -7045,7 +7045,7 @@
       },
       "AzureAvailability": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ON_DEMAND_AZURE",
           "SPOT_AZURE",
           "SPOT_WITH_FALLBACK_AZURE"
@@ -7054,7 +7054,7 @@
       },
       "CloudProviderNodeStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "NotAvailableInRegion",
           "NotEnabledOnSubscription"
         ],
@@ -7062,7 +7062,7 @@
       },
       "ClusterPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_ATTACH_TO",
           "CAN_MANAGE",
           "CAN_RESTART"
@@ -7071,14 +7071,14 @@
       },
       "ClusterPolicyPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_USE"
         ],
         "description": "Permission level"
       },
       "ClusterSource": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "API",
           "JOB",
           "MODELS",
@@ -7091,7 +7091,7 @@
       },
       "CommandStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "Cancelled",
           "Cancelling",
           "Error",
@@ -7103,7 +7103,7 @@
       },
       "ContextStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "Error",
           "Pending",
           "Running"
@@ -7112,7 +7112,7 @@
       },
       "DataPlaneEventDetailsEventType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "NODE_BLACKLISTED",
           "NODE_EXCLUDED_DECOMMISSIONED"
         ],
@@ -7120,7 +7120,7 @@
       },
       "DataSecurityMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DATA_SECURITY_MODE_AUTO",
           "DATA_SECURITY_MODE_DEDICATED",
           "DATA_SECURITY_MODE_STANDARD",
@@ -7136,7 +7136,7 @@
       },
       "DiskTypeAzureDiskVolumeType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PREMIUM_LRS",
           "STANDARD_LRS"
         ],
@@ -7144,7 +7144,7 @@
       },
       "DiskTypeEbsVolumeType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "GENERAL_PURPOSE_SSD",
           "THROUGHPUT_OPTIMIZED_HDD"
         ],
@@ -7152,7 +7152,7 @@
       },
       "EbsVolumeType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "GENERAL_PURPOSE_SSD",
           "THROUGHPUT_OPTIMIZED_HDD"
         ],
@@ -7160,7 +7160,7 @@
       },
       "EventDetailsCause": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AUTORECOVERY",
           "AUTOSCALE",
           "AUTOSCALE_V2",
@@ -7171,7 +7171,7 @@
       },
       "EventType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ADD_NODES_FAILED",
           "AUTOMATIC_CLUSTER_UPDATE",
           "AUTOSCALING_BACKOFF",
@@ -7210,7 +7210,7 @@
       },
       "GcpAvailability": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ON_DEMAND_GCP",
           "PREEMPTIBLE_GCP",
           "PREEMPTIBLE_WITH_FALLBACK_GCP"
@@ -7219,7 +7219,7 @@
       },
       "GetEventsOrder": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ASC",
           "DESC"
         ],
@@ -7227,7 +7227,7 @@
       },
       "HardwareAcceleratorType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "GPU_1xA10",
           "GPU_8xH100"
         ],
@@ -7235,7 +7235,7 @@
       },
       "InitScriptExecutionDetailsInitScriptExecutionStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAILED_EXECUTION",
           "FAILED_FETCH",
           "FUSE_MOUNT_FAILED",
@@ -7248,7 +7248,7 @@
       },
       "InstancePoolAwsAttributesAvailability": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ON_DEMAND",
           "SPOT"
         ],
@@ -7256,7 +7256,7 @@
       },
       "InstancePoolAzureAttributesAvailability": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ON_DEMAND_AZURE",
           "SPOT_AZURE"
         ],
@@ -7264,7 +7264,7 @@
       },
       "InstancePoolPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_ATTACH_TO",
           "CAN_MANAGE"
         ],
@@ -7272,7 +7272,7 @@
       },
       "InstancePoolState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "DELETED",
           "STOPPED"
@@ -7281,14 +7281,14 @@
       },
       "Kind": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CLASSIC_PREVIEW"
         ],
         "description": "The kind of compute described by this compute specification.\n\nDepending on `kind`, different validations and default values will be applied.\n\nClusters with `kind = CLASSIC_PREVIEW` support the following fields, whereas clusters with no\nspecified `kind` do not. * [is_single_node](/api/workspace/clusters/create#is_single_node) *\n[use_ml_runtime](/api/workspace/clusters/create#use_ml_runtime) *\n[data_security_mode](/api/workspace/clusters/create#data_security_mode) set to\n`DATA_SECURITY_MODE_AUTO`, `DATA_SECURITY_MODE_DEDICATED`, or `DATA_SECURITY_MODE_STANDARD`\n\nBy using the [simple form], your clusters are automatically using `kind = CLASSIC_PREVIEW`.\n\n[simple form]: https://docs.databricks.com/compute/simple-form.html"
       },
       "Language": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "python",
           "r",
           "scala",
@@ -7298,7 +7298,7 @@
       },
       "LibraryInstallStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAILED",
           "INSTALLED",
           "INSTALLING",
@@ -7312,7 +7312,7 @@
       },
       "ListClustersSortByDirection": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ASC",
           "DESC"
         ],
@@ -7320,7 +7320,7 @@
       },
       "ListClustersSortByField": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CLUSTER_NAME",
           "DEFAULT"
         ],
@@ -7328,7 +7328,7 @@
       },
       "ListSortColumn": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "POLICY_CREATION_TIME",
           "POLICY_NAME"
         ],
@@ -7336,7 +7336,7 @@
       },
       "ListSortOrder": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ASC",
           "DESC"
         ],
@@ -7344,7 +7344,7 @@
       },
       "ResultType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "error",
           "image",
           "images",
@@ -7355,7 +7355,7 @@
       },
       "RuntimeEngine": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "NULL",
           "PHOTON",
           "STANDARD"
@@ -7364,7 +7364,7 @@
       },
       "State": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ERROR",
           "PENDING",
           "RESIZING",
@@ -7378,7 +7378,7 @@
       },
       "TerminationReasonCode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ABUSE_DETECTED",
           "ACCESS_TOKEN_FAILURE",
           "ALLOCATION_TIMEOUT",
@@ -7570,7 +7570,7 @@
       },
       "TerminationReasonType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CLIENT_ERROR",
           "CLOUD_FAILURE",
           "SERVICE_FAULT",

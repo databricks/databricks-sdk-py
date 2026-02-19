@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_service_principals</co
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_service_principals</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_service_principals" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iam.account_service_principals" /></td></tr>
 </tbody></table>
@@ -367,12 +367,12 @@ Creates a new service principal in the Databricks account.
 
 ```sql
 INSERT INTO databricks_account.iam.account_service_principals (
-data__active,
-data__application_id,
-data__display_name,
-data__external_id,
-data__id,
-data__roles,
+active,
+application_id,
+display_name,
+external_id,
+id,
+roles,
 account_id
 )
 SELECT 
@@ -445,8 +445,8 @@ Partially updates the details of a single service principal in the Databricks ac
 ```sql
 UPDATE databricks_account.iam.account_service_principals
 SET 
-data__operations = '{{ operations }}',
-data__schemas = '{{ schemas }}'
+operations = '{{ operations }}',
+schemas = '{{ schemas }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND id = '{{ id }}' --required;
@@ -470,11 +470,11 @@ Updates the details of a single service principal.
 ```sql
 REPLACE databricks_account.iam.account_service_principals
 SET 
-data__active = '{{ active }}',
-data__application_id = '{{ application_id }}',
-data__display_name = '{{ display_name }}',
-data__external_id = '{{ external_id }}',
-data__roles = '{{ roles }}'
+active = '{{ active }}',
+application_id = '{{ application_id }}',
+display_name = '{{ display_name }}',
+external_id = '{{ external_id }}',
+roles = '{{ roles }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND id = '{{ id }}' --required;

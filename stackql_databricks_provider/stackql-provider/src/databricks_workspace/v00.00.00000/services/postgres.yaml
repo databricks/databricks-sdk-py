@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.postgres
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -1274,7 +1274,7 @@ components:
           description: The name of the Postgres role.
     BranchStatusState:
       type: string
-      enum:
+      x-enum:
         - ARCHIVED
         - IMPORTING
         - INIT
@@ -1283,20 +1283,20 @@ components:
       description: The state of the branch.
     EndpointStatusState:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - IDLE
         - INIT
       description: The state of the compute endpoint.
     EndpointType:
       type: string
-      enum:
+      x-enum:
         - ENDPOINT_TYPE_READ_ONLY
         - ENDPOINT_TYPE_READ_WRITE
       description: The compute endpoint type. Either `read_write` or `read_only`.
     ErrorCode:
       type: string
-      enum:
+      x-enum:
         - ABORTED
         - ALREADY_EXISTS
         - BAD_REQUEST
@@ -1383,7 +1383,7 @@ components:
         conditions.
     RequestedClaimsPermissionSet:
       type: string
-      enum:
+      x-enum:
         - READ_ONLY
       description: |-
         Create a collection of name/value pairs.
@@ -1424,14 +1424,14 @@ components:
         attributes -- see the documentation for details.
     RoleAuthMethod:
       type: string
-      enum:
+      x-enum:
         - LAKEBASE_OAUTH_V1
         - NO_LOGIN
         - PG_PASSWORD_SCRAM_SHA_256
       description: How the role is authenticated when connecting to Postgres.
     RoleIdentityType:
       type: string
-      enum:
+      x-enum:
         - GROUP
         - SERVICE_PRINCIPAL
         - USER
@@ -1448,6 +1448,9 @@ components:
       title: Postgres Branches
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1branches/post'
           response:
@@ -1474,6 +1477,9 @@ components:
       title: Postgres Endpoints
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1endpoints/post'
           response:
@@ -1500,6 +1506,9 @@ components:
       title: Postgres Projects
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1projects/post'
           response:
@@ -1513,6 +1522,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.projects
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{name}/patch'
           response:
@@ -1533,6 +1545,9 @@ components:
       title: Postgres Roles
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1{parent}~1roles/post'
           response:
@@ -1573,6 +1588,9 @@ components:
       title: Postgres Credentials
       methods:
         generate:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1postgres~1credentials/post'
           response:
@@ -1584,3 +1602,11 @@ components:
         update: []
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

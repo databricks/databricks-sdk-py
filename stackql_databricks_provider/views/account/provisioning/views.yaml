@@ -1,0 +1,678 @@
+    vw_workspaces:
+      name: vw_workspaces
+      id: databricks_account.provisioning.vw_workspaces
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: workspace_id
+            type: integer
+            description: Unique numeric identifier for the workspace.
+          - name: workspace_name
+            type: string
+            description: Human-readable name of the workspace.
+          - name: workspace_status
+            type: string
+            description: Current provisioning status of the workspace (e.g. RUNNING, PROVISIONING, FAILED).
+          - name: workspace_status_message
+            type: string
+            description: Human-readable message describing the current workspace status.
+          - name: cloud
+            type: string
+            description: Cloud provider hosting the workspace (e.g. aws, azure, gcp).
+          - name: aws_region
+            type: string
+            description: AWS region where the workspace is deployed (AWS only).
+          - name: location
+            type: string
+            description: Cloud region or location where the workspace is deployed (Azure/GCP).
+          - name: deployment_name
+            type: string
+            description: Subdomain component of the workspace URL (e.g. mycompany in mycompany.azuredatabricks.net).
+          - name: pricing_tier
+            type: string
+            description: Pricing tier of the workspace (e.g. PREMIUM, ENTERPRISE, STANDARD).
+          - name: compute_mode
+            type: string
+            description: Compute isolation mode for the workspace.
+          - name: storage_mode
+            type: string
+            description: Storage isolation mode for the workspace.
+          - name: credentials_id
+            type: string
+            description: ID of the cross-account credential configuration used by this workspace (AWS only).
+          - name: storage_configuration_id
+            type: string
+            description: ID of the root storage configuration for this workspace.
+          - name: network_id
+            type: string
+            description: ID of the customer-managed network configuration for this workspace.
+          - name: network_connectivity_config_id
+            type: string
+            description: ID of the network connectivity configuration for private access.
+          - name: managed_services_customer_managed_key_id
+            type: string
+            description: ID of the customer-managed key used to encrypt managed services data.
+          - name: storage_customer_managed_key_id
+            type: string
+            description: ID of the customer-managed key used to encrypt workspace storage.
+          - name: private_access_settings_id
+            type: string
+            description: ID of the private access settings configuration for this workspace.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the workspace was created.
+          - name: custom_tags
+            type: object
+            description: Key-value custom tags applied to cloud resources provisioned for this workspace.
+          - name: azure_subscription_id
+            type: string
+            description: Azure subscription ID where the workspace is deployed (Azure only).
+          - name: azure_resource_group
+            type: string
+            description: Azure resource group containing the workspace resources (Azure only).
+          - name: gcp_project_id
+            type: string
+            description: GCP project ID that contains the workspace resources (GCP only).
+          - name: gcp_subnet_cidr
+            type: string
+            description: CIDR range for the GCP managed network subnet (GCP only).
+          - name: gcp_pod_ip_range
+            type: string
+            description: IP range used for GKE cluster pods (GCP only).
+          - name: gcp_service_ip_range
+            type: string
+            description: IP range used for GKE cluster services (GCP only).
+          - name: gke_connectivity_type
+            type: string
+            description: GKE cluster connectivity type (e.g. PRIVATE_NODE_PUBLIC_MASTER, PUBLIC_NODE_PUBLIC_MASTER) (GCP only).
+          - name: gke_master_ip_range
+            type: string
+            description: CIDR range for the GKE control plane (GCP only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                w.account_id,
+                w.workspace_id,
+                w.workspace_name,
+                w.workspace_status,
+                w.workspace_status_message,
+                w.cloud,
+                w.aws_region,
+                w.location,
+                w.deployment_name,
+                w.pricing_tier,
+                w.compute_mode,
+                w.storage_mode,
+                w.credentials_id,
+                w.storage_configuration_id,
+                w.network_id,
+                w.network_connectivity_config_id,
+                w.managed_services_customer_managed_key_id,
+                w.storage_customer_managed_key_id,
+                w.private_access_settings_id,
+                w.creation_time,
+                w.custom_tags,
+                JSON_EXTRACT(w.azure_workspace_info, '$.subscription_id') AS azure_subscription_id,
+                JSON_EXTRACT(w.azure_workspace_info, '$.resource_group') AS azure_resource_group,
+                JSON_EXTRACT(w.cloud_resource_container, '$.gcp.project_id') AS gcp_project_id,
+                JSON_EXTRACT(w.gcp_managed_network_config, '$.subnet_cidr') AS gcp_subnet_cidr,
+                JSON_EXTRACT(w.gcp_managed_network_config, '$.gke_cluster_pod_ip_range') AS gcp_pod_ip_range,
+                JSON_EXTRACT(w.gcp_managed_network_config, '$.gke_cluster_service_ip_range') AS gcp_service_ip_range,
+                JSON_EXTRACT(w.gke_config, '$.connectivity_type') AS gke_connectivity_type,
+                JSON_EXTRACT(w.gke_config, '$.master_ip_range') AS gke_master_ip_range
+              FROM databricks_account.provisioning.workspaces w
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  w.account_id,
+                  w.workspace_id,
+                  w.workspace_name,
+                  w.workspace_status,
+                  w.workspace_status_message,
+                  w.cloud,
+                  w.aws_region,
+                  w.location,
+                  w.deployment_name,
+                  w.pricing_tier,
+                  w.compute_mode,
+                  w.storage_mode,
+                  w.credentials_id,
+                  w.storage_configuration_id,
+                  w.network_id,
+                  w.network_connectivity_config_id,
+                  w.managed_services_customer_managed_key_id,
+                  w.storage_customer_managed_key_id,
+                  w.private_access_settings_id,
+                  w.creation_time,
+                  w.custom_tags,
+                  w.azure_workspace_info->>'subscription_id' AS azure_subscription_id,
+                  w.azure_workspace_info->>'resource_group' AS azure_resource_group,
+                  w.cloud_resource_container->'gcp'->>'project_id' AS gcp_project_id,
+                  w.gcp_managed_network_config->>'subnet_cidr' AS gcp_subnet_cidr,
+                  w.gcp_managed_network_config->>'gke_cluster_pod_ip_range' AS gcp_pod_ip_range,
+                  w.gcp_managed_network_config->>'gke_cluster_service_ip_range' AS gcp_service_ip_range,
+                  w.gke_config->>'connectivity_type' AS gke_connectivity_type,
+                  w.gke_config->>'master_ip_range' AS gke_master_ip_range
+                FROM databricks_account.provisioning.workspaces w
+                WHERE account_id = '{{ account_id }}'
+
+    vw_networks:
+      name: vw_networks
+      id: databricks_account.provisioning.vw_networks
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_id
+            type: string
+            description: Unique identifier for the network configuration.
+          - name: network_name
+            type: string
+            description: Human-readable name of the network configuration.
+          - name: vpc_id
+            type: string
+            description: ID of the VPC used by this network configuration (AWS only).
+          - name: vpc_status
+            type: string
+            description: Validation status of the VPC (e.g. VALID, BROKEN, UNATTACHED).
+          - name: workspace_id
+            type: integer
+            description: ID of the workspace this network configuration is attached to.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the network configuration was created.
+          - name: security_group_ids
+            type: array
+            description: List of security group IDs associated with this network configuration (AWS only).
+          - name: subnet_ids
+            type: array
+            description: List of subnet IDs associated with this network configuration (AWS only).
+          - name: gcp_network_project_id
+            type: string
+            description: GCP project ID that hosts the shared VPC network (GCP only).
+          - name: gcp_vpc_id
+            type: string
+            description: Name of the GCP VPC network (GCP only).
+          - name: gcp_subnet_id
+            type: string
+            description: Name of the GCP subnet used by the workspace (GCP only).
+          - name: gcp_subnet_region
+            type: string
+            description: GCP region where the subnet is located (GCP only).
+          - name: gcp_pod_ip_range_name
+            type: string
+            description: Name of the secondary IP range used for GKE pods (GCP only).
+          - name: gcp_service_ip_range_name
+            type: string
+            description: Name of the secondary IP range used for GKE services (GCP only).
+          - name: vpc_endpoint_rest_api_ids
+            type: array
+            description: List of VPC endpoint IDs used for REST API private connectivity (AWS only).
+          - name: vpc_endpoint_dataplane_relay_ids
+            type: array
+            description: List of VPC endpoint IDs used for dataplane relay private connectivity (AWS only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                n.account_id,
+                n.network_id,
+                n.network_name,
+                n.vpc_id,
+                n.vpc_status,
+                n.workspace_id,
+                n.creation_time,
+                n.security_group_ids,
+                n.subnet_ids,
+                JSON_EXTRACT(n.gcp_network_info, '$.network_project_id') AS gcp_network_project_id,
+                JSON_EXTRACT(n.gcp_network_info, '$.vpc_id') AS gcp_vpc_id,
+                JSON_EXTRACT(n.gcp_network_info, '$.subnet_id') AS gcp_subnet_id,
+                JSON_EXTRACT(n.gcp_network_info, '$.subnet_region') AS gcp_subnet_region,
+                JSON_EXTRACT(n.gcp_network_info, '$.pod_ip_range_name') AS gcp_pod_ip_range_name,
+                JSON_EXTRACT(n.gcp_network_info, '$.service_ip_range_name') AS gcp_service_ip_range_name,
+                JSON_EXTRACT(n.vpc_endpoints, '$.rest_api') AS vpc_endpoint_rest_api_ids,
+                JSON_EXTRACT(n.vpc_endpoints, '$.dataplane_relay') AS vpc_endpoint_dataplane_relay_ids
+              FROM databricks_account.provisioning.networks n
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  n.account_id,
+                  n.network_id,
+                  n.network_name,
+                  n.vpc_id,
+                  n.vpc_status,
+                  n.workspace_id,
+                  n.creation_time,
+                  n.security_group_ids,
+                  n.subnet_ids,
+                  n.gcp_network_info->>'network_project_id' AS gcp_network_project_id,
+                  n.gcp_network_info->>'vpc_id' AS gcp_vpc_id,
+                  n.gcp_network_info->>'subnet_id' AS gcp_subnet_id,
+                  n.gcp_network_info->>'subnet_region' AS gcp_subnet_region,
+                  n.gcp_network_info->>'pod_ip_range_name' AS gcp_pod_ip_range_name,
+                  n.gcp_network_info->>'service_ip_range_name' AS gcp_service_ip_range_name,
+                  n.vpc_endpoints->'rest_api' AS vpc_endpoint_rest_api_ids,
+                  n.vpc_endpoints->'dataplane_relay' AS vpc_endpoint_dataplane_relay_ids
+                FROM databricks_account.provisioning.networks n
+                WHERE account_id = '{{ account_id }}'
+
+    vw_network_errors:
+      name: vw_network_errors
+      id: databricks_account.provisioning.vw_network_errors
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_id
+            type: string
+            description: Unique identifier for the network configuration.
+          - name: network_name
+            type: string
+            description: Human-readable name of the network configuration.
+          - name: vpc_status
+            type: string
+            description: Validation status of the VPC at the time of the error.
+          - name: error_type
+            type: string
+            description: Category of the network validation error (one row per error).
+          - name: error_message
+            type: string
+            description: Human-readable description of the network validation error.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                n.account_id,
+                n.network_id,
+                n.network_name,
+                n.vpc_status,
+                JSON_EXTRACT(e.value, '$.error_type') AS error_type,
+                JSON_EXTRACT(e.value, '$.error_message') AS error_message
+              FROM databricks_account.provisioning.networks n,
+                   JSON_EACH(n.error_messages) e
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  n.account_id,
+                  n.network_id,
+                  n.network_name,
+                  n.vpc_status,
+                  e.value->>'error_type' AS error_type,
+                  e.value->>'error_message' AS error_message
+                FROM databricks_account.provisioning.networks n,
+                     jsonb_array_elements(n.error_messages::jsonb) AS e
+                WHERE account_id = '{{ account_id }}'
+
+    vw_network_warnings:
+      name: vw_network_warnings
+      id: databricks_account.provisioning.vw_network_warnings
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_id
+            type: string
+            description: Unique identifier for the network configuration.
+          - name: network_name
+            type: string
+            description: Human-readable name of the network configuration.
+          - name: vpc_status
+            type: string
+            description: Validation status of the VPC at the time of the warning.
+          - name: warning_type
+            type: string
+            description: Category of the network validation warning (one row per warning).
+          - name: warning_message
+            type: string
+            description: Human-readable description of the network validation warning.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                n.account_id,
+                n.network_id,
+                n.network_name,
+                n.vpc_status,
+                JSON_EXTRACT(w.value, '$.warning_type') AS warning_type,
+                JSON_EXTRACT(w.value, '$.warning_message') AS warning_message
+              FROM databricks_account.provisioning.networks n,
+                   JSON_EACH(n.warning_messages) w
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  n.account_id,
+                  n.network_id,
+                  n.network_name,
+                  n.vpc_status,
+                  w.value->>'warning_type' AS warning_type,
+                  w.value->>'warning_message' AS warning_message
+                FROM databricks_account.provisioning.networks n,
+                     jsonb_array_elements(n.warning_messages::jsonb) AS w
+                WHERE account_id = '{{ account_id }}'
+
+    vw_encryption_keys:
+      name: vw_encryption_keys
+      id: databricks_account.provisioning.vw_encryption_keys
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: customer_managed_key_id
+            type: string
+            description: Unique identifier for the customer-managed key configuration.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the key configuration was created.
+          - name: use_case
+            type: string
+            description: Encryption use case this key is assigned to (one row per use case, e.g. MANAGED_SERVICES, STORAGE).
+          - name: aws_key_arn
+            type: string
+            description: ARN of the AWS KMS key (AWS only).
+          - name: aws_key_region
+            type: string
+            description: AWS region where the KMS key resides (AWS only).
+          - name: aws_key_alias
+            type: string
+            description: Alias of the AWS KMS key (AWS only).
+          - name: aws_reuse_key_for_volumes
+            type: boolean
+            description: Whether to reuse the same KMS key for cluster EBS volumes (AWS only).
+          - name: azure_key_name
+            type: string
+            description: Name of the Azure Key Vault key (Azure only).
+          - name: azure_key_vault_uri
+            type: string
+            description: URI of the Azure Key Vault containing the key (Azure only).
+          - name: azure_tenant_id
+            type: string
+            description: Azure Active Directory tenant ID for the key vault (Azure only).
+          - name: azure_key_version
+            type: string
+            description: Version of the Azure Key Vault key (Azure only).
+          - name: azure_disk_encryption_set_id
+            type: string
+            description: Resource ID of the Azure Disk Encryption Set using this key (Azure only).
+          - name: gcp_kms_key_id
+            type: string
+            description: Resource ID of the GCP Cloud KMS key (GCP only).
+          - name: cloud_type
+            type: string
+            description: Derived cloud provider for this key configuration - one of AWS, AZURE, GCP, or UNKNOWN.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                k.account_id,
+                k.customer_managed_key_id,
+                k.creation_time,
+                uc.value AS use_case,
+                JSON_EXTRACT(k.aws_key_info, '$.key_arn') AS aws_key_arn,
+                JSON_EXTRACT(k.aws_key_info, '$.key_region') AS aws_key_region,
+                JSON_EXTRACT(k.aws_key_info, '$.key_alias') AS aws_key_alias,
+                JSON_EXTRACT(k.aws_key_info, '$.reuse_key_for_cluster_volumes') AS aws_reuse_key_for_volumes,
+                JSON_EXTRACT(k.azure_key_info, '$.key_name') AS azure_key_name,
+                JSON_EXTRACT(k.azure_key_info, '$.key_vault_uri') AS azure_key_vault_uri,
+                JSON_EXTRACT(k.azure_key_info, '$.tenant_id') AS azure_tenant_id,
+                JSON_EXTRACT(k.azure_key_info, '$.version') AS azure_key_version,
+                JSON_EXTRACT(k.azure_key_info, '$.disk_encryption_set_id') AS azure_disk_encryption_set_id,
+                JSON_EXTRACT(k.gcp_key_info, '$.kms_key_id') AS gcp_kms_key_id,
+                CASE
+                  WHEN k.aws_key_info IS NOT NULL THEN 'AWS'
+                  WHEN k.azure_key_info IS NOT NULL THEN 'AZURE'
+                  WHEN k.gcp_key_info IS NOT NULL THEN 'GCP'
+                  ELSE 'UNKNOWN'
+                END AS cloud_type
+              FROM databricks_account.provisioning.encryption_keys k,
+                   JSON_EACH(k.use_cases) uc
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  k.account_id,
+                  k.customer_managed_key_id,
+                  k.creation_time,
+                  uc.value AS use_case,
+                  k.aws_key_info->>'key_arn' AS aws_key_arn,
+                  k.aws_key_info->>'key_region' AS aws_key_region,
+                  k.aws_key_info->>'key_alias' AS aws_key_alias,
+                  (k.aws_key_info->>'reuse_key_for_cluster_volumes')::boolean AS aws_reuse_key_for_volumes,
+                  k.azure_key_info->>'key_name' AS azure_key_name,
+                  k.azure_key_info->>'key_vault_uri' AS azure_key_vault_uri,
+                  k.azure_key_info->>'tenant_id' AS azure_tenant_id,
+                  k.azure_key_info->>'version' AS azure_key_version,
+                  k.azure_key_info->>'disk_encryption_set_id' AS azure_disk_encryption_set_id,
+                  k.gcp_key_info->>'kms_key_id' AS gcp_kms_key_id,
+                  CASE
+                    WHEN k.aws_key_info IS NOT NULL THEN 'AWS'
+                    WHEN k.azure_key_info IS NOT NULL THEN 'AZURE'
+                    WHEN k.gcp_key_info IS NOT NULL THEN 'GCP'
+                    ELSE 'UNKNOWN'
+                  END AS cloud_type
+                FROM databricks_account.provisioning.encryption_keys k,
+                     jsonb_array_elements(k.use_cases::jsonb) AS uc
+                WHERE account_id = '{{ account_id }}'
+
+    vw_credentials:
+      name: vw_credentials
+      id: databricks_account.provisioning.vw_credentials
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: credentials_id
+            type: string
+            description: Unique identifier for the credential configuration.
+          - name: credentials_name
+            type: string
+            description: Human-readable name of the credential configuration.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the credential configuration was created.
+          - name: aws_role_arn
+            type: string
+            description: ARN of the AWS IAM role Databricks uses to manage resources in the customer account (AWS only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                c.account_id,
+                c.credentials_id,
+                c.credentials_name,
+                c.creation_time,
+                JSON_EXTRACT(c.aws_credentials, '$.sts_role.role_arn') AS aws_role_arn
+              FROM databricks_account.provisioning.credentials c
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  c.account_id,
+                  c.credentials_id,
+                  c.credentials_name,
+                  c.creation_time,
+                  c.aws_credentials->'sts_role'->>'role_arn' AS aws_role_arn
+                FROM databricks_account.provisioning.credentials c
+                WHERE account_id = '{{ account_id }}'
+
+    vw_storage_configurations:
+      name: vw_storage_configurations
+      id: databricks_account.provisioning.vw_storage_configurations
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: storage_configuration_id
+            type: string
+            description: Unique identifier for the storage configuration.
+          - name: storage_configuration_name
+            type: string
+            description: Human-readable name of the storage configuration.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the storage configuration was created.
+          - name: role_arn
+            type: string
+            description: ARN of the AWS IAM role used to access the root storage bucket (AWS only).
+          - name: root_bucket_name
+            type: string
+            description: Name of the S3 bucket used as the workspace root storage (AWS only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                s.account_id,
+                s.storage_configuration_id,
+                s.storage_configuration_name,
+                s.creation_time,
+                s.role_arn,
+                JSON_EXTRACT(s.root_bucket_info, '$.bucket_name') AS root_bucket_name
+              FROM databricks_account.provisioning.storage s
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  s.account_id,
+                  s.storage_configuration_id,
+                  s.storage_configuration_name,
+                  s.creation_time,
+                  s.role_arn,
+                  s.root_bucket_info->>'bucket_name' AS root_bucket_name
+                FROM databricks_account.provisioning.storage s
+                WHERE account_id = '{{ account_id }}'
+
+    vw_vpc_endpoints:
+      name: vw_vpc_endpoints
+      id: databricks_account.provisioning.vw_vpc_endpoints
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: vpc_endpoint_id
+            type: string
+            description: Unique Databricks identifier for the VPC endpoint configuration.
+          - name: vpc_endpoint_name
+            type: string
+            description: Human-readable name of the VPC endpoint configuration.
+          - name: region
+            type: string
+            description: Cloud region where the VPC endpoint is deployed.
+          - name: state
+            type: string
+            description: Current state of the VPC endpoint (e.g. available, pending, rejected).
+          - name: use_case
+            type: string
+            description: Traffic type this endpoint handles (e.g. dataplane-relay, workspace-access).
+          - name: aws_account_id
+            type: string
+            description: AWS account ID that owns the VPC endpoint (AWS only).
+          - name: aws_endpoint_service_id
+            type: string
+            description: ID of the AWS endpoint service this VPC endpoint connects to (AWS only).
+          - name: aws_vpc_endpoint_id
+            type: string
+            description: AWS VPC endpoint ID (AWS only).
+          - name: gcp_project_id
+            type: string
+            description: GCP project ID containing the PSC endpoint (GCP only).
+          - name: gcp_psc_endpoint_name
+            type: string
+            description: Name of the GCP Private Service Connect endpoint (GCP only).
+          - name: gcp_endpoint_region
+            type: string
+            description: GCP region where the PSC endpoint is deployed (GCP only).
+          - name: gcp_psc_connection_id
+            type: string
+            description: Connection ID of the GCP PSC endpoint (GCP only).
+          - name: gcp_service_attachment_id
+            type: string
+            description: ID of the GCP service attachment the PSC endpoint connects to (GCP only).
+          - name: cloud_type
+            type: string
+            description: Derived cloud provider for this VPC endpoint - one of AWS, GCP, or UNKNOWN.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                v.account_id,
+                v.vpc_endpoint_id,
+                v.vpc_endpoint_name,
+                v.region,
+                v.state,
+                v.use_case,
+                v.aws_account_id,
+                v.aws_endpoint_service_id,
+                v.aws_vpc_endpoint_id,
+                JSON_EXTRACT(v.gcp_vpc_endpoint_info, '$.project_id') AS gcp_project_id,
+                JSON_EXTRACT(v.gcp_vpc_endpoint_info, '$.psc_endpoint_name') AS gcp_psc_endpoint_name,
+                JSON_EXTRACT(v.gcp_vpc_endpoint_info, '$.endpoint_region') AS gcp_endpoint_region,
+                JSON_EXTRACT(v.gcp_vpc_endpoint_info, '$.psc_connection_id') AS gcp_psc_connection_id,
+                JSON_EXTRACT(v.gcp_vpc_endpoint_info, '$.service_attachment_id') AS gcp_service_attachment_id,
+                CASE
+                  WHEN v.aws_vpc_endpoint_id IS NOT NULL THEN 'AWS'
+                  WHEN v.gcp_vpc_endpoint_info IS NOT NULL THEN 'GCP'
+                  ELSE 'UNKNOWN'
+                END AS cloud_type
+              FROM databricks_account.provisioning.vpc_endpoints v
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  v.account_id,
+                  v.vpc_endpoint_id,
+                  v.vpc_endpoint_name,
+                  v.region,
+                  v.state,
+                  v.use_case,
+                  v.aws_account_id,
+                  v.aws_endpoint_service_id,
+                  v.aws_vpc_endpoint_id,
+                  v.gcp_vpc_endpoint_info->>'project_id' AS gcp_project_id,
+                  v.gcp_vpc_endpoint_info->>'psc_endpoint_name' AS gcp_psc_endpoint_name,
+                  v.gcp_vpc_endpoint_info->>'endpoint_region' AS gcp_endpoint_region,
+                  v.gcp_vpc_endpoint_info->>'psc_connection_id' AS gcp_psc_connection_id,
+                  v.gcp_vpc_endpoint_info->>'service_attachment_id' AS gcp_service_attachment_id,
+                  CASE
+                    WHEN v.aws_vpc_endpoint_id IS NOT NULL THEN 'AWS'
+                    WHEN v.gcp_vpc_endpoint_info IS NOT NULL THEN 'GCP'
+                    ELSE 'UNKNOWN'
+                  END AS cloud_type
+                FROM databricks_account.provisioning.vpc_endpoints v
+                WHERE account_id = '{{ account_id }}'

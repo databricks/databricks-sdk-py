@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>encryption_keys</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>encryption_keys</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="encryption_keys" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.provisioning.encryption_keys" /></td></tr>
 </tbody></table>
@@ -313,7 +313,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#encryption_keys_create"><CopyableCode code="encryption_keys_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__use_cases"><code>data__use_cases</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-use_cases"><code>use_cases</code></a></td>
     <td></td>
     <td>Creates a customer-managed key configuration object for an account, specified by ID. This operation</td>
 </tr>
@@ -417,9 +417,9 @@ Creates a customer-managed key configuration object for an account, specified by
 
 ```sql
 INSERT INTO databricks_account.provisioning.encryption_keys (
-data__use_cases,
-data__aws_key_info,
-data__gcp_key_info,
+use_cases,
+aws_key_info,
+gcp_key_info,
 account_id
 )
 SELECT 

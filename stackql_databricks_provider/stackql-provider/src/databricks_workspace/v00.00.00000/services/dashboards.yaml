@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.dashboards
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -2973,7 +2973,7 @@ components:
       properties: {}
     DashboardView:
       type: string
-      enum:
+      x-enum:
         - DASHBOARD_VIEW_BASIC
       description: |-
         Create a collection of name/value pairs.
@@ -3014,14 +3014,14 @@ components:
         attributes -- see the documentation for details.
     GenieFeedbackRating:
       type: string
-      enum:
+      x-enum:
         - NEGATIVE
         - NONE
         - POSITIVE
       description: Feedback rating for Genie messages
     LifecycleState:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - TRASHED
       description: |-
@@ -3063,7 +3063,7 @@ components:
         attributes -- see the documentation for details.
     MessageErrorType:
       type: string
-      enum:
+      x-enum:
         - BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION
         - CHAT_COMPLETION_CLIENT_EXCEPTION
         - CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION
@@ -3163,7 +3163,7 @@ components:
         attributes -- see the documentation for details.
     MessageStatus:
       type: string
-      enum:
+      x-enum:
         - ASKING_AI
         - CANCELLED
         - COMPLETED
@@ -3215,7 +3215,7 @@ components:
         Message has been cancelled.
     SchedulePauseStatus:
       type: string
-      enum:
+      x-enum:
         - PAUSED
         - UNPAUSED
       description: |-
@@ -3257,7 +3257,7 @@ components:
         attributes -- see the documentation for details.
     TextAttachmentPurpose:
       type: string
-      enum:
+      x-enum:
         - FOLLOW_UP_QUESTION
       description: Purpose/intent of a text attachment
   x-stackQL-resources:
@@ -3267,6 +3267,9 @@ components:
       title: Genie Messages
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages/post
@@ -3316,6 +3319,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         send_feedback:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1conversations~1{conversation_id}~1messages~1{message_id}~1feedback/post
@@ -3340,6 +3346,9 @@ components:
       title: Genie
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1genie~1spaces/post'
           response:
@@ -3364,6 +3373,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1genie~1spaces~1{space_id}/patch'
           response:
@@ -3399,6 +3411,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         start:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1genie~1spaces~1{space_id}~1start-conversation/post
@@ -3474,6 +3489,9 @@ components:
       title: Lakeview
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1lakeview~1dashboards/post'
           response:
@@ -3487,6 +3505,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.dashboards
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}/patch'
           response:
@@ -3505,6 +3526,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         migrate:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1lakeview~1dashboards~1migrate/post'
           response:
@@ -3528,6 +3552,9 @@ components:
       title: Lakeview Schedules
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules/post
@@ -3572,6 +3599,9 @@ components:
       title: Lakeview Subscriptions
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1schedules~1{schedule_id}~1subscriptions/post
@@ -3627,6 +3657,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         publish:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1lakeview~1dashboards~1{dashboard_id}~1published/post
@@ -3666,3 +3699,11 @@ components:
         update: []
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

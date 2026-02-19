@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>workspace_status</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>workspace_status</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="workspace_status" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.workspace.workspace_status" /></td></tr>
 </tbody></table>
@@ -59,7 +59,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "language",
     "type": "string",
-    "description": "The language of the object. This value is set only if the object type is ``NOTEBOOK``."
+    "description": "The language of the object. This value is set only if the object type is ``NOTEBOOK``. (PYTHON, R, SCALA, SQL)"
   },
   {
     "name": "modified_at",
@@ -69,7 +69,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "object_type",
     "type": "string",
-    "description": "The type of the object in workspace. - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard"
+    "description": "The type of the object in workspace. - `NOTEBOOK`: document that contains runnable code, visualizations, and explanatory text. - `DIRECTORY`: directory - `LIBRARY`: library - `FILE`: file - `REPO`: repository - `DASHBOARD`: Lakeview dashboard (DASHBOARD, DIRECTORY, FILE, LIBRARY, NOTEBOOK, REPO)"
   },
   {
     "name": "path",

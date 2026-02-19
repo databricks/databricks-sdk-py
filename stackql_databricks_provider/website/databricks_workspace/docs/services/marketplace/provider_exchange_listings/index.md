@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>provider_exchange_listings</cod
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>provider_exchange_listings</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="provider_exchange_listings" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.marketplace.provider_exchange_listings" /></td></tr>
 </tbody></table>
@@ -117,7 +117,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#add"><CopyableCode code="add" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__listing_id"><code>data__listing_id</code></a>, <a href="#parameter-data__exchange_id"><code>data__exchange_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-listing_id"><code>listing_id</code></a>, <a href="#parameter-exchange_id"><code>exchange_id</code></a></td>
     <td></td>
     <td>Associate an exchange with a listing</td>
 </tr>
@@ -240,8 +240,8 @@ Associate an exchange with a listing
 
 ```sql
 INSERT INTO databricks_workspace.marketplace.provider_exchange_listings (
-data__listing_id,
-data__exchange_id,
+listing_id,
+exchange_id,
 deployment_name
 )
 SELECT 

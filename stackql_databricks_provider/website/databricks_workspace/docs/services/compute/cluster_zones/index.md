@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>cluster_zones</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>cluster_zones</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="cluster_zones" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.cluster_zones" /></td></tr>
 </tbody></table>

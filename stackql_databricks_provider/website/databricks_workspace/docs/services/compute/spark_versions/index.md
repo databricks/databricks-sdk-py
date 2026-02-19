@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>spark_versions</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>spark_versions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="spark_versions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.spark_versions" /></td></tr>
 </tbody></table>

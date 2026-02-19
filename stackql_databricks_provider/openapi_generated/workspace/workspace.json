@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks workspace service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.workspace"
   },
   "servers": [
@@ -2808,7 +2808,7 @@
       },
       "AclPermission": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "MANAGE",
           "READ",
           "WRITE"
@@ -2817,7 +2817,7 @@
       },
       "ExportFormat": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AUTO",
           "DBC",
           "HTML",
@@ -2830,7 +2830,7 @@
       },
       "ImportFormat": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AUTO",
           "DBC",
           "HTML",
@@ -2843,7 +2843,7 @@
       },
       "Language": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PYTHON",
           "R",
           "SCALA",
@@ -2853,7 +2853,7 @@
       },
       "ObjectType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DASHBOARD",
           "DIRECTORY",
           "FILE",
@@ -2865,7 +2865,7 @@
       },
       "RepoPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_EDIT",
           "CAN_MANAGE",
           "CAN_READ",
@@ -2875,7 +2875,7 @@
       },
       "ScopeBackendType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AZURE_KEYVAULT",
           "DATABRICKS"
         ],
@@ -2883,7 +2883,7 @@
       },
       "WorkspaceObjectPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_EDIT",
           "CAN_MANAGE",
           "CAN_READ",

@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.jobs
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -5772,7 +5772,7 @@ components:
           type: string
     AuthenticationMethod:
       type: string
-      enum:
+      x-enum:
         - OAUTH
         - PAT
       description: |-
@@ -5814,7 +5814,7 @@ components:
         attributes -- see the documentation for details.
     CleanRoomTaskRunLifeCycleState:
       type: string
-      enum:
+      x-enum:
         - BLOCKED
         - INTERNAL_ERROR
         - PENDING
@@ -5832,7 +5832,7 @@ components:
         remove coupling with jobs API definition
     CleanRoomTaskRunResultState:
       type: string
-      enum:
+      x-enum:
         - CANCELED
         - DISABLED
         - EVICTED
@@ -5853,7 +5853,7 @@ components:
         cyclic dependency.
     Condition:
       type: string
-      enum:
+      x-enum:
         - ALL_UPDATED
         - ANY_UPDATED
       description: |-
@@ -5895,7 +5895,7 @@ components:
         attributes -- see the documentation for details.
     ConditionTaskOp:
       type: string
-      enum:
+      x-enum:
         - EQUAL_TO
         - GREATER_THAN
         - GREATER_THAN_OR_EQUAL
@@ -5927,7 +5927,7 @@ components:
         `“false”` for the comparison.
     DbtPlatformRunStatus:
       type: string
-      enum:
+      x-enum:
         - CANCELLED
         - ERROR
         - QUEUED
@@ -5939,7 +5939,7 @@ components:
         output
     Format:
       type: string
-      enum:
+      x-enum:
         - MULTI_TASK
         - SINGLE_TASK
       description: |-
@@ -5981,7 +5981,7 @@ components:
         attributes -- see the documentation for details.
     GitProvider:
       type: string
-      enum:
+      x-enum:
         - awsCodeCommit
         - azureDevOpsServices
         - bitbucketCloud
@@ -6029,7 +6029,7 @@ components:
         attributes -- see the documentation for details.
     JobDeploymentKind:
       type: string
-      enum:
+      x-enum:
         - BUNDLE
         - SYSTEM_MANAGED
       description: >-
@@ -6039,7 +6039,7 @@ components:
         managed by Databricks and is read-only.
     JobEditMode:
       type: string
-      enum:
+      x-enum:
         - EDITABLE
         - UI_LOCKED
       description: >-
@@ -6052,7 +6052,7 @@ components:
         in an editable state and can be modified.
     JobPermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_MANAGE
         - CAN_MANAGE_RUN
         - CAN_VIEW
@@ -6060,7 +6060,7 @@ components:
       description: Permission level
     JobSourceDirtyState:
       type: string
-      enum:
+      x-enum:
         - DISCONNECTED
         - NOT_SYNCED
       description: >-
@@ -6085,7 +6085,7 @@ components:
         synced.
     JobsHealthMetric:
       type: string
-      enum:
+      x-enum:
         - RUN_DURATION_SECONDS
         - STREAMING_BACKLOG_BYTES
         - STREAMING_BACKLOG_FILES
@@ -6117,14 +6117,14 @@ components:
         streams. This metric is in Public Preview.
     JobsHealthOperator:
       type: string
-      enum:
+      x-enum:
         - GREATER_THAN
       description: >-
         Specifies the operator used to compare the health metric value with the
         specified threshold.
     ModelTriggerConfigurationCondition:
       type: string
-      enum:
+      x-enum:
         - MODEL_ALIAS_SET
         - MODEL_CREATED
         - MODEL_VERSION_READY
@@ -6167,7 +6167,7 @@ components:
         attributes -- see the documentation for details.
     PauseStatus:
       type: string
-      enum:
+      x-enum:
         - PAUSED
         - UNPAUSED
       description: |-
@@ -6209,7 +6209,7 @@ components:
         attributes -- see the documentation for details.
     PerformanceTarget:
       type: string
-      enum:
+      x-enum:
         - PERFORMANCE_OPTIMIZED
         - STANDARD
       description: >-
@@ -6223,7 +6223,7 @@ components:
         cluster-common PerformanceTarget).
     PeriodicTriggerConfigurationTimeUnit:
       type: string
-      enum:
+      x-enum:
         - DAYS
         - HOURS
         - WEEKS
@@ -6266,7 +6266,7 @@ components:
         attributes -- see the documentation for details.
     QueueDetailsCodeCode:
       type: string
-      enum:
+      x-enum:
         - ACTIVE_RUNS_LIMIT_REACHED
         - ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED
         - MAX_CONCURRENT_RUNS_REACHED
@@ -6285,7 +6285,7 @@ components:
         active run job tasks.
     RepairHistoryItemType:
       type: string
-      enum:
+      x-enum:
         - ORIGINAL
         - REPAIR
       description: >-
@@ -6293,7 +6293,7 @@ components:
         run or a repair run.
     RunIf:
       type: string
-      enum:
+      x-enum:
         - ALL_DONE
         - ALL_FAILED
         - ALL_SUCCESS
@@ -6323,7 +6323,7 @@ components:
         dependencies have failed
     RunLifeCycleState:
       type: string
-      enum:
+      x-enum:
         - BLOCKED
         - INTERNAL_ERROR
         - PENDING
@@ -6368,7 +6368,7 @@ components:
         waiting for a retry.
     RunLifecycleStateV2State:
       type: string
-      enum:
+      x-enum:
         - BLOCKED
         - PENDING
         - QUEUED
@@ -6379,7 +6379,7 @@ components:
       description: The current state of the run.
     RunResultState:
       type: string
-      enum:
+      x-enum:
         - CANCELED
         - DISABLED
         - EXCLUDED
@@ -6418,7 +6418,7 @@ components:
         The run was skipped because it was disabled explicitly by the user.
     RunType:
       type: string
-      enum:
+      x-enum:
         - JOB_RUN
         - SUBMIT_RUN
         - WORKFLOW_RUN
@@ -6436,7 +6436,7 @@ components:
         https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow
     Source:
       type: string
-      enum:
+      x-enum:
         - GIT
         - WORKSPACE
       description: >-
@@ -6456,7 +6456,7 @@ components:
         cloud Git provider.
     SqlAlertState:
       type: string
-      enum:
+      x-enum:
         - OK
         - TRIGGERED
         - UNKNOWN
@@ -6470,7 +6470,7 @@ components:
         conditions * TRIGGERED: alert evaluated and fulfilled trigger conditions
     SqlDashboardWidgetOutputStatus:
       type: string
-      enum:
+      x-enum:
         - CANCELLED
         - FAILED
         - PENDING
@@ -6515,7 +6515,7 @@ components:
         attributes -- see the documentation for details.
     StorageMode:
       type: string
-      enum:
+      x-enum:
         - DIRECT_QUERY
         - DUAL
         - IMPORT
@@ -6558,7 +6558,7 @@ components:
         attributes -- see the documentation for details.
     TaskRetryMode:
       type: string
-      enum:
+      x-enum:
         - NEVER
         - ON_FAILURE
       description: >-
@@ -6574,7 +6574,7 @@ components:
         cancelled and a new run is started.
     TerminationCodeCode:
       type: string
-      enum:
+      x-enum:
         - BUDGET_POLICY_LIMIT_EXCEEDED
         - CANCELED
         - CLOUD_FAILURE
@@ -6713,7 +6713,7 @@ components:
         https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now
     TerminationTypeType:
       type: string
-      enum:
+      x-enum:
         - CLIENT_ERROR
         - CLOUD_FAILURE
         - INTERNAL_ERROR
@@ -6737,7 +6737,7 @@ components:
         [status page]: https://status.databricks.com/
     TriggerType:
       type: string
-      enum:
+      x-enum:
         - CONTINUOUS
         - CONTINUOUS_RESTART
         - FILE_ARRIVAL
@@ -6777,13 +6777,13 @@ components:
         * `MODEL`: Indicates a run that is triggered by a model update.
     ViewType:
       type: string
-      enum:
+      x-enum:
         - DASHBOARD
         - NOTEBOOK
       description: '* `NOTEBOOK`: Notebook view item. * `DASHBOARD`: Dashboard view item.'
     ViewsToExport:
       type: string
-      enum:
+      x-enum:
         - ALL
         - CODE
         - DASHBOARDS
@@ -6799,18 +6799,27 @@ components:
       title: Job Runs
       methods:
         cancel_all:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1cancel-all/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         cancel:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1cancel/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1delete/post'
           response:
@@ -6836,12 +6845,18 @@ components:
             openAPIDocKey: '200'
             objectKey: $.runs
         repair:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1repair/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         submit:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1runs~1submit/post'
           response:
@@ -6863,12 +6878,18 @@ components:
       title: Jobs
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1delete/post'
           response:
@@ -6888,18 +6909,27 @@ components:
             openAPIDocKey: '200'
             objectKey: $.jobs
         reset:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1reset/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         run_now:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1run-now/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.2~1jobs~1update/post'
           response:
@@ -6948,12 +6978,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1jobs~1{job_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1jobs~1{job_id}/patch'
           response:
@@ -6992,6 +7028,9 @@ components:
       title: Policy Compliance For Jobs
       methods:
         enforce:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1jobs~1enforce-compliance/post'
           response:
@@ -7022,3 +7061,11 @@ components:
         update: []
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

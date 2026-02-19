@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks serving service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.serving"
   },
   "servers": [
@@ -3067,7 +3067,7 @@
       },
       "AiGatewayGuardrailPiiBehaviorBehavior": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BLOCK",
           "MASK",
           "NONE"
@@ -3076,7 +3076,7 @@
       },
       "AiGatewayRateLimitKey": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "endpoint",
           "service_principal",
           "user",
@@ -3086,14 +3086,14 @@
       },
       "AiGatewayRateLimitRenewalPeriod": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "minute"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "AmazonBedrockConfigBedrockProvider": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ai21labs",
           "amazon",
           "anthropic",
@@ -3103,7 +3103,7 @@
       },
       "ChatMessageRole": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "assistant",
           "system",
           "user"
@@ -3112,14 +3112,14 @@
       },
       "EmbeddingsV1ResponseEmbeddingElementObject": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "embedding"
         ],
         "description": "This will always be 'embedding'."
       },
       "EndpointStateConfigUpdate": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "IN_PROGRESS",
           "NOT_UPDATING",
           "UPDATE_CANCELED",
@@ -3129,7 +3129,7 @@
       },
       "EndpointStateReady": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "NOT_READY",
           "READY"
         ],
@@ -3137,7 +3137,7 @@
       },
       "ExternalFunctionRequestHttpMethod": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELETE",
           "GET",
           "PATCH",
@@ -3148,7 +3148,7 @@
       },
       "ExternalModelProvider": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ai21labs",
           "amazon-bedrock",
           "anthropic",
@@ -3163,7 +3163,7 @@
       },
       "QueryEndpointResponseObject": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "chat.completion",
           "list",
           "text_completion"
@@ -3172,7 +3172,7 @@
       },
       "RateLimitKey": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "endpoint",
           "user"
         ],
@@ -3180,14 +3180,14 @@
       },
       "RateLimitRenewalPeriod": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "minute"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ServedModelInputWorkloadType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CPU",
           "GPU_LARGE",
           "GPU_MEDIUM",
@@ -3198,7 +3198,7 @@
       },
       "ServedModelStateDeployment": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DEPLOYMENT_ABORTED",
           "DEPLOYMENT_CREATING",
           "DEPLOYMENT_FAILED",
@@ -3209,7 +3209,7 @@
       },
       "ServingEndpointDetailedPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_MANAGE",
           "CAN_QUERY",
           "CAN_VIEW"
@@ -3218,7 +3218,7 @@
       },
       "ServingEndpointPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_MANAGE",
           "CAN_QUERY",
           "CAN_VIEW"
@@ -3227,7 +3227,7 @@
       },
       "ServingModelWorkloadType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CPU",
           "GPU_LARGE",
           "GPU_MEDIUM",

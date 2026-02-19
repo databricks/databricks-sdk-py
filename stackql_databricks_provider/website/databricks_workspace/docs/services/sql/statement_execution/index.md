@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>statement_execution</code> reso
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>statement_execution</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="statement_execution" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.statement_execution" /></td></tr>
 </tbody></table>
@@ -174,7 +174,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "format",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ARROW_STREAM, CSV, JSON_ARRAY)"
       },
       {
         "name": "schema",
@@ -209,7 +209,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "type_name",
                 "type": "string",
-                "description": "The name of the base data type. This doesn't include details for complex types such as STRUCT, MAP or ARRAY."
+                "description": "The name of the base data type. This doesn't include details for complex types such as STRUCT, MAP or ARRAY. (ARRAY, BINARY, BOOLEAN, BYTE, CHAR, DATE, DECIMAL, DOUBLE, FLOAT, INT, INTERVAL, LONG, MAP, NULL, SHORT, STRING, STRUCT, TIMESTAMP, USER_DEFINED_TYPE)"
               },
               {
                 "name": "type_precision",
@@ -359,7 +359,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "error_code",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ABORTED, ALREADY_EXISTS, BAD_REQUEST, CANCELLED, DEADLINE_EXCEEDED, INTERNAL_ERROR, IO_ERROR, NOT_FOUND, RESOURCE_EXHAUSTED, SERVICE_UNDER_MAINTENANCE, TEMPORARILY_UNAVAILABLE, UNAUTHENTICATED, UNKNOWN, WORKSPACE_TEMPORARILY_UNAVAILABLE)"
           },
           {
             "name": "message",
@@ -371,7 +371,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running - `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution failed; reason for failure described in accompanying error message - `CANCELED`: user canceled; can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`: execution successful, and statement closed; result no longer available for fetch"
+        "description": "Statement execution state: - `PENDING`: waiting for warehouse - `RUNNING`: running - `SUCCEEDED`: execution was successful, result data available for fetch - `FAILED`: execution failed; reason for failure described in accompanying error message - `CANCELED`: user canceled; can come from explicit cancel call, or timeout with `on_wait_timeout=CANCEL` - `CLOSED`: execution successful, and statement closed; result no longer available for fetch (CANCELED, CLOSED, FAILED, PENDING, RUNNING, SUCCEEDED)"
       }
     ]
   }
@@ -418,7 +418,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#execute"><CopyableCode code="execute" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__statement"><code>data__statement</code></a>, <a href="#parameter-data__warehouse_id"><code>data__warehouse_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-statement"><code>statement</code></a>, <a href="#parameter-warehouse_id"><code>warehouse_id</code></a></td>
     <td></td>
     <td>Execute a SQL statement and optionally await its results for a specified time.</td>
 </tr>
@@ -536,18 +536,18 @@ Execute a SQL statement and optionally await its results for a specified time.
 
 ```sql
 INSERT INTO databricks_workspace.sql.statement_execution (
-data__statement,
-data__warehouse_id,
-data__byte_limit,
-data__catalog,
-data__disposition,
-data__format,
-data__on_wait_timeout,
-data__parameters,
-data__query_tags,
-data__row_limit,
-data__schema,
-data__wait_timeout,
+statement,
+warehouse_id,
+byte_limit,
+catalog,
+disposition,
+format,
+on_wait_timeout,
+parameters,
+query_tags,
+row_limit,
+schema,
+wait_timeout,
 deployment_name
 )
 SELECT 

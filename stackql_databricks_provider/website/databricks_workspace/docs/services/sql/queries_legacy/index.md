@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>queries_legacy</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>queries_legacy</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="queries_legacy" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.queries_legacy" /></td></tr>
 </tbody></table>
@@ -194,7 +194,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type",
             "type": "string",
-            "description": "Parameters can have several different types."
+            "description": "Parameters can have several different types. (datetime, enum, number, query, text)"
           },
           {
             "name": "value",
@@ -218,7 +218,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "permission_tier",
     "type": "string",
-    "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+    "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query (CAN_EDIT, CAN_MANAGE, CAN_RUN, CAN_VIEW)"
   },
   {
     "name": "query",
@@ -233,7 +233,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "run_as_role",
     "type": "string",
-    "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior)"
+    "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior) (owner, viewer)"
   },
   {
     "name": "tags",
@@ -419,7 +419,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "permission_tier",
             "type": "string",
-            "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+            "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query (CAN_EDIT, CAN_MANAGE, CAN_RUN, CAN_VIEW)"
           },
           {
             "name": "query",
@@ -434,7 +434,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "run_as_role",
             "type": "string",
-            "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior)"
+            "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior) (owner, viewer)"
           },
           {
             "name": "tags",
@@ -691,7 +691,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type",
             "type": "string",
-            "description": "Parameters can have several different types."
+            "description": "Parameters can have several different types. (datetime, enum, number, query, text)"
           },
           {
             "name": "value",
@@ -715,7 +715,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "permission_tier",
     "type": "string",
-    "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+    "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query (CAN_EDIT, CAN_MANAGE, CAN_RUN, CAN_VIEW)"
   },
   {
     "name": "query",
@@ -730,7 +730,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "run_as_role",
     "type": "string",
-    "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior)"
+    "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior) (owner, viewer)"
   },
   {
     "name": "tags",
@@ -916,7 +916,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "permission_tier",
             "type": "string",
-            "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+            "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query (CAN_EDIT, CAN_MANAGE, CAN_RUN, CAN_VIEW)"
           },
           {
             "name": "query",
@@ -931,7 +931,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "run_as_role",
             "type": "string",
-            "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior)"
+            "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior) (owner, viewer)"
           },
           {
             "name": "tags",
@@ -1243,14 +1243,14 @@ Creates a new query definition. Queries created with this endpoint belong to the
 
 ```sql
 INSERT INTO databricks_workspace.sql.queries_legacy (
-data__data_source_id,
-data__description,
-data__name,
-data__options,
-data__parent,
-data__query,
-data__run_as_role,
-data__tags,
+data_source_id,
+description,
+name,
+options,
+parent,
+query,
+run_as_role,
+tags,
 deployment_name
 )
 SELECT 
@@ -1352,13 +1352,13 @@ Modify this query definition.
 ```sql
 REPLACE databricks_workspace.sql.queries_legacy
 SET 
-data__data_source_id = '{{ data_source_id }}',
-data__description = '{{ description }}',
-data__name = '{{ name }}',
-data__options = '{{ options }}',
-data__query = '{{ query }}',
-data__run_as_role = '{{ run_as_role }}',
-data__tags = '{{ tags }}'
+data_source_id = '{{ data_source_id }}',
+description = '{{ description }}',
+name = '{{ name }}',
+options = '{{ options }}',
+query = '{{ query }}',
+run_as_role = '{{ run_as_role }}',
+tags = '{{ tags }}'
 WHERE 
 query_id = '{{ query_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

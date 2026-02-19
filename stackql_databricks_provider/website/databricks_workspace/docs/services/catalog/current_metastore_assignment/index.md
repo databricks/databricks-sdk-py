@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>current_metastore_assignment</c
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>current_metastore_assignment</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="current_metastore_assignment" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.current_metastore_assignment" /></td></tr>
 </tbody></table>

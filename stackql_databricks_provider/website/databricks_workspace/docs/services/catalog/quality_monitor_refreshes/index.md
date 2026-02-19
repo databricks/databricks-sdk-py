@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>quality_monitor_refreshes</code
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>quality_monitor_refreshes</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="quality_monitor_refreshes" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.quality_monitor_refreshes" /></td></tr>
 </tbody></table>
@@ -65,12 +65,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The current state of the refresh."
+    "description": "The current state of the refresh. (CANCELED, FAILED, PENDING, RUNNING, SUCCESS, UNKNOWN)"
   },
   {
     "name": "trigger",
     "type": "string",
-    "description": "The method by which the refresh was triggered."
+    "description": "The method by which the refresh was triggered. (MANUAL, SCHEDULE, UNKNOWN_TRIGGER)"
   }
 ]} />
 </TabItem>
@@ -90,7 +90,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "The current state of the refresh."
+        "description": "The current state of the refresh. (CANCELED, FAILED, PENDING, RUNNING, SUCCESS, UNKNOWN)"
       },
       {
         "name": "start_time_ms",
@@ -110,7 +110,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "trigger",
         "type": "string",
-        "description": "The method by which the refresh was triggered."
+        "description": "The method by which the refresh was triggered. (MANUAL, SCHEDULE, UNKNOWN_TRIGGER)"
       }
     ]
   }

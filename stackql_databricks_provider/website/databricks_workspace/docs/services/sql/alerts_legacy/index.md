@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>alerts_legacy</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>alerts_legacy</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="alerts_legacy" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.alerts_legacy" /></td></tr>
 </tbody></table>
@@ -95,7 +95,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "empty_result_state",
         "type": "string",
-        "description": "State that alert evaluates to when query result is empty."
+        "description": "State that alert evaluates to when query result is empty. (ok, triggered, unknown)"
       },
       {
         "name": "muted",
@@ -202,7 +202,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "type",
                 "type": "string",
-                "description": "Parameters can have several different types."
+                "description": "Parameters can have several different types. (datetime, enum, number, query, text)"
               },
               {
                 "name": "value",
@@ -248,7 +248,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."
+    "description": "State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions). (ok, triggered, unknown)"
   },
   {
     "name": "updated_at",
@@ -335,7 +335,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "empty_result_state",
         "type": "string",
-        "description": "State that alert evaluates to when query result is empty."
+        "description": "State that alert evaluates to when query result is empty. (ok, triggered, unknown)"
       },
       {
         "name": "muted",
@@ -442,7 +442,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "type",
                 "type": "string",
-                "description": "Parameters can have several different types."
+                "description": "Parameters can have several different types. (datetime, enum, number, query, text)"
               },
               {
                 "name": "value",
@@ -488,7 +488,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions)."
+    "description": "State of the alert. Possible values are: `unknown` (yet to be evaluated), `triggered` (evaluated and fulfilled trigger conditions), or `ok` (evaluated and did not fulfill trigger conditions). (ok, triggered, unknown)"
   },
   {
     "name": "updated_at",
@@ -553,14 +553,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__options"><code>data__options</code></a>, <a href="#parameter-data__query_id"><code>data__query_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-query_id"><code>query_id</code></a></td>
     <td></td>
     <td>Creates an alert. An alert is a Databricks SQL object that periodically runs a query, evaluates a</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__options"><code>data__options</code></a>, <a href="#parameter-data__query_id"><code>data__query_id</code></a></td>
+    <td><a href="#parameter-alert_id"><code>alert_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-query_id"><code>query_id</code></a></td>
     <td></td>
     <td>Updates an alert.</td>
 </tr>
@@ -672,11 +672,11 @@ Creates an alert. An alert is a Databricks SQL object that periodically runs a q
 
 ```sql
 INSERT INTO databricks_workspace.sql.alerts_legacy (
-data__name,
-data__options,
-data__query_id,
-data__parent,
-data__rearm,
+name,
+options,
+query_id,
+parent,
+rearm,
 deployment_name
 )
 SELECT 
@@ -750,16 +750,16 @@ Updates an alert.
 ```sql
 REPLACE databricks_workspace.sql.alerts_legacy
 SET 
-data__name = '{{ name }}',
-data__options = '{{ options }}',
-data__query_id = '{{ query_id }}',
-data__rearm = '{{ rearm }}'
+name = '{{ name }}',
+options = '{{ options }}',
+query_id = '{{ query_id }}',
+rearm = '{{ rearm }}'
 WHERE 
 alert_id = '{{ alert_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__name = '{{ name }}' --required
-AND data__options = '{{ options }}' --required
-AND data__query_id = '{{ query_id }}' --required;
+AND name = '{{ name }}' --required
+AND options = '{{ options }}' --required
+AND query_id = '{{ query_id }}' --required;
 ```
 </TabItem>
 </Tabs>

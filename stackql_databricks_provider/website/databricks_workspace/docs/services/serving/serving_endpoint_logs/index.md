@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>serving_endpoint_logs</code> re
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>serving_endpoint_logs</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="serving_endpoint_logs" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.serving.serving_endpoint_logs" /></td></tr>
 </tbody></table>

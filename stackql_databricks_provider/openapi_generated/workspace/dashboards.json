@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks dashboards service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.dashboards"
   },
   "servers": [
@@ -3475,14 +3475,14 @@
       },
       "DashboardView": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DASHBOARD_VIEW_BASIC"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "GenieFeedbackRating": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "NEGATIVE",
           "NONE",
           "POSITIVE"
@@ -3491,7 +3491,7 @@
       },
       "LifecycleState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "TRASHED"
         ],
@@ -3499,7 +3499,7 @@
       },
       "MessageErrorType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BLOCK_MULTIPLE_EXECUTIONS_EXCEPTION",
           "CHAT_COMPLETION_CLIENT_EXCEPTION",
           "CHAT_COMPLETION_CLIENT_TIMEOUT_EXCEPTION",
@@ -3565,7 +3565,7 @@
       },
       "MessageStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ASKING_AI",
           "CANCELLED",
           "COMPLETED",
@@ -3581,7 +3581,7 @@
       },
       "SchedulePauseStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PAUSED",
           "UNPAUSED"
         ],
@@ -3589,7 +3589,7 @@
       },
       "TextAttachmentPurpose": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FOLLOW_UP_QUESTION"
         ],
         "description": "Purpose/intent of a text attachment"

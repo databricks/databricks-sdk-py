@@ -6,7 +6,7 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.dataquality
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -1405,7 +1405,7 @@ components:
       description: Time series analysis configuration.
     AggregationGranularity:
       type: string
-      enum:
+      x-enum:
         - AGGREGATION_GRANULARITY_1_DAY
         - AGGREGATION_GRANULARITY_1_HOUR
         - AGGREGATION_GRANULARITY_1_MONTH
@@ -1421,20 +1421,20 @@ components:
         timestamp.
     CronSchedulePauseStatus:
       type: string
-      enum:
+      x-enum:
         - CRON_SCHEDULE_PAUSE_STATUS_PAUSED
         - CRON_SCHEDULE_PAUSE_STATUS_UNPAUSED
       description: The data quality monitoring workflow cron schedule pause status.
     DataProfilingCustomMetricType:
       type: string
-      enum:
+      x-enum:
         - DATA_PROFILING_CUSTOM_METRIC_TYPE_AGGREGATE
         - DATA_PROFILING_CUSTOM_METRIC_TYPE_DERIVED
         - DATA_PROFILING_CUSTOM_METRIC_TYPE_DRIFT
       description: The custom metric type.
     DataProfilingStatus:
       type: string
-      enum:
+      x-enum:
         - DATA_PROFILING_STATUS_ACTIVE
         - DATA_PROFILING_STATUS_DELETE_PENDING
         - DATA_PROFILING_STATUS_ERROR
@@ -1443,13 +1443,13 @@ components:
       description: The status of the data profiling monitor.
     InferenceProblemType:
       type: string
-      enum:
+      x-enum:
         - INFERENCE_PROBLEM_TYPE_CLASSIFICATION
         - INFERENCE_PROBLEM_TYPE_REGRESSION
       description: Inference problem type the model aims to solve.
     RefreshState:
       type: string
-      enum:
+      x-enum:
         - MONITOR_REFRESH_STATE_CANCELED
         - MONITOR_REFRESH_STATE_FAILED
         - MONITOR_REFRESH_STATE_PENDING
@@ -1459,7 +1459,7 @@ components:
       description: The state of the refresh.
     RefreshTrigger:
       type: string
-      enum:
+      x-enum:
         - MONITOR_REFRESH_TRIGGER_DATA_CHANGE
         - MONITOR_REFRESH_TRIGGER_MANUAL
         - MONITOR_REFRESH_TRIGGER_SCHEDULE
@@ -1479,6 +1479,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes/post
@@ -1508,6 +1511,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}~1refreshes~1{refresh_id}/patch
@@ -1536,6 +1542,9 @@ components:
       title: Data Quality
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~1data-quality~1v1~1monitors/post'
           response:
@@ -1563,6 +1572,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~1data-quality~1v1~1monitors~1{object_type}~1{object_id}/patch
@@ -1580,3 +1592,11 @@ components:
         delete:
           - $ref: '#/components/x-stackQL-resources/data_quality/methods/delete'
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

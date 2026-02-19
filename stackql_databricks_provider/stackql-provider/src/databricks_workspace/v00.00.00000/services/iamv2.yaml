@@ -1,44 +1,32 @@
 openapi: 3.0.0
 info:
   title: Databricks Iamv2 API (workspace)
-  description: >-
-    OpenAPI specification for the Databricks iamv2 service (workspace-level
-    APIs), generated from the Databricks Python SDK.
+  description: OpenAPI specification for the Databricks iamv2 service (workspace-level APIs), generated from the Databricks
+    Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.iamv2
 servers:
-  - url: https://{deployment_name}.cloud.databricks.com
-    variables:
-      deployment_name:
-        description: The Databricks Workspace Deployment Name
-        default: dbc-abcd0123-a1bc
+- url: https://{deployment_name}.cloud.databricks.com
+  variables:
+    deployment_name:
+      description: The Databricks Workspace Deployment Name
+      default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/identity/workspaceAccessDetails/{principal_id}:
     get:
       operationId: workspace_iam_v2_get_workspace_access_detail_local
-      summary: >-
-        Returns the access details for a principal in the current workspace.
-        Allows for checking access
+      summary: Returns the access details for a principal in the current workspace. Allows for checking access
       tags:
-        - iamv2
-        - workspace_iam_v2
-      description: >-
-        Returns the access details for a principal in the current workspace.
-        Allows for checking access
-
-        details for any provisioned principal (user, service principal, or
-        group) in the current workspace. *
-
-        Provisioned principal here refers to one that has been synced into
-        Databricks from the customer's IdP
-
-        or added explicitly to Databricks via SCIM/UI. Allows for passing in a
-        "view" parameter to control
-
+      - iamv2
+      - workspace_iam_v2
+      description: |-
+        Returns the access details for a principal in the current workspace. Allows for checking access
+        details for any provisioned principal (user, service principal, or group) in the current workspace. *
+        Provisioned principal here refers to one that has been synced into Databricks from the customer's IdP
+        or added explicitly to Databricks via SCIM/UI. Allows for passing in a "view" parameter to control
         what fields are returned (BASIC by default or FULL).
-
 
         :param principal_id: int
           Required. The internal ID of the principal (user/sp/group) for which the access details are being
@@ -48,20 +36,18 @@ paths:
 
         :returns: :class:`WorkspaceAccessDetail`
       parameters:
-        - name: principal_id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: >-
-            Required. The internal ID of the principal (user/sp/group) for which
-            the access details are being requested.
-        - name: view
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Controls what fields are returned.
+      - name: principal_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: Required. The internal ID of the principal (user/sp/group) for which the access details are being requested.
+      - name: view
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Controls what fields are returned.
       responses:
         '200':
           description: Success
@@ -84,21 +70,14 @@ paths:
   /api/2.0/identity/groups/resolveByExternalId:
     post:
       operationId: workspace_iam_v2_resolve_group_proxy
-      summary: >-
-        Resolves a group with the given external ID from the customer's IdP. If
-        the group does not exist, it
+      summary: Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
       tags:
-        - iamv2
-        - workspace_iam_v2
-      description: >-
-        Resolves a group with the given external ID from the customer's IdP. If
-        the group does not exist, it
-
-        will be created in the account. If the customer is not onboarded onto
-        Automatic Identity Management
-
+      - iamv2
+      - workspace_iam_v2
+      description: |-
+        Resolves a group with the given external ID from the customer's IdP. If the group does not exist, it
+        will be created in the account. If the customer is not onboarded onto Automatic Identity Management
         (AIM), this will return an error.
-
 
         :param external_id: str
           Required. The external ID of the group in the customer's IdP.
@@ -112,11 +91,9 @@ paths:
               properties:
                 external_id:
                   type: string
-                  description: >-
-                    Required. The external ID of the group in the customer's
-                    IdP.
+                  description: Required. The external ID of the group in the customer's IdP.
               required:
-                - external_id
+              - external_id
       responses:
         '200':
           description: Success
@@ -139,21 +116,14 @@ paths:
   /api/2.0/identity/servicePrincipals/resolveByExternalId:
     post:
       operationId: workspace_iam_v2_resolve_service_principal_proxy
-      summary: >-
-        Resolves an SP with the given external ID from the customer's IdP. If
-        the SP does not exist, it will
+      summary: Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will
       tags:
-        - iamv2
-        - workspace_iam_v2
-      description: >-
-        Resolves an SP with the given external ID from the customer's IdP. If
-        the SP does not exist, it will
-
-        be created. If the customer is not onboarded onto Automatic Identity
-        Management (AIM), this will
-
+      - iamv2
+      - workspace_iam_v2
+      description: |-
+        Resolves an SP with the given external ID from the customer's IdP. If the SP does not exist, it will
+        be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
         return an error.
-
 
         :param external_id: str
           Required. The external ID of the service principal in the customer's IdP.
@@ -167,11 +137,9 @@ paths:
               properties:
                 external_id:
                   type: string
-                  description: >-
-                    Required. The external ID of the service principal in the
-                    customer's IdP.
+                  description: Required. The external ID of the service principal in the customer's IdP.
               required:
-                - external_id
+              - external_id
       responses:
         '200':
           description: Success
@@ -194,21 +162,14 @@ paths:
   /api/2.0/identity/users/resolveByExternalId:
     post:
       operationId: workspace_iam_v2_resolve_user_proxy
-      summary: >-
-        Resolves a user with the given external ID from the customer's IdP. If
-        the user does not exist, it
+      summary: Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it
       tags:
-        - iamv2
-        - workspace_iam_v2
-      description: >-
-        Resolves a user with the given external ID from the customer's IdP. If
-        the user does not exist, it
-
-        will be created. If the customer is not onboarded onto Automatic
-        Identity Management (AIM), this will
-
+      - iamv2
+      - workspace_iam_v2
+      description: |-
+        Resolves a user with the given external ID from the customer's IdP. If the user does not exist, it
+        will be created. If the customer is not onboarded onto Automatic Identity Management (AIM), this will
         return an error.
-
 
         :param external_id: str
           Required. The external ID of the user in the customer's IdP.
@@ -224,7 +185,7 @@ paths:
                   type: string
                   description: Required. The external ID of the user in the customer's IdP.
               required:
-                - external_id
+              - external_id
       responses:
         '200':
           description: Success
@@ -297,9 +258,7 @@ components:
           description: ExternalId of the service principal in the customer's IdP.
         internal_id:
           type: integer
-          description: >-
-            Internal service principal ID of the service principal in
-            Databricks.
+          description: Internal service principal ID of the service principal in Databricks.
       description: The details of a ServicePrincipal resource.
     User:
       type: object
@@ -336,9 +295,7 @@ components:
           $ref: '#/components/schemas/WorkspaceAccessDetailAccessType'
         account_id:
           type: string
-          description: >-
-            The account ID parent of the workspace where the principal has
-            access.
+          description: The account ID parent of the workspace where the principal has access.
         permissions:
           type: array
           items:
@@ -351,47 +308,41 @@ components:
           $ref: '#/components/schemas/PrincipalType'
         status:
           $ref: '#/components/schemas/State'
-          description: >-
-            The activity status of the principal in the workspace. Not
-            applicable for groups at the moment.
+          description: The activity status of the principal in the workspace. Not applicable for groups at the moment.
         workspace_id:
           type: integer
           description: The workspace ID where the principal has access.
       description: The details of a principal's access to a workspace.
     PrincipalType:
       type: string
-      enum:
-        - GROUP
-        - SERVICE_PRINCIPAL
-        - USER
+      x-enum:
+      - GROUP
+      - SERVICE_PRINCIPAL
+      - USER
       description: The type of the principal (user/sp/group).
     State:
       type: string
-      enum:
-        - ACTIVE
-        - INACTIVE
-      description: >-
-        The activity status of a user or service principal in a Databricks
-        account or workspace.
+      x-enum:
+      - ACTIVE
+      - INACTIVE
+      description: The activity status of a user or service principal in a Databricks account or workspace.
     WorkspaceAccessDetailAccessType:
       type: string
-      enum:
-        - DIRECT
-        - INDIRECT
+      x-enum:
+      - DIRECT
+      - INDIRECT
       description: The type of access the principal has to the workspace.
     WorkspaceAccessDetailView:
       type: string
-      enum:
-        - BASIC
-        - FULL
-      description: >-
-        Controls what fields are returned in the GetWorkspaceAccessDetail
-        response.
+      x-enum:
+      - BASIC
+      - FULL
+      description: Controls what fields are returned in the GetWorkspaceAccessDetail response.
     WorkspacePermission:
       type: string
-      enum:
-        - ADMIN_PERMISSION
-        - USER_PERMISSION
+      x-enum:
+      - ADMIN_PERMISSION
+      - USER_PERMISSION
       description: The type of permission a principal has to a workspace (admin/user).
   x-stackQL-resources:
     workspace_iam_v2:
@@ -401,25 +352,32 @@ components:
       methods:
         get_workspace_access_detail_local:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1identity~1workspaceAccessDetails~1{principal_id}/get
+            $ref: '#/paths/~1api~12.0~1identity~1workspaceAccessDetails~1{principal_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         resolve_group_proxy:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1identity~1groups~1resolveByExternalId/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         resolve_service_principal_proxy:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1identity~1servicePrincipals~1resolveByExternalId/post
+            $ref: '#/paths/~1api~12.0~1identity~1servicePrincipals~1resolveByExternalId/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         resolve_user_proxy:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1identity~1users~1resolveByExternalId/post'
           response:
@@ -427,9 +385,79 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspace_iam_v2/methods/get_workspace_access_detail_local
+        - $ref: '#/components/x-stackQL-resources/workspace_iam_v2/methods/get_workspace_access_detail_local'
         insert: []
         update: []
         delete: []
         replace: []
+    vw_workspace_access_details:
+      name: vw_workspace_access_details
+      id: databricks_workspace.iamv2.vw_workspace_access_details
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: principal_id
+            type: string
+            description: Unique identifier of the principal whose workspace access is being queried.
+          - name: principal_type
+            type: string
+            description: Type of the principal (e.g. USER, GROUP, SERVICE_PRINCIPAL).
+          - name: access_type
+            type: string
+            description: How the principal was granted access to the workspace (e.g. DIRECT, ACCOUNT_ADMIN).
+          - name: status
+            type: string
+            description: Current access status of the principal on the workspace (e.g. ACTIVE).
+          - name: account_id
+            type: string
+            description: Databricks account ID that owns the workspace.
+          - name: workspace_id
+            type: integer
+            description: Numeric identifier of the workspace.
+          - name: permission
+            type: string
+            description: Permission level granted to the principal on the workspace (one row per permission, e.g. USER, ADMIN).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                wa.deployment_name,
+                wa.principal_id,
+                wa.principal_type,
+                wa.access_type,
+                wa.status,
+                wa.account_id,
+                wa.workspace_id,
+                p.value AS permission
+              FROM databricks_workspace.iamv2.workspace_iam_v2 wa,
+                   JSON_EACH(wa.permissions) p
+              WHERE wa.deployment_name = '{{ deployment_name }}'
+              AND wa.principal_id = '{{ principal_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  wa.deployment_name,
+                  wa.principal_id,
+                  wa.principal_type,
+                  wa.access_type,
+                  wa.status,
+                  wa.account_id,
+                  wa.workspace_id,
+                  p.value AS permission
+                FROM databricks_workspace.iamv2.workspace_iam_v2 wa,
+                     jsonb_array_elements(wa.permissions::jsonb) AS p
+                WHERE wa.deployment_name = '{{ deployment_name }}'
+                AND wa.principal_id = '{{ principal_id }}'
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

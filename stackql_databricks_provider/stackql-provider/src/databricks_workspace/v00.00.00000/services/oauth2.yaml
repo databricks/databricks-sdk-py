@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.oauth2
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -524,6 +524,9 @@ components:
       title: Service Principal Secrets
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1servicePrincipals~1{service_principal_id}~1credentials~1secrets/post
@@ -557,3 +560,11 @@ components:
           - $ref: >-
               #/components/x-stackQL-resources/service_principal_secrets/methods/delete
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

@@ -1,0 +1,351 @@
+    vw_apps:
+      name: vw_apps
+      id: databricks_workspace.apps.vw_apps
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: name
+            type: string
+            description: Unique name of the Databricks app within the workspace.
+          - name: id
+            type: string
+            description: Unique identifier for the app.
+          - name: description
+            type: string
+            description: Optional description of the app.
+          - name: url
+            type: string
+            description: URL at which the app is accessible.
+          - name: creator
+            type: string
+            description: Username of the user who created the app.
+          - name: create_time
+            type: string
+            description: Timestamp when the app was created (ISO 8601).
+          - name: updater
+            type: string
+            description: Username of the user who last updated the app.
+          - name: update_time
+            type: string
+            description: Timestamp when the app was last updated (ISO 8601).
+          - name: compute_size
+            type: string
+            description: Compute size tier for the app (e.g. SMALL, MEDIUM, LARGE).
+          - name: budget_policy_id
+            type: string
+            description: ID of the budget policy explicitly assigned to this app.
+          - name: effective_budget_policy_id
+            type: string
+            description: ID of the budget policy in effect for this app (may be inherited).
+          - name: service_principal_id
+            type: integer
+            description: ID of the service principal used by this app.
+          - name: service_principal_name
+            type: string
+            description: Display name of the service principal used by this app.
+          - name: service_principal_client_id
+            type: string
+            description: OAuth client ID of the service principal used by this app.
+          - name: default_source_code_path
+            type: string
+            description: Default workspace path to the app source code.
+          - name: app_state
+            type: string
+            description: Current lifecycle state of the app (e.g. RUNNING, STOPPED, ERROR).
+          - name: app_status_message
+            type: string
+            description: Human-readable message describing the current app state.
+          - name: compute_state
+            type: string
+            description: Current state of the app compute resources (e.g. ACTIVE, STOPPING, ERROR).
+          - name: compute_status_message
+            type: string
+            description: Human-readable message describing the current compute state.
+          - name: compute_active_instances
+            type: integer
+            description: Number of active compute instances currently running for the app.
+          - name: git_repo_url
+            type: string
+            description: URL of the linked Git repository (if configured).
+          - name: git_repo_provider
+            type: string
+            description: Git provider for the linked repository (e.g. github, gitLab, azureDevOpsServices).
+          - name: active_deployment_id
+            type: string
+            description: Deployment ID of the currently active deployment.
+          - name: active_deployment_source_path
+            type: string
+            description: Workspace source code path used by the active deployment.
+          - name: active_deployment_mode
+            type: string
+            description: Deployment mode of the active deployment (e.g. SNAPSHOT, AUTO_SYNC).
+          - name: active_deployment_state
+            type: string
+            description: State of the active deployment (e.g. SUCCEEDED, IN_PROGRESS, FAILED).
+          - name: active_deployment_message
+            type: string
+            description: Human-readable status message for the active deployment.
+          - name: active_deployment_creator
+            type: string
+            description: Username of the user who created the active deployment.
+          - name: active_deployment_create_time
+            type: string
+            description: Timestamp when the active deployment was created (ISO 8601).
+          - name: pending_deployment_id
+            type: string
+            description: Deployment ID of the pending deployment, if one is in progress.
+          - name: pending_deployment_state
+            type: string
+            description: State of the pending deployment (e.g. IN_PROGRESS, FAILED).
+          - name: pending_deployment_message
+            type: string
+            description: Human-readable status message for the pending deployment.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                a.deployment_name,
+                a.name,
+                a.id,
+                a.description,
+                a.url,
+                a.creator,
+                a.create_time,
+                a.updater,
+                a.update_time,
+                a.compute_size,
+                a.budget_policy_id,
+                a.effective_budget_policy_id,
+                a.service_principal_id,
+                a.service_principal_name,
+                a.service_principal_client_id,
+                a.default_source_code_path,
+                JSON_EXTRACT(a.app_status, '$.state') AS app_state,
+                JSON_EXTRACT(a.app_status, '$.message') AS app_status_message,
+                JSON_EXTRACT(a.compute_status, '$.state') AS compute_state,
+                JSON_EXTRACT(a.compute_status, '$.message') AS compute_status_message,
+                JSON_EXTRACT(a.compute_status, '$.active_instances') AS compute_active_instances,
+                JSON_EXTRACT(a.git_repository, '$.url') AS git_repo_url,
+                JSON_EXTRACT(a.git_repository, '$.provider') AS git_repo_provider,
+                JSON_EXTRACT(a.active_deployment, '$.deployment_id') AS active_deployment_id,
+                JSON_EXTRACT(a.active_deployment, '$.source_code_path') AS active_deployment_source_path,
+                JSON_EXTRACT(a.active_deployment, '$.mode') AS active_deployment_mode,
+                JSON_EXTRACT(a.active_deployment, '$.status.state') AS active_deployment_state,
+                JSON_EXTRACT(a.active_deployment, '$.status.message') AS active_deployment_message,
+                JSON_EXTRACT(a.active_deployment, '$.creator') AS active_deployment_creator,
+                JSON_EXTRACT(a.active_deployment, '$.create_time') AS active_deployment_create_time,
+                JSON_EXTRACT(a.pending_deployment, '$.deployment_id') AS pending_deployment_id,
+                JSON_EXTRACT(a.pending_deployment, '$.status.state') AS pending_deployment_state,
+                JSON_EXTRACT(a.pending_deployment, '$.status.message') AS pending_deployment_message
+              FROM databricks_workspace.apps.apps a
+              WHERE deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  a.deployment_name,
+                  a.name,
+                  a.id,
+                  a.description,
+                  a.url,
+                  a.creator,
+                  a.create_time,
+                  a.updater,
+                  a.update_time,
+                  a.compute_size,
+                  a.budget_policy_id,
+                  a.effective_budget_policy_id,
+                  a.service_principal_id,
+                  a.service_principal_name,
+                  a.service_principal_client_id,
+                  a.default_source_code_path,
+                  a.app_status->>'state' AS app_state,
+                  a.app_status->>'message' AS app_status_message,
+                  a.compute_status->>'state' AS compute_state,
+                  a.compute_status->>'message' AS compute_status_message,
+                  (a.compute_status->>'active_instances')::integer AS compute_active_instances,
+                  a.git_repository->>'url' AS git_repo_url,
+                  a.git_repository->>'provider' AS git_repo_provider,
+                  a.active_deployment->>'deployment_id' AS active_deployment_id,
+                  a.active_deployment->>'source_code_path' AS active_deployment_source_path,
+                  a.active_deployment->>'mode' AS active_deployment_mode,
+                  a.active_deployment->'status'->>'state' AS active_deployment_state,
+                  a.active_deployment->'status'->>'message' AS active_deployment_message,
+                  a.active_deployment->>'creator' AS active_deployment_creator,
+                  a.active_deployment->>'create_time' AS active_deployment_create_time,
+                  a.pending_deployment->>'deployment_id' AS pending_deployment_id,
+                  a.pending_deployment->'status'->>'state' AS pending_deployment_state,
+                  a.pending_deployment->'status'->>'message' AS pending_deployment_message
+                FROM databricks_workspace.apps.apps a
+                WHERE deployment_name = '{{ deployment_name }}'
+
+    vw_app_resources:
+      name: vw_app_resources
+      id: databricks_workspace.apps.vw_app_resources
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: app_name
+            type: string
+            description: Name of the app that owns this resource binding.
+          - name: app_id
+            type: string
+            description: ID of the app that owns this resource binding.
+          - name: resource_name
+            type: string
+            description: Name used to reference this resource within the app (one row per resource).
+          - name: resource_description
+            type: string
+            description: Optional description of the resource binding.
+          - name: resource_type
+            type: string
+            description: Derived resource type - one of JOB, SQL_WAREHOUSE, SERVING_ENDPOINT, SECRET, EXPERIMENT, DATABASE, GENIE_SPACE, UC_SECURABLE, or UNKNOWN.
+          - name: job_id
+            type: string
+            description: ID of the bound Databricks job (JOB type only).
+          - name: job_permission
+            type: string
+            description: Permission level granted to the app on the job (JOB type only).
+          - name: sql_warehouse_id
+            type: string
+            description: ID of the bound SQL warehouse (SQL_WAREHOUSE type only).
+          - name: sql_warehouse_permission
+            type: string
+            description: Permission level granted to the app on the SQL warehouse (SQL_WAREHOUSE type only).
+          - name: serving_endpoint_name
+            type: string
+            description: Name of the bound model serving endpoint (SERVING_ENDPOINT type only).
+          - name: serving_endpoint_permission
+            type: string
+            description: Permission level granted to the app on the serving endpoint (SERVING_ENDPOINT type only).
+          - name: secret_scope
+            type: string
+            description: Secret scope containing the bound secret (SECRET type only).
+          - name: secret_key
+            type: string
+            description: Key of the bound secret within the scope (SECRET type only).
+          - name: secret_permission
+            type: string
+            description: Permission level granted to the app on the secret (SECRET type only).
+          - name: experiment_id
+            type: string
+            description: ID of the bound MLflow experiment (EXPERIMENT type only).
+          - name: experiment_permission
+            type: string
+            description: Permission level granted to the app on the experiment (EXPERIMENT type only).
+          - name: database_instance
+            type: string
+            description: Instance name of the bound Databricks database (DATABASE type only).
+          - name: database_name
+            type: string
+            description: Name of the bound database (DATABASE type only).
+          - name: database_permission
+            type: string
+            description: Permission level granted to the app on the database (DATABASE type only).
+          - name: genie_space_id
+            type: string
+            description: ID of the bound Genie space (GENIE_SPACE type only).
+          - name: genie_space_permission
+            type: string
+            description: Permission level granted to the app on the Genie space (GENIE_SPACE type only).
+          - name: uc_securable_name
+            type: string
+            description: Full name of the bound Unity Catalog securable (UC_SECURABLE type only).
+          - name: uc_securable_type
+            type: string
+            description: Type of the Unity Catalog securable (e.g. TABLE, SCHEMA, CATALOG) (UC_SECURABLE type only).
+          - name: uc_securable_permission
+            type: string
+            description: Permission level granted to the app on the Unity Catalog securable (UC_SECURABLE type only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                a.deployment_name,
+                a.name AS app_name,
+                a.id AS app_id,
+                JSON_EXTRACT(r.value, '$.name') AS resource_name,
+                JSON_EXTRACT(r.value, '$.description') AS resource_description,
+                CASE
+                  WHEN JSON_EXTRACT(r.value, '$.job') IS NOT NULL THEN 'JOB'
+                  WHEN JSON_EXTRACT(r.value, '$.sql_warehouse') IS NOT NULL THEN 'SQL_WAREHOUSE'
+                  WHEN JSON_EXTRACT(r.value, '$.serving_endpoint') IS NOT NULL THEN 'SERVING_ENDPOINT'
+                  WHEN JSON_EXTRACT(r.value, '$.secret') IS NOT NULL THEN 'SECRET'
+                  WHEN JSON_EXTRACT(r.value, '$.experiment') IS NOT NULL THEN 'EXPERIMENT'
+                  WHEN JSON_EXTRACT(r.value, '$.database') IS NOT NULL THEN 'DATABASE'
+                  WHEN JSON_EXTRACT(r.value, '$.genie_space') IS NOT NULL THEN 'GENIE_SPACE'
+                  WHEN JSON_EXTRACT(r.value, '$.uc_securable') IS NOT NULL THEN 'UC_SECURABLE'
+                  ELSE 'UNKNOWN'
+                END AS resource_type,
+                JSON_EXTRACT(r.value, '$.job.id') AS job_id,
+                JSON_EXTRACT(r.value, '$.job.permission') AS job_permission,
+                JSON_EXTRACT(r.value, '$.sql_warehouse.id') AS sql_warehouse_id,
+                JSON_EXTRACT(r.value, '$.sql_warehouse.permission') AS sql_warehouse_permission,
+                JSON_EXTRACT(r.value, '$.serving_endpoint.name') AS serving_endpoint_name,
+                JSON_EXTRACT(r.value, '$.serving_endpoint.permission') AS serving_endpoint_permission,
+                JSON_EXTRACT(r.value, '$.secret.scope') AS secret_scope,
+                JSON_EXTRACT(r.value, '$.secret.key') AS secret_key,
+                JSON_EXTRACT(r.value, '$.secret.permission') AS secret_permission,
+                JSON_EXTRACT(r.value, '$.experiment.experiment_id') AS experiment_id,
+                JSON_EXTRACT(r.value, '$.experiment.permission') AS experiment_permission,
+                JSON_EXTRACT(r.value, '$.database.instance_name') AS database_instance,
+                JSON_EXTRACT(r.value, '$.database.database_name') AS database_name,
+                JSON_EXTRACT(r.value, '$.database.permission') AS database_permission,
+                JSON_EXTRACT(r.value, '$.genie_space.space_id') AS genie_space_id,
+                JSON_EXTRACT(r.value, '$.genie_space.permission') AS genie_space_permission,
+                JSON_EXTRACT(r.value, '$.uc_securable.securable_full_name') AS uc_securable_name,
+                JSON_EXTRACT(r.value, '$.uc_securable.securable_type') AS uc_securable_type,
+                JSON_EXTRACT(r.value, '$.uc_securable.permission') AS uc_securable_permission
+              FROM databricks_workspace.apps.apps a,
+                   JSON_EACH(a.resources) r
+              WHERE deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  a.deployment_name,
+                  a.name AS app_name,
+                  a.id AS app_id,
+                  r.value->>'name' AS resource_name,
+                  r.value->>'description' AS resource_description,
+                  CASE
+                    WHEN r.value->'job' IS NOT NULL THEN 'JOB'
+                    WHEN r.value->'sql_warehouse' IS NOT NULL THEN 'SQL_WAREHOUSE'
+                    WHEN r.value->'serving_endpoint' IS NOT NULL THEN 'SERVING_ENDPOINT'
+                    WHEN r.value->'secret' IS NOT NULL THEN 'SECRET'
+                    WHEN r.value->'experiment' IS NOT NULL THEN 'EXPERIMENT'
+                    WHEN r.value->'database' IS NOT NULL THEN 'DATABASE'
+                    WHEN r.value->'genie_space' IS NOT NULL THEN 'GENIE_SPACE'
+                    WHEN r.value->'uc_securable' IS NOT NULL THEN 'UC_SECURABLE'
+                    ELSE 'UNKNOWN'
+                  END AS resource_type,
+                  r.value->'job'->>'id' AS job_id,
+                  r.value->'job'->>'permission' AS job_permission,
+                  r.value->'sql_warehouse'->>'id' AS sql_warehouse_id,
+                  r.value->'sql_warehouse'->>'permission' AS sql_warehouse_permission,
+                  r.value->'serving_endpoint'->>'name' AS serving_endpoint_name,
+                  r.value->'serving_endpoint'->>'permission' AS serving_endpoint_permission,
+                  r.value->'secret'->>'scope' AS secret_scope,
+                  r.value->'secret'->>'key' AS secret_key,
+                  r.value->'secret'->>'permission' AS secret_permission,
+                  r.value->'experiment'->>'experiment_id' AS experiment_id,
+                  r.value->'experiment'->>'permission' AS experiment_permission,
+                  r.value->'database'->>'instance_name' AS database_instance,
+                  r.value->'database'->>'database_name' AS database_name,
+                  r.value->'database'->>'permission' AS database_permission,
+                  r.value->'genie_space'->>'space_id' AS genie_space_id,
+                  r.value->'genie_space'->>'permission' AS genie_space_permission,
+                  r.value->'uc_securable'->>'securable_full_name' AS uc_securable_name,
+                  r.value->'uc_securable'->>'securable_type' AS uc_securable_type,
+                  r.value->'uc_securable'->>'permission' AS uc_securable_permission
+                FROM databricks_workspace.apps.apps a,
+                     jsonb_array_elements(a.resources::jsonb) AS r
+                WHERE deployment_name = '{{ deployment_name }}'

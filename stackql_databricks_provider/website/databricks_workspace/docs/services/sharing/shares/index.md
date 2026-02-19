@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>shares</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>shares</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="shares" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sharing.shares" /></td></tr>
 </tbody></table>
@@ -100,12 +100,12 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "data_object_type",
         "type": "string",
-        "description": "The type of the data object."
+        "description": "The type of the data object. (FEATURE_SPEC, FOREIGN_TABLE, FUNCTION, MATERIALIZED_VIEW, MODEL, NOTEBOOK_FILE, SCHEMA, STREAMING_TABLE, TABLE, VIEW, VOLUME)"
       },
       {
         "name": "history_data_sharing_status",
         "type": "string",
-        "description": "Whether to enable or disable sharing of data history. If not specified, the default is **DISABLED**."
+        "description": "Whether to enable or disable sharing of data history. If not specified, the default is **DISABLED**. (DISABLED, ENABLED)"
       },
       {
         "name": "partitions",
@@ -125,7 +125,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "op",
                 "type": "string",
-                "description": "The operator to apply for the value."
+                "description": "The operator to apply for the value. (EQUAL, LIKE)"
               },
               {
                 "name": "recipient_property_key",
@@ -154,7 +154,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "One of: **ACTIVE**, **PERMISSION_DENIED**."
+        "description": "One of: **ACTIVE**, **PERMISSION_DENIED**. (ACTIVE, PERMISSION_DENIED)"
       },
       {
         "name": "string_shared_as",
@@ -251,12 +251,12 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "data_object_type",
         "type": "string",
-        "description": "The type of the data object."
+        "description": "The type of the data object. (FEATURE_SPEC, FOREIGN_TABLE, FUNCTION, MATERIALIZED_VIEW, MODEL, NOTEBOOK_FILE, SCHEMA, STREAMING_TABLE, TABLE, VIEW, VOLUME)"
       },
       {
         "name": "history_data_sharing_status",
         "type": "string",
-        "description": "Whether to enable or disable sharing of data history. If not specified, the default is **DISABLED**."
+        "description": "Whether to enable or disable sharing of data history. If not specified, the default is **DISABLED**. (DISABLED, ENABLED)"
       },
       {
         "name": "partitions",
@@ -276,7 +276,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "op",
                 "type": "string",
-                "description": "The operator to apply for the value."
+                "description": "The operator to apply for the value. (EQUAL, LIKE)"
               },
               {
                 "name": "recipient_property_key",
@@ -305,7 +305,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "One of: **ACTIVE**, **PERMISSION_DENIED**."
+        "description": "One of: **ACTIVE**, **PERMISSION_DENIED**. (ACTIVE, PERMISSION_DENIED)"
       },
       {
         "name": "string_shared_as",
@@ -375,7 +375,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a new share for data objects. Data objects can be added after creation with **update**. The</td>
 </tr>
@@ -510,9 +510,9 @@ Creates a new share for data objects. Data objects can be added after creation w
 
 ```sql
 INSERT INTO databricks_workspace.sharing.shares (
-data__name,
-data__comment,
-data__storage_root,
+name,
+comment,
+storage_root,
 deployment_name
 )
 SELECT 
@@ -575,11 +575,11 @@ Updates the share with the changes and data objects in the request. The caller m
 ```sql
 UPDATE databricks_workspace.sharing.shares
 SET 
-data__comment = '{{ comment }}',
-data__new_name = '{{ new_name }}',
-data__owner = '{{ owner }}',
-data__storage_root = '{{ storage_root }}',
-data__updates = '{{ updates }}'
+comment = '{{ comment }}',
+new_name = '{{ new_name }}',
+owner = '{{ owner }}',
+storage_root = '{{ storage_root }}',
+updates = '{{ updates }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

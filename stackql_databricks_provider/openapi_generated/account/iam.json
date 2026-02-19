@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks iam service (account-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.iam"
   },
   "servers": [
@@ -2893,7 +2893,7 @@
       },
       "GetSortOrder": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ascending",
           "descending"
         ],
@@ -2901,21 +2901,21 @@
       },
       "GroupSchema": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "urn:ietf:params:scim:schemas:core:2.0:Group"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ListResponseSchema": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "urn:ietf:params:scim:api:messages:2.0:ListResponse"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "ListSortOrder": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ascending",
           "descending"
         ],
@@ -2923,14 +2923,14 @@
       },
       "PasswordPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_USE"
         ],
         "description": "Permission level"
       },
       "PatchOp": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "add",
           "remove",
           "replace"
@@ -2939,14 +2939,14 @@
       },
       "PatchSchema": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "urn:ietf:params:scim:api:messages:2.0:PatchOp"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "PermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_ATTACH_TO",
           "CAN_BIND",
           "CAN_CREATE",
@@ -2971,7 +2971,7 @@
       },
       "RequestAuthzIdentity": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "REQUEST_AUTHZ_IDENTITY_SERVICE_IDENTITY",
           "REQUEST_AUTHZ_IDENTITY_USER_CONTEXT"
         ],
@@ -2979,14 +2979,14 @@
       },
       "ServicePrincipalSchema": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "urn:ietf:params:scim:schemas:core:2.0:ServicePrincipal"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "UserSchema": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "urn:ietf:params:scim:schemas:core:2.0:User",
           "urn:ietf:params:scim:schemas:extension:workspace:2.0:User"
         ],
@@ -2994,7 +2994,7 @@
       },
       "WorkspacePermission": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ADMIN",
           "UNKNOWN",
           "USER"

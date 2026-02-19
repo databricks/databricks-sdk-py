@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>model_registry_model_version_ur
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>model_registry_model_version_uri</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="model_registry_model_version_uri" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.model_registry_model_version_uri" /></td></tr>
 </tbody></table>

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>policy_compliance_for_jobs</cod
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>policy_compliance_for_jobs</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="policy_compliance_for_jobs" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.jobs.policy_compliance_for_jobs" /></td></tr>
 </tbody></table>
@@ -108,7 +108,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#enforce"><CopyableCode code="enforce" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__job_id"><code>data__job_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-job_id"><code>job_id</code></a></td>
     <td></td>
     <td>Updates a job so the job clusters that are created when running the job (specified in `new_cluster`)</td>
 </tr>
@@ -214,8 +214,8 @@ Updates a job so the job clusters that are created when running the job (specifi
 
 ```sql
 INSERT INTO databricks_workspace.jobs.policy_compliance_for_jobs (
-data__job_id,
-data__validate_only,
+job_id,
+validate_only,
 deployment_name
 )
 SELECT 

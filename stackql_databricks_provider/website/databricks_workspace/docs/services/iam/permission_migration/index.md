@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>permission_migration</code> res
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>permission_migration</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="permission_migration" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.permission_migration" /></td></tr>
 </tbody></table>
@@ -53,7 +53,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#migrate"><CopyableCode code="migrate" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__workspace_id"><code>data__workspace_id</code></a>, <a href="#parameter-data__from_workspace_group_name"><code>data__from_workspace_group_name</code></a>, <a href="#parameter-data__to_account_group_name"><code>data__to_account_group_name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-from_workspace_group_name"><code>from_workspace_group_name</code></a>, <a href="#parameter-to_account_group_name"><code>to_account_group_name</code></a></td>
     <td></td>
     <td>Migrate Permissions.</td>
 </tr>
@@ -96,10 +96,10 @@ Migrate Permissions.
 
 ```sql
 INSERT INTO databricks_workspace.iam.permission_migration (
-data__workspace_id,
-data__from_workspace_group_name,
-data__to_account_group_name,
-data__size,
+workspace_id,
+from_workspace_group_name,
+to_account_group_name,
+size,
 deployment_name
 )
 SELECT 

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>query_visualizations</code> res
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>query_visualizations</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="query_visualizations" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.query_visualizations" /></td></tr>
 </tbody></table>
@@ -117,7 +117,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__update_mask"><code>data__update_mask</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td></td>
     <td>Updates a visualization.</td>
 </tr>
@@ -215,7 +215,7 @@ Adds a visualization to a query.
 
 ```sql
 INSERT INTO databricks_workspace.sql.query_visualizations (
-data__visualization,
+visualization,
 deployment_name
 )
 SELECT 
@@ -266,12 +266,12 @@ Updates a visualization.
 ```sql
 UPDATE databricks_workspace.sql.query_visualizations
 SET 
-data__update_mask = '{{ update_mask }}',
-data__visualization = '{{ visualization }}'
+update_mask = '{{ update_mask }}',
+visualization = '{{ visualization }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__update_mask = '{{ update_mask }}' --required
+AND update_mask = '{{ update_mask }}' --required
 RETURNING
 id,
 query_id,

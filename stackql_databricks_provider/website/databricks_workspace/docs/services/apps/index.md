@@ -18,7 +18,7 @@ apps service documentation.
 
 :::info[Service Summary]
 
-total resources: __6__  
+total resources: __8__  
 
 :::
 
@@ -27,11 +27,13 @@ total resources: __6__
 <div class="providerDocColumn">
 <a href="/services/apps/app_deployments/">app_deployments</a><br />
 <a href="/services/apps/app_permission_levels/">app_permission_levels</a><br />
-<a href="/services/apps/app_permissions/">app_permissions</a>
+<a href="/services/apps/app_permissions/">app_permissions</a><br />
+<a href="/services/apps/app_updates/">app_updates</a>
 </div>
 <div class="providerDocColumn">
-<a href="/services/apps/app_updates/">app_updates</a><br />
 <a href="/services/apps/apps/">apps</a><br />
-<a href="/services/apps/apps_settings/">apps_settings</a>
+<a href="/services/apps/apps_settings/">apps_settings</a><br />
+<a href="/services/apps/vw_app_resources/">vw_app_resources</a><br />
+<a href="/services/apps/vw_apps/">vw_apps</a>
 </div>
 </div>

@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.sharing
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -2758,7 +2758,7 @@ components:
         external users.
     AuthenticationType:
       type: string
-      enum:
+      x-enum:
         - DATABRICKS
         - OAUTH_CLIENT_CREDENTIALS
         - OIDC_FEDERATION
@@ -2766,7 +2766,7 @@ components:
       description: The delta sharing authentication type.
     ColumnTypeName:
       type: string
-      enum:
+      x-enum:
         - ARRAY
         - BINARY
         - BOOLEAN
@@ -2795,7 +2795,7 @@ components:
         https://src.dev.databricks.com/databricks/universe@23a85902bb58695ab9293adc9f327b0714b55e72/-/blob/managed-catalog/api/messages/table.proto?L68
     FunctionParameterMode:
       type: string
-      enum:
+      x-enum:
         - IN
         - INOUT
         - OUT
@@ -2838,7 +2838,7 @@ components:
         attributes -- see the documentation for details.
     FunctionParameterType:
       type: string
-      enum:
+      x-enum:
         - COLUMN
         - PARAM
       description: |-
@@ -2880,7 +2880,7 @@ components:
         attributes -- see the documentation for details.
     PartitionValueOp:
       type: string
-      enum:
+      x-enum:
         - EQUAL
         - LIKE
       description: |-
@@ -2922,7 +2922,7 @@ components:
         attributes -- see the documentation for details.
     Privilege:
       type: string
-      enum:
+      x-enum:
         - ACCESS
         - ALL_PRIVILEGES
         - APPLY_TAG
@@ -3007,7 +3007,7 @@ components:
         attributes -- see the documentation for details.
     SharedDataObjectDataObjectType:
       type: string
-      enum:
+      x-enum:
         - FEATURE_SPEC
         - FOREIGN_TABLE
         - FUNCTION
@@ -3058,7 +3058,7 @@ components:
         attributes -- see the documentation for details.
     SharedDataObjectHistoryDataSharingStatus:
       type: string
-      enum:
+      x-enum:
         - DISABLED
         - ENABLED
       description: |-
@@ -3100,7 +3100,7 @@ components:
         attributes -- see the documentation for details.
     SharedDataObjectStatus:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - PERMISSION_DENIED
       description: |-
@@ -3142,7 +3142,7 @@ components:
         attributes -- see the documentation for details.
     SharedDataObjectUpdateAction:
       type: string
-      enum:
+      x-enum:
         - ADD
         - REMOVE
         - UPDATE
@@ -3185,14 +3185,14 @@ components:
         attributes -- see the documentation for details.
     SharedSecurableKind:
       type: string
-      enum:
+      x-enum:
         - FUNCTION_FEATURE_SPEC
         - FUNCTION_REGISTERED_MODEL
         - FUNCTION_STANDARD
       description: The SecurableKind of a delta-shared object.
     TableInternalAttributesSharedTableType:
       type: string
-      enum:
+      x-enum:
         - DELTA_ICEBERG_TABLE
         - DIRECTORY_BASED_TABLE
         - FILE_BASED_TABLE
@@ -3246,6 +3246,9 @@ components:
       title: Providers
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1providers/post'
           response:
@@ -3271,6 +3274,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1providers~1{name}/patch'
           response:
@@ -3358,6 +3364,9 @@ components:
       title: Recipient Federation Policies
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1data-sharing~1recipients~1{recipient_name}~1federation-policies/post
@@ -3406,6 +3415,9 @@ components:
       title: Recipients
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1recipients/post'
           response:
@@ -3431,12 +3443,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1recipients~1{name}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         rotate_token:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1recipients~1{name}~1rotate-token/post
@@ -3481,6 +3499,9 @@ components:
       title: Shares
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1shares/post'
           response:
@@ -3506,6 +3527,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1shares~1{name}/patch'
           response:
@@ -3534,6 +3558,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1shares~1{name}~1permissions/patch
@@ -3548,3 +3575,11 @@ components:
           - $ref: '#/components/x-stackQL-resources/share_permissions/methods/update'
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

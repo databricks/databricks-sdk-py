@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>all_cluster_library_statuses</
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>all_cluster_library_statuses</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="all_cluster_library_statuses" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.all_cluster_library_statuses" /></td></tr>
 </tbody></table>
@@ -147,7 +147,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Status of installing the library on the cluster."
+        "description": "Status of installing the library on the cluster. (FAILED, INSTALLED, INSTALLING, PENDING, RESOLVING, RESTORED, SKIPPED, UNINSTALL_ON_RESTART)"
       }
     ]
   }

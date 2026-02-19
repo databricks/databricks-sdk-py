@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks jobs service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.jobs"
   },
   "servers": [
@@ -5059,7 +5059,7 @@
       },
       "AuthenticationMethod": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "OAUTH",
           "PAT"
         ],
@@ -5067,7 +5067,7 @@
       },
       "CleanRoomTaskRunLifeCycleState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BLOCKED",
           "INTERNAL_ERROR",
           "PENDING",
@@ -5083,7 +5083,7 @@
       },
       "CleanRoomTaskRunResultState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCELED",
           "DISABLED",
           "EVICTED",
@@ -5102,7 +5102,7 @@
       },
       "Condition": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALL_UPDATED",
           "ANY_UPDATED"
         ],
@@ -5110,7 +5110,7 @@
       },
       "ConditionTaskOp": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EQUAL_TO",
           "GREATER_THAN",
           "GREATER_THAN_OR_EQUAL",
@@ -5122,7 +5122,7 @@
       },
       "DbtPlatformRunStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCELLED",
           "ERROR",
           "QUEUED",
@@ -5134,7 +5134,7 @@
       },
       "Format": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "MULTI_TASK",
           "SINGLE_TASK"
         ],
@@ -5142,7 +5142,7 @@
       },
       "GitProvider": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "awsCodeCommit",
           "azureDevOpsServices",
           "bitbucketCloud",
@@ -5156,7 +5156,7 @@
       },
       "JobDeploymentKind": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BUNDLE",
           "SYSTEM_MANAGED"
         ],
@@ -5164,7 +5164,7 @@
       },
       "JobEditMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EDITABLE",
           "UI_LOCKED"
         ],
@@ -5172,7 +5172,7 @@
       },
       "JobPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_MANAGE",
           "CAN_MANAGE_RUN",
           "CAN_VIEW",
@@ -5182,7 +5182,7 @@
       },
       "JobSourceDirtyState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DISCONNECTED",
           "NOT_SYNCED"
         ],
@@ -5190,7 +5190,7 @@
       },
       "JobsHealthMetric": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "RUN_DURATION_SECONDS",
           "STREAMING_BACKLOG_BYTES",
           "STREAMING_BACKLOG_FILES",
@@ -5201,14 +5201,14 @@
       },
       "JobsHealthOperator": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "GREATER_THAN"
         ],
         "description": "Specifies the operator used to compare the health metric value with the specified threshold."
       },
       "ModelTriggerConfigurationCondition": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "MODEL_ALIAS_SET",
           "MODEL_CREATED",
           "MODEL_VERSION_READY"
@@ -5217,7 +5217,7 @@
       },
       "PauseStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PAUSED",
           "UNPAUSED"
         ],
@@ -5225,7 +5225,7 @@
       },
       "PerformanceTarget": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PERFORMANCE_OPTIMIZED",
           "STANDARD"
         ],
@@ -5233,7 +5233,7 @@
       },
       "PeriodicTriggerConfigurationTimeUnit": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DAYS",
           "HOURS",
           "WEEKS"
@@ -5242,7 +5242,7 @@
       },
       "QueueDetailsCodeCode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE_RUNS_LIMIT_REACHED",
           "ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED",
           "MAX_CONCURRENT_RUNS_REACHED"
@@ -5251,7 +5251,7 @@
       },
       "RepairHistoryItemType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ORIGINAL",
           "REPAIR"
         ],
@@ -5259,7 +5259,7 @@
       },
       "RunIf": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALL_DONE",
           "ALL_FAILED",
           "ALL_SUCCESS",
@@ -5271,7 +5271,7 @@
       },
       "RunLifeCycleState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BLOCKED",
           "INTERNAL_ERROR",
           "PENDING",
@@ -5286,7 +5286,7 @@
       },
       "RunLifecycleStateV2State": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BLOCKED",
           "PENDING",
           "QUEUED",
@@ -5299,7 +5299,7 @@
       },
       "RunResultState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCELED",
           "DISABLED",
           "EXCLUDED",
@@ -5315,7 +5315,7 @@
       },
       "RunType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "JOB_RUN",
           "SUBMIT_RUN",
           "WORKFLOW_RUN"
@@ -5324,7 +5324,7 @@
       },
       "Source": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "GIT",
           "WORKSPACE"
         ],
@@ -5332,7 +5332,7 @@
       },
       "SqlAlertState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "OK",
           "TRIGGERED",
           "UNKNOWN"
@@ -5341,7 +5341,7 @@
       },
       "SqlDashboardWidgetOutputStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCELLED",
           "FAILED",
           "PENDING",
@@ -5352,7 +5352,7 @@
       },
       "StorageMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DIRECT_QUERY",
           "DUAL",
           "IMPORT"
@@ -5361,7 +5361,7 @@
       },
       "TaskRetryMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "NEVER",
           "ON_FAILURE"
         ],
@@ -5369,7 +5369,7 @@
       },
       "TerminationCodeCode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BUDGET_POLICY_LIMIT_EXCEEDED",
           "CANCELED",
           "CLOUD_FAILURE",
@@ -5400,7 +5400,7 @@
       },
       "TerminationTypeType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CLIENT_ERROR",
           "CLOUD_FAILURE",
           "INTERNAL_ERROR",
@@ -5410,7 +5410,7 @@
       },
       "TriggerType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CONTINUOUS",
           "CONTINUOUS_RESTART",
           "FILE_ARRIVAL",
@@ -5424,7 +5424,7 @@
       },
       "ViewType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DASHBOARD",
           "NOTEBOOK"
         ],
@@ -5432,7 +5432,7 @@
       },
       "ViewsToExport": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALL",
           "CODE",
           "DASHBOARDS"

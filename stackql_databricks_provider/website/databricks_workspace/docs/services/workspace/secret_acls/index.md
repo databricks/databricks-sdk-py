@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>secret_acls</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>secret_acls</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="secret_acls" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.workspace.secret_acls" /></td></tr>
 </tbody></table>
@@ -45,7 +45,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "permission",
     "type": "string",
-    "description": "The permission level applied to the principal."
+    "description": "The permission level applied to the principal. (MANAGE, READ, WRITE)"
   },
   {
     "name": "principal",
@@ -60,7 +60,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "permission",
     "type": "string",
-    "description": "The permission level applied to the principal."
+    "description": "The permission level applied to the principal. (MANAGE, READ, WRITE)"
   },
   {
     "name": "principal",
@@ -103,7 +103,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#put"><CopyableCode code="put" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__scope"><code>data__scope</code></a>, <a href="#parameter-data__principal"><code>data__principal</code></a>, <a href="#parameter-data__permission"><code>data__permission</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-principal"><code>principal</code></a>, <a href="#parameter-permission"><code>permission</code></a></td>
     <td></td>
     <td>Creates or overwrites the ACL associated with the given principal (user or group) on the specified</td>
 </tr>
@@ -204,9 +204,9 @@ Creates or overwrites the ACL associated with the given principal (user or group
 
 ```sql
 INSERT INTO databricks_workspace.workspace.secret_acls (
-data__scope,
-data__principal,
-data__permission,
+scope,
+principal,
+permission,
 deployment_name
 )
 SELECT 

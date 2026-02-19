@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks vectorsearch service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.vectorsearch"
   },
   "servers": [
@@ -1780,7 +1780,7 @@
       },
       "DeleteDataStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAILURE",
           "PARTIAL_SUCCESS",
           "SUCCESS"
@@ -1789,7 +1789,7 @@
       },
       "EndpointStatusState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELETED",
           "OFFLINE",
           "ONLINE",
@@ -1801,14 +1801,14 @@
       },
       "EndpointType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "STANDARD"
         ],
         "description": "Type of endpoint."
       },
       "PipelineType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CONTINUOUS",
           "TRIGGERED"
         ],
@@ -1816,7 +1816,7 @@
       },
       "UpsertDataStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAILURE",
           "PARTIAL_SUCCESS",
           "SUCCESS"
@@ -1825,7 +1825,7 @@
       },
       "VectorIndexType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELTA_SYNC",
           "DIRECT_ACCESS"
         ],

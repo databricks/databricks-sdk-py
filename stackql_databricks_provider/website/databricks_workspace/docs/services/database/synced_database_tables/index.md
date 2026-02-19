@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>synced_database_tables</code> r
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>synced_database_tables</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="synced_database_tables" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.database.synced_database_tables" /></td></tr>
 </tbody></table>
@@ -95,7 +95,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "provisioning_phase",
                 "type": "string",
-                "description": "The current phase of the data synchronization pipeline."
+                "description": "The current phase of the data synchronization pipeline. (PROVISIONING_PHASE_INDEX_SCAN, PROVISIONING_PHASE_INDEX_SORT, PROVISIONING_PHASE_MAIN)"
               },
               {
                 "name": "sync_progress_completion",
@@ -129,7 +129,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "detailed_state",
         "type": "string",
-        "description": "The state of the synced table."
+        "description": "The state of the synced table. (SYNCED_TABLED_OFFLINE, SYNCED_TABLE_OFFLINE_FAILED, SYNCED_TABLE_ONLINE, SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE, SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE, SYNCED_TABLE_ONLINE_PIPELINE_FAILED, SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE, SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES, SYNCED_TABLE_PROVISIONING, SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT, SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES)"
       },
       {
         "name": "failed_status",
@@ -215,7 +215,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "provisioning_phase",
                 "type": "string",
-                "description": "The current phase of the data synchronization pipeline."
+                "description": "The current phase of the data synchronization pipeline. (PROVISIONING_PHASE_INDEX_SCAN, PROVISIONING_PHASE_INDEX_SORT, PROVISIONING_PHASE_MAIN)"
               },
               {
                 "name": "sync_progress_completion",
@@ -269,7 +269,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "provisioning_phase",
                 "type": "string",
-                "description": "The current phase of the data synchronization pipeline."
+                "description": "The current phase of the data synchronization pipeline. (PROVISIONING_PHASE_INDEX_SCAN, PROVISIONING_PHASE_INDEX_SORT, PROVISIONING_PHASE_MAIN)"
               },
               {
                 "name": "sync_progress_completion",
@@ -337,7 +337,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "scheduling_policy",
         "type": "string",
-        "description": "Scheduling policy of the underlying pipeline."
+        "description": "Scheduling policy of the underlying pipeline. (CONTINUOUS, SNAPSHOT, TRIGGERED)"
       },
       {
         "name": "source_table_full_name",
@@ -354,7 +354,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "unity_catalog_provisioning_state",
     "type": "string",
-    "description": "The provisioning state of the synced table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in \"ACTIVE\" but the pipeline may be in \"PROVISIONING\" as it runs asynchronously)."
+    "description": "The provisioning state of the synced table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in \"ACTIVE\" but the pipeline may be in \"PROVISIONING\" as it runs asynchronously). (ACTIVE, DEGRADED, DELETING, FAILED, PROVISIONING, UPDATING)"
   }
 ]} />
 </TabItem>
@@ -414,7 +414,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "provisioning_phase",
                 "type": "string",
-                "description": "The current phase of the data synchronization pipeline."
+                "description": "The current phase of the data synchronization pipeline. (PROVISIONING_PHASE_INDEX_SCAN, PROVISIONING_PHASE_INDEX_SORT, PROVISIONING_PHASE_MAIN)"
               },
               {
                 "name": "sync_progress_completion",
@@ -448,7 +448,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "detailed_state",
         "type": "string",
-        "description": "The state of the synced table."
+        "description": "The state of the synced table. (SYNCED_TABLED_OFFLINE, SYNCED_TABLE_OFFLINE_FAILED, SYNCED_TABLE_ONLINE, SYNCED_TABLE_ONLINE_CONTINUOUS_UPDATE, SYNCED_TABLE_ONLINE_NO_PENDING_UPDATE, SYNCED_TABLE_ONLINE_PIPELINE_FAILED, SYNCED_TABLE_ONLINE_TRIGGERED_UPDATE, SYNCED_TABLE_ONLINE_UPDATING_PIPELINE_RESOURCES, SYNCED_TABLE_PROVISIONING, SYNCED_TABLE_PROVISIONING_INITIAL_SNAPSHOT, SYNCED_TABLE_PROVISIONING_PIPELINE_RESOURCES)"
       },
       {
         "name": "failed_status",
@@ -534,7 +534,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "provisioning_phase",
                 "type": "string",
-                "description": "The current phase of the data synchronization pipeline."
+                "description": "The current phase of the data synchronization pipeline. (PROVISIONING_PHASE_INDEX_SCAN, PROVISIONING_PHASE_INDEX_SORT, PROVISIONING_PHASE_MAIN)"
               },
               {
                 "name": "sync_progress_completion",
@@ -588,7 +588,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "provisioning_phase",
                 "type": "string",
-                "description": "The current phase of the data synchronization pipeline."
+                "description": "The current phase of the data synchronization pipeline. (PROVISIONING_PHASE_INDEX_SCAN, PROVISIONING_PHASE_INDEX_SORT, PROVISIONING_PHASE_MAIN)"
               },
               {
                 "name": "sync_progress_completion",
@@ -656,7 +656,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "scheduling_policy",
         "type": "string",
-        "description": "Scheduling policy of the underlying pipeline."
+        "description": "Scheduling policy of the underlying pipeline. (CONTINUOUS, SNAPSHOT, TRIGGERED)"
       },
       {
         "name": "source_table_full_name",
@@ -673,7 +673,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "unity_catalog_provisioning_state",
     "type": "string",
-    "description": "The provisioning state of the synced table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in \"ACTIVE\" but the pipeline may be in \"PROVISIONING\" as it runs asynchronously)."
+    "description": "The provisioning state of the synced table entity in Unity Catalog. This is distinct from the state of the data synchronization pipeline (i.e. the table may be in \"ACTIVE\" but the pipeline may be in \"PROVISIONING\" as it runs asynchronously). (ACTIVE, DEGRADED, DELETING, FAILED, PROVISIONING, UPDATING)"
   }
 ]} />
 </TabItem>
@@ -711,14 +711,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__synced_table"><code>data__synced_table</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-synced_table"><code>synced_table</code></a></td>
     <td></td>
     <td>Create a Synced Database Table.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__synced_table"><code>data__synced_table</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-synced_table"><code>synced_table</code></a></td>
     <td></td>
     <td>This API is currently unimplemented, but exposed for Terraform support.</td>
 </tr>
@@ -852,7 +852,7 @@ Create a Synced Database Table.
 
 ```sql
 INSERT INTO databricks_workspace.database.synced_database_tables (
-data__synced_table,
+synced_table,
 deployment_name
 )
 SELECT 
@@ -903,12 +903,12 @@ This API is currently unimplemented, but exposed for Terraform support.
 ```sql
 UPDATE databricks_workspace.database.synced_database_tables
 SET 
-data__synced_table = '{{ synced_table }}'
+synced_table = '{{ synced_table }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__synced_table = '{{ synced_table }}' --required
+AND synced_table = '{{ synced_table }}' --required
 RETURNING
 name,
 database_instance_name,

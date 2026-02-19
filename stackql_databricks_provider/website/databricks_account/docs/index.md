@@ -28,7 +28,7 @@ For Databricks workspace operations use the [__`databricks_workspace`__](https:/
 :::info[Provider Summary]
 
 total services: __8__
-total resources: __46__
+total resources: __75__
 
 :::
 

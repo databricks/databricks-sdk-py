@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>query_history</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>query_history</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="query_history" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.query_history" /></td></tr>
 </tbody></table>
@@ -74,7 +74,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "name",
             "type": "string",
-            "description": "Name of the channel"
+            "description": "Name of the channel (CHANNEL_NAME_CURRENT, CHANNEL_NAME_CUSTOM, CHANNEL_NAME_PREVIEW, CHANNEL_NAME_PREVIOUS)"
           }
         ]
       },
@@ -290,7 +290,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "plans_state",
         "type": "string",
-        "description": "Whether plans exist for the execution, or the reason why they are missing"
+        "description": "Whether plans exist for the execution, or the reason why they are missing (EMPTY, EXISTS, IGNORED_LARGE_PLANS_SIZE, IGNORED_SMALL_DURATION, IGNORED_SPARK_PLAN_TYPE, UNKNOWN)"
       },
       {
         "name": "query_end_time_ms",
@@ -406,12 +406,12 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "statement_type",
         "type": "string",
-        "description": "Type of statement for this query"
+        "description": "Type of statement for this query (ALTER, ANALYZE, COPY, CREATE, DELETE, DESCRIBE, DROP, EXPLAIN, GRANT, INSERT, MERGE, OPTIMIZE, OTHER, REFRESH, REPLACE, REVOKE, SELECT, SET, SHOW, TRUNCATE, UPDATE, USE)"
       },
       {
         "name": "status",
         "type": "string",
-        "description": "Query status with one the following values: - `QUEUED`: Query has been received and queued. - `RUNNING`: Query has started. - `CANCELED`: Query has been cancelled by the user. - `FAILED`: Query has failed. - `FINISHED`: Query has completed."
+        "description": "Query status with one the following values: - `QUEUED`: Query has been received and queued. - `RUNNING`: Query has started. - `CANCELED`: Query has been cancelled by the user. - `FAILED`: Query has failed. - `FINISHED`: Query has completed. (CANCELED, COMPILED, COMPILING, FAILED, FINISHED, QUEUED, RUNNING, STARTED)"
       },
       {
         "name": "user_id",

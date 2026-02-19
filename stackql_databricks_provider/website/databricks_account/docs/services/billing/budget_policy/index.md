@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>budget_policy</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>budget_policy</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="budget_policy" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.billing.budget_policy" /></td></tr>
 </tbody></table>
@@ -130,7 +130,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#budget_policy_update"><CopyableCode code="budget_policy_update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-data__policy"><code>data__policy</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-policy_id"><code>policy_id</code></a>, <a href="#parameter-policy"><code>policy</code></a></td>
     <td><a href="#parameter-limit_config"><code>limit_config</code></a></td>
     <td>Updates a policy</td>
 </tr>
@@ -257,8 +257,8 @@ Creates a new policy.
 
 ```sql
 INSERT INTO databricks_account.billing.budget_policy (
-data__policy,
-data__request_id,
+policy,
+request_id,
 account_id
 )
 SELECT 
@@ -310,11 +310,11 @@ Updates a policy
 ```sql
 UPDATE databricks_account.billing.budget_policy
 SET 
-data__policy = '{{ policy }}'
+policy = '{{ policy }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND policy_id = '{{ policy_id }}' --required
-AND data__policy = '{{ policy }}' --required
+AND policy = '{{ policy }}' --required
 AND limit_config = '{{ limit_config}}'
 RETURNING
 policy_id,

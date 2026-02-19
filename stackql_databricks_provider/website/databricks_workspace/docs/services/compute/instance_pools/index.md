@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>instance_pools</code> resource
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>instance_pools</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="instance_pools" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.instance_pools" /></td></tr>
 </tbody></table>
@@ -65,7 +65,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "availability",
         "type": "string",
-        "description": "Availability type used for the spot nodes."
+        "description": "Availability type used for the spot nodes. (ON_DEMAND, SPOT)"
       },
       {
         "name": "instance_profile_arn",
@@ -92,7 +92,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "availability",
         "type": "string",
-        "description": "Availability type used for the spot nodes."
+        "description": "Availability type used for the spot nodes. (ON_DEMAND_AZURE, SPOT_AZURE)"
       },
       {
         "name": "spot_bid_max_price",
@@ -144,12 +144,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "azure_disk_volume_type",
             "type": "string",
-            "description": "All Azure Disk types that Databricks supports. See<br />https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks"
+            "description": "All Azure Disk types that Databricks supports. See<br />https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks (PREMIUM_LRS, STANDARD_LRS)"
           },
           {
             "name": "ebs_volume_type",
             "type": "string",
-            "description": "All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for<br />details."
+            "description": "All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for<br />details. (GENERAL_PURPOSE_SSD, THROUGHPUT_OPTIMIZED_HDD)"
           }
         ]
       }
@@ -168,7 +168,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "gcp_availability",
         "type": "string",
-        "description": "This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or<br />preemptible VMs with a fallback to on-demand VMs if the former is unavailable."
+        "description": "This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or<br />preemptible VMs with a fallback to on-demand VMs if the former is unavailable. (ON_DEMAND_GCP, PREEMPTIBLE_GCP, PREEMPTIBLE_WITH_FALLBACK_GCP)"
       },
       {
         "name": "local_ssd_count",
@@ -251,7 +251,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "Current state of the instance pool."
+    "description": "Current state of the instance pool. (ACTIVE, DELETED, STOPPED)"
   },
   {
     "name": "stats",
@@ -337,7 +337,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "availability",
         "type": "string",
-        "description": "Availability type used for the spot nodes."
+        "description": "Availability type used for the spot nodes. (ON_DEMAND, SPOT)"
       },
       {
         "name": "instance_profile_arn",
@@ -364,7 +364,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "availability",
         "type": "string",
-        "description": "Availability type used for the spot nodes."
+        "description": "Availability type used for the spot nodes. (ON_DEMAND_AZURE, SPOT_AZURE)"
       },
       {
         "name": "spot_bid_max_price",
@@ -416,12 +416,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "azure_disk_volume_type",
             "type": "string",
-            "description": "All Azure Disk types that Databricks supports. See<br />https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks"
+            "description": "All Azure Disk types that Databricks supports. See<br />https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks (PREMIUM_LRS, STANDARD_LRS)"
           },
           {
             "name": "ebs_volume_type",
             "type": "string",
-            "description": "All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for<br />details."
+            "description": "All EBS volume types that Databricks supports. See https://aws.amazon.com/ebs/details/ for<br />details. (GENERAL_PURPOSE_SSD, THROUGHPUT_OPTIMIZED_HDD)"
           }
         ]
       }
@@ -440,7 +440,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "gcp_availability",
         "type": "string",
-        "description": "This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or<br />preemptible VMs with a fallback to on-demand VMs if the former is unavailable."
+        "description": "This field determines whether the instance pool will contain preemptible VMs, on-demand VMs, or<br />preemptible VMs with a fallback to on-demand VMs if the former is unavailable. (ON_DEMAND_GCP, PREEMPTIBLE_GCP, PREEMPTIBLE_WITH_FALLBACK_GCP)"
       },
       {
         "name": "local_ssd_count",
@@ -523,7 +523,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "Current state of the instance pool."
+    "description": "Current state of the instance pool. (ACTIVE, DELETED, STOPPED)"
   },
   {
     "name": "stats",
@@ -617,14 +617,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__instance_pool_name"><code>data__instance_pool_name</code></a>, <a href="#parameter-data__node_type_id"><code>data__node_type_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-instance_pool_name"><code>instance_pool_name</code></a>, <a href="#parameter-node_type_id"><code>node_type_id</code></a></td>
     <td></td>
     <td>Creates a new instance pool using idle and ready-to-use cloud instances.</td>
 </tr>
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__instance_pool_id"><code>data__instance_pool_id</code></a>, <a href="#parameter-data__instance_pool_name"><code>data__instance_pool_name</code></a>, <a href="#parameter-data__node_type_id"><code>data__node_type_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-instance_pool_id"><code>instance_pool_id</code></a>, <a href="#parameter-instance_pool_name"><code>instance_pool_name</code></a>, <a href="#parameter-node_type_id"><code>node_type_id</code></a></td>
     <td></td>
     <td>Modifies the configuration of an existing instance pool.</td>
 </tr>
@@ -756,22 +756,22 @@ Creates a new instance pool using idle and ready-to-use cloud instances.
 
 ```sql
 INSERT INTO databricks_workspace.compute.instance_pools (
-data__instance_pool_name,
-data__node_type_id,
-data__aws_attributes,
-data__azure_attributes,
-data__custom_tags,
-data__disk_spec,
-data__enable_elastic_disk,
-data__gcp_attributes,
-data__idle_instance_autotermination_minutes,
-data__max_capacity,
-data__min_idle_instances,
-data__node_type_flexibility,
-data__preloaded_docker_images,
-data__preloaded_spark_versions,
-data__remote_disk_throughput,
-data__total_initial_remote_disk_size,
+instance_pool_name,
+node_type_id,
+aws_attributes,
+azure_attributes,
+custom_tags,
+disk_spec,
+enable_elastic_disk,
+gcp_attributes,
+idle_instance_autotermination_minutes,
+max_capacity,
+min_idle_instances,
+node_type_flexibility,
+preloaded_docker_images,
+preloaded_spark_versions,
+remote_disk_throughput,
+total_initial_remote_disk_size,
 deployment_name
 )
 SELECT 
@@ -890,21 +890,21 @@ Modifies the configuration of an existing instance pool.
 ```sql
 REPLACE databricks_workspace.compute.instance_pools
 SET 
-data__instance_pool_id = '{{ instance_pool_id }}',
-data__instance_pool_name = '{{ instance_pool_name }}',
-data__node_type_id = '{{ node_type_id }}',
-data__custom_tags = '{{ custom_tags }}',
-data__idle_instance_autotermination_minutes = '{{ idle_instance_autotermination_minutes }}',
-data__max_capacity = '{{ max_capacity }}',
-data__min_idle_instances = '{{ min_idle_instances }}',
-data__node_type_flexibility = '{{ node_type_flexibility }}',
-data__remote_disk_throughput = '{{ remote_disk_throughput }}',
-data__total_initial_remote_disk_size = '{{ total_initial_remote_disk_size }}'
+instance_pool_id = '{{ instance_pool_id }}',
+instance_pool_name = '{{ instance_pool_name }}',
+node_type_id = '{{ node_type_id }}',
+custom_tags = '{{ custom_tags }}',
+idle_instance_autotermination_minutes = '{{ idle_instance_autotermination_minutes }}',
+max_capacity = '{{ max_capacity }}',
+min_idle_instances = '{{ min_idle_instances }}',
+node_type_flexibility = '{{ node_type_flexibility }}',
+remote_disk_throughput = '{{ remote_disk_throughput }}',
+total_initial_remote_disk_size = '{{ total_initial_remote_disk_size }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__instance_pool_id = '{{ instance_pool_id }}' --required
-AND data__instance_pool_name = '{{ instance_pool_name }}' --required
-AND data__node_type_id = '{{ node_type_id }}' --required;
+AND instance_pool_id = '{{ instance_pool_id }}' --required
+AND instance_pool_name = '{{ instance_pool_name }}' --required
+AND node_type_id = '{{ node_type_id }}' --required;
 ```
 </TabItem>
 </Tabs>

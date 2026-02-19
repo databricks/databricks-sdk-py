@@ -6,7 +6,7 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.agentbricks
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -384,7 +384,7 @@ components:
         - request_col
     State:
       type: string
-      enum:
+      x-enum:
         - CANCELLED
         - COMPLETED
         - CREATED
@@ -405,6 +405,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1custom-llms/post'
           response:
@@ -423,6 +426,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1custom-llms~1{id}/patch'
           response:
@@ -444,3 +450,11 @@ components:
         delete:
           - $ref: '#/components/x-stackQL-resources/custom_llms/methods/delete'
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

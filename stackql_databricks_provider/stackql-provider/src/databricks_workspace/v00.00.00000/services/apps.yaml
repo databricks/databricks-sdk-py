@@ -1,26 +1,25 @@
 openapi: 3.0.0
 info:
   title: Databricks Apps API (workspace)
-  description: >-
-    OpenAPI specification for the Databricks apps service (workspace-level
-    APIs), generated from the Databricks Python SDK.
+  description: OpenAPI specification for the Databricks apps service (workspace-level APIs), generated from the Databricks
+    Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.apps
 servers:
-  - url: https://{deployment_name}.cloud.databricks.com
-    variables:
-      deployment_name:
-        description: The Databricks Workspace Deployment Name
-        default: dbc-abcd0123-a1bc
+- url: https://{deployment_name}.cloud.databricks.com
+  variables:
+    deployment_name:
+      description: The Databricks Workspace Deployment Name
+      default: dbc-abcd0123-a1bc
 paths:
   /api/2.0/apps:
     post:
       operationId: apps_create
       summary: Creates a new app.
       tags:
-        - apps
+      - apps
       description: |-
         Creates a new app.
 
@@ -32,11 +31,11 @@ paths:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_active for more details.
       parameters:
-        - name: no_compute
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: no_compute
+        in: query
+        required: false
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -45,11 +44,9 @@ paths:
               properties:
                 app:
                   type: string
-                  description: >-
-                    :param no_compute: bool (optional) If true, the app will not
-                    be started after creation.
+                  description: ':param no_compute: bool (optional) If true, the app will not be started after creation.'
               required:
-                - app
+              - app
       responses:
         '200':
           description: Success
@@ -73,7 +70,7 @@ paths:
       operationId: apps_list
       summary: Lists all apps in the workspace.
       tags:
-        - apps
+      - apps
       description: |-
         Lists all apps in the workspace.
 
@@ -84,20 +81,18 @@ paths:
 
         :returns: Iterator over :class:`App`
       parameters:
-        - name: page_size
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Upper bound for items returned.
-        - name: page_token
-          in: query
-          required: false
-          schema:
-            type: string
-          description: >-
-            Pagination token to go to the next page of apps. Requests first page
-            if absent.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Upper bound for items returned.
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Pagination token to go to the next page of apps. Requests first page if absent.
       responses:
         '200':
           description: Success
@@ -120,20 +115,14 @@ paths:
   /api/2.0/apps/{app_name}/update:
     post:
       operationId: apps_create_update
-      summary: >-
-        Creates an app update and starts the update process. The update process
-        is asynchronous and the status
+      summary: Creates an app update and starts the update process. The update process is asynchronous and the status
       tags:
-        - apps
-      description: >-
-        Creates an app update and starts the update process. The update process
-        is asynchronous and the status
-
+      - apps
+      description: |-
+        Creates an app update and starts the update process. The update process is asynchronous and the status
         of the update can be checked with the GetAppUpdate method.
 
-
         :param app_name: str
-
         :param update_mask: str
           The field mask must be a single string, with multiple fields separated by commas (no spaces). The
           field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
@@ -146,27 +135,21 @@ paths:
           changes in the future.
         :param app: :class:`App` (optional)
 
-
         :returns:
           Long-running operation waiter for :class:`AppUpdate`.
           See :method:wait_get_update_app_succeeded for more details.
       parameters:
-        - name: app_name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: >-
-            :param update_mask: str The field mask must be a single string, with
-            multiple fields separated by commas (no spaces). The field path is
-            relative to the resource object, using a dot (`.`) to navigate
-            sub-fields (e.g., `author.given_name`). Specification of elements in
-            sequence or map fields is not allowed, as only the entire collection
-            field can be specified. Field names must exactly match the resource
-            field names. A field mask of `*` indicates full replacement. It’s
-            recommended to always explicitly list the fields being updated and
-            avoid using `*` wildcards, as it can lead to unintended results if
-            the API changes in the future.
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ':param update_mask: str The field mask must be a single string, with multiple fields separated by commas
+          (no spaces). The field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only the entire collection
+          field can be specified. Field names must exactly match the resource field names. A field mask of `*` indicates full
+          replacement. It’s recommended to always explicitly list the fields being updated and avoid using `*` wildcards,
+          as it can lead to unintended results if the API changes in the future.'
       requestBody:
         content:
           application/json:
@@ -177,12 +160,10 @@ paths:
                   type: string
                 app:
                   type: string
-                  description: >-
-                    :returns: Long-running operation waiter for
-                    :class:`AppUpdate`. See
-                    :method:wait_get_update_app_succeeded for more details.
+                  description: ':returns: Long-running operation waiter for :class:`AppUpdate`. See :method:wait_get_update_app_succeeded
+                    for more details.'
               required:
-                - update_mask
+              - update_mask
       responses:
         '200':
           description: Success
@@ -206,7 +187,7 @@ paths:
       operationId: apps_get_update
       summary: Gets the status of an app update.
       tags:
-        - apps
+      - apps
       description: |-
         Gets the status of an app update.
 
@@ -215,12 +196,12 @@ paths:
 
         :returns: :class:`AppUpdate`
       parameters:
-        - name: app_name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The name of the app.
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the app.
       responses:
         '200':
           description: Success
@@ -245,7 +226,7 @@ paths:
       operationId: apps_delete
       summary: Deletes an app.
       tags:
-        - apps
+      - apps
       description: |-
         Deletes an app.
 
@@ -254,12 +235,12 @@ paths:
 
         :returns: :class:`App`
       parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The name of the app.
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the app.
       responses:
         '200':
           description: Success
@@ -283,7 +264,7 @@ paths:
       operationId: apps_get
       summary: Retrieves information for the app with the supplied name.
       tags:
-        - apps
+      - apps
       description: |-
         Retrieves information for the app with the supplied name.
 
@@ -292,12 +273,12 @@ paths:
 
         :returns: :class:`App`
       parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The name of the app.
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the app.
       responses:
         '200':
           description: Success
@@ -321,7 +302,7 @@ paths:
       operationId: apps_update
       summary: Updates the app with the supplied name.
       tags:
-        - apps
+      - apps
       description: |-
         Updates the app with the supplied name.
 
@@ -332,15 +313,13 @@ paths:
 
         :returns: :class:`App`
       parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: >-
-            The name of the app. The name must contain only lowercase
-            alphanumeric characters and hyphens. It must be unique within the
-            workspace.
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the app. The name must contain only lowercase alphanumeric characters and hyphens. It must
+          be unique within the workspace.
       requestBody:
         content:
           application/json:
@@ -351,7 +330,7 @@ paths:
                   type: string
                   description: ':returns: :class:`App`'
               required:
-                - app
+              - app
       responses:
         '200':
           description: Success
@@ -376,7 +355,7 @@ paths:
       operationId: apps_deploy
       summary: Creates an app deployment for the app with the supplied name.
       tags:
-        - apps
+      - apps
       description: |-
         Creates an app deployment for the app with the supplied name.
 
@@ -389,12 +368,12 @@ paths:
           Long-running operation waiter for :class:`AppDeployment`.
           See :method:wait_get_deployment_app_succeeded for more details.
       parameters:
-        - name: app_name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The name of the app.
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the app.
       requestBody:
         content:
           application/json:
@@ -405,7 +384,7 @@ paths:
                   type: string
                   description: The app deployment configuration.
               required:
-                - app_deployment
+              - app_deployment
       responses:
         '200':
           description: Success
@@ -429,7 +408,7 @@ paths:
       operationId: apps_list_deployments
       summary: Lists all app deployments for the app with the supplied name.
       tags:
-        - apps
+      - apps
       description: |-
         Lists all app deployments for the app with the supplied name.
 
@@ -442,26 +421,24 @@ paths:
 
         :returns: Iterator over :class:`AppDeployment`
       parameters:
-        - name: app_name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The name of the app.
-        - name: page_size
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Upper bound for items returned.
-        - name: page_token
-          in: query
-          required: false
-          schema:
-            type: string
-          description: >-
-            Pagination token to go to the next page of apps. Requests first page
-            if absent.
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the app.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Upper bound for items returned.
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Pagination token to go to the next page of apps. Requests first page if absent.
       responses:
         '200':
           description: Success
@@ -484,15 +461,11 @@ paths:
   /api/2.0/apps/{app_name}/deployments/{deployment_id}:
     get:
       operationId: apps_get_deployment
-      summary: >-
-        Retrieves information for the app deployment with the supplied name and
-        deployment id.
+      summary: Retrieves information for the app deployment with the supplied name and deployment id.
       tags:
-        - apps
-      description: >-
-        Retrieves information for the app deployment with the supplied name and
-        deployment id.
-
+      - apps
+      description: |-
+        Retrieves information for the app deployment with the supplied name and deployment id.
 
         :param app_name: str
           The name of the app.
@@ -501,18 +474,18 @@ paths:
 
         :returns: :class:`AppDeployment`
       parameters:
-        - name: app_name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The name of the app.
-        - name: deployment_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The unique id of the deployment.
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the app.
+      - name: deployment_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The unique id of the deployment.
       responses:
         '200':
           description: Success
@@ -537,7 +510,7 @@ paths:
       operationId: apps_get_permission_levels
       summary: Gets the permission levels that a user can have on an object.
       tags:
-        - apps
+      - apps
       description: |-
         Gets the permission levels that a user can have on an object.
 
@@ -546,12 +519,12 @@ paths:
 
         :returns: :class:`GetAppPermissionLevelsResponse`
       parameters:
-        - name: app_name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The app for which to get or manage permissions.
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The app for which to get or manage permissions.
       responses:
         '200':
           description: Success
@@ -574,27 +547,23 @@ paths:
   /api/2.0/permissions/apps/{app_name}:
     get:
       operationId: apps_get_permissions
-      summary: >-
-        Gets the permissions of an app. Apps can inherit permissions from their
-        root object.
+      summary: Gets the permissions of an app. Apps can inherit permissions from their root object.
       tags:
-        - apps
-      description: >-
-        Gets the permissions of an app. Apps can inherit permissions from their
-        root object.
-
+      - apps
+      description: |-
+        Gets the permissions of an app. Apps can inherit permissions from their root object.
 
         :param app_name: str
           The app for which to get or manage permissions.
 
         :returns: :class:`AppPermissions`
       parameters:
-        - name: app_name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The app for which to get or manage permissions.
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The app for which to get or manage permissions.
       responses:
         '200':
           description: Success
@@ -616,33 +585,25 @@ paths:
       x-stackql-sdk-source: AppsAPI
     put:
       operationId: apps_set_permissions
-      summary: >-
-        Sets permissions on an object, replacing existing permissions if they
-        exist. Deletes all direct
+      summary: Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
       tags:
-        - apps
-      description: >-
-        Sets permissions on an object, replacing existing permissions if they
-        exist. Deletes all direct
-
-        permissions if none are specified. Objects can inherit permissions from
-        their root object.
-
+      - apps
+      description: |-
+        Sets permissions on an object, replacing existing permissions if they exist. Deletes all direct
+        permissions if none are specified. Objects can inherit permissions from their root object.
 
         :param app_name: str
           The app for which to get or manage permissions.
-        :param access_control_list: List[:class:`AppAccessControlRequest`]
-        (optional)
-
+        :param access_control_list: List[:class:`AppAccessControlRequest`] (optional)
 
         :returns: :class:`AppPermissions`
       parameters:
-        - name: app_name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The app for which to get or manage permissions.
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The app for which to get or manage permissions.
       requestBody:
         content:
           application/json:
@@ -673,30 +634,24 @@ paths:
       x-stackql-sdk-source: AppsAPI
     patch:
       operationId: apps_update_permissions
-      summary: >-
-        Updates the permissions on an app. Apps can inherit permissions from
-        their root object.
+      summary: Updates the permissions on an app. Apps can inherit permissions from their root object.
       tags:
-        - apps
-      description: >-
-        Updates the permissions on an app. Apps can inherit permissions from
-        their root object.
-
+      - apps
+      description: |-
+        Updates the permissions on an app. Apps can inherit permissions from their root object.
 
         :param app_name: str
           The app for which to get or manage permissions.
-        :param access_control_list: List[:class:`AppAccessControlRequest`]
-        (optional)
-
+        :param access_control_list: List[:class:`AppAccessControlRequest`] (optional)
 
         :returns: :class:`AppPermissions`
       parameters:
-        - name: app_name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The app for which to get or manage permissions.
+      - name: app_name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The app for which to get or manage permissions.
       requestBody:
         content:
           application/json:
@@ -730,7 +685,7 @@ paths:
       operationId: apps_start
       summary: Start the last active deployment of the app in the workspace.
       tags:
-        - apps
+      - apps
       description: |-
         Start the last active deployment of the app in the workspace.
 
@@ -741,12 +696,12 @@ paths:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_active for more details.
       parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The name of the app.
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the app.
       responses:
         '200':
           description: Success
@@ -771,7 +726,7 @@ paths:
       operationId: apps_stop
       summary: Stops the active deployment of the app in the workspace.
       tags:
-        - apps
+      - apps
       description: |-
         Stops the active deployment of the app in the workspace.
 
@@ -782,12 +737,12 @@ paths:
           Long-running operation waiter for :class:`App`.
           See :method:wait_get_app_stopped for more details.
       parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The name of the app.
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the app.
       responses:
         '200':
           description: Success
@@ -812,8 +767,8 @@ paths:
       operationId: apps_settings_create_custom_template
       summary: Creates a custom template.
       tags:
-        - apps
-        - apps_settings
+      - apps
+      - apps_settings
       description: |-
         Creates a custom template.
 
@@ -830,7 +785,7 @@ paths:
                   type: string
                   description: ':returns: :class:`CustomTemplate`'
               required:
-                - template
+              - template
       responses:
         '200':
           description: Success
@@ -854,8 +809,8 @@ paths:
       operationId: apps_settings_list_custom_templates
       summary: Lists all custom templates in the workspace.
       tags:
-        - apps
-        - apps_settings
+      - apps
+      - apps_settings
       description: |-
         Lists all custom templates in the workspace.
 
@@ -866,20 +821,18 @@ paths:
 
         :returns: Iterator over :class:`CustomTemplate`
       parameters:
-        - name: page_size
-          in: query
-          required: false
-          schema:
-            type: string
-          description: Upper bound for items returned.
-        - name: page_token
-          in: query
-          required: false
-          schema:
-            type: string
-          description: >-
-            Pagination token to go to the next page of custom templates.
-            Requests first page if absent.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Upper bound for items returned.
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: Pagination token to go to the next page of custom templates. Requests first page if absent.
       responses:
         '200':
           description: Success
@@ -904,8 +857,8 @@ paths:
       operationId: apps_settings_delete_custom_template
       summary: Deletes the custom template with the specified name.
       tags:
-        - apps
-        - apps_settings
+      - apps
+      - apps_settings
       description: |-
         Deletes the custom template with the specified name.
 
@@ -914,12 +867,12 @@ paths:
 
         :returns: :class:`CustomTemplate`
       parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The name of the custom template.
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the custom template.
       responses:
         '200':
           description: Success
@@ -943,8 +896,8 @@ paths:
       operationId: apps_settings_get_custom_template
       summary: Gets the custom template with the specified name.
       tags:
-        - apps
-        - apps_settings
+      - apps
+      - apps_settings
       description: |-
         Gets the custom template with the specified name.
 
@@ -953,12 +906,12 @@ paths:
 
         :returns: :class:`CustomTemplate`
       parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The name of the custom template.
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the custom template.
       responses:
         '200':
           description: Success
@@ -980,34 +933,27 @@ paths:
       x-stackql-sdk-source: AppsSettingsAPI
     put:
       operationId: apps_settings_update_custom_template
-      summary: >-
-        Updates the custom template with the specified name. Note that the
-        template name cannot be updated.
+      summary: Updates the custom template with the specified name. Note that the template name cannot be updated.
       tags:
-        - apps
-        - apps_settings
-      description: >-
-        Updates the custom template with the specified name. Note that the
-        template name cannot be updated.
-
+      - apps
+      - apps_settings
+      description: |-
+        Updates the custom template with the specified name. Note that the template name cannot be updated.
 
         :param name: str
           The name of the template. It must contain only alphanumeric characters, hyphens, underscores, and
           whitespaces. It must be unique within the workspace.
         :param template: :class:`CustomTemplate`
 
-
         :returns: :class:`CustomTemplate`
       parameters:
-        - name: name
-          in: path
-          required: true
-          schema:
-            type: string
-          description: >-
-            The name of the template. It must contain only alphanumeric
-            characters, hyphens, underscores, and whitespaces. It must be unique
-            within the workspace.
+      - name: name
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The name of the template. It must contain only alphanumeric characters, hyphens, underscores, and whitespaces.
+          It must be unique within the workspace.
       requestBody:
         content:
           application/json:
@@ -1018,7 +964,7 @@ paths:
                   type: string
                   description: ':returns: :class:`CustomTemplate`'
               required:
-                - template
+              - template
       responses:
         '200':
           description: Success
@@ -1047,9 +993,8 @@ components:
           type: string
         active_deployment:
           $ref: '#/components/schemas/AppDeployment'
-          description: >-
-            The active deployment of the app. A deployment is considered active
-            when it has been deployed to the app compute.
+          description: The active deployment of the app. A deployment is considered active when it has been deployed to the
+            app compute.
         app_status:
           $ref: '#/components/schemas/ApplicationStatus'
         budget_policy_id:
@@ -1066,10 +1011,8 @@ components:
           description: The email of the user that created the app.
         default_source_code_path:
           type: string
-          description: >-
-            The default workspace file system path of the source code from which
-            app deployment are created. This field tracks the workspace source
-            code path of the last active deployment.
+          description: The default workspace file system path of the source code from which app deployment are created. This
+            field tracks the workspace source code path of the last active deployment.
         description:
           type: string
           description: The description of the app.
@@ -1084,10 +1027,8 @@ components:
           description: The effective api scopes granted to the user access token.
         git_repository:
           $ref: '#/components/schemas/GitRepository'
-          description: >-
-            Git repository configuration for app deployments. When specified,
-            deployments can reference code from this repository by providing
-            only the git reference (branch, tag, or commit).
+          description: Git repository configuration for app deployments. When specified, deployments can reference code from
+            this repository by providing only the git reference (branch, tag, or commit).
         id:
           type: string
           description: The unique identifier of the app.
@@ -1097,9 +1038,8 @@ components:
           type: string
         pending_deployment:
           $ref: '#/components/schemas/AppDeployment'
-          description: >-
-            The pending deployment of the app. A deployment is considered
-            pending when it is being prepared for deployment to the app compute.
+          description: The pending deployment of the app. A deployment is considered pending when it is being prepared for
+            deployment to the app compute.
         resources:
           type: array
           items:
@@ -1127,7 +1067,7 @@ components:
           items:
             type: string
       required:
-        - name
+      - name
     AppAccessControlRequest:
       type: object
       properties:
@@ -1169,9 +1109,7 @@ components:
             type: string
         create_time:
           type: string
-          description: >-
-            The creation time of the deployment. Formatted timestamp in ISO
-            6801.
+          description: The creation time of the deployment. Formatted timestamp in ISO 6801.
         creator:
           type: string
           description: The email of the user creates the deployment.
@@ -1185,10 +1123,8 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/EnvVar'
-          description: >-
-            The environment variables to set in the app runtime environment.
-            This will override the environment variables specified in the
-            app.yaml file.
+          description: The environment variables to set in the app runtime environment. This will override the environment
+            variables specified in the app.yaml file.
         git_source:
           $ref: '#/components/schemas/GitSource'
           description: Git repository to use as the source for the app deployment.
@@ -1197,14 +1133,10 @@ components:
           description: The mode of which the deployment will manage the source code.
         source_code_path:
           type: string
-          description: >-
-            The workspace file system path of the source code used to create the
-            app deployment. This is different from
-            `deployment_artifacts.source_code_path`, which is the path used by
-            the deployed app. The former refers to the original source code
-            location of the app in the workspace during deployment creation,
-            whereas the latter provides a system generated stable snapshotted
-            source code path used by the deployment.
+          description: The workspace file system path of the source code used to create the app deployment. This is different
+            from `deployment_artifacts.source_code_path`, which is the path used by the deployed app. The former refers to
+            the original source code location of the app in the workspace during deployment creation, whereas the latter provides
+            a system generated stable snapshotted source code path used by the deployment.
         status:
           $ref: '#/components/schemas/AppDeploymentStatus'
           description: Status and status message of the deployment
@@ -1241,40 +1173,37 @@ components:
           items:
             $ref: '#/components/schemas/AppManifestAppResourceSpec'
       required:
-        - version
-        - name
+      - version
+      - name
       description: App manifest definition
     AppManifestAppResourceExperimentSpec:
       type: object
       properties:
         permission:
-          $ref: >-
-            #/components/schemas/AppManifestAppResourceExperimentSpecExperimentPermission
+          $ref: '#/components/schemas/AppManifestAppResourceExperimentSpecExperimentPermission'
       required:
-        - permission
+      - permission
     AppManifestAppResourceJobSpec:
       type: object
       properties:
         permission:
           $ref: '#/components/schemas/AppManifestAppResourceJobSpecJobPermission'
       required:
-        - permission
+      - permission
     AppManifestAppResourceSecretSpec:
       type: object
       properties:
         permission:
-          $ref: >-
-            #/components/schemas/AppManifestAppResourceSecretSpecSecretPermission
+          $ref: '#/components/schemas/AppManifestAppResourceSecretSpecSecretPermission'
       required:
-        - permission
+      - permission
     AppManifestAppResourceServingEndpointSpec:
       type: object
       properties:
         permission:
-          $ref: >-
-            #/components/schemas/AppManifestAppResourceServingEndpointSpecServingEndpointPermission
+          $ref: '#/components/schemas/AppManifestAppResourceServingEndpointSpecServingEndpointPermission'
       required:
-        - permission
+      - permission
     AppManifestAppResourceSpec:
       type: object
       properties:
@@ -1297,31 +1226,27 @@ components:
         uc_securable_spec:
           $ref: '#/components/schemas/AppManifestAppResourceUcSecurableSpec'
       required:
-        - name
-      description: >-
-        AppResource related fields are copied from app.proto but excludes
-        resource identifiers (e.g.
+      - name
+      description: |-
+        AppResource related fields are copied from app.proto but excludes resource identifiers (e.g.
             name, id, key, scope, etc.)
     AppManifestAppResourceSqlWarehouseSpec:
       type: object
       properties:
         permission:
-          $ref: >-
-            #/components/schemas/AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission
+          $ref: '#/components/schemas/AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission'
       required:
-        - permission
+      - permission
     AppManifestAppResourceUcSecurableSpec:
       type: object
       properties:
         securable_type:
-          $ref: >-
-            #/components/schemas/AppManifestAppResourceUcSecurableSpecUcSecurableType
+          $ref: '#/components/schemas/AppManifestAppResourceUcSecurableSpecUcSecurableType'
         permission:
-          $ref: >-
-            #/components/schemas/AppManifestAppResourceUcSecurableSpecUcSecurablePermission
+          $ref: '#/components/schemas/AppManifestAppResourceUcSecurableSpecUcSecurablePermission'
       required:
-        - securable_type
-        - permission
+      - securable_type
+      - permission
     AppPermission:
       type: object
       properties:
@@ -1376,7 +1301,7 @@ components:
         uc_securable:
           $ref: '#/components/schemas/AppResourceUcSecurable'
       required:
-        - name
+      - name
     AppResourceDatabase:
       type: object
       properties:
@@ -1387,9 +1312,9 @@ components:
         permission:
           $ref: '#/components/schemas/AppResourceDatabaseDatabasePermission'
       required:
-        - instance_name
-        - database_name
-        - permission
+      - instance_name
+      - database_name
+      - permission
     AppResourceExperiment:
       type: object
       properties:
@@ -1398,8 +1323,8 @@ components:
         permission:
           $ref: '#/components/schemas/AppResourceExperimentExperimentPermission'
       required:
-        - experiment_id
-        - permission
+      - experiment_id
+      - permission
     AppResourceGenieSpace:
       type: object
       properties:
@@ -1410,9 +1335,9 @@ components:
         permission:
           $ref: '#/components/schemas/AppResourceGenieSpaceGenieSpacePermission'
       required:
-        - name
-        - space_id
-        - permission
+      - name
+      - space_id
+      - permission
     AppResourceJob:
       type: object
       properties:
@@ -1420,12 +1345,11 @@ components:
           type: string
         permission:
           $ref: '#/components/schemas/AppResourceJobJobPermission'
-          description: >-
-            Permissions to grant on the Job. Supported permissions are:
-            "CAN_MANAGE", "IS_OWNER", "CAN_MANAGE_RUN", "CAN_VIEW".
+          description: 'Permissions to grant on the Job. Supported permissions are: "CAN_MANAGE", "IS_OWNER", "CAN_MANAGE_RUN",
+            "CAN_VIEW".'
       required:
-        - id
-        - permission
+      - id
+      - permission
     AppResourceSecret:
       type: object
       properties:
@@ -1436,28 +1360,24 @@ components:
           description: Key of the secret to grant permission on.
         permission:
           $ref: '#/components/schemas/AppResourceSecretSecretPermission'
-          description: >-
-            Permission to grant on the secret scope. For secrets, only one
-            permission is allowed. Permission must be one of: "READ", "WRITE",
-            "MANAGE".
+          description: 'Permission to grant on the secret scope. For secrets, only one permission is allowed. Permission must
+            be one of: "READ", "WRITE", "MANAGE".'
       required:
-        - scope
-        - key
-        - permission
+      - scope
+      - key
+      - permission
     AppResourceServingEndpoint:
       type: object
       properties:
         name:
           type: string
         permission:
-          $ref: >-
-            #/components/schemas/AppResourceServingEndpointServingEndpointPermission
-          description: >-
-            Permission to grant on the serving endpoint. Supported permissions
-            are: "CAN_MANAGE", "CAN_QUERY", "CAN_VIEW".
+          $ref: '#/components/schemas/AppResourceServingEndpointServingEndpointPermission'
+          description: 'Permission to grant on the serving endpoint. Supported permissions are: "CAN_MANAGE", "CAN_QUERY",
+            "CAN_VIEW".'
       required:
-        - name
-        - permission
+      - name
+      - permission
     AppResourceSqlWarehouse:
       type: object
       properties:
@@ -1465,12 +1385,10 @@ components:
           type: string
         permission:
           $ref: '#/components/schemas/AppResourceSqlWarehouseSqlWarehousePermission'
-          description: >-
-            Permission to grant on the SQL warehouse. Supported permissions are:
-            "CAN_MANAGE", "CAN_USE", "IS_OWNER".
+          description: 'Permission to grant on the SQL warehouse. Supported permissions are: "CAN_MANAGE", "CAN_USE", "IS_OWNER".'
       required:
-        - id
-        - permission
+      - id
+      - permission
     AppResourceUcSecurable:
       type: object
       properties:
@@ -1481,9 +1399,9 @@ components:
         permission:
           $ref: '#/components/schemas/AppResourceUcSecurableUcSecurablePermission'
       required:
-        - securable_full_name
-        - securable_type
-        - permission
+      - securable_full_name
+      - securable_type
+      - permission
     AppUpdate:
       type: object
       properties:
@@ -1546,9 +1464,7 @@ components:
           description: The path to the template within the Git repository.
         manifest:
           $ref: '#/components/schemas/AppManifest'
-          description: >-
-            The manifest of the template. It defines fields and default values
-            when installing the template.
+          description: The manifest of the template. It defines fields and default values when installing the template.
         git_provider:
           type: string
           description: The Git provider of the template.
@@ -1558,11 +1474,11 @@ components:
           type: string
           description: The description of the template.
       required:
-        - name
-        - git_repo
-        - path
-        - manifest
-        - git_provider
+      - name
+      - git_repo
+      - path
+      - manifest
+      - git_provider
     EnvVar:
       type: object
       properties:
@@ -1573,9 +1489,8 @@ components:
           description: The value for the environment variable.
         value_from:
           type: string
-          description: >-
-            The name of an external Databricks resource that contains the value,
-            such as a secret or a database table.
+          description: The name of an external Databricks resource that contains the value, such as a secret or a database
+            table.
     GetAppPermissionLevelsResponse:
       type: object
       properties:
@@ -1591,13 +1506,11 @@ components:
           description: URL of the Git repository.
         provider:
           type: string
-          description: >-
-            Git provider. Case insensitive. Supported values: gitHub,
-            gitHubEnterprise, bitbucketCloud, bitbucketServer,
-            azureDevOpsServices, gitLab, gitLabEnterpriseEdition, awsCodeCommit.
+          description: 'Git provider. Case insensitive. Supported values: gitHub, gitHubEnterprise, bitbucketCloud, bitbucketServer,
+            azureDevOpsServices, gitLab, gitLabEnterpriseEdition, awsCodeCommit.'
       required:
-        - url
-        - provider
+      - url
+      - provider
       description: Git repository configuration specifying the location of the repository.
     GitSource:
       type: object
@@ -1610,28 +1523,21 @@ components:
           description: Git commit SHA to checkout.
         git_repository:
           $ref: '#/components/schemas/GitRepository'
-          description: >-
-            Git repository configuration. Populated from the app's
-            git_repository configuration.
+          description: Git repository configuration. Populated from the app's git_repository configuration.
         resolved_commit:
           type: string
-          description: >-
-            The resolved commit SHA that was actually used for the deployment.
-            This is populated by the system after resolving the reference
-            (branch, tag, or commit). If commit is specified directly, this will
-            match commit. If a branch or tag is specified, this contains the
-            commit SHA that the branch or tag pointed to at deployment time.
+          description: The resolved commit SHA that was actually used for the deployment. This is populated by the system
+            after resolving the reference (branch, tag, or commit). If commit is specified directly, this will match commit.
+            If a branch or tag is specified, this contains the commit SHA that the branch or tag pointed to at deployment
+            time.
         source_code_path:
           type: string
-          description: >-
-            Relative path to the app source code within the Git repository. If
-            not specified, the root of the repository is used.
+          description: Relative path to the app source code within the Git repository. If not specified, the root of the repository
+            is used.
         tag:
           type: string
           description: Git tag to checkout.
-      description: >-
-        Complete git source specification including repository location and
-        reference.
+      description: Complete git source specification including repository location and reference.
     ListAppDeploymentsResponse:
       type: object
       properties:
@@ -1663,9 +1569,9 @@ components:
             $ref: '#/components/schemas/CustomTemplate'
     AppDeploymentMode:
       type: string
-      enum:
-        - AUTO_SYNC
-        - SNAPSHOT
+      x-enum:
+      - AUTO_SYNC
+      - SNAPSHOT
       description: |-
         Create a collection of name/value pairs.
 
@@ -1705,11 +1611,11 @@ components:
         attributes -- see the documentation for details.
     AppDeploymentState:
       type: string
-      enum:
-        - CANCELLED
-        - FAILED
-        - IN_PROGRESS
-        - SUCCEEDED
+      x-enum:
+      - CANCELLED
+      - FAILED
+      - IN_PROGRESS
+      - SUCCEEDED
       description: |-
         Create a collection of name/value pairs.
 
@@ -1749,10 +1655,10 @@ components:
         attributes -- see the documentation for details.
     AppManifestAppResourceExperimentSpecExperimentPermission:
       type: string
-      enum:
-        - CAN_EDIT
-        - CAN_MANAGE
-        - CAN_READ
+      x-enum:
+      - CAN_EDIT
+      - CAN_MANAGE
+      - CAN_READ
       description: |-
         Create a collection of name/value pairs.
 
@@ -1792,11 +1698,11 @@ components:
         attributes -- see the documentation for details.
     AppManifestAppResourceJobSpecJobPermission:
       type: string
-      enum:
-        - CAN_MANAGE
-        - CAN_MANAGE_RUN
-        - CAN_VIEW
-        - IS_OWNER
+      x-enum:
+      - CAN_MANAGE
+      - CAN_MANAGE_RUN
+      - CAN_VIEW
+      - IS_OWNER
       description: |-
         Create a collection of name/value pairs.
 
@@ -1836,19 +1742,17 @@ components:
         attributes -- see the documentation for details.
     AppManifestAppResourceSecretSpecSecretPermission:
       type: string
-      enum:
-        - MANAGE
-        - READ
-        - WRITE
-      description: >-
-        Permission to grant on the secret scope. Supported permissions are:
-        "READ", "WRITE", "MANAGE".
+      x-enum:
+      - MANAGE
+      - READ
+      - WRITE
+      description: 'Permission to grant on the secret scope. Supported permissions are: "READ", "WRITE", "MANAGE".'
     AppManifestAppResourceServingEndpointSpecServingEndpointPermission:
       type: string
-      enum:
-        - CAN_MANAGE
-        - CAN_QUERY
-        - CAN_VIEW
+      x-enum:
+      - CAN_MANAGE
+      - CAN_QUERY
+      - CAN_VIEW
       description: |-
         Create a collection of name/value pairs.
 
@@ -1888,10 +1792,10 @@ components:
         attributes -- see the documentation for details.
     AppManifestAppResourceSqlWarehouseSpecSqlWarehousePermission:
       type: string
-      enum:
-        - CAN_MANAGE
-        - CAN_USE
-        - IS_OWNER
+      x-enum:
+      - CAN_MANAGE
+      - CAN_USE
+      - IS_OWNER
       description: |-
         Create a collection of name/value pairs.
 
@@ -1931,13 +1835,13 @@ components:
         attributes -- see the documentation for details.
     AppManifestAppResourceUcSecurableSpecUcSecurablePermission:
       type: string
-      enum:
-        - EXECUTE
-        - MANAGE
-        - READ_VOLUME
-        - SELECT
-        - USE_CONNECTION
-        - WRITE_VOLUME
+      x-enum:
+      - EXECUTE
+      - MANAGE
+      - READ_VOLUME
+      - SELECT
+      - USE_CONNECTION
+      - WRITE_VOLUME
       description: |-
         Create a collection of name/value pairs.
 
@@ -1977,11 +1881,11 @@ components:
         attributes -- see the documentation for details.
     AppManifestAppResourceUcSecurableSpecUcSecurableType:
       type: string
-      enum:
-        - CONNECTION
-        - FUNCTION
-        - TABLE
-        - VOLUME
+      x-enum:
+      - CONNECTION
+      - FUNCTION
+      - TABLE
+      - VOLUME
       description: |-
         Create a collection of name/value pairs.
 
@@ -2021,14 +1925,14 @@ components:
         attributes -- see the documentation for details.
     AppPermissionLevel:
       type: string
-      enum:
-        - CAN_MANAGE
-        - CAN_USE
+      x-enum:
+      - CAN_MANAGE
+      - CAN_USE
       description: Permission level
     AppResourceDatabaseDatabasePermission:
       type: string
-      enum:
-        - CAN_CONNECT_AND_CREATE
+      x-enum:
+      - CAN_CONNECT_AND_CREATE
       description: |-
         Create a collection of name/value pairs.
 
@@ -2068,10 +1972,10 @@ components:
         attributes -- see the documentation for details.
     AppResourceExperimentExperimentPermission:
       type: string
-      enum:
-        - CAN_EDIT
-        - CAN_MANAGE
-        - CAN_READ
+      x-enum:
+      - CAN_EDIT
+      - CAN_MANAGE
+      - CAN_READ
       description: |-
         Create a collection of name/value pairs.
 
@@ -2111,11 +2015,11 @@ components:
         attributes -- see the documentation for details.
     AppResourceGenieSpaceGenieSpacePermission:
       type: string
-      enum:
-        - CAN_EDIT
-        - CAN_MANAGE
-        - CAN_RUN
-        - CAN_VIEW
+      x-enum:
+      - CAN_EDIT
+      - CAN_MANAGE
+      - CAN_RUN
+      - CAN_VIEW
       description: |-
         Create a collection of name/value pairs.
 
@@ -2155,11 +2059,11 @@ components:
         attributes -- see the documentation for details.
     AppResourceJobJobPermission:
       type: string
-      enum:
-        - CAN_MANAGE
-        - CAN_MANAGE_RUN
-        - CAN_VIEW
-        - IS_OWNER
+      x-enum:
+      - CAN_MANAGE
+      - CAN_MANAGE_RUN
+      - CAN_VIEW
+      - IS_OWNER
       description: |-
         Create a collection of name/value pairs.
 
@@ -2199,19 +2103,17 @@ components:
         attributes -- see the documentation for details.
     AppResourceSecretSecretPermission:
       type: string
-      enum:
-        - MANAGE
-        - READ
-        - WRITE
-      description: >-
-        Permission to grant on the secret scope. Supported permissions are:
-        "READ", "WRITE", "MANAGE".
+      x-enum:
+      - MANAGE
+      - READ
+      - WRITE
+      description: 'Permission to grant on the secret scope. Supported permissions are: "READ", "WRITE", "MANAGE".'
     AppResourceServingEndpointServingEndpointPermission:
       type: string
-      enum:
-        - CAN_MANAGE
-        - CAN_QUERY
-        - CAN_VIEW
+      x-enum:
+      - CAN_MANAGE
+      - CAN_QUERY
+      - CAN_VIEW
       description: |-
         Create a collection of name/value pairs.
 
@@ -2251,10 +2153,10 @@ components:
         attributes -- see the documentation for details.
     AppResourceSqlWarehouseSqlWarehousePermission:
       type: string
-      enum:
-        - CAN_MANAGE
-        - CAN_USE
-        - IS_OWNER
+      x-enum:
+      - CAN_MANAGE
+      - CAN_USE
+      - IS_OWNER
       description: |-
         Create a collection of name/value pairs.
 
@@ -2294,12 +2196,12 @@ components:
         attributes -- see the documentation for details.
     AppResourceUcSecurableUcSecurablePermission:
       type: string
-      enum:
-        - EXECUTE
-        - READ_VOLUME
-        - SELECT
-        - USE_CONNECTION
-        - WRITE_VOLUME
+      x-enum:
+      - EXECUTE
+      - READ_VOLUME
+      - SELECT
+      - USE_CONNECTION
+      - WRITE_VOLUME
       description: |-
         Create a collection of name/value pairs.
 
@@ -2339,11 +2241,11 @@ components:
         attributes -- see the documentation for details.
     AppResourceUcSecurableUcSecurableType:
       type: string
-      enum:
-        - CONNECTION
-        - FUNCTION
-        - TABLE
-        - VOLUME
+      x-enum:
+      - CONNECTION
+      - FUNCTION
+      - TABLE
+      - VOLUME
       description: |-
         Create a collection of name/value pairs.
 
@@ -2383,11 +2285,11 @@ components:
         attributes -- see the documentation for details.
     AppUpdateUpdateStatusUpdateState:
       type: string
-      enum:
-        - FAILED
-        - IN_PROGRESS
-        - NOT_UPDATED
-        - SUCCEEDED
+      x-enum:
+      - FAILED
+      - IN_PROGRESS
+      - NOT_UPDATED
+      - SUCCEEDED
       description: |-
         Create a collection of name/value pairs.
 
@@ -2427,11 +2329,11 @@ components:
         attributes -- see the documentation for details.
     ApplicationState:
       type: string
-      enum:
-        - CRASHED
-        - DEPLOYING
-        - RUNNING
-        - UNAVAILABLE
+      x-enum:
+      - CRASHED
+      - DEPLOYING
+      - RUNNING
+      - UNAVAILABLE
       description: |-
         Create a collection of name/value pairs.
 
@@ -2471,9 +2373,9 @@ components:
         attributes -- see the documentation for details.
     ComputeSize:
       type: string
-      enum:
-        - LARGE
-        - MEDIUM
+      x-enum:
+      - LARGE
+      - MEDIUM
       description: |-
         Create a collection of name/value pairs.
 
@@ -2513,14 +2415,14 @@ components:
         attributes -- see the documentation for details.
     ComputeState:
       type: string
-      enum:
-        - ACTIVE
-        - DELETING
-        - ERROR
-        - STARTING
-        - STOPPED
-        - STOPPING
-        - UPDATING
+      x-enum:
+      - ACTIVE
+      - DELETING
+      - ERROR
+      - STARTING
+      - STOPPED
+      - STOPPING
+      - UPDATING
       description: |-
         Create a collection of name/value pairs.
 
@@ -2565,6 +2467,9 @@ components:
       title: Apps
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1apps/post'
           response:
@@ -2590,6 +2495,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1apps~1{name}/patch'
           response:
@@ -2609,14 +2517,14 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/apps/methods/get'
-          - $ref: '#/components/x-stackQL-resources/apps/methods/list'
+        - $ref: '#/components/x-stackQL-resources/apps/methods/get'
+        - $ref: '#/components/x-stackQL-resources/apps/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/apps/methods/create'
+        - $ref: '#/components/x-stackQL-resources/apps/methods/create'
         update:
-          - $ref: '#/components/x-stackQL-resources/apps/methods/update'
+        - $ref: '#/components/x-stackQL-resources/apps/methods/update'
         delete:
-          - $ref: '#/components/x-stackQL-resources/apps/methods/delete'
+        - $ref: '#/components/x-stackQL-resources/apps/methods/delete'
         replace: []
     app_updates:
       id: databricks_workspace.apps.app_updates
@@ -2624,6 +2532,9 @@ components:
       title: App Updates
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1update/post'
           response:
@@ -2637,9 +2548,9 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/app_updates/methods/get'
+        - $ref: '#/components/x-stackQL-resources/app_updates/methods/get'
         insert:
-          - $ref: '#/components/x-stackQL-resources/app_updates/methods/create'
+        - $ref: '#/components/x-stackQL-resources/app_updates/methods/create'
         update: []
         delete: []
         replace: []
@@ -2649,6 +2560,9 @@ components:
       title: App Deployments
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1deployments/post'
           response:
@@ -2663,17 +2577,16 @@ components:
             objectKey: $.app_deployments
         get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1apps~1{app_name}~1deployments~1{deployment_id}/get
+            $ref: '#/paths/~1api~12.0~1apps~1{app_name}~1deployments~1{deployment_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/app_deployments/methods/get'
-          - $ref: '#/components/x-stackQL-resources/app_deployments/methods/list'
+        - $ref: '#/components/x-stackQL-resources/app_deployments/methods/get'
+        - $ref: '#/components/x-stackQL-resources/app_deployments/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/app_deployments/methods/create'
+        - $ref: '#/components/x-stackQL-resources/app_deployments/methods/create'
         update: []
         delete: []
         replace: []
@@ -2684,14 +2597,13 @@ components:
       methods:
         get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1permissions~1apps~1{app_name}~1permissionLevels/get
+            $ref: '#/paths/~1api~12.0~1permissions~1apps~1{app_name}~1permissionLevels/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/app_permission_levels/methods/get'
+        - $ref: '#/components/x-stackQL-resources/app_permission_levels/methods/get'
         insert: []
         update: []
         delete: []
@@ -2708,12 +2620,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1apps~1{app_name}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1apps~1{app_name}/patch'
           response:
@@ -2721,19 +2639,22 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/app_permissions/methods/get'
+        - $ref: '#/components/x-stackQL-resources/app_permissions/methods/get'
         insert: []
         update:
-          - $ref: '#/components/x-stackQL-resources/app_permissions/methods/update'
+        - $ref: '#/components/x-stackQL-resources/app_permissions/methods/update'
         delete: []
         replace:
-          - $ref: '#/components/x-stackQL-resources/app_permissions/methods/set'
+        - $ref: '#/components/x-stackQL-resources/app_permissions/methods/set'
     apps_settings:
       id: databricks_workspace.apps.apps_settings
       name: apps_settings
       title: Apps Settings
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1apps-settings~1templates/post'
           response:
@@ -2759,6 +2680,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         replace:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1apps-settings~1templates~1{name}/put'
           response:
@@ -2766,12 +2690,371 @@ components:
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/apps_settings/methods/get'
-          - $ref: '#/components/x-stackQL-resources/apps_settings/methods/list'
+        - $ref: '#/components/x-stackQL-resources/apps_settings/methods/get'
+        - $ref: '#/components/x-stackQL-resources/apps_settings/methods/list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/apps_settings/methods/create'
+        - $ref: '#/components/x-stackQL-resources/apps_settings/methods/create'
         update: []
         delete:
-          - $ref: '#/components/x-stackQL-resources/apps_settings/methods/delete'
+        - $ref: '#/components/x-stackQL-resources/apps_settings/methods/delete'
         replace:
-          - $ref: '#/components/x-stackQL-resources/apps_settings/methods/replace'
+        - $ref: '#/components/x-stackQL-resources/apps_settings/methods/replace'
+    vw_apps:
+      name: vw_apps
+      id: databricks_workspace.apps.vw_apps
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: name
+            type: string
+            description: Unique name of the Databricks app within the workspace.
+          - name: id
+            type: string
+            description: Unique identifier for the app.
+          - name: description
+            type: string
+            description: Optional description of the app.
+          - name: url
+            type: string
+            description: URL at which the app is accessible.
+          - name: creator
+            type: string
+            description: Username of the user who created the app.
+          - name: create_time
+            type: string
+            description: Timestamp when the app was created (ISO 8601).
+          - name: updater
+            type: string
+            description: Username of the user who last updated the app.
+          - name: update_time
+            type: string
+            description: Timestamp when the app was last updated (ISO 8601).
+          - name: compute_size
+            type: string
+            description: Compute size tier for the app (e.g. SMALL, MEDIUM, LARGE).
+          - name: budget_policy_id
+            type: string
+            description: ID of the budget policy explicitly assigned to this app.
+          - name: effective_budget_policy_id
+            type: string
+            description: ID of the budget policy in effect for this app (may be inherited).
+          - name: service_principal_id
+            type: integer
+            description: ID of the service principal used by this app.
+          - name: service_principal_name
+            type: string
+            description: Display name of the service principal used by this app.
+          - name: service_principal_client_id
+            type: string
+            description: OAuth client ID of the service principal used by this app.
+          - name: default_source_code_path
+            type: string
+            description: Default workspace path to the app source code.
+          - name: app_state
+            type: string
+            description: Current lifecycle state of the app (e.g. RUNNING, STOPPED, ERROR).
+          - name: app_status_message
+            type: string
+            description: Human-readable message describing the current app state.
+          - name: compute_state
+            type: string
+            description: Current state of the app compute resources (e.g. ACTIVE, STOPPING, ERROR).
+          - name: compute_status_message
+            type: string
+            description: Human-readable message describing the current compute state.
+          - name: compute_active_instances
+            type: integer
+            description: Number of active compute instances currently running for the app.
+          - name: git_repo_url
+            type: string
+            description: URL of the linked Git repository (if configured).
+          - name: git_repo_provider
+            type: string
+            description: Git provider for the linked repository (e.g. github, gitLab, azureDevOpsServices).
+          - name: active_deployment_id
+            type: string
+            description: Deployment ID of the currently active deployment.
+          - name: active_deployment_source_path
+            type: string
+            description: Workspace source code path used by the active deployment.
+          - name: active_deployment_mode
+            type: string
+            description: Deployment mode of the active deployment (e.g. SNAPSHOT, AUTO_SYNC).
+          - name: active_deployment_state
+            type: string
+            description: State of the active deployment (e.g. SUCCEEDED, IN_PROGRESS, FAILED).
+          - name: active_deployment_message
+            type: string
+            description: Human-readable status message for the active deployment.
+          - name: active_deployment_creator
+            type: string
+            description: Username of the user who created the active deployment.
+          - name: active_deployment_create_time
+            type: string
+            description: Timestamp when the active deployment was created (ISO 8601).
+          - name: pending_deployment_id
+            type: string
+            description: Deployment ID of the pending deployment, if one is in progress.
+          - name: pending_deployment_state
+            type: string
+            description: State of the pending deployment (e.g. IN_PROGRESS, FAILED).
+          - name: pending_deployment_message
+            type: string
+            description: Human-readable status message for the pending deployment.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                a.deployment_name,
+                a.name,
+                a.id,
+                a.description,
+                a.url,
+                a.creator,
+                a.create_time,
+                a.updater,
+                a.update_time,
+                a.compute_size,
+                a.budget_policy_id,
+                a.effective_budget_policy_id,
+                a.service_principal_id,
+                a.service_principal_name,
+                a.service_principal_client_id,
+                a.default_source_code_path,
+                JSON_EXTRACT(a.app_status, '$.state') AS app_state,
+                JSON_EXTRACT(a.app_status, '$.message') AS app_status_message,
+                JSON_EXTRACT(a.compute_status, '$.state') AS compute_state,
+                JSON_EXTRACT(a.compute_status, '$.message') AS compute_status_message,
+                JSON_EXTRACT(a.compute_status, '$.active_instances') AS compute_active_instances,
+                JSON_EXTRACT(a.git_repository, '$.url') AS git_repo_url,
+                JSON_EXTRACT(a.git_repository, '$.provider') AS git_repo_provider,
+                JSON_EXTRACT(a.active_deployment, '$.deployment_id') AS active_deployment_id,
+                JSON_EXTRACT(a.active_deployment, '$.source_code_path') AS active_deployment_source_path,
+                JSON_EXTRACT(a.active_deployment, '$.mode') AS active_deployment_mode,
+                JSON_EXTRACT(a.active_deployment, '$.status.state') AS active_deployment_state,
+                JSON_EXTRACT(a.active_deployment, '$.status.message') AS active_deployment_message,
+                JSON_EXTRACT(a.active_deployment, '$.creator') AS active_deployment_creator,
+                JSON_EXTRACT(a.active_deployment, '$.create_time') AS active_deployment_create_time,
+                JSON_EXTRACT(a.pending_deployment, '$.deployment_id') AS pending_deployment_id,
+                JSON_EXTRACT(a.pending_deployment, '$.status.state') AS pending_deployment_state,
+                JSON_EXTRACT(a.pending_deployment, '$.status.message') AS pending_deployment_message
+              FROM databricks_workspace.apps.apps a
+              WHERE deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  a.deployment_name,
+                  a.name,
+                  a.id,
+                  a.description,
+                  a.url,
+                  a.creator,
+                  a.create_time,
+                  a.updater,
+                  a.update_time,
+                  a.compute_size,
+                  a.budget_policy_id,
+                  a.effective_budget_policy_id,
+                  a.service_principal_id,
+                  a.service_principal_name,
+                  a.service_principal_client_id,
+                  a.default_source_code_path,
+                  a.app_status->>'state' AS app_state,
+                  a.app_status->>'message' AS app_status_message,
+                  a.compute_status->>'state' AS compute_state,
+                  a.compute_status->>'message' AS compute_status_message,
+                  (a.compute_status->>'active_instances')::integer AS compute_active_instances,
+                  a.git_repository->>'url' AS git_repo_url,
+                  a.git_repository->>'provider' AS git_repo_provider,
+                  a.active_deployment->>'deployment_id' AS active_deployment_id,
+                  a.active_deployment->>'source_code_path' AS active_deployment_source_path,
+                  a.active_deployment->>'mode' AS active_deployment_mode,
+                  a.active_deployment->'status'->>'state' AS active_deployment_state,
+                  a.active_deployment->'status'->>'message' AS active_deployment_message,
+                  a.active_deployment->>'creator' AS active_deployment_creator,
+                  a.active_deployment->>'create_time' AS active_deployment_create_time,
+                  a.pending_deployment->>'deployment_id' AS pending_deployment_id,
+                  a.pending_deployment->'status'->>'state' AS pending_deployment_state,
+                  a.pending_deployment->'status'->>'message' AS pending_deployment_message
+                FROM databricks_workspace.apps.apps a
+                WHERE deployment_name = '{{ deployment_name }}'
+    vw_app_resources:
+      name: vw_app_resources
+      id: databricks_workspace.apps.vw_app_resources
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: app_name
+            type: string
+            description: Name of the app that owns this resource binding.
+          - name: app_id
+            type: string
+            description: ID of the app that owns this resource binding.
+          - name: resource_name
+            type: string
+            description: Name used to reference this resource within the app (one row per resource).
+          - name: resource_description
+            type: string
+            description: Optional description of the resource binding.
+          - name: resource_type
+            type: string
+            description: Derived resource type - one of JOB, SQL_WAREHOUSE, SERVING_ENDPOINT, SECRET, EXPERIMENT, DATABASE,
+              GENIE_SPACE, UC_SECURABLE, or UNKNOWN.
+          - name: job_id
+            type: string
+            description: ID of the bound Databricks job (JOB type only).
+          - name: job_permission
+            type: string
+            description: Permission level granted to the app on the job (JOB type only).
+          - name: sql_warehouse_id
+            type: string
+            description: ID of the bound SQL warehouse (SQL_WAREHOUSE type only).
+          - name: sql_warehouse_permission
+            type: string
+            description: Permission level granted to the app on the SQL warehouse (SQL_WAREHOUSE type only).
+          - name: serving_endpoint_name
+            type: string
+            description: Name of the bound model serving endpoint (SERVING_ENDPOINT type only).
+          - name: serving_endpoint_permission
+            type: string
+            description: Permission level granted to the app on the serving endpoint (SERVING_ENDPOINT type only).
+          - name: secret_scope
+            type: string
+            description: Secret scope containing the bound secret (SECRET type only).
+          - name: secret_key
+            type: string
+            description: Key of the bound secret within the scope (SECRET type only).
+          - name: secret_permission
+            type: string
+            description: Permission level granted to the app on the secret (SECRET type only).
+          - name: experiment_id
+            type: string
+            description: ID of the bound MLflow experiment (EXPERIMENT type only).
+          - name: experiment_permission
+            type: string
+            description: Permission level granted to the app on the experiment (EXPERIMENT type only).
+          - name: database_instance
+            type: string
+            description: Instance name of the bound Databricks database (DATABASE type only).
+          - name: database_name
+            type: string
+            description: Name of the bound database (DATABASE type only).
+          - name: database_permission
+            type: string
+            description: Permission level granted to the app on the database (DATABASE type only).
+          - name: genie_space_id
+            type: string
+            description: ID of the bound Genie space (GENIE_SPACE type only).
+          - name: genie_space_permission
+            type: string
+            description: Permission level granted to the app on the Genie space (GENIE_SPACE type only).
+          - name: uc_securable_name
+            type: string
+            description: Full name of the bound Unity Catalog securable (UC_SECURABLE type only).
+          - name: uc_securable_type
+            type: string
+            description: Type of the Unity Catalog securable (e.g. TABLE, SCHEMA, CATALOG) (UC_SECURABLE type only).
+          - name: uc_securable_permission
+            type: string
+            description: Permission level granted to the app on the Unity Catalog securable (UC_SECURABLE type only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                a.deployment_name,
+                a.name AS app_name,
+                a.id AS app_id,
+                JSON_EXTRACT(r.value, '$.name') AS resource_name,
+                JSON_EXTRACT(r.value, '$.description') AS resource_description,
+                CASE
+                  WHEN JSON_EXTRACT(r.value, '$.job') IS NOT NULL THEN 'JOB'
+                  WHEN JSON_EXTRACT(r.value, '$.sql_warehouse') IS NOT NULL THEN 'SQL_WAREHOUSE'
+                  WHEN JSON_EXTRACT(r.value, '$.serving_endpoint') IS NOT NULL THEN 'SERVING_ENDPOINT'
+                  WHEN JSON_EXTRACT(r.value, '$.secret') IS NOT NULL THEN 'SECRET'
+                  WHEN JSON_EXTRACT(r.value, '$.experiment') IS NOT NULL THEN 'EXPERIMENT'
+                  WHEN JSON_EXTRACT(r.value, '$.database') IS NOT NULL THEN 'DATABASE'
+                  WHEN JSON_EXTRACT(r.value, '$.genie_space') IS NOT NULL THEN 'GENIE_SPACE'
+                  WHEN JSON_EXTRACT(r.value, '$.uc_securable') IS NOT NULL THEN 'UC_SECURABLE'
+                  ELSE 'UNKNOWN'
+                END AS resource_type,
+                JSON_EXTRACT(r.value, '$.job.id') AS job_id,
+                JSON_EXTRACT(r.value, '$.job.permission') AS job_permission,
+                JSON_EXTRACT(r.value, '$.sql_warehouse.id') AS sql_warehouse_id,
+                JSON_EXTRACT(r.value, '$.sql_warehouse.permission') AS sql_warehouse_permission,
+                JSON_EXTRACT(r.value, '$.serving_endpoint.name') AS serving_endpoint_name,
+                JSON_EXTRACT(r.value, '$.serving_endpoint.permission') AS serving_endpoint_permission,
+                JSON_EXTRACT(r.value, '$.secret.scope') AS secret_scope,
+                JSON_EXTRACT(r.value, '$.secret.key') AS secret_key,
+                JSON_EXTRACT(r.value, '$.secret.permission') AS secret_permission,
+                JSON_EXTRACT(r.value, '$.experiment.experiment_id') AS experiment_id,
+                JSON_EXTRACT(r.value, '$.experiment.permission') AS experiment_permission,
+                JSON_EXTRACT(r.value, '$.database.instance_name') AS database_instance,
+                JSON_EXTRACT(r.value, '$.database.database_name') AS database_name,
+                JSON_EXTRACT(r.value, '$.database.permission') AS database_permission,
+                JSON_EXTRACT(r.value, '$.genie_space.space_id') AS genie_space_id,
+                JSON_EXTRACT(r.value, '$.genie_space.permission') AS genie_space_permission,
+                JSON_EXTRACT(r.value, '$.uc_securable.securable_full_name') AS uc_securable_name,
+                JSON_EXTRACT(r.value, '$.uc_securable.securable_type') AS uc_securable_type,
+                JSON_EXTRACT(r.value, '$.uc_securable.permission') AS uc_securable_permission
+              FROM databricks_workspace.apps.apps a,
+                   JSON_EACH(a.resources) r
+              WHERE deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  a.deployment_name,
+                  a.name AS app_name,
+                  a.id AS app_id,
+                  r.value->>'name' AS resource_name,
+                  r.value->>'description' AS resource_description,
+                  CASE
+                    WHEN r.value->'job' IS NOT NULL THEN 'JOB'
+                    WHEN r.value->'sql_warehouse' IS NOT NULL THEN 'SQL_WAREHOUSE'
+                    WHEN r.value->'serving_endpoint' IS NOT NULL THEN 'SERVING_ENDPOINT'
+                    WHEN r.value->'secret' IS NOT NULL THEN 'SECRET'
+                    WHEN r.value->'experiment' IS NOT NULL THEN 'EXPERIMENT'
+                    WHEN r.value->'database' IS NOT NULL THEN 'DATABASE'
+                    WHEN r.value->'genie_space' IS NOT NULL THEN 'GENIE_SPACE'
+                    WHEN r.value->'uc_securable' IS NOT NULL THEN 'UC_SECURABLE'
+                    ELSE 'UNKNOWN'
+                  END AS resource_type,
+                  r.value->'job'->>'id' AS job_id,
+                  r.value->'job'->>'permission' AS job_permission,
+                  r.value->'sql_warehouse'->>'id' AS sql_warehouse_id,
+                  r.value->'sql_warehouse'->>'permission' AS sql_warehouse_permission,
+                  r.value->'serving_endpoint'->>'name' AS serving_endpoint_name,
+                  r.value->'serving_endpoint'->>'permission' AS serving_endpoint_permission,
+                  r.value->'secret'->>'scope' AS secret_scope,
+                  r.value->'secret'->>'key' AS secret_key,
+                  r.value->'secret'->>'permission' AS secret_permission,
+                  r.value->'experiment'->>'experiment_id' AS experiment_id,
+                  r.value->'experiment'->>'permission' AS experiment_permission,
+                  r.value->'database'->>'instance_name' AS database_instance,
+                  r.value->'database'->>'database_name' AS database_name,
+                  r.value->'database'->>'permission' AS database_permission,
+                  r.value->'genie_space'->>'space_id' AS genie_space_id,
+                  r.value->'genie_space'->>'permission' AS genie_space_permission,
+                  r.value->'uc_securable'->>'securable_full_name' AS uc_securable_name,
+                  r.value->'uc_securable'->>'securable_type' AS uc_securable_type,
+                  r.value->'uc_securable'->>'permission' AS uc_securable_permission
+                FROM databricks_workspace.apps.apps a,
+                     jsonb_array_elements(a.resources::jsonb) AS r
+                WHERE deployment_name = '{{ deployment_name }}'
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>global_init_scripts</code> reso
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>global_init_scripts</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="global_init_scripts" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.global_init_scripts" /></td></tr>
 </tbody></table>
@@ -168,14 +168,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__script"><code>data__script</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-script"><code>script</code></a></td>
     <td></td>
     <td>Creates a new global init script in this workspace.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__script"><code>data__script</code></a></td>
+    <td><a href="#parameter-script_id"><code>script_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-script"><code>script</code></a></td>
     <td></td>
     <td>Updates a global init script, specifying only the fields to change. All fields are optional.</td>
 </tr>
@@ -282,10 +282,10 @@ Creates a new global init script in this workspace.
 
 ```sql
 INSERT INTO databricks_workspace.compute.global_init_scripts (
-data__name,
-data__script,
-data__enabled,
-data__position,
+name,
+script,
+enabled,
+position,
 deployment_name
 )
 SELECT 
@@ -344,15 +344,15 @@ Updates a global init script, specifying only the fields to change. All fields a
 ```sql
 UPDATE databricks_workspace.compute.global_init_scripts
 SET 
-data__name = '{{ name }}',
-data__script = '{{ script }}',
-data__enabled = '{{ enabled }}',
-data__position = '{{ position }}'
+name = '{{ name }}',
+script = '{{ script }}',
+enabled = '{{ enabled }}',
+position = '{{ position }}'
 WHERE 
 script_id = '{{ script_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__name = '{{ name }}' --required
-AND data__script = '{{ script }}' --required;
+AND name = '{{ name }}' --required
+AND script = '{{ script }}' --required;
 ```
 </TabItem>
 </Tabs>

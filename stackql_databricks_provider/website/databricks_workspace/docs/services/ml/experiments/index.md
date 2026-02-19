@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>experiments</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>experiments</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="experiments" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.experiments" /></td></tr>
 </tbody></table>
@@ -251,7 +251,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates an experiment with a name. Returns the ID of the newly created experiment. Validates that</td>
 </tr>
@@ -414,9 +414,9 @@ Creates an experiment with a name. Returns the ID of the newly created experimen
 
 ```sql
 INSERT INTO databricks_workspace.ml.experiments (
-data__name,
-data__artifact_location,
-data__tags,
+name,
+artifact_location,
+tags,
 deployment_name
 )
 SELECT 

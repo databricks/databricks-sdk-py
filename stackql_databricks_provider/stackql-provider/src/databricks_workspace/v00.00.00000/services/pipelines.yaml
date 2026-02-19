@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.pipelines
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -2836,12 +2836,12 @@ components:
           type: string
     CloneMode:
       type: string
-      enum:
+      x-enum:
         - MIGRATE_TO_UC
       description: Enum to specify which mode of clone to execute
     DayOfWeek:
       type: string
-      enum:
+      x-enum:
         - FRIDAY
         - MONDAY
         - SATURDAY
@@ -2856,7 +2856,7 @@ components:
         will be used.
     DeploymentKind:
       type: string
-      enum:
+      x-enum:
         - BUNDLE
       description: >-
         The deployment method that manages the pipeline: - BUNDLE: The pipeline
@@ -2865,7 +2865,7 @@ components:
         Databricks Asset Bundle.
     EventLevel:
       type: string
-      enum:
+      x-enum:
         - ERROR
         - INFO
         - METRICS
@@ -2873,13 +2873,13 @@ components:
       description: The severity level of the event.
     GetPipelineResponseHealth:
       type: string
-      enum:
+      x-enum:
         - HEALTHY
         - UNHEALTHY
       description: The health of a pipeline.
     IngestionSourceType:
       type: string
-      enum:
+      x-enum:
         - BIGQUERY
         - DYNAMICS365
         - FOREIGN_CATALOG
@@ -2934,14 +2934,14 @@ components:
         attributes -- see the documentation for details.
     MaturityLevel:
       type: string
-      enum:
+      x-enum:
         - DEPRECATED
         - EVOLVING
         - STABLE
       description: Maturity level for EventDetails.
     PipelineClusterAutoscaleMode:
       type: string
-      enum:
+      x-enum:
         - ENHANCED
         - LEGACY
       description: >-
@@ -2957,7 +2957,7 @@ components:
         autoscaling feature is used for `maintenance` clusters.
     PipelinePermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_MANAGE
         - CAN_RUN
         - CAN_VIEW
@@ -2965,7 +2965,7 @@ components:
       description: Permission level
     PipelineState:
       type: string
-      enum:
+      x-enum:
         - DELETED
         - DEPLOYING
         - FAILED
@@ -2978,13 +2978,13 @@ components:
       description: The pipeline state.
     PipelineStateInfoHealth:
       type: string
-      enum:
+      x-enum:
         - HEALTHY
         - UNHEALTHY
       description: The health of a pipeline.
     StartUpdateCause:
       type: string
-      enum:
+      x-enum:
         - API_CALL
         - INFRASTRUCTURE_MAINTENANCE
         - JOB_TASK
@@ -2995,14 +2995,14 @@ components:
       description: What triggered this update.
     TableSpecificConfigScdType:
       type: string
-      enum:
+      x-enum:
         - APPEND_ONLY
         - SCD_TYPE_1
         - SCD_TYPE_2
       description: The SCD type to use to ingest the table.
     UpdateInfoCause:
       type: string
-      enum:
+      x-enum:
         - API_CALL
         - INFRASTRUCTURE_MAINTENANCE
         - JOB_TASK
@@ -3013,7 +3013,7 @@ components:
       description: What triggered this update.
     UpdateInfoState:
       type: string
-      enum:
+      x-enum:
         - CANCELED
         - COMPLETED
         - CREATED
@@ -3028,7 +3028,7 @@ components:
       description: The update state.
     UpdateStateInfoState:
       type: string
-      enum:
+      x-enum:
         - CANCELED
         - COMPLETED
         - CREATED
@@ -3048,12 +3048,18 @@ components:
       title: Pipelines
       methods:
         clone:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1clone/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines/post'
           response:
@@ -3079,6 +3085,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}/put'
           response:
@@ -3133,12 +3142,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1pipelines~1{pipeline_id}/patch'
           response:
@@ -3173,6 +3188,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         start:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1pipelines~1{pipeline_id}~1updates/post'
           response:
@@ -3205,3 +3223,11 @@ components:
         update: []
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

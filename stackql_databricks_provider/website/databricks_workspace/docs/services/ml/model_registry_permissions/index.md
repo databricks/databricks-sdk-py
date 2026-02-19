@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>model_registry_permissions</cod
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>model_registry_permissions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="model_registry_permissions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.model_registry_permissions" /></td></tr>
 </tbody></table>
@@ -69,7 +69,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "permission_level",
             "type": "string",
-            "description": "Permission level"
+            "description": "Permission level (CAN_EDIT, CAN_MANAGE, CAN_MANAGE_PRODUCTION_VERSIONS, CAN_MANAGE_STAGING_VERSIONS, CAN_READ)"
           }
         ]
       },
@@ -210,7 +210,7 @@ Updates the permissions on a registered model. Registered models can inherit per
 ```sql
 UPDATE databricks_workspace.ml.model_registry_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 registered_model_id = '{{ registered_model_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
@@ -238,7 +238,7 @@ Sets permissions on an object, replacing existing permissions if they exist. Del
 ```sql
 REPLACE databricks_workspace.ml.model_registry_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 registered_model_id = '{{ registered_model_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>workspaces</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>workspaces</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="workspaces" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.provisioning.workspaces" /></td></tr>
 </tbody></table>
@@ -146,7 +146,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "compute_mode",
     "type": "string",
-    "description": "The compute mode of the workspace."
+    "description": "The compute mode of the workspace. (HYBRID, SERVERLESS)"
   },
   {
     "name": "creation_time",
@@ -161,7 +161,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "expected_workspace_status",
     "type": "string",
-    "description": "A client owned field used to indicate the workspace status that the client expects to be in. For now this is only used to unblock Temporal workflow for GCP least privileged workspace."
+    "description": "A client owned field used to indicate the workspace status that the client expects to be in. For now this is only used to unblock Temporal workflow for GCP least privileged workspace. (BANNED, CANCELLING, FAILED, NOT_PROVISIONED, PROVISIONING, RUNNING)"
   },
   {
     "name": "gcp_managed_network_config",
@@ -193,7 +193,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "connectivity_type",
         "type": "string",
-        "description": "The type of network connectivity of the GKE cluster."
+        "description": "The type of network connectivity of the GKE cluster. (PRIVATE_NODE_PUBLIC_MASTER, PUBLIC_NODE_PUBLIC_MASTER)"
       },
       {
         "name": "master_ip_range",
@@ -225,7 +225,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "gke_connectivity_type",
             "type": "string",
-            "description": "The type of network connectivity of the GKE cluster."
+            "description": "The type of network connectivity of the GKE cluster. (PRIVATE_NODE_PUBLIC_MASTER, PUBLIC_NODE_PUBLIC_MASTER)"
           }
         ]
       },
@@ -261,17 +261,17 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "pricing_tier",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (COMMUNITY_EDITION, DEDICATED, ENTERPRISE, PREMIUM, STANDARD, UNKNOWN)"
   },
   {
     "name": "storage_mode",
     "type": "string",
-    "description": "The storage mode of the workspace."
+    "description": "The storage mode of the workspace. (CUSTOMER_HOSTED, DEFAULT_STORAGE)"
   },
   {
     "name": "workspace_status",
     "type": "string",
-    "description": "The status of a workspace"
+    "description": "The status of a workspace (BANNED, CANCELLING, FAILED, NOT_PROVISIONED, PROVISIONING, RUNNING)"
   },
   {
     "name": "workspace_status_message",
@@ -387,7 +387,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "compute_mode",
     "type": "string",
-    "description": "The compute mode of the workspace."
+    "description": "The compute mode of the workspace. (HYBRID, SERVERLESS)"
   },
   {
     "name": "creation_time",
@@ -402,7 +402,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "expected_workspace_status",
     "type": "string",
-    "description": "A client owned field used to indicate the workspace status that the client expects to be in. For now this is only used to unblock Temporal workflow for GCP least privileged workspace."
+    "description": "A client owned field used to indicate the workspace status that the client expects to be in. For now this is only used to unblock Temporal workflow for GCP least privileged workspace. (BANNED, CANCELLING, FAILED, NOT_PROVISIONED, PROVISIONING, RUNNING)"
   },
   {
     "name": "gcp_managed_network_config",
@@ -434,7 +434,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "connectivity_type",
         "type": "string",
-        "description": "The type of network connectivity of the GKE cluster."
+        "description": "The type of network connectivity of the GKE cluster. (PRIVATE_NODE_PUBLIC_MASTER, PUBLIC_NODE_PUBLIC_MASTER)"
       },
       {
         "name": "master_ip_range",
@@ -466,7 +466,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "gke_connectivity_type",
             "type": "string",
-            "description": "The type of network connectivity of the GKE cluster."
+            "description": "The type of network connectivity of the GKE cluster. (PRIVATE_NODE_PUBLIC_MASTER, PUBLIC_NODE_PUBLIC_MASTER)"
           }
         ]
       },
@@ -502,17 +502,17 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "pricing_tier",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (COMMUNITY_EDITION, DEDICATED, ENTERPRISE, PREMIUM, STANDARD, UNKNOWN)"
   },
   {
     "name": "storage_mode",
     "type": "string",
-    "description": "The storage mode of the workspace."
+    "description": "The storage mode of the workspace. (CUSTOMER_HOSTED, DEFAULT_STORAGE)"
   },
   {
     "name": "workspace_status",
     "type": "string",
-    "description": "The status of a workspace"
+    "description": "The status of a workspace (BANNED, CANCELLING, FAILED, NOT_PROVISIONED, PROVISIONING, RUNNING)"
   },
   {
     "name": "workspace_status_message",
@@ -562,7 +562,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#workspaces_update"><CopyableCode code="workspaces_update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-data__customer_facing_workspace"><code>data__customer_facing_workspace</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-customer_facing_workspace"><code>customer_facing_workspace</code></a></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td>Updates a workspace.</td>
 </tr>
@@ -711,24 +711,24 @@ Creates a new workspace using a credential configuration and a storage configura
 
 ```sql
 INSERT INTO databricks_account.provisioning.workspaces (
-data__aws_region,
-data__cloud,
-data__cloud_resource_container,
-data__compute_mode,
-data__credentials_id,
-data__custom_tags,
-data__deployment_name,
-data__gcp_managed_network_config,
-data__gke_config,
-data__location,
-data__managed_services_customer_managed_key_id,
-data__network_connectivity_config_id,
-data__network_id,
-data__pricing_tier,
-data__private_access_settings_id,
-data__storage_configuration_id,
-data__storage_customer_managed_key_id,
-data__workspace_name,
+aws_region,
+cloud,
+cloud_resource_container,
+compute_mode,
+credentials_id,
+custom_tags,
+deployment_name,
+gcp_managed_network_config,
+gke_config,
+location,
+managed_services_customer_managed_key_id,
+network_connectivity_config_id,
+network_id,
+pricing_tier,
+private_access_settings_id,
+storage_configuration_id,
+storage_customer_managed_key_id,
+workspace_name,
 account_id
 )
 SELECT 
@@ -875,11 +875,11 @@ Updates a workspace.
 ```sql
 UPDATE databricks_account.provisioning.workspaces
 SET 
-data__customer_facing_workspace = '{{ customer_facing_workspace }}'
+customer_facing_workspace = '{{ customer_facing_workspace }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND workspace_id = '{{ workspace_id }}' --required
-AND data__customer_facing_workspace = '{{ customer_facing_workspace }}' --required
+AND customer_facing_workspace = '{{ customer_facing_workspace }}' --required
 AND update_mask = '{{ update_mask}}'
 RETURNING
 account_id,

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>data_quality_refreshes</code> r
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>data_quality_refreshes</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="data_quality_refreshes" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.dataquality.data_quality_refreshes" /></td></tr>
 </tbody></table>
@@ -75,12 +75,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The current state of the refresh."
+    "description": "The current state of the refresh. (MONITOR_REFRESH_STATE_CANCELED, MONITOR_REFRESH_STATE_FAILED, MONITOR_REFRESH_STATE_PENDING, MONITOR_REFRESH_STATE_RUNNING, MONITOR_REFRESH_STATE_SUCCESS, MONITOR_REFRESH_STATE_UNKNOWN)"
   },
   {
     "name": "trigger",
     "type": "string",
-    "description": "What triggered the refresh."
+    "description": "What triggered the refresh. (MONITOR_REFRESH_TRIGGER_DATA_CHANGE, MONITOR_REFRESH_TRIGGER_MANUAL, MONITOR_REFRESH_TRIGGER_SCHEDULE, MONITOR_REFRESH_TRIGGER_UNKNOWN)"
   }
 ]} />
 </TabItem>
@@ -120,12 +120,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The current state of the refresh."
+    "description": "The current state of the refresh. (MONITOR_REFRESH_STATE_CANCELED, MONITOR_REFRESH_STATE_FAILED, MONITOR_REFRESH_STATE_PENDING, MONITOR_REFRESH_STATE_RUNNING, MONITOR_REFRESH_STATE_SUCCESS, MONITOR_REFRESH_STATE_UNKNOWN)"
   },
   {
     "name": "trigger",
     "type": "string",
-    "description": "What triggered the refresh."
+    "description": "What triggered the refresh. (MONITOR_REFRESH_TRIGGER_DATA_CHANGE, MONITOR_REFRESH_TRIGGER_MANUAL, MONITOR_REFRESH_TRIGGER_SCHEDULE, MONITOR_REFRESH_TRIGGER_UNKNOWN)"
   }
 ]} />
 </TabItem>
@@ -163,14 +163,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__refresh"><code>data__refresh</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-refresh"><code>refresh</code></a></td>
     <td></td>
     <td>Creates a refresh. Currently only supported for the `table` `object_type`. The call must be made in</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__refresh"><code>data__refresh</code></a></td>
+    <td><a href="#parameter-object_type"><code>object_type</code></a>, <a href="#parameter-object_id"><code>object_id</code></a>, <a href="#parameter-refresh_id"><code>refresh_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-refresh"><code>refresh</code></a></td>
     <td></td>
     <td>(Unimplemented) Update a refresh</td>
 </tr>
@@ -314,7 +314,7 @@ Creates a refresh. Currently only supported for the `table` `object_type`. The c
 
 ```sql
 INSERT INTO databricks_workspace.dataquality.data_quality_refreshes (
-data__refresh,
+refresh,
 object_type,
 object_id,
 deployment_name
@@ -375,14 +375,14 @@ trigger
 ```sql
 UPDATE databricks_workspace.dataquality.data_quality_refreshes
 SET 
-data__refresh = '{{ refresh }}'
+refresh = '{{ refresh }}'
 WHERE 
 object_type = '{{ object_type }}' --required
 AND object_id = '{{ object_id }}' --required
 AND refresh_id = '{{ refresh_id }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__refresh = '{{ refresh }}' --required
+AND refresh = '{{ refresh }}' --required
 RETURNING
 object_id,
 refresh_id,

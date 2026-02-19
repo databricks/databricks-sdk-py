@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>workspace_network_configuration
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>workspace_network_configuration</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="workspace_network_configuration" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.settings.workspace_network_configuration" /></td></tr>
 </tbody></table>
@@ -80,7 +80,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update_workspace_network_option_rpc"><CopyableCode code="update_workspace_network_option_rpc" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-data__workspace_network_option"><code>data__workspace_network_option</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-workspace_id"><code>workspace_id</code></a>, <a href="#parameter-workspace_network_option"><code>workspace_network_option</code></a></td>
     <td></td>
     <td>Updates the network option for a workspace. This operation associates the workspace with the specified</td>
 </tr>
@@ -153,11 +153,11 @@ Updates the network option for a workspace. This operation associates the worksp
 ```sql
 REPLACE databricks_account.settings.workspace_network_configuration
 SET 
-data__workspace_network_option = '{{ workspace_network_option }}'
+workspace_network_option = '{{ workspace_network_option }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND workspace_id = '{{ workspace_id }}' --required
-AND data__workspace_network_option = '{{ workspace_network_option }}' --required
+AND workspace_network_option = '{{ workspace_network_option }}' --required
 RETURNING
 network_policy_id,
 workspace_id;

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>provider_providers</code> resou
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>provider_providers</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="provider_providers" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.marketplace.provider_providers" /></td></tr>
 </tbody></table>
@@ -230,14 +230,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__provider"><code>data__provider</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-provider"><code>provider</code></a></td>
     <td></td>
     <td>Create a provider</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__provider"><code>data__provider</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-provider"><code>provider</code></a></td>
     <td></td>
     <td>Update provider profile</td>
 </tr>
@@ -354,7 +354,7 @@ Create a provider
 
 ```sql
 INSERT INTO databricks_workspace.marketplace.provider_providers (
-data__provider,
+provider,
 deployment_name
 )
 SELECT 
@@ -398,11 +398,11 @@ Update provider profile
 ```sql
 REPLACE databricks_workspace.marketplace.provider_providers
 SET 
-data__provider = '{{ provider }}'
+provider = '{{ provider }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__provider = '{{ provider }}' --required
+AND provider = '{{ provider }}' --required
 RETURNING
 provider;
 ```

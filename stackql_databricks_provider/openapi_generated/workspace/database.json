@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks database service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.database"
   },
   "servers": [
@@ -2084,7 +2084,7 @@
       },
       "DatabaseInstanceRoleIdentityType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "GROUP",
           "PG_ONLY",
           "SERVICE_PRINCIPAL",
@@ -2094,14 +2094,14 @@
       },
       "DatabaseInstanceRoleMembershipRole": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DATABRICKS_SUPERUSER"
         ],
         "description": "Roles that the DatabaseInstanceRole can be a member of."
       },
       "DatabaseInstanceState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AVAILABLE",
           "DELETING",
           "FAILING_OVER",
@@ -2113,7 +2113,7 @@
       },
       "ProvisioningInfoState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "DEGRADED",
           "DELETING",
@@ -2125,7 +2125,7 @@
       },
       "ProvisioningPhase": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PROVISIONING_PHASE_INDEX_SCAN",
           "PROVISIONING_PHASE_INDEX_SORT",
           "PROVISIONING_PHASE_MAIN"
@@ -2134,14 +2134,14 @@
       },
       "RequestedClaimsPermissionSet": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "READ_ONLY"
         ],
         "description": "Might add WRITE in the future"
       },
       "SyncedTableSchedulingPolicy": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CONTINUOUS",
           "SNAPSHOT",
           "TRIGGERED"
@@ -2150,7 +2150,7 @@
       },
       "SyncedTableState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "SYNCED_TABLED_OFFLINE",
           "SYNCED_TABLE_OFFLINE_FAILED",
           "SYNCED_TABLE_ONLINE",

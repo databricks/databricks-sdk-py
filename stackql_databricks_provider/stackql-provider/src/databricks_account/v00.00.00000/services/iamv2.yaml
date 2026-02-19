@@ -6,7 +6,7 @@ info:
     generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.iamv2
 servers:
   - url: https://accounts.cloud.databricks.com
@@ -389,14 +389,14 @@ components:
       description: The details of a principal's access to a workspace.
     PrincipalType:
       type: string
-      enum:
+      x-enum:
         - GROUP
         - SERVICE_PRINCIPAL
         - USER
       description: The type of the principal (user/sp/group).
     State:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - INACTIVE
       description: >-
@@ -404,13 +404,13 @@ components:
         account or workspace.
     WorkspaceAccessDetailAccessType:
       type: string
-      enum:
+      x-enum:
         - DIRECT
         - INDIRECT
       description: The type of access the principal has to the workspace.
     WorkspaceAccessDetailView:
       type: string
-      enum:
+      x-enum:
         - BASIC
         - FULL
       description: >-
@@ -418,7 +418,7 @@ components:
         response.
     WorkspacePermission:
       type: string
-      enum:
+      x-enum:
         - ADMIN_PERMISSION
         - USER_PERMISSION
       description: The type of permission a principal has to a workspace (admin/user).
@@ -436,6 +436,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         resolve_group:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1identity~1accounts~1{account_id}~1groups~1resolveByExternalId/post
@@ -443,6 +446,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         resolve_service_principal:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1identity~1accounts~1{account_id}~1servicePrincipals~1resolveByExternalId/post
@@ -450,6 +456,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         resolve_user:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1identity~1accounts~1{account_id}~1users~1resolveByExternalId/post
@@ -464,3 +473,11 @@ components:
         update: []
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>database_instances</code> resou
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>database_instances</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="database_instances" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.database.database_instances" /></td></tr>
 </tbody></table>
@@ -239,7 +239,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The current state of the instance."
+    "description": "The current state of the instance. (AVAILABLE, DELETING, FAILING_OVER, STARTING, STOPPED, UPDATING)"
   },
   {
     "name": "stopped",
@@ -452,7 +452,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The current state of the instance."
+    "description": "The current state of the instance. (AVAILABLE, DELETING, FAILING_OVER, STARTING, STOPPED, UPDATING)"
   },
   {
     "name": "stopped",
@@ -665,7 +665,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The current state of the instance."
+    "description": "The current state of the instance. (AVAILABLE, DELETING, FAILING_OVER, STARTING, STOPPED, UPDATING)"
   },
   {
     "name": "stopped",
@@ -720,14 +720,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__database_instance"><code>data__database_instance</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-database_instance"><code>database_instance</code></a></td>
     <td></td>
     <td>Create a Database Instance.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__database_instance"><code>data__database_instance</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-database_instance"><code>database_instance</code></a></td>
     <td></td>
     <td>Update a Database Instance.</td>
 </tr>
@@ -940,7 +940,7 @@ Create a Database Instance.
 
 ```sql
 INSERT INTO databricks_workspace.database.database_instances (
-data__database_instance,
+database_instance,
 deployment_name
 )
 SELECT 
@@ -1009,12 +1009,12 @@ Update a Database Instance.
 ```sql
 UPDATE databricks_workspace.database.database_instances
 SET 
-data__database_instance = '{{ database_instance }}'
+database_instance = '{{ database_instance }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__database_instance = '{{ database_instance }}' --required
+AND database_instance = '{{ database_instance }}' --required
 RETURNING
 name,
 effective_usage_policy_id,

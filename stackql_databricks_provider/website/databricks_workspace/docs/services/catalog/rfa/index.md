@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>rfa</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>rfa</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="rfa" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.rfa" /></td></tr>
 </tbody></table>
@@ -69,7 +69,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "type",
         "type": "string",
-        "description": "The type of Unity Catalog securable."
+        "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
       }
     ]
   },
@@ -86,12 +86,12 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "destination_type",
         "type": "string",
-        "description": "The type of the destination."
+        "description": "The type of the destination. (EMAIL, GENERIC_WEBHOOK, MICROSOFT_TEAMS, SLACK, URL)"
       },
       {
         "name": "special_destination",
         "type": "string",
-        "description": "This field is used to denote whether the destination is the email of the owner of the securable object. The special destination cannot be assigned to a securable and only represents the default destination of the securable. The securable types that support default special destinations are: \"catalog\", \"external_location\", \"connection\", \"credential\", and \"metastore\". The **destination_type** of a **special_destination** is always EMAIL."
+        "description": "This field is used to denote whether the destination is the email of the owner of the securable object. The special destination cannot be assigned to a securable and only represents the default destination of the securable. The securable types that support default special destinations are: \"catalog\", \"external_location\", \"connection\", \"credential\", and \"metastore\". The **destination_type** of a **special_destination** is always EMAIL. (SPECIAL_DESTINATION_CATALOG_OWNER, SPECIAL_DESTINATION_CONNECTION_OWNER, SPECIAL_DESTINATION_CREDENTIAL_OWNER, SPECIAL_DESTINATION_EXTERNAL_LOCATION_OWNER, SPECIAL_DESTINATION_METASTORE_OWNER)"
       }
     ]
   },
@@ -113,7 +113,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "type",
         "type": "string",
-        "description": "The type of Unity Catalog securable."
+        "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
       }
     ]
   },
@@ -158,7 +158,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update_destinations"><CopyableCode code="update_destinations" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__access_request_destinations"><code>data__access_request_destinations</code></a></td>
+    <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-access_request_destinations"><code>access_request_destinations</code></a></td>
     <td></td>
     <td>Updates the access request destinations for the given securable. The caller must be a metastore admin,</td>
 </tr>
@@ -246,7 +246,7 @@ Creates access requests for Unity Catalog permissions for a specified principal 
 
 ```sql
 INSERT INTO databricks_workspace.catalog.rfa (
-data__requests,
+requests,
 deployment_name
 )
 SELECT 
@@ -290,11 +290,11 @@ Updates the access request destinations for the given securable. The caller must
 ```sql
 UPDATE databricks_workspace.catalog.rfa
 SET 
-data__access_request_destinations = '{{ access_request_destinations }}'
+access_request_destinations = '{{ access_request_destinations }}'
 WHERE 
 update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__access_request_destinations = '{{ access_request_destinations }}' --required
+AND access_request_destinations = '{{ access_request_destinations }}' --required
 RETURNING
 full_name,
 are_any_destinations_hidden,

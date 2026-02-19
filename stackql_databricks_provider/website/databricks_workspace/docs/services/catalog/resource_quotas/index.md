@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>resource_quotas</code> resource
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>resource_quotas</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="resource_quotas" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.resource_quotas" /></td></tr>
 </tbody></table>
@@ -60,7 +60,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "parent_securable_type",
         "type": "string",
-        "description": "The type of Unity Catalog securable."
+        "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
       },
       {
         "name": "quota_count",
@@ -102,7 +102,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "parent_securable_type",
     "type": "string",
-    "description": "The type of Unity Catalog securable."
+    "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
   },
   {
     "name": "quota_count",

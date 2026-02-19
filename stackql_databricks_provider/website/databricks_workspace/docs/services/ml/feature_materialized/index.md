@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>feature_materialized</code> res
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>feature_materialized</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="feature_materialized" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.feature_materialized" /></td></tr>
 </tbody></table>
@@ -119,7 +119,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "pipeline_schedule_state",
     "type": "string",
-    "description": "The schedule state of the materialization pipeline."
+    "description": "The schedule state of the materialization pipeline. (ACTIVE, PAUSED, SNAPSHOT)"
   }
 ]} />
 </TabItem>
@@ -203,7 +203,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "pipeline_schedule_state",
     "type": "string",
-    "description": "The schedule state of the materialization pipeline."
+    "description": "The schedule state of the materialization pipeline. (ACTIVE, PAUSED, SNAPSHOT)"
   }
 ]} />
 </TabItem>
@@ -241,14 +241,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__materialized_feature"><code>data__materialized_feature</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-materialized_feature"><code>materialized_feature</code></a></td>
     <td></td>
     <td>Create a materialized feature.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__materialized_feature"><code>data__materialized_feature</code></a></td>
+    <td><a href="#parameter-materialized_feature_id"><code>materialized_feature_id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-materialized_feature"><code>materialized_feature</code></a></td>
     <td></td>
     <td>Update a materialized feature (pause/resume).</td>
 </tr>
@@ -384,7 +384,7 @@ Create a materialized feature.
 
 ```sql
 INSERT INTO databricks_workspace.ml.feature_materialized (
-data__materialized_feature,
+materialized_feature,
 deployment_name
 )
 SELECT 
@@ -435,12 +435,12 @@ Update a materialized feature (pause/resume).
 ```sql
 UPDATE databricks_workspace.ml.feature_materialized
 SET 
-data__materialized_feature = '{{ materialized_feature }}'
+materialized_feature = '{{ materialized_feature }}'
 WHERE 
 materialized_feature_id = '{{ materialized_feature_id }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__materialized_feature = '{{ materialized_feature }}' --required
+AND materialized_feature = '{{ materialized_feature }}' --required
 RETURNING
 materialized_feature_id,
 feature_name,

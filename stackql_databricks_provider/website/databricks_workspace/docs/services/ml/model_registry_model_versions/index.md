@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>model_registry_model_versions</
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>model_registry_model_versions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="model_registry_model_versions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.model_registry_model_versions" /></td></tr>
 </tbody></table>
@@ -90,7 +90,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Current status of `model_version`"
+        "description": "Current status of `model_version` (FAILED_REGISTRATION, PENDING_REGISTRATION, READY)"
       },
       {
         "name": "status_message",
@@ -179,7 +179,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Current status of `model_version`"
+    "description": "Current status of `model_version` (FAILED_REGISTRATION, PENDING_REGISTRATION, READY)"
   },
   {
     "name": "status_message",
@@ -244,14 +244,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__source"><code>data__source</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-source"><code>source</code></a></td>
     <td></td>
     <td>Creates a model version.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__version"><code>data__version</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a></td>
     <td></td>
     <td>Updates the model version.</td>
 </tr>
@@ -411,12 +411,12 @@ Creates a model version.
 
 ```sql
 INSERT INTO databricks_workspace.ml.model_registry_model_versions (
-data__name,
-data__source,
-data__description,
-data__run_id,
-data__run_link,
-data__tags,
+name,
+source,
+description,
+run_id,
+run_link,
+tags,
 deployment_name
 )
 SELECT 
@@ -485,13 +485,13 @@ Updates the model version.
 ```sql
 UPDATE databricks_workspace.ml.model_registry_model_versions
 SET 
-data__name = '{{ name }}',
-data__version = '{{ version }}',
-data__description = '{{ description }}'
+name = '{{ name }}',
+version = '{{ version }}',
+description = '{{ description }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__name = '{{ name }}' --required
-AND data__version = '{{ version }}' --required
+AND name = '{{ name }}' --required
+AND version = '{{ version }}' --required
 RETURNING
 model_version;
 ```

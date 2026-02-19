@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>git_credentials</code> resource
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>git_credentials</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="git_credentials" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.workspace.git_credentials" /></td></tr>
 </tbody></table>
@@ -143,14 +143,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__git_provider"><code>data__git_provider</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-git_provider"><code>git_provider</code></a></td>
     <td></td>
     <td>Creates a Git credential entry for the user. Only one Git credential per user is supported, so any</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__git_provider"><code>data__git_provider</code></a></td>
+    <td><a href="#parameter-credential_id"><code>credential_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-git_provider"><code>git_provider</code></a></td>
     <td></td>
     <td>Updates the specified Git credential.</td>
 </tr>
@@ -259,13 +259,13 @@ Creates a Git credential entry for the user. Only one Git credential per user is
 
 ```sql
 INSERT INTO databricks_workspace.workspace.git_credentials (
-data__git_provider,
-data__git_email,
-data__git_username,
-data__is_default_for_provider,
-data__name,
-data__personal_access_token,
-data__principal_id,
+git_provider,
+git_email,
+git_username,
+is_default_for_provider,
+name,
+personal_access_token,
+principal_id,
 deployment_name
 )
 SELECT 
@@ -344,17 +344,17 @@ Updates the specified Git credential.
 ```sql
 UPDATE databricks_workspace.workspace.git_credentials
 SET 
-data__git_provider = '{{ git_provider }}',
-data__git_email = '{{ git_email }}',
-data__git_username = '{{ git_username }}',
-data__is_default_for_provider = '{{ is_default_for_provider }}',
-data__name = '{{ name }}',
-data__personal_access_token = '{{ personal_access_token }}',
-data__principal_id = '{{ principal_id }}'
+git_provider = '{{ git_provider }}',
+git_email = '{{ git_email }}',
+git_username = '{{ git_username }}',
+is_default_for_provider = '{{ is_default_for_provider }}',
+name = '{{ name }}',
+personal_access_token = '{{ personal_access_token }}',
+principal_id = '{{ principal_id }}'
 WHERE 
 credential_id = '{{ credential_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__git_provider = '{{ git_provider }}' --required;
+AND git_provider = '{{ git_provider }}' --required;
 ```
 </TabItem>
 </Tabs>

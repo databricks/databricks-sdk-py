@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>database_tables</code> resource
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>database_tables</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="database_tables" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.database.database_tables" /></td></tr>
 </tbody></table>
@@ -85,7 +85,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__table"><code>data__table</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-table"><code>table</code></a></td>
     <td></td>
     <td>Create a Database Table. Useful for registering pre-existing PG tables in UC. See</td>
 </tr>
@@ -166,7 +166,7 @@ Create a Database Table. Useful for registering pre-existing PG tables in UC. Se
 
 ```sql
 INSERT INTO databricks_workspace.database.database_tables (
-data__table,
+table,
 deployment_name
 )
 SELECT 

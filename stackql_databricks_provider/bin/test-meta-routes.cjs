@@ -222,13 +222,20 @@ async function testMetaRoutes() {
         const methodsQuery = `SHOW EXTENDED METHODS IN ${resourceFQRN}`;
         const methods = await executeQuery(methodsQuery, `  Getting methods for ${resourceName}`);
         if (!methods || methods.length === 0) {
-          console.error(`❌ Error: Resource ${resourceName} has no methods`);
-          process.exit(1);
+          console.log(`No methods found for ${resourceName}, checking if it's a view...`);
+          const describeQuery = `DESCRIBE ${resourceFQRN}`;
+          const describeResult = await executeQuery(describeQuery, `  Describing ${resourceName}`);
+          if (describeResult !== null && describeResult.length > 0) {
+            console.log(`Resource ${resourceName} is a view with ${describeResult.length} columns`);
+            results.totalMethods += 1;
+          } else {
+            console.error(`❌ Error: Resource ${resourceName} has no methods`);
+            process.exit(1);
+          }
         } else {
           console.log(`Found ${methods.length} methods for ${resourceName}`);
+          results.totalMethods += methods.length;
         }
-
-        results.totalMethods += methods.length;
 
         for (const method of methods) {
           const methodName = method.MethodName;

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>genie</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>genie</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="genie" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.dashboards.genie" /></td></tr>
 </tbody></table>
@@ -145,7 +145,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__warehouse_id"><code>data__warehouse_id</code></a>, <a href="#parameter-data__serialized_space"><code>data__serialized_space</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-warehouse_id"><code>warehouse_id</code></a>, <a href="#parameter-serialized_space"><code>serialized_space</code></a></td>
     <td></td>
     <td>Creates a Genie space from a serialized payload.</td>
 </tr>
@@ -267,11 +267,11 @@ Creates a Genie space from a serialized payload.
 
 ```sql
 INSERT INTO databricks_workspace.dashboards.genie (
-data__warehouse_id,
-data__serialized_space,
-data__description,
-data__parent_path,
-data__title,
+warehouse_id,
+serialized_space,
+description,
+parent_path,
+title,
 deployment_name
 )
 SELECT 
@@ -339,10 +339,10 @@ Updates a Genie space with a serialized payload.
 ```sql
 UPDATE databricks_workspace.dashboards.genie
 SET 
-data__description = '{{ description }}',
-data__serialized_space = '{{ serialized_space }}',
-data__title = '{{ title }}',
-data__warehouse_id = '{{ warehouse_id }}'
+description = '{{ description }}',
+serialized_space = '{{ serialized_space }}',
+title = '{{ title }}',
+warehouse_id = '{{ warehouse_id }}'
 WHERE 
 space_id = '{{ space_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

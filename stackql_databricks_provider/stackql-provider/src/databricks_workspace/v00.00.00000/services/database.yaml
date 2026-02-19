@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.database
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -1828,7 +1828,7 @@ components:
             or the SYNCED_NO_PENDING_UPDATE state.
     DatabaseInstanceRoleIdentityType:
       type: string
-      enum:
+      x-enum:
         - GROUP
         - PG_ONLY
         - SERVICE_PRINCIPAL
@@ -1872,12 +1872,12 @@ components:
         attributes -- see the documentation for details.
     DatabaseInstanceRoleMembershipRole:
       type: string
-      enum:
+      x-enum:
         - DATABRICKS_SUPERUSER
       description: Roles that the DatabaseInstanceRole can be a member of.
     DatabaseInstanceState:
       type: string
-      enum:
+      x-enum:
         - AVAILABLE
         - DELETING
         - FAILING_OVER
@@ -1923,7 +1923,7 @@ components:
         attributes -- see the documentation for details.
     ProvisioningInfoState:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - DEGRADED
         - DELETING
@@ -1969,7 +1969,7 @@ components:
         attributes -- see the documentation for details.
     ProvisioningPhase:
       type: string
-      enum:
+      x-enum:
         - PROVISIONING_PHASE_INDEX_SCAN
         - PROVISIONING_PHASE_INDEX_SORT
         - PROVISIONING_PHASE_MAIN
@@ -2012,12 +2012,12 @@ components:
         attributes -- see the documentation for details.
     RequestedClaimsPermissionSet:
       type: string
-      enum:
+      x-enum:
         - READ_ONLY
       description: Might add WRITE in the future
     SyncedTableSchedulingPolicy:
       type: string
-      enum:
+      x-enum:
         - CONTINUOUS
         - SNAPSHOT
         - TRIGGERED
@@ -2060,7 +2060,7 @@ components:
         attributes -- see the documentation for details.
     SyncedTableState:
       type: string
-      enum:
+      x-enum:
         - SYNCED_TABLED_OFFLINE
         - SYNCED_TABLE_OFFLINE_FAILED
         - SYNCED_TABLE_ONLINE
@@ -2080,6 +2080,9 @@ components:
       title: Database Catalogs
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1database~1catalogs/post'
           response:
@@ -2098,6 +2101,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1database~1catalogs~1{name}/patch'
           response:
@@ -2128,6 +2134,9 @@ components:
       title: Database Instances
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1database~1instances/post'
           response:
@@ -2153,6 +2162,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1database~1instances~1{name}/patch'
           response:
@@ -2183,6 +2195,9 @@ components:
       title: Database Instance Roles
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1database~1instances~1{instance_name}~1roles/post
@@ -2231,6 +2246,9 @@ components:
       title: Database Tables
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1database~1tables/post'
           response:
@@ -2263,6 +2281,9 @@ components:
       title: Synced Database Tables
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1database~1synced_tables/post'
           response:
@@ -2281,6 +2302,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1database~1synced_tables~1{name}/patch'
           response:
@@ -2316,6 +2340,9 @@ components:
       title: Database Credentials
       methods:
         generate:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1database~1credentials/post'
           response:
@@ -2327,3 +2354,11 @@ components:
         update: []
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

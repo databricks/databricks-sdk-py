@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks dataquality service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.dataquality"
   },
   "servers": [
@@ -1167,7 +1167,7 @@
       },
       "AggregationGranularity": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AGGREGATION_GRANULARITY_1_DAY",
           "AGGREGATION_GRANULARITY_1_HOUR",
           "AGGREGATION_GRANULARITY_1_MONTH",
@@ -1183,7 +1183,7 @@
       },
       "CronSchedulePauseStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CRON_SCHEDULE_PAUSE_STATUS_PAUSED",
           "CRON_SCHEDULE_PAUSE_STATUS_UNPAUSED"
         ],
@@ -1191,7 +1191,7 @@
       },
       "DataProfilingCustomMetricType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DATA_PROFILING_CUSTOM_METRIC_TYPE_AGGREGATE",
           "DATA_PROFILING_CUSTOM_METRIC_TYPE_DERIVED",
           "DATA_PROFILING_CUSTOM_METRIC_TYPE_DRIFT"
@@ -1200,7 +1200,7 @@
       },
       "DataProfilingStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DATA_PROFILING_STATUS_ACTIVE",
           "DATA_PROFILING_STATUS_DELETE_PENDING",
           "DATA_PROFILING_STATUS_ERROR",
@@ -1211,7 +1211,7 @@
       },
       "InferenceProblemType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "INFERENCE_PROBLEM_TYPE_CLASSIFICATION",
           "INFERENCE_PROBLEM_TYPE_REGRESSION"
         ],
@@ -1219,7 +1219,7 @@
       },
       "RefreshState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "MONITOR_REFRESH_STATE_CANCELED",
           "MONITOR_REFRESH_STATE_FAILED",
           "MONITOR_REFRESH_STATE_PENDING",
@@ -1231,7 +1231,7 @@
       },
       "RefreshTrigger": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "MONITOR_REFRESH_TRIGGER_DATA_CHANGE",
           "MONITOR_REFRESH_TRIGGER_MANUAL",
           "MONITOR_REFRESH_TRIGGER_SCHEDULE",

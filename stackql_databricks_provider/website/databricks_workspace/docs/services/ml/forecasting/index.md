@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>forecasting</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>forecasting</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="forecasting" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.forecasting" /></td></tr>
 </tbody></table>
@@ -54,7 +54,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The current state of the forecasting experiment."
+    "description": "The current state of the forecasting experiment. (CANCELLED, FAILED, PENDING, RUNNING, SUCCEEDED)"
   }
 ]} />
 </TabItem>
@@ -85,7 +85,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__train_data_path"><code>data__train_data_path</code></a>, <a href="#parameter-data__target_column"><code>data__target_column</code></a>, <a href="#parameter-data__time_column"><code>data__time_column</code></a>, <a href="#parameter-data__forecast_granularity"><code>data__forecast_granularity</code></a>, <a href="#parameter-data__forecast_horizon"><code>data__forecast_horizon</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-train_data_path"><code>train_data_path</code></a>, <a href="#parameter-target_column"><code>target_column</code></a>, <a href="#parameter-time_column"><code>time_column</code></a>, <a href="#parameter-forecast_granularity"><code>forecast_granularity</code></a>, <a href="#parameter-forecast_horizon"><code>forecast_horizon</code></a></td>
     <td></td>
     <td>Creates a serverless forecasting experiment. Returns the experiment ID.</td>
 </tr>
@@ -159,23 +159,23 @@ Creates a serverless forecasting experiment. Returns the experiment ID.
 
 ```sql
 INSERT INTO databricks_workspace.ml.forecasting (
-data__train_data_path,
-data__target_column,
-data__time_column,
-data__forecast_granularity,
-data__forecast_horizon,
-data__custom_weights_column,
-data__experiment_path,
-data__future_feature_data_path,
-data__holiday_regions,
-data__include_features,
-data__max_runtime,
-data__prediction_data_path,
-data__primary_metric,
-data__register_to,
-data__split_column,
-data__timeseries_identifier_columns,
-data__training_frameworks,
+train_data_path,
+target_column,
+time_column,
+forecast_granularity,
+forecast_horizon,
+custom_weights_column,
+experiment_path,
+future_feature_data_path,
+holiday_regions,
+include_features,
+max_runtime,
+prediction_data_path,
+primary_metric,
+register_to,
+split_column,
+timeseries_identifier_columns,
+training_frameworks,
 deployment_name
 )
 SELECT 

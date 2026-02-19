@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>recipient_federation_policies</
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>recipient_federation_policies</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="recipient_federation_policies" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sharing.recipient_federation_policies" /></td></tr>
 </tbody></table>
@@ -187,7 +187,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__policy"><code>data__policy</code></a></td>
+    <td><a href="#parameter-recipient_name"><code>recipient_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-policy"><code>policy</code></a></td>
     <td></td>
     <td>Create a federation policy for an OIDC_FEDERATION recipient for sharing data from Databricks to</td>
 </tr>
@@ -308,7 +308,7 @@ Create a federation policy for an OIDC_FEDERATION recipient for sharing data fro
 
 ```sql
 INSERT INTO databricks_workspace.sharing.recipient_federation_policies (
-data__policy,
+policy,
 recipient_name,
 deployment_name
 )

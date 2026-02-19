@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>credentials_manager</code> reso
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>credentials_manager</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="credentials_manager" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.settings.credentials_manager" /></td></tr>
 </tbody></table>
@@ -53,7 +53,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#exchange_token"><CopyableCode code="exchange_token" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__partition_id"><code>data__partition_id</code></a>, <a href="#parameter-data__token_type"><code>data__token_type</code></a>, <a href="#parameter-data__scopes"><code>data__scopes</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-partition_id"><code>partition_id</code></a>, <a href="#parameter-token_type"><code>token_type</code></a>, <a href="#parameter-scopes"><code>scopes</code></a></td>
     <td></td>
     <td>Exchange tokens with an Identity Provider to get a new access token. It allows specifying scopes to</td>
 </tr>
@@ -96,9 +96,9 @@ Exchange tokens with an Identity Provider to get a new access token. It allows s
 
 ```sql
 INSERT INTO databricks_workspace.settings.credentials_manager (
-data__partition_id,
-data__token_type,
-data__scopes,
+partition_id,
+token_type,
+scopes,
 deployment_name
 )
 SELECT 

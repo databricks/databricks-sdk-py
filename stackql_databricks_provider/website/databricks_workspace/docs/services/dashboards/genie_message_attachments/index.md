@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>genie_message_attachments</code
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>genie_message_attachments</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="genie_message_attachments" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.dashboards.genie_message_attachments" /></td></tr>
 </tbody></table>

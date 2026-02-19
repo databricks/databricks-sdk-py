@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>storage_credentials</code> reso
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>storage_credentials</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="storage_credentials" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.storage_credentials" /></td></tr>
 </tbody></table>
@@ -185,7 +185,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -360,7 +360,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+    "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -423,7 +423,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a new storage credential.</td>
 </tr>
@@ -586,15 +586,15 @@ Creates a new storage credential.
 
 ```sql
 INSERT INTO databricks_workspace.catalog.storage_credentials (
-data__name,
-data__aws_iam_role,
-data__azure_managed_identity,
-data__azure_service_principal,
-data__cloudflare_api_token,
-data__comment,
-data__databricks_gcp_service_account,
-data__read_only,
-data__skip_validation,
+name,
+aws_iam_role,
+azure_managed_identity,
+azure_service_principal,
+cloudflare_api_token,
+comment,
+databricks_gcp_service_account,
+read_only,
+skip_validation,
 deployment_name
 )
 SELECT 
@@ -695,18 +695,18 @@ Updates a storage credential on the metastore.
 ```sql
 UPDATE databricks_workspace.catalog.storage_credentials
 SET 
-data__aws_iam_role = '{{ aws_iam_role }}',
-data__azure_managed_identity = '{{ azure_managed_identity }}',
-data__azure_service_principal = '{{ azure_service_principal }}',
-data__cloudflare_api_token = '{{ cloudflare_api_token }}',
-data__comment = '{{ comment }}',
-data__databricks_gcp_service_account = '{{ databricks_gcp_service_account }}',
-data__force = '{{ force }}',
-data__isolation_mode = '{{ isolation_mode }}',
-data__new_name = '{{ new_name }}',
-data__owner = '{{ owner }}',
-data__read_only = '{{ read_only }}',
-data__skip_validation = '{{ skip_validation }}'
+aws_iam_role = '{{ aws_iam_role }}',
+azure_managed_identity = '{{ azure_managed_identity }}',
+azure_service_principal = '{{ azure_service_principal }}',
+cloudflare_api_token = '{{ cloudflare_api_token }}',
+comment = '{{ comment }}',
+databricks_gcp_service_account = '{{ databricks_gcp_service_account }}',
+force = '{{ force }}',
+isolation_mode = '{{ isolation_mode }}',
+new_name = '{{ new_name }}',
+owner = '{{ owner }}',
+read_only = '{{ read_only }}',
+skip_validation = '{{ skip_validation }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

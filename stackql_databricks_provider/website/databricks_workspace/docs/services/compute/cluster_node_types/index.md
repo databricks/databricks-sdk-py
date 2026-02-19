@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>cluster_node_types</code> resou
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>cluster_node_types</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="cluster_node_types" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.cluster_node_types" /></td></tr>
 </tbody></table>

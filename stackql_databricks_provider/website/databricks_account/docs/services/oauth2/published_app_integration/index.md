@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>published_app_integration</code
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>published_app_integration</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="published_app_integration" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.oauth2.published_app_integration" /></td></tr>
 </tbody></table>
@@ -308,8 +308,8 @@ Create Published OAuth App Integration.
 
 ```sql
 INSERT INTO databricks_account.oauth2.published_app_integration (
-data__app_id,
-data__token_access_policy,
+app_id,
+token_access_policy,
 account_id
 )
 SELECT 
@@ -358,7 +358,7 @@ Updates an existing published OAuth App Integration. You can retrieve the publis
 ```sql
 UPDATE databricks_account.oauth2.published_app_integration
 SET 
-data__token_access_policy = '{{ token_access_policy }}'
+token_access_policy = '{{ token_access_policy }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND integration_id = '{{ integration_id }}' --required;

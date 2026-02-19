@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>warehouses</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>warehouses</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="warehouses" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.warehouses" /></td></tr>
 </tbody></table>
@@ -75,7 +75,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "name",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CHANNEL_NAME_CURRENT, CHANNEL_NAME_CUSTOM, CHANNEL_NAME_PREVIEW, CHANNEL_NAME_PREVIOUS)"
       }
     ]
   },
@@ -112,7 +112,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "code",
             "type": "string",
-            "description": "The status code indicating why the cluster was terminated"
+            "description": "The status code indicating why the cluster was terminated (ABUSE_DETECTED, ACCESS_TOKEN_FAILURE, ALLOCATION_TIMEOUT, ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY, ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS, ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS, ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS, ALLOCATION_TIMEOUT_NO_READY_CLUSTERS, ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS, ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS, ATTACH_PROJECT_FAILURE, AWS_AUTHORIZATION_FAILURE, AWS_INACCESSIBLE_KMS_KEY_FAILURE, AWS_INSTANCE_PROFILE_UPDATE_FAILURE, AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE, AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE, AWS_INVALID_KEY_PAIR, AWS_INVALID_KMS_KEY_STATE, AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE, AWS_REQUEST_LIMIT_EXCEEDED, AWS_RESOURCE_QUOTA_EXCEEDED, AWS_UNSUPPORTED_FAILURE, AZURE_BYOK_KEY_PERMISSION_FAILURE, AZURE_EPHEMERAL_DISK_FAILURE, AZURE_INVALID_DEPLOYMENT_TEMPLATE, AZURE_OPERATION_NOT_ALLOWED_EXCEPTION, AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE, AZURE_QUOTA_EXCEEDED_EXCEPTION, AZURE_RESOURCE_MANAGER_THROTTLING, AZURE_RESOURCE_PROVIDER_THROTTLING, AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE, AZURE_VM_EXTENSION_FAILURE, AZURE_VNET_CONFIGURATION_FAILURE, BOOTSTRAP_TIMEOUT, BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION, BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG, BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED, BUDGET_POLICY_RESOLUTION_FAILURE, CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED, CLOUD_ACCOUNT_SETUP_FAILURE, CLOUD_OPERATION_CANCELLED, CLOUD_PROVIDER_DISK_SETUP_FAILURE, CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED, CLOUD_PROVIDER_LAUNCH_FAILURE, CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG, CLOUD_PROVIDER_RESOURCE_STOCKOUT, CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG, CLOUD_PROVIDER_SHUTDOWN, CLUSTER_OPERATION_THROTTLED, CLUSTER_OPERATION_TIMEOUT, COMMUNICATION_LOST, CONTAINER_LAUNCH_FAILURE, CONTROL_PLANE_CONNECTION_FAILURE, CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG, CONTROL_PLANE_REQUEST_FAILURE, CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG, DATABASE_CONNECTION_FAILURE, DATA_ACCESS_CONFIG_CHANGED, DBFS_COMPONENT_UNHEALTHY, DBR_IMAGE_RESOLUTION_FAILURE, DISASTER_RECOVERY_REPLICATION, DNS_RESOLUTION_ERROR, DOCKER_CONTAINER_CREATION_EXCEPTION, DOCKER_IMAGE_PULL_FAILURE, DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION, DOCKER_INVALID_OS_EXCEPTION, DRIVER_EVICTION, DRIVER_LAUNCH_TIMEOUT, DRIVER_NODE_UNREACHABLE, DRIVER_OUT_OF_DISK, DRIVER_OUT_OF_MEMORY, DRIVER_POD_CREATION_FAILURE, DRIVER_UNEXPECTED_FAILURE, DRIVER_UNHEALTHY, DRIVER_UNREACHABLE, DRIVER_UNRESPONSIVE, DYNAMIC_SPARK_CONF_SIZE_EXCEEDED, EOS_SPARK_IMAGE, EXECUTION_COMPONENT_UNHEALTHY, EXECUTOR_POD_UNSCHEDULED, GCP_API_RATE_QUOTA_EXCEEDED, GCP_DENIED_BY_ORG_POLICY, GCP_FORBIDDEN, GCP_IAM_TIMEOUT, GCP_INACCESSIBLE_KMS_KEY_FAILURE, GCP_INSUFFICIENT_CAPACITY, GCP_IP_SPACE_EXHAUSTED, GCP_KMS_KEY_PERMISSION_DENIED, GCP_NOT_FOUND, GCP_QUOTA_EXCEEDED, GCP_RESOURCE_QUOTA_EXCEEDED, GCP_SERVICE_ACCOUNT_ACCESS_DENIED, GCP_SERVICE_ACCOUNT_DELETED, GCP_SERVICE_ACCOUNT_NOT_FOUND, GCP_SUBNET_NOT_READY, GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED, GKE_BASED_CLUSTER_TERMINATION, GLOBAL_INIT_SCRIPT_FAILURE, HIVE_METASTORE_PROVISIONING_FAILURE, IMAGE_PULL_PERMISSION_DENIED, INACTIVITY, INIT_CONTAINER_NOT_FINISHED, INIT_SCRIPT_FAILURE, INSTANCE_POOL_CLUSTER_FAILURE, INSTANCE_POOL_MAX_CAPACITY_REACHED, INSTANCE_POOL_NOT_FOUND, INSTANCE_UNREACHABLE, INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG, INTERNAL_CAPACITY_FAILURE, INTERNAL_ERROR, INVALID_ARGUMENT, INVALID_AWS_PARAMETER, INVALID_INSTANCE_PLACEMENT_PROTOCOL, INVALID_SPARK_IMAGE, INVALID_WORKER_IMAGE_FAILURE, IN_PENALTY_BOX, IP_EXHAUSTION_FAILURE, JOB_FINISHED, K8S_ACTIVE_POD_QUOTA_EXCEEDED, K8S_AUTOSCALING_FAILURE, K8S_DBR_CLUSTER_LAUNCH_TIMEOUT, LAZY_ALLOCATION_TIMEOUT, MAINTENANCE_MODE, METASTORE_COMPONENT_UNHEALTHY, MTLS_PORT_CONNECTIVITY_FAILURE, NEPHOS_RESOURCE_MANAGEMENT, NETVISOR_SETUP_TIMEOUT, NETWORK_CHECK_CONTROL_PLANE_FAILURE, NETWORK_CHECK_CONTROL_PLANE_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_DNS_SERVER_FAILURE, NETWORK_CHECK_DNS_SERVER_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_METADATA_ENDPOINT_FAILURE, NETWORK_CHECK_METADATA_ENDPOINT_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE, NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_NIC_FAILURE, NETWORK_CHECK_NIC_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_STORAGE_FAILURE, NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG, NETWORK_CONFIGURATION_FAILURE, NFS_MOUNT_FAILURE, NO_MATCHED_K8S, NO_MATCHED_K8S_TESTING_TAG, NPIP_TUNNEL_SETUP_FAILURE, NPIP_TUNNEL_TOKEN_FAILURE, POD_ASSIGNMENT_FAILURE, POD_SCHEDULING_FAILURE, RATE_LIMITED, REQUEST_REJECTED, REQUEST_THROTTLED, RESOURCE_USAGE_BLOCKED, SECRET_CREATION_FAILURE, SECRET_PERMISSION_DENIED, SECRET_RESOLUTION_ERROR, SECURITY_DAEMON_REGISTRATION_EXCEPTION, SELF_BOOTSTRAP_FAILURE, SERVERLESS_LONG_RUNNING_TERMINATED, SKIPPED_SLOW_NODES, SLOW_IMAGE_DOWNLOAD, SPARK_ERROR, SPARK_IMAGE_DOWNLOAD_FAILURE, SPARK_IMAGE_DOWNLOAD_THROTTLED, SPARK_IMAGE_NOT_FOUND, SPARK_STARTUP_FAILURE, SPOT_INSTANCE_TERMINATION, SSH_BOOTSTRAP_FAILURE, STORAGE_DOWNLOAD_FAILURE, STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG, STORAGE_DOWNLOAD_FAILURE_SLOW, STORAGE_DOWNLOAD_FAILURE_THROTTLED, STS_CLIENT_SETUP_FAILURE, SUBNET_EXHAUSTED_FAILURE, TEMPORARILY_UNAVAILABLE, TRIAL_EXPIRED, UNEXPECTED_LAUNCH_FAILURE, UNEXPECTED_POD_RECREATION, UNKNOWN, UNSUPPORTED_INSTANCE_TYPE, UPDATE_INSTANCE_PROFILE_FAILURE, USAGE_POLICY_ENTITLEMENT_DENIED, USER_INITIATED_VM_TERMINATION, USER_REQUEST, WORKER_SETUP_FAILURE, WORKSPACE_CANCELLED_ERROR, WORKSPACE_CONFIGURATION_ERROR, WORKSPACE_UPDATE)"
           },
           {
             "name": "parameters",
@@ -122,7 +122,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type",
             "type": "string",
-            "description": "type of the termination"
+            "description": "type of the termination (CLIENT_ERROR, CLOUD_FAILURE, SERVICE_FAULT, SUCCESS)"
           }
         ]
       },
@@ -134,7 +134,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Health status of the endpoint."
+        "description": "Health status of the endpoint. (DEGRADED, FAILED, HEALTHY)"
       },
       {
         "name": "summary",
@@ -203,12 +203,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "spot_instance_policy",
     "type": "string",
-    "description": "Configurations whether the endpoint should use spot instances."
+    "description": "Configurations whether the endpoint should use spot instances. (COST_OPTIMIZED, POLICY_UNSPECIFIED, RELIABILITY_OPTIMIZED)"
   },
   {
     "name": "state",
     "type": "string",
-    "description": "state of the endpoint"
+    "description": "state of the endpoint (DELETED, DELETING, RUNNING, STARTING, STOPPED, STOPPING)"
   },
   {
     "name": "tags",
@@ -237,7 +237,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "warehouse_type",
     "type": "string",
-    "description": "Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`."
+    "description": "Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`. (CLASSIC, PRO, TYPE_UNSPECIFIED)"
   }
 ]} />
 </TabItem>
@@ -277,7 +277,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "name",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CHANNEL_NAME_CURRENT, CHANNEL_NAME_CUSTOM, CHANNEL_NAME_PREVIEW, CHANNEL_NAME_PREVIOUS)"
       }
     ]
   },
@@ -314,7 +314,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "code",
             "type": "string",
-            "description": "The status code indicating why the cluster was terminated"
+            "description": "The status code indicating why the cluster was terminated (ABUSE_DETECTED, ACCESS_TOKEN_FAILURE, ALLOCATION_TIMEOUT, ALLOCATION_TIMEOUT_NODE_DAEMON_NOT_READY, ALLOCATION_TIMEOUT_NO_HEALTHY_AND_WARMED_UP_CLUSTERS, ALLOCATION_TIMEOUT_NO_HEALTHY_CLUSTERS, ALLOCATION_TIMEOUT_NO_MATCHED_CLUSTERS, ALLOCATION_TIMEOUT_NO_READY_CLUSTERS, ALLOCATION_TIMEOUT_NO_UNALLOCATED_CLUSTERS, ALLOCATION_TIMEOUT_NO_WARMED_UP_CLUSTERS, ATTACH_PROJECT_FAILURE, AWS_AUTHORIZATION_FAILURE, AWS_INACCESSIBLE_KMS_KEY_FAILURE, AWS_INSTANCE_PROFILE_UPDATE_FAILURE, AWS_INSUFFICIENT_FREE_ADDRESSES_IN_SUBNET_FAILURE, AWS_INSUFFICIENT_INSTANCE_CAPACITY_FAILURE, AWS_INVALID_KEY_PAIR, AWS_INVALID_KMS_KEY_STATE, AWS_MAX_SPOT_INSTANCE_COUNT_EXCEEDED_FAILURE, AWS_REQUEST_LIMIT_EXCEEDED, AWS_RESOURCE_QUOTA_EXCEEDED, AWS_UNSUPPORTED_FAILURE, AZURE_BYOK_KEY_PERMISSION_FAILURE, AZURE_EPHEMERAL_DISK_FAILURE, AZURE_INVALID_DEPLOYMENT_TEMPLATE, AZURE_OPERATION_NOT_ALLOWED_EXCEPTION, AZURE_PACKED_DEPLOYMENT_PARTIAL_FAILURE, AZURE_QUOTA_EXCEEDED_EXCEPTION, AZURE_RESOURCE_MANAGER_THROTTLING, AZURE_RESOURCE_PROVIDER_THROTTLING, AZURE_UNEXPECTED_DEPLOYMENT_TEMPLATE_FAILURE, AZURE_VM_EXTENSION_FAILURE, AZURE_VNET_CONFIGURATION_FAILURE, BOOTSTRAP_TIMEOUT, BOOTSTRAP_TIMEOUT_CLOUD_PROVIDER_EXCEPTION, BOOTSTRAP_TIMEOUT_DUE_TO_MISCONFIG, BUDGET_POLICY_LIMIT_ENFORCEMENT_ACTIVATED, BUDGET_POLICY_RESOLUTION_FAILURE, CLOUD_ACCOUNT_POD_QUOTA_EXCEEDED, CLOUD_ACCOUNT_SETUP_FAILURE, CLOUD_OPERATION_CANCELLED, CLOUD_PROVIDER_DISK_SETUP_FAILURE, CLOUD_PROVIDER_INSTANCE_NOT_LAUNCHED, CLOUD_PROVIDER_LAUNCH_FAILURE, CLOUD_PROVIDER_LAUNCH_FAILURE_DUE_TO_MISCONFIG, CLOUD_PROVIDER_RESOURCE_STOCKOUT, CLOUD_PROVIDER_RESOURCE_STOCKOUT_DUE_TO_MISCONFIG, CLOUD_PROVIDER_SHUTDOWN, CLUSTER_OPERATION_THROTTLED, CLUSTER_OPERATION_TIMEOUT, COMMUNICATION_LOST, CONTAINER_LAUNCH_FAILURE, CONTROL_PLANE_CONNECTION_FAILURE, CONTROL_PLANE_CONNECTION_FAILURE_DUE_TO_MISCONFIG, CONTROL_PLANE_REQUEST_FAILURE, CONTROL_PLANE_REQUEST_FAILURE_DUE_TO_MISCONFIG, DATABASE_CONNECTION_FAILURE, DATA_ACCESS_CONFIG_CHANGED, DBFS_COMPONENT_UNHEALTHY, DBR_IMAGE_RESOLUTION_FAILURE, DISASTER_RECOVERY_REPLICATION, DNS_RESOLUTION_ERROR, DOCKER_CONTAINER_CREATION_EXCEPTION, DOCKER_IMAGE_PULL_FAILURE, DOCKER_IMAGE_TOO_LARGE_FOR_INSTANCE_EXCEPTION, DOCKER_INVALID_OS_EXCEPTION, DRIVER_EVICTION, DRIVER_LAUNCH_TIMEOUT, DRIVER_NODE_UNREACHABLE, DRIVER_OUT_OF_DISK, DRIVER_OUT_OF_MEMORY, DRIVER_POD_CREATION_FAILURE, DRIVER_UNEXPECTED_FAILURE, DRIVER_UNHEALTHY, DRIVER_UNREACHABLE, DRIVER_UNRESPONSIVE, DYNAMIC_SPARK_CONF_SIZE_EXCEEDED, EOS_SPARK_IMAGE, EXECUTION_COMPONENT_UNHEALTHY, EXECUTOR_POD_UNSCHEDULED, GCP_API_RATE_QUOTA_EXCEEDED, GCP_DENIED_BY_ORG_POLICY, GCP_FORBIDDEN, GCP_IAM_TIMEOUT, GCP_INACCESSIBLE_KMS_KEY_FAILURE, GCP_INSUFFICIENT_CAPACITY, GCP_IP_SPACE_EXHAUSTED, GCP_KMS_KEY_PERMISSION_DENIED, GCP_NOT_FOUND, GCP_QUOTA_EXCEEDED, GCP_RESOURCE_QUOTA_EXCEEDED, GCP_SERVICE_ACCOUNT_ACCESS_DENIED, GCP_SERVICE_ACCOUNT_DELETED, GCP_SERVICE_ACCOUNT_NOT_FOUND, GCP_SUBNET_NOT_READY, GCP_TRUSTED_IMAGE_PROJECTS_VIOLATED, GKE_BASED_CLUSTER_TERMINATION, GLOBAL_INIT_SCRIPT_FAILURE, HIVE_METASTORE_PROVISIONING_FAILURE, IMAGE_PULL_PERMISSION_DENIED, INACTIVITY, INIT_CONTAINER_NOT_FINISHED, INIT_SCRIPT_FAILURE, INSTANCE_POOL_CLUSTER_FAILURE, INSTANCE_POOL_MAX_CAPACITY_REACHED, INSTANCE_POOL_NOT_FOUND, INSTANCE_UNREACHABLE, INSTANCE_UNREACHABLE_DUE_TO_MISCONFIG, INTERNAL_CAPACITY_FAILURE, INTERNAL_ERROR, INVALID_ARGUMENT, INVALID_AWS_PARAMETER, INVALID_INSTANCE_PLACEMENT_PROTOCOL, INVALID_SPARK_IMAGE, INVALID_WORKER_IMAGE_FAILURE, IN_PENALTY_BOX, IP_EXHAUSTION_FAILURE, JOB_FINISHED, K8S_ACTIVE_POD_QUOTA_EXCEEDED, K8S_AUTOSCALING_FAILURE, K8S_DBR_CLUSTER_LAUNCH_TIMEOUT, LAZY_ALLOCATION_TIMEOUT, MAINTENANCE_MODE, METASTORE_COMPONENT_UNHEALTHY, MTLS_PORT_CONNECTIVITY_FAILURE, NEPHOS_RESOURCE_MANAGEMENT, NETVISOR_SETUP_TIMEOUT, NETWORK_CHECK_CONTROL_PLANE_FAILURE, NETWORK_CHECK_CONTROL_PLANE_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_DNS_SERVER_FAILURE, NETWORK_CHECK_DNS_SERVER_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_METADATA_ENDPOINT_FAILURE, NETWORK_CHECK_METADATA_ENDPOINT_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE, NETWORK_CHECK_MULTIPLE_COMPONENTS_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_NIC_FAILURE, NETWORK_CHECK_NIC_FAILURE_DUE_TO_MISCONFIG, NETWORK_CHECK_STORAGE_FAILURE, NETWORK_CHECK_STORAGE_FAILURE_DUE_TO_MISCONFIG, NETWORK_CONFIGURATION_FAILURE, NFS_MOUNT_FAILURE, NO_MATCHED_K8S, NO_MATCHED_K8S_TESTING_TAG, NPIP_TUNNEL_SETUP_FAILURE, NPIP_TUNNEL_TOKEN_FAILURE, POD_ASSIGNMENT_FAILURE, POD_SCHEDULING_FAILURE, RATE_LIMITED, REQUEST_REJECTED, REQUEST_THROTTLED, RESOURCE_USAGE_BLOCKED, SECRET_CREATION_FAILURE, SECRET_PERMISSION_DENIED, SECRET_RESOLUTION_ERROR, SECURITY_DAEMON_REGISTRATION_EXCEPTION, SELF_BOOTSTRAP_FAILURE, SERVERLESS_LONG_RUNNING_TERMINATED, SKIPPED_SLOW_NODES, SLOW_IMAGE_DOWNLOAD, SPARK_ERROR, SPARK_IMAGE_DOWNLOAD_FAILURE, SPARK_IMAGE_DOWNLOAD_THROTTLED, SPARK_IMAGE_NOT_FOUND, SPARK_STARTUP_FAILURE, SPOT_INSTANCE_TERMINATION, SSH_BOOTSTRAP_FAILURE, STORAGE_DOWNLOAD_FAILURE, STORAGE_DOWNLOAD_FAILURE_DUE_TO_MISCONFIG, STORAGE_DOWNLOAD_FAILURE_SLOW, STORAGE_DOWNLOAD_FAILURE_THROTTLED, STS_CLIENT_SETUP_FAILURE, SUBNET_EXHAUSTED_FAILURE, TEMPORARILY_UNAVAILABLE, TRIAL_EXPIRED, UNEXPECTED_LAUNCH_FAILURE, UNEXPECTED_POD_RECREATION, UNKNOWN, UNSUPPORTED_INSTANCE_TYPE, UPDATE_INSTANCE_PROFILE_FAILURE, USAGE_POLICY_ENTITLEMENT_DENIED, USER_INITIATED_VM_TERMINATION, USER_REQUEST, WORKER_SETUP_FAILURE, WORKSPACE_CANCELLED_ERROR, WORKSPACE_CONFIGURATION_ERROR, WORKSPACE_UPDATE)"
           },
           {
             "name": "parameters",
@@ -324,7 +324,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type",
             "type": "string",
-            "description": "type of the termination"
+            "description": "type of the termination (CLIENT_ERROR, CLOUD_FAILURE, SERVICE_FAULT, SUCCESS)"
           }
         ]
       },
@@ -336,7 +336,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "Health status of the endpoint."
+        "description": "Health status of the endpoint. (DEGRADED, FAILED, HEALTHY)"
       },
       {
         "name": "summary",
@@ -405,12 +405,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "spot_instance_policy",
     "type": "string",
-    "description": "Configurations whether the endpoint should use spot instances."
+    "description": "Configurations whether the endpoint should use spot instances. (COST_OPTIMIZED, POLICY_UNSPECIFIED, RELIABILITY_OPTIMIZED)"
   },
   {
     "name": "state",
     "type": "string",
-    "description": "state of the endpoint"
+    "description": "state of the endpoint (DELETED, DELETING, RUNNING, STARTING, STOPPED, STOPPING)"
   },
   {
     "name": "tags",
@@ -439,7 +439,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "warehouse_type",
     "type": "string",
-    "description": "Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`."
+    "description": "Warehouse type: `PRO` or `CLASSIC`. If you want to use serverless compute, you must set to `PRO` and also set the field `enable_serverless_compute` to `true`. (CLASSIC, PRO, TYPE_UNSPECIFIED)"
   }
 ]} />
 </TabItem>
@@ -646,19 +646,19 @@ Creates a new SQL warehouse.
 
 ```sql
 INSERT INTO databricks_workspace.sql.warehouses (
-data__auto_stop_mins,
-data__channel,
-data__cluster_size,
-data__creator_name,
-data__enable_photon,
-data__enable_serverless_compute,
-data__instance_profile_arn,
-data__max_num_clusters,
-data__min_num_clusters,
-data__name,
-data__spot_instance_policy,
-data__tags,
-data__warehouse_type,
+auto_stop_mins,
+channel,
+cluster_size,
+creator_name,
+enable_photon,
+enable_serverless_compute,
+instance_profile_arn,
+max_num_clusters,
+min_num_clusters,
+name,
+spot_instance_policy,
+tags,
+warehouse_type,
 deployment_name
 )
 SELECT 
@@ -781,19 +781,19 @@ Updates the configuration for a SQL warehouse.
 ```sql
 REPLACE databricks_workspace.sql.warehouses
 SET 
-data__auto_stop_mins = '{{ auto_stop_mins }}',
-data__channel = '{{ channel }}',
-data__cluster_size = '{{ cluster_size }}',
-data__creator_name = '{{ creator_name }}',
-data__enable_photon = '{{ enable_photon }}',
-data__enable_serverless_compute = '{{ enable_serverless_compute }}',
-data__instance_profile_arn = '{{ instance_profile_arn }}',
-data__max_num_clusters = '{{ max_num_clusters }}',
-data__min_num_clusters = '{{ min_num_clusters }}',
-data__name = '{{ name }}',
-data__spot_instance_policy = '{{ spot_instance_policy }}',
-data__tags = '{{ tags }}',
-data__warehouse_type = '{{ warehouse_type }}'
+auto_stop_mins = '{{ auto_stop_mins }}',
+channel = '{{ channel }}',
+cluster_size = '{{ cluster_size }}',
+creator_name = '{{ creator_name }}',
+enable_photon = '{{ enable_photon }}',
+enable_serverless_compute = '{{ enable_serverless_compute }}',
+instance_profile_arn = '{{ instance_profile_arn }}',
+max_num_clusters = '{{ max_num_clusters }}',
+min_num_clusters = '{{ min_num_clusters }}',
+name = '{{ name }}',
+spot_instance_policy = '{{ spot_instance_policy }}',
+tags = '{{ tags }}',
+warehouse_type = '{{ warehouse_type }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

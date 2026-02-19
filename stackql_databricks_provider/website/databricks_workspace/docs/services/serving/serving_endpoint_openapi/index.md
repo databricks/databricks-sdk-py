@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>serving_endpoint_openapi</code>
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>serving_endpoint_openapi</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="serving_endpoint_openapi" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.serving.serving_endpoint_openapi" /></td></tr>
 </tbody></table>

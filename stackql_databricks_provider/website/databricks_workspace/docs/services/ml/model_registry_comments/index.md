@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>model_registry_comments</code> 
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>model_registry_comments</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="model_registry_comments" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.model_registry_comments" /></td></tr>
 </tbody></table>
@@ -53,14 +53,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__version"><code>data__version</code></a>, <a href="#parameter-data__comment"><code>data__comment</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-version"><code>version</code></a>, <a href="#parameter-comment"><code>comment</code></a></td>
     <td></td>
     <td>Posts a comment on a model version. A comment can be submitted either by a user or programmatically to</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__id"><code>data__id</code></a>, <a href="#parameter-data__comment"><code>data__comment</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-id"><code>id</code></a>, <a href="#parameter-comment"><code>comment</code></a></td>
     <td></td>
     <td>Post an edit to a comment on a model version.</td>
 </tr>
@@ -115,9 +115,9 @@ Posts a comment on a model version. A comment can be submitted either by a user 
 
 ```sql
 INSERT INTO databricks_workspace.ml.model_registry_comments (
-data__name,
-data__version,
-data__comment,
+name,
+version,
+comment,
 deployment_name
 )
 SELECT 
@@ -171,12 +171,12 @@ Post an edit to a comment on a model version.
 ```sql
 UPDATE databricks_workspace.ml.model_registry_comments
 SET 
-data__id = '{{ id }}',
-data__comment = '{{ comment }}'
+id = '{{ id }}',
+comment = '{{ comment }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__id = '{{ id }}' --required
-AND data__comment = '{{ comment }}' --required
+AND id = '{{ id }}' --required
+AND comment = '{{ comment }}' --required
 RETURNING
 comment;
 ```

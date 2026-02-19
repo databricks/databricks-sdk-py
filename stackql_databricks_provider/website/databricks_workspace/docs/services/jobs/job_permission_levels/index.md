@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>job_permission_levels</code> re
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>job_permission_levels</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="job_permission_levels" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.jobs.job_permission_levels" /></td></tr>
 </tbody></table>
@@ -54,7 +54,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "permission_level",
         "type": "string",
-        "description": "Permission level"
+        "description": "Permission level (CAN_MANAGE, CAN_MANAGE_RUN, CAN_VIEW, IS_OWNER)"
       }
     ]
   }

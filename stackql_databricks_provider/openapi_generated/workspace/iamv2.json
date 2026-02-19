@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks iamv2 service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.iamv2"
   },
   "servers": [
@@ -419,7 +419,7 @@
       },
       "PrincipalType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "GROUP",
           "SERVICE_PRINCIPAL",
           "USER"
@@ -428,7 +428,7 @@
       },
       "State": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "INACTIVE"
         ],
@@ -436,7 +436,7 @@
       },
       "WorkspaceAccessDetailAccessType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DIRECT",
           "INDIRECT"
         ],
@@ -444,7 +444,7 @@
       },
       "WorkspaceAccessDetailView": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BASIC",
           "FULL"
         ],
@@ -452,7 +452,7 @@
       },
       "WorkspacePermission": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ADMIN_PERMISSION",
           "USER_PERMISSION"
         ],

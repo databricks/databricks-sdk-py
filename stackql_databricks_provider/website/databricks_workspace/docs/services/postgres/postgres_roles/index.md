@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>postgres_roles</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>postgres_roles</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="postgres_roles" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.postgres.postgres_roles" /></td></tr>
 </tbody></table>
@@ -65,12 +65,12 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "auth_method",
         "type": "string",
-        "description": "How the role is authenticated when connecting to Postgres."
+        "description": "How the role is authenticated when connecting to Postgres. (LAKEBASE_OAUTH_V1, NO_LOGIN, PG_PASSWORD_SCRAM_SHA_256)"
       },
       {
         "name": "identity_type",
         "type": "string",
-        "description": "The type of role. When specifying a managed-identity, the chosen role_id must be a valid: * application ID for SERVICE_PRINCIPAL * user email for USER * group name for GROUP"
+        "description": "The type of role. When specifying a managed-identity, the chosen role_id must be a valid: * application ID for SERVICE_PRINCIPAL * user email for USER * group name for GROUP (GROUP, SERVICE_PRINCIPAL, USER)"
       },
       {
         "name": "postgres_role",
@@ -87,12 +87,12 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "auth_method",
         "type": "string",
-        "description": "How the role is authenticated when connecting to Postgres."
+        "description": "How the role is authenticated when connecting to Postgres. (LAKEBASE_OAUTH_V1, NO_LOGIN, PG_PASSWORD_SCRAM_SHA_256)"
       },
       {
         "name": "identity_type",
         "type": "string",
-        "description": "The type of the role."
+        "description": "The type of the role. (GROUP, SERVICE_PRINCIPAL, USER)"
       },
       {
         "name": "postgres_role",
@@ -134,12 +134,12 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "auth_method",
         "type": "string",
-        "description": "How the role is authenticated when connecting to Postgres."
+        "description": "How the role is authenticated when connecting to Postgres. (LAKEBASE_OAUTH_V1, NO_LOGIN, PG_PASSWORD_SCRAM_SHA_256)"
       },
       {
         "name": "identity_type",
         "type": "string",
-        "description": "The type of role. When specifying a managed-identity, the chosen role_id must be a valid: * application ID for SERVICE_PRINCIPAL * user email for USER * group name for GROUP"
+        "description": "The type of role. When specifying a managed-identity, the chosen role_id must be a valid: * application ID for SERVICE_PRINCIPAL * user email for USER * group name for GROUP (GROUP, SERVICE_PRINCIPAL, USER)"
       },
       {
         "name": "postgres_role",
@@ -156,12 +156,12 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "auth_method",
         "type": "string",
-        "description": "How the role is authenticated when connecting to Postgres."
+        "description": "How the role is authenticated when connecting to Postgres. (LAKEBASE_OAUTH_V1, NO_LOGIN, PG_PASSWORD_SCRAM_SHA_256)"
       },
       {
         "name": "identity_type",
         "type": "string",
-        "description": "The type of the role."
+        "description": "The type of the role. (GROUP, SERVICE_PRINCIPAL, USER)"
       },
       {
         "name": "postgres_role",
@@ -211,7 +211,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__role"><code>data__role</code></a></td>
+    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-role"><code>role</code></a></td>
     <td><a href="#parameter-role_id"><code>role_id</code></a></td>
     <td>Creates a new Postgres role in the branch.</td>
 </tr>
@@ -341,7 +341,7 @@ Creates a new Postgres role in the branch.
 
 ```sql
 INSERT INTO databricks_workspace.postgres.postgres_roles (
-data__role,
+role,
 parent,
 deployment_name,
 role_id

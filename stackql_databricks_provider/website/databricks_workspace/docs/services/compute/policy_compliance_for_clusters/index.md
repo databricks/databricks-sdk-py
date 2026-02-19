@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>policy_compliance_for_clusters<
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>policy_compliance_for_clusters</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="policy_compliance_for_clusters" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.policy_compliance_for_clusters" /></td></tr>
 </tbody></table>
@@ -108,7 +108,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#enforce"><CopyableCode code="enforce" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__cluster_id"><code>data__cluster_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-cluster_id"><code>cluster_id</code></a></td>
     <td></td>
     <td>Updates a cluster to be compliant with the current version of its policy. A cluster can be updated if</td>
 </tr>
@@ -214,8 +214,8 @@ Updates a cluster to be compliant with the current version of its policy. A clus
 
 ```sql
 INSERT INTO databricks_workspace.compute.policy_compliance_for_clusters (
-data__cluster_id,
-data__validate_only,
+cluster_id,
+validate_only,
 deployment_name
 )
 SELECT 

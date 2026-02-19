@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>data_sources</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>data_sources</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="data_sources" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.data_sources" /></td></tr>
 </tbody></table>

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>job_run_output</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>job_run_output</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="job_run_output" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.jobs.job_run_output" /></td></tr>
 </tbody></table>
@@ -54,12 +54,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "life_cycle_state",
             "type": "string",
-            "description": "A value indicating the run's current lifecycle state. This field is always available in the response. Note: Additional states might be introduced in future releases."
+            "description": "A value indicating the run's current lifecycle state. This field is always available in the response. Note: Additional states might be introduced in future releases. (BLOCKED, INTERNAL_ERROR, PENDING, QUEUED, RUNNING, RUN_LIFE_CYCLE_STATE_UNSPECIFIED, SKIPPED, TERMINATED, TERMINATING, WAITING_FOR_RETRY)"
           },
           {
             "name": "result_state",
             "type": "string",
-            "description": "A value indicating the run's result. This field is only available for terminal lifecycle states. Note: Additional states might be introduced in future releases."
+            "description": "A value indicating the run's result. This field is only available for terminal lifecycle states. Note: Additional states might be introduced in future releases. (CANCELED, DISABLED, EVICTED, EXCLUDED, FAILED, MAXIMUM_CONCURRENT_RUNS_REACHED, RUN_RESULT_STATE_UNSPECIFIED, SUCCESS, SUCCESS_WITH_FAILURES, TIMEDOUT, UPSTREAM_CANCELED, UPSTREAM_EVICTED, UPSTREAM_FAILED)"
           }
         ]
       },
@@ -168,7 +168,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "status",
             "type": "string",
-            "description": "State of the step"
+            "description": "State of the step (CANCELLED, ERROR, QUEUED, RUNNING, STARTING, SUCCESS)"
           }
         ]
       },
@@ -239,7 +239,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "status",
             "type": "string",
-            "description": "State of the step"
+            "description": "State of the step (CANCELLED, ERROR, QUEUED, RUNNING, STARTING, SUCCESS)"
           }
         ]
       },
@@ -352,7 +352,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "effective_performance_target",
         "type": "string",
-        "description": "The actual performance target used by the serverless run during execution. This can differ from the client-set performance target on the request depending on whether the performance mode is supported by the job type. * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and optimized cluster performance."
+        "description": "The actual performance target used by the serverless run during execution. This can differ from the client-set performance target on the request depending on whether the performance mode is supported by the job type. * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and optimized cluster performance. (PERFORMANCE_OPTIMIZED, STANDARD)"
       },
       {
         "name": "effective_usage_policy_id",
@@ -382,7 +382,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "git_provider",
             "type": "string",
-            "description": "Unique identifier of the service used to host the Git repository. The value is case insensitive."
+            "description": "Unique identifier of the service used to host the Git repository. The value is case insensitive. (awsCodeCommit, azureDevOpsServices, bitbucketCloud, bitbucketServer, gitHub, gitHubEnterprise, gitLab, gitLabEnterpriseEdition)"
           },
           {
             "name": "git_branch",
@@ -429,7 +429,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "dirty_state",
                 "type": "string",
-                "description": "Dirty state indicates the job is not fully synced with the job specification in the remote repository. Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job specification. Import the remote job specification from UI to make the job fully synced. * `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is allowed for live edit. Import the remote job specification again from UI to make the job fully synced."
+                "description": "Dirty state indicates the job is not fully synced with the job specification in the remote repository. Possible values are: * `NOT_SYNCED`: The job is not yet synced with the remote job specification. Import the remote job specification from UI to make the job fully synced. * `DISCONNECTED`: The job is temporary disconnected from the remote job specification and is allowed for live edit. Import the remote job specification again from UI to make the job fully synced. (DISCONNECTED, NOT_SYNCED)"
               }
             ]
           }
@@ -524,7 +524,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "op",
                 "type": "string",
-                "description": "* `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that<br />`“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`,<br />`LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.<br />`“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to<br />`false`.<br /><br />The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.<br />If a task value was set to a boolean value, it will be serialized to `“true”` or<br />`“false”` for the comparison."
+                "description": "* `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that<br />`“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`,<br />`LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.<br />`“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to<br />`false`.<br /><br />The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.<br />If a task value was set to a boolean value, it will be serialized to `“true”` or<br />`“false”` for the comparison. (EQUAL_TO, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL)"
               },
               {
                 "name": "left",
@@ -637,7 +637,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the project directory. When set to `WORKSPACE`, the project will be retrieved from the local Databricks workspace. When set to `GIT`, the project will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`: Project is located in cloud Git provider."
+                "description": "Optional location type of the project directory. When set to `WORKSPACE`, the project will be retrieved from the local Databricks workspace. When set to `GIT`, the project will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`: Project is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "warehouse_id",
@@ -671,7 +671,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "effective_performance_target",
             "type": "string",
-            "description": "The actual performance target used by the serverless run during execution. This can differ from the client-set performance target on the request depending on whether the performance mode is supported by the job type. * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and optimized cluster performance."
+            "description": "The actual performance target used by the serverless run during execution. This can differ from the client-set performance target on the request depending on whether the performance mode is supported by the job type. * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and optimized cluster performance. (PERFORMANCE_OPTIMIZED, STANDARD)"
           },
           {
             "name": "email_notifications",
@@ -785,7 +785,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the training script. When set to `WORKSPACE`, the script will be retrieved from the local Databricks workspace. When set to `GIT`, the script will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script is located in Databricks workspace. * `GIT`: Script is located in cloud Git provider."
+                "description": "Optional location type of the training script. When set to `WORKSPACE`, the script will be retrieved from the local Databricks workspace. When set to `GIT`, the script will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script is located in Databricks workspace. * `GIT`: Script is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "training_script_path",
@@ -817,7 +817,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "git_provider",
                 "type": "string",
-                "description": "Unique identifier of the service used to host the Git repository. The value is case insensitive."
+                "description": "Unique identifier of the service used to host the Git repository. The value is case insensitive. (awsCodeCommit, azureDevOpsServices, bitbucketCloud, bitbucketServer, gitHub, gitHubEnterprise, gitLab, gitLabEnterpriseEdition)"
               },
               {
                 "name": "git_branch",
@@ -879,7 +879,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the notebook. When set to `WORKSPACE`, the notebook will be retrieved from the local Databricks workspace. When set to `GIT`, the notebook will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Notebook is located in Databricks workspace. * `GIT`: Notebook is located in cloud Git provider."
+                "description": "Optional location type of the notebook. When set to `WORKSPACE`, the notebook will be retrieved from the local Databricks workspace. When set to `GIT`, the notebook will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Notebook is located in Databricks workspace. * `GIT`: Notebook is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "warehouse_id",
@@ -1061,7 +1061,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "run_if",
             "type": "string",
-            "description": "An optional value indicating the condition that determines whether the task should be run once its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of possible values."
+            "description": "An optional value indicating the condition that determines whether the task should be run once its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of possible values. (ALL_DONE, ALL_FAILED, ALL_SUCCESS, AT_LEAST_ONE_FAILED, AT_LEAST_ONE_SUCCESS, NONE_FAILED)"
           },
           {
             "name": "run_job_task",
@@ -1175,7 +1175,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the Python file. When set to `WORKSPACE` or not specified, the file will be retrieved from the local Databricks workspace or cloud location (if the `python_file` has a URI format). When set to `GIT`, the Python file will be retrieved from a Git repository defined in `git_source`. * `WORKSPACE`: The Python file is located in a Databricks workspace or at a cloud filesystem URI. * `GIT`: The Python file is located in a remote Git repository."
+                "description": "Optional location type of the Python file. When set to `WORKSPACE` or not specified, the file will be retrieved from the local Databricks workspace or cloud location (if the `python_file` has a URI format). When set to `GIT`, the Python file will be retrieved from a Git repository defined in `git_source`. * `WORKSPACE`: The Python file is located in a Databricks workspace or at a cloud filesystem URI. * `GIT`: The Python file is located in a remote Git repository. (GIT, WORKSPACE)"
               }
             ]
           },
@@ -1241,7 +1241,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "life_cycle_state",
                 "type": "string",
-                "description": "A value indicating the run's current lifecycle state. This field is always available in the response. Note: Additional states might be introduced in future releases."
+                "description": "A value indicating the run's current lifecycle state. This field is always available in the response. Note: Additional states might be introduced in future releases. (BLOCKED, INTERNAL_ERROR, PENDING, QUEUED, RUNNING, SKIPPED, TERMINATED, TERMINATING, WAITING_FOR_RETRY)"
               },
               {
                 "name": "queue_reason",
@@ -1251,7 +1251,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "result_state",
                 "type": "string",
-                "description": "A value indicating the run's result. This field is only available for terminal lifecycle states. Note: Additional states might be introduced in future releases."
+                "description": "A value indicating the run's result. This field is only available for terminal lifecycle states. Note: Additional states might be introduced in future releases. (CANCELED, DISABLED, EXCLUDED, FAILED, MAXIMUM_CONCURRENT_RUNS_REACHED, SUCCESS, SUCCESS_WITH_FAILURES, TIMEDOUT, UPSTREAM_CANCELED, UPSTREAM_FAILED)"
               },
               {
                 "name": "state_message",
@@ -1278,7 +1278,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "state",
                 "type": "string",
-                "description": "The current state of the run."
+                "description": "The current state of the run. (BLOCKED, PENDING, QUEUED, RUNNING, TERMINATED, TERMINATING, WAITING)"
               },
               {
                 "name": "termination_details",
@@ -1457,7 +1457,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "effective_performance_target",
             "type": "string",
-            "description": "PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run<br />on serverless compute should be. The performance mode on the job or pipeline should map to a<br />performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget)."
+            "description": "PerformanceTarget defines how performant (lower latency) or cost efficient the execution of run<br />on serverless compute should be. The performance mode on the job or pipeline should map to a<br />performance setting that is passed to Cluster Manager (see cluster-common PerformanceTarget). (PERFORMANCE_OPTIMIZED, STANDARD)"
           },
           {
             "name": "end_time",
@@ -1482,7 +1482,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "life_cycle_state",
                 "type": "string",
-                "description": "A value indicating the run's current lifecycle state. This field is always available in the response. Note: Additional states might be introduced in future releases."
+                "description": "A value indicating the run's current lifecycle state. This field is always available in the response. Note: Additional states might be introduced in future releases. (BLOCKED, INTERNAL_ERROR, PENDING, QUEUED, RUNNING, SKIPPED, TERMINATED, TERMINATING, WAITING_FOR_RETRY)"
               },
               {
                 "name": "queue_reason",
@@ -1492,7 +1492,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "result_state",
                 "type": "string",
-                "description": "A value indicating the run's result. This field is only available for terminal lifecycle states. Note: Additional states might be introduced in future releases."
+                "description": "A value indicating the run's result. This field is only available for terminal lifecycle states. Note: Additional states might be introduced in future releases. (CANCELED, DISABLED, EXCLUDED, FAILED, MAXIMUM_CONCURRENT_RUNS_REACHED, SUCCESS, SUCCESS_WITH_FAILURES, TIMEDOUT, UPSTREAM_CANCELED, UPSTREAM_FAILED)"
               },
               {
                 "name": "state_message",
@@ -1519,7 +1519,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "state",
                 "type": "string",
-                "description": "The current state of the run."
+                "description": "The current state of the run. (BLOCKED, PENDING, QUEUED, RUNNING, TERMINATED, TERMINATING, WAITING)"
               },
               {
                 "name": "termination_details",
@@ -1536,7 +1536,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "type",
             "type": "string",
-            "description": "The repair history item type. Indicates whether a run is the original run or a repair run."
+            "description": "The repair history item type. Indicates whether a run is the original run or a repair run. (ORIGINAL, REPAIR)"
           }
         ]
       },
@@ -1563,7 +1563,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "run_type",
         "type": "string",
-        "description": "The type of a run. * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *<br />`WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit<br />run. A run created with :method:jobs/submit.<br /><br />[dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow"
+        "description": "The type of a run. * `JOB_RUN`: Normal job run. A run created with :method:jobs/runNow. *<br />`WORKFLOW_RUN`: Workflow run. A run created with [dbutils.notebook.run]. * `SUBMIT_RUN`: Submit<br />run. A run created with :method:jobs/submit.<br /><br />[dbutils.notebook.run]: https://docs.databricks.com/dev-tools/databricks-utils.html#dbutils-workflow (JOB_RUN, SUBMIT_RUN, WORKFLOW_RUN)"
       },
       {
         "name": "schedule",
@@ -1583,7 +1583,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "pause_status",
             "type": "string",
-            "description": "Indicate whether this schedule is paused or not."
+            "description": "Indicate whether this schedule is paused or not. (PAUSED, UNPAUSED)"
           }
         ]
       },
@@ -1605,7 +1605,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "life_cycle_state",
             "type": "string",
-            "description": "A value indicating the run's current lifecycle state. This field is always available in the response. Note: Additional states might be introduced in future releases."
+            "description": "A value indicating the run's current lifecycle state. This field is always available in the response. Note: Additional states might be introduced in future releases. (BLOCKED, INTERNAL_ERROR, PENDING, QUEUED, RUNNING, SKIPPED, TERMINATED, TERMINATING, WAITING_FOR_RETRY)"
           },
           {
             "name": "queue_reason",
@@ -1615,7 +1615,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "result_state",
             "type": "string",
-            "description": "A value indicating the run's result. This field is only available for terminal lifecycle states. Note: Additional states might be introduced in future releases."
+            "description": "A value indicating the run's result. This field is only available for terminal lifecycle states. Note: Additional states might be introduced in future releases. (CANCELED, DISABLED, EXCLUDED, FAILED, MAXIMUM_CONCURRENT_RUNS_REACHED, SUCCESS, SUCCESS_WITH_FAILURES, TIMEDOUT, UPSTREAM_CANCELED, UPSTREAM_FAILED)"
           },
           {
             "name": "state_message",
@@ -1642,7 +1642,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "code",
                 "type": "string",
-                "description": "The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was queued due to<br />reaching the workspace limit of active task runs. * `MAX_CONCURRENT_RUNS_REACHED`: The run was<br />queued due to reaching the per-job limit of concurrent job runs. *<br />`ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of<br />active run job tasks."
+                "description": "The reason for queuing the run. * `ACTIVE_RUNS_LIMIT_REACHED`: The run was queued due to<br />reaching the workspace limit of active task runs. * `MAX_CONCURRENT_RUNS_REACHED`: The run was<br />queued due to reaching the per-job limit of concurrent job runs. *<br />`ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED`: The run was queued due to reaching the workspace limit of<br />active run job tasks. (ACTIVE_RUNS_LIMIT_REACHED, ACTIVE_RUN_JOB_TASKS_LIMIT_REACHED, MAX_CONCURRENT_RUNS_REACHED)"
               },
               {
                 "name": "message",
@@ -1654,7 +1654,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "state",
             "type": "string",
-            "description": "The current state of the run."
+            "description": "The current state of the run. (BLOCKED, PENDING, QUEUED, RUNNING, TERMINATED, TERMINATING, WAITING)"
           },
           {
             "name": "termination_details",
@@ -1664,7 +1664,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "code",
                 "type": "string",
-                "description": "The code indicates why the run was terminated. Additional codes might be introduced in future<br />releases. * `SUCCESS`: The run was completed successfully. * `SUCCESS_WITH_FAILURES`: The run<br />was completed successfully but some child runs failed. * `USER_CANCELED`: The run was<br />successfully canceled during execution by a user. * `CANCELED`: The run was canceled during<br />execution by the Databricks platform; for example, if the maximum run duration was exceeded. *<br />`SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency<br />type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The<br />run encountered an unexpected error. Refer to the state message for further details. *<br />`DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. *<br />`CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further<br />details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when<br />communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because<br />it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The<br />workspace has reached the quota for the maximum number of concurrent active runs. Consider<br />scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it<br />tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The<br />number of cluster creation, start, and upsize requests have exceeded the allotted rate limit.<br />Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run<br />failed due to an error when accessing the customer blob storage. Refer to the state message for<br />further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more<br />details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to<br />a permission issue while accessing a resource. Refer to the state message for further details. *<br />`LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer<br />to the state message for further details. The causes might include, but are not limited to: The<br />provided library is invalid, there are insufficient permissions to install the library, and so<br />forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum<br />concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a<br />cluster that has already reached the maximum number of contexts it is configured to create. See:<br />[Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to<br />the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an<br />invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The<br />run failed due to a cloud provider issue. Refer to the state message for further details. *<br />`MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size<br />limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user.<br />* `BREAKING_CHANGE`: Run failed because of an intentional breaking change in Spark, but it will<br />be retried with a mitigation config.<br /><br />[Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now"
+                "description": "The code indicates why the run was terminated. Additional codes might be introduced in future<br />releases. * `SUCCESS`: The run was completed successfully. * `SUCCESS_WITH_FAILURES`: The run<br />was completed successfully but some child runs failed. * `USER_CANCELED`: The run was<br />successfully canceled during execution by a user. * `CANCELED`: The run was canceled during<br />execution by the Databricks platform; for example, if the maximum run duration was exceeded. *<br />`SKIPPED`: Run was never executed, for example, if the upstream task run failed, the dependency<br />type condition was not met, or there were no material tasks to execute. * `INTERNAL_ERROR`: The<br />run encountered an unexpected error. Refer to the state message for further details. *<br />`DRIVER_ERROR`: The run encountered an error while communicating with the Spark Driver. *<br />`CLUSTER_ERROR`: The run failed due to a cluster error. Refer to the state message for further<br />details. * `REPOSITORY_CHECKOUT_FAILED`: Failed to complete the checkout due to an error when<br />communicating with the third party service. * `INVALID_CLUSTER_REQUEST`: The run failed because<br />it issued an invalid request to start the cluster. * `WORKSPACE_RUN_LIMIT_EXCEEDED`: The<br />workspace has reached the quota for the maximum number of concurrent active runs. Consider<br />scheduling the runs over a larger time frame. * `FEATURE_DISABLED`: The run failed because it<br />tried to access a feature unavailable for the workspace. * `CLUSTER_REQUEST_LIMIT_EXCEEDED`: The<br />number of cluster creation, start, and upsize requests have exceeded the allotted rate limit.<br />Consider spreading the run execution over a larger time frame. * `STORAGE_ACCESS_ERROR`: The run<br />failed due to an error when accessing the customer blob storage. Refer to the state message for<br />further details. * `RUN_EXECUTION_ERROR`: The run was completed with task failures. For more<br />details, refer to the state message or run output. * `UNAUTHORIZED_ERROR`: The run failed due to<br />a permission issue while accessing a resource. Refer to the state message for further details. *<br />`LIBRARY_INSTALLATION_ERROR`: The run failed while installing the user-requested library. Refer<br />to the state message for further details. The causes might include, but are not limited to: The<br />provided library is invalid, there are insufficient permissions to install the library, and so<br />forth. * `MAX_CONCURRENT_RUNS_EXCEEDED`: The scheduled run exceeds the limit of maximum<br />concurrent runs set for the job. * `MAX_SPARK_CONTEXTS_EXCEEDED`: The run is scheduled on a<br />cluster that has already reached the maximum number of contexts it is configured to create. See:<br />[Link]. * `RESOURCE_NOT_FOUND`: A resource necessary for run execution does not exist. Refer to<br />the state message for further details. * `INVALID_RUN_CONFIGURATION`: The run failed due to an<br />invalid configuration. Refer to the state message for further details. * `CLOUD_FAILURE`: The<br />run failed due to a cloud provider issue. Refer to the state message for further details. *<br />`MAX_JOB_QUEUE_SIZE_EXCEEDED`: The run was skipped due to reaching the job level queue size<br />limit. * `DISABLED`: The run was never executed because it was disabled explicitly by the user.<br />* `BREAKING_CHANGE`: Run failed because of an intentional breaking change in Spark, but it will<br />be retried with a mitigation config.<br /><br />[Link]: https://kb.databricks.com/en_US/notebooks/too-many-execution-contexts-are-open-right-now (BUDGET_POLICY_LIMIT_EXCEEDED, CANCELED, CLOUD_FAILURE, CLUSTER_ERROR, CLUSTER_REQUEST_LIMIT_EXCEEDED, DISABLED, DRIVER_ERROR, FEATURE_DISABLED, INTERNAL_ERROR, INVALID_CLUSTER_REQUEST, INVALID_RUN_CONFIGURATION, LIBRARY_INSTALLATION_ERROR, MAX_CONCURRENT_RUNS_EXCEEDED, MAX_JOB_QUEUE_SIZE_EXCEEDED, MAX_SPARK_CONTEXTS_EXCEEDED, REPOSITORY_CHECKOUT_FAILED, RESOURCE_NOT_FOUND, RUN_EXECUTION_ERROR, SKIPPED, STORAGE_ACCESS_ERROR, SUCCESS, SUCCESS_WITH_FAILURES, UNAUTHORIZED_ERROR, USER_CANCELED, WORKSPACE_RUN_LIMIT_EXCEEDED)"
               },
               {
                 "name": "message",
@@ -1674,7 +1674,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "type",
                 "type": "string",
-                "description": "* `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An error occurred in the<br />Databricks platform. Please look at the [status page] or contact support if the issue persists.<br />* `CLIENT_ERROR`: The run was terminated because of an error caused by user input or the job<br />configuration. * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud<br />provider.<br /><br />[status page]: https://status.databricks.com/"
+                "description": "* `SUCCESS`: The run terminated without any issues * `INTERNAL_ERROR`: An error occurred in the<br />Databricks platform. Please look at the [status page] or contact support if the issue persists.<br />* `CLIENT_ERROR`: The run was terminated because of an error caused by user input or the job<br />configuration. * `CLOUD_FAILURE`: The run was terminated because of an issue with your cloud<br />provider.<br /><br />[status page]: https://status.databricks.com/ (CLIENT_ERROR, CLOUD_FAILURE, INTERNAL_ERROR, SUCCESS)"
               }
             ]
           }
@@ -1764,7 +1764,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "op",
                 "type": "string",
-                "description": "* `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that<br />`“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`,<br />`LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.<br />`“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to<br />`false`.<br /><br />The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.<br />If a task value was set to a boolean value, it will be serialized to `“true”` or<br />`“false”` for the comparison."
+                "description": "* `EQUAL_TO`, `NOT_EQUAL` operators perform string comparison of their operands. This means that<br />`“12.0” == “12”` will evaluate to `false`. * `GREATER_THAN`, `GREATER_THAN_OR_EQUAL`,<br />`LESS_THAN`, `LESS_THAN_OR_EQUAL` operators perform numeric comparison of their operands.<br />`“12.0” >= “12”` will evaluate to `true`, `“10.0” >= “12”` will evaluate to<br />`false`.<br /><br />The boolean comparison to task values can be implemented with operators `EQUAL_TO`, `NOT_EQUAL`.<br />If a task value was set to a boolean value, it will be serialized to `“true”` or<br />`“false”` for the comparison. (EQUAL_TO, GREATER_THAN, GREATER_THAN_OR_EQUAL, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL)"
               },
               {
                 "name": "left",
@@ -1877,7 +1877,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the project directory. When set to `WORKSPACE`, the project will be retrieved from the local Databricks workspace. When set to `GIT`, the project will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`: Project is located in cloud Git provider."
+                "description": "Optional location type of the project directory. When set to `WORKSPACE`, the project will be retrieved from the local Databricks workspace. When set to `GIT`, the project will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Project is located in Databricks workspace. * `GIT`: Project is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "warehouse_id",
@@ -1911,7 +1911,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "effective_performance_target",
             "type": "string",
-            "description": "The actual performance target used by the serverless run during execution. This can differ from the client-set performance target on the request depending on whether the performance mode is supported by the job type. * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and optimized cluster performance."
+            "description": "The actual performance target used by the serverless run during execution. This can differ from the client-set performance target on the request depending on whether the performance mode is supported by the job type. * `STANDARD`: Enables cost-efficient execution of serverless workloads. * `PERFORMANCE_OPTIMIZED`: Prioritizes fast startup and execution times through rapid scaling and optimized cluster performance. (PERFORMANCE_OPTIMIZED, STANDARD)"
           },
           {
             "name": "email_notifications",
@@ -2025,7 +2025,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the training script. When set to `WORKSPACE`, the script will be retrieved from the local Databricks workspace. When set to `GIT`, the script will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script is located in Databricks workspace. * `GIT`: Script is located in cloud Git provider."
+                "description": "Optional location type of the training script. When set to `WORKSPACE`, the script will be retrieved from the local Databricks workspace. When set to `GIT`, the script will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Script is located in Databricks workspace. * `GIT`: Script is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "training_script_path",
@@ -2057,7 +2057,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "git_provider",
                 "type": "string",
-                "description": "Unique identifier of the service used to host the Git repository. The value is case insensitive."
+                "description": "Unique identifier of the service used to host the Git repository. The value is case insensitive. (awsCodeCommit, azureDevOpsServices, bitbucketCloud, bitbucketServer, gitHub, gitHubEnterprise, gitLab, gitLabEnterpriseEdition)"
               },
               {
                 "name": "git_branch",
@@ -2119,7 +2119,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the notebook. When set to `WORKSPACE`, the notebook will be retrieved from the local Databricks workspace. When set to `GIT`, the notebook will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Notebook is located in Databricks workspace. * `GIT`: Notebook is located in cloud Git provider."
+                "description": "Optional location type of the notebook. When set to `WORKSPACE`, the notebook will be retrieved from the local Databricks workspace. When set to `GIT`, the notebook will be retrieved from a Git repository defined in `git_source`. If the value is empty, the task will use `GIT` if `git_source` is defined and `WORKSPACE` otherwise. * `WORKSPACE`: Notebook is located in Databricks workspace. * `GIT`: Notebook is located in cloud Git provider. (GIT, WORKSPACE)"
               },
               {
                 "name": "warehouse_id",
@@ -2301,7 +2301,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "run_if",
             "type": "string",
-            "description": "An optional value indicating the condition that determines whether the task should be run once its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of possible values."
+            "description": "An optional value indicating the condition that determines whether the task should be run once its dependencies have been completed. When omitted, defaults to `ALL_SUCCESS`. See :method:jobs/create for a list of possible values. (ALL_DONE, ALL_FAILED, ALL_SUCCESS, AT_LEAST_ONE_FAILED, AT_LEAST_ONE_SUCCESS, NONE_FAILED)"
           },
           {
             "name": "run_job_task",
@@ -2415,7 +2415,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source",
                 "type": "string",
-                "description": "Optional location type of the Python file. When set to `WORKSPACE` or not specified, the file will be retrieved from the local Databricks workspace or cloud location (if the `python_file` has a URI format). When set to `GIT`, the Python file will be retrieved from a Git repository defined in `git_source`. * `WORKSPACE`: The Python file is located in a Databricks workspace or at a cloud filesystem URI. * `GIT`: The Python file is located in a remote Git repository."
+                "description": "Optional location type of the Python file. When set to `WORKSPACE` or not specified, the file will be retrieved from the local Databricks workspace or cloud location (if the `python_file` has a URI format). When set to `GIT`, the Python file will be retrieved from a Git repository defined in `git_source`. * `WORKSPACE`: The Python file is located in a Databricks workspace or at a cloud filesystem URI. * `GIT`: The Python file is located in a remote Git repository. (GIT, WORKSPACE)"
               }
             ]
           },
@@ -2481,7 +2481,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "life_cycle_state",
                 "type": "string",
-                "description": "A value indicating the run's current lifecycle state. This field is always available in the response. Note: Additional states might be introduced in future releases."
+                "description": "A value indicating the run's current lifecycle state. This field is always available in the response. Note: Additional states might be introduced in future releases. (BLOCKED, INTERNAL_ERROR, PENDING, QUEUED, RUNNING, SKIPPED, TERMINATED, TERMINATING, WAITING_FOR_RETRY)"
               },
               {
                 "name": "queue_reason",
@@ -2491,7 +2491,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "result_state",
                 "type": "string",
-                "description": "A value indicating the run's result. This field is only available for terminal lifecycle states. Note: Additional states might be introduced in future releases."
+                "description": "A value indicating the run's result. This field is only available for terminal lifecycle states. Note: Additional states might be introduced in future releases. (CANCELED, DISABLED, EXCLUDED, FAILED, MAXIMUM_CONCURRENT_RUNS_REACHED, SUCCESS, SUCCESS_WITH_FAILURES, TIMEDOUT, UPSTREAM_CANCELED, UPSTREAM_FAILED)"
               },
               {
                 "name": "state_message",
@@ -2518,7 +2518,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "state",
                 "type": "string",
-                "description": "The current state of the run."
+                "description": "The current state of the run. (BLOCKED, PENDING, QUEUED, RUNNING, TERMINATED, TERMINATING, WAITING)"
               },
               {
                 "name": "termination_details",
@@ -2569,7 +2569,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "trigger",
         "type": "string",
-        "description": "The type of trigger that fired this run.<br /><br />* `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:<br />One time triggers that fire a single run. This occurs you triggered a single run on demand<br />through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a<br />previously failed run. This occurs when you request to re-run the job in case of failures. *<br />`RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:<br />Indicates a run that is triggered by a file arrival. * `CONTINUOUS`: Indicates a run that is<br />triggered by a continuous job. * `TABLE`: Indicates a run that is triggered by a table update. *<br />`CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a continuous job run.<br />* `MODEL`: Indicates a run that is triggered by a model update."
+        "description": "The type of trigger that fired this run.<br /><br />* `PERIODIC`: Schedules that periodically trigger runs, such as a cron scheduler. * `ONE_TIME`:<br />One time triggers that fire a single run. This occurs you triggered a single run on demand<br />through the UI or the API. * `RETRY`: Indicates a run that is triggered as a retry of a<br />previously failed run. This occurs when you request to re-run the job in case of failures. *<br />`RUN_JOB_TASK`: Indicates a run that is triggered using a Run Job task. * `FILE_ARRIVAL`:<br />Indicates a run that is triggered by a file arrival. * `CONTINUOUS`: Indicates a run that is<br />triggered by a continuous job. * `TABLE`: Indicates a run that is triggered by a table update. *<br />`CONTINUOUS_RESTART`: Indicates a run created by user to manually restart a continuous job run.<br />* `MODEL`: Indicates a run that is triggered by a model update. (CONTINUOUS, CONTINUOUS_RESTART, FILE_ARRIVAL, ONE_TIME, PERIODIC, RETRY, RUN_JOB_TASK, TABLE)"
       },
       {
         "name": "trigger_info",
@@ -2627,7 +2627,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "alert_state",
             "type": "string",
-            "description": "The state of the SQL alert.<br /><br />* UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not fulfill trigger<br />conditions * TRIGGERED: alert evaluated and fulfilled trigger conditions"
+            "description": "The state of the SQL alert.<br /><br />* UNKNOWN: alert yet to be evaluated * OK: alert evaluated and did not fulfill trigger<br />conditions * TRIGGERED: alert evaluated and fulfilled trigger conditions (OK, TRIGGERED, UNKNOWN)"
           },
           {
             "name": "output_link",
@@ -2696,7 +2696,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "status",
                 "type": "string",
-                "description": "The execution status of the SQL widget."
+                "description": "The execution status of the SQL widget. (CANCELLED, FAILED, PENDING, RUNNING, SUCCESS)"
               },
               {
                 "name": "widget_id",

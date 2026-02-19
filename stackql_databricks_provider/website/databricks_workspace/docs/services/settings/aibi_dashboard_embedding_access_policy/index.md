@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>aibi_dashboard_embedding_acces
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>aibi_dashboard_embedding_access_policy</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="aibi_dashboard_embedding_access_policy" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.settings.aibi_dashboard_embedding_access_policy" /></td></tr>
 </tbody></table>
@@ -54,7 +54,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "access_policy_type",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (ALLOW_ALL_DOMAINS, ALLOW_APPROVED_DOMAINS, DENY_ALL_DOMAINS)"
       }
     ]
   },
@@ -92,7 +92,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__allow_missing"><code>data__allow_missing</code></a>, <a href="#parameter-data__setting"><code>data__setting</code></a>, <a href="#parameter-data__field_mask"><code>data__field_mask</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-allow_missing"><code>allow_missing</code></a>, <a href="#parameter-setting"><code>setting</code></a>, <a href="#parameter-field_mask"><code>field_mask</code></a></td>
     <td></td>
     <td>Updates the AI/BI dashboard embedding access policy at the workspace level.</td>
 </tr>
@@ -173,14 +173,14 @@ Updates the AI/BI dashboard embedding access policy at the workspace level.
 ```sql
 UPDATE databricks_workspace.settings.aibi_dashboard_embedding_access_policy
 SET 
-data__allow_missing = {{ allow_missing }},
-data__setting = '{{ setting }}',
-data__field_mask = '{{ field_mask }}'
+allow_missing = {{ allow_missing }},
+setting = '{{ setting }}',
+field_mask = '{{ field_mask }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__allow_missing = {{ allow_missing }} --required
-AND data__setting = '{{ setting }}' --required
-AND data__field_mask = '{{ field_mask }}' --required
+AND allow_missing = {{ allow_missing }} --required
+AND setting = '{{ setting }}' --required
+AND field_mask = '{{ field_mask }}' --required
 RETURNING
 setting_name,
 aibi_dashboard_embedding_access_policy,

@@ -18,7 +18,7 @@ settings service documentation.
 
 :::info[Service Summary]
 
-total resources: __31__  
+total resources: __32__  
 
 :::
 
@@ -57,6 +57,7 @@ total resources: __31__
 <a href="/services/settings/token_permission_levels/">token_permission_levels</a><br />
 <a href="/services/settings/token_permissions/">token_permissions</a><br />
 <a href="/services/settings/tokens/">tokens</a><br />
+<a href="/services/settings/vw_all_settings/">vw_all_settings</a><br />
 <a href="/services/settings/workspace_config/">workspace_config</a>
 </div>
 </div>

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>provider_shares</code> resource
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>provider_shares</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="provider_shares" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sharing.provider_shares" /></td></tr>
 </tbody></table>

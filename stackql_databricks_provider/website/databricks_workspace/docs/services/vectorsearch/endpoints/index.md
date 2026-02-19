@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>endpoints</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>endpoints</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="endpoints" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.vectorsearch.endpoints" /></td></tr>
 </tbody></table>
@@ -97,14 +97,14 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "Current state of the endpoint"
+        "description": "Current state of the endpoint (DELETED, OFFLINE, ONLINE, PROVISIONING, RED_STATE, YELLOW_STATE)"
       }
     ]
   },
   {
     "name": "endpoint_type",
     "type": "string",
-    "description": "Type of endpoint"
+    "description": "Type of endpoint (STANDARD)"
   },
   {
     "name": "last_updated_timestamp",
@@ -181,14 +181,14 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "Current state of the endpoint"
+        "description": "Current state of the endpoint (DELETED, OFFLINE, ONLINE, PROVISIONING, RED_STATE, YELLOW_STATE)"
       }
     ]
   },
   {
     "name": "endpoint_type",
     "type": "string",
-    "description": "Type of endpoint"
+    "description": "Type of endpoint (STANDARD)"
   },
   {
     "name": "last_updated_timestamp",
@@ -241,7 +241,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__endpoint_type"><code>data__endpoint_type</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-endpoint_type"><code>endpoint_type</code></a></td>
     <td></td>
     <td>Create a new endpoint.</td>
 </tr>
@@ -385,9 +385,9 @@ Create a new endpoint.
 
 ```sql
 INSERT INTO databricks_workspace.vectorsearch.endpoints (
-data__name,
-data__endpoint_type,
-data__budget_policy_id,
+name,
+endpoint_type,
+budget_policy_id,
 deployment_name
 )
 SELECT 

@@ -1,0 +1,261 @@
+    vw_account_user_roles:
+      name: vw_account_user_roles
+      id: databricks_account.iam.vw_account_user_roles
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the account user.
+          - name: userName
+            type: string
+            description: Username (typically email address) of the account user.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the account user.
+          - name: role
+            type: string
+            description: Role assigned to the user (one row per role assignment).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                u.account_id,
+                u.id,
+                u.userName,
+                u.displayName,
+                JSON_EXTRACT(r.value, '$.value') AS role
+              FROM databricks_account.iam.account_users u,
+                   JSON_EACH(u.roles) r
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  u.account_id,
+                  u.id,
+                  u.userName,
+                  u.displayName,
+                  r.value->>'value' AS role
+                FROM databricks_account.iam.account_users u,
+                     jsonb_array_elements(u.roles::jsonb) AS r
+                WHERE account_id = '{{ account_id }}'
+
+    vw_account_group_members:
+      name: vw_account_group_members
+      id: databricks_account.iam.vw_account_group_members
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the account group.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the account group.
+          - name: member_id
+            type: string
+            description: Unique identifier of the group member (one row per member).
+          - name: member_display
+            type: string
+            description: Display name of the group member.
+          - name: member_ref
+            type: string
+            description: SCIM $ref URI for the group member resource.
+          - name: member_type
+            type: string
+            description: Type of the member resource (e.g. User, Group, ServicePrincipal).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                g.account_id,
+                g.id,
+                g.displayName,
+                JSON_EXTRACT(m.value, '$.value') AS member_id,
+                JSON_EXTRACT(m.value, '$.display') AS member_display,
+                JSON_EXTRACT(m.value, '$.$ref') AS member_ref,
+                JSON_EXTRACT(m.value, '$.type') AS member_type
+              FROM databricks_account.iam.account_groups g,
+                   JSON_EACH(g.members) m
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  g.account_id,
+                  g.id,
+                  g.displayName,
+                  m.value->>'value' AS member_id,
+                  m.value->>'display' AS member_display,
+                  m.value->>'$ref' AS member_ref,
+                  m.value->>'type' AS member_type
+                FROM databricks_account.iam.account_groups g,
+                     jsonb_array_elements(g.members::jsonb) AS m
+                WHERE account_id = '{{ account_id }}'
+
+    vw_account_group_roles:
+      name: vw_account_group_roles
+      id: databricks_account.iam.vw_account_group_roles
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the account group.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the account group.
+          - name: role
+            type: string
+            description: Role assigned to the group (one row per role assignment).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                g.account_id,
+                g.id,
+                g.displayName,
+                JSON_EXTRACT(r.value, '$.value') AS role
+              FROM databricks_account.iam.account_groups g,
+                   JSON_EACH(g.roles) r
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  g.account_id,
+                  g.id,
+                  g.displayName,
+                  r.value->>'value' AS role
+                FROM databricks_account.iam.account_groups g,
+                     jsonb_array_elements(g.roles::jsonb) AS r
+                WHERE account_id = '{{ account_id }}'
+
+    vw_account_service_principal_roles:
+      name: vw_account_service_principal_roles
+      id: databricks_account.iam.vw_account_service_principal_roles
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the service principal.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the service principal.
+          - name: applicationId
+            type: integer
+            description: Application ID of the service principal.
+          - name: active
+            type: boolean
+            description: Whether the service principal is active.
+          - name: role
+            type: string
+            description: Role assigned to the service principal (one row per role assignment).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                sp.account_id,
+                sp.id,
+                sp.displayName,
+                sp.applicationId,
+                sp.active,
+                JSON_EXTRACT(r.value, '$.value') AS role
+              FROM databricks_account.iam.account_service_principals sp,
+                   JSON_EACH(sp.roles) r
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  sp.account_id,
+                  sp.id,
+                  sp.displayName,
+                  sp.applicationId,
+                  sp.active,
+                  r.value->>'value' AS role
+                FROM databricks_account.iam.account_service_principals sp,
+                     jsonb_array_elements(sp.roles::jsonb) AS r
+                WHERE account_id = '{{ account_id }}'
+
+    vw_workspace_assignments:
+      name: vw_workspace_assignments
+      id: databricks_account.iam.vw_workspace_assignments
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: workspace_id
+            type: integer
+            description: Numeric ID of the workspace used to scope the query.
+          - name: principal_id
+            type: integer
+            description: Numeric ID of the principal assigned to the workspace.
+          - name: display_name
+            type: string
+            description: Display name of the assigned principal.
+          - name: user_name
+            type: string
+            description: Username of the assigned principal if the principal is a user.
+          - name: group_name
+            type: string
+            description: Group name of the assigned principal if the principal is a group.
+          - name: service_principal_name
+            type: string
+            description: Application name of the assigned principal if the principal is a service principal.
+          - name: permission
+            type: string
+            description: Permission level granted to the principal on the workspace (one row per permission, e.g. USER, ADMIN).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                wa.account_id,
+                wa.workspace_id,
+                JSON_EXTRACT(wa.principal, '$.principal_id') AS principal_id,
+                JSON_EXTRACT(wa.principal, '$.display_name') AS display_name,
+                JSON_EXTRACT(wa.principal, '$.user_name') AS user_name,
+                JSON_EXTRACT(wa.principal, '$.group_name') AS group_name,
+                JSON_EXTRACT(wa.principal, '$.service_principal_name') AS service_principal_name,
+                p.value AS permission
+              FROM databricks_account.iam.workspace_assignment wa,
+                   JSON_EACH(wa.permissions) p
+              WHERE account_id = '{{ account_id }}'
+              AND workspace_id = '{{ workspace_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  wa.account_id,
+                  wa.workspace_id,
+                  (wa.principal->>'principal_id')::bigint AS principal_id,
+                  wa.principal->>'display_name' AS display_name,
+                  wa.principal->>'user_name' AS user_name,
+                  wa.principal->>'group_name' AS group_name,
+                  wa.principal->>'service_principal_name' AS service_principal_name,
+                  p.value AS permission
+                FROM databricks_account.iam.workspace_assignment wa,
+                     jsonb_array_elements(wa.permissions::jsonb) AS p
+                WHERE account_id = '{{ account_id }}'
+                AND workspace_id = '{{ workspace_id }}'

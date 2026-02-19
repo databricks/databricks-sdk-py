@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_metastore_assignments<
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_metastore_assignments</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_metastore_assignments" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.catalog.account_metastore_assignments" /></td></tr>
 </tbody></table>
@@ -210,7 +210,7 @@ Creates an assignment to a metastore for a workspace
 
 ```sql
 INSERT INTO databricks_account.catalog.account_metastore_assignments (
-data__metastore_assignment,
+metastore_assignment,
 account_id,
 workspace_id,
 metastore_id
@@ -262,7 +262,7 @@ Updates an assignment to a metastore for a workspace. Currently, only the defaul
 ```sql
 REPLACE databricks_account.catalog.account_metastore_assignments
 SET 
-data__metastore_assignment = '{{ metastore_assignment }}'
+metastore_assignment = '{{ metastore_assignment }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND workspace_id = '{{ workspace_id }}' --required

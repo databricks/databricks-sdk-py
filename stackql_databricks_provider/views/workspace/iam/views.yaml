@@ -1,0 +1,618 @@
+    vw_users:
+      name: vw_users
+      id: databricks_workspace.iam.vw_users
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the workspace user.
+          - name: userName
+            type: string
+            description: Username (typically email address) of the workspace user.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the workspace user.
+          - name: active
+            type: boolean
+            description: Whether the user account is active.
+          - name: externalId
+            type: string
+            description: External identity provider ID for the user (SCIM provisioned users only).
+          - name: givenName
+            type: string
+            description: First (given) name of the user.
+          - name: familyName
+            type: string
+            description: Last (family) name of the user.
+          - name: email
+            type: string
+            description: Email address for this entry (one row per email address).
+          - name: email_type
+            type: string
+            description: Type classification of the email address (e.g. work).
+          - name: is_primary
+            type: boolean
+            description: Whether this email address is the user's primary email.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                u.deployment_name,
+                u.id,
+                u.userName,
+                u.displayName,
+                u.active,
+                u.externalId,
+                JSON_EXTRACT(u.name, '$.givenName') AS givenName,
+                JSON_EXTRACT(u.name, '$.familyName') AS familyName,
+                JSON_EXTRACT(e.value, '$.value') AS email,
+                JSON_EXTRACT(e.value, '$.type') AS email_type,
+                JSON_EXTRACT(e.value, '$.primary') AS is_primary
+              FROM databricks_workspace.iam.users_v2 u,
+                   JSON_EACH(u.emails) e
+              WHERE u.deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  u.deployment_name,
+                  u.id,
+                  u.userName,
+                  u.displayName,
+                  u.active,
+                  u.externalId,
+                  u.name->>'givenName' AS givenName,
+                  u.name->>'familyName' AS familyName,
+                  e.value->>'value' AS email,
+                  e.value->>'type' AS email_type,
+                  (e.value->>'primary')::boolean AS is_primary
+                FROM databricks_workspace.iam.users_v2 u,
+                     jsonb_array_elements(u.emails::jsonb) AS e
+                WHERE u.deployment_name = '{{ deployment_name }}'
+
+    vw_user_roles:
+      name: vw_user_roles
+      id: databricks_workspace.iam.vw_user_roles
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the workspace user.
+          - name: userName
+            type: string
+            description: Username of the workspace user.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the workspace user.
+          - name: role
+            type: string
+            description: Role assigned to the user (one row per role assignment).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                u.deployment_name,
+                u.id,
+                u.userName,
+                u.displayName,
+                JSON_EXTRACT(r.value, '$.value') AS role
+              FROM databricks_workspace.iam.users_v2 u,
+                   JSON_EACH(u.roles) r
+              WHERE u.deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  u.deployment_name,
+                  u.id,
+                  u.userName,
+                  u.displayName,
+                  r.value->>'value' AS role
+                FROM databricks_workspace.iam.users_v2 u,
+                     jsonb_array_elements(u.roles::jsonb) AS r
+                WHERE u.deployment_name = '{{ deployment_name }}'
+
+    vw_user_entitlements:
+      name: vw_user_entitlements
+      id: databricks_workspace.iam.vw_user_entitlements
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the workspace user.
+          - name: userName
+            type: string
+            description: Username of the workspace user.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the workspace user.
+          - name: entitlement
+            type: string
+            description: Entitlement granted to the user (one row per entitlement, e.g. workspace-access, databricks-sql-access, allow-cluster-create).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                u.deployment_name,
+                u.id,
+                u.userName,
+                u.displayName,
+                JSON_EXTRACT(e.value, '$.value') AS entitlement
+              FROM databricks_workspace.iam.users_v2 u,
+                   JSON_EACH(u.entitlements) e
+              WHERE u.deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  u.deployment_name,
+                  u.id,
+                  u.userName,
+                  u.displayName,
+                  e.value->>'value' AS entitlement
+                FROM databricks_workspace.iam.users_v2 u,
+                     jsonb_array_elements(u.entitlements::jsonb) AS e
+                WHERE u.deployment_name = '{{ deployment_name }}'
+
+    vw_user_groups:
+      name: vw_user_groups
+      id: databricks_workspace.iam.vw_user_groups
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the workspace user.
+          - name: userName
+            type: string
+            description: Username of the workspace user.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the workspace user.
+          - name: group_id
+            type: string
+            description: Unique identifier of the group the user belongs to (one row per group membership).
+          - name: group_name
+            type: string
+            description: Display name of the group.
+          - name: group_ref
+            type: string
+            description: SCIM $ref URI for the group resource.
+          - name: group_type
+            type: string
+            description: Type of the group resource (typically Group).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                u.deployment_name,
+                u.id,
+                u.userName,
+                u.displayName,
+                JSON_EXTRACT(g.value, '$.value') AS group_id,
+                JSON_EXTRACT(g.value, '$.display') AS group_name,
+                JSON_EXTRACT(g.value, '$.$ref') AS group_ref,
+                JSON_EXTRACT(g.value, '$.type') AS group_type
+              FROM databricks_workspace.iam.users_v2 u,
+                   JSON_EACH(u.groups) g
+              WHERE u.deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  u.deployment_name,
+                  u.id,
+                  u.userName,
+                  u.displayName,
+                  g.value->>'value' AS group_id,
+                  g.value->>'display' AS group_name,
+                  g.value->>'$ref' AS group_ref,
+                  g.value->>'type' AS group_type
+                FROM databricks_workspace.iam.users_v2 u,
+                     jsonb_array_elements(u.groups::jsonb) AS g
+                WHERE u.deployment_name = '{{ deployment_name }}'
+
+    vw_group_members:
+      name: vw_group_members
+      id: databricks_workspace.iam.vw_group_members
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the workspace group.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the workspace group.
+          - name: member_id
+            type: string
+            description: Unique identifier of the group member (one row per member).
+          - name: member_display
+            type: string
+            description: Display name of the group member.
+          - name: member_ref
+            type: string
+            description: SCIM $ref URI for the member resource.
+          - name: member_type
+            type: string
+            description: Type of the member resource (e.g. User, Group, ServicePrincipal).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                g.deployment_name,
+                g.id,
+                g.displayName,
+                JSON_EXTRACT(m.value, '$.value') AS member_id,
+                JSON_EXTRACT(m.value, '$.display') AS member_display,
+                JSON_EXTRACT(m.value, '$.$ref') AS member_ref,
+                JSON_EXTRACT(m.value, '$.type') AS member_type
+              FROM databricks_workspace.iam.groups_v2 g,
+                   JSON_EACH(g.members) m
+              WHERE g.deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  g.deployment_name,
+                  g.id,
+                  g.displayName,
+                  m.value->>'value' AS member_id,
+                  m.value->>'display' AS member_display,
+                  m.value->>'$ref' AS member_ref,
+                  m.value->>'type' AS member_type
+                FROM databricks_workspace.iam.groups_v2 g,
+                     jsonb_array_elements(g.members::jsonb) AS m
+                WHERE g.deployment_name = '{{ deployment_name }}'
+
+    vw_group_entitlements:
+      name: vw_group_entitlements
+      id: databricks_workspace.iam.vw_group_entitlements
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the workspace group.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the workspace group.
+          - name: entitlement
+            type: string
+            description: Entitlement granted to the group (one row per entitlement, e.g. workspace-access, databricks-sql-access, allow-cluster-create).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                g.deployment_name,
+                g.id,
+                g.displayName,
+                JSON_EXTRACT(e.value, '$.value') AS entitlement
+              FROM databricks_workspace.iam.groups_v2 g,
+                   JSON_EACH(g.entitlements) e
+              WHERE g.deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  g.deployment_name,
+                  g.id,
+                  g.displayName,
+                  e.value->>'value' AS entitlement
+                FROM databricks_workspace.iam.groups_v2 g,
+                     jsonb_array_elements(g.entitlements::jsonb) AS e
+                WHERE g.deployment_name = '{{ deployment_name }}'
+
+    vw_group_roles:
+      name: vw_group_roles
+      id: databricks_workspace.iam.vw_group_roles
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the workspace group.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the workspace group.
+          - name: role
+            type: string
+            description: Role assigned to the group (one row per role assignment).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                g.deployment_name,
+                g.id,
+                g.displayName,
+                JSON_EXTRACT(r.value, '$.value') AS role
+              FROM databricks_workspace.iam.groups_v2 g,
+                   JSON_EACH(g.roles) r
+              WHERE g.deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  g.deployment_name,
+                  g.id,
+                  g.displayName,
+                  r.value->>'value' AS role
+                FROM databricks_workspace.iam.groups_v2 g,
+                     jsonb_array_elements(g.roles::jsonb) AS r
+                WHERE g.deployment_name = '{{ deployment_name }}'
+
+    vw_service_principal_entitlements:
+      name: vw_service_principal_entitlements
+      id: databricks_workspace.iam.vw_service_principal_entitlements
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the service principal.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the service principal.
+          - name: applicationId
+            type: integer
+            description: Application ID of the service principal.
+          - name: active
+            type: boolean
+            description: Whether the service principal is active.
+          - name: entitlement
+            type: string
+            description: Entitlement granted to the service principal (one row per entitlement, e.g. workspace-access, databricks-sql-access, allow-cluster-create).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                sp.deployment_name,
+                sp.id,
+                sp.displayName,
+                sp.applicationId,
+                sp.active,
+                JSON_EXTRACT(e.value, '$.value') AS entitlement
+              FROM databricks_workspace.iam.service_principals_v2 sp,
+                   JSON_EACH(sp.entitlements) e
+              WHERE sp.deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  sp.deployment_name,
+                  sp.id,
+                  sp.displayName,
+                  sp.applicationId,
+                  sp.active,
+                  e.value->>'value' AS entitlement
+                FROM databricks_workspace.iam.service_principals_v2 sp,
+                     jsonb_array_elements(sp.entitlements::jsonb) AS e
+                WHERE sp.deployment_name = '{{ deployment_name }}'
+
+    vw_service_principal_roles:
+      name: vw_service_principal_roles
+      id: databricks_workspace.iam.vw_service_principal_roles
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the service principal.
+          - name: displayName
+            type: string
+            description: Human-readable display name of the service principal.
+          - name: applicationId
+            type: integer
+            description: Application ID of the service principal.
+          - name: active
+            type: boolean
+            description: Whether the service principal is active.
+          - name: role
+            type: string
+            description: Role assigned to the service principal (one row per role assignment).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                sp.deployment_name,
+                sp.id,
+                sp.displayName,
+                sp.applicationId,
+                sp.active,
+                JSON_EXTRACT(r.value, '$.value') AS role
+              FROM databricks_workspace.iam.service_principals_v2 sp,
+                   JSON_EACH(sp.roles) r
+              WHERE sp.deployment_name = '{{ deployment_name }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  sp.deployment_name,
+                  sp.id,
+                  sp.displayName,
+                  sp.applicationId,
+                  sp.active,
+                  r.value->>'value' AS role
+                FROM databricks_workspace.iam.service_principals_v2 sp,
+                     jsonb_array_elements(sp.roles::jsonb) AS r
+                WHERE sp.deployment_name = '{{ deployment_name }}'
+
+    vw_permissions:
+      name: vw_permissions
+      id: databricks_workspace.iam.vw_permissions
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: request_object_type
+            type: string
+            description: Object type used to scope the permissions query (e.g. clusters, jobs, notebooks, directories).
+          - name: request_object_id
+            type: string
+            description: Object ID used to scope the permissions query.
+          - name: object_id
+            type: string
+            description: ID of the object whose permissions are being queried.
+          - name: object_type
+            type: string
+            description: Type of the object (e.g. clusters, jobs, notebooks, directories).
+          - name: display_name
+            type: string
+            description: Display name of the principal in this ACL entry.
+          - name: user_name
+            type: string
+            description: Username of the principal if the principal is a user.
+          - name: group_name
+            type: string
+            description: Group name of the principal if the principal is a group.
+          - name: service_principal_name
+            type: string
+            description: Application name of the principal if the principal is a service principal.
+          - name: permission_level
+            type: string
+            description: Permission level granted to the principal (one row per permission, e.g. CAN_VIEW, CAN_RUN, CAN_MANAGE, IS_OWNER).
+          - name: inherited
+            type: boolean
+            description: Whether this permission is inherited from a parent object.
+          - name: inherited_from_object
+            type: array
+            description: List of parent object paths from which this permission is inherited.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                p.deployment_name,
+                p.request_object_type,
+                p.request_object_id,
+                p.object_id,
+                p.object_type,
+                JSON_EXTRACT(acl.value, '$.display_name') AS display_name,
+                JSON_EXTRACT(acl.value, '$.user_name') AS user_name,
+                JSON_EXTRACT(acl.value, '$.group_name') AS group_name,
+                JSON_EXTRACT(acl.value, '$.service_principal_name') AS service_principal_name,
+                JSON_EXTRACT(perm.value, '$.permission_level') AS permission_level,
+                JSON_EXTRACT(perm.value, '$.inherited') AS inherited,
+                JSON_EXTRACT(perm.value, '$.inherited_from_object') AS inherited_from_object
+              FROM databricks_workspace.iam.permissions p,
+                   JSON_EACH(p.access_control_list) acl,
+                   JSON_EACH(JSON_EXTRACT(acl.value, '$.all_permissions')) perm
+              WHERE p.deployment_name = '{{ deployment_name }}'
+              AND p.request_object_type = '{{ request_object_type }}'
+              AND p.request_object_id = '{{ request_object_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  p.deployment_name,
+                  p.request_object_type,
+                  p.request_object_id,
+                  p.object_id,
+                  p.object_type,
+                  acl.value->>'display_name' AS display_name,
+                  acl.value->>'user_name' AS user_name,
+                  acl.value->>'group_name' AS group_name,
+                  acl.value->>'service_principal_name' AS service_principal_name,
+                  perm.value->>'permission_level' AS permission_level,
+                  (perm.value->>'inherited')::boolean AS inherited,
+                  perm.value->'inherited_from_object' AS inherited_from_object
+                FROM databricks_workspace.iam.permissions p,
+                     jsonb_array_elements(p.access_control_list::jsonb) AS acl,
+                     jsonb_array_elements((acl.value->'all_permissions')::jsonb) AS perm
+                WHERE p.deployment_name = '{{ deployment_name }}'
+                AND p.request_object_type = '{{ request_object_type }}'
+                AND p.request_object_id = '{{ request_object_id }}'
+
+    vw_rule_set_grant_principals:
+      name: vw_rule_set_grant_principals
+      id: databricks_workspace.iam.vw_rule_set_grant_principals
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: rule_set_name
+            type: string
+            description: Fully qualified name of the rule set used to scope the query (e.g. accounts/accountId/servicePrincipals/spId/ruleSets/default).
+          - name: etag
+            type: string
+            description: ETag of the rule set used to scope the query and for optimistic concurrency control.
+          - name: role
+            type: string
+            description: Role granted by this grant rule (one row per principal per role).
+          - name: principal
+            type: string
+            description: Principal granted the role (e.g. users/alice@example.com, groups/analysts).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                rs.deployment_name,
+                rs.name AS rule_set_name,
+                rs.etag,
+                JSON_EXTRACT(gr.value, '$.role') AS role,
+                pr.value AS principal
+              FROM databricks_workspace.iam.rule_sets rs,
+                   JSON_EACH(rs.grant_rules) gr,
+                   JSON_EACH(JSON_EXTRACT(gr.value, '$.principals')) pr
+              WHERE rs.deployment_name = '{{ deployment_name }}'
+              AND rs.name = '{{ name }}'
+              AND rs.etag = '{{ etag }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  rs.deployment_name,
+                  rs.name AS rule_set_name,
+                  rs.etag,
+                  gr.value->>'role' AS role,
+                  pr.value AS principal
+                FROM databricks_workspace.iam.rule_sets rs,
+                     jsonb_array_elements(rs.grant_rules::jsonb) AS gr,
+                     jsonb_array_elements((gr.value->'principals')::jsonb) AS pr
+                WHERE rs.deployment_name = '{{ deployment_name }}'
+                AND rs.name = '{{ name }}'
+                AND rs.etag = '{{ etag }}'

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>queries</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>queries</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="queries" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.queries" /></td></tr>
 </tbody></table>
@@ -90,7 +90,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "lifecycle_state",
     "type": "string",
-    "description": "Indicates whether the query is trashed."
+    "description": "Indicates whether the query is trashed. (ACTIVE, TRASHED)"
   },
   {
     "name": "parameters",
@@ -122,12 +122,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "dynamic_date_range_value",
             "type": "string",
-            "description": "Dynamic date-time range value based on current date-time."
+            "description": "Dynamic date-time range value based on current date-time. (LAST_12_MONTHS, LAST_14_DAYS, LAST_24_HOURS, LAST_30_DAYS, LAST_60_DAYS, LAST_7_DAYS, LAST_8_HOURS, LAST_90_DAYS, LAST_HOUR, LAST_MONTH, LAST_WEEK, LAST_YEAR, THIS_MONTH, THIS_WEEK, THIS_YEAR, TODAY, YESTERDAY)"
           },
           {
             "name": "precision",
             "type": "string",
-            "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD)."
+            "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD). (DAY_PRECISION, MINUTE_PRECISION, SECOND_PRECISION)"
           },
           {
             "name": "start_day_of_week",
@@ -149,12 +149,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "dynamic_date_value",
             "type": "string",
-            "description": "Dynamic date-time value based on current date-time."
+            "description": "Dynamic date-time value based on current date-time. (NOW, YESTERDAY)"
           },
           {
             "name": "precision",
             "type": "string",
-            "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD)."
+            "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD). (DAY_PRECISION, MINUTE_PRECISION, SECOND_PRECISION)"
           }
         ]
       },
@@ -285,7 +285,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "run_as_mode",
     "type": "string",
-    "description": "Sets the \"Run as\" role for the object."
+    "description": "Sets the \"Run as\" role for the object. (OWNER, VIEWER)"
   },
   {
     "name": "schema",
@@ -355,7 +355,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "lifecycle_state",
     "type": "string",
-    "description": "Indicates whether the query is trashed."
+    "description": "Indicates whether the query is trashed. (ACTIVE, TRASHED)"
   },
   {
     "name": "parameters",
@@ -387,12 +387,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "dynamic_date_range_value",
             "type": "string",
-            "description": "Dynamic date-time range value based on current date-time."
+            "description": "Dynamic date-time range value based on current date-time. (LAST_12_MONTHS, LAST_14_DAYS, LAST_24_HOURS, LAST_30_DAYS, LAST_60_DAYS, LAST_7_DAYS, LAST_8_HOURS, LAST_90_DAYS, LAST_HOUR, LAST_MONTH, LAST_WEEK, LAST_YEAR, THIS_MONTH, THIS_WEEK, THIS_YEAR, TODAY, YESTERDAY)"
           },
           {
             "name": "precision",
             "type": "string",
-            "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD)."
+            "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD). (DAY_PRECISION, MINUTE_PRECISION, SECOND_PRECISION)"
           },
           {
             "name": "start_day_of_week",
@@ -414,12 +414,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "dynamic_date_value",
             "type": "string",
-            "description": "Dynamic date-time value based on current date-time."
+            "description": "Dynamic date-time value based on current date-time. (NOW, YESTERDAY)"
           },
           {
             "name": "precision",
             "type": "string",
-            "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD)."
+            "description": "Date-time precision to format the value into when the query is run. Defaults to DAY_PRECISION (YYYY-MM-DD). (DAY_PRECISION, MINUTE_PRECISION, SECOND_PRECISION)"
           }
         ]
       },
@@ -545,7 +545,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "run_as_mode",
     "type": "string",
-    "description": "Sets the \"Run as\" role for the object."
+    "description": "Sets the \"Run as\" role for the object. (OWNER, VIEWER)"
   },
   {
     "name": "schema",
@@ -605,7 +605,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__update_mask"><code>data__update_mask</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td></td>
     <td>Updates a query.</td>
 </tr>
@@ -740,8 +740,8 @@ Creates a query.
 
 ```sql
 INSERT INTO databricks_workspace.sql.queries (
-data__auto_resolve_display_name,
-data__query,
+auto_resolve_display_name,
+query,
 deployment_name
 )
 SELECT 
@@ -806,13 +806,13 @@ Updates a query.
 ```sql
 UPDATE databricks_workspace.sql.queries
 SET 
-data__update_mask = '{{ update_mask }}',
-data__auto_resolve_display_name = '{{ auto_resolve_display_name }}',
-data__query = '{{ query }}'
+update_mask = '{{ update_mask }}',
+auto_resolve_display_name = '{{ auto_resolve_display_name }}',
+query = '{{ query }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__update_mask = '{{ update_mask }}' --required
+AND update_mask = '{{ update_mask }}' --required
 RETURNING
 id,
 warehouse_id,

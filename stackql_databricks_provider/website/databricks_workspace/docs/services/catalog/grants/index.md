@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>grants</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>grants</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="grants" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.grants" /></td></tr>
 </tbody></table>
@@ -189,7 +189,7 @@ Updates the permissions for a securable.
 ```sql
 UPDATE databricks_workspace.catalog.grants
 SET 
-data__changes = '{{ changes }}'
+changes = '{{ changes }}'
 WHERE 
 securable_type = '{{ securable_type }}' --required
 AND full_name = '{{ full_name }}' --required

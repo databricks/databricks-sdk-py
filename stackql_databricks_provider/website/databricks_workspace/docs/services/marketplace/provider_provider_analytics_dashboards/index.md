@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>provider_provider_analytics_das
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>provider_provider_analytics_dashboards</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="provider_provider_analytics_dashboards" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.marketplace.provider_provider_analytics_dashboards" /></td></tr>
 </tbody></table>
@@ -210,7 +210,7 @@ Update provider analytics dashboard.
 ```sql
 REPLACE databricks_workspace.marketplace.provider_provider_analytics_dashboards
 SET 
-data__version = '{{ version }}'
+version = '{{ version }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

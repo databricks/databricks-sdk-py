@@ -1,0 +1,464 @@
+    vw_ip_access_list_addresses:
+      name: vw_ip_access_list_addresses
+      id: databricks_account.settings.vw_ip_access_list_addresses
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: list_id
+            type: string
+            description: Unique identifier for the IP access list.
+          - name: label
+            type: string
+            description: Human-readable label for the IP access list.
+          - name: list_type
+            type: string
+            description: Type of the IP access list - either ALLOW or BLOCK.
+          - name: enabled
+            type: boolean
+            description: Whether the IP access list is currently active.
+          - name: address_count
+            type: integer
+            description: Total number of IP addresses or CIDR ranges in this list.
+          - name: created_at
+            type: integer
+            description: Unix timestamp (ms) when the IP access list was created.
+          - name: created_by
+            type: integer
+            description: ID of the user who created the IP access list.
+          - name: updated_at
+            type: integer
+            description: Unix timestamp (ms) when the IP access list was last updated.
+          - name: updated_by
+            type: integer
+            description: ID of the user who last updated the IP access list.
+          - name: ip_address
+            type: string
+            description: Individual IP address or CIDR range entry from the list (one row per entry).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                l.account_id,
+                l.list_id,
+                l.label,
+                l.list_type,
+                l.enabled,
+                l.address_count,
+                l.created_at,
+                l.created_by,
+                l.updated_at,
+                l.updated_by,
+                a.value AS ip_address
+              FROM databricks_account.settings.account_ip_access_lists l,
+                   JSON_EACH(l.ip_addresses) a
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  l.account_id,
+                  l.list_id,
+                  l.label,
+                  l.list_type,
+                  l.enabled,
+                  l.address_count,
+                  l.created_at,
+                  l.created_by,
+                  l.updated_at,
+                  l.updated_by,
+                  a.value AS ip_address
+                FROM databricks_account.settings.account_ip_access_lists l,
+                     jsonb_array_elements(l.ip_addresses::jsonb) AS a
+                WHERE account_id = '{{ account_id }}'
+
+    vw_network_connectivity_configs:
+      name: vw_network_connectivity_configs
+      id: databricks_account.settings.vw_network_connectivity_configs
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_connectivity_config_id
+            type: string
+            description: Unique identifier for the network connectivity configuration.
+          - name: name
+            type: string
+            description: Human-readable name of the network connectivity configuration.
+          - name: region
+            type: string
+            description: Cloud region where this network connectivity configuration applies.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the configuration was created.
+          - name: updated_time
+            type: integer
+            description: Unix timestamp (ms) when the configuration was last updated.
+          - name: aws_stable_ip_cidr_blocks
+            type: array
+            description: List of stable CIDR blocks used for outbound traffic from Databricks (AWS only).
+          - name: azure_svc_endpoint_region
+            type: string
+            description: Azure region targeted by the default service endpoint rule (Azure only).
+          - name: azure_svc_endpoint_subnets
+            type: array
+            description: List of subnets covered by the default Azure service endpoint rule (Azure only).
+          - name: azure_svc_endpoint_services
+            type: array
+            description: List of Azure services targeted by the default service endpoint rule (Azure only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                ncc.account_id,
+                ncc.network_connectivity_config_id,
+                ncc.name,
+                ncc.region,
+                ncc.creation_time,
+                ncc.updated_time,
+                JSON_EXTRACT(ncc.egress_config, '$.default_rules.aws_stable_ip_rule.cidr_blocks') AS aws_stable_ip_cidr_blocks,
+                JSON_EXTRACT(ncc.egress_config, '$.default_rules.azure_service_endpoint_rule.target_region') AS azure_svc_endpoint_region,
+                JSON_EXTRACT(ncc.egress_config, '$.default_rules.azure_service_endpoint_rule.subnets') AS azure_svc_endpoint_subnets,
+                JSON_EXTRACT(ncc.egress_config, '$.default_rules.azure_service_endpoint_rule.target_services') AS azure_svc_endpoint_services
+              FROM databricks_account.settings.network_connectivity ncc
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  ncc.account_id,
+                  ncc.network_connectivity_config_id,
+                  ncc.name,
+                  ncc.region,
+                  ncc.creation_time,
+                  ncc.updated_time,
+                  ncc.egress_config->'default_rules'->'aws_stable_ip_rule'->'cidr_blocks' AS aws_stable_ip_cidr_blocks,
+                  ncc.egress_config->'default_rules'->'azure_service_endpoint_rule'->>'target_region' AS azure_svc_endpoint_region,
+                  ncc.egress_config->'default_rules'->'azure_service_endpoint_rule'->'subnets' AS azure_svc_endpoint_subnets,
+                  ncc.egress_config->'default_rules'->'azure_service_endpoint_rule'->'target_services' AS azure_svc_endpoint_services
+                FROM databricks_account.settings.network_connectivity ncc
+                WHERE account_id = '{{ account_id }}'
+
+    vw_ncc_aws_private_endpoint_rules:
+      name: vw_ncc_aws_private_endpoint_rules
+      id: databricks_account.settings.vw_ncc_aws_private_endpoint_rules
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_connectivity_config_id
+            type: string
+            description: Unique identifier for the parent network connectivity configuration.
+          - name: ncc_name
+            type: string
+            description: Human-readable name of the parent network connectivity configuration.
+          - name: region
+            type: string
+            description: Cloud region of the parent network connectivity configuration.
+          - name: rule_id
+            type: string
+            description: Unique identifier for this AWS private endpoint rule (one row per rule).
+          - name: rule_ncc_id
+            type: string
+            description: Network connectivity config ID stored within the rule object.
+          - name: connection_state
+            type: string
+            description: State of the AWS VPC endpoint connection (e.g. pending, available, rejected).
+          - name: endpoint_service
+            type: string
+            description: Name of the AWS endpoint service this rule connects to.
+          - name: vpc_endpoint_id
+            type: string
+            description: AWS VPC endpoint ID for this private endpoint rule.
+          - name: enabled
+            type: boolean
+            description: Whether this private endpoint rule is currently active.
+          - name: deactivated
+            type: boolean
+            description: Whether this private endpoint rule has been deactivated.
+          - name: resource_names
+            type: array
+            description: List of resource names associated with this private endpoint rule.
+          - name: domain_names
+            type: array
+            description: List of domain names routed through this private endpoint.
+          - name: error_message
+            type: string
+            description: Error message if the private endpoint rule is in a failed state.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the rule was created.
+          - name: updated_time
+            type: integer
+            description: Unix timestamp (ms) when the rule was last updated.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                ncc.account_id,
+                ncc.network_connectivity_config_id,
+                ncc.name AS ncc_name,
+                ncc.region,
+                JSON_EXTRACT(r.value, '$.rule_id') AS rule_id,
+                JSON_EXTRACT(r.value, '$.network_connectivity_config_id') AS rule_ncc_id,
+                JSON_EXTRACT(r.value, '$.connection_state') AS connection_state,
+                JSON_EXTRACT(r.value, '$.endpoint_service') AS endpoint_service,
+                JSON_EXTRACT(r.value, '$.vpc_endpoint_id') AS vpc_endpoint_id,
+                JSON_EXTRACT(r.value, '$.enabled') AS enabled,
+                JSON_EXTRACT(r.value, '$.deactivated') AS deactivated,
+                JSON_EXTRACT(r.value, '$.resource_names') AS resource_names,
+                JSON_EXTRACT(r.value, '$.domain_names') AS domain_names,
+                JSON_EXTRACT(r.value, '$.error_message') AS error_message,
+                JSON_EXTRACT(r.value, '$.creation_time') AS creation_time,
+                JSON_EXTRACT(r.value, '$.updated_time') AS updated_time
+              FROM databricks_account.settings.network_connectivity ncc,
+                   JSON_EACH(JSON_EXTRACT(ncc.egress_config, '$.target_rules.aws_private_endpoint_rules')) r
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  ncc.account_id,
+                  ncc.network_connectivity_config_id,
+                  ncc.name AS ncc_name,
+                  ncc.region,
+                  r.value->>'rule_id' AS rule_id,
+                  r.value->>'network_connectivity_config_id' AS rule_ncc_id,
+                  r.value->>'connection_state' AS connection_state,
+                  r.value->>'endpoint_service' AS endpoint_service,
+                  r.value->>'vpc_endpoint_id' AS vpc_endpoint_id,
+                  (r.value->>'enabled')::boolean AS enabled,
+                  (r.value->>'deactivated')::boolean AS deactivated,
+                  r.value->'resource_names' AS resource_names,
+                  r.value->'domain_names' AS domain_names,
+                  r.value->>'error_message' AS error_message,
+                  (r.value->>'creation_time')::bigint AS creation_time,
+                  (r.value->>'updated_time')::bigint AS updated_time
+                FROM databricks_account.settings.network_connectivity ncc,
+                     jsonb_array_elements((ncc.egress_config->'target_rules'->'aws_private_endpoint_rules')::jsonb) AS r
+                WHERE account_id = '{{ account_id }}'
+
+    vw_ncc_azure_private_endpoint_rules:
+      name: vw_ncc_azure_private_endpoint_rules
+      id: databricks_account.settings.vw_ncc_azure_private_endpoint_rules
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_connectivity_config_id
+            type: string
+            description: Unique identifier for the parent network connectivity configuration.
+          - name: ncc_name
+            type: string
+            description: Human-readable name of the parent network connectivity configuration.
+          - name: region
+            type: string
+            description: Cloud region of the parent network connectivity configuration.
+          - name: rule_id
+            type: string
+            description: Unique identifier for this Azure private endpoint rule (one row per rule).
+          - name: rule_ncc_id
+            type: string
+            description: Network connectivity config ID stored within the rule object.
+          - name: connection_state
+            type: string
+            description: Approval state of the Azure private endpoint connection (e.g. Pending, Approved, Rejected).
+          - name: resource_id
+            type: string
+            description: Azure resource ID of the target private link resource.
+          - name: group_id
+            type: string
+            description: Sub-resource group ID for the private link resource (e.g. blob, sql).
+          - name: endpoint_name
+            type: string
+            description: Name of the Azure private endpoint created for this rule.
+          - name: deactivated
+            type: boolean
+            description: Whether this private endpoint rule has been deactivated.
+          - name: domain_names
+            type: array
+            description: List of domain names routed through this private endpoint.
+          - name: error_message
+            type: string
+            description: Error message if the private endpoint rule is in a failed state.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the rule was created.
+          - name: updated_time
+            type: integer
+            description: Unix timestamp (ms) when the rule was last updated.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                ncc.account_id,
+                ncc.network_connectivity_config_id,
+                ncc.name AS ncc_name,
+                ncc.region,
+                JSON_EXTRACT(r.value, '$.rule_id') AS rule_id,
+                JSON_EXTRACT(r.value, '$.network_connectivity_config_id') AS rule_ncc_id,
+                JSON_EXTRACT(r.value, '$.connection_state') AS connection_state,
+                JSON_EXTRACT(r.value, '$.resource_id') AS resource_id,
+                JSON_EXTRACT(r.value, '$.group_id') AS group_id,
+                JSON_EXTRACT(r.value, '$.endpoint_name') AS endpoint_name,
+                JSON_EXTRACT(r.value, '$.deactivated') AS deactivated,
+                JSON_EXTRACT(r.value, '$.domain_names') AS domain_names,
+                JSON_EXTRACT(r.value, '$.error_message') AS error_message,
+                JSON_EXTRACT(r.value, '$.creation_time') AS creation_time,
+                JSON_EXTRACT(r.value, '$.updated_time') AS updated_time
+              FROM databricks_account.settings.network_connectivity ncc,
+                   JSON_EACH(JSON_EXTRACT(ncc.egress_config, '$.target_rules.azure_private_endpoint_rules')) r
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  ncc.account_id,
+                  ncc.network_connectivity_config_id,
+                  ncc.name AS ncc_name,
+                  ncc.region,
+                  r.value->>'rule_id' AS rule_id,
+                  r.value->>'network_connectivity_config_id' AS rule_ncc_id,
+                  r.value->>'connection_state' AS connection_state,
+                  r.value->>'resource_id' AS resource_id,
+                  r.value->>'group_id' AS group_id,
+                  r.value->>'endpoint_name' AS endpoint_name,
+                  (r.value->>'deactivated')::boolean AS deactivated,
+                  r.value->'domain_names' AS domain_names,
+                  r.value->>'error_message' AS error_message,
+                  (r.value->>'creation_time')::bigint AS creation_time,
+                  (r.value->>'updated_time')::bigint AS updated_time
+                FROM databricks_account.settings.network_connectivity ncc,
+                     jsonb_array_elements((ncc.egress_config->'target_rules'->'azure_private_endpoint_rules')::jsonb) AS r
+                WHERE account_id = '{{ account_id }}'
+
+    vw_network_policy_internet_destinations:
+      name: vw_network_policy_internet_destinations
+      id: databricks_account.settings.vw_network_policy_internet_destinations
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_policy_id
+            type: string
+            description: Unique identifier for the network policy.
+          - name: restriction_mode
+            type: string
+            description: Overall egress restriction mode for the policy (e.g. FULL_RESTRICTION, NO_RESTRICTION).
+          - name: enforcement_mode
+            type: string
+            description: Enforcement mode for the egress policy (e.g. ENFORCED, AUDIT).
+          - name: destination
+            type: string
+            description: Allowed internet destination hostname or CIDR (one row per destination).
+          - name: destination_type
+            type: string
+            description: Classification of the allowed internet destination (e.g. PUBLIC).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                np.account_id,
+                np.network_policy_id,
+                JSON_EXTRACT(np.egress, '$.network_access.restriction_mode') AS restriction_mode,
+                JSON_EXTRACT(np.egress, '$.network_access.policy_enforcement.enforcement_mode') AS enforcement_mode,
+                JSON_EXTRACT(d.value, '$.destination') AS destination,
+                JSON_EXTRACT(d.value, '$.internet_destination_type') AS destination_type
+              FROM databricks_account.settings.network_policies np,
+                   JSON_EACH(JSON_EXTRACT(np.egress, '$.network_access.allowed_internet_destinations')) d
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  np.account_id,
+                  np.network_policy_id,
+                  np.egress->'network_access'->>'restriction_mode' AS restriction_mode,
+                  np.egress->'network_access'->'policy_enforcement'->>'enforcement_mode' AS enforcement_mode,
+                  d.value->>'destination' AS destination,
+                  d.value->>'internet_destination_type' AS destination_type
+                FROM databricks_account.settings.network_policies np,
+                     jsonb_array_elements((np.egress->'network_access'->'allowed_internet_destinations')::jsonb) AS d
+                WHERE account_id = '{{ account_id }}'
+
+    vw_network_policy_storage_destinations:
+      name: vw_network_policy_storage_destinations
+      id: databricks_account.settings.vw_network_policy_storage_destinations
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_policy_id
+            type: string
+            description: Unique identifier for the network policy.
+          - name: restriction_mode
+            type: string
+            description: Overall egress restriction mode for the policy (e.g. FULL_RESTRICTION, NO_RESTRICTION).
+          - name: enforcement_mode
+            type: string
+            description: Enforcement mode for the egress policy (e.g. ENFORCED, AUDIT).
+          - name: storage_type
+            type: string
+            description: Cloud storage type for this allowed destination (one row per destination, e.g. AWS_S3, AZURE_STORAGE).
+          - name: bucket_name
+            type: string
+            description: Name of the allowed S3 bucket (AWS only).
+          - name: region
+            type: string
+            description: Cloud region of the allowed storage destination (AWS only).
+          - name: azure_storage_account
+            type: string
+            description: Name of the allowed Azure storage account (Azure only).
+          - name: azure_storage_service
+            type: string
+            description: Azure storage service type for this destination (e.g. blob, dfs) (Azure only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                np.account_id,
+                np.network_policy_id,
+                JSON_EXTRACT(np.egress, '$.network_access.restriction_mode') AS restriction_mode,
+                JSON_EXTRACT(np.egress, '$.network_access.policy_enforcement.enforcement_mode') AS enforcement_mode,
+                JSON_EXTRACT(d.value, '$.storage_destination_type') AS storage_type,
+                JSON_EXTRACT(d.value, '$.bucket_name') AS bucket_name,
+                JSON_EXTRACT(d.value, '$.region') AS region,
+                JSON_EXTRACT(d.value, '$.azure_storage_account') AS azure_storage_account,
+                JSON_EXTRACT(d.value, '$.azure_storage_service') AS azure_storage_service
+              FROM databricks_account.settings.network_policies np,
+                   JSON_EACH(JSON_EXTRACT(np.egress, '$.network_access.allowed_storage_destinations')) d
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  np.account_id,
+                  np.network_policy_id,
+                  np.egress->'network_access'->>'restriction_mode' AS restriction_mode,
+                  np.egress->'network_access'->'policy_enforcement'->>'enforcement_mode' AS enforcement_mode,
+                  d.value->>'storage_destination_type' AS storage_type,
+                  d.value->>'bucket_name' AS bucket_name,
+                  d.value->>'region' AS region,
+                  d.value->>'azure_storage_account' AS azure_storage_account,
+                  d.value->>'azure_storage_service' AS azure_storage_service
+                FROM databricks_account.settings.network_policies np,
+                     jsonb_array_elements((np.egress->'network_access'->'allowed_storage_destinations')::jsonb) AS d
+                WHERE account_id = '{{ account_id }}'

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>serving_endpoint_rate_limits</c
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>serving_endpoint_rate_limits</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="serving_endpoint_rate_limits" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.serving.serving_endpoint_rate_limits" /></td></tr>
 </tbody></table>
@@ -101,7 +101,7 @@ Deprecated: Please use AI Gateway to manage rate limits instead.
 ```sql
 REPLACE databricks_workspace.serving.serving_endpoint_rate_limits
 SET 
-data__rate_limits = '{{ rate_limits }}'
+rate_limits = '{{ rate_limits }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

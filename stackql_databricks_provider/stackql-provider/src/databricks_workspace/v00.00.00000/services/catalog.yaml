@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.catalog
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -12796,14 +12796,14 @@ components:
         - workspace_id
     ArtifactType:
       type: string
-      enum:
+      x-enum:
         - INIT_SCRIPT
         - LIBRARY_JAR
         - LIBRARY_MAVEN
       description: The artifact type
     CatalogIsolationMode:
       type: string
-      enum:
+      x-enum:
         - ISOLATED
         - OPEN
       description: |-
@@ -12845,7 +12845,7 @@ components:
         attributes -- see the documentation for details.
     CatalogType:
       type: string
-      enum:
+      x-enum:
         - DELTASHARING_CATALOG
         - FOREIGN_CATALOG
         - INTERNAL_CATALOG
@@ -12855,7 +12855,7 @@ components:
       description: The type of the catalog.
     ColumnTypeName:
       type: string
-      enum:
+      x-enum:
         - ARRAY
         - BINARY
         - BOOLEAN
@@ -12919,7 +12919,7 @@ components:
         attributes -- see the documentation for details.
     ConnectionType:
       type: string
-      enum:
+      x-enum:
         - BIGQUERY
         - DATABRICKS
         - GA4_RAW_DATA
@@ -12943,7 +12943,7 @@ components:
       description: 'Next Id: 72'
     CreateFunctionParameterStyle:
       type: string
-      enum:
+      x-enum:
         - S
       description: |-
         Create a collection of name/value pairs.
@@ -12984,7 +12984,7 @@ components:
         attributes -- see the documentation for details.
     CreateFunctionRoutineBody:
       type: string
-      enum:
+      x-enum:
         - EXTERNAL
         - SQL
       description: |-
@@ -13026,7 +13026,7 @@ components:
         attributes -- see the documentation for details.
     CreateFunctionSecurityType:
       type: string
-      enum:
+      x-enum:
         - DEFINER
       description: |-
         Create a collection of name/value pairs.
@@ -13067,7 +13067,7 @@ components:
         attributes -- see the documentation for details.
     CreateFunctionSqlDataAccess:
       type: string
-      enum:
+      x-enum:
         - CONTAINS_SQL
         - NO_SQL
         - READS_SQL_DATA
@@ -13110,7 +13110,7 @@ components:
         attributes -- see the documentation for details.
     CredentialPurpose:
       type: string
-      enum:
+      x-enum:
         - SERVICE
         - STORAGE
       description: |-
@@ -13152,7 +13152,7 @@ components:
         attributes -- see the documentation for details.
     CredentialType:
       type: string
-      enum:
+      x-enum:
         - ANY_STATIC_CREDENTIAL
         - BEARER_TOKEN
         - OAUTH_ACCESS_TOKEN
@@ -13171,7 +13171,7 @@ components:
       description: 'Next Id: 15'
     DataSourceFormat:
       type: string
-      enum:
+      x-enum:
         - AVRO
         - BIGQUERY_FORMAT
         - CSV
@@ -13205,7 +13205,7 @@ components:
       description: Data source format
     DeltaSharingScopeEnum:
       type: string
-      enum:
+      x-enum:
         - INTERNAL
         - INTERNAL_AND_EXTERNAL
       description: |-
@@ -13247,7 +13247,7 @@ components:
         attributes -- see the documentation for details.
     DestinationType:
       type: string
-      enum:
+      x-enum:
         - EMAIL
         - GENERIC_WEBHOOK
         - MICROSOFT_TEAMS
@@ -13292,7 +13292,7 @@ components:
         attributes -- see the documentation for details.
     EffectivePredictiveOptimizationFlagInheritedFromType:
       type: string
-      enum:
+      x-enum:
         - CATALOG
         - SCHEMA
       description: |-
@@ -13334,7 +13334,7 @@ components:
         attributes -- see the documentation for details.
     EnablePredictiveOptimization:
       type: string
-      enum:
+      x-enum:
         - DISABLE
         - ENABLE
         - INHERIT
@@ -13377,7 +13377,7 @@ components:
         attributes -- see the documentation for details.
     FunctionInfoParameterStyle:
       type: string
-      enum:
+      x-enum:
         - S
       description: |-
         Create a collection of name/value pairs.
@@ -13418,7 +13418,7 @@ components:
         attributes -- see the documentation for details.
     FunctionInfoRoutineBody:
       type: string
-      enum:
+      x-enum:
         - EXTERNAL
         - SQL
       description: |-
@@ -13460,7 +13460,7 @@ components:
         attributes -- see the documentation for details.
     FunctionInfoSecurityType:
       type: string
-      enum:
+      x-enum:
         - DEFINER
       description: |-
         Create a collection of name/value pairs.
@@ -13501,7 +13501,7 @@ components:
         attributes -- see the documentation for details.
     FunctionInfoSqlDataAccess:
       type: string
-      enum:
+      x-enum:
         - CONTAINS_SQL
         - NO_SQL
         - READS_SQL_DATA
@@ -13544,7 +13544,7 @@ components:
         attributes -- see the documentation for details.
     FunctionParameterMode:
       type: string
-      enum:
+      x-enum:
         - IN
       description: |-
         Create a collection of name/value pairs.
@@ -13585,7 +13585,7 @@ components:
         attributes -- see the documentation for details.
     FunctionParameterType:
       type: string
-      enum:
+      x-enum:
         - COLUMN
         - PARAM
       description: |-
@@ -13627,7 +13627,7 @@ components:
         attributes -- see the documentation for details.
     IsolationMode:
       type: string
-      enum:
+      x-enum:
         - ISOLATION_MODE_ISOLATED
         - ISOLATION_MODE_OPEN
       description: |-
@@ -13669,7 +13669,7 @@ components:
         attributes -- see the documentation for details.
     LineageDirection:
       type: string
-      enum:
+      x-enum:
         - DOWNSTREAM
         - UPSTREAM
       description: |-
@@ -13711,12 +13711,12 @@ components:
         attributes -- see the documentation for details.
     MatchType:
       type: string
-      enum:
+      x-enum:
         - PREFIX_MATCH
       description: The artifact pattern matching type
     ModelVersionInfoStatus:
       type: string
-      enum:
+      x-enum:
         - FAILED_REGISTRATION
         - MODEL_VERSION_STATUS_UNKNOWN
         - PENDING_REGISTRATION
@@ -13760,7 +13760,7 @@ components:
         attributes -- see the documentation for details.
     MonitorCronSchedulePauseStatus:
       type: string
-      enum:
+      x-enum:
         - PAUSED
         - UNPAUSED
         - UNSPECIFIED
@@ -13772,7 +13772,7 @@ components:
         Monitoring workflow schedule pause status.
     MonitorInferenceLogProblemType:
       type: string
-      enum:
+      x-enum:
         - PROBLEM_TYPE_CLASSIFICATION
         - PROBLEM_TYPE_REGRESSION
       description: |-
@@ -13814,7 +13814,7 @@ components:
         attributes -- see the documentation for details.
     MonitorInfoStatus:
       type: string
-      enum:
+      x-enum:
         - MONITOR_STATUS_ACTIVE
         - MONITOR_STATUS_DELETE_PENDING
         - MONITOR_STATUS_ERROR
@@ -13859,7 +13859,7 @@ components:
         attributes -- see the documentation for details.
     MonitorMetricType:
       type: string
-      enum:
+      x-enum:
         - CUSTOM_METRIC_TYPE_AGGREGATE
         - CUSTOM_METRIC_TYPE_DERIVED
         - CUSTOM_METRIC_TYPE_DRIFT
@@ -13886,7 +13886,7 @@ components:
         aggregate or derived metrics
     MonitorRefreshInfoState:
       type: string
-      enum:
+      x-enum:
         - CANCELED
         - FAILED
         - PENDING
@@ -13896,7 +13896,7 @@ components:
       description: The current state of the refresh.
     MonitorRefreshInfoTrigger:
       type: string
-      enum:
+      x-enum:
         - MANUAL
         - SCHEDULE
         - UNKNOWN_TRIGGER
@@ -13939,7 +13939,7 @@ components:
         attributes -- see the documentation for details.
     OnlineTableState:
       type: string
-      enum:
+      x-enum:
         - OFFLINE
         - OFFLINE_FAILED
         - ONLINE
@@ -13954,7 +13954,7 @@ components:
       description: The state of an online table.
     OptionSpecOauthStage:
       type: string
-      enum:
+      x-enum:
         - BEFORE_ACCESS_TOKEN
         - BEFORE_AUTHORIZATION_CODE
       description: >-
@@ -13974,7 +13974,7 @@ components:
         been received.
     OptionSpecOptionType:
       type: string
-      enum:
+      x-enum:
         - OPTION_BIGINT
         - OPTION_BOOLEAN
         - OPTION_ENUM
@@ -13992,7 +13992,7 @@ components:
         string with selections.
     PathOperation:
       type: string
-      enum:
+      x-enum:
         - PATH_CREATE_TABLE
         - PATH_READ
         - PATH_READ_WRITE
@@ -14035,7 +14035,7 @@ components:
         attributes -- see the documentation for details.
     PolicyType:
       type: string
-      enum:
+      x-enum:
         - POLICY_TYPE_COLUMN_MASK
         - POLICY_TYPE_ROW_FILTER
       description: |-
@@ -14077,7 +14077,7 @@ components:
         attributes -- see the documentation for details.
     PrincipalType:
       type: string
-      enum:
+      x-enum:
         - GROUP_PRINCIPAL
         - SERVICE_PRINCIPAL
         - USER_PRINCIPAL
@@ -14120,7 +14120,7 @@ components:
         attributes -- see the documentation for details.
     Privilege:
       type: string
-      enum:
+      x-enum:
         - ACCESS
         - ALL_PRIVILEGES
         - APPLY_TAG
@@ -14210,7 +14210,7 @@ components:
         attributes -- see the documentation for details.
     ProvisioningInfoState:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - DEGRADED
         - DELETING
@@ -14256,7 +14256,7 @@ components:
         attributes -- see the documentation for details.
     SecurableKind:
       type: string
-      enum:
+      x-enum:
         - TABLE_DB_STORAGE
         - TABLE_DELTA
         - TABLE_DELTASHARING
@@ -14323,7 +14323,7 @@ components:
       description: 'Latest kind: CONNECTION_OKTA_SYSTEM_LOGS_SSWS_TOKEN = 295; Next id: 296'
     SecurableType:
       type: string
-      enum:
+      x-enum:
         - CATALOG
         - CLEAN_ROOM
         - CONNECTION
@@ -14344,7 +14344,7 @@ components:
       description: The type of Unity Catalog securable.
     SpecialDestination:
       type: string
-      enum:
+      x-enum:
         - SPECIAL_DESTINATION_CATALOG_OWNER
         - SPECIAL_DESTINATION_CONNECTION_OWNER
         - SPECIAL_DESTINATION_CREDENTIAL_OWNER
@@ -14389,7 +14389,7 @@ components:
         attributes -- see the documentation for details.
     SseEncryptionDetailsAlgorithm:
       type: string
-      enum:
+      x-enum:
         - AWS_SSE_KMS
         - AWS_SSE_S3
       description: |-
@@ -14431,7 +14431,7 @@ components:
         attributes -- see the documentation for details.
     SystemType:
       type: string
-      enum:
+      x-enum:
         - AMAZON_REDSHIFT
         - AZURE_SYNAPSE
         - CONFLUENT
@@ -14494,7 +14494,7 @@ components:
         attributes -- see the documentation for details.
     TableOperation:
       type: string
-      enum:
+      x-enum:
         - READ
         - READ_WRITE
       description: |-
@@ -14536,7 +14536,7 @@ components:
         attributes -- see the documentation for details.
     TableType:
       type: string
-      enum:
+      x-enum:
         - EXTERNAL
         - EXTERNAL_SHALLOW_CLONE
         - FOREIGN
@@ -14585,14 +14585,14 @@ components:
         attributes -- see the documentation for details.
     ValidateCredentialResult:
       type: string
-      enum:
+      x-enum:
         - FAIL
         - PASS
         - SKIP
       description: A enum represents the result of the file operation
     ValidationResultOperation:
       type: string
-      enum:
+      x-enum:
         - DELETE
         - LIST
         - PATH_EXISTS
@@ -14605,14 +14605,14 @@ components:
         credential
     ValidationResultResult:
       type: string
-      enum:
+      x-enum:
         - FAIL
         - PASS
         - SKIP
       description: A enum represents the result of the file operation
     VolumeType:
       type: string
-      enum:
+      x-enum:
         - EXTERNAL
         - MANAGED
       description: |-
@@ -14654,7 +14654,7 @@ components:
         attributes -- see the documentation for details.
     WorkspaceBindingBindingType:
       type: string
-      enum:
+      x-enum:
         - BINDING_TYPE_READ_ONLY
         - BINDING_TYPE_READ_WRITE
       description: >-
@@ -14676,6 +14676,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         replace:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1artifact-allowlists~1{artifact_type.value}/put
@@ -14697,6 +14700,9 @@ components:
       title: Catalogs
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1catalogs/post'
           response:
@@ -14722,6 +14728,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1catalogs~1{name}/patch'
           response:
@@ -14744,6 +14753,9 @@ components:
       title: Connections
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1connections/post'
           response:
@@ -14769,6 +14781,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1connections~1{name}/patch'
           response:
@@ -14791,6 +14806,9 @@ components:
       title: Entity Tag Assignments
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1entity-tag-assignments/post'
           response:
@@ -14811,6 +14829,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1entity-tag-assignments~1{entity_type}~1{entity_name}~1tags~1{tag_key}/patch
@@ -14847,6 +14868,9 @@ components:
       title: External Lineage
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1lineage-tracking~1external-lineage/post'
           response:
@@ -14866,6 +14890,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.external_lineage_relationships
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1lineage-tracking~1external-lineage/patch'
           response:
@@ -14887,6 +14914,9 @@ components:
       title: External Locations
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1external-locations/post'
           response:
@@ -14913,6 +14943,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1external-locations~1{name}/patch
@@ -14936,6 +14969,9 @@ components:
       title: External Metadata
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1lineage-tracking~1external-metadata/post'
           response:
@@ -14963,6 +14999,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1lineage-tracking~1external-metadata~1{name}/patch
@@ -14986,6 +15025,9 @@ components:
       title: Functions
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1functions/post'
           response:
@@ -15011,6 +15053,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1functions~1{name}/patch'
           response:
@@ -15040,6 +15085,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1permissions~1{securable_type}~1{full_name}/patch
@@ -15079,6 +15127,9 @@ components:
       title: Metastores
       methods:
         assign:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1workspaces~1{workspace_id}~1metastore/put
@@ -15093,6 +15144,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update_assignment:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1workspaces~1{workspace_id}~1metastore/patch
@@ -15100,6 +15154,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores/post'
           response:
@@ -15125,6 +15182,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1metastores~1{id}/patch'
           response:
@@ -15203,6 +15263,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1models~1{full_name}~1versions~1{version}/patch
@@ -15249,6 +15312,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set_alias:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1models~1{full_name}~1aliases~1{alias}/put
@@ -15256,6 +15322,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1models/post'
           response:
@@ -15281,6 +15350,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1models~1{full_name}/patch'
           response:
@@ -15307,6 +15379,9 @@ components:
       title: Online Tables
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1online-tables/post'
           response:
@@ -15339,6 +15414,9 @@ components:
       title: Policies
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1policies/post'
           response:
@@ -15359,6 +15437,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1policies~1{on_securable_type}~1{on_securable_fullname}~1{name}/patch
@@ -15397,6 +15478,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor/post
@@ -15418,6 +15502,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1tables~1{table_name}~1monitor/put
@@ -15425,6 +15512,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         regenerate_dashboard:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1quality-monitoring~1tables~1{table_name}~1monitor~1dashboard/post
@@ -15511,6 +15601,9 @@ components:
       title: Rfa
       methods:
         batch_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~13.0~1rfa~1requests/post'
           response:
@@ -15524,6 +15617,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update_destinations:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~13.0~1rfa~1destinations/patch'
           response:
@@ -15544,6 +15640,9 @@ components:
       title: Schemas
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1schemas/post'
           response:
@@ -15569,6 +15668,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1schemas~1{full_name}/patch'
           response:
@@ -15591,6 +15693,9 @@ components:
       title: Storage Credentials
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1storage-credentials/post'
           response:
@@ -15617,6 +15722,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1storage-credentials~1{name}/patch
@@ -15624,6 +15732,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         validate:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1validate-storage-credentials/post
@@ -15657,6 +15768,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         enable:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1metastores~1{metastore_id}~1systemschemas~1{schema_name}/put
@@ -15686,6 +15800,9 @@ components:
       title: Table Constraints
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1constraints/post'
           response:
@@ -15711,6 +15828,9 @@ components:
       title: Tables
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1tables/post'
           response:
@@ -15736,6 +15856,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1tables~1{full_name}/patch'
           response:
@@ -15783,6 +15906,9 @@ components:
       title: Temporary Path Credentials
       methods:
         generate:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1unity-catalog~1temporary-path-credentials/post'
           response:
@@ -15802,6 +15928,9 @@ components:
       title: Temporary Table Credentials
       methods:
         generate:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1unity-catalog~1temporary-table-credentials/post
@@ -15822,6 +15951,9 @@ components:
       title: Volumes
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1volumes/post'
           response:
@@ -15847,6 +15979,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1unity-catalog~1volumes~1{name}/patch'
           response:
@@ -15876,6 +16011,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1workspace-bindings~1catalogs~1{name}/patch
@@ -15891,6 +16029,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.bindings
         update_bindings:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.1~1unity-catalog~1bindings~1{securable_type}~1{securable_name}/patch
@@ -15909,3 +16050,11 @@ components:
           - $ref: '#/components/x-stackQL-resources/workspace_bindings/methods/update'
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

@@ -101,7 +101,6 @@ npm run generate-provider -- \
   --service-config '{"pagination":{"requestToken":{"key":"page_token","location":"query"},"responseToken":{"key":"next_page_token","location":"body"}}}' \
   --naive-req-body-translate \
   --overwrite
-
 ```
 
 #### Workspace scope
@@ -141,6 +140,8 @@ View definitions live in ``views/{account,workspace}/{service}/views.yaml`` and 
 - `--config-path` - Path to the consolidated CSV mapping file
 - `--servers` - JSON array defining the base URL pattern for API requests
 - `--provider-config` - Authentication configuration
+- `--service-config` - Service level config added to `x-stackQL-config`
+- `--naive-req-body-translate` - Adds naive translation to all methods with body params (omits `data__` disambiguation prefixes for top level body fields)
 - `--overwrite` - Overwrite existing generated files
 
 ### 5. Test Provider
@@ -224,11 +225,20 @@ SELECT
   enable_predictive_optimization
 FROM databricks_workspace.catalog.catalogs
 WHERE deployment_name = 'dbc-36ff48e3-4a69';
+
+SELECT * FROM
+databricks_workspace.settings.vw_all_settings
+WHERE deployment_name = 'dbc-36ff48e3-4a69';
+
+SELECT *
+FROM databricks_account.iam.vw_account_user_roles
+WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
 ```
 
 ```bash
 # Download billable usage to CSV
 ./stackql exec \
+  --registry="${REG_STR}" \
   -o text \
   --hideheaders \
   -f billable_usage.csv \
@@ -236,7 +246,7 @@ WHERE deployment_name = 'dbc-36ff48e3-4a69';
   FROM databricks_account.billing.billable_usage
   WHERE start_month = '2025-12'
   AND end_month = '2026-01'
-  AND account_id = 'your-account-id'"
+  AND account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce'"
 ```
 
 ### 6. Publish the Provider
@@ -278,6 +288,7 @@ npm run generate-docs -- \
 ```bash
 python -m add_doc_examples --doc-dir website
 ```
+
 ### 8. Authentication
 
 Both providers authenticate using OAuth2 with a Databricks service principal. Set the following environment variables:

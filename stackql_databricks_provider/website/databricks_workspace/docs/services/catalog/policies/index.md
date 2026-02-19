@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>policies</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>policies</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="policies" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.policies" /></td></tr>
 </tbody></table>
@@ -109,7 +109,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "for_securable_type",
     "type": "string",
-    "description": "The type of Unity Catalog securable."
+    "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
   },
   {
     "name": "match_columns",
@@ -136,12 +136,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "on_securable_type",
     "type": "string",
-    "description": "The type of Unity Catalog securable."
+    "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
   },
   {
     "name": "policy_type",
     "type": "string",
-    "description": "Type of the policy. Required on create."
+    "description": "Type of the policy. Required on create. (POLICY_TYPE_COLUMN_MASK, POLICY_TYPE_ROW_FILTER)"
   },
   {
     "name": "row_filter",
@@ -264,7 +264,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "for_securable_type",
     "type": "string",
-    "description": "The type of Unity Catalog securable."
+    "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
   },
   {
     "name": "match_columns",
@@ -291,12 +291,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "on_securable_type",
     "type": "string",
-    "description": "The type of Unity Catalog securable."
+    "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
   },
   {
     "name": "policy_type",
     "type": "string",
-    "description": "Type of the policy. Required on create."
+    "description": "Type of the policy. Required on create. (POLICY_TYPE_COLUMN_MASK, POLICY_TYPE_ROW_FILTER)"
   },
   {
     "name": "row_filter",
@@ -383,14 +383,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__policy_info"><code>data__policy_info</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-policy_info"><code>policy_info</code></a></td>
     <td></td>
     <td>Creates a new policy on a securable. The new policy applies to the securable and all its descendants.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__policy_info"><code>data__policy_info</code></a></td>
+    <td><a href="#parameter-on_securable_type"><code>on_securable_type</code></a>, <a href="#parameter-on_securable_fullname"><code>on_securable_fullname</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-policy_info"><code>policy_info</code></a></td>
     <td><a href="#parameter-update_mask"><code>update_mask</code></a></td>
     <td>Update an ABAC policy on a securable.</td>
 </tr>
@@ -551,7 +551,7 @@ Creates a new policy on a securable. The new policy applies to the securable and
 
 ```sql
 INSERT INTO databricks_workspace.catalog.policies (
-data__policy_info,
+policy_info,
 deployment_name
 )
 SELECT 
@@ -611,13 +611,13 @@ Update an ABAC policy on a securable.
 ```sql
 UPDATE databricks_workspace.catalog.policies
 SET 
-data__policy_info = '{{ policy_info }}'
+policy_info = '{{ policy_info }}'
 WHERE 
 on_securable_type = '{{ on_securable_type }}' --required
 AND on_securable_fullname = '{{ on_securable_fullname }}' --required
 AND name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__policy_info = '{{ policy_info }}' --required
+AND policy_info = '{{ policy_info }}' --required
 AND update_mask = '{{ update_mask}}'
 RETURNING
 id,

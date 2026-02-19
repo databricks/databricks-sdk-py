@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>auto_approval_rules</code> res
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>auto_approval_rules</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="auto_approval_rules" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.cleanrooms.auto_approval_rules" /></td></tr>
 </tbody></table>
@@ -60,7 +60,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "author_scope",
     "type": "string",
-    "description": "Scope of authors covered by the rule. Only one of `author_collaborator_alias` and `author_scope` can be set."
+    "description": "Scope of authors covered by the rule. Only one of `author_collaborator_alias` and `author_scope` can be set. (ANY_AUTHOR)"
   },
   {
     "name": "created_at",
@@ -100,7 +100,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "author_scope",
     "type": "string",
-    "description": "Scope of authors covered by the rule. Only one of `author_collaborator_alias` and `author_scope` can be set."
+    "description": "Scope of authors covered by the rule. Only one of `author_collaborator_alias` and `author_scope` can be set. (ANY_AUTHOR)"
   },
   {
     "name": "created_at",
@@ -153,14 +153,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__auto_approval_rule"><code>data__auto_approval_rule</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-auto_approval_rule"><code>auto_approval_rule</code></a></td>
     <td></td>
     <td>Create an auto-approval rule</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__auto_approval_rule"><code>data__auto_approval_rule</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-rule_id"><code>rule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-auto_approval_rule"><code>auto_approval_rule</code></a></td>
     <td></td>
     <td>Update a auto-approval rule by rule ID</td>
 </tr>
@@ -283,7 +283,7 @@ Create an auto-approval rule
 
 ```sql
 INSERT INTO databricks_workspace.cleanrooms.auto_approval_rules (
-data__auto_approval_rule,
+auto_approval_rule,
 clean_room_name,
 deployment_name
 )
@@ -338,12 +338,12 @@ Update a auto-approval rule by rule ID
 ```sql
 UPDATE databricks_workspace.cleanrooms.auto_approval_rules
 SET 
-data__auto_approval_rule = '{{ auto_approval_rule }}'
+auto_approval_rule = '{{ auto_approval_rule }}'
 WHERE 
 clean_room_name = '{{ clean_room_name }}' --required
 AND rule_id = '{{ rule_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__auto_approval_rule = '{{ auto_approval_rule }}' --required
+AND auto_approval_rule = '{{ auto_approval_rule }}' --required
 RETURNING
 rule_id,
 clean_room_name,

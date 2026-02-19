@@ -1,23 +1,22 @@
 openapi: 3.0.0
 info:
   title: Databricks Oauth2 API (account)
-  description: >-
-    OpenAPI specification for the Databricks oauth2 service (account-level
-    APIs), generated from the Databricks Python SDK.
+  description: OpenAPI specification for the Databricks oauth2 service (account-level APIs), generated from the Databricks
+    Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.oauth2
 servers:
-  - url: https://accounts.cloud.databricks.com
+- url: https://accounts.cloud.databricks.com
 paths:
   /api/2.0/accounts/{account_id}/federationPolicies:
     post:
       operationId: account_federation_policy_create
       summary: Create account federation policy.
       tags:
-        - oauth2
-        - account_federation_policy
+      - oauth2
+      - account_federation_policy
       description: |-
         Create account federation policy.
 
@@ -28,16 +27,16 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: policy_id
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: policy_id
+        in: query
+        required: false
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -46,14 +45,11 @@ paths:
               properties:
                 policy:
                   type: string
-                  description: >-
-                    :param policy_id: str (optional) The identifier for the
-                    federation policy. The identifier must contain only
-                    lowercase alphanumeric characters, numbers, hyphens, and
-                    slashes. If unspecified, the id will be assigned by
-                    Databricks.
+                  description: ':param policy_id: str (optional) The identifier for the federation policy. The identifier
+                    must contain only lowercase alphanumeric characters, numbers, hyphens, and slashes. If unspecified, the
+                    id will be assigned by Databricks.'
               required:
-                - policy
+              - policy
       responses:
         '200':
           description: Success
@@ -77,8 +73,8 @@ paths:
       operationId: account_federation_policy_list
       summary: List account federation policies.
       tags:
-        - oauth2
-        - account_federation_policy
+      - oauth2
+      - account_federation_policy
       description: |-
         List account federation policies.
 
@@ -87,22 +83,22 @@ paths:
 
         :returns: Iterator over :class:`FederationPolicy`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: page_size
-          in: query
-          required: false
-          schema:
-            type: string
-          description: ':param page_token: str (optional)'
-        - name: page_token
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ':param page_token: str (optional)'
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -127,25 +123,25 @@ paths:
       operationId: account_federation_policy_delete
       summary: Delete account federation policy.
       tags:
-        - oauth2
-        - account_federation_policy
+      - oauth2
+      - account_federation_policy
       description: |-
         Delete account federation policy.
 
         :param policy_id: str
           The identifier for the federation policy.
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: policy_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The identifier for the federation policy.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: policy_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The identifier for the federation policy.
       responses:
         '200':
           description: Success
@@ -165,8 +161,8 @@ paths:
       operationId: account_federation_policy_get
       summary: Get account federation policy.
       tags:
-        - oauth2
-        - account_federation_policy
+      - oauth2
+      - account_federation_policy
       description: |-
         Get account federation policy.
 
@@ -175,17 +171,17 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: policy_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The identifier for the federation policy.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: policy_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The identifier for the federation policy.
       responses:
         '200':
           description: Success
@@ -209,8 +205,8 @@ paths:
       operationId: account_federation_policy_update
       summary: Update account federation policy.
       tags:
-        - oauth2
-        - account_federation_policy
+      - oauth2
+      - account_federation_policy
       description: |-
         Update account federation policy.
 
@@ -226,22 +222,22 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: policy_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The identifier for the federation policy.
-        - name: update_mask
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: policy_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The identifier for the federation policy.
+      - name: update_mask
+        in: query
+        required: false
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -250,18 +246,13 @@ paths:
               properties:
                 policy:
                   type: string
-                  description: >-
-                    :param update_mask: str (optional) The field mask specifies
-                    which fields of the policy to update. To specify multiple
-                    fields in the field mask, use comma as the separator (no
-                    space). The special value '*' indicates that all fields
-                    should be updated (full replacement). If unspecified, all
-                    fields that are set in the policy provided in the update
-                    request will overwrite the corresponding fields in the
-                    existing policy. Example value:
-                    'description,oidc_policy.audiences'.
+                  description: ':param update_mask: str (optional) The field mask specifies which fields of the policy to
+                    update. To specify multiple fields in the field mask, use comma as the separator (no space). The special
+                    value ''*'' indicates that all fields should be updated (full replacement). If unspecified, all fields
+                    that are set in the policy provided in the update request will overwrite the corresponding fields in the
+                    existing policy. Example value: ''description,oidc_policy.audiences''.'
               required:
-                - policy
+              - policy
       responses:
         '200':
           description: Success
@@ -286,15 +277,12 @@ paths:
       operationId: custom_app_integration_create
       summary: Create Custom OAuth App Integration.
       tags:
-        - oauth2
-        - custom_app_integration
-      description: >-
+      - oauth2
+      - custom_app_integration
+      description: |-
         Create Custom OAuth App Integration.
 
-
-        You can retrieve the custom OAuth app integration via
-        :method:CustomAppIntegration/get.
-
+        You can retrieve the custom OAuth app integration via :method:CustomAppIntegration/get.
 
         :param confidential: bool (optional)
           This field indicates whether an OAuth client secret is required to authenticate this client.
@@ -313,11 +301,11 @@ paths:
 
         :returns: :class:`CreateCustomAppIntegrationOutput`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -326,9 +314,7 @@ paths:
               properties:
                 confidential:
                   type: string
-                  description: >-
-                    This field indicates whether an OAuth client secret is
-                    required to authenticate this client.
+                  description: This field indicates whether an OAuth client secret is required to authenticate this client.
                 name:
                   type: string
                   description: Name of the custom OAuth app
@@ -337,18 +323,15 @@ paths:
                   description: List of OAuth redirect urls
                 scopes:
                   type: string
-                  description: >-
-                    OAuth scopes granted to the application. Supported scopes:
-                    all-apis, sql, offline_access, openid, profile, email.
+                  description: 'OAuth scopes granted to the application. Supported scopes: all-apis, sql, offline_access,
+                    openid, profile, email.'
                 token_access_policy:
                   type: string
                   description: Token access policy
                 user_authorized_scopes:
                   type: string
-                  description: >-
-                    Scopes that will need to be consented by end user to mint
-                    the access token. If the user does not authorize the access
-                    token will not be minted. Must be a subset of scopes.
+                  description: Scopes that will need to be consented by end user to mint the access token. If the user does
+                    not authorize the access token will not be minted. Must be a subset of scopes.
       responses:
         '200':
           description: Success
@@ -370,48 +353,41 @@ paths:
       x-stackql-sdk-source: CustomAppIntegrationAPI
     get:
       operationId: custom_app_integration_list
-      summary: >-
-        Get the list of custom OAuth app integrations for the specified
-        Databricks account
+      summary: Get the list of custom OAuth app integrations for the specified Databricks account
       tags:
-        - oauth2
-        - custom_app_integration
-      description: >-
-        Get the list of custom OAuth app integrations for the specified
-        Databricks account
-
+      - oauth2
+      - custom_app_integration
+      description: |-
+        Get the list of custom OAuth app integrations for the specified Databricks account
 
         :param include_creator_username: bool (optional)
-
         :param page_size: int (optional)
-
         :param page_token: str (optional)
-
 
         :returns: Iterator over :class:`GetCustomAppIntegrationOutput`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: include_creator_username
-          in: query
-          required: false
-          schema:
-            type: string
-          description: ':param page_size: int (optional)'
-        - name: page_size
-          in: query
-          required: false
-          schema:
-            type: string
-        - name: page_token
-          in: query
-          required: false
-          schema:
-            type: string
-          description: ':returns: Iterator over :class:`GetCustomAppIntegrationOutput`'
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: include_creator_username
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ':param page_size: int (optional)'
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: string
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ':returns: Iterator over :class:`GetCustomAppIntegrationOutput`'
       responses:
         '200':
           description: Success
@@ -434,32 +410,27 @@ paths:
   /api/2.0/accounts/{account_id}/oauth2/custom-app-integrations/{integration_id}:
     delete:
       operationId: custom_app_integration_delete
-      summary: >-
-        Delete an existing Custom OAuth App Integration. You can retrieve the
-        custom OAuth app integration via
+      summary: Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via
       tags:
-        - oauth2
-        - custom_app_integration
-      description: >-
-        Delete an existing Custom OAuth App Integration. You can retrieve the
-        custom OAuth app integration via
-
+      - oauth2
+      - custom_app_integration
+      description: |-
+        Delete an existing Custom OAuth App Integration. You can retrieve the custom OAuth app integration via
         :method:CustomAppIntegration/get.
-
 
         :param integration_id: str
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: integration_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: str
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: integration_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: str
       responses:
         '200':
           description: Success
@@ -479,8 +450,8 @@ paths:
       operationId: custom_app_integration_get
       summary: Gets the Custom OAuth App Integration for the given integration id.
       tags:
-        - oauth2
-        - custom_app_integration
+      - oauth2
+      - custom_app_integration
       description: |-
         Gets the Custom OAuth App Integration for the given integration id.
 
@@ -489,17 +460,17 @@ paths:
 
         :returns: :class:`GetCustomAppIntegrationOutput`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: integration_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The OAuth app integration ID.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: integration_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The OAuth app integration ID.
       responses:
         '200':
           description: Success
@@ -521,21 +492,15 @@ paths:
       x-stackql-sdk-source: CustomAppIntegrationAPI
     patch:
       operationId: custom_app_integration_update
-      summary: >-
-        Updates an existing custom OAuth App Integration. You can retrieve the
-        custom OAuth app integration
+      summary: Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration
       tags:
-        - oauth2
-        - custom_app_integration
-      description: >-
-        Updates an existing custom OAuth App Integration. You can retrieve the
-        custom OAuth app integration
-
+      - oauth2
+      - custom_app_integration
+      description: |-
+        Updates an existing custom OAuth App Integration. You can retrieve the custom OAuth app integration
         via :method:CustomAppIntegration/get.
 
-
         :param integration_id: str
-
         :param redirect_urls: List[str] (optional)
           List of OAuth redirect urls to be updated in the custom OAuth app integration
         :param scopes: List[str] (optional)
@@ -547,19 +512,18 @@ paths:
           Scopes that will need to be consented by end user to mint the access token. If the user does not
           authorize the access token will not be minted. Must be a subset of scopes.
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: integration_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: >-
-            :param redirect_urls: List[str] (optional) List of OAuth redirect
-            urls to be updated in the custom OAuth app integration
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: integration_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ':param redirect_urls: List[str] (optional) List of OAuth redirect urls to be updated in the custom OAuth
+          app integration'
       requestBody:
         content:
           application/json:
@@ -570,21 +534,15 @@ paths:
                   type: string
                 scopes:
                   type: string
-                  description: >-
-                    List of OAuth scopes to be updated in the custom OAuth app
-                    integration, similar to redirect URIs this will fully
-                    replace the existing values instead of appending
+                  description: List of OAuth scopes to be updated in the custom OAuth app integration, similar to redirect
+                    URIs this will fully replace the existing values instead of appending
                 token_access_policy:
                   type: string
-                  description: >-
-                    Token access policy to be updated in the custom OAuth app
-                    integration
+                  description: Token access policy to be updated in the custom OAuth app integration
                 user_authorized_scopes:
                   type: string
-                  description: >-
-                    Scopes that will need to be consented by end user to mint
-                    the access token. If the user does not authorize the access
-                    token will not be minted. Must be a subset of scopes.
+                  description: Scopes that will need to be consented by end user to mint the access token. If the user does
+                    not authorize the access token will not be minted. Must be a subset of scopes.
       responses:
         '200':
           description: Success
@@ -605,8 +563,8 @@ paths:
       operationId: o_auth_published_apps_list
       summary: Get all the available published OAuth apps in Databricks.
       tags:
-        - oauth2
-        - o_auth_published_apps
+      - oauth2
+      - o_auth_published_apps
       description: |-
         Get all the available published OAuth apps in Databricks.
 
@@ -617,23 +575,23 @@ paths:
 
         :returns: Iterator over :class:`PublishedAppOutput`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: page_size
-          in: query
-          required: false
-          schema:
-            type: string
-          description: The max number of OAuth published apps to return in one page.
-        - name: page_token
-          in: query
-          required: false
-          schema:
-            type: string
-          description: A token that can be used to get the next page of results.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: string
+        description: The max number of OAuth published apps to return in one page.
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
+        description: A token that can be used to get the next page of results.
       responses:
         '200':
           description: Success
@@ -658,15 +616,12 @@ paths:
       operationId: published_app_integration_create
       summary: Create Published OAuth App Integration.
       tags:
-        - oauth2
-        - published_app_integration
-      description: >-
+      - oauth2
+      - published_app_integration
+      description: |-
         Create Published OAuth App Integration.
 
-
-        You can retrieve the published OAuth app integration via
-        :method:PublishedAppIntegration/get.
-
+        You can retrieve the published OAuth app integration via :method:PublishedAppIntegration/get.
 
         :param app_id: str (optional)
           App id of the OAuth published app integration. For example power-bi, tableau-deskop
@@ -675,11 +630,11 @@ paths:
 
         :returns: :class:`CreatePublishedAppIntegrationOutput`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -688,9 +643,7 @@ paths:
               properties:
                 app_id:
                   type: string
-                  description: >-
-                    App id of the OAuth published app integration. For example
-                    power-bi, tableau-deskop
+                  description: App id of the OAuth published app integration. For example power-bi, tableau-deskop
                 token_access_policy:
                   type: string
                   description: Token access policy
@@ -715,40 +668,34 @@ paths:
       x-stackql-sdk-source: PublishedAppIntegrationAPI
     get:
       operationId: published_app_integration_list
-      summary: >-
-        Get the list of published OAuth app integrations for the specified
-        Databricks account
+      summary: Get the list of published OAuth app integrations for the specified Databricks account
       tags:
-        - oauth2
-        - published_app_integration
-      description: >-
-        Get the list of published OAuth app integrations for the specified
-        Databricks account
-
+      - oauth2
+      - published_app_integration
+      description: |-
+        Get the list of published OAuth app integrations for the specified Databricks account
 
         :param page_size: int (optional)
-
         :param page_token: str (optional)
-
 
         :returns: Iterator over :class:`GetPublishedAppIntegrationOutput`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: page_size
-          in: query
-          required: false
-          schema:
-            type: string
-          description: ':param page_token: str (optional)'
-        - name: page_token
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ':param page_token: str (optional)'
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -771,32 +718,27 @@ paths:
   /api/2.0/accounts/{account_id}/oauth2/published-app-integrations/{integration_id}:
     delete:
       operationId: published_app_integration_delete
-      summary: >-
-        Delete an existing Published OAuth App Integration. You can retrieve the
-        published OAuth app
+      summary: Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app
       tags:
-        - oauth2
-        - published_app_integration
-      description: >-
-        Delete an existing Published OAuth App Integration. You can retrieve the
-        published OAuth app
-
+      - oauth2
+      - published_app_integration
+      description: |-
+        Delete an existing Published OAuth App Integration. You can retrieve the published OAuth app
         integration via :method:PublishedAppIntegration/get.
-
 
         :param integration_id: str
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: integration_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: str
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: integration_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: str
       responses:
         '200':
           description: Success
@@ -816,8 +758,8 @@ paths:
       operationId: published_app_integration_get
       summary: Gets the Published OAuth App Integration for the given integration id.
       tags:
-        - oauth2
-        - published_app_integration
+      - oauth2
+      - published_app_integration
       description: |-
         Gets the Published OAuth App Integration for the given integration id.
 
@@ -825,17 +767,17 @@ paths:
 
         :returns: :class:`GetPublishedAppIntegrationOutput`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: integration_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ':returns: :class:`GetPublishedAppIntegrationOutput`'
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: integration_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ':returns: :class:`GetPublishedAppIntegrationOutput`'
       responses:
         '200':
           description: Success
@@ -857,38 +799,30 @@ paths:
       x-stackql-sdk-source: PublishedAppIntegrationAPI
     patch:
       operationId: published_app_integration_update
-      summary: >-
-        Updates an existing published OAuth App Integration. You can retrieve
-        the published OAuth app
+      summary: Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
       tags:
-        - oauth2
-        - published_app_integration
-      description: >-
-        Updates an existing published OAuth App Integration. You can retrieve
-        the published OAuth app
-
+      - oauth2
+      - published_app_integration
+      description: |-
+        Updates an existing published OAuth App Integration. You can retrieve the published OAuth app
         integration via :method:PublishedAppIntegration/get.
 
-
         :param integration_id: str
-
         :param token_access_policy: :class:`TokenAccessPolicy` (optional)
           Token access policy to be updated in the published OAuth app integration
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: integration_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: >-
-            :param token_access_policy: :class:`TokenAccessPolicy` (optional)
-            Token access policy to be updated in the published OAuth app
-            integration
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: integration_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ':param token_access_policy: :class:`TokenAccessPolicy` (optional) Token access policy to be updated
+          in the published OAuth app integration'
       requestBody:
         content:
           application/json:
@@ -917,8 +851,8 @@ paths:
       operationId: service_principal_federation_policy_create
       summary: Create account federation policy.
       tags:
-        - oauth2
-        - service_principal_federation_policy
+      - oauth2
+      - service_principal_federation_policy
       description: |-
         Create account federation policy.
 
@@ -931,22 +865,22 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: service_principal_id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: The service principal id for the federation policy.
-        - name: policy_id
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: service_principal_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The service principal id for the federation policy.
+      - name: policy_id
+        in: query
+        required: false
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -955,14 +889,11 @@ paths:
               properties:
                 policy:
                   type: string
-                  description: >-
-                    :param policy_id: str (optional) The identifier for the
-                    federation policy. The identifier must contain only
-                    lowercase alphanumeric characters, numbers, hyphens, and
-                    slashes. If unspecified, the id will be assigned by
-                    Databricks.
+                  description: ':param policy_id: str (optional) The identifier for the federation policy. The identifier
+                    must contain only lowercase alphanumeric characters, numbers, hyphens, and slashes. If unspecified, the
+                    id will be assigned by Databricks.'
               required:
-                - policy
+              - policy
       responses:
         '200':
           description: Success
@@ -986,8 +917,8 @@ paths:
       operationId: service_principal_federation_policy_list
       summary: List account federation policies.
       tags:
-        - oauth2
-        - service_principal_federation_policy
+      - oauth2
+      - service_principal_federation_policy
       description: |-
         List account federation policies.
 
@@ -998,28 +929,28 @@ paths:
 
         :returns: Iterator over :class:`FederationPolicy`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: service_principal_id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: The service principal id for the federation policy.
-        - name: page_size
-          in: query
-          required: false
-          schema:
-            type: string
-          description: ':param page_token: str (optional)'
-        - name: page_token
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: service_principal_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The service principal id for the federation policy.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ':param page_token: str (optional)'
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -1044,8 +975,8 @@ paths:
       operationId: service_principal_federation_policy_delete
       summary: Delete account federation policy.
       tags:
-        - oauth2
-        - service_principal_federation_policy
+      - oauth2
+      - service_principal_federation_policy
       description: |-
         Delete account federation policy.
 
@@ -1054,23 +985,23 @@ paths:
         :param policy_id: str
           The identifier for the federation policy.
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: service_principal_id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: The service principal id for the federation policy.
-        - name: policy_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The identifier for the federation policy.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: service_principal_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The service principal id for the federation policy.
+      - name: policy_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The identifier for the federation policy.
       responses:
         '200':
           description: Success
@@ -1090,8 +1021,8 @@ paths:
       operationId: service_principal_federation_policy_get
       summary: Get account federation policy.
       tags:
-        - oauth2
-        - service_principal_federation_policy
+      - oauth2
+      - service_principal_federation_policy
       description: |-
         Get account federation policy.
 
@@ -1102,23 +1033,23 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: service_principal_id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: The service principal id for the federation policy.
-        - name: policy_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The identifier for the federation policy.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: service_principal_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The service principal id for the federation policy.
+      - name: policy_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The identifier for the federation policy.
       responses:
         '200':
           description: Success
@@ -1142,8 +1073,8 @@ paths:
       operationId: service_principal_federation_policy_update
       summary: Update account federation policy.
       tags:
-        - oauth2
-        - service_principal_federation_policy
+      - oauth2
+      - service_principal_federation_policy
       description: |-
         Update account federation policy.
 
@@ -1161,28 +1092,28 @@ paths:
 
         :returns: :class:`FederationPolicy`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: service_principal_id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: The service principal id for the federation policy.
-        - name: policy_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The identifier for the federation policy.
-        - name: update_mask
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: service_principal_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: The service principal id for the federation policy.
+      - name: policy_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The identifier for the federation policy.
+      - name: update_mask
+        in: query
+        required: false
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1191,18 +1122,13 @@ paths:
               properties:
                 policy:
                   type: string
-                  description: >-
-                    :param update_mask: str (optional) The field mask specifies
-                    which fields of the policy to update. To specify multiple
-                    fields in the field mask, use comma as the separator (no
-                    space). The special value '*' indicates that all fields
-                    should be updated (full replacement). If unspecified, all
-                    fields that are set in the policy provided in the update
-                    request will overwrite the corresponding fields in the
-                    existing policy. Example value:
-                    'description,oidc_policy.audiences'.
+                  description: ':param update_mask: str (optional) The field mask specifies which fields of the policy to
+                    update. To specify multiple fields in the field mask, use comma as the separator (no space). The special
+                    value ''*'' indicates that all fields should be updated (full replacement). If unspecified, all fields
+                    that are set in the policy provided in the update request will overwrite the corresponding fields in the
+                    existing policy. Example value: ''description,oidc_policy.audiences''.'
               required:
-                - policy
+              - policy
       responses:
         '200':
           description: Success
@@ -1227,8 +1153,8 @@ paths:
       operationId: service_principal_secrets_create
       summary: Create a secret for the given service principal.
       tags:
-        - oauth2
-        - service_principal_secrets
+      - oauth2
+      - service_principal_secrets
       description: |-
         Create a secret for the given service principal.
 
@@ -1240,17 +1166,17 @@ paths:
 
         :returns: :class:`CreateServicePrincipalSecretResponse`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: service_principal_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The service principal ID.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: service_principal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The service principal ID.
       requestBody:
         content:
           application/json:
@@ -1259,10 +1185,8 @@ paths:
               properties:
                 lifetime:
                   type: string
-                  description: >-
-                    The lifetime of the secret in seconds. If this parameter is
-                    not provided, the secret will have a default lifetime of 730
-                    days (63072000s).
+                  description: The lifetime of the secret in seconds. If this parameter is not provided, the secret will have
+                    a default lifetime of 730 days (63072000s).
       responses:
         '200':
           description: Success
@@ -1284,23 +1208,17 @@ paths:
       x-stackql-sdk-source: ServicePrincipalSecretsAPI
     get:
       operationId: service_principal_secrets_list
-      summary: >-
-        List all secrets associated with the given service principal. This
-        operation only returns information
+      summary: List all secrets associated with the given service principal. This operation only returns information
       tags:
-        - oauth2
-        - service_principal_secrets
-      description: >-
-        List all secrets associated with the given service principal. This
-        operation only returns information
-
+      - oauth2
+      - service_principal_secrets
+      description: |-
+        List all secrets associated with the given service principal. This operation only returns information
         about the secrets themselves and does not include the secret values.
-
 
         :param service_principal_id: str
           The service principal ID.
         :param page_size: int (optional)
-
         :param page_token: str (optional)
           An opaque page token which was the `next_page_token` in the response of the previous request to list
           the secrets for this service principal. Provide this token to retrieve the next page of secret
@@ -1311,38 +1229,33 @@ paths:
 
         :returns: Iterator over :class:`SecretInfo`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: service_principal_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The service principal ID.
-        - name: page_size
-          in: query
-          required: false
-          schema:
-            type: string
-          description: >-
-            :param page_token: str (optional) An opaque page token which was the
-            `next_page_token` in the response of the previous request to list
-            the secrets for this service principal. Provide this token to
-            retrieve the next page of secret entries. When providing a
-            `page_token`, all other parameters provided to the request must
-            match the previous request. To list all of the secrets for a service
-            principal, it is necessary to continue requesting pages of entries
-            until the response contains no `next_page_token`. Note that the
-            number of entries returned must not be used to determine when the
-            listing is complete.
-        - name: page_token
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: service_principal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The service principal ID.
+      - name: page_size
+        in: query
+        required: false
+        schema:
+          type: string
+        description: ':param page_token: str (optional) An opaque page token which was the `next_page_token` in the response
+          of the previous request to list the secrets for this service principal. Provide this token to retrieve the next
+          page of secret entries. When providing a `page_token`, all other parameters provided to the request must match the
+          previous request. To list all of the secrets for a service principal, it is necessary to continue requesting pages
+          of entries until the response contains no `next_page_token`. Note that the number of entries returned must not be
+          used to determine when the listing is complete.'
+      - name: page_token
+        in: query
+        required: false
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -1367,8 +1280,8 @@ paths:
       operationId: service_principal_secrets_delete
       summary: Delete a secret from the given service principal.
       tags:
-        - oauth2
-        - service_principal_secrets
+      - oauth2
+      - service_principal_secrets
       description: |-
         Delete a secret from the given service principal.
 
@@ -1377,23 +1290,23 @@ paths:
         :param secret_id: str
           The secret ID.
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: service_principal_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The service principal ID.
-        - name: secret_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: The secret ID.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: service_principal_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The service principal ID.
+      - name: secret_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: The secret ID.
       responses:
         '200':
           description: Success
@@ -1418,9 +1331,8 @@ components:
           type: string
         client_secret:
           type: string
-          description: >-
-            OAuth client-secret generated by the Databricks. If this is a
-            confidential OAuth app client-secret will be generated.
+          description: OAuth client-secret generated by the Databricks. If this is a confidential OAuth app client-secret
+            will be generated.
         integration_id:
           type: string
           description: Unique integration id for the custom OAuth app
@@ -1436,9 +1348,7 @@ components:
           type: string
         expire_time:
           type: string
-          description: >-
-            UTC time when the secret will expire. If the field is not present,
-            the secret does not expire.
+          description: UTC time when the secret will expire. If the field is not present, the secret does not expire.
         id:
           type: string
           description: ID of the secret
@@ -1470,15 +1380,10 @@ components:
           description: Description of the federation policy.
         name:
           type: string
-          description: >-
-            Resource name for the federation policy. Example values include
-            `accounts/<account-id>/federationPolicies/my-federation-policy` for
-            Account Federation Policies, and
-            `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy`
-            for Service Principal Federation Policies. Typically an output
-            parameter, which does not need to be specified in create or update
-            requests. If specified in a request, must match the value in the
-            request URL.
+          description: Resource name for the federation policy. Example values include `accounts/<account-id>/federationPolicies/my-federation-policy`
+            for Account Federation Policies, and `accounts/<account-id>/servicePrincipals/<service-principal-id>/federationPolicies/my-federation-policy`
+            for Service Principal Federation Policies. Typically an output parameter, which does not need to be specified
+            in create or update requests. If specified in a request, must match the value in the request URL.
         oidc_policy:
           $ref: '#/components/schemas/OidcFederationPolicy'
         policy_id:
@@ -1486,9 +1391,8 @@ components:
           description: The ID of the federation policy. Output only.
         service_principal_id:
           type: integer
-          description: >-
-            The service principal ID that this federation policy applies to.
-            Output only. Only set for service principal federation policies.
+          description: The service principal ID that this federation policy applies to. Output only. Only set for service
+            principal federation policies.
         uid:
           type: string
           description: Unique, immutable id of the federation policy.
@@ -1502,9 +1406,7 @@ components:
           type: string
         confidential:
           type: boolean
-          description: >-
-            This field indicates whether an OAuth client secret is required to
-            authenticate this client.
+          description: This field indicates whether an OAuth client secret is required to authenticate this client.
         create_time:
           type: string
         created_by:
@@ -1533,10 +1435,8 @@ components:
           type: array
           items:
             type: string
-          description: >-
-            Scopes that will need to be consented by end user to mint the access
-            token. If the user does not authorize the access token will not be
-            minted. Must be a subset of scopes.
+          description: Scopes that will need to be consented by end user to mint the access token. If the user does not authorize
+            the access token will not be minted. Must be a subset of scopes.
     GetCustomAppIntegrationsOutput:
       type: object
       properties:
@@ -1582,9 +1482,8 @@ components:
             $ref: '#/components/schemas/PublishedAppOutput'
         next_page_token:
           type: string
-          description: >-
-            A token that can be used to get the next page of results. If not
-            present, there are no more results to show.
+          description: A token that can be used to get the next page of results. If not present, there are no more results
+            to show.
     ListFederationPoliciesResponse:
       type: object
       properties:
@@ -1611,51 +1510,33 @@ components:
           type: array
           items:
             type: string
-          description: >-
-            The allowed token audiences, as specified in the 'aud' claim of
-            federated tokens. The audience identifier is intended to represent
-            the recipient of the token. Can be any non-empty string value. As
-            long as the audience in the token matches at least one audience in
-            the policy, the token is considered a match. If audiences is
-            unspecified, defaults to your Databricks account id.
+          description: The allowed token audiences, as specified in the 'aud' claim of federated tokens. The audience identifier
+            is intended to represent the recipient of the token. Can be any non-empty string value. As long as the audience
+            in the token matches at least one audience in the policy, the token is considered a match. If audiences is unspecified,
+            defaults to your Databricks account id.
         issuer:
           type: string
-          description: >-
-            The required token issuer, as specified in the 'iss' claim of
-            federated tokens.
+          description: The required token issuer, as specified in the 'iss' claim of federated tokens.
         jwks_json:
           type: string
-          description: >-
-            The public keys used to validate the signature of federated tokens,
-            in JWKS format. Most use cases should not need to specify this
-            field. If jwks_uri and jwks_json are both unspecified (recommended),
-            Databricks automatically fetches the public keys from your issuer’s
-            well known endpoint. Databricks strongly recommends relying on your
-            issuer’s well known endpoint for discovering public keys.
+          description: The public keys used to validate the signature of federated tokens, in JWKS format. Most use cases
+            should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks
+            automatically fetches the public keys from your issuer’s well known endpoint. Databricks strongly recommends relying
+            on your issuer’s well known endpoint for discovering public keys.
         jwks_uri:
           type: string
-          description: >-
-            URL of the public keys used to validate the signature of federated
-            tokens, in JWKS format. Most use cases should not need to specify
-            this field. If jwks_uri and jwks_json are both unspecified
-            (recommended), Databricks automatically fetches the public keys from
-            your issuer’s well known endpoint. Databricks strongly recommends
-            relying on your issuer’s well known endpoint for discovering public
-            keys.
+          description: URL of the public keys used to validate the signature of federated tokens, in JWKS format. Most use
+            cases should not need to specify this field. If jwks_uri and jwks_json are both unspecified (recommended), Databricks
+            automatically fetches the public keys from your issuer’s well known endpoint. Databricks strongly recommends relying
+            on your issuer’s well known endpoint for discovering public keys.
         subject:
           type: string
-          description: >-
-            The required token subject, as specified in the subject claim of
-            federated tokens. Must be specified for service principal federation
-            policies. Must not be specified for account federation policies.
+          description: The required token subject, as specified in the subject claim of federated tokens. Must be specified
+            for service principal federation policies. Must not be specified for account federation policies.
         subject_claim:
           type: string
-          description: >-
-            The claim that contains the subject of the token. If unspecified,
-            the default value is 'sub'.
-      description: >-
-        Specifies the policy to use for validating OIDC claims in your federated
-        tokens.
+          description: The claim that contains the subject of the token. If unspecified, the default value is 'sub'.
+      description: Specifies the policy to use for validating OIDC claims in your federated tokens.
     PublishedAppOutput:
       type: object
       properties:
@@ -1663,17 +1544,13 @@ components:
           type: string
         client_id:
           type: string
-          description: >-
-            Client ID of the published OAuth app. It is the client_id in the
-            OAuth flow
+          description: Client ID of the published OAuth app. It is the client_id in the OAuth flow
         description:
           type: string
           description: Description of the published OAuth app.
         is_confidential_client:
           type: boolean
-          description: >-
-            Whether the published OAuth app is a confidential client. It is
-            always false for published OAuth apps.
+          description: Whether the published OAuth app is a confidential client. It is always false for published OAuth apps.
         name:
           type: string
           description: The display name of the published OAuth app.
@@ -1694,9 +1571,7 @@ components:
           type: string
         expire_time:
           type: string
-          description: >-
-            UTC time when the secret will expire. If the field is not present,
-            the secret does not expire.
+          description: UTC time when the secret will expire. If the field is not present, the secret does not expire.
         id:
           type: string
           description: ID of the secret
@@ -1719,20 +1594,15 @@ components:
           description: access token time to live in minutes
         enable_single_use_refresh_tokens:
           type: boolean
-          description: >-
-            Whether to enable single-use refresh tokens (refresh token
-            rotation). If this feature is enabled, upon successfully getting a
-            new access token using a refresh token, Databricks will issue a new
-            refresh token along with the access token in the response and
-            invalidate the old refresh token. The client should use the new
-            refresh token to get access tokens in future requests.
+          description: Whether to enable single-use refresh tokens (refresh token rotation). If this feature is enabled, upon
+            successfully getting a new access token using a refresh token, Databricks will issue a new refresh token along
+            with the access token in the response and invalidate the old refresh token. The client should use the new refresh
+            token to get access tokens in future requests.
         refresh_token_ttl_in_minutes:
           type: integer
-          description: >-
-            Refresh token time to live in minutes. When single-use refresh
-            tokens are enabled, this represents the TTL of an individual refresh
-            token. If the refresh token is used before it expires, a new one is
-            issued with a renewed individual TTL.
+          description: Refresh token time to live in minutes. When single-use refresh tokens are enabled, this represents
+            the TTL of an individual refresh token. If the refresh token is used before it expires, a new one is issued with
+            a renewed individual TTL.
     UpdateCustomAppIntegrationOutput:
       type: object
       properties: {}
@@ -1746,9 +1616,11 @@ components:
       title: Account Federation Policy
       methods:
         account_federation_policy_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1federationPolicies/post
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1federationPolicies/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
@@ -1761,40 +1633,35 @@ components:
             objectKey: $.policies
         account_federation_policy_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1federationPolicies~1{policy_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1federationPolicies~1{policy_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         account_federation_policy_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1federationPolicies~1{policy_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1federationPolicies~1{policy_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         account_federation_policy_update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1federationPolicies~1{policy_id}/patch
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1federationPolicies~1{policy_id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_federation_policy/methods/account_federation_policy_get
-          - $ref: >-
-              #/components/x-stackQL-resources/account_federation_policy/methods/account_federation_policy_list
+        - $ref: '#/components/x-stackQL-resources/account_federation_policy/methods/account_federation_policy_get'
+        - $ref: '#/components/x-stackQL-resources/account_federation_policy/methods/account_federation_policy_list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_federation_policy/methods/account_federation_policy_create
+        - $ref: '#/components/x-stackQL-resources/account_federation_policy/methods/account_federation_policy_create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_federation_policy/methods/account_federation_policy_update
+        - $ref: '#/components/x-stackQL-resources/account_federation_policy/methods/account_federation_policy_update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/account_federation_policy/methods/account_federation_policy_delete
+        - $ref: '#/components/x-stackQL-resources/account_federation_policy/methods/account_federation_policy_delete'
         replace: []
     custom_app_integration:
       id: databricks_account.oauth2.custom_app_integration
@@ -1802,56 +1669,52 @@ components:
       title: Custom App Integration
       methods:
         custom_app_integration_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1custom-app-integrations/post
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1custom-app-integrations/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         custom_app_integration_list:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1custom-app-integrations/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1custom-app-integrations/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
             objectKey: $.apps
         custom_app_integration_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1custom-app-integrations~1{integration_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1custom-app-integrations~1{integration_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         custom_app_integration_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1custom-app-integrations~1{integration_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1custom-app-integrations~1{integration_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         custom_app_integration_update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1custom-app-integrations~1{integration_id}/patch
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1custom-app-integrations~1{integration_id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_get
-          - $ref: >-
-              #/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_list
+        - $ref: '#/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_get'
+        - $ref: '#/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_create
+        - $ref: '#/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_update
+        - $ref: '#/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_delete
+        - $ref: '#/components/x-stackQL-resources/custom_app_integration/methods/custom_app_integration_delete'
         replace: []
     oauth_published_apps:
       id: databricks_account.oauth2.oauth_published_apps
@@ -1860,16 +1723,14 @@ components:
       methods:
         oauth_published_apps_list:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-apps/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-apps/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
             objectKey: $.apps
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/oauth_published_apps/methods/oauth_published_apps_list
+        - $ref: '#/components/x-stackQL-resources/oauth_published_apps/methods/oauth_published_apps_list'
         insert: []
         update: []
         delete: []
@@ -1880,56 +1741,52 @@ components:
       title: Published App Integration
       methods:
         published_app_integration_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-app-integrations/post
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-app-integrations/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         published_app_integration_list:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-app-integrations/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-app-integrations/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
             objectKey: $.apps
         published_app_integration_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-app-integrations~1{integration_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-app-integrations~1{integration_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         published_app_integration_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-app-integrations~1{integration_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-app-integrations~1{integration_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         published_app_integration_update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-app-integrations~1{integration_id}/patch
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1oauth2~1published-app-integrations~1{integration_id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/published_app_integration/methods/published_app_integration_get
-          - $ref: >-
-              #/components/x-stackQL-resources/published_app_integration/methods/published_app_integration_list
+        - $ref: '#/components/x-stackQL-resources/published_app_integration/methods/published_app_integration_get'
+        - $ref: '#/components/x-stackQL-resources/published_app_integration/methods/published_app_integration_list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/published_app_integration/methods/published_app_integration_create
+        - $ref: '#/components/x-stackQL-resources/published_app_integration/methods/published_app_integration_create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/published_app_integration/methods/published_app_integration_update
+        - $ref: '#/components/x-stackQL-resources/published_app_integration/methods/published_app_integration_update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/published_app_integration/methods/published_app_integration_delete
+        - $ref: '#/components/x-stackQL-resources/published_app_integration/methods/published_app_integration_delete'
         replace: []
     service_principal_federation_policy:
       id: databricks_account.oauth2.service_principal_federation_policy
@@ -1937,56 +1794,52 @@ components:
       title: Service Principal Federation Policy
       methods:
         service_principal_federation_policy_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1federationPolicies/post
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1federationPolicies/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         service_principal_federation_policy_list:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1federationPolicies/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1federationPolicies/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
             objectKey: $.policies
         service_principal_federation_policy_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1federationPolicies~1{policy_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1federationPolicies~1{policy_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         service_principal_federation_policy_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1federationPolicies~1{policy_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1federationPolicies~1{policy_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         service_principal_federation_policy_update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1federationPolicies~1{policy_id}/patch
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1federationPolicies~1{policy_id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/service_principal_federation_policy/methods/service_principal_federation_policy_get
-          - $ref: >-
-              #/components/x-stackQL-resources/service_principal_federation_policy/methods/service_principal_federation_policy_list
+        - $ref: '#/components/x-stackQL-resources/service_principal_federation_policy/methods/service_principal_federation_policy_get'
+        - $ref: '#/components/x-stackQL-resources/service_principal_federation_policy/methods/service_principal_federation_policy_list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/service_principal_federation_policy/methods/service_principal_federation_policy_create
+        - $ref: '#/components/x-stackQL-resources/service_principal_federation_policy/methods/service_principal_federation_policy_create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/service_principal_federation_policy/methods/service_principal_federation_policy_update
+        - $ref: '#/components/x-stackQL-resources/service_principal_federation_policy/methods/service_principal_federation_policy_update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/service_principal_federation_policy/methods/service_principal_federation_policy_delete
+        - $ref: '#/components/x-stackQL-resources/service_principal_federation_policy/methods/service_principal_federation_policy_delete'
         replace: []
     service_principal_secrets:
       id: databricks_account.oauth2.service_principal_secrets
@@ -1994,36 +1847,293 @@ components:
       title: Service Principal Secrets
       methods:
         service_principal_secrets_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1credentials~1secrets/post
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1credentials~1secrets/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         service_principal_secrets_list:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1credentials~1secrets/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1credentials~1secrets/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
             objectKey: $.secrets
         service_principal_secrets_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1credentials~1secrets~1{secret_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1servicePrincipals~1{service_principal_id}~1credentials~1secrets~1{secret_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/service_principal_secrets/methods/service_principal_secrets_list
+        - $ref: '#/components/x-stackQL-resources/service_principal_secrets/methods/service_principal_secrets_list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/service_principal_secrets/methods/service_principal_secrets_create
+        - $ref: '#/components/x-stackQL-resources/service_principal_secrets/methods/service_principal_secrets_create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/service_principal_secrets/methods/service_principal_secrets_delete
+        - $ref: '#/components/x-stackQL-resources/service_principal_secrets/methods/service_principal_secrets_delete'
         replace: []
+    vw_federation_policies:
+      name: vw_federation_policies
+      id: databricks_account.oauth2.vw_federation_policies
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: policy_id
+            type: string
+            description: Unique identifier for the federation policy.
+          - name: uid
+            type: string
+            description: Globally unique identifier for the federation policy.
+          - name: name
+            type: string
+            description: Human-readable name of the federation policy.
+          - name: description
+            type: string
+            description: Optional description of the federation policy.
+          - name: service_principal_id
+            type: integer
+            description: ID of the service principal this federation policy is associated with.
+          - name: create_time
+            type: string
+            description: Timestamp when the federation policy was created (ISO 8601).
+          - name: update_time
+            type: string
+            description: Timestamp when the federation policy was last updated (ISO 8601).
+          - name: oidc_issuer
+            type: string
+            description: OIDC token issuer URL for the federation policy.
+          - name: oidc_subject
+            type: string
+            description: Expected subject claim value in the OIDC token.
+          - name: oidc_subject_claim
+            type: string
+            description: Name of the claim in the OIDC token used as the subject identifier.
+          - name: oidc_audiences
+            type: array
+            description: List of acceptable audience values in the OIDC token.
+          - name: oidc_jwks_uri
+            type: string
+            description: URI of the JWKS endpoint used to verify the OIDC token signature.
+          - name: oidc_jwks_json
+            type: string
+            description: Inline JWKS JSON used to verify the OIDC token signature (alternative to jwks_uri).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                fp.account_id,
+                fp.policy_id,
+                fp.uid,
+                fp.name,
+                fp.description,
+                fp.service_principal_id,
+                fp.create_time,
+                fp.update_time,
+                JSON_EXTRACT(fp.oidc_policy, '$.issuer') AS oidc_issuer,
+                JSON_EXTRACT(fp.oidc_policy, '$.subject') AS oidc_subject,
+                JSON_EXTRACT(fp.oidc_policy, '$.subject_claim') AS oidc_subject_claim,
+                JSON_EXTRACT(fp.oidc_policy, '$.audiences') AS oidc_audiences,
+                JSON_EXTRACT(fp.oidc_policy, '$.jwks_uri') AS oidc_jwks_uri,
+                JSON_EXTRACT(fp.oidc_policy, '$.jwks_json') AS oidc_jwks_json
+              FROM databricks_account.oauth2.account_federation_policy fp
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  fp.account_id,
+                  fp.policy_id,
+                  fp.uid,
+                  fp.name,
+                  fp.description,
+                  fp.service_principal_id,
+                  fp.create_time,
+                  fp.update_time,
+                  fp.oidc_policy->>'issuer' AS oidc_issuer,
+                  fp.oidc_policy->>'subject' AS oidc_subject,
+                  fp.oidc_policy->>'subject_claim' AS oidc_subject_claim,
+                  fp.oidc_policy->'audiences' AS oidc_audiences,
+                  fp.oidc_policy->>'jwks_uri' AS oidc_jwks_uri,
+                  fp.oidc_policy->>'jwks_json' AS oidc_jwks_json
+                FROM databricks_account.oauth2.account_federation_policy fp
+                WHERE account_id = '{{ account_id }}'
+    vw_custom_app_integrations:
+      name: vw_custom_app_integrations
+      id: databricks_account.oauth2.vw_custom_app_integrations
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: integration_id
+            type: string
+            description: Unique identifier for the custom app integration.
+          - name: client_id
+            type: string
+            description: OAuth2 client ID issued for the custom app integration.
+          - name: name
+            type: string
+            description: Human-readable name of the custom app integration.
+          - name: confidential
+            type: boolean
+            description: Whether the app is a confidential client (can securely store a client secret).
+          - name: creator_username
+            type: string
+            description: Username of the user who created the custom app integration.
+          - name: created_by
+            type: integer
+            description: ID of the user who created the custom app integration.
+          - name: create_time
+            type: string
+            description: Timestamp when the integration was created (ISO 8601).
+          - name: redirect_urls
+            type: array
+            description: List of allowed OAuth2 redirect URLs for the app integration.
+          - name: scopes
+            type: array
+            description: List of OAuth2 scopes the app integration is permitted to request.
+          - name: user_authorized_scopes
+            type: array
+            description: List of scopes that users have individually authorized for this app.
+          - name: access_token_ttl_minutes
+            type: integer
+            description: Time-to-live for access tokens issued to this app, in minutes.
+          - name: refresh_token_ttl_minutes
+            type: integer
+            description: Time-to-live for refresh tokens issued to this app, in minutes.
+          - name: session_lifetime_minutes
+            type: integer
+            description: Maximum absolute session lifetime for this app, in minutes.
+          - name: single_use_refresh_tokens
+            type: boolean
+            description: Whether refresh tokens are single-use (rotated on each use).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                c.account_id,
+                c.integration_id,
+                c.client_id,
+                c.name,
+                c.confidential,
+                c.creator_username,
+                c.created_by,
+                c.create_time,
+                c.redirect_urls,
+                c.scopes,
+                c.user_authorized_scopes,
+                JSON_EXTRACT(c.token_access_policy, '$.access_token_ttl_in_minutes') AS access_token_ttl_minutes,
+                JSON_EXTRACT(c.token_access_policy, '$.refresh_token_ttl_in_minutes') AS refresh_token_ttl_minutes,
+                JSON_EXTRACT(c.token_access_policy, '$.absolute_session_lifetime_in_minutes') AS session_lifetime_minutes,
+                JSON_EXTRACT(c.token_access_policy, '$.enable_single_use_refresh_tokens') AS single_use_refresh_tokens
+              FROM databricks_account.oauth2.custom_app_integration c
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  c.account_id,
+                  c.integration_id,
+                  c.client_id,
+                  c.name,
+                  c.confidential,
+                  c.creator_username,
+                  c.created_by,
+                  c.create_time,
+                  c.redirect_urls,
+                  c.scopes,
+                  c.user_authorized_scopes,
+                  (c.token_access_policy->>'access_token_ttl_in_minutes')::integer AS access_token_ttl_minutes,
+                  (c.token_access_policy->>'refresh_token_ttl_in_minutes')::integer AS refresh_token_ttl_minutes,
+                  (c.token_access_policy->>'absolute_session_lifetime_in_minutes')::integer AS session_lifetime_minutes,
+                  (c.token_access_policy->>'enable_single_use_refresh_tokens')::boolean AS single_use_refresh_tokens
+                FROM databricks_account.oauth2.custom_app_integration c
+                WHERE account_id = '{{ account_id }}'
+    vw_published_app_integrations:
+      name: vw_published_app_integrations
+      id: databricks_account.oauth2.vw_published_app_integrations
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: integration_id
+            type: string
+            description: Unique identifier for the published app integration.
+          - name: app_id
+            type: string
+            description: ID of the published app (matches integration_id for published apps).
+          - name: name
+            type: string
+            description: Human-readable name of the published app (e.g. Tableau, Power BI, Databricks CLI).
+          - name: create_time
+            type: string
+            description: Timestamp when the integration was enabled on this account (ISO 8601).
+          - name: created_by
+            type: integer
+            description: ID of the user who enabled this published app integration (0 for system-created).
+          - name: access_token_ttl_minutes
+            type: integer
+            description: Time-to-live for access tokens issued to this app, in minutes (typically 60).
+          - name: refresh_token_ttl_minutes
+            type: integer
+            description: Time-to-live for refresh tokens issued to this app, in minutes (typically 10080 - 7 days).
+          - name: session_lifetime_minutes
+            type: integer
+            description: Maximum absolute session lifetime for this app, in minutes (e.g. 129600 = 90 days, 525600 = 1 year).
+          - name: single_use_refresh_tokens
+            type: boolean
+            description: Whether refresh tokens are single-use and rotated on each use (1 = true, 0 = false).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                p.account_id,
+                p.integration_id,
+                p.app_id,
+                p.name,
+                p.create_time,
+                p.created_by,
+                JSON_EXTRACT(p.token_access_policy, '$.access_token_ttl_in_minutes') AS access_token_ttl_minutes,
+                JSON_EXTRACT(p.token_access_policy, '$.refresh_token_ttl_in_minutes') AS refresh_token_ttl_minutes,
+                JSON_EXTRACT(p.token_access_policy, '$.absolute_session_lifetime_in_minutes') AS session_lifetime_minutes,
+                JSON_EXTRACT(p.token_access_policy, '$.enable_single_use_refresh_tokens') AS single_use_refresh_tokens
+              FROM databricks_account.oauth2.published_app_integration p
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  p.account_id,
+                  p.integration_id,
+                  p.app_id,
+                  p.name,
+                  p.create_time,
+                  p.created_by,
+                  (p.token_access_policy->>'access_token_ttl_in_minutes')::integer AS access_token_ttl_minutes,
+                  (p.token_access_policy->>'refresh_token_ttl_in_minutes')::integer AS refresh_token_ttl_minutes,
+                  (p.token_access_policy->>'absolute_session_lifetime_in_minutes')::integer AS session_lifetime_minutes,
+                  (p.token_access_policy->>'enable_single_use_refresh_tokens')::boolean AS single_use_refresh_tokens
+                FROM databricks_account.oauth2.published_app_integration p
+                WHERE account_id = '{{ account_id }}'
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

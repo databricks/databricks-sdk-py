@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>postgres_credentials</code> res
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>postgres_credentials</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="postgres_credentials" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.postgres.postgres_credentials" /></td></tr>
 </tbody></table>

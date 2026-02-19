@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks qualitymonitorv2 service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.qualitymonitorv2"
   },
   "servers": [
@@ -459,7 +459,7 @@
       },
       "AnomalyDetectionRunStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ANOMALY_DETECTION_RUN_STATUS_CANCELED",
           "ANOMALY_DETECTION_RUN_STATUS_FAILED",
           "ANOMALY_DETECTION_RUN_STATUS_JOB_DELETED",

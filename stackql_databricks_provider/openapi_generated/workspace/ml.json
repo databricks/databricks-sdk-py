@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks ml service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.ml"
   },
   "servers": [
@@ -9276,7 +9276,7 @@
       },
       "ActivityAction": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "APPROVE_TRANSITION_REQUEST",
           "CANCEL_TRANSITION_REQUEST",
           "DELETE_COMMENT",
@@ -9287,7 +9287,7 @@
       },
       "ActivityType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "APPLIED_TRANSITION",
           "APPROVED_REQUEST",
           "CANCELLED_REQUEST",
@@ -9300,7 +9300,7 @@
       },
       "CommentActivityAction": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "APPROVE_TRANSITION_REQUEST",
           "CANCEL_TRANSITION_REQUEST",
           "DELETE_COMMENT",
@@ -9311,7 +9311,7 @@
       },
       "ExperimentPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_EDIT",
           "CAN_MANAGE",
           "CAN_READ"
@@ -9320,7 +9320,7 @@
       },
       "ForecastingExperimentState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCELLED",
           "FAILED",
           "PENDING",
@@ -9331,7 +9331,7 @@
       },
       "FunctionFunctionType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "APPROX_COUNT_DISTINCT",
           "APPROX_PERCENTILE",
           "AVG",
@@ -9350,7 +9350,7 @@
       },
       "LoggedModelStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "LOGGED_MODEL_PENDING",
           "LOGGED_MODEL_READY",
           "LOGGED_MODEL_UPLOAD_FAILED"
@@ -9359,7 +9359,7 @@
       },
       "MaterializedFeaturePipelineScheduleState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "PAUSED",
           "SNAPSHOT"
@@ -9368,7 +9368,7 @@
       },
       "ModelVersionStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAILED_REGISTRATION",
           "PENDING_REGISTRATION",
           "READY"
@@ -9377,7 +9377,7 @@
       },
       "OnlineStoreState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AVAILABLE",
           "DELETING",
           "FAILING_OVER",
@@ -9389,7 +9389,7 @@
       },
       "PermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_CREATE_REGISTERED_MODEL",
           "CAN_EDIT",
           "CAN_MANAGE",
@@ -9401,7 +9401,7 @@
       },
       "PublishSpecPublishMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CONTINUOUS",
           "SNAPSHOT",
           "TRIGGERED"
@@ -9410,7 +9410,7 @@
       },
       "RegisteredModelPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_EDIT",
           "CAN_MANAGE",
           "CAN_MANAGE_PRODUCTION_VERSIONS",
@@ -9421,7 +9421,7 @@
       },
       "RegistryEmailSubscriptionType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALL_EVENTS",
           "DEFAULT",
           "SUBSCRIBED",
@@ -9431,7 +9431,7 @@
       },
       "RegistryWebhookEvent": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "COMMENT_CREATED",
           "MODEL_VERSION_CREATED",
           "MODEL_VERSION_TAG_SET",
@@ -9449,7 +9449,7 @@
       },
       "RegistryWebhookStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "DISABLED",
           "TEST_MODE"
@@ -9458,7 +9458,7 @@
       },
       "RunInfoStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAILED",
           "FINISHED",
           "KILLED",
@@ -9469,7 +9469,7 @@
       },
       "Status": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAILED_REGISTRATION",
           "PENDING_REGISTRATION",
           "READY"
@@ -9478,7 +9478,7 @@
       },
       "UpdateRunStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAILED",
           "FINISHED",
           "KILLED",
@@ -9489,7 +9489,7 @@
       },
       "ViewType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE_ONLY",
           "ALL",
           "DELETED_ONLY"

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>artifact_allowlists</code> res
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>artifact_allowlists</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="artifact_allowlists" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.artifact_allowlists" /></td></tr>
 </tbody></table>
@@ -59,7 +59,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "match_type",
         "type": "string",
-        "description": "The pattern matching type of the artifact"
+        "description": "The pattern matching type of the artifact (PREFIX_MATCH)"
       }
     ]
   },
@@ -102,7 +102,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-artifact_type.value"><code>artifact_type.value</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__artifact_type"><code>data__artifact_type</code></a>, <a href="#parameter-data__artifact_matchers"><code>data__artifact_matchers</code></a></td>
+    <td><a href="#parameter-artifact_type.value"><code>artifact_type.value</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-artifact_type"><code>artifact_type</code></a>, <a href="#parameter-artifact_matchers"><code>artifact_matchers</code></a></td>
     <td></td>
     <td>Set the artifact allowlist of a certain artifact type. The whole artifact allowlist is replaced with</td>
 </tr>
@@ -183,16 +183,16 @@ Set the artifact allowlist of a certain artifact type. The whole artifact allowl
 ```sql
 REPLACE databricks_workspace.catalog.artifact_allowlists
 SET 
-data__artifact_type = '{{ artifact_type }}',
-data__artifact_matchers = '{{ artifact_matchers }}',
-data__created_at = '{{ created_at }}',
-data__created_by = '{{ created_by }}',
-data__metastore_id = '{{ metastore_id }}'
+artifact_type = '{{ artifact_type }}',
+artifact_matchers = '{{ artifact_matchers }}',
+created_at = '{{ created_at }}',
+created_by = '{{ created_by }}',
+metastore_id = '{{ metastore_id }}'
 WHERE 
 artifact_type.value = '{{ artifact_type.value }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__artifact_type = '{{ artifact_type }}' --required
-AND data__artifact_matchers = '{{ artifact_matchers }}' --required
+AND artifact_type = '{{ artifact_type }}' --required
+AND artifact_matchers = '{{ artifact_matchers }}' --required
 RETURNING
 metastore_id,
 artifact_matchers,

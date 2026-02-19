@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>tokens</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>tokens</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="tokens" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.settings.tokens" /></td></tr>
 </tbody></table>
@@ -166,8 +166,8 @@ Creates and returns a token for a user. If this call is made through token authe
 
 ```sql
 INSERT INTO databricks_workspace.settings.tokens (
-data__comment,
-data__lifetime_seconds,
+comment,
+lifetime_seconds,
 deployment_name
 )
 SELECT 

@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks catalog service (account-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.catalog"
   },
   "servers": [
@@ -5945,7 +5945,7 @@
       },
       "ArtifactType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "INIT_SCRIPT",
           "LIBRARY_JAR",
           "LIBRARY_MAVEN"
@@ -5954,7 +5954,7 @@
       },
       "CatalogIsolationMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ISOLATED",
           "OPEN"
         ],
@@ -5962,7 +5962,7 @@
       },
       "CatalogType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELTASHARING_CATALOG",
           "FOREIGN_CATALOG",
           "INTERNAL_CATALOG",
@@ -5974,7 +5974,7 @@
       },
       "ColumnTypeName": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ARRAY",
           "BINARY",
           "BOOLEAN",
@@ -6004,7 +6004,7 @@
       },
       "ConnectionType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BIGQUERY",
           "DATABRICKS",
           "GA4_RAW_DATA",
@@ -6030,14 +6030,14 @@
       },
       "CreateFunctionParameterStyle": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "S"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "CreateFunctionRoutineBody": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EXTERNAL",
           "SQL"
         ],
@@ -6045,14 +6045,14 @@
       },
       "CreateFunctionSecurityType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DEFINER"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "CreateFunctionSqlDataAccess": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CONTAINS_SQL",
           "NO_SQL",
           "READS_SQL_DATA"
@@ -6061,7 +6061,7 @@
       },
       "CredentialPurpose": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "SERVICE",
           "STORAGE"
         ],
@@ -6069,7 +6069,7 @@
       },
       "CredentialType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ANY_STATIC_CREDENTIAL",
           "BEARER_TOKEN",
           "OAUTH_ACCESS_TOKEN",
@@ -6090,7 +6090,7 @@
       },
       "DataSourceFormat": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AVRO",
           "BIGQUERY_FORMAT",
           "CSV",
@@ -6126,7 +6126,7 @@
       },
       "DeltaSharingScopeEnum": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "INTERNAL",
           "INTERNAL_AND_EXTERNAL"
         ],
@@ -6134,7 +6134,7 @@
       },
       "DestinationType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EMAIL",
           "GENERIC_WEBHOOK",
           "MICROSOFT_TEAMS",
@@ -6145,7 +6145,7 @@
       },
       "EffectivePredictiveOptimizationFlagInheritedFromType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CATALOG",
           "SCHEMA"
         ],
@@ -6153,7 +6153,7 @@
       },
       "EnablePredictiveOptimization": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DISABLE",
           "ENABLE",
           "INHERIT"
@@ -6162,14 +6162,14 @@
       },
       "FunctionInfoParameterStyle": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "S"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FunctionInfoRoutineBody": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EXTERNAL",
           "SQL"
         ],
@@ -6177,14 +6177,14 @@
       },
       "FunctionInfoSecurityType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DEFINER"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FunctionInfoSqlDataAccess": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CONTAINS_SQL",
           "NO_SQL",
           "READS_SQL_DATA"
@@ -6193,14 +6193,14 @@
       },
       "FunctionParameterMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "IN"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "FunctionParameterType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "COLUMN",
           "PARAM"
         ],
@@ -6208,7 +6208,7 @@
       },
       "IsolationMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ISOLATION_MODE_ISOLATED",
           "ISOLATION_MODE_OPEN"
         ],
@@ -6216,7 +6216,7 @@
       },
       "LineageDirection": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DOWNSTREAM",
           "UPSTREAM"
         ],
@@ -6224,14 +6224,14 @@
       },
       "MatchType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PREFIX_MATCH"
         ],
         "description": "The artifact pattern matching type"
       },
       "ModelVersionInfoStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAILED_REGISTRATION",
           "MODEL_VERSION_STATUS_UNKNOWN",
           "PENDING_REGISTRATION",
@@ -6241,7 +6241,7 @@
       },
       "MonitorCronSchedulePauseStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PAUSED",
           "UNPAUSED",
           "UNSPECIFIED"
@@ -6250,7 +6250,7 @@
       },
       "MonitorInferenceLogProblemType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PROBLEM_TYPE_CLASSIFICATION",
           "PROBLEM_TYPE_REGRESSION"
         ],
@@ -6258,7 +6258,7 @@
       },
       "MonitorInfoStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "MONITOR_STATUS_ACTIVE",
           "MONITOR_STATUS_DELETE_PENDING",
           "MONITOR_STATUS_ERROR",
@@ -6269,7 +6269,7 @@
       },
       "MonitorMetricType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CUSTOM_METRIC_TYPE_AGGREGATE",
           "CUSTOM_METRIC_TYPE_DERIVED",
           "CUSTOM_METRIC_TYPE_DRIFT"
@@ -6278,7 +6278,7 @@
       },
       "MonitorRefreshInfoState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANCELED",
           "FAILED",
           "PENDING",
@@ -6290,7 +6290,7 @@
       },
       "MonitorRefreshInfoTrigger": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "MANUAL",
           "SCHEDULE",
           "UNKNOWN_TRIGGER"
@@ -6299,7 +6299,7 @@
       },
       "OnlineTableState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "OFFLINE",
           "OFFLINE_FAILED",
           "ONLINE",
@@ -6316,7 +6316,7 @@
       },
       "OptionSpecOauthStage": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BEFORE_ACCESS_TOKEN",
           "BEFORE_AUTHORIZATION_CODE"
         ],
@@ -6324,7 +6324,7 @@
       },
       "OptionSpecOptionType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "OPTION_BIGINT",
           "OPTION_BOOLEAN",
           "OPTION_ENUM",
@@ -6337,7 +6337,7 @@
       },
       "PathOperation": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "PATH_CREATE_TABLE",
           "PATH_READ",
           "PATH_READ_WRITE"
@@ -6346,7 +6346,7 @@
       },
       "PolicyType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "POLICY_TYPE_COLUMN_MASK",
           "POLICY_TYPE_ROW_FILTER"
         ],
@@ -6354,7 +6354,7 @@
       },
       "PrincipalType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "GROUP_PRINCIPAL",
           "SERVICE_PRINCIPAL",
           "USER_PRINCIPAL"
@@ -6363,7 +6363,7 @@
       },
       "Privilege": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACCESS",
           "ALL_PRIVILEGES",
           "APPLY_TAG",
@@ -6419,7 +6419,7 @@
       },
       "ProvisioningInfoState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ACTIVE",
           "DEGRADED",
           "DELETING",
@@ -6431,7 +6431,7 @@
       },
       "SecurableKind": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "TABLE_DB_STORAGE",
           "TABLE_DELTA",
           "TABLE_DELTASHARING",
@@ -6500,7 +6500,7 @@
       },
       "SecurableType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CATALOG",
           "CLEAN_ROOM",
           "CONNECTION",
@@ -6523,7 +6523,7 @@
       },
       "SpecialDestination": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "SPECIAL_DESTINATION_CATALOG_OWNER",
           "SPECIAL_DESTINATION_CONNECTION_OWNER",
           "SPECIAL_DESTINATION_CREDENTIAL_OWNER",
@@ -6534,7 +6534,7 @@
       },
       "SseEncryptionDetailsAlgorithm": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AWS_SSE_KMS",
           "AWS_SSE_S3"
         ],
@@ -6542,7 +6542,7 @@
       },
       "SystemType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AMAZON_REDSHIFT",
           "AZURE_SYNAPSE",
           "CONFLUENT",
@@ -6571,7 +6571,7 @@
       },
       "TableOperation": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "READ",
           "READ_WRITE"
         ],
@@ -6579,7 +6579,7 @@
       },
       "TableType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EXTERNAL",
           "EXTERNAL_SHALLOW_CLONE",
           "FOREIGN",
@@ -6594,7 +6594,7 @@
       },
       "ValidateCredentialResult": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAIL",
           "PASS",
           "SKIP"
@@ -6603,7 +6603,7 @@
       },
       "ValidationResultOperation": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELETE",
           "LIST",
           "PATH_EXISTS",
@@ -6614,7 +6614,7 @@
       },
       "ValidationResultResult": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FAIL",
           "PASS",
           "SKIP"
@@ -6623,7 +6623,7 @@
       },
       "VolumeType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EXTERNAL",
           "MANAGED"
         ],
@@ -6631,7 +6631,7 @@
       },
       "WorkspaceBindingBindingType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "BINDING_TYPE_READ_ONLY",
           "BINDING_TYPE_READ_WRITE"
         ],

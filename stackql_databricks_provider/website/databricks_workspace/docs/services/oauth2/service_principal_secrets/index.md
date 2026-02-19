@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>service_principal_secrets</code
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>service_principal_secrets</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="service_principal_secrets" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.oauth2.service_principal_secrets" /></td></tr>
 </tbody></table>
@@ -201,7 +201,7 @@ Create a secret for the given service principal.
 
 ```sql
 INSERT INTO databricks_workspace.oauth2.service_principal_secrets (
-data__lifetime,
+lifetime,
 service_principal_id,
 deployment_name
 )

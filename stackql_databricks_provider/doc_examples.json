@@ -13,6 +13,19 @@
           "content": "Export billable usage data to a local CSV file using the StackQL CLI:\n\n```bash\n./stackql exec \\\n  -o text \\\n  --hideheaders \\\n  -f billable_usage.csv \\\n  \"SELECT contents \n  FROM databricks_account.billing.billable_usage \n  WHERE start_month = '2025-12' \n  AND end_month = '2026-01' \n  AND account_id = 'your-account-id'\"\n```\n\nThis downloads the usage data in CSV format directly from the Databricks API."
         }
       ]
-    }
+    },
+    {
+      "provider": "databricks_account",
+      "service": "billing",
+      "resource": "budget_policy",
+      "section": "insert",
+      "tabs": [
+        {
+          "label": "Example Billing Policy Creation",
+          "value": "example_billing_policy_creation",
+          "content": "Create a new budget policy using StackQL:\n\n```sql\nINSERT INTO databricks_account.billing.budget_policy (\n  policy,\n  request_id,\n  account_id\n)\nSELECT\n'{\n  \"binding_workspace_ids\": [\n    7291048365820174,\n    3845619027364852,\n    5012837461928503\n  ],\n  \"custom_tags\": [\n    {\n      \"key\": \"team\",\n      \"value\": \"dev_team\"\n    }\n  ],\n  \"policy_name\": \"test_policy\"\n}' as policy,\n'a1b2c3d4-e5f6-7890-abcd-ef1234567890' as request_id,\n'your-account-id' as account_id\n;\n```\n\nThis creates a new budget policy with workspace bindings and custom tags in the Databricks account."
+        }
+      ]
+    }    
   ]
 }

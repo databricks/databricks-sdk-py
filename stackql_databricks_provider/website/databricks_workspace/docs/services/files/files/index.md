@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>files</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>files</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="files" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.files.files" /></td></tr>
 </tbody></table>
@@ -114,7 +114,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#upload"><CopyableCode code="upload" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__contents"><code>data__contents</code></a></td>
+    <td><a href="#parameter-file_path"><code>file_path</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-contents"><code>contents</code></a></td>
     <td><a href="#parameter-overwrite"><code>overwrite</code></a></td>
     <td>Uploads a file of up to 5 GiB. The file contents should be sent as the request body as raw bytes (an</td>
 </tr>
@@ -254,11 +254,11 @@ Uploads a file of up to 5 GiB. The file contents should be sent as the request b
 ```sql
 REPLACE databricks_workspace.files.files
 SET 
-data__contents = '{{ contents }}'
+contents = '{{ contents }}'
 WHERE 
 file_path = '{{ file_path }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__contents = '{{ contents }}' --required
+AND contents = '{{ contents }}' --required
 AND overwrite = '{{ overwrite}}';
 ```
 </TabItem>

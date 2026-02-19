@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>log_delivery</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>log_delivery</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="log_delivery" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.billing.log_delivery" /></td></tr>
 </tbody></table>
@@ -90,7 +90,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "* The status string for log delivery. Possible values are: `CREATED`: There were no log delivery<br />attempts since the config was created. `SUCCEEDED`: The latest attempt of log delivery has<br />succeeded completely. `USER_FAILURE`: The latest attempt of log delivery failed because of<br />misconfiguration of customer provided permissions on role or storage. `SYSTEM_FAILURE`: The<br />latest attempt of log delivery failed because of an Databricks internal error. Contact support<br />if it doesn't go away soon. `NOT_FOUND`: The log delivery status as the configuration has been<br />disabled since the release of this feature or there are no workspaces in the account."
+        "description": "* The status string for log delivery. Possible values are: `CREATED`: There were no log delivery<br />attempts since the config was created. `SUCCEEDED`: The latest attempt of log delivery has<br />succeeded completely. `USER_FAILURE`: The latest attempt of log delivery failed because of<br />misconfiguration of customer provided permissions on role or storage. `SYSTEM_FAILURE`: The<br />latest attempt of log delivery failed because of an Databricks internal error. Contact support<br />if it doesn't go away soon. `NOT_FOUND`: The log delivery status as the configuration has been<br />disabled since the release of this feature or there are no workspaces in the account. (CREATED, NOT_FOUND, SUCCEEDED, SYSTEM_FAILURE, USER_FAILURE)"
       },
       {
         "name": "message",
@@ -112,17 +112,17 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "log_type",
     "type": "string",
-    "description": "Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the [View billable usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit logging] [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"
+    "description": "Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the [View billable usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit logging] [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html (AUDIT_LOGS, BILLABLE_USAGE)"
   },
   {
     "name": "output_format",
     "type": "string",
-    "description": "The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated values) format is supported. For the schema, see the [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript Object Notation) format is supported. For the schema, see the [Configuring audit logs]. [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"
+    "description": "The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated values) format is supported. For the schema, see the [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript Object Notation) format is supported. For the schema, see the [Configuring audit logs]. [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html (CSV, JSON)"
   },
   {
     "name": "status",
     "type": "string",
-    "description": "Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is not supported, so disable a log delivery configuration that is no longer needed."
+    "description": "Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is not supported, so disable a log delivery configuration that is no longer needed. (DISABLED, ENABLED)"
   },
   {
     "name": "update_time",
@@ -187,7 +187,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "status",
         "type": "string",
-        "description": "* The status string for log delivery. Possible values are: `CREATED`: There were no log delivery<br />attempts since the config was created. `SUCCEEDED`: The latest attempt of log delivery has<br />succeeded completely. `USER_FAILURE`: The latest attempt of log delivery failed because of<br />misconfiguration of customer provided permissions on role or storage. `SYSTEM_FAILURE`: The<br />latest attempt of log delivery failed because of an Databricks internal error. Contact support<br />if it doesn't go away soon. `NOT_FOUND`: The log delivery status as the configuration has been<br />disabled since the release of this feature or there are no workspaces in the account."
+        "description": "* The status string for log delivery. Possible values are: `CREATED`: There were no log delivery<br />attempts since the config was created. `SUCCEEDED`: The latest attempt of log delivery has<br />succeeded completely. `USER_FAILURE`: The latest attempt of log delivery failed because of<br />misconfiguration of customer provided permissions on role or storage. `SYSTEM_FAILURE`: The<br />latest attempt of log delivery failed because of an Databricks internal error. Contact support<br />if it doesn't go away soon. `NOT_FOUND`: The log delivery status as the configuration has been<br />disabled since the release of this feature or there are no workspaces in the account. (CREATED, NOT_FOUND, SUCCEEDED, SYSTEM_FAILURE, USER_FAILURE)"
       },
       {
         "name": "message",
@@ -209,17 +209,17 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "log_type",
     "type": "string",
-    "description": "Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the [View billable usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit logging] [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html"
+    "description": "Log delivery type. Supported values are: * `BILLABLE_USAGE` — Configure [billable usage log delivery]. For the CSV schema, see the [View billable usage]. * `AUDIT_LOGS` — Configure [audit log delivery]. For the JSON schema, see [Configure audit logging] [Configure audit logging]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html [audit log delivery]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [billable usage log delivery]: https://docs.databricks.com/administration-guide/account-settings/billable-usage-delivery.html (AUDIT_LOGS, BILLABLE_USAGE)"
   },
   {
     "name": "output_format",
     "type": "string",
-    "description": "The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated values) format is supported. For the schema, see the [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript Object Notation) format is supported. For the schema, see the [Configuring audit logs]. [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html"
+    "description": "The file type of log delivery. * If `log_type` is `BILLABLE_USAGE`, this value must be `CSV`. Only the CSV (comma-separated values) format is supported. For the schema, see the [View billable usage] * If `log_type` is `AUDIT_LOGS`, this value must be `JSON`. Only the JSON (JavaScript Object Notation) format is supported. For the schema, see the [Configuring audit logs]. [Configuring audit logs]: https://docs.databricks.com/administration-guide/account-settings/audit-logs.html [View billable usage]: https://docs.databricks.com/administration-guide/account-settings/usage.html (CSV, JSON)"
   },
   {
     "name": "status",
     "type": "string",
-    "description": "Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is not supported, so disable a log delivery configuration that is no longer needed."
+    "description": "Status of log delivery configuration. Set to `ENABLED` (enabled) or `DISABLED` (disabled). Defaults to `ENABLED`. You can [enable or disable the configuration](#operation/patch-log-delivery-config-status) later. Deletion of a configuration is not supported, so disable a log delivery configuration that is no longer needed. (DISABLED, ENABLED)"
   },
   {
     "name": "update_time",
@@ -267,14 +267,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#log_delivery_create"><CopyableCode code="log_delivery_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__log_delivery_configuration"><code>data__log_delivery_configuration</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-log_delivery_configuration"><code>log_delivery_configuration</code></a></td>
     <td></td>
     <td>Creates a new Databricks log delivery configuration to enable delivery of the specified type of logs</td>
 </tr>
 <tr>
     <td><a href="#log_delivery_patch_status"><CopyableCode code="log_delivery_patch_status" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-log_delivery_configuration_id"><code>log_delivery_configuration_id</code></a>, <a href="#parameter-data__status"><code>data__status</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-log_delivery_configuration_id"><code>log_delivery_configuration_id</code></a>, <a href="#parameter-status"><code>status</code></a></td>
     <td></td>
     <td>Enables or disables a log delivery configuration. Deletion of delivery configurations is not</td>
 </tr>
@@ -409,7 +409,7 @@ Creates a new Databricks log delivery configuration to enable delivery of the sp
 
 ```sql
 INSERT INTO databricks_account.billing.log_delivery (
-data__log_delivery_configuration,
+log_delivery_configuration,
 account_id
 )
 SELECT 
@@ -453,11 +453,11 @@ Enables or disables a log delivery configuration. Deletion of delivery configura
 ```sql
 UPDATE databricks_account.billing.log_delivery
 SET 
-data__status = '{{ status }}'
+status = '{{ status }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND log_delivery_configuration_id = '{{ log_delivery_configuration_id }}' --required
-AND data__status = '{{ status }}' --required;
+AND status = '{{ status }}' --required;
 ```
 </TabItem>
 </Tabs>

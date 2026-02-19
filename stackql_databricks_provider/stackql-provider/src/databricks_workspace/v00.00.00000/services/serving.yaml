@@ -5,7 +5,7 @@ info:
     Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.serving
 servers:
 - url: https://{deployment_name}.cloud.databricks.com
@@ -2361,7 +2361,7 @@ components:
           description: The text response from the __completions__ endpoint.
     AiGatewayGuardrailPiiBehaviorBehavior:
       type: string
-      enum:
+      x-enum:
       - BLOCK
       - MASK
       - NONE
@@ -2373,7 +2373,7 @@ components:
         \ their own\nattributes -- see the documentation for details."
     AiGatewayRateLimitKey:
       type: string
-      enum:
+      x-enum:
       - endpoint
       - service_principal
       - user
@@ -2386,7 +2386,7 @@ components:
         \ their own\nattributes -- see the documentation for details."
     AiGatewayRateLimitRenewalPeriod:
       type: string
-      enum:
+      x-enum:
       - minute
       description: "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED\
         \ = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED:\
@@ -2396,7 +2396,7 @@ components:
         \ their own\nattributes -- see the documentation for details."
     AmazonBedrockConfigBedrockProvider:
       type: string
-      enum:
+      x-enum:
       - ai21labs
       - amazon
       - anthropic
@@ -2409,19 +2409,19 @@ components:
         \ their own\nattributes -- see the documentation for details."
     ChatMessageRole:
       type: string
-      enum:
+      x-enum:
       - assistant
       - system
       - user
       description: The role of the message. One of [system, user, assistant].
     EmbeddingsV1ResponseEmbeddingElementObject:
       type: string
-      enum:
+      x-enum:
       - embedding
       description: This will always be 'embedding'.
     EndpointStateConfigUpdate:
       type: string
-      enum:
+      x-enum:
       - IN_PROGRESS
       - NOT_UPDATING
       - UPDATE_CANCELED
@@ -2434,7 +2434,7 @@ components:
         \ their own\nattributes -- see the documentation for details."
     EndpointStateReady:
       type: string
-      enum:
+      x-enum:
       - NOT_READY
       - READY
       description: "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED\
@@ -2445,7 +2445,7 @@ components:
         \ their own\nattributes -- see the documentation for details."
     ExternalFunctionRequestHttpMethod:
       type: string
-      enum:
+      x-enum:
       - DELETE
       - GET
       - PATCH
@@ -2459,7 +2459,7 @@ components:
         \ their own\nattributes -- see the documentation for details."
     ExternalModelProvider:
       type: string
-      enum:
+      x-enum:
       - ai21labs
       - amazon-bedrock
       - anthropic
@@ -2477,7 +2477,7 @@ components:
         \ their own\nattributes -- see the documentation for details."
     QueryEndpointResponseObject:
       type: string
-      enum:
+      x-enum:
       - chat.completion
       - list
       - text_completion
@@ -2486,7 +2486,7 @@ components:
         [text_completion, chat.completion, list (of embeddings)].'
     RateLimitKey:
       type: string
-      enum:
+      x-enum:
       - endpoint
       - user
       description: "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED\
@@ -2497,7 +2497,7 @@ components:
         \ their own\nattributes -- see the documentation for details."
     RateLimitRenewalPeriod:
       type: string
-      enum:
+      x-enum:
       - minute
       description: "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED\
         \ = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED:\
@@ -2507,7 +2507,7 @@ components:
         \ their own\nattributes -- see the documentation for details."
     ServedModelInputWorkloadType:
       type: string
-      enum:
+      x-enum:
       - CPU
       - GPU_LARGE
       - GPU_MEDIUM
@@ -2516,7 +2516,7 @@ components:
       description: Please keep this in sync with with workload types in InferenceEndpointEntities.scala
     ServedModelStateDeployment:
       type: string
-      enum:
+      x-enum:
       - DEPLOYMENT_ABORTED
       - DEPLOYMENT_CREATING
       - DEPLOYMENT_FAILED
@@ -2530,7 +2530,7 @@ components:
         \ their own\nattributes -- see the documentation for details."
     ServingEndpointDetailedPermissionLevel:
       type: string
-      enum:
+      x-enum:
       - CAN_MANAGE
       - CAN_QUERY
       - CAN_VIEW
@@ -2542,14 +2542,14 @@ components:
         \ their own\nattributes -- see the documentation for details."
     ServingEndpointPermissionLevel:
       type: string
-      enum:
+      x-enum:
       - CAN_MANAGE
       - CAN_QUERY
       - CAN_VIEW
       description: Permission level
     ServingModelWorkloadType:
       type: string
-      enum:
+      x-enum:
       - CPU
       - GPU_LARGE
       - GPU_MEDIUM
@@ -2581,6 +2581,9 @@ components:
       title: Serving Endpoints
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints/post'
           response:
@@ -2606,18 +2609,27 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1tags/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         query:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1serving-endpoints~1{name}~1invocations/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update_config:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1config/put'
           response:
@@ -2641,12 +2653,18 @@ components:
       title: Serving Endpoints Pt
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1pt/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update_config:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1pt~1{name}~1config/put'
           response:
@@ -2734,12 +2752,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1serving-endpoints~1{serving_endpoint_id}/patch'
           response:
@@ -2760,6 +2784,9 @@ components:
       title: Serving Endpoints Http Request
       methods:
         serving_endpoints_http_request:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1external-function/post'
           response:
@@ -2800,6 +2827,9 @@ components:
       title: Serving Endpoint Rate Limits
       methods:
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1rate-limits/put'
           response:
@@ -2818,6 +2848,9 @@ components:
       title: Serving Endpoint Ai Gateway
       methods:
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1ai-gateway/put'
           response:
@@ -2836,6 +2869,9 @@ components:
       title: Serving Endpoint Notifications
       methods:
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1serving-endpoints~1{name}~1notifications/patch'
           response:
@@ -2848,3 +2884,11 @@ components:
         - $ref: '#/components/x-stackQL-resources/serving_endpoint_notifications/methods/update'
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>postgres_endpoints</code> resou
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>postgres_endpoints</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="postgres_endpoints" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.postgres.postgres_endpoints" /></td></tr>
 </tbody></table>
@@ -64,7 +64,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "endpoint_type",
         "type": "string",
-        "description": "The compute endpoint type. Either `read_write` or `read_only`."
+        "description": "The compute endpoint type. Either `read_write` or `read_only`. (ENDPOINT_TYPE_READ_ONLY, ENDPOINT_TYPE_READ_WRITE)"
       },
       {
         "name": "autoscaling_limit_max_cu",
@@ -123,7 +123,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "current_state",
         "type": "string",
-        "description": "The state of the compute endpoint."
+        "description": "The state of the compute endpoint. (ACTIVE, IDLE, INIT)"
       },
       {
         "name": "disabled",
@@ -133,7 +133,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "endpoint_type",
         "type": "string",
-        "description": "The compute endpoint type. Either `read_write` or `read_only`."
+        "description": "The compute endpoint type. Either `read_write` or `read_only`. (ENDPOINT_TYPE_READ_ONLY, ENDPOINT_TYPE_READ_WRITE)"
       },
       {
         "name": "hosts",
@@ -150,7 +150,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "pending_state",
         "type": "string",
-        "description": "The state of the compute endpoint."
+        "description": "The state of the compute endpoint. (ACTIVE, IDLE, INIT)"
       },
       {
         "name": "settings",
@@ -210,7 +210,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-endpoint_id"><code>endpoint_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__endpoint"><code>data__endpoint</code></a></td>
+    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-endpoint_id"><code>endpoint_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-endpoint"><code>endpoint</code></a></td>
     <td></td>
     <td>Creates a new compute endpoint in the branch.</td>
 </tr>
@@ -305,7 +305,7 @@ Creates a new compute endpoint in the branch.
 
 ```sql
 INSERT INTO databricks_workspace.postgres.postgres_endpoints (
-data__endpoint,
+endpoint,
 parent,
 endpoint_id,
 deployment_name

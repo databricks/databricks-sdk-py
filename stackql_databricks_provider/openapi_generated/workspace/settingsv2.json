@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks settingsv2 service (workspace-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.settingsv2"
   },
   "servers": [
@@ -509,7 +509,7 @@
       },
       "AibiDashboardEmbeddingAccessPolicyAccessPolicyType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALLOW_ALL_DOMAINS",
           "ALLOW_APPROVED_DOMAINS",
           "DENY_ALL_DOMAINS"
@@ -518,7 +518,7 @@
       },
       "ClusterAutoRestartMessageMaintenanceWindowDayOfWeek": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FRIDAY",
           "MONDAY",
           "SATURDAY",
@@ -531,7 +531,7 @@
       },
       "ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EVERY_WEEK",
           "FIRST_AND_THIRD_OF_MONTH",
           "FIRST_OF_MONTH",
@@ -544,7 +544,7 @@
       },
       "PersonalComputeMessagePersonalComputeMessageEnum": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELEGATE",
           "ON"
         ],
@@ -552,7 +552,7 @@
       },
       "RestrictWorkspaceAdminsMessageStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALLOW_ALL",
           "RESTRICT_TOKENS_AND_JOB_RUN_AS"
         ],

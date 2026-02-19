@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>network_policies</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>network_policies</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="network_policies" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.settings.network_policies" /></td></tr>
 </tbody></table>
@@ -65,7 +65,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "restriction_mode",
             "type": "string",
-            "description": "At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:<br />Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can<br />only access explicitly allowed internet and storage destinations, as well as UC connections and<br />external locations."
+            "description": "At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:<br />Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can<br />only access explicitly allowed internet and storage destinations, as well as UC connections and<br />external locations. (FULL_ACCESS, RESTRICTED_ACCESS)"
           },
           {
             "name": "allowed_internet_destinations",
@@ -80,7 +80,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "internet_destination_type",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (DNS_NAME)"
               }
             ]
           },
@@ -112,7 +112,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "storage_destination_type",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (AWS_S3, AZURE_STORAGE, GOOGLE_CLOUD_STORAGE)"
               }
             ]
           },
@@ -129,7 +129,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "enforcement_mode",
                 "type": "string",
-                "description": "The mode of policy enforcement. ENFORCED blocks traffic that violates policy, while DRY_RUN only logs violations without blocking. When not specified, defaults to ENFORCED."
+                "description": "The mode of policy enforcement. ENFORCED blocks traffic that violates policy, while DRY_RUN only logs violations without blocking. When not specified, defaults to ENFORCED. (DRY_RUN, ENFORCED)"
               }
             ]
           }
@@ -165,7 +165,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "restriction_mode",
             "type": "string",
-            "description": "At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:<br />Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can<br />only access explicitly allowed internet and storage destinations, as well as UC connections and<br />external locations."
+            "description": "At which level can Databricks and Databricks managed compute access Internet. FULL_ACCESS:<br />Databricks can access Internet. No blocking rules will apply. RESTRICTED_ACCESS: Databricks can<br />only access explicitly allowed internet and storage destinations, as well as UC connections and<br />external locations. (FULL_ACCESS, RESTRICTED_ACCESS)"
           },
           {
             "name": "allowed_internet_destinations",
@@ -180,7 +180,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "internet_destination_type",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (DNS_NAME)"
               }
             ]
           },
@@ -212,7 +212,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "storage_destination_type",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (AWS_S3, AZURE_STORAGE, GOOGLE_CLOUD_STORAGE)"
               }
             ]
           },
@@ -229,7 +229,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "enforcement_mode",
                 "type": "string",
-                "description": "The mode of policy enforcement. ENFORCED blocks traffic that violates policy, while DRY_RUN only logs violations without blocking. When not specified, defaults to ENFORCED."
+                "description": "The mode of policy enforcement. ENFORCED blocks traffic that violates policy, while DRY_RUN only logs violations without blocking. When not specified, defaults to ENFORCED. (DRY_RUN, ENFORCED)"
               }
             ]
           }
@@ -273,14 +273,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create_network_policy_rpc"><CopyableCode code="create_network_policy_rpc" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__network_policy"><code>data__network_policy</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_policy"><code>network_policy</code></a></td>
     <td></td>
     <td>Creates a new network policy to manage which network destinations can be accessed from the Databricks</td>
 </tr>
 <tr>
     <td><a href="#update_network_policy_rpc"><CopyableCode code="update_network_policy_rpc" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_policy_id"><code>network_policy_id</code></a>, <a href="#parameter-data__network_policy"><code>data__network_policy</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-network_policy_id"><code>network_policy_id</code></a>, <a href="#parameter-network_policy"><code>network_policy</code></a></td>
     <td></td>
     <td>Updates a network policy. This allows you to modify the configuration of a network policy.</td>
 </tr>
@@ -382,7 +382,7 @@ Creates a new network policy to manage which network destinations can be accesse
 
 ```sql
 INSERT INTO databricks_account.settings.network_policies (
-data__network_policy,
+network_policy,
 account_id
 )
 SELECT 
@@ -428,11 +428,11 @@ Updates a network policy. This allows you to modify the configuration of a netwo
 ```sql
 REPLACE databricks_account.settings.network_policies
 SET 
-data__network_policy = '{{ network_policy }}'
+network_policy = '{{ network_policy }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND network_policy_id = '{{ network_policy_id }}' --required
-AND data__network_policy = '{{ network_policy }}' --required
+AND network_policy = '{{ network_policy }}' --required
 RETURNING
 account_id,
 network_policy_id,

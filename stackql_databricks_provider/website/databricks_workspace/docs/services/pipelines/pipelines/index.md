@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>pipelines</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>pipelines</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="pipelines" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.pipelines.pipelines" /></td></tr>
 </tbody></table>
@@ -80,7 +80,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "health",
     "type": "string",
-    "description": "The health of a pipeline."
+    "description": "The health of a pipeline. (HEALTHY, UNHEALTHY)"
   },
   {
     "name": "last_modified",
@@ -100,7 +100,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "The update state."
+        "description": "The update state. (CANCELED, COMPLETED, CREATED, FAILED, INITIALIZING, QUEUED, RESETTING, RUNNING, SETTING_UP_TABLES, STOPPING, WAITING_FOR_RESOURCES)"
       },
       {
         "name": "update_id",
@@ -174,7 +174,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "mode",
                 "type": "string",
-                "description": "Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating cluster resources based on workload volume, with minimal impact to the data processing latency of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy autoscaling feature is used for `maintenance` clusters."
+                "description": "Databricks Enhanced Autoscaling optimizes cluster utilization by automatically allocating cluster resources based on workload volume, with minimal impact to the data processing latency of your pipelines. Enhanced Autoscaling is available for `updates` clusters only. The legacy autoscaling feature is used for `maintenance` clusters. (ENHANCED, LEGACY)"
               }
             ]
           },
@@ -283,7 +283,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "kind",
             "type": "string",
-            "description": "The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a<br />Databricks Asset Bundle."
+            "description": "The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a<br />Databricks Asset Bundle. (BUNDLE)"
           },
           {
             "name": "metadata_file_path",
@@ -486,7 +486,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "source_type",
             "type": "string",
-            "description": "The type of the foreign source. The source type will be inferred from the source connection or ingestion gateway. This field is output only and will be ignored if provided."
+            "description": "The type of the foreign source. The source type will be inferred from the source connection or ingestion gateway. This field is output only and will be ignored if provided. (BIGQUERY, DYNAMICS365, FOREIGN_CATALOG, GA4_RAW_DATA, MANAGED_POSTGRESQL, MYSQL, NETSUITE, ORACLE, POSTGRESQL, SALESFORCE, SERVICENOW, SHAREPOINT, SQLSERVER, TERADATA, WORKDAY_RAAS)"
           },
           {
             "name": "table_configuration",
@@ -531,7 +531,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "scd_type",
                 "type": "string",
-                "description": "The SCD type to use to ingest the table."
+                "description": "The SCD type to use to ingest the table. (APPEND_ONLY, SCD_TYPE_1, SCD_TYPE_2)"
               },
               {
                 "name": "sequence_by",
@@ -723,7 +723,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The pipeline state."
+    "description": "The pipeline state. (DELETED, DEPLOYING, FAILED, IDLE, RECOVERING, RESETTING, RUNNING, STARTING, STOPPING)"
   }
 ]} />
 </TabItem>
@@ -758,7 +758,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "health",
     "type": "string",
-    "description": "The health of a pipeline."
+    "description": "The health of a pipeline. (HEALTHY, UNHEALTHY)"
   },
   {
     "name": "latest_updates",
@@ -773,7 +773,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "The update state."
+        "description": "The update state. (CANCELED, COMPLETED, CREATED, FAILED, INITIALIZING, QUEUED, RESETTING, RUNNING, SETTING_UP_TABLES, STOPPING, WAITING_FOR_RESOURCES)"
       },
       {
         "name": "update_id",
@@ -785,7 +785,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "state",
     "type": "string",
-    "description": "The pipeline state."
+    "description": "The pipeline state. (DELETED, DEPLOYING, FAILED, IDLE, RECOVERING, RESETTING, RUNNING, STARTING, STOPPING)"
   }
 ]} />
 </TabItem>
@@ -984,37 +984,37 @@ Creates a new data processing pipeline based on the requested configuration. If 
 
 ```sql
 INSERT INTO databricks_workspace.pipelines.pipelines (
-data__allow_duplicate_names,
-data__budget_policy_id,
-data__catalog,
-data__channel,
-data__clusters,
-data__configuration,
-data__continuous,
-data__deployment,
-data__development,
-data__dry_run,
-data__edition,
-data__environment,
-data__event_log,
-data__filters,
-data__gateway_definition,
-data__id,
-data__ingestion_definition,
-data__libraries,
-data__name,
-data__notifications,
-data__photon,
-data__restart_window,
-data__root_path,
-data__run_as,
-data__schema,
-data__serverless,
-data__storage,
-data__tags,
-data__target,
-data__trigger,
-data__usage_policy_id,
+allow_duplicate_names,
+budget_policy_id,
+catalog,
+channel,
+clusters,
+configuration,
+continuous,
+deployment,
+development,
+dry_run,
+edition,
+environment,
+event_log,
+filters,
+gateway_definition,
+id,
+ingestion_definition,
+libraries,
+name,
+notifications,
+photon,
+restart_window,
+root_path,
+run_as,
+schema,
+serverless,
+storage,
+tags,
+target,
+trigger,
+usage_policy_id,
 deployment_name
 )
 SELECT 
@@ -1205,37 +1205,37 @@ Updates a pipeline with the supplied configuration.
 ```sql
 REPLACE databricks_workspace.pipelines.pipelines
 SET 
-data__allow_duplicate_names = '{{ allow_duplicate_names }}',
-data__budget_policy_id = '{{ budget_policy_id }}',
-data__catalog = '{{ catalog }}',
-data__channel = '{{ channel }}',
-data__clusters = '{{ clusters }}',
-data__configuration = '{{ configuration }}',
-data__continuous = '{{ continuous }}',
-data__deployment = '{{ deployment }}',
-data__development = '{{ development }}',
-data__edition = '{{ edition }}',
-data__environment = '{{ environment }}',
-data__event_log = '{{ event_log }}',
-data__expected_last_modified = '{{ expected_last_modified }}',
-data__filters = '{{ filters }}',
-data__gateway_definition = '{{ gateway_definition }}',
-data__id = '{{ id }}',
-data__ingestion_definition = '{{ ingestion_definition }}',
-data__libraries = '{{ libraries }}',
-data__name = '{{ name }}',
-data__notifications = '{{ notifications }}',
-data__photon = '{{ photon }}',
-data__restart_window = '{{ restart_window }}',
-data__root_path = '{{ root_path }}',
-data__run_as = '{{ run_as }}',
-data__schema = '{{ schema }}',
-data__serverless = '{{ serverless }}',
-data__storage = '{{ storage }}',
-data__tags = '{{ tags }}',
-data__target = '{{ target }}',
-data__trigger = '{{ trigger }}',
-data__usage_policy_id = '{{ usage_policy_id }}'
+allow_duplicate_names = '{{ allow_duplicate_names }}',
+budget_policy_id = '{{ budget_policy_id }}',
+catalog = '{{ catalog }}',
+channel = '{{ channel }}',
+clusters = '{{ clusters }}',
+configuration = '{{ configuration }}',
+continuous = '{{ continuous }}',
+deployment = '{{ deployment }}',
+development = '{{ development }}',
+edition = '{{ edition }}',
+environment = '{{ environment }}',
+event_log = '{{ event_log }}',
+expected_last_modified = '{{ expected_last_modified }}',
+filters = '{{ filters }}',
+gateway_definition = '{{ gateway_definition }}',
+id = '{{ id }}',
+ingestion_definition = '{{ ingestion_definition }}',
+libraries = '{{ libraries }}',
+name = '{{ name }}',
+notifications = '{{ notifications }}',
+photon = '{{ photon }}',
+restart_window = '{{ restart_window }}',
+root_path = '{{ root_path }}',
+run_as = '{{ run_as }}',
+schema = '{{ schema }}',
+serverless = '{{ serverless }}',
+storage = '{{ storage }}',
+tags = '{{ tags }}',
+target = '{{ target }}',
+trigger = '{{ trigger }}',
+usage_policy_id = '{{ usage_policy_id }}'
 WHERE 
 pipeline_id = '{{ pipeline_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required;

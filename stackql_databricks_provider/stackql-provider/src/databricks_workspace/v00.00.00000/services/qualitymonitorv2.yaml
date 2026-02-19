@@ -6,7 +6,7 @@ info:
     (workspace-level APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.qualitymonitorv2
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -367,7 +367,7 @@ components:
           $ref: '#/components/schemas/UniquenessValidityCheck'
     AnomalyDetectionRunStatus:
       type: string
-      enum:
+      x-enum:
         - ANOMALY_DETECTION_RUN_STATUS_CANCELED
         - ANOMALY_DETECTION_RUN_STATUS_FAILED
         - ANOMALY_DETECTION_RUN_STATUS_JOB_DELETED
@@ -384,6 +384,9 @@ components:
       title: Quality Monitor V2
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1quality-monitors/post'
           response:
@@ -411,6 +414,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1quality-monitors~1{object_type}~1{object_id}/put
@@ -428,3 +434,11 @@ components:
           - $ref: '#/components/x-stackQL-resources/quality_monitor_v2/methods/delete'
         replace:
           - $ref: '#/components/x-stackQL-resources/quality_monitor_v2/methods/update'
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

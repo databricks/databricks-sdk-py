@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>permissions</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>permissions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="permissions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.permissions" /></td></tr>
 </tbody></table>
@@ -69,7 +69,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "permission_level",
             "type": "string",
-            "description": "Permission level"
+            "description": "Permission level (CAN_ATTACH_TO, CAN_BIND, CAN_CREATE, CAN_EDIT, CAN_EDIT_METADATA, CAN_MANAGE, CAN_MANAGE_PRODUCTION_VERSIONS, CAN_MANAGE_RUN, CAN_MANAGE_STAGING_VERSIONS, CAN_MONITOR, CAN_MONITOR_ONLY, CAN_QUERY, CAN_READ, CAN_RESTART, CAN_RUN, CAN_USE, CAN_VIEW, CAN_VIEW_METADATA, IS_OWNER)"
           }
         ]
       },
@@ -216,7 +216,7 @@ Updates the permissions on an object. Objects can inherit permissions from their
 ```sql
 UPDATE databricks_workspace.iam.permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 request_object_type = '{{ request_object_type }}' --required
 AND request_object_id = '{{ request_object_id }}' --required
@@ -245,7 +245,7 @@ Sets permissions on an object, replacing existing permissions if they exist. Del
 ```sql
 REPLACE databricks_workspace.iam.permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 request_object_type = '{{ request_object_type }}' --required
 AND request_object_id = '{{ request_object_id }}' --required

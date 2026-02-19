@@ -1,0 +1,254 @@
+    vw_federation_policies:
+      name: vw_federation_policies
+      id: databricks_account.oauth2.vw_federation_policies
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: policy_id
+            type: string
+            description: Unique identifier for the federation policy.
+          - name: uid
+            type: string
+            description: Globally unique identifier for the federation policy.
+          - name: name
+            type: string
+            description: Human-readable name of the federation policy.
+          - name: description
+            type: string
+            description: Optional description of the federation policy.
+          - name: service_principal_id
+            type: integer
+            description: ID of the service principal this federation policy is associated with.
+          - name: create_time
+            type: string
+            description: Timestamp when the federation policy was created (ISO 8601).
+          - name: update_time
+            type: string
+            description: Timestamp when the federation policy was last updated (ISO 8601).
+          - name: oidc_issuer
+            type: string
+            description: OIDC token issuer URL for the federation policy.
+          - name: oidc_subject
+            type: string
+            description: Expected subject claim value in the OIDC token.
+          - name: oidc_subject_claim
+            type: string
+            description: Name of the claim in the OIDC token used as the subject identifier.
+          - name: oidc_audiences
+            type: array
+            description: List of acceptable audience values in the OIDC token.
+          - name: oidc_jwks_uri
+            type: string
+            description: URI of the JWKS endpoint used to verify the OIDC token signature.
+          - name: oidc_jwks_json
+            type: string
+            description: Inline JWKS JSON used to verify the OIDC token signature (alternative to jwks_uri).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                fp.account_id,
+                fp.policy_id,
+                fp.uid,
+                fp.name,
+                fp.description,
+                fp.service_principal_id,
+                fp.create_time,
+                fp.update_time,
+                JSON_EXTRACT(fp.oidc_policy, '$.issuer') AS oidc_issuer,
+                JSON_EXTRACT(fp.oidc_policy, '$.subject') AS oidc_subject,
+                JSON_EXTRACT(fp.oidc_policy, '$.subject_claim') AS oidc_subject_claim,
+                JSON_EXTRACT(fp.oidc_policy, '$.audiences') AS oidc_audiences,
+                JSON_EXTRACT(fp.oidc_policy, '$.jwks_uri') AS oidc_jwks_uri,
+                JSON_EXTRACT(fp.oidc_policy, '$.jwks_json') AS oidc_jwks_json
+              FROM databricks_account.oauth2.account_federation_policy fp
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  fp.account_id,
+                  fp.policy_id,
+                  fp.uid,
+                  fp.name,
+                  fp.description,
+                  fp.service_principal_id,
+                  fp.create_time,
+                  fp.update_time,
+                  fp.oidc_policy->>'issuer' AS oidc_issuer,
+                  fp.oidc_policy->>'subject' AS oidc_subject,
+                  fp.oidc_policy->>'subject_claim' AS oidc_subject_claim,
+                  fp.oidc_policy->'audiences' AS oidc_audiences,
+                  fp.oidc_policy->>'jwks_uri' AS oidc_jwks_uri,
+                  fp.oidc_policy->>'jwks_json' AS oidc_jwks_json
+                FROM databricks_account.oauth2.account_federation_policy fp
+                WHERE account_id = '{{ account_id }}'
+
+    vw_custom_app_integrations:
+      name: vw_custom_app_integrations
+      id: databricks_account.oauth2.vw_custom_app_integrations
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: integration_id
+            type: string
+            description: Unique identifier for the custom app integration.
+          - name: client_id
+            type: string
+            description: OAuth2 client ID issued for the custom app integration.
+          - name: name
+            type: string
+            description: Human-readable name of the custom app integration.
+          - name: confidential
+            type: boolean
+            description: Whether the app is a confidential client (can securely store a client secret).
+          - name: creator_username
+            type: string
+            description: Username of the user who created the custom app integration.
+          - name: created_by
+            type: integer
+            description: ID of the user who created the custom app integration.
+          - name: create_time
+            type: string
+            description: Timestamp when the integration was created (ISO 8601).
+          - name: redirect_urls
+            type: array
+            description: List of allowed OAuth2 redirect URLs for the app integration.
+          - name: scopes
+            type: array
+            description: List of OAuth2 scopes the app integration is permitted to request.
+          - name: user_authorized_scopes
+            type: array
+            description: List of scopes that users have individually authorized for this app.
+          - name: access_token_ttl_minutes
+            type: integer
+            description: Time-to-live for access tokens issued to this app, in minutes.
+          - name: refresh_token_ttl_minutes
+            type: integer
+            description: Time-to-live for refresh tokens issued to this app, in minutes.
+          - name: session_lifetime_minutes
+            type: integer
+            description: Maximum absolute session lifetime for this app, in minutes.
+          - name: single_use_refresh_tokens
+            type: boolean
+            description: Whether refresh tokens are single-use (rotated on each use).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                c.account_id,
+                c.integration_id,
+                c.client_id,
+                c.name,
+                c.confidential,
+                c.creator_username,
+                c.created_by,
+                c.create_time,
+                c.redirect_urls,
+                c.scopes,
+                c.user_authorized_scopes,
+                JSON_EXTRACT(c.token_access_policy, '$.access_token_ttl_in_minutes') AS access_token_ttl_minutes,
+                JSON_EXTRACT(c.token_access_policy, '$.refresh_token_ttl_in_minutes') AS refresh_token_ttl_minutes,
+                JSON_EXTRACT(c.token_access_policy, '$.absolute_session_lifetime_in_minutes') AS session_lifetime_minutes,
+                JSON_EXTRACT(c.token_access_policy, '$.enable_single_use_refresh_tokens') AS single_use_refresh_tokens
+              FROM databricks_account.oauth2.custom_app_integration c
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  c.account_id,
+                  c.integration_id,
+                  c.client_id,
+                  c.name,
+                  c.confidential,
+                  c.creator_username,
+                  c.created_by,
+                  c.create_time,
+                  c.redirect_urls,
+                  c.scopes,
+                  c.user_authorized_scopes,
+                  (c.token_access_policy->>'access_token_ttl_in_minutes')::integer AS access_token_ttl_minutes,
+                  (c.token_access_policy->>'refresh_token_ttl_in_minutes')::integer AS refresh_token_ttl_minutes,
+                  (c.token_access_policy->>'absolute_session_lifetime_in_minutes')::integer AS session_lifetime_minutes,
+                  (c.token_access_policy->>'enable_single_use_refresh_tokens')::boolean AS single_use_refresh_tokens
+                FROM databricks_account.oauth2.custom_app_integration c
+                WHERE account_id = '{{ account_id }}'
+
+    vw_published_app_integrations:
+      name: vw_published_app_integrations
+      id: databricks_account.oauth2.vw_published_app_integrations
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: integration_id
+            type: string
+            description: Unique identifier for the published app integration.
+          - name: app_id
+            type: string
+            description: ID of the published app (matches integration_id for published apps).
+          - name: name
+            type: string
+            description: Human-readable name of the published app (e.g. Tableau, Power BI, Databricks CLI).
+          - name: create_time
+            type: string
+            description: Timestamp when the integration was enabled on this account (ISO 8601).
+          - name: created_by
+            type: integer
+            description: ID of the user who enabled this published app integration (0 for system-created).
+          - name: access_token_ttl_minutes
+            type: integer
+            description: Time-to-live for access tokens issued to this app, in minutes (typically 60).
+          - name: refresh_token_ttl_minutes
+            type: integer
+            description: Time-to-live for refresh tokens issued to this app, in minutes (typically 10080 - 7 days).
+          - name: session_lifetime_minutes
+            type: integer
+            description: Maximum absolute session lifetime for this app, in minutes (e.g. 129600 = 90 days, 525600 = 1 year).
+          - name: single_use_refresh_tokens
+            type: boolean
+            description: Whether refresh tokens are single-use and rotated on each use (1 = true, 0 = false).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                p.account_id,
+                p.integration_id,
+                p.app_id,
+                p.name,
+                p.create_time,
+                p.created_by,
+                JSON_EXTRACT(p.token_access_policy, '$.access_token_ttl_in_minutes') AS access_token_ttl_minutes,
+                JSON_EXTRACT(p.token_access_policy, '$.refresh_token_ttl_in_minutes') AS refresh_token_ttl_minutes,
+                JSON_EXTRACT(p.token_access_policy, '$.absolute_session_lifetime_in_minutes') AS session_lifetime_minutes,
+                JSON_EXTRACT(p.token_access_policy, '$.enable_single_use_refresh_tokens') AS single_use_refresh_tokens
+              FROM databricks_account.oauth2.published_app_integration p
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  p.account_id,
+                  p.integration_id,
+                  p.app_id,
+                  p.name,
+                  p.create_time,
+                  p.created_by,
+                  (p.token_access_policy->>'access_token_ttl_in_minutes')::integer AS access_token_ttl_minutes,
+                  (p.token_access_policy->>'refresh_token_ttl_in_minutes')::integer AS refresh_token_ttl_minutes,
+                  (p.token_access_policy->>'absolute_session_lifetime_in_minutes')::integer AS session_lifetime_minutes,
+                  (p.token_access_policy->>'enable_single_use_refresh_tokens')::boolean AS single_use_refresh_tokens
+                FROM databricks_account.oauth2.published_app_integration p
+                WHERE account_id = '{{ account_id }}'

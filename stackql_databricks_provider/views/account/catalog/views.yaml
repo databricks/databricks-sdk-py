@@ -1,0 +1,170 @@
+    vw_account_storage_credentials:
+      name: vw_account_storage_credentials
+      id: databricks_account.catalog.vw_account_storage_credentials
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: metastore_id
+            type: string
+            description: Metastore ID used to scope the query.
+          - name: id
+            type: string
+            description: Unique identifier for the storage credential.
+          - name: name
+            type: string
+            description: Name of the storage credential.
+          - name: full_name
+            type: string
+            description: Fully qualified name of the storage credential.
+          - name: owner
+            type: string
+            description: Username or group that owns the storage credential.
+          - name: read_only
+            type: boolean
+            description: Whether the storage credential is restricted to read-only access.
+          - name: used_for_managed_storage
+            type: boolean
+            description: Whether this credential is used for managed storage in the metastore.
+          - name: isolation_mode
+            type: string
+            description: Isolation mode controlling which workspaces can use this credential.
+          - name: created_at
+            type: integer
+            description: Unix timestamp (ms) when the credential was created.
+          - name: created_by
+            type: string
+            description: Identity that created the storage credential.
+          - name: updated_at
+            type: integer
+            description: Unix timestamp (ms) when the credential was last updated.
+          - name: updated_by
+            type: string
+            description: Identity that last updated the storage credential.
+          - name: comment
+            type: string
+            description: Optional free-text comment describing the storage credential.
+          - name: aws_role_arn
+            type: string
+            description: ARN of the AWS IAM role used for credential (AWS only).
+          - name: aws_external_id
+            type: string
+            description: External ID used when assuming the AWS IAM role (AWS only).
+          - name: aws_unity_catalog_iam_arn
+            type: string
+            description: ARN of the Unity Catalog IAM role for the AWS credential (AWS only).
+          - name: azure_access_connector_id
+            type: string
+            description: Resource ID of the Azure Databricks Access Connector (Azure managed identity only).
+          - name: azure_credential_id
+            type: string
+            description: Credential ID for the Azure managed identity (Azure managed identity only).
+          - name: azure_managed_identity_id
+            type: string
+            description: ID of the Azure managed identity (Azure managed identity only).
+          - name: azure_directory_id
+            type: string
+            description: Azure Active Directory tenant ID for the service principal (Azure service principal only).
+          - name: azure_application_id
+            type: string
+            description: Application (client) ID of the Azure service principal (Azure service principal only).
+          - name: cloudflare_access_key_id
+            type: string
+            description: Access key ID for the Cloudflare API token credential (Cloudflare only).
+          - name: cloudflare_account_id
+            type: string
+            description: Cloudflare account ID associated with the API token credential (Cloudflare only).
+          - name: gcp_credential_id
+            type: string
+            description: Credential ID for the Databricks GCP service account (GCP only).
+          - name: gcp_service_account_email
+            type: string
+            description: Email address of the Databricks-managed GCP service account (GCP only).
+          - name: cloud_type
+            type: string
+            description: Derived cloud provider type - one of AWS, AZURE_MANAGED_IDENTITY, AZURE_SERVICE_PRINCIPAL, CLOUDFLARE, GCP, or UNKNOWN.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                sc.account_id,
+                sc.metastore_id,
+                sc.id,
+                sc.name,
+                sc.full_name,
+                sc.owner,
+                sc.read_only,
+                sc.used_for_managed_storage,
+                sc.isolation_mode,
+                sc.created_at,
+                sc.created_by,
+                sc.updated_at,
+                sc.updated_by,
+                sc.comment,
+                JSON_EXTRACT(sc.aws_iam_role, '$.role_arn') AS aws_role_arn,
+                JSON_EXTRACT(sc.aws_iam_role, '$.external_id') AS aws_external_id,
+                JSON_EXTRACT(sc.aws_iam_role, '$.unity_catalog_iam_arn') AS aws_unity_catalog_iam_arn,
+                JSON_EXTRACT(sc.azure_managed_identity, '$.access_connector_id') AS azure_access_connector_id,
+                JSON_EXTRACT(sc.azure_managed_identity, '$.credential_id') AS azure_credential_id,
+                JSON_EXTRACT(sc.azure_managed_identity, '$.managed_identity_id') AS azure_managed_identity_id,
+                JSON_EXTRACT(sc.azure_service_principal, '$.directory_id') AS azure_directory_id,
+                JSON_EXTRACT(sc.azure_service_principal, '$.application_id') AS azure_application_id,
+                JSON_EXTRACT(sc.cloudflare_api_token, '$.access_key_id') AS cloudflare_access_key_id,
+                JSON_EXTRACT(sc.cloudflare_api_token, '$.account_id') AS cloudflare_account_id,
+                JSON_EXTRACT(sc.databricks_gcp_service_account, '$.credential_id') AS gcp_credential_id,
+                JSON_EXTRACT(sc.databricks_gcp_service_account, '$.email') AS gcp_service_account_email,
+                CASE
+                  WHEN sc.aws_iam_role IS NOT NULL THEN 'AWS'
+                  WHEN sc.azure_managed_identity IS NOT NULL THEN 'AZURE_MANAGED_IDENTITY'
+                  WHEN sc.azure_service_principal IS NOT NULL THEN 'AZURE_SERVICE_PRINCIPAL'
+                  WHEN sc.cloudflare_api_token IS NOT NULL THEN 'CLOUDFLARE'
+                  WHEN sc.databricks_gcp_service_account IS NOT NULL THEN 'GCP'
+                  ELSE 'UNKNOWN'
+                END AS cloud_type
+              FROM databricks_account.catalog.account_storage_credentials sc
+              WHERE account_id = '{{ account_id }}'
+              AND metastore_id = '{{ metastore_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  sc.account_id,
+                  sc.metastore_id,
+                  sc.id,
+                  sc.name,
+                  sc.full_name,
+                  sc.owner,
+                  sc.read_only,
+                  sc.used_for_managed_storage,
+                  sc.isolation_mode,
+                  sc.created_at,
+                  sc.created_by,
+                  sc.updated_at,
+                  sc.updated_by,
+                  sc.comment,
+                  sc.aws_iam_role->>'role_arn' AS aws_role_arn,
+                  sc.aws_iam_role->>'external_id' AS aws_external_id,
+                  sc.aws_iam_role->>'unity_catalog_iam_arn' AS aws_unity_catalog_iam_arn,
+                  sc.azure_managed_identity->>'access_connector_id' AS azure_access_connector_id,
+                  sc.azure_managed_identity->>'credential_id' AS azure_credential_id,
+                  sc.azure_managed_identity->>'managed_identity_id' AS azure_managed_identity_id,
+                  sc.azure_service_principal->>'directory_id' AS azure_directory_id,
+                  sc.azure_service_principal->>'application_id' AS azure_application_id,
+                  sc.cloudflare_api_token->>'access_key_id' AS cloudflare_access_key_id,
+                  sc.cloudflare_api_token->>'account_id' AS cloudflare_account_id,
+                  sc.databricks_gcp_service_account->>'credential_id' AS gcp_credential_id,
+                  sc.databricks_gcp_service_account->>'email' AS gcp_service_account_email,
+                  CASE
+                    WHEN sc.aws_iam_role IS NOT NULL THEN 'AWS'
+                    WHEN sc.azure_managed_identity IS NOT NULL THEN 'AZURE_MANAGED_IDENTITY'
+                    WHEN sc.azure_service_principal IS NOT NULL THEN 'AZURE_SERVICE_PRINCIPAL'
+                    WHEN sc.cloudflare_api_token IS NOT NULL THEN 'CLOUDFLARE'
+                    WHEN sc.databricks_gcp_service_account IS NOT NULL THEN 'GCP'
+                    ELSE 'UNKNOWN'
+                  END AS cloud_type
+                FROM databricks_account.catalog.account_storage_credentials sc
+                WHERE account_id = '{{ account_id }}'
+                AND metastore_id = '{{ metastore_id }}'

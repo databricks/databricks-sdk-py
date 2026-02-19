@@ -6,7 +6,7 @@ info:
     generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.ml
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -8295,7 +8295,7 @@ components:
           $ref: '#/components/schemas/RegistryWebhook'
     ActivityAction:
       type: string
-      enum:
+      x-enum:
         - APPROVE_TRANSITION_REQUEST
         - CANCEL_TRANSITION_REQUEST
         - DELETE_COMMENT
@@ -8322,7 +8322,7 @@ components:
         * `DELETE_COMMENT`: Delete the comment
     ActivityType:
       type: string
-      enum:
+      x-enum:
         - APPLIED_TRANSITION
         - APPROVED_REQUEST
         - CANCELLED_REQUEST
@@ -8356,7 +8356,7 @@ components:
         versions in a stage.
     CommentActivityAction:
       type: string
-      enum:
+      x-enum:
         - APPROVE_TRANSITION_REQUEST
         - CANCEL_TRANSITION_REQUEST
         - DELETE_COMMENT
@@ -8383,14 +8383,14 @@ components:
         * `DELETE_COMMENT`: Delete the comment
     ExperimentPermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_EDIT
         - CAN_MANAGE
         - CAN_READ
       description: Permission level
     ForecastingExperimentState:
       type: string
-      enum:
+      x-enum:
         - CANCELLED
         - FAILED
         - PENDING
@@ -8435,7 +8435,7 @@ components:
         attributes -- see the documentation for details.
     FunctionFunctionType:
       type: string
-      enum:
+      x-enum:
         - APPROX_COUNT_DISTINCT
         - APPROX_PERCENTILE
         - AVG
@@ -8488,14 +8488,14 @@ components:
         attributes -- see the documentation for details.
     LoggedModelStatus:
       type: string
-      enum:
+      x-enum:
         - LOGGED_MODEL_PENDING
         - LOGGED_MODEL_READY
         - LOGGED_MODEL_UPLOAD_FAILED
       description: A LoggedModelStatus enum value represents the status of a logged model.
     MaterializedFeaturePipelineScheduleState:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - PAUSED
         - SNAPSHOT
@@ -8538,7 +8538,7 @@ components:
         attributes -- see the documentation for details.
     ModelVersionStatus:
       type: string
-      enum:
+      x-enum:
         - FAILED_REGISTRATION
         - PENDING_REGISTRATION
         - READY
@@ -8556,7 +8556,7 @@ components:
         * `READY`: Model version is ready for use.
     OnlineStoreState:
       type: string
-      enum:
+      x-enum:
         - AVAILABLE
         - DELETING
         - FAILING_OVER
@@ -8602,7 +8602,7 @@ components:
         attributes -- see the documentation for details.
     PermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_CREATE_REGISTERED_MODEL
         - CAN_EDIT
         - CAN_MANAGE
@@ -8616,7 +8616,7 @@ components:
         [MLflow Model permissions](..).
     PublishSpecPublishMode:
       type: string
-      enum:
+      x-enum:
         - CONTINUOUS
         - SNAPSHOT
         - TRIGGERED
@@ -8659,7 +8659,7 @@ components:
         attributes -- see the documentation for details.
     RegisteredModelPermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_EDIT
         - CAN_MANAGE
         - CAN_MANAGE_PRODUCTION_VERSIONS
@@ -8668,7 +8668,7 @@ components:
       description: Permission level
     RegistryEmailSubscriptionType:
       type: string
-      enum:
+      x-enum:
         - ALL_EVENTS
         - DEFAULT
         - SUBSCRIBED
@@ -8686,7 +8686,7 @@ components:
         `UNSUBSCRIBED`: Not subscribed to notifications.
     RegistryWebhookEvent:
       type: string
-      enum:
+      x-enum:
         - COMMENT_CREATED
         - MODEL_VERSION_CREATED
         - MODEL_VERSION_TAG_SET
@@ -8738,7 +8738,7 @@ components:
         attributes -- see the documentation for details.
     RegistryWebhookStatus:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - DISABLED
         - TEST_MODE
@@ -8759,7 +8759,7 @@ components:
         real event.
     RunInfoStatus:
       type: string
-      enum:
+      x-enum:
         - FAILED
         - FINISHED
         - KILLED
@@ -8768,7 +8768,7 @@ components:
       description: Status of a run.
     Status:
       type: string
-      enum:
+      x-enum:
         - FAILED_REGISTRATION
         - PENDING_REGISTRATION
         - READY
@@ -8786,7 +8786,7 @@ components:
         * `READY`: Model version is ready for use.
     UpdateRunStatus:
       type: string
-      enum:
+      x-enum:
         - FAILED
         - FINISHED
         - KILLED
@@ -8795,7 +8795,7 @@ components:
       description: Status of a run.
     ViewType:
       type: string
-      enum:
+      x-enum:
         - ACTIVE_ONLY
         - ALL
         - DELETED_ONLY
@@ -8807,12 +8807,18 @@ components:
       title: Experiments
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1delete/post'
           response:
@@ -8838,24 +8844,36 @@ components:
             openAPIDocKey: '200'
             objectKey: $.experiments
         restore:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1restore/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         search:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1search/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         set_tag:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1set-experiment-tag/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1experiments~1update/post'
           response:
@@ -8877,6 +8895,9 @@ components:
       title: Logged Models
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models/post'
           response:
@@ -8889,6 +8910,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         finalize:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models~1{model_id}/patch'
           response:
@@ -8908,18 +8932,27 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         log_params:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models~1{model_id}~1params/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         search:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models~1search/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         set_tags:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1logged-models~1{model_id}~1tags/patch'
           response:
@@ -8941,24 +8974,36 @@ components:
       title: Experiment Runs
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete_bulk:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1databricks~1runs~1delete-runs/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete_tag:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1delete-tag/post'
           response:
@@ -8971,66 +9016,99 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         log_batch:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-batch/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         log_inputs:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-inputs/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         log_metric:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-metric/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         log_model:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-model/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         log_outputs:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1outputs/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         log_param:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1log-parameter/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         restore:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1restore/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         restore_bulk:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1databricks~1runs~1restore-runs/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         search:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1search/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         set_tag:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1set-tag/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1runs~1update/post'
           response:
@@ -9096,12 +9174,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1experiments~1{experiment_id}/patch
@@ -9146,6 +9230,9 @@ components:
       title: Feature Materialized
       methods:
         batch_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1materialized-features:batchCreate/post
@@ -9153,6 +9240,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1materialized-features/post
@@ -9181,6 +9271,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1materialized-features~1{materialized_feature_id}/patch
@@ -9207,6 +9300,9 @@ components:
       title: Feature Engineering
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1feature-engineering~1features/post'
           response:
@@ -9233,6 +9329,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1features~1{full_name}/patch
@@ -9259,6 +9358,9 @@ components:
       title: Feature Kafka Configs
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs/post
@@ -9288,6 +9390,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-engineering~1features~1kafka-configs~1{name}/patch
@@ -9315,6 +9420,9 @@ components:
       title: Feature Store
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1feature-store~1online-stores/post'
           response:
@@ -9340,6 +9448,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1feature-store~1online-stores~1{name}/patch'
           response:
@@ -9353,6 +9464,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         publish_table:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1tables~1{source_table_name}~1publish/post
@@ -9380,6 +9494,9 @@ components:
       title: Forecasting
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1automl~1create-forecasting-experiment/post'
           response:
@@ -9406,6 +9523,9 @@ components:
       title: Materialized Features
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1feature-tables~1{table_name}~1features~1{feature_name}~1tags/post
@@ -9435,6 +9555,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1feature-store~1feature-tables~1{table_name}~1features~1{feature_name}~1tags~1{key}/patch
@@ -9481,12 +9604,18 @@ components:
       title: Model Registry Transitions
       methods:
         approve:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1transition-requests~1approve/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1transition-requests~1create/post'
           response:
@@ -9506,12 +9635,18 @@ components:
             openAPIDocKey: '200'
             objectKey: $.requests
         reject:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1transition-requests~1reject/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         transition:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1mlflow~1databricks~1model-versions~1transition-stage/post
@@ -9534,6 +9669,9 @@ components:
       title: Model Registry Comments
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1comments~1create/post'
           response:
@@ -9546,6 +9684,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1comments~1update/patch'
           response:
@@ -9567,6 +9708,9 @@ components:
       title: Model Registry
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1create/post'
           response:
@@ -9598,6 +9742,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.registered_models
         rename:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1rename/post'
           response:
@@ -9611,12 +9758,18 @@ components:
             openAPIDocKey: '200'
             objectKey: $.registered_models
         set_tag:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1set-tag/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registered-models~1update/patch'
           response:
@@ -9640,6 +9793,9 @@ components:
       title: Model Registry Model Versions
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1create/post'
           response:
@@ -9658,6 +9814,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         get_latest:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1mlflow~1registered-models~1get-latest-versions/post
@@ -9678,12 +9837,18 @@ components:
             openAPIDocKey: '200'
             objectKey: $.model_versions
         set_tag:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1set-tag/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1model-versions~1update/patch'
           response:
@@ -9709,6 +9874,9 @@ components:
       title: Model Registry Webhooks
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1create/post'
           response:
@@ -9728,12 +9896,18 @@ components:
             openAPIDocKey: '200'
             objectKey: $.webhooks
         test:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1test/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1mlflow~1registry-webhooks~1update/patch'
           response:
@@ -9803,6 +9977,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}/put
@@ -9810,6 +9987,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1registered-models~1{registered_model_id}/patch
@@ -9828,3 +10008,11 @@ components:
         replace:
           - $ref: >-
               #/components/x-stackQL-resources/model_registry_permissions/methods/set
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

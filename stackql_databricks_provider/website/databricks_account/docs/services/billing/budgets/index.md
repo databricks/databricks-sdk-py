@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>budgets</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>budgets</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="budgets" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.billing.budgets" /></td></tr>
 </tbody></table>
@@ -75,7 +75,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "action_type",
             "type": "string",
-            "description": "The type of the action."
+            "description": "The type of the action. (EMAIL_NOTIFICATION)"
           },
           {
             "name": "target",
@@ -97,17 +97,17 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "quantity_type",
         "type": "string",
-        "description": "The way to calculate cost for this budget alert. This is what `quantity_threshold` is measured in."
+        "description": "The way to calculate cost for this budget alert. This is what `quantity_threshold` is measured in. (LIST_PRICE_DOLLARS_USD)"
       },
       {
         "name": "time_period",
         "type": "string",
-        "description": "The time window of usage data for the budget."
+        "description": "The time window of usage data for the budget. (MONTH)"
       },
       {
         "name": "trigger_type",
         "type": "string",
-        "description": "The evaluation method to determine when this budget alert is in a triggered state."
+        "description": "The evaluation method to determine when this budget alert is in a triggered state. (CUMULATIVE_SPENDING_EXCEEDED)"
       }
     ]
   },
@@ -139,7 +139,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "operator",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
               },
               {
                 "name": "values",
@@ -158,7 +158,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "operator",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
           },
           {
             "name": "values",
@@ -212,7 +212,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "action_type",
             "type": "string",
-            "description": "The type of the action."
+            "description": "The type of the action. (EMAIL_NOTIFICATION)"
           },
           {
             "name": "target",
@@ -234,17 +234,17 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "quantity_type",
         "type": "string",
-        "description": "The way to calculate cost for this budget alert. This is what `quantity_threshold` is measured in."
+        "description": "The way to calculate cost for this budget alert. This is what `quantity_threshold` is measured in. (LIST_PRICE_DOLLARS_USD)"
       },
       {
         "name": "time_period",
         "type": "string",
-        "description": "The time window of usage data for the budget."
+        "description": "The time window of usage data for the budget. (MONTH)"
       },
       {
         "name": "trigger_type",
         "type": "string",
-        "description": "The evaluation method to determine when this budget alert is in a triggered state."
+        "description": "The evaluation method to determine when this budget alert is in a triggered state. (CUMULATIVE_SPENDING_EXCEEDED)"
       }
     ]
   },
@@ -276,7 +276,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "operator",
                 "type": "string",
-                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+                "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
               },
               {
                 "name": "values",
@@ -295,7 +295,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "operator",
             "type": "string",
-            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+            "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (IN)"
           },
           {
             "name": "values",
@@ -347,14 +347,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#budgets_create"><CopyableCode code="budgets_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__budget"><code>data__budget</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-budget"><code>budget</code></a></td>
     <td></td>
     <td>Create a new budget configuration for an account. For full details, see</td>
 </tr>
 <tr>
     <td><a href="#budgets_update"><CopyableCode code="budgets_update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-budget_id"><code>budget_id</code></a>, <a href="#parameter-data__budget"><code>data__budget</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-budget_id"><code>budget_id</code></a>, <a href="#parameter-budget"><code>budget</code></a></td>
     <td></td>
     <td>Updates a budget configuration for an account. Both account and budget configuration are specified by</td>
 </tr>
@@ -464,7 +464,7 @@ Create a new budget configuration for an account. For full details, see
 
 ```sql
 INSERT INTO databricks_account.billing.budgets (
-data__budget,
+budget,
 account_id
 )
 SELECT 
@@ -508,11 +508,11 @@ Updates a budget configuration for an account. Both account and budget configura
 ```sql
 REPLACE databricks_account.billing.budgets
 SET 
-data__budget = '{{ budget }}'
+budget = '{{ budget }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND budget_id = '{{ budget_id }}' --required
-AND data__budget = '{{ budget }}' --required
+AND budget = '{{ budget }}' --required
 RETURNING
 budget;
 ```

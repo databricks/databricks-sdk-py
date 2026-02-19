@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>cluster_policies</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>cluster_policies</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="cluster_policies" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.cluster_policies" /></td></tr>
 </tbody></table>
@@ -356,7 +356,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#replace"><CopyableCode code="replace" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__policy_id"><code>data__policy_id</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-policy_id"><code>policy_id</code></a></td>
     <td></td>
     <td>Update an existing policy for cluster. This operation may make some clusters governed by the previous</td>
 </tr>
@@ -480,13 +480,13 @@ Creates a new policy with prescribed settings.
 
 ```sql
 INSERT INTO databricks_workspace.compute.cluster_policies (
-data__definition,
-data__description,
-data__libraries,
-data__max_clusters_per_user,
-data__name,
-data__policy_family_definition_overrides,
-data__policy_family_id,
+definition,
+description,
+libraries,
+max_clusters_per_user,
+name,
+policy_family_definition_overrides,
+policy_family_id,
 deployment_name
 )
 SELECT 
@@ -560,17 +560,17 @@ Update an existing policy for cluster. This operation may make some clusters gov
 ```sql
 REPLACE databricks_workspace.compute.cluster_policies
 SET 
-data__policy_id = '{{ policy_id }}',
-data__definition = '{{ definition }}',
-data__description = '{{ description }}',
-data__libraries = '{{ libraries }}',
-data__max_clusters_per_user = '{{ max_clusters_per_user }}',
-data__name = '{{ name }}',
-data__policy_family_definition_overrides = '{{ policy_family_definition_overrides }}',
-data__policy_family_id = '{{ policy_family_id }}'
+policy_id = '{{ policy_id }}',
+definition = '{{ definition }}',
+description = '{{ description }}',
+libraries = '{{ libraries }}',
+max_clusters_per_user = '{{ max_clusters_per_user }}',
+name = '{{ name }}',
+policy_family_definition_overrides = '{{ policy_family_definition_overrides }}',
+policy_family_id = '{{ policy_family_id }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__policy_id = '{{ policy_id }}' --required;
+AND policy_id = '{{ policy_id }}' --required;
 ```
 </TabItem>
 </Tabs>

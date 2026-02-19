@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>credentials</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>credentials</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="credentials" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.catalog.credentials" /></td></tr>
 </tbody></table>
@@ -168,7 +168,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces."
+    "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -178,7 +178,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "purpose",
     "type": "string",
-    "description": "Indicates the purpose of the credential."
+    "description": "Indicates the purpose of the credential. (SERVICE, STORAGE)"
   },
   {
     "name": "read_only",
@@ -331,7 +331,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "isolation_mode",
     "type": "string",
-    "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces."
+    "description": "Whether the current securable is accessible from all workspaces or a specific set of workspaces. (ISOLATION_MODE_ISOLATED, ISOLATION_MODE_OPEN)"
   },
   {
     "name": "owner",
@@ -341,7 +341,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "purpose",
     "type": "string",
-    "description": "Indicates the purpose of the credential."
+    "description": "Indicates the purpose of the credential. (SERVICE, STORAGE)"
   },
   {
     "name": "read_only",
@@ -399,14 +399,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create_credential"><CopyableCode code="create_credential" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-data__name"><code>data__name</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a></td>
     <td></td>
     <td>Creates a new credential. The type of credential to be created is determined by the **purpose** field,</td>
 </tr>
 <tr>
     <td><a href="#credentials_generate_temporary_service_credential"><CopyableCode code="credentials_generate_temporary_service_credential" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-data__credential_name"><code>data__credential_name</code></a></td>
+    <td><a href="#parameter-credential_name"><code>credential_name</code></a></td>
     <td></td>
     <td>Returns a set of temporary credentials generated using the specified service credential. The caller</td>
 </tr>
@@ -570,15 +570,15 @@ Creates a new credential. The type of credential to be created is determined by 
 
 ```sql
 INSERT INTO databricks_account.catalog.credentials (
-data__name,
-data__aws_iam_role,
-data__azure_managed_identity,
-data__azure_service_principal,
-data__comment,
-data__databricks_gcp_service_account,
-data__purpose,
-data__read_only,
-data__skip_validation
+name,
+aws_iam_role,
+azure_managed_identity,
+azure_service_principal,
+comment,
+databricks_gcp_service_account,
+purpose,
+read_only,
+skip_validation
 )
 SELECT 
 '{{ name }}' /* required */,
@@ -618,9 +618,9 @@ Returns a set of temporary credentials generated using the specified service cre
 
 ```sql
 INSERT INTO databricks_account.catalog.credentials (
-data__credential_name,
-data__azure_options,
-data__gcp_options
+credential_name,
+azure_options,
+gcp_options
 )
 SELECT 
 '{{ credential_name }}' /* required */,
@@ -640,14 +640,14 @@ Validates a credential.
 
 ```sql
 INSERT INTO databricks_account.catalog.credentials (
-data__aws_iam_role,
-data__azure_managed_identity,
-data__credential_name,
-data__databricks_gcp_service_account,
-data__external_location_name,
-data__purpose,
-data__read_only,
-data__url
+aws_iam_role,
+azure_managed_identity,
+credential_name,
+databricks_gcp_service_account,
+external_location_name,
+purpose,
+read_only,
+url
 )
 SELECT 
 '{{ aws_iam_role }}',
@@ -740,17 +740,17 @@ Updates a service or storage credential on the metastore.
 ```sql
 UPDATE databricks_account.catalog.credentials
 SET 
-data__aws_iam_role = '{{ aws_iam_role }}',
-data__azure_managed_identity = '{{ azure_managed_identity }}',
-data__azure_service_principal = '{{ azure_service_principal }}',
-data__comment = '{{ comment }}',
-data__databricks_gcp_service_account = '{{ databricks_gcp_service_account }}',
-data__force = '{{ force }}',
-data__isolation_mode = '{{ isolation_mode }}',
-data__new_name = '{{ new_name }}',
-data__owner = '{{ owner }}',
-data__read_only = '{{ read_only }}',
-data__skip_validation = '{{ skip_validation }}'
+aws_iam_role = '{{ aws_iam_role }}',
+azure_managed_identity = '{{ azure_managed_identity }}',
+azure_service_principal = '{{ azure_service_principal }}',
+comment = '{{ comment }}',
+databricks_gcp_service_account = '{{ databricks_gcp_service_account }}',
+force = '{{ force }}',
+isolation_mode = '{{ isolation_mode }}',
+new_name = '{{ new_name }}',
+owner = '{{ owner }}',
+read_only = '{{ read_only }}',
+skip_validation = '{{ skip_validation }}'
 WHERE 
 name_arg = '{{ name_arg }}' --required
 RETURNING

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>connections</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>connections</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="connections" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.connections" /></td></tr>
 </tbody></table>
@@ -70,7 +70,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "connection_type",
     "type": "string",
-    "description": "The type of connection."
+    "description": "The type of connection. (BIGQUERY, DATABRICKS, GA4_RAW_DATA, GLUE, HIVE_METASTORE, HTTP, MYSQL, ORACLE, POSTGRESQL, POWER_BI, REDSHIFT, SALESFORCE, SALESFORCE_DATA_CLOUD, SERVICENOW, SNOWFLAKE, SQLDW, SQLSERVER, TERADATA, UNKNOWN_CONNECTION_TYPE, WORKDAY_RAAS)"
   },
   {
     "name": "created_at",
@@ -85,7 +85,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "credential_type",
     "type": "string",
-    "description": "The type of credential."
+    "description": "The type of credential. (ANY_STATIC_CREDENTIAL, BEARER_TOKEN, OAUTH_ACCESS_TOKEN, OAUTH_M2M, OAUTH_MTLS, OAUTH_REFRESH_TOKEN, OAUTH_RESOURCE_OWNER_PASSWORD, OAUTH_U2M, OAUTH_U2M_MAPPING, OIDC_TOKEN, PEM_PRIVATE_KEY, SERVICE_CREDENTIAL, SSWS_TOKEN, UNKNOWN_CREDENTIAL_TYPE, USERNAME_PASSWORD)"
   },
   {
     "name": "options",
@@ -110,7 +110,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "The provisioning state of the resource."
+        "description": "The provisioning state of the resource. (ACTIVE, DEGRADED, DELETING, FAILED, PROVISIONING, UPDATING)"
       }
     ]
   },
@@ -122,7 +122,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "securable_type",
     "type": "string",
-    "description": "The type of Unity Catalog securable."
+    "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
   },
   {
     "name": "updated_at",
@@ -172,7 +172,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "connection_type",
     "type": "string",
-    "description": "The type of connection."
+    "description": "The type of connection. (BIGQUERY, DATABRICKS, GA4_RAW_DATA, GLUE, HIVE_METASTORE, HTTP, MYSQL, ORACLE, POSTGRESQL, POWER_BI, REDSHIFT, SALESFORCE, SALESFORCE_DATA_CLOUD, SERVICENOW, SNOWFLAKE, SQLDW, SQLSERVER, TERADATA, UNKNOWN_CONNECTION_TYPE, WORKDAY_RAAS)"
   },
   {
     "name": "created_at",
@@ -187,7 +187,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "credential_type",
     "type": "string",
-    "description": "The type of credential."
+    "description": "The type of credential. (ANY_STATIC_CREDENTIAL, BEARER_TOKEN, OAUTH_ACCESS_TOKEN, OAUTH_M2M, OAUTH_MTLS, OAUTH_REFRESH_TOKEN, OAUTH_RESOURCE_OWNER_PASSWORD, OAUTH_U2M, OAUTH_U2M_MAPPING, OIDC_TOKEN, PEM_PRIVATE_KEY, SERVICE_CREDENTIAL, SSWS_TOKEN, UNKNOWN_CREDENTIAL_TYPE, USERNAME_PASSWORD)"
   },
   {
     "name": "options",
@@ -212,7 +212,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "The provisioning state of the resource."
+        "description": "The provisioning state of the resource. (ACTIVE, DEGRADED, DELETING, FAILED, PROVISIONING, UPDATING)"
       }
     ]
   },
@@ -224,7 +224,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "securable_type",
     "type": "string",
-    "description": "The type of Unity Catalog securable."
+    "description": "The type of Unity Catalog securable. (CATALOG, CLEAN_ROOM, CONNECTION, CREDENTIAL, EXTERNAL_LOCATION, EXTERNAL_METADATA, FUNCTION, METASTORE, PIPELINE, PROVIDER, RECIPIENT, SCHEMA, SHARE, STAGING_TABLE, STORAGE_CREDENTIAL, TABLE, VOLUME)"
   },
   {
     "name": "updated_at",
@@ -277,14 +277,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__connection_type"><code>data__connection_type</code></a>, <a href="#parameter-data__options"><code>data__options</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-connection_type"><code>connection_type</code></a>, <a href="#parameter-options"><code>options</code></a></td>
     <td></td>
     <td>Creates a new connection</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__options"><code>data__options</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-options"><code>options</code></a></td>
     <td></td>
     <td>Updates the connection that matches the supplied name.</td>
 </tr>
@@ -422,12 +422,12 @@ Creates a new connection
 
 ```sql
 INSERT INTO databricks_workspace.catalog.connections (
-data__name,
-data__connection_type,
-data__options,
-data__comment,
-data__properties,
-data__read_only,
+name,
+connection_type,
+options,
+comment,
+properties,
+read_only,
 deployment_name
 )
 SELECT 
@@ -513,13 +513,13 @@ Updates the connection that matches the supplied name.
 ```sql
 UPDATE databricks_workspace.catalog.connections
 SET 
-data__options = '{{ options }}',
-data__new_name = '{{ new_name }}',
-data__owner = '{{ owner }}'
+options = '{{ options }}',
+new_name = '{{ new_name }}',
+owner = '{{ owner }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__options = '{{ options }}' --required
+AND options = '{{ options }}' --required
 RETURNING
 name,
 connection_id,

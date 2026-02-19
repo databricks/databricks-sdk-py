@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>workspace_warehouse_config</cod
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>workspace_warehouse_config</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="workspace_warehouse_config" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.workspace_warehouse_config" /></td></tr>
 </tbody></table>
@@ -54,7 +54,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "name",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CHANNEL_NAME_CURRENT, CHANNEL_NAME_CUSTOM, CHANNEL_NAME_PREVIEW, CHANNEL_NAME_PREVIOUS)"
       }
     ]
   },
@@ -134,7 +134,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "warehouse_type",
         "type": "string",
-        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details."
+        "description": "Create a collection of name/value pairs.<br /><br />Example enumeration:<br /><br />&gt;&gt;&gt; class Color(Enum):<br />...     RED = 1<br />...     BLUE = 2<br />...     GREEN = 3<br /><br />Access them by:<br /><br />- attribute access:<br /><br />  &gt;&gt;&gt; Color.RED<br />  &lt;Color.RED: 1&gt;<br /><br />- value lookup:<br /><br />  &gt;&gt;&gt; Color(1)<br />  &lt;Color.RED: 1&gt;<br /><br />- name lookup:<br /><br />  &gt;&gt;&gt; Color['RED']<br />  &lt;Color.RED: 1&gt;<br /><br />Enumerations can be iterated over, and know how many members they have:<br /><br />&gt;&gt;&gt; len(Color)<br />3<br /><br />&gt;&gt;&gt; list(Color)<br />[&lt;Color.RED: 1&gt;, &lt;Color.BLUE: 2&gt;, &lt;Color.GREEN: 3&gt;]<br /><br />Methods can be added to enumerations, and members can have their own<br />attributes -- see the documentation for details. (CLASSIC, PRO, TYPE_UNSPECIFIED)"
       }
     ]
   },
@@ -192,7 +192,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "security_policy",
     "type": "string",
-    "description": "Security policy for warehouses"
+    "description": "Security policy for warehouses (DATA_ACCESS_CONTROL, NONE, PASSTHROUGH)"
   },
   {
     "name": "sql_configuration_parameters",
@@ -339,16 +339,16 @@ Sets the workspace level configuration that is shared by all SQL warehouses in a
 ```sql
 REPLACE databricks_workspace.sql.workspace_warehouse_config
 SET 
-data__channel = '{{ channel }}',
-data__config_param = '{{ config_param }}',
-data__data_access_config = '{{ data_access_config }}',
-data__enable_serverless_compute = '{{ enable_serverless_compute }}',
-data__enabled_warehouse_types = '{{ enabled_warehouse_types }}',
-data__global_param = '{{ global_param }}',
-data__google_service_account = '{{ google_service_account }}',
-data__instance_profile_arn = '{{ instance_profile_arn }}',
-data__security_policy = '{{ security_policy }}',
-data__sql_configuration_parameters = '{{ sql_configuration_parameters }}'
+channel = '{{ channel }}',
+config_param = '{{ config_param }}',
+data_access_config = '{{ data_access_config }}',
+enable_serverless_compute = '{{ enable_serverless_compute }}',
+enabled_warehouse_types = '{{ enabled_warehouse_types }}',
+global_param = '{{ global_param }}',
+google_service_account = '{{ google_service_account }}',
+instance_profile_arn = '{{ instance_profile_arn }}',
+security_policy = '{{ security_policy }}',
+sql_configuration_parameters = '{{ sql_configuration_parameters }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required;
 ```

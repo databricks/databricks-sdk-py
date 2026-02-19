@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>lakeview</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>lakeview</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="lakeview" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.dashboards.lakeview" /></td></tr>
 </tbody></table>
@@ -70,7 +70,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "lifecycle_state",
     "type": "string",
-    "description": "The state of the dashboard resource. Used for tracking trashed status."
+    "description": "The state of the dashboard resource. Used for tracking trashed status. (ACTIVE, TRASHED)"
   },
   {
     "name": "parent_path",
@@ -125,7 +125,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "lifecycle_state",
     "type": "string",
-    "description": "The state of the dashboard resource. Used for tracking trashed status."
+    "description": "The state of the dashboard resource. Used for tracking trashed status. (ACTIVE, TRASHED)"
   },
   {
     "name": "parent_path",
@@ -183,21 +183,21 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__dashboard"><code>data__dashboard</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard"><code>dashboard</code></a></td>
     <td><a href="#parameter-dataset_catalog"><code>dataset_catalog</code></a>, <a href="#parameter-dataset_schema"><code>dataset_schema</code></a></td>
     <td>Create a draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__dashboard"><code>data__dashboard</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard"><code>dashboard</code></a></td>
     <td><a href="#parameter-dataset_catalog"><code>dataset_catalog</code></a>, <a href="#parameter-dataset_schema"><code>dataset_schema</code></a></td>
     <td>Update a draft dashboard.</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__dashboard"><code>data__dashboard</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-dashboard"><code>dashboard</code></a></td>
     <td><a href="#parameter-dataset_catalog"><code>dataset_catalog</code></a>, <a href="#parameter-dataset_schema"><code>dataset_schema</code></a></td>
     <td>Update a draft dashboard.</td>
 </tr>
@@ -348,7 +348,7 @@ Create a draft dashboard.
 
 ```sql
 INSERT INTO databricks_workspace.dashboards.lakeview (
-data__dashboard,
+dashboard,
 deployment_name,
 dataset_catalog,
 dataset_schema
@@ -410,11 +410,11 @@ Update a draft dashboard.
 ```sql
 UPDATE databricks_workspace.dashboards.lakeview
 SET 
-data__dashboard = '{{ dashboard }}'
+dashboard = '{{ dashboard }}'
 WHERE 
 dashboard_id = '{{ dashboard_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__dashboard = '{{ dashboard }}' --required
+AND dashboard = '{{ dashboard }}' --required
 AND dataset_catalog = '{{ dataset_catalog}}'
 AND dataset_schema = '{{ dataset_schema}}'
 RETURNING
@@ -448,11 +448,11 @@ Update a draft dashboard.
 ```sql
 REPLACE databricks_workspace.dashboards.lakeview
 SET 
-data__dashboard = '{{ dashboard }}'
+dashboard = '{{ dashboard }}'
 WHERE 
 dashboard_id = '{{ dashboard_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__dashboard = '{{ dashboard }}' --required
+AND dashboard = '{{ dashboard }}' --required
 AND dataset_catalog = '{{ dataset_catalog}}'
 AND dataset_schema = '{{ dataset_schema}}'
 RETURNING

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>lakeview_subscriptions</code> r
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>lakeview_subscriptions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="lakeview_subscriptions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.dashboards.lakeview_subscriptions" /></td></tr>
 </tbody></table>
@@ -215,7 +215,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__subscription"><code>data__subscription</code></a></td>
+    <td><a href="#parameter-dashboard_id"><code>dashboard_id</code></a>, <a href="#parameter-schedule_id"><code>schedule_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-subscription"><code>subscription</code></a></td>
     <td></td>
     <td>Create schedule subscription.</td>
 </tr>
@@ -352,7 +352,7 @@ Create schedule subscription.
 
 ```sql
 INSERT INTO databricks_workspace.dashboards.lakeview_subscriptions (
-data__subscription,
+subscription,
 dashboard_id,
 schedule_id,
 deployment_name

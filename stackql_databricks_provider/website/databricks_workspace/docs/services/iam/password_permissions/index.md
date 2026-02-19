@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>password_permissions</code> res
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>password_permissions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="password_permissions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.password_permissions" /></td></tr>
 </tbody></table>
@@ -69,7 +69,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "permission_level",
             "type": "string",
-            "description": "Permission level"
+            "description": "Permission level (CAN_USE)"
           }
         ]
       },
@@ -204,7 +204,7 @@ Updates the permissions on all passwords. Passwords can inherit permissions from
 ```sql
 UPDATE databricks_workspace.iam.password_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
 RETURNING
@@ -231,7 +231,7 @@ Sets permissions on an object, replacing existing permissions if they exist. Del
 ```sql
 REPLACE databricks_workspace.iam.password_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
 RETURNING

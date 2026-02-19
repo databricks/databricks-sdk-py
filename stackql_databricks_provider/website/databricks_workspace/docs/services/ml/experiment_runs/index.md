@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>experiment_runs</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>experiment_runs</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="experiment_runs" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.experiment_runs" /></td></tr>
 </tbody></table>
@@ -182,7 +182,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "status",
             "type": "string",
-            "description": "Current status of the run."
+            "description": "Current status of the run. (FAILED, FINISHED, KILLED, RUNNING, SCHEDULED)"
           },
           {
             "name": "user_id",
@@ -434,11 +434,11 @@ Creates a new run within an experiment. A run is usually a single execution of a
 
 ```sql
 INSERT INTO databricks_workspace.ml.experiment_runs (
-data__experiment_id,
-data__run_name,
-data__start_time,
-data__tags,
-data__user_id,
+experiment_id,
+run_name,
+start_time,
+tags,
+user_id,
 deployment_name
 )
 SELECT 

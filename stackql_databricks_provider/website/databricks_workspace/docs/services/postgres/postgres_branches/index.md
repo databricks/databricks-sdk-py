@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>postgres_branches</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>postgres_branches</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="postgres_branches" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.postgres.postgres_branches" /></td></tr>
 </tbody></table>
@@ -106,7 +106,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "current_state",
         "type": "string",
-        "description": "The state of the branch."
+        "description": "The state of the branch. (ARCHIVED, IMPORTING, INIT, READY, RESETTING)"
       },
       {
         "name": "default",
@@ -131,7 +131,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "pending_state",
         "type": "string",
-        "description": "The state of the branch."
+        "description": "The state of the branch. (ARCHIVED, IMPORTING, INIT, READY, RESETTING)"
       },
       {
         "name": "source_branch",
@@ -194,7 +194,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-branch_id"><code>branch_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__branch"><code>data__branch</code></a></td>
+    <td><a href="#parameter-parent"><code>parent</code></a>, <a href="#parameter-branch_id"><code>branch_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-branch"><code>branch</code></a></td>
     <td></td>
     <td>Creates a new database branch in the project.</td>
 </tr>
@@ -289,7 +289,7 @@ Creates a new database branch in the project.
 
 ```sql
 INSERT INTO databricks_workspace.postgres.postgres_branches (
-data__branch,
+branch,
 parent,
 branch_id,
 deployment_name

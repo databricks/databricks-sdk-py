@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>workspace_entity_tag_assignment
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>workspace_entity_tag_assignments</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="workspace_entity_tag_assignments" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.tags.workspace_entity_tag_assignments" /></td></tr>
 </tbody></table>
@@ -123,14 +123,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_assignment"><code>data__tag_assignment</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-tag_assignment"><code>tag_assignment</code></a></td>
     <td></td>
     <td>Create a tag assignment</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_id"><code>entity_id</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__tag_assignment"><code>data__tag_assignment</code></a></td>
+    <td><a href="#parameter-entity_type"><code>entity_type</code></a>, <a href="#parameter-entity_id"><code>entity_id</code></a>, <a href="#parameter-tag_key"><code>tag_key</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-tag_assignment"><code>tag_assignment</code></a></td>
     <td></td>
     <td>Update a tag assignment</td>
 </tr>
@@ -259,7 +259,7 @@ Create a tag assignment
 
 ```sql
 INSERT INTO databricks_workspace.tags.workspace_entity_tag_assignments (
-data__tag_assignment,
+tag_assignment,
 deployment_name
 )
 SELECT 
@@ -306,14 +306,14 @@ Update a tag assignment
 ```sql
 UPDATE databricks_workspace.tags.workspace_entity_tag_assignments
 SET 
-data__tag_assignment = '{{ tag_assignment }}'
+tag_assignment = '{{ tag_assignment }}'
 WHERE 
 entity_type = '{{ entity_type }}' --required
 AND entity_id = '{{ entity_id }}' --required
 AND tag_key = '{{ tag_key }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__tag_assignment = '{{ tag_assignment }}' --required
+AND tag_assignment = '{{ tag_assignment }}' --required
 RETURNING
 entity_id,
 entity_type,

@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>users_v2</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>users_v2</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="users_v2" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.users_v2" /></td></tr>
 </tbody></table>
@@ -608,17 +608,17 @@ Creates a new user in the Databricks workspace. This new user will also be added
 
 ```sql
 INSERT INTO databricks_workspace.iam.users_v2 (
-data__active,
-data__display_name,
-data__emails,
-data__entitlements,
-data__external_id,
-data__groups,
-data__id,
-data__name,
-data__roles,
-data__schemas,
-data__user_name,
+active,
+display_name,
+emails,
+entitlements,
+external_id,
+groups,
+id,
+name,
+roles,
+schemas,
+user_name,
 deployment_name
 )
 SELECT 
@@ -718,8 +718,8 @@ Partially updates a user resource by applying the supplied operations on specifi
 ```sql
 UPDATE databricks_workspace.iam.users_v2
 SET 
-data__operations = '{{ operations }}',
-data__schemas = '{{ schemas }}'
+operations = '{{ operations }}',
+schemas = '{{ schemas }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required;
@@ -743,16 +743,16 @@ Replaces a user's information with the data supplied in request.
 ```sql
 REPLACE databricks_workspace.iam.users_v2
 SET 
-data__active = '{{ active }}',
-data__display_name = '{{ display_name }}',
-data__emails = '{{ emails }}',
-data__entitlements = '{{ entitlements }}',
-data__external_id = '{{ external_id }}',
-data__groups = '{{ groups }}',
-data__name = '{{ name }}',
-data__roles = '{{ roles }}',
-data__schemas = '{{ schemas }}',
-data__user_name = '{{ user_name }}'
+active = '{{ active }}',
+display_name = '{{ display_name }}',
+emails = '{{ emails }}',
+entitlements = '{{ entitlements }}',
+external_id = '{{ external_id }}',
+groups = '{{ groups }}',
+name = '{{ name }}',
+roles = '{{ roles }}',
+schemas = '{{ schemas }}',
+user_name = '{{ user_name }}'
 WHERE 
 id = '{{ id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required;

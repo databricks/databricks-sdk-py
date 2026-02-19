@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>dbfs</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>dbfs</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="dbfs" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.files.dbfs" /></td></tr>
 </tbody></table>
@@ -90,7 +90,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__path"><code>data__path</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-path"><code>path</code></a></td>
     <td></td>
     <td>Opens a stream to write to a file and returns a handle to this stream. There is a 10 minute idle</td>
 </tr>
@@ -231,8 +231,8 @@ Opens a stream to write to a file and returns a handle to this stream. There is 
 
 ```sql
 INSERT INTO databricks_workspace.files.dbfs (
-data__path,
-data__overwrite,
+path,
+overwrite,
 deployment_name
 )
 SELECT 

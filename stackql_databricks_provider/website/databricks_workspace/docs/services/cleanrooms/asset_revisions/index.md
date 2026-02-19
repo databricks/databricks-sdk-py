@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>asset_revisions</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>asset_revisions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="asset_revisions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.cleanrooms.asset_revisions" /></td></tr>
 </tbody></table>
@@ -60,7 +60,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "asset_type",
     "type": "string",
-    "description": "The type of the asset."
+    "description": "The type of the asset. (FOREIGN_TABLE, NOTEBOOK_FILE, TABLE, VIEW, VOLUME)"
   },
   {
     "name": "foreign_table",
@@ -104,7 +104,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "review_state",
         "type": "string",
-        "description": "Top-level status derived from all reviews"
+        "description": "Top-level status derived from all reviews (APPROVED, PENDING, REJECTED)"
       },
       {
         "name": "reviews",
@@ -124,12 +124,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "review_state",
             "type": "string",
-            "description": "Review outcome"
+            "description": "Review outcome (APPROVED, PENDING, REJECTED)"
           },
           {
             "name": "review_sub_reason",
             "type": "string",
-            "description": "Specified when the review was not explicitly made by a user"
+            "description": "Specified when the review was not explicitly made by a user (AUTO_APPROVED, BACKFILLED)"
           },
           {
             "name": "reviewer_collaborator_alias",
@@ -153,7 +153,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Status of the asset"
+    "description": "Status of the asset (ACTIVE, PENDING, PERMISSION_DENIED)"
   },
   {
     "name": "table",
@@ -243,7 +243,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "asset_type",
     "type": "string",
-    "description": "The type of the asset."
+    "description": "The type of the asset. (FOREIGN_TABLE, NOTEBOOK_FILE, TABLE, VIEW, VOLUME)"
   },
   {
     "name": "foreign_table",
@@ -287,7 +287,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "review_state",
         "type": "string",
-        "description": "Top-level status derived from all reviews"
+        "description": "Top-level status derived from all reviews (APPROVED, PENDING, REJECTED)"
       },
       {
         "name": "reviews",
@@ -307,12 +307,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "review_state",
             "type": "string",
-            "description": "Review outcome"
+            "description": "Review outcome (APPROVED, PENDING, REJECTED)"
           },
           {
             "name": "review_sub_reason",
             "type": "string",
-            "description": "Specified when the review was not explicitly made by a user"
+            "description": "Specified when the review was not explicitly made by a user (AUTO_APPROVED, BACKFILLED)"
           },
           {
             "name": "reviewer_collaborator_alias",
@@ -336,7 +336,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Status of the asset"
+    "description": "Status of the asset (ACTIVE, PENDING, PERMISSION_DENIED)"
   },
   {
     "name": "table",

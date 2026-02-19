@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>usage_dashboards</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>usage_dashboards</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="usage_dashboards" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.billing.usage_dashboards" /></td></tr>
 </tbody></table>
@@ -159,9 +159,9 @@ Create a usage dashboard specified by workspaceId, accountId, and dashboard type
 
 ```sql
 INSERT INTO databricks_account.billing.usage_dashboards (
-data__dashboard_type,
-data__major_version,
-data__workspace_id,
+dashboard_type,
+major_version,
+workspace_id,
 account_id
 )
 SELECT 

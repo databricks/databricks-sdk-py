@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>default_warehouse_overrides</co
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>default_warehouse_overrides</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="default_warehouse_overrides" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.default_warehouse_overrides" /></td></tr>
 </tbody></table>
@@ -60,7 +60,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "type",
     "type": "string",
-    "description": "The type of override behavior."
+    "description": "The type of override behavior. (CUSTOM, LAST_SELECTED)"
   }
 ]} />
 </TabItem>
@@ -85,7 +85,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "type",
     "type": "string",
-    "description": "The type of override behavior."
+    "description": "The type of override behavior. (CUSTOM, LAST_SELECTED)"
   }
 ]} />
 </TabItem>
@@ -123,14 +123,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-default_warehouse_override_id"><code>default_warehouse_override_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__default_warehouse_override"><code>data__default_warehouse_override</code></a></td>
+    <td><a href="#parameter-default_warehouse_override_id"><code>default_warehouse_override_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-default_warehouse_override"><code>default_warehouse_override</code></a></td>
     <td></td>
     <td>Creates a new default warehouse override for a user. Users can create their own override. Admins can</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__default_warehouse_override"><code>data__default_warehouse_override</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-default_warehouse_override"><code>default_warehouse_override</code></a></td>
     <td><a href="#parameter-allow_missing"><code>allow_missing</code></a></td>
     <td>Updates an existing default warehouse override for a user. Users can update their own override. Admins</td>
 </tr>
@@ -255,7 +255,7 @@ Creates a new default warehouse override for a user. Users can create their own 
 
 ```sql
 INSERT INTO databricks_workspace.sql.default_warehouse_overrides (
-data__default_warehouse_override,
+default_warehouse_override,
 default_warehouse_override_id,
 deployment_name
 )
@@ -307,12 +307,12 @@ Updates an existing default warehouse override for a user. Users can update thei
 ```sql
 UPDATE databricks_workspace.sql.default_warehouse_overrides
 SET 
-data__default_warehouse_override = '{{ default_warehouse_override }}'
+default_warehouse_override = '{{ default_warehouse_override }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__default_warehouse_override = '{{ default_warehouse_override }}' --required
+AND default_warehouse_override = '{{ default_warehouse_override }}' --required
 AND allow_missing = '{{ allow_missing}}'
 RETURNING
 name,

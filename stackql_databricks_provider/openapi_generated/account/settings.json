@@ -5,7 +5,7 @@
     "description": "OpenAPI specification for the Databricks settings service (account-level APIs), generated from the Databricks Python SDK.",
     "version": "0.1.0",
     "x-stackql-sdk-version": "0.86.0",
-    "x-stackql-date-generated": "2026-02-12",
+    "x-stackql-date-generated": "2026-02-19",
     "x-stackql-sdk-namespace": "databricks.sdk.service.settings"
   },
   "servers": [
@@ -3493,7 +3493,7 @@
       },
       "AibiDashboardEmbeddingAccessPolicyAccessPolicyType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALLOW_ALL_DOMAINS",
           "ALLOW_APPROVED_DOMAINS",
           "DENY_ALL_DOMAINS"
@@ -3502,7 +3502,7 @@
       },
       "ClusterAutoRestartMessageMaintenanceWindowDayOfWeek": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FRIDAY",
           "MONDAY",
           "SATURDAY",
@@ -3515,7 +3515,7 @@
       },
       "ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EVERY_WEEK",
           "FIRST_AND_THIRD_OF_MONTH",
           "FIRST_OF_MONTH",
@@ -3528,7 +3528,7 @@
       },
       "ComplianceStandard": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CANADA_PROTECTED_B",
           "CYBER_ESSENTIAL_PLUS",
           "FEDRAMP_HIGH",
@@ -3549,7 +3549,7 @@
       },
       "CustomerFacingNetworkConnectivityConfigAwsPrivateEndpointRulePrivateLinkConnectionState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CREATE_FAILED",
           "CREATING",
           "DISCONNECTED",
@@ -3562,7 +3562,7 @@
       },
       "DestinationType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "EMAIL",
           "MICROSOFT_TEAMS",
           "PAGERDUTY",
@@ -3573,21 +3573,21 @@
       },
       "EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationFilteringProtocol": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "TCP"
         ],
         "description": "The filtering protocol used by the DP. For private and public preview, SEG will only support TCP\nfiltering (i.e. DNS based filtering, filtering by destination IP address), so protocol will be\nset to TCP by default and hidden from the user. In the future, users may be able to select HTTP\nfiltering (i.e. SNI based filtering, filtering by FQDN)."
       },
       "EgressNetworkPolicyInternetAccessPolicyInternetDestinationInternetDestinationType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FQDN"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "EgressNetworkPolicyInternetAccessPolicyLogOnlyModeLogOnlyModeType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALL_SERVICES",
           "SELECTED_SERVICES"
         ],
@@ -3595,7 +3595,7 @@
       },
       "EgressNetworkPolicyInternetAccessPolicyLogOnlyModeWorkloadType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DBSQL",
           "ML_SERVING"
         ],
@@ -3603,7 +3603,7 @@
       },
       "EgressNetworkPolicyInternetAccessPolicyRestrictionMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FULL_ACCESS",
           "PRIVATE_ACCESS_ONLY",
           "RESTRICTED_ACCESS"
@@ -3612,7 +3612,7 @@
       },
       "EgressNetworkPolicyInternetAccessPolicyStorageDestinationStorageDestinationType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AWS_S3",
           "AZURE_STORAGE",
           "CLOUDFLARE_R2",
@@ -3622,14 +3622,14 @@
       },
       "EgressNetworkPolicyNetworkAccessPolicyInternetDestinationInternetDestinationType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DNS_NAME"
         ],
         "description": "Create a collection of name/value pairs.\n\nExample enumeration:\n\n>>> class Color(Enum):\n...     RED = 1\n...     BLUE = 2\n...     GREEN = 3\n\nAccess them by:\n\n- attribute access:\n\n  >>> Color.RED\n  <Color.RED: 1>\n\n- value lookup:\n\n  >>> Color(1)\n  <Color.RED: 1>\n\n- name lookup:\n\n  >>> Color['RED']\n  <Color.RED: 1>\n\nEnumerations can be iterated over, and know how many members they have:\n\n>>> len(Color)\n3\n\n>>> list(Color)\n[<Color.RED: 1>, <Color.BLUE: 2>, <Color.GREEN: 3>]\n\nMethods can be added to enumerations, and members can have their own\nattributes -- see the documentation for details."
       },
       "EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementDryRunModeProductFilter": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DBSQL",
           "ML_SERVING"
         ],
@@ -3637,7 +3637,7 @@
       },
       "EgressNetworkPolicyNetworkAccessPolicyPolicyEnforcementEnforcementMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DRY_RUN",
           "ENFORCED"
         ],
@@ -3645,7 +3645,7 @@
       },
       "EgressNetworkPolicyNetworkAccessPolicyRestrictionMode": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "FULL_ACCESS",
           "RESTRICTED_ACCESS"
         ],
@@ -3653,7 +3653,7 @@
       },
       "EgressNetworkPolicyNetworkAccessPolicyStorageDestinationStorageDestinationType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AWS_S3",
           "AZURE_STORAGE",
           "GOOGLE_CLOUD_STORAGE"
@@ -3662,14 +3662,14 @@
       },
       "EgressResourceType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "AZURE_BLOB_STORAGE"
         ],
         "description": "The target resources that are supported by Network Connectivity Config. Note: some egress types\ncan support general types that are not defined in EgressResourceType. E.g.: Azure private\nendpoint supports private link enabled Azure services."
       },
       "ListType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALLOW",
           "BLOCK"
         ],
@@ -3677,7 +3677,7 @@
       },
       "NccAzurePrivateEndpointRuleConnectionState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CREATE_FAILED",
           "CREATING",
           "DISCONNECTED",
@@ -3691,7 +3691,7 @@
       },
       "NccPrivateEndpointRulePrivateLinkConnectionState": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CREATE_FAILED",
           "CREATING",
           "DISCONNECTED",
@@ -3704,7 +3704,7 @@
       },
       "PersonalComputeMessageEnum": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "DELEGATE",
           "ON"
         ],
@@ -3712,7 +3712,7 @@
       },
       "RestrictWorkspaceAdminsMessageStatus": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ALLOW_ALL",
           "RESTRICT_TOKENS_AND_JOB_RUN_AS"
         ],
@@ -3720,14 +3720,14 @@
       },
       "TokenPermissionLevel": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "CAN_USE"
         ],
         "description": "Permission level"
       },
       "TokenType": {
         "type": "string",
-        "enum": [
+        "x-enum": [
           "ARCLIGHT_AZURE_EXCHANGE_TOKEN",
           "ARCLIGHT_AZURE_EXCHANGE_TOKEN_WITH_USER_DELEGATION_KEY",
           "ARCLIGHT_MULTI_TENANT_AZURE_EXCHANGE_TOKEN",

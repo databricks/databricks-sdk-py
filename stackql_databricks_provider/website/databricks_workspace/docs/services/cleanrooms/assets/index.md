@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>assets</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>assets</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="assets" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.cleanrooms.assets" /></td></tr>
 </tbody></table>
@@ -60,7 +60,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "asset_type",
     "type": "string",
-    "description": "The type of the asset."
+    "description": "The type of the asset. (FOREIGN_TABLE, NOTEBOOK_FILE, TABLE, VIEW, VOLUME)"
   },
   {
     "name": "foreign_table",
@@ -104,7 +104,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "review_state",
         "type": "string",
-        "description": "Top-level status derived from all reviews"
+        "description": "Top-level status derived from all reviews (APPROVED, PENDING, REJECTED)"
       },
       {
         "name": "reviews",
@@ -124,12 +124,12 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "review_state",
             "type": "string",
-            "description": "Review outcome"
+            "description": "Review outcome (APPROVED, PENDING, REJECTED)"
           },
           {
             "name": "review_sub_reason",
             "type": "string",
-            "description": "Specified when the review was not explicitly made by a user"
+            "description": "Specified when the review was not explicitly made by a user (AUTO_APPROVED, BACKFILLED)"
           },
           {
             "name": "reviewer_collaborator_alias",
@@ -153,7 +153,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "status",
     "type": "string",
-    "description": "Status of the asset"
+    "description": "Status of the asset (ACTIVE, PENDING, PERMISSION_DENIED)"
   },
   {
     "name": "table",
@@ -260,14 +260,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__asset"><code>data__asset</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-asset"><code>asset</code></a></td>
     <td></td>
     <td>Create a clean room asset —share an asset like a notebook or table into the clean room. For each UC</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__asset_type"><code>data__asset_type</code></a>, <a href="#parameter-data__asset"><code>data__asset</code></a></td>
+    <td><a href="#parameter-clean_room_name"><code>clean_room_name</code></a>, <a href="#parameter-asset_type.value"><code>asset_type.value</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-asset_type"><code>asset_type</code></a>, <a href="#parameter-asset"><code>asset</code></a></td>
     <td></td>
     <td>Update a clean room asset. For example, updating the content of a notebook; changing the shared</td>
 </tr>
@@ -404,7 +404,7 @@ Create a clean room asset —share an asset like a notebook or table into the cl
 
 ```sql
 INSERT INTO databricks_workspace.cleanrooms.assets (
-data__asset,
+asset,
 clean_room_name,
 deployment_name
 )
@@ -466,15 +466,15 @@ Update a clean room asset. For example, updating the content of a notebook; chan
 ```sql
 UPDATE databricks_workspace.cleanrooms.assets
 SET 
-data__asset_type = '{{ asset_type }}',
-data__asset = '{{ asset }}'
+asset_type = '{{ asset_type }}',
+asset = '{{ asset }}'
 WHERE 
 clean_room_name = '{{ clean_room_name }}' --required
 AND asset_type.value = '{{ asset_type.value }}' --required
 AND name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__asset_type = '{{ asset_type }}' --required
-AND data__asset = '{{ asset }}' --required
+AND asset_type = '{{ asset_type }}' --required
+AND asset = '{{ asset }}' --required
 RETURNING
 name,
 clean_room_name,

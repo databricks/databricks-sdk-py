@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>experiment_permissions</code> 
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>experiment_permissions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="experiment_permissions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.ml.experiment_permissions" /></td></tr>
 </tbody></table>
@@ -69,7 +69,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "permission_level",
             "type": "string",
-            "description": "Permission level"
+            "description": "Permission level (CAN_EDIT, CAN_MANAGE, CAN_READ)"
           }
         ]
       },
@@ -210,7 +210,7 @@ Updates the permissions on an experiment. Experiments can inherit permissions fr
 ```sql
 UPDATE databricks_workspace.ml.experiment_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 experiment_id = '{{ experiment_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
@@ -238,7 +238,7 @@ Sets permissions on an object, replacing existing permissions if they exist. Del
 ```sql
 REPLACE databricks_workspace.ml.experiment_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 experiment_id = '{{ experiment_id }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

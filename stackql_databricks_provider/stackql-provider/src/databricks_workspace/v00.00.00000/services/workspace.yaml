@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.workspace
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -2978,14 +2978,14 @@ components:
           $ref: '#/components/schemas/WorkspaceObjectPermissionLevel'
     AclPermission:
       type: string
-      enum:
+      x-enum:
         - MANAGE
         - READ
         - WRITE
       description: The ACL permission levels for Secret ACLs applied to secret scopes.
     ExportFormat:
       type: string
-      enum:
+      x-enum:
         - AUTO
         - DBC
         - HTML
@@ -2996,7 +2996,7 @@ components:
       description: The format for workspace import and export.
     ImportFormat:
       type: string
-      enum:
+      x-enum:
         - AUTO
         - DBC
         - HTML
@@ -3007,7 +3007,7 @@ components:
       description: The format for workspace import and export.
     Language:
       type: string
-      enum:
+      x-enum:
         - PYTHON
         - R
         - SCALA
@@ -3015,7 +3015,7 @@ components:
       description: The language of notebook.
     ObjectType:
       type: string
-      enum:
+      x-enum:
         - DASHBOARD
         - DIRECTORY
         - FILE
@@ -3025,7 +3025,7 @@ components:
       description: The type of the object in workspace.
     RepoPermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_EDIT
         - CAN_MANAGE
         - CAN_READ
@@ -3033,7 +3033,7 @@ components:
       description: Permission level
     ScopeBackendType:
       type: string
-      enum:
+      x-enum:
         - AZURE_KEYVAULT
         - DATABRICKS
       description: >-
@@ -3043,7 +3043,7 @@ components:
         will be supported in a later release.
     WorkspaceObjectPermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_EDIT
         - CAN_MANAGE
         - CAN_READ
@@ -3056,6 +3056,9 @@ components:
       title: Git Credentials
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1git-credentials/post'
           response:
@@ -3081,6 +3084,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1git-credentials~1{credential_id}/patch'
           response:
@@ -3103,6 +3109,9 @@ components:
       title: Repos
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1repos/post'
           response:
@@ -3128,6 +3137,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1repos~1{repo_id}/patch'
           response:
@@ -3176,12 +3188,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1repos~1{repo_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1repos~1{repo_id}/patch'
           response:
@@ -3202,12 +3220,18 @@ components:
       title: Secret Scopes
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1scopes~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1scopes~1delete/post'
           response:
@@ -3234,6 +3258,9 @@ components:
       title: Secret Acls
       methods:
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1acls~1delete/post'
           response:
@@ -3253,6 +3280,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.items
         put:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1acls~1put/post'
           response:
@@ -3273,6 +3303,9 @@ components:
       title: Secrets
       methods:
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1delete/post'
           response:
@@ -3292,6 +3325,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.secrets
         put:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1secrets~1put/post'
           response:
@@ -3312,6 +3348,9 @@ components:
       title: Workspace
       methods:
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1workspace~1delete/post'
           response:
@@ -3324,6 +3363,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         import:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1workspace~1import/post'
           response:
@@ -3337,6 +3379,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.objects
         mkdirs:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1workspace~1mkdirs/post'
           response:
@@ -3382,6 +3427,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}/put
@@ -3389,6 +3437,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1{workspace_object_type}~1{workspace_object_id}/patch
@@ -3422,3 +3473,11 @@ components:
         update: []
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

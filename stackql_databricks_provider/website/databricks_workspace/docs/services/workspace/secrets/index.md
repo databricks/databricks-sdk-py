@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>secrets</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>secrets</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="secrets" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.workspace.secrets" /></td></tr>
 </tbody></table>
@@ -103,7 +103,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#put"><CopyableCode code="put" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__scope"><code>data__scope</code></a>, <a href="#parameter-data__key"><code>data__key</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-scope"><code>scope</code></a>, <a href="#parameter-key"><code>key</code></a></td>
     <td></td>
     <td>Inserts a secret under the provided scope with the given name. If a secret already exists with the</td>
 </tr>
@@ -204,10 +204,10 @@ Inserts a secret under the provided scope with the given name. If a secret alrea
 
 ```sql
 INSERT INTO databricks_workspace.workspace.secrets (
-data__scope,
-data__key,
-data__bytes_value,
-data__string_value,
+scope,
+key,
+bytes_value,
+string_value,
 deployment_name
 )
 SELECT 

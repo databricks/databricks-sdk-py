@@ -1,67 +1,47 @@
 openapi: 3.0.0
 info:
   title: Databricks Provisioning API (account)
-  description: >-
-    OpenAPI specification for the Databricks provisioning service (account-level
-    APIs), generated from the Databricks Python SDK.
+  description: OpenAPI specification for the Databricks provisioning service (account-level APIs), generated from the Databricks
+    Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.provisioning
 servers:
-  - url: https://accounts.cloud.databricks.com
+- url: https://accounts.cloud.databricks.com
 paths:
   /api/2.0/accounts/{account_id}/credentials:
     post:
       operationId: credentials_create
-      summary: >-
-        Creates a Databricks credential configuration that represents cloud
-        cross-account credentials for a
+      summary: Creates a Databricks credential configuration that represents cloud cross-account credentials for a
       tags:
-        - provisioning
-        - credentials
-      description: >-
-        Creates a Databricks credential configuration that represents cloud
-        cross-account credentials for a
+      - provisioning
+      - credentials
+      description: |-
+        Creates a Databricks credential configuration that represents cloud cross-account credentials for a
+        specified account. Databricks uses this to set up network infrastructure properly to host Databricks
+        clusters. For your AWS IAM role, you need to trust the External ID (the Databricks Account API account
+        ID) in the returned credential object, and configure the required access policy.
 
-        specified account. Databricks uses this to set up network infrastructure
-        properly to host Databricks
-
-        clusters. For your AWS IAM role, you need to trust the External ID (the
-        Databricks Account API account
-
-        ID) in the returned credential object, and configure the required access
-        policy.
-
-
-        Save the response's `credentials_id` field, which is the ID for your new
-        credential configuration
-
+        Save the response's `credentials_id` field, which is the ID for your new credential configuration
         object.
 
-
-        For information about how to create a new workspace with this API, see
-        [Create a new workspace using
-
+        For information about how to create a new workspace with this API, see [Create a new workspace using
         the Account API]
 
-
-        [Create a new workspace using the Account API]:
-        http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-
+        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 
         :param credentials_name: str
           The human-readable name of the credential configuration object.
         :param aws_credentials: :class:`CreateCredentialAwsCredentials`
 
-
         :returns: :class:`Credential`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -70,15 +50,13 @@ paths:
               properties:
                 credentials_name:
                   type: string
-                  description: >-
-                    The human-readable name of the credential configuration
-                    object.
+                  description: The human-readable name of the credential configuration object.
                 aws_credentials:
                   type: string
                   description: ':returns: :class:`Credential`'
               required:
-                - credentials_name
-                - aws_credentials
+              - credentials_name
+              - aws_credentials
       responses:
         '200':
           description: Success
@@ -100,25 +78,21 @@ paths:
       x-stackql-sdk-source: CredentialsAPI
     get:
       operationId: credentials_list
-      summary: >-
-        List Databricks credential configuration objects for an account,
-        specified by ID.
+      summary: List Databricks credential configuration objects for an account, specified by ID.
       tags:
-        - provisioning
-        - credentials
-      description: >-
-        List Databricks credential configuration objects for an account,
-        specified by ID.
-
+      - provisioning
+      - credentials
+      description: |-
+        List Databricks credential configuration objects for an account, specified by ID.
 
 
         :returns: Iterator over :class:`Credential`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -141,35 +115,30 @@ paths:
   /api/2.0/accounts/{account_id}/credentials/{credentials_id}:
     delete:
       operationId: credentials_delete
-      summary: >-
-        Deletes a Databricks credential configuration object for an account,
-        both specified by ID. You cannot
+      summary: Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot
       tags:
-        - provisioning
-        - credentials
-      description: >-
-        Deletes a Databricks credential configuration object for an account,
-        both specified by ID. You cannot
-
+      - provisioning
+      - credentials
+      description: |-
+        Deletes a Databricks credential configuration object for an account, both specified by ID. You cannot
         delete a credential that is associated with any workspace.
-
 
         :param credentials_id: str
           Databricks Account API credential configuration ID
 
         :returns: :class:`Credential`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: credentials_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Databricks Account API credential configuration ID
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: credentials_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Databricks Account API credential configuration ID
       responses:
         '200':
           description: Success
@@ -191,33 +160,29 @@ paths:
       x-stackql-sdk-source: CredentialsAPI
     get:
       operationId: credentials_get
-      summary: >-
-        Gets a Databricks credential configuration object for an account, both
-        specified by ID.
+      summary: Gets a Databricks credential configuration object for an account, both specified by ID.
       tags:
-        - provisioning
-        - credentials
-      description: >-
-        Gets a Databricks credential configuration object for an account, both
-        specified by ID.
-
+      - provisioning
+      - credentials
+      description: |-
+        Gets a Databricks credential configuration object for an account, both specified by ID.
 
         :param credentials_id: str
           Credential configuration ID
 
         :returns: :class:`Credential`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: credentials_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Credential configuration ID
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: credentials_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Credential configuration ID
       responses:
         '200':
           description: Success
@@ -240,61 +205,37 @@ paths:
   /api/2.0/accounts/{account_id}/customer-managed-keys:
     post:
       operationId: encryption_keys_create
-      summary: >-
-        Creates a customer-managed key configuration object for an account,
-        specified by ID. This operation
+      summary: Creates a customer-managed key configuration object for an account, specified by ID. This operation
       tags:
-        - provisioning
-        - encryption_keys
-      description: >-
-        Creates a customer-managed key configuration object for an account,
-        specified by ID. This operation
-
-        uploads a reference to a customer-managed key to Databricks. If the key
-        is assigned as a workspace's
-
-        customer-managed key for managed services, Databricks uses the key to
-        encrypt the workspaces notebooks
-
-        and secrets in the control plane, in addition to Databricks SQL queries
-        and query history. If it is
-
-        specified as a workspace's customer-managed key for workspace storage,
-        the key encrypts the
-
-        workspace's root S3 bucket (which contains the workspace's root DBFS and
-        system data) and, optionally,
-
+      - provisioning
+      - encryption_keys
+      description: |-
+        Creates a customer-managed key configuration object for an account, specified by ID. This operation
+        uploads a reference to a customer-managed key to Databricks. If the key is assigned as a workspace's
+        customer-managed key for managed services, Databricks uses the key to encrypt the workspaces notebooks
+        and secrets in the control plane, in addition to Databricks SQL queries and query history. If it is
+        specified as a workspace's customer-managed key for workspace storage, the key encrypts the
+        workspace's root S3 bucket (which contains the workspace's root DBFS and system data) and, optionally,
         cluster EBS volume data.
 
+        **Important**: Customer-managed keys are supported only for some deployment types, subscription types,
+        and AWS regions that currently support creation of Databricks workspaces.
 
-        **Important**: Customer-managed keys are supported only for some
-        deployment types, subscription types,
-
-        and AWS regions that currently support creation of Databricks
-        workspaces.
-
-
-        This operation is available only if your account is on the E2 version of
-        the platform or on a select
-
+        This operation is available only if your account is on the E2 version of the platform or on a select
         custom plan that allows multiple workspaces per account.
-
 
         :param use_cases: List[:class:`KeyUseCase`]
           The cases that the key can be used for.
         :param aws_key_info: :class:`CreateAwsKeyInfo` (optional)
-
         :param gcp_key_info: :class:`CreateGcpKeyInfo` (optional)
-
 
         :returns: :class:`CustomerManagedKey`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -310,7 +251,7 @@ paths:
                 gcp_key_info:
                   type: string
               required:
-                - use_cases
+              - use_cases
       responses:
         '200':
           description: Success
@@ -334,19 +275,19 @@ paths:
       operationId: encryption_keys_list
       summary: Lists Databricks customer-managed key configurations for an account.
       tags:
-        - provisioning
-        - encryption_keys
+      - provisioning
+      - encryption_keys
       description: |-
         Lists Databricks customer-managed key configurations for an account.
 
 
         :returns: Iterator over :class:`CustomerManagedKey`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -369,35 +310,30 @@ paths:
   /api/2.0/accounts/{account_id}/customer-managed-keys/{customer_managed_key_id}:
     delete:
       operationId: encryption_keys_delete
-      summary: >-
-        Deletes a customer-managed key configuration object for an account. You
-        cannot delete a configuration
+      summary: Deletes a customer-managed key configuration object for an account. You cannot delete a configuration
       tags:
-        - provisioning
-        - encryption_keys
-      description: >-
-        Deletes a customer-managed key configuration object for an account. You
-        cannot delete a configuration
-
+      - provisioning
+      - encryption_keys
+      description: |-
+        Deletes a customer-managed key configuration object for an account. You cannot delete a configuration
         that is associated with a running workspace.
-
 
         :param customer_managed_key_id: str
           Databricks encryption key configuration ID.
 
         :returns: :class:`CustomerManagedKey`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: customer_managed_key_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Databricks encryption key configuration ID.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: customer_managed_key_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Databricks encryption key configuration ID.
       responses:
         '200':
           description: Success
@@ -419,60 +355,40 @@ paths:
       x-stackql-sdk-source: EncryptionKeysAPI
     get:
       operationId: encryption_keys_get
-      summary: >-
-        Gets a customer-managed key configuration object for an account,
-        specified by ID. This operation
+      summary: Gets a customer-managed key configuration object for an account, specified by ID. This operation
       tags:
-        - provisioning
-        - encryption_keys
-      description: >-
-        Gets a customer-managed key configuration object for an account,
-        specified by ID. This operation
-
-        uploads a reference to a customer-managed key to Databricks. If assigned
-        as a workspace's
-
-        customer-managed key for managed services, Databricks uses the key to
-        encrypt the workspaces notebooks
-
-        and secrets in the control plane, in addition to Databricks SQL queries
-        and query history. If it is
-
-        specified as a workspace's customer-managed key for storage, the key
-        encrypts the workspace's root S3
-
-        bucket (which contains the workspace's root DBFS and system data) and,
-        optionally, cluster EBS volume
-
+      - provisioning
+      - encryption_keys
+      description: |-
+        Gets a customer-managed key configuration object for an account, specified by ID. This operation
+        uploads a reference to a customer-managed key to Databricks. If assigned as a workspace's
+        customer-managed key for managed services, Databricks uses the key to encrypt the workspaces notebooks
+        and secrets in the control plane, in addition to Databricks SQL queries and query history. If it is
+        specified as a workspace's customer-managed key for storage, the key encrypts the workspace's root S3
+        bucket (which contains the workspace's root DBFS and system data) and, optionally, cluster EBS volume
         data.
 
-
-        **Important**: Customer-managed keys are supported only for some
-        deployment types, subscription types,
-
+        **Important**: Customer-managed keys are supported only for some deployment types, subscription types,
         and AWS regions.
 
-
-        This operation is available only if your account is on the E2 version of
-        the platform.",
-
+        This operation is available only if your account is on the E2 version of the platform.",
 
         :param customer_managed_key_id: str
           Databricks encryption key configuration ID.
 
         :returns: :class:`CustomerManagedKey`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: customer_managed_key_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Databricks encryption key configuration ID.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: customer_managed_key_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Databricks encryption key configuration ID.
       responses:
         '200':
           description: Success
@@ -495,22 +411,15 @@ paths:
   /api/2.0/accounts/{account_id}/networks:
     post:
       operationId: networks_create
-      summary: >-
-        Creates a Databricks network configuration that represents an VPC and
-        its resources. The VPC will be
+      summary: Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be
       tags:
-        - provisioning
-        - networks
-      description: >-
-        Creates a Databricks network configuration that represents an VPC and
-        its resources. The VPC will be
-
-        used for new Databricks clusters. This requires a pre-existing VPC and
-        subnets.
-
+      - provisioning
+      - networks
+      description: |-
+        Creates a Databricks network configuration that represents an VPC and its resources. The VPC will be
+        used for new Databricks clusters. This requires a pre-existing VPC and subnets.
 
         :param gcp_network_info: :class:`GcpNetworkInfo` (optional)
-
         :param network_name: str (optional)
           The human-readable name of the network configuration.
         :param security_group_ids: List[str] (optional)
@@ -520,18 +429,17 @@ paths:
           IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in multiple
           network configurations.
         :param vpc_endpoints: :class:`NetworkVpcEndpoints` (optional)
-
         :param vpc_id: str (optional)
           The ID of the VPC associated with this network configuration. VPC IDs can be used in multiple
           networks.
 
         :returns: :class:`Network`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -540,29 +448,21 @@ paths:
               properties:
                 gcp_network_info:
                   type: string
-                  description: >-
-                    :param network_name: str (optional) The human-readable name
-                    of the network configuration.
+                  description: ':param network_name: str (optional) The human-readable name of the network configuration.'
                 network_name:
                   type: string
                 security_group_ids:
                   type: string
-                  description: >-
-                    IDs of one to five security groups associated with this
-                    network. Security group IDs **cannot** be used in multiple
-                    network configurations.
+                  description: IDs of one to five security groups associated with this network. Security group IDs **cannot**
+                    be used in multiple network configurations.
                 subnet_ids:
                   type: string
-                  description: >-
-                    IDs of at least two subnets associated with this network.
-                    Subnet IDs **cannot** be used in multiple network
-                    configurations.
+                  description: IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in
+                    multiple network configurations.
                 vpc_endpoints:
                   type: string
-                  description: >-
-                    :param vpc_id: str (optional) The ID of the VPC associated
-                    with this network configuration. VPC IDs can be used in
-                    multiple networks.
+                  description: ':param vpc_id: str (optional) The ID of the VPC associated with this network configuration.
+                    VPC IDs can be used in multiple networks.'
                 vpc_id:
                   type: string
       responses:
@@ -588,19 +488,19 @@ paths:
       operationId: networks_list
       summary: Lists Databricks network configurations for an account.
       tags:
-        - provisioning
-        - networks
+      - provisioning
+      - networks
       description: |-
         Lists Databricks network configurations for an account.
 
 
         :returns: Iterator over :class:`Network`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -623,39 +523,32 @@ paths:
   /api/2.0/accounts/{account_id}/networks/{network_id}:
     delete:
       operationId: networks_delete
-      summary: >-
-        Deletes a Databricks network configuration, which represents a cloud VPC
-        and its resources. You cannot
+      summary: Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot
       tags:
-        - provisioning
-        - networks
-      description: >-
-        Deletes a Databricks network configuration, which represents a cloud VPC
-        and its resources. You cannot
-
+      - provisioning
+      - networks
+      description: |-
+        Deletes a Databricks network configuration, which represents a cloud VPC and its resources. You cannot
         delete a network that is associated with a workspace.
 
-
-        This operation is available only if your account is on the E2 version of
-        the platform.
-
+        This operation is available only if your account is on the E2 version of the platform.
 
         :param network_id: str
           Databricks Account API network configuration ID.
 
         :returns: :class:`Network`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: network_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Databricks Account API network configuration ID.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: network_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Databricks Account API network configuration ID.
       responses:
         '200':
           description: Success
@@ -677,33 +570,29 @@ paths:
       x-stackql-sdk-source: NetworksAPI
     get:
       operationId: networks_get
-      summary: >-
-        Gets a Databricks network configuration, which represents a cloud VPC
-        and its resources.
+      summary: Gets a Databricks network configuration, which represents a cloud VPC and its resources.
       tags:
-        - provisioning
-        - networks
-      description: >-
-        Gets a Databricks network configuration, which represents a cloud VPC
-        and its resources.
-
+      - provisioning
+      - networks
+      description: |-
+        Gets a Databricks network configuration, which represents a cloud VPC and its resources.
 
         :param network_id: str
           Databricks Account API network configuration ID.
 
         :returns: :class:`Network`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: network_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Databricks Account API network configuration ID.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: network_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Databricks Account API network configuration ID.
       responses:
         '200':
           description: Success
@@ -726,21 +615,14 @@ paths:
   /api/2.0/accounts/{account_id}/private-access-settings:
     post:
       operationId: private_access_create
-      summary: >-
-        Creates a private access settings configuration, which represents
-        network access restrictions for
+      summary: Creates a private access settings configuration, which represents network access restrictions for
       tags:
-        - provisioning
-        - private_access
-      description: >-
-        Creates a private access settings configuration, which represents
-        network access restrictions for
-
-        workspace resources. Private access settings configure whether
-        workspaces can be accessed from the
-
+      - provisioning
+      - private_access
+      description: |-
+        Creates a private access settings configuration, which represents network access restrictions for
+        workspace resources. Private access settings configure whether workspaces can be accessed from the
         public internet or only from private endpoints.
-
 
         :param allowed_vpc_endpoint_ids: List[str] (optional)
           An array of Databricks VPC endpoint IDs. This is the Databricks ID returned when registering the VPC
@@ -767,11 +649,11 @@ paths:
 
         :returns: :class:`PrivateAccessSettings`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -780,48 +662,29 @@ paths:
               properties:
                 allowed_vpc_endpoint_ids:
                   type: string
-                  description: >-
-                    An array of Databricks VPC endpoint IDs. This is the
-                    Databricks ID returned when registering the VPC endpoint
-                    configuration in your Databricks account. This is not the ID
-                    of the VPC endpoint in AWS. Only used when
-                    private_access_level is set to ENDPOINT. This is an allow
-                    list of VPC endpoints registered in your Databricks account
-                    that can connect to your workspace over AWS PrivateLink.
-                    Note: If hybrid access to your workspace is enabled by
-                    setting public_access_enabled to true, this control only
-                    works for PrivateLink connections. To control how your
-                    workspace is accessed via public internet, see IP access
-                    lists.
+                  description: 'An array of Databricks VPC endpoint IDs. This is the Databricks ID returned when registering
+                    the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in AWS.
+                    Only used when private_access_level is set to ENDPOINT. This is an allow list of VPC endpoints registered
+                    in your Databricks account that can connect to your workspace over AWS PrivateLink. Note: If hybrid access
+                    to your workspace is enabled by setting public_access_enabled to true, this control only works for PrivateLink
+                    connections. To control how your workspace is accessed via public internet, see IP access lists.'
                 private_access_level:
                   type: string
-                  description: >-
-                    The private access level controls which VPC endpoints can
-                    connect to the UI or API of any workspace that attaches this
-                    private access settings object. `ACCOUNT` level access (the
-                    default) allows only VPC endpoints that are registered in
-                    your Databricks account connect to your workspace.
-                    `ENDPOINT` level access allows only specified VPC endpoints
-                    connect to your workspace. For details, see
-                    allowed_vpc_endpoint_ids.
+                  description: The private access level controls which VPC endpoints can connect to the UI or API of any workspace
+                    that attaches this private access settings object. `ACCOUNT` level access (the default) allows only VPC
+                    endpoints that are registered in your Databricks account connect to your workspace. `ENDPOINT` level access
+                    allows only specified VPC endpoints connect to your workspace. For details, see allowed_vpc_endpoint_ids.
                 private_access_settings_name:
                   type: string
-                  description: >-
-                    The human-readable name of the private access settings
-                    object.
+                  description: The human-readable name of the private access settings object.
                 public_access_enabled:
                   type: string
-                  description: >-
-                    Determines if the workspace can be accessed over public
-                    internet. For fully private workspaces, you can optionally
-                    specify false, but only if you implement both the front-end
-                    and the back-end PrivateLink connections. Otherwise, specify
-                    true, which means that public access is enabled.
+                  description: Determines if the workspace can be accessed over public internet. For fully private workspaces,
+                    you can optionally specify false, but only if you implement both the front-end and the back-end PrivateLink
+                    connections. Otherwise, specify true, which means that public access is enabled.
                 region:
                   type: string
-                  description: >-
-                    The AWS region for workspaces attached to this private
-                    access settings object.
+                  description: The AWS region for workspaces attached to this private access settings object.
       responses:
         '200':
           description: Success
@@ -845,19 +708,19 @@ paths:
       operationId: private_access_list
       summary: Lists Databricks private access settings for an account.
       tags:
-        - provisioning
-        - private_access
+      - provisioning
+      - private_access
       description: |-
         Lists Databricks private access settings for an account.
 
 
         :returns: Iterator over :class:`PrivateAccessSettings`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -880,33 +743,28 @@ paths:
   /api/2.0/accounts/{account_id}/private-access-settings/{private_access_settings_id}:
     delete:
       operationId: private_access_delete
-      summary: >-
-        Deletes a Databricks private access settings configuration, both
-        specified by ID.
+      summary: Deletes a Databricks private access settings configuration, both specified by ID.
       tags:
-        - provisioning
-        - private_access
-      description: >-
-        Deletes a Databricks private access settings configuration, both
-        specified by ID.
-
+      - provisioning
+      - private_access
+      description: |-
+        Deletes a Databricks private access settings configuration, both specified by ID.
 
         :param private_access_settings_id: str
 
-
         :returns: :class:`PrivateAccessSettings`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: private_access_settings_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ':returns: :class:`PrivateAccessSettings`'
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: private_access_settings_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ':returns: :class:`PrivateAccessSettings`'
       responses:
         '200':
           description: Success
@@ -928,33 +786,28 @@ paths:
       x-stackql-sdk-source: PrivateAccessAPI
     get:
       operationId: private_access_get
-      summary: >-
-        Gets a Databricks private access settings configuration, both specified
-        by ID.
+      summary: Gets a Databricks private access settings configuration, both specified by ID.
       tags:
-        - provisioning
-        - private_access
-      description: >-
-        Gets a Databricks private access settings configuration, both specified
-        by ID.
-
+      - provisioning
+      - private_access
+      description: |-
+        Gets a Databricks private access settings configuration, both specified by ID.
 
         :param private_access_settings_id: str
 
-
         :returns: :class:`PrivateAccessSettings`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: private_access_settings_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ':returns: :class:`PrivateAccessSettings`'
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: private_access_settings_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ':returns: :class:`PrivateAccessSettings`'
       responses:
         '200':
           description: Success
@@ -976,63 +829,40 @@ paths:
       x-stackql-sdk-source: PrivateAccessAPI
     put:
       operationId: private_access_replace
-      summary: >-
-        Updates an existing private access settings object, which specifies how
-        your workspace is accessed
+      summary: Updates an existing private access settings object, which specifies how your workspace is accessed
       tags:
-        - provisioning
-        - private_access
-      description: >-
-        Updates an existing private access settings object, which specifies how
-        your workspace is accessed
-
-        over AWS PrivateLink. To use AWS PrivateLink, a workspace must have a
-        private access settings object
-
-        referenced by ID in the workspace's private_access_settings_id property.
-        This operation completely
-
-        overwrites your existing private access settings object attached to your
-        workspaces. All workspaces
-
-        attached to the private access settings are affected by any change. If
-        public_access_enabled,
-
-        private_access_level, or allowed_vpc_endpoint_ids are updated, effects
-        of these changes might take
-
-        several minutes to propagate to the workspace API. You can share one
-        private access settings object
-
-        with multiple workspaces in a single account. However, private access
-        settings are specific to AWS
-
-        regions, so only workspaces in the same AWS region can use a given
-        private access settings object.
-
-        Before configuring PrivateLink, read the Databricks article about
-        PrivateLink.
-
+      - provisioning
+      - private_access
+      description: |-
+        Updates an existing private access settings object, which specifies how your workspace is accessed
+        over AWS PrivateLink. To use AWS PrivateLink, a workspace must have a private access settings object
+        referenced by ID in the workspace's private_access_settings_id property. This operation completely
+        overwrites your existing private access settings object attached to your workspaces. All workspaces
+        attached to the private access settings are affected by any change. If public_access_enabled,
+        private_access_level, or allowed_vpc_endpoint_ids are updated, effects of these changes might take
+        several minutes to propagate to the workspace API. You can share one private access settings object
+        with multiple workspaces in a single account. However, private access settings are specific to AWS
+        regions, so only workspaces in the same AWS region can use a given private access settings object.
+        Before configuring PrivateLink, read the Databricks article about PrivateLink.
 
         :param private_access_settings_id: str
           Databricks private access settings ID.
-        :param customer_facing_private_access_settings:
-        :class:`PrivateAccessSettings`
+        :param customer_facing_private_access_settings: :class:`PrivateAccessSettings`
           Properties of the new private access settings object.
 
         :returns: :class:`PrivateAccessSettings`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: private_access_settings_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Databricks private access settings ID.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: private_access_settings_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Databricks private access settings ID.
       requestBody:
         content:
           application/json:
@@ -1043,7 +873,7 @@ paths:
                   type: string
                   description: Properties of the new private access settings object.
               required:
-                - customer_facing_private_access_settings
+              - customer_facing_private_access_settings
       responses:
         '200':
           description: Success
@@ -1068,8 +898,8 @@ paths:
       operationId: storage_create
       summary: Creates a Databricks storage configuration for an account.
       tags:
-        - provisioning
-        - storage
+      - provisioning
+      - storage
       description: |-
         Creates a Databricks storage configuration for an account.
 
@@ -1086,11 +916,11 @@ paths:
 
         :returns: :class:`StorageConfiguration`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1105,18 +935,13 @@ paths:
                   description: Root S3 bucket information.
                 role_arn:
                   type: string
-                  description: >-
-                    Optional IAM role that is used to access the workspace
-                    catalog which is created during workspace creation for UC by
-                    Default. If a storage configuration with this field
-                    populated is used to create a workspace, then a workspace
-                    catalog is created together with the workspace. The
-                    workspace catalog shares the root bucket with internal
-                    workspace storage (including DBFS root) but uses a dedicated
-                    bucket path prefix.
+                  description: Optional IAM role that is used to access the workspace catalog which is created during workspace
+                    creation for UC by Default. If a storage configuration with this field populated is used to create a workspace,
+                    then a workspace catalog is created together with the workspace. The workspace catalog shares the root
+                    bucket with internal workspace storage (including DBFS root) but uses a dedicated bucket path prefix.
               required:
-                - storage_configuration_name
-                - root_bucket_info
+              - storage_configuration_name
+              - root_bucket_info
       responses:
         '200':
           description: Success
@@ -1140,19 +965,19 @@ paths:
       operationId: storage_list
       summary: Lists Databricks storage configurations for an account, specified by ID.
       tags:
-        - provisioning
-        - storage
+      - provisioning
+      - storage
       description: |-
         Lists Databricks storage configurations for an account, specified by ID.
 
 
         :returns: Iterator over :class:`StorageConfiguration`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -1175,35 +1000,29 @@ paths:
   /api/2.0/accounts/{account_id}/storage-configurations/{storage_configuration_id}:
     delete:
       operationId: storage_delete
-      summary: >-
-        Deletes a Databricks storage configuration. You cannot delete a storage
-        configuration that is
+      summary: Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
       tags:
-        - provisioning
-        - storage
-      description: >-
-        Deletes a Databricks storage configuration. You cannot delete a storage
-        configuration that is
-
+      - provisioning
+      - storage
+      description: |-
+        Deletes a Databricks storage configuration. You cannot delete a storage configuration that is
         associated with any workspace.
-
 
         :param storage_configuration_id: str
 
-
         :returns: :class:`StorageConfiguration`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: storage_configuration_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ':returns: :class:`StorageConfiguration`'
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: storage_configuration_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ':returns: :class:`StorageConfiguration`'
       responses:
         '200':
           description: Success
@@ -1225,33 +1044,28 @@ paths:
       x-stackql-sdk-source: StorageAPI
     get:
       operationId: storage_get
-      summary: >-
-        Gets a Databricks storage configuration for an account, both specified
-        by ID.
+      summary: Gets a Databricks storage configuration for an account, both specified by ID.
       tags:
-        - provisioning
-        - storage
-      description: >-
-        Gets a Databricks storage configuration for an account, both specified
-        by ID.
-
+      - provisioning
+      - storage
+      description: |-
+        Gets a Databricks storage configuration for an account, both specified by ID.
 
         :param storage_configuration_id: str
 
-
         :returns: :class:`StorageConfiguration`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: storage_configuration_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ':returns: :class:`StorageConfiguration`'
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: storage_configuration_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ':returns: :class:`StorageConfiguration`'
       responses:
         '200':
           description: Success
@@ -1274,40 +1088,23 @@ paths:
   /api/2.0/accounts/{account_id}/vpc-endpoints:
     post:
       operationId: vpc_endpoints_create
-      summary: >-
-        Creates a VPC endpoint configuration, which represents a [VPC endpoint]
-        object in AWS used to
+      summary: Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
       tags:
-        - provisioning
-        - vpc_endpoints
-      description: >-
-        Creates a VPC endpoint configuration, which represents a [VPC endpoint]
-        object in AWS used to
-
+      - provisioning
+      - vpc_endpoints
+      description: |-
+        Creates a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to
         communicate privately with Databricks over [AWS PrivateLink].
 
-
-        After you create the VPC endpoint configuration, the Databricks
-        [endpoint service] automatically
-
+        After you create the VPC endpoint configuration, the Databricks [endpoint service] automatically
         accepts the VPC endpoint.
 
-
-        Before configuring PrivateLink, read the [Databricks article about
-        PrivateLink].
-
+        Before configuring PrivateLink, read the [Databricks article about PrivateLink].
 
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
-
-        [Databricks article about PrivateLink]:
-        https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-
-        [VPC endpoint]:
-        https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html
-
-        [endpoint service]:
-        https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html
-
+        [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+        [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/vpc-endpoints.html
+        [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/privatelink-share-your-services.html
 
         :param aws_vpc_endpoint_id: str (optional)
           The ID of the VPC endpoint object in AWS.
@@ -1320,11 +1117,11 @@ paths:
 
         :returns: :class:`VpcEndpoint`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1366,19 +1163,19 @@ paths:
       operationId: vpc_endpoints_list
       summary: Lists Databricks VPC endpoint configurations for an account.
       tags:
-        - provisioning
-        - vpc_endpoints
+      - provisioning
+      - vpc_endpoints
       description: |-
         Lists Databricks VPC endpoint configurations for an account.
 
 
         :returns: Iterator over :class:`VpcEndpoint`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -1401,35 +1198,29 @@ paths:
   /api/2.0/accounts/{account_id}/vpc-endpoints/{vpc_endpoint_id}:
     delete:
       operationId: vpc_endpoints_delete
-      summary: >-
-        Deletes a Databricks VPC endpoint configuration. You cannot delete a VPC
-        endpoint configuration that
+      summary: Deletes a Databricks VPC endpoint configuration. You cannot delete a VPC endpoint configuration that
       tags:
-        - provisioning
-        - vpc_endpoints
-      description: >-
-        Deletes a Databricks VPC endpoint configuration. You cannot delete a VPC
-        endpoint configuration that
-
+      - provisioning
+      - vpc_endpoints
+      description: |-
+        Deletes a Databricks VPC endpoint configuration. You cannot delete a VPC endpoint configuration that
         is associated with any workspace.
-
 
         :param vpc_endpoint_id: str
 
-
         :returns: :class:`VpcEndpoint`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: vpc_endpoint_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: ':returns: :class:`VpcEndpoint`'
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: vpc_endpoint_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: ':returns: :class:`VpcEndpoint`'
       responses:
         '200':
           description: Success
@@ -1451,41 +1242,33 @@ paths:
       x-stackql-sdk-source: VpcEndpointsAPI
     get:
       operationId: vpc_endpoints_get
-      summary: >-
-        Gets a VPC endpoint configuration, which represents a [VPC endpoint]
-        object in AWS used to communicate
+      summary: Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate
       tags:
-        - provisioning
-        - vpc_endpoints
-      description: >-
-        Gets a VPC endpoint configuration, which represents a [VPC endpoint]
-        object in AWS used to communicate
-
+      - provisioning
+      - vpc_endpoints
+      description: |-
+        Gets a VPC endpoint configuration, which represents a [VPC endpoint] object in AWS used to communicate
         privately with Databricks over [AWS PrivateLink].
 
-
         [AWS PrivateLink]: https://aws.amazon.com/privatelink
-
-        [VPC endpoint]:
-        https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
-
+        [VPC endpoint]: https://docs.aws.amazon.com/vpc/latest/privatelink/concepts.html
 
         :param vpc_endpoint_id: str
           Databricks VPC endpoint ID.
 
         :returns: :class:`VpcEndpoint`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: vpc_endpoint_id
-          in: path
-          required: true
-          schema:
-            type: string
-          description: Databricks VPC endpoint ID.
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: vpc_endpoint_id
+        in: path
+        required: true
+        schema:
+          type: string
+        description: Databricks VPC endpoint ID.
       responses:
         '200':
           description: Success
@@ -1508,92 +1291,45 @@ paths:
   /api/2.0/accounts/{account_id}/workspaces:
     post:
       operationId: workspaces_create
-      summary: >-
-        Creates a new workspace using a credential configuration and a storage
-        configuration, an optional
+      summary: Creates a new workspace using a credential configuration and a storage configuration, an optional
       tags:
-        - provisioning
-        - workspaces
-      description: >-
-        Creates a new workspace using a credential configuration and a storage
-        configuration, an optional
-
-        network configuration (if using a customer-managed VPC), an optional
-        managed services key
-
-        configuration (if using customer-managed keys for managed services), and
-        an optional storage key
-
-        configuration (if using customer-managed keys for storage). The key
-        configurations used for managed
-
+      - provisioning
+      - workspaces
+      description: |-
+        Creates a new workspace using a credential configuration and a storage configuration, an optional
+        network configuration (if using a customer-managed VPC), an optional managed services key
+        configuration (if using customer-managed keys for managed services), and an optional storage key
+        configuration (if using customer-managed keys for storage). The key configurations used for managed
         services and storage encryption can be the same or different.
 
+        Important: This operation is asynchronous. A response with HTTP status code 200 means the request has
+        been accepted and is in progress, but does not mean that the workspace deployed successfully and is
+        running. The initial workspace status is typically PROVISIONING. Use the workspace ID (workspace_id)
+        field in the response to identify the new workspace and make repeated GET requests with the workspace
+        ID and check its status. The workspace becomes available when the status changes to RUNNING.
 
-        Important: This operation is asynchronous. A response with HTTP status
-        code 200 means the request has
+        You can share one customer-managed VPC with multiple workspaces in a single account. It is not
+        required to create a new VPC for each workspace. However, you cannot reuse subnets or Security Groups
+        between workspaces. If you plan to share one VPC with multiple workspaces, make sure you size your VPC
+        and subnets accordingly. Because a Databricks Account API network configuration encapsulates this
+        information, you cannot reuse a Databricks Account API network configuration across workspaces.
 
-        been accepted and is in progress, but does not mean that the workspace
-        deployed successfully and is
-
-        running. The initial workspace status is typically PROVISIONING. Use the
-        workspace ID (workspace_id)
-
-        field in the response to identify the new workspace and make repeated
-        GET requests with the workspace
-
-        ID and check its status. The workspace becomes available when the status
-        changes to RUNNING.
-
-
-        You can share one customer-managed VPC with multiple workspaces in a
-        single account. It is not
-
-        required to create a new VPC for each workspace. However, you cannot
-        reuse subnets or Security Groups
-
-        between workspaces. If you plan to share one VPC with multiple
-        workspaces, make sure you size your VPC
-
-        and subnets accordingly. Because a Databricks Account API network
-        configuration encapsulates this
-
-        information, you cannot reuse a Databricks Account API network
-        configuration across workspaces.
-
-
-        For information about how to create a new workspace with this API
-        including error handling, see
-
+        For information about how to create a new workspace with this API including error handling, see
         [Create a new workspace using the Account API].
 
-
-        Important: Customer-managed VPCs, PrivateLink, and customer-managed keys
-        are supported on a limited
-
-        set of deployment and subscription types. If you have questions about
-        availability, contact your
-
+        Important: Customer-managed VPCs, PrivateLink, and customer-managed keys are supported on a limited
+        set of deployment and subscription types. If you have questions about availability, contact your
         Databricks representative.
 
-
-        This operation is available only if your account is on the E2 version of
-        the platform or on a select
-
+        This operation is available only if your account is on the E2 version of the platform or on a select
         custom plan that allows multiple workspaces per account.
 
-
-        [Create a new workspace using the Account API]:
-        http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-
+        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 
         :param aws_region: str (optional)
-
         :param cloud: str (optional)
           The cloud name. This field always has the value `gcp`.
-        :param cloud_resource_container: :class:`CloudResourceContainer`
-        (optional)
-
+        :param cloud_resource_container: :class:`CloudResourceContainer` (optional)
         :param compute_mode: :class:`CustomerFacingComputeMode` (optional)
           If the compute mode is `SERVERLESS`, a serverless workspace is created that comes pre-configured
           with serverless compute and default storage, providing a fully-managed, enterprise-ready SaaS
@@ -1622,11 +1358,8 @@ paths:
           acme.cloud.databricks.com. This value must be unique across all non-deleted deployments across all
           AWS regions. If a new workspace omits this property, the server generates a unique deployment name
           for you with the pattern dbc-xxxxxxxx-xxxx.
-        :param gcp_managed_network_config: :class:`GcpManagedNetworkConfig`
-        (optional)
-
+        :param gcp_managed_network_config: :class:`GcpManagedNetworkConfig` (optional)
         :param gke_config: :class:`GkeConfig` (optional)
-
         :param location: str (optional)
           The Google Cloud region of the workspace data plane in your Google account (for example,
           `us-east4`).
@@ -1642,7 +1375,6 @@ paths:
           The ID of the workspace's network configuration object. To use AWS PrivateLink, this field is
           required.
         :param pricing_tier: :class:`PricingTier` (optional)
-
         :param private_access_settings_id: str (optional)
           ID of the workspace's private access settings object. Only used for PrivateLink. You must specify
           this ID if you are using [AWS PrivateLink] for either front-end (user-to-workspace connection),
@@ -1664,11 +1396,11 @@ paths:
           Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -1677,23 +1409,16 @@ paths:
               properties:
                 aws_region:
                   type: string
-                  description: >-
-                    :param cloud: str (optional) The cloud name. This field
-                    always has the value `gcp`.
+                  description: ':param cloud: str (optional) The cloud name. This field always has the value `gcp`.'
                 cloud:
                   type: string
                 cloud_resource_container:
                   type: string
-                  description: >-
-                    :param compute_mode: :class:`CustomerFacingComputeMode`
-                    (optional) If the compute mode is `SERVERLESS`, a serverless
-                    workspace is created that comes pre-configured with
-                    serverless compute and default storage, providing a
-                    fully-managed, enterprise-ready SaaS experience. This means
-                    you don't need to provide any resources managed by you, such
-                    as credentials, storage, or network. If the compute mode is
-                    `HYBRID` (which is the default option), a classic workspace
-                    is created that uses customer-managed resources.
+                  description: ':param compute_mode: :class:`CustomerFacingComputeMode` (optional) If the compute mode is
+                    `SERVERLESS`, a serverless workspace is created that comes pre-configured with serverless compute and
+                    default storage, providing a fully-managed, enterprise-ready SaaS experience. This means you don''t need
+                    to provide any resources managed by you, such as credentials, storage, or network. If the compute mode
+                    is `HYBRID` (which is the default option), a classic workspace is created that uses customer-managed resources.'
                 compute_mode:
                   type: string
                 credentials_id:
@@ -1701,41 +1426,24 @@ paths:
                   description: ID of the workspace's credential configuration object.
                 custom_tags:
                   type: string
-                  description: >-
-                    The custom tags key-value pairing that is attached to this
-                    workspace. The key-value pair is a string of utf-8
-                    characters. The value can be an empty string, with maximum
-                    length of 255 characters. The key can be of maximum length
-                    of 127 characters, and cannot be empty.
+                  description: The custom tags key-value pairing that is attached to this workspace. The key-value pair is
+                    a string of utf-8 characters. The value can be an empty string, with maximum length of 255 characters.
+                    The key can be of maximum length of 127 characters, and cannot be empty.
                 deployment_name:
                   type: string
-                  description: >-
-                    The deployment name defines part of the subdomain for the
-                    workspace. The workspace URL for the web application and
-                    REST APIs is
-                    <workspace-deployment-name>.cloud.databricks.com. For
-                    example, if the deployment name is abcsales, your workspace
-                    URL will be https://abcsales.cloud.databricks.com. Hyphens
-                    are allowed. This property supports only the set of
-                    characters that are allowed in a subdomain. To set this
-                    value, you must have a deployment name prefix. Contact your
-                    Databricks account team to add an account deployment name
-                    prefix to your account. Workspace deployment names follow
-                    the account prefix and a hyphen. For example, if your
-                    account's deployment prefix is acme and the workspace
-                    deployment name is workspace-1, the JSON response for the
-                    deployment_name field becomes acme-workspace-1. The
-                    workspace URL would be
-                    acme-workspace-1.cloud.databricks.com. You can also set the
-                    deployment_name to the reserved keyword EMPTY if you want
-                    the deployment name to only include the deployment prefix.
-                    For example, if your account's deployment prefix is acme and
-                    the workspace deployment name is EMPTY, the deployment_name
-                    becomes acme only and the workspace URL is
-                    acme.cloud.databricks.com. This value must be unique across
-                    all non-deleted deployments across all AWS regions. If a new
-                    workspace omits this property, the server generates a unique
-                    deployment name for you with the pattern dbc-xxxxxxxx-xxxx.
+                  description: The deployment name defines part of the subdomain for the workspace. The workspace URL for
+                    the web application and REST APIs is <workspace-deployment-name>.cloud.databricks.com. For example, if
+                    the deployment name is abcsales, your workspace URL will be https://abcsales.cloud.databricks.com. Hyphens
+                    are allowed. This property supports only the set of characters that are allowed in a subdomain. To set
+                    this value, you must have a deployment name prefix. Contact your Databricks account team to add an account
+                    deployment name prefix to your account. Workspace deployment names follow the account prefix and a hyphen.
+                    For example, if your account's deployment prefix is acme and the workspace deployment name is workspace-1,
+                    the JSON response for the deployment_name field becomes acme-workspace-1. The workspace URL would be acme-workspace-1.cloud.databricks.com.
+                    You can also set the deployment_name to the reserved keyword EMPTY if you want the deployment name to
+                    only include the deployment prefix. For example, if your account's deployment prefix is acme and the workspace
+                    deployment name is EMPTY, the deployment_name becomes acme only and the workspace URL is acme.cloud.databricks.com.
+                    This value must be unique across all non-deleted deployments across all AWS regions. If a new workspace
+                    omits this property, the server generates a unique deployment name for you with the pattern dbc-xxxxxxxx-xxxx.
                 gcp_managed_network_config:
                   type: string
                   description: ':param gke_config: :class:`GkeConfig` (optional)'
@@ -1743,44 +1451,27 @@ paths:
                   type: string
                 location:
                   type: string
-                  description: >-
-                    The Google Cloud region of the workspace data plane in your
-                    Google account (for example, `us-east4`).
+                  description: The Google Cloud region of the workspace data plane in your Google account (for example, `us-east4`).
                 managed_services_customer_managed_key_id:
                   type: string
-                  description: >-
-                    The ID of the workspace's managed services encryption key
-                    configuration object. This is used to help protect and
-                    control access to the workspace's notebooks, secrets,
-                    Databricks SQL queries, and query history. The provided key
-                    configuration object property use_cases must contain
-                    MANAGED_SERVICES.
+                  description: The ID of the workspace's managed services encryption key configuration object. This is used
+                    to help protect and control access to the workspace's notebooks, secrets, Databricks SQL queries, and
+                    query history. The provided key configuration object property use_cases must contain MANAGED_SERVICES.
                 network_connectivity_config_id:
                   type: string
-                  description: >-
-                    The object ID of network connectivity config. Once assigned,
-                    the workspace serverless compute resources use the same set
-                    of stable IP CIDR blocks and optional private link to access
-                    your resources.
+                  description: The object ID of network connectivity config. Once assigned, the workspace serverless compute
+                    resources use the same set of stable IP CIDR blocks and optional private link to access your resources.
                 network_id:
                   type: string
-                  description: >-
-                    The ID of the workspace's network configuration object. To
-                    use AWS PrivateLink, this field is required.
+                  description: The ID of the workspace's network configuration object. To use AWS PrivateLink, this field
+                    is required.
                 pricing_tier:
                   type: string
-                  description: >-
-                    :param private_access_settings_id: str (optional) ID of the
-                    workspace's private access settings object. Only used for
-                    PrivateLink. You must specify this ID if you are using [AWS
-                    PrivateLink] for either front-end (user-to-workspace
-                    connection), back-end (data plane to control plane
-                    connection), or both connection types. Before configuring
-                    PrivateLink, read the [Databricks article about
-                    PrivateLink].", [AWS PrivateLink]:
-                    https://aws.amazon.com/privatelink/ [Databricks article
-                    about PrivateLink]:
-                    https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+                  description: ':param private_access_settings_id: str (optional) ID of the workspace''s private access settings
+                    object. Only used for PrivateLink. You must specify this ID if you are using [AWS PrivateLink] for either
+                    front-end (user-to-workspace connection), back-end (data plane to control plane connection), or both connection
+                    types. Before configuring PrivateLink, read the [Databricks article about PrivateLink].", [AWS PrivateLink]:
+                    https://aws.amazon.com/privatelink/ [Databricks article about PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html'
                 private_access_settings_id:
                   type: string
                 storage_configuration_id:
@@ -1788,13 +1479,9 @@ paths:
                   description: ID of the workspace's storage configuration object.
                 storage_customer_managed_key_id:
                   type: string
-                  description: >-
-                    The ID of the workspace's storage encryption key
-                    configuration object. This is used to encrypt the
-                    workspace's root S3 bucket (root DBFS and system data) and,
-                    optionally, cluster EBS volumes. The provided key
-                    configuration object property use_cases must contain
-                    STORAGE.
+                  description: The ID of the workspace's storage encryption key configuration object. This is used to encrypt
+                    the workspace's root S3 bucket (root DBFS and system data) and, optionally, cluster EBS volumes. The provided
+                    key configuration object property use_cases must contain STORAGE.
                 workspace_name:
                   type: string
                   description: The human-readable name of the workspace.
@@ -1821,19 +1508,19 @@ paths:
       operationId: workspaces_list
       summary: Lists Databricks workspaces for an account.
       tags:
-        - provisioning
-        - workspaces
+      - provisioning
+      - workspaces
       description: |-
         Lists Databricks workspaces for an account.
 
 
         :returns: Iterator over :class:`Workspace`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
       responses:
         '200':
           description: Success
@@ -1858,8 +1545,8 @@ paths:
       operationId: workspaces_delete
       summary: Deletes a Databricks workspace, both specified by ID.
       tags:
-        - provisioning
-        - workspaces
+      - provisioning
+      - workspaces
       description: |-
         Deletes a Databricks workspace, both specified by ID.
 
@@ -1867,17 +1554,17 @@ paths:
 
         :returns: :class:`Workspace`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: workspace_id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: ':returns: :class:`Workspace`'
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workspace_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ':returns: :class:`Workspace`'
       responses:
         '200':
           description: Success
@@ -1899,51 +1586,35 @@ paths:
       x-stackql-sdk-source: WorkspacesAPI
     get:
       operationId: workspaces_get
-      summary: >-
-        Gets information including status for a Databricks workspace, specified
-        by ID. In the response, the
+      summary: Gets information including status for a Databricks workspace, specified by ID. In the response, the
       tags:
-        - provisioning
-        - workspaces
-      description: >-
-        Gets information including status for a Databricks workspace, specified
-        by ID. In the response, the
-
-        `workspace_status` field indicates the current status. After initial
-        workspace creation (which is
-
-        asynchronous), make repeated `GET` requests with the workspace ID and
-        check its status. The workspace
-
-        becomes available when the status changes to `RUNNING`. For information
-        about how to create a new
-
-        workspace with this API **including error handling**, see [Create a new
-        workspace using the Account
-
+      - provisioning
+      - workspaces
+      description: |-
+        Gets information including status for a Databricks workspace, specified by ID. In the response, the
+        `workspace_status` field indicates the current status. After initial workspace creation (which is
+        asynchronous), make repeated `GET` requests with the workspace ID and check its status. The workspace
+        becomes available when the status changes to `RUNNING`. For information about how to create a new
+        workspace with this API **including error handling**, see [Create a new workspace using the Account
         API].
 
-
-        [Create a new workspace using the Account API]:
-        http://docs.databricks.com/administration-guide/account-api/new-workspace.html
-
+        [Create a new workspace using the Account API]: http://docs.databricks.com/administration-guide/account-api/new-workspace.html
 
         :param workspace_id: int
 
-
         :returns: :class:`Workspace`
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: workspace_id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: ':returns: :class:`Workspace`'
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workspace_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: ':returns: :class:`Workspace`'
       responses:
         '200':
           description: Success
@@ -1967,8 +1638,8 @@ paths:
       operationId: workspaces_update
       summary: Updates a workspace.
       tags:
-        - provisioning
-        - workspaces
+      - provisioning
+      - workspaces
       description: |-
         Updates a workspace.
 
@@ -1990,22 +1661,22 @@ paths:
           Long-running operation waiter for :class:`Workspace`.
           See :method:wait_get_workspace_running for more details.
       parameters:
-        - name: account_id
-          in: path
-          required: true
-          schema:
-            type: string
-        - name: workspace_id
-          in: path
-          required: true
-          schema:
-            type: integer
-          description: A unique integer ID for the workspace
-        - name: update_mask
-          in: query
-          required: false
-          schema:
-            type: string
+      - name: account_id
+        in: path
+        required: true
+        schema:
+          type: string
+      - name: workspace_id
+        in: path
+        required: true
+        schema:
+          type: integer
+        description: A unique integer ID for the workspace
+      - name: update_mask
+        in: query
+        required: false
+        schema:
+          type: string
       requestBody:
         content:
           application/json:
@@ -2014,21 +1685,15 @@ paths:
               properties:
                 customer_facing_workspace:
                   type: string
-                  description: >-
-                    :param update_mask: str (optional) The field mask must be a
-                    single string, with multiple fields separated by commas (no
-                    spaces). The field path is relative to the resource object,
-                    using a dot (`.`) to navigate sub-fields (e.g.,
-                    `author.given_name`). Specification of elements in sequence
-                    or map fields is not allowed, as only the entire collection
-                    field can be specified. Field names must exactly match the
-                    resource field names. A field mask of `*` indicates full
-                    replacement. It’s recommended to always explicitly list the
-                    fields being updated and avoid using `*` wildcards, as it
-                    can lead to unintended results if the API changes in the
-                    future.
+                  description: ':param update_mask: str (optional) The field mask must be a single string, with multiple fields
+                    separated by commas (no spaces). The field path is relative to the resource object, using a dot (`.`)
+                    to navigate sub-fields (e.g., `author.given_name`). Specification of elements in sequence or map fields
+                    is not allowed, as only the entire collection field can be specified. Field names must exactly match the
+                    resource field names. A field mask of `*` indicates full replacement. It’s recommended to always explicitly
+                    list the fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the
+                    API changes in the future.'
               required:
-                - customer_facing_workspace
+              - customer_facing_workspace
       responses:
         '200':
           description: Success
@@ -2068,14 +1733,12 @@ components:
           description: The AWS KMS key alias.
         reuse_key_for_cluster_volumes:
           type: boolean
-          description: >-
-            This field applies only if the `use_cases` property includes
-            `STORAGE`. If this is set to true or omitted, the key is also used
-            to encrypt cluster EBS volumes. If you do not want to use this key
-            for encrypting EBS volumes, set to false.
+          description: This field applies only if the `use_cases` property includes `STORAGE`. If this is set to true or omitted,
+            the key is also used to encrypt cluster EBS volumes. If you do not want to use this key for encrypting EBS volumes,
+            set to false.
       required:
-        - key_arn
-        - key_region
+      - key_arn
+      - key_region
     AzureKeyInfo:
       type: object
       properties:
@@ -2083,9 +1746,8 @@ components:
           type: string
         key_access_configuration:
           $ref: '#/components/schemas/KeyAccessConfiguration'
-          description: >-
-            The structure to store key access credential This is set if the
-            Managed Identity is being used to access the Azure Key Vault key.
+          description: The structure to store key access credential This is set if the Managed Identity is being used to access
+            the Azure Key Vault key.
         key_name:
           type: string
           description: The name of the key in KeyVault.
@@ -2124,13 +1786,11 @@ components:
           description: The AWS KMS key region.
         reuse_key_for_cluster_volumes:
           type: boolean
-          description: >-
-            This field applies only if the `use_cases` property includes
-            `STORAGE`. If this is set to true or omitted, the key is also used
-            to encrypt cluster EBS volumes. If you do not want to use this key
-            for encrypting EBS volumes, set to false.
+          description: This field applies only if the `use_cases` property includes `STORAGE`. If this is set to true or omitted,
+            the key is also used to encrypt cluster EBS volumes. If you do not want to use this key for encrypting EBS volumes,
+            set to false.
       required:
-        - key_arn
+      - key_arn
     CreateCredentialAwsCredentials:
       type: object
       properties:
@@ -2148,11 +1808,10 @@ components:
           type: string
         gcp_service_account:
           $ref: '#/components/schemas/GcpServiceAccount'
-          description: >-
-            Globally unique service account email that has access to the KMS
-            key. The service account exists within the Databricks CP project.
+          description: Globally unique service account email that has access to the KMS key. The service account exists within
+            the Databricks CP project.
       required:
-        - kms_key_id
+      - kms_key_id
     Credential:
       type: object
       properties:
@@ -2201,16 +1860,13 @@ components:
       properties:
         gke_cluster_master_ip_range:
           type: string
-          description: >-
-            The IP range that will be used to allocate GKE cluster master
-            resources from. This field must not be set if
-            gke_cluster_type=PUBLIC_NODE_PUBLIC_MASTER.
+          description: The IP range that will be used to allocate GKE cluster master resources from. This field must not be
+            set if gke_cluster_type=PUBLIC_NODE_PUBLIC_MASTER.
         gke_connectivity_type:
           $ref: '#/components/schemas/GkeConfigConnectivityType'
           description: The type of network connectivity of the GKE cluster.
-      description: >-
-        The shared network config for GCP workspace. This object has common
-        network configurations that
+      description: |-
+        The shared network config for GCP workspace. This object has common network configurations that
             are network attributions of a workspace. DEPRECATED. Use GkeConfig instead.
     GcpKeyInfo:
       type: object
@@ -2219,11 +1875,10 @@ components:
           type: string
         gcp_service_account:
           $ref: '#/components/schemas/GcpServiceAccount'
-          description: >-
-            Globally unique service account email that has access to the KMS
-            key. The service account exists within the Databricks CP project.
+          description: Globally unique service account email that has access to the KMS key. The service account exists within
+            the Databricks CP project.
       required:
-        - kms_key_id
+      - kms_key_id
     GcpManagedNetworkConfig:
       type: object
       properties:
@@ -2232,14 +1887,11 @@ components:
           description: The IP range that will be used to allocate GKE cluster Pods from.
         gke_cluster_service_ip_range:
           type: string
-          description: >-
-            The IP range that will be used to allocate GKE cluster Services
-            from.
+          description: The IP range that will be used to allocate GKE cluster Services from.
         subnet_cidr:
           type: string
-          description: >-
-            The IP range which will be used to allocate GKE cluster nodes from.
-            Note: Pods, services and master IP range must be mutually exclusive.
+          description: 'The IP range which will be used to allocate GKE cluster nodes from. Note: Pods, services and master
+            IP range must be mutually exclusive.'
       description: The network configuration for the workspace.
     GcpNetworkInfo:
       type: object
@@ -2251,29 +1903,23 @@ components:
           description: The customer-provided VPC ID.
         subnet_id:
           type: string
-          description: >-
-            The customer-provided Subnet ID that will be available to Clusters
-            in Workspaces using this Network.
+          description: The customer-provided Subnet ID that will be available to Clusters in Workspaces using this Network.
         subnet_region:
           type: string
         pod_ip_range_name:
           type: string
-          description: >-
-            Name of the secondary range within the subnet that will be used by
-            GKE as Pod IP range. This is BYO VPC specific. DB VPC uses
-            network.getGcpManagedNetworkConfig.getGkeClusterPodIpRange
+          description: Name of the secondary range within the subnet that will be used by GKE as Pod IP range. This is BYO
+            VPC specific. DB VPC uses network.getGcpManagedNetworkConfig.getGkeClusterPodIpRange
         service_ip_range_name:
           type: string
-          description: >-
-            Name of the secondary range within the subnet that will be used by
-            GKE as Service IP range.
+          description: Name of the secondary range within the subnet that will be used by GKE as Service IP range.
       required:
-        - network_project_id
-        - vpc_id
-        - subnet_id
-        - subnet_region
-        - pod_ip_range_name
-        - service_ip_range_name
+      - network_project_id
+      - vpc_id
+      - subnet_id
+      - subnet_region
+      - pod_ip_range_name
+      - service_ip_range_name
     GcpServiceAccount:
       type: object
       properties:
@@ -2293,9 +1939,9 @@ components:
         service_attachment_id:
           type: string
       required:
-        - project_id
-        - psc_endpoint_name
-        - endpoint_region
+      - project_id
+      - psc_endpoint_name
+      - endpoint_region
     GkeConfig:
       type: object
       properties:
@@ -2304,10 +1950,8 @@ components:
           description: The type of network connectivity of the GKE cluster.
         master_ip_range:
           type: string
-          description: >-
-            The IP range that will be used to allocate GKE cluster master
-            resources from. This field must not be set if
-            gke_cluster_type=PUBLIC_NODE_PUBLIC_MASTER.
+          description: The IP range that will be used to allocate GKE cluster master resources from. This field must not be
+            set if gke_cluster_type=PUBLIC_NODE_PUBLIC_MASTER.
       description: The configurations of the GKE cluster used by the GCP workspace.
     KeyAccessConfiguration:
       type: object
@@ -2340,24 +1984,19 @@ components:
           type: array
           items:
             type: string
-          description: >-
-            IDs of one to five security groups associated with this network.
-            Security group IDs **cannot** be used in multiple network
-            configurations.
+          description: IDs of one to five security groups associated with this network. Security group IDs **cannot** be used
+            in multiple network configurations.
         subnet_ids:
           type: array
           items:
             type: string
-          description: >-
-            IDs of at least two subnets associated with this network. Subnet IDs
-            **cannot** be used in multiple network configurations.
+          description: IDs of at least two subnets associated with this network. Subnet IDs **cannot** be used in multiple
+            network configurations.
         vpc_endpoints:
           $ref: '#/components/schemas/NetworkVpcEndpoints'
         vpc_id:
           type: string
-          description: >-
-            The ID of the VPC associated with this network configuration. VPC
-            IDs can be used in multiple networks.
+          description: The ID of the VPC associated with this network configuration. VPC IDs can be used in multiple networks.
         vpc_status:
           $ref: '#/components/schemas/VpcStatus'
         warning_messages:
@@ -2386,9 +2025,7 @@ components:
           type: array
           items:
             type: string
-          description: >-
-            The VPC endpoint ID used by this network to access the Databricks
-            REST API.
+          description: The VPC endpoint ID used by this network to access the Databricks REST API.
     NetworkWarning:
       type: object
       properties:
@@ -2406,26 +2043,18 @@ components:
           type: array
           items:
             type: string
-          description: >-
-            An array of Databricks VPC endpoint IDs. This is the Databricks ID
-            that is returned when registering the VPC endpoint configuration in
-            your Databricks account. This is not the ID of the VPC endpoint in
-            AWS. Only used when private_access_level is set to ENDPOINT. This is
-            an allow list of VPC endpoints that in your account that can connect
-            to your workspace over AWS PrivateLink. If hybrid access to your
-            workspace is enabled by setting public_access_enabled to true, this
-            control only works for PrivateLink connections. To control how your
-            workspace is accessed via public internet, see IP access lists.
+          description: An array of Databricks VPC endpoint IDs. This is the Databricks ID that is returned when registering
+            the VPC endpoint configuration in your Databricks account. This is not the ID of the VPC endpoint in AWS. Only
+            used when private_access_level is set to ENDPOINT. This is an allow list of VPC endpoints that in your account
+            that can connect to your workspace over AWS PrivateLink. If hybrid access to your workspace is enabled by setting
+            public_access_enabled to true, this control only works for PrivateLink connections. To control how your workspace
+            is accessed via public internet, see IP access lists.
         private_access_level:
           $ref: '#/components/schemas/PrivateAccessLevel'
-          description: >-
-            The private access level controls which VPC endpoints can connect to
-            the UI or API of any workspace that attaches this private access
-            settings object. `ACCOUNT` level access (the default) allows only
-            VPC endpoints that are registered in your Databricks account connect
-            to your workspace. `ENDPOINT` level access allows only specified VPC
-            endpoints connect to your workspace. For details, see
-            allowed_vpc_endpoint_ids.
+          description: The private access level controls which VPC endpoints can connect to the UI or API of any workspace
+            that attaches this private access settings object. `ACCOUNT` level access (the default) allows only VPC endpoints
+            that are registered in your Databricks account connect to your workspace. `ENDPOINT` level access allows only
+            specified VPC endpoints connect to your workspace. For details, see allowed_vpc_endpoint_ids.
         private_access_settings_id:
           type: string
           description: Databricks private access settings ID.
@@ -2434,17 +2063,12 @@ components:
           description: The human-readable name of the private access settings object.
         public_access_enabled:
           type: boolean
-          description: >-
-            Determines if the workspace can be accessed over public internet.
-            For fully private workspaces, you can optionally specify false, but
-            only if you implement both the front-end and the back-end
-            PrivateLink connections. Otherwise, specify true, which means that
-            public access is enabled.
+          description: Determines if the workspace can be accessed over public internet. For fully private workspaces, you
+            can optionally specify false, but only if you implement both the front-end and the back-end PrivateLink connections.
+            Otherwise, specify true, which means that public access is enabled.
         region:
           type: string
-          description: >-
-            The AWS region for workspaces attached to this private access
-            settings object.
+          description: The AWS region for workspaces attached to this private access settings object.
       description: '*'
     RootBucketInfo:
       type: object
@@ -2458,19 +2082,13 @@ components:
           type: string
         creation_time:
           type: integer
-          description: >-
-            Time in epoch milliseconds when the storage configuration was
-            created.
+          description: Time in epoch milliseconds when the storage configuration was created.
         role_arn:
           type: string
-          description: >-
-            Optional IAM role that is used to access the workspace catalog which
-            is created during workspace creation for UC by Default. If a storage
-            configuration with this field populated is used to create a
-            workspace, then a workspace catalog is created together with the
-            workspace. The workspace catalog shares the root bucket with
-            internal workspace storage (including DBFS root) but uses a
-            dedicated bucket path prefix.
+          description: Optional IAM role that is used to access the workspace catalog which is created during workspace creation
+            for UC by Default. If a storage configuration with this field populated is used to create a workspace, then a
+            workspace catalog is created together with the workspace. The workspace catalog shares the root bucket with internal
+            workspace storage (including DBFS root) but uses a dedicated bucket path prefix.
         root_bucket_info:
           $ref: '#/components/schemas/RootBucketInfo'
           description: The root bucket information for the storage configuration.
@@ -2490,23 +2108,17 @@ components:
       properties:
         account_id:
           type: string
-          description: >-
-            The Databricks account ID that hosts the VPC endpoint configuration.
-            TODO - This may signal an OpenAPI diff; it does not show up in the
-            generated spec
+          description: The Databricks account ID that hosts the VPC endpoint configuration. TODO - This may signal an OpenAPI
+            diff; it does not show up in the generated spec
         aws_account_id:
           type: string
           description: The AWS Account in which the VPC endpoint object exists.
         aws_endpoint_service_id:
           type: string
-          description: >-
-            The ID of the Databricks [endpoint service] that this VPC endpoint
-            is connected to. For a list of endpoint service IDs for each
-            supported AWS region, see the [Databricks PrivateLink
-            documentation]. [Databricks PrivateLink documentation]:
-            https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
-            [endpoint service]:
-            https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html
+          description: 'The ID of the Databricks [endpoint service] that this VPC endpoint is connected to. For a list of
+            endpoint service IDs for each supported AWS region, see the [Databricks PrivateLink documentation]. [Databricks
+            PrivateLink documentation]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+            [endpoint service]: https://docs.aws.amazon.com/vpc/latest/privatelink/endpoint-service.html'
         aws_vpc_endpoint_id:
           type: string
           description: The ID of the VPC endpoint object in AWS.
@@ -2518,29 +2130,18 @@ components:
           description: The AWS region in which this VPC endpoint object exists.
         state:
           type: string
-          description: >-
-            The current state (such as `available` or `rejected`) of the VPC
-            endpoint. Derived from AWS. For the full set of values, see [AWS
-            DescribeVpcEndpoint documentation]. [AWS DescribeVpcEndpoint
-            documentation]:
-            https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-vpc-endpoints.html
+          description: 'The current state (such as `available` or `rejected`) of the VPC endpoint. Derived from AWS. For the
+            full set of values, see [AWS DescribeVpcEndpoint documentation]. [AWS DescribeVpcEndpoint documentation]: https://docs.aws.amazon.com/cli/latest/reference/ec2/describe-vpc-endpoints.html'
         use_case:
           $ref: '#/components/schemas/EndpointUseCase'
-          description: >-
-            This enumeration represents the type of Databricks VPC endpoint
-            service that was used when creating this VPC endpoint. If the VPC
-            endpoint connects to the Databricks control plane for either the
-            front-end connection or the back-end REST API connection, the value
-            is WORKSPACE_ACCESS. If the VPC endpoint connects to the Databricks
-            workspace for the back-end secure cluster connectivity relay, the
-            value is DATAPLANE_RELAY_ACCESS.
+          description: This enumeration represents the type of Databricks VPC endpoint service that was used when creating
+            this VPC endpoint. If the VPC endpoint connects to the Databricks control plane for either the front-end connection
+            or the back-end REST API connection, the value is WORKSPACE_ACCESS. If the VPC endpoint connects to the Databricks
+            workspace for the back-end secure cluster connectivity relay, the value is DATAPLANE_RELAY_ACCESS.
         vpc_endpoint_id:
           type: string
-          description: >-
-            Databricks VPC endpoint ID. This is the Databricks-specific name of
-            the VPC endpoint. Do not confuse this with the
-            `aws_vpc_endpoint_id`, which is the ID within AWS of the VPC
-            endpoint.
+          description: Databricks VPC endpoint ID. This is the Databricks-specific name of the VPC endpoint. Do not confuse
+            this with the `aws_vpc_endpoint_id`, which is the ID within AWS of the VPC endpoint.
         vpc_endpoint_name:
           type: string
           description: The human-readable name of the storage configuration.
@@ -2570,59 +2171,44 @@ components:
           description: ID of the workspace's credential configuration object.
         custom_tags:
           type: object
-          description: >-
-            The custom tags key-value pairing that is attached to this
-            workspace. The key-value pair is a string of utf-8 characters. The
-            value can be an empty string, with maximum length of 255 characters.
-            The key can be of maximum length of 127 characters, and cannot be
-            empty.
+          description: The custom tags key-value pairing that is attached to this workspace. The key-value pair is a string
+            of utf-8 characters. The value can be an empty string, with maximum length of 255 characters. The key can be of
+            maximum length of 127 characters, and cannot be empty.
         deployment_name:
           type: string
         expected_workspace_status:
           $ref: '#/components/schemas/WorkspaceStatus'
-          description: >-
-            A client owned field used to indicate the workspace status that the
-            client expects to be in. For now this is only used to unblock
-            Temporal workflow for GCP least privileged workspace.
+          description: A client owned field used to indicate the workspace status that the client expects to be in. For now
+            this is only used to unblock Temporal workflow for GCP least privileged workspace.
         gcp_managed_network_config:
           $ref: '#/components/schemas/GcpManagedNetworkConfig'
         gke_config:
           $ref: '#/components/schemas/GkeConfig'
         location:
           type: string
-          description: >-
-            The Google Cloud region of the workspace data plane in your Google
-            account (for example, `us-east4`).
+          description: The Google Cloud region of the workspace data plane in your Google account (for example, `us-east4`).
         managed_services_customer_managed_key_id:
           type: string
           description: ID of the key configuration for encrypting managed services.
         network:
           $ref: '#/components/schemas/WorkspaceNetwork'
-          description: >-
-            The network configuration for the workspace. DEPRECATED. Use
-            `network_id` instead.
+          description: The network configuration for the workspace. DEPRECATED. Use `network_id` instead.
         network_connectivity_config_id:
           type: string
           description: The object ID of network connectivity config.
         network_id:
           type: string
-          description: >-
-            If this workspace is BYO VPC, then the network_id will be populated.
-            If this workspace is not BYO VPC, then the network_id will be empty.
+          description: If this workspace is BYO VPC, then the network_id will be populated. If this workspace is not BYO VPC,
+            then the network_id will be empty.
         pricing_tier:
           $ref: '#/components/schemas/PricingTier'
         private_access_settings_id:
           type: string
-          description: >-
-            ID of the workspace's private access settings object. Only used for
-            PrivateLink. You must specify this ID if you are using [AWS
-            PrivateLink] for either front-end (user-to-workspace connection),
-            back-end (data plane to control plane connection), or both
-            connection types. Before configuring PrivateLink, read the
-            [Databricks article about PrivateLink].", [AWS PrivateLink]:
-            https://aws.amazon.com/privatelink/ [Databricks article about
-            PrivateLink]:
-            https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html
+          description: 'ID of the workspace''s private access settings object. Only used for PrivateLink. You must specify
+            this ID if you are using [AWS PrivateLink] for either front-end (user-to-workspace connection), back-end (data
+            plane to control plane connection), or both connection types. Before configuring PrivateLink, read the [Databricks
+            article about PrivateLink].", [AWS PrivateLink]: https://aws.amazon.com/privatelink/ [Databricks article about
+            PrivateLink]: https://docs.databricks.com/administration-guide/cloud-configurations/aws/privatelink.html'
         storage_configuration_id:
           type: string
           description: ID of the workspace's storage configuration object.
@@ -2639,7 +2225,6 @@ components:
           type: string
           description: The human-readable name of the workspace.
         workspace_status:
-          type: string
           $ref: '#/components/schemas/WorkspaceStatus'
           description: The status of a workspace
         workspace_status_message:
@@ -2650,41 +2235,32 @@ components:
       properties:
         gcp_common_network_config:
           $ref: '#/components/schemas/GcpCommonNetworkConfig'
-          description: >-
-            The shared network config for GCP workspace. This object has common
-            network configurations that are network attributions of a workspace.
-            This object is input-only.
+          description: The shared network config for GCP workspace. This object has common network configurations that are
+            network attributions of a workspace. This object is input-only.
         gcp_managed_network_config:
           $ref: '#/components/schemas/GcpManagedNetworkConfig'
-          description: >-
-            The mutually exclusive network deployment modes. The option decides
-            which network mode the workspace will use. The network config for
-            GCP workspace with Databricks managed network. This object is
-            input-only and will not be provided when listing workspaces. See
-            go/gcp-byovpc-alpha-design for interface decisions.
+          description: The mutually exclusive network deployment modes. The option decides which network mode the workspace
+            will use. The network config for GCP workspace with Databricks managed network. This object is input-only and
+            will not be provided when listing workspaces. See go/gcp-byovpc-alpha-design for interface decisions.
         network_id:
           type: string
-          description: >-
-            The ID of the network object, if the workspace is a BYOVPC
-            workspace. This should apply to workspaces on all clouds in internal
-            services. In accounts-rest-api, user will use workspace.network_id
-            for input and output instead. Currently (2021-06-19) the network ID
-            is only used by GCP.
+          description: The ID of the network object, if the workspace is a BYOVPC workspace. This should apply to workspaces
+            on all clouds in internal services. In accounts-rest-api, user will use workspace.network_id for input and output
+            instead. Currently (2021-06-19) the network ID is only used by GCP.
       description: The network configuration for workspaces.
     CustomerFacingComputeMode:
       type: string
-      enum:
-        - HYBRID
-        - SERVERLESS
-      description: >-
+      x-enum:
+      - HYBRID
+      - SERVERLESS
+      description: |-
         Corresponds to compute mode defined here:
-
         https://src.dev.databricks.com/databricks/universe@9076536b18479afd639d1c1f9dd5a59f72215e69/-/blob/central/api/common.proto?L872
     CustomerFacingStorageMode:
       type: string
-      enum:
-        - CUSTOMER_HOSTED
-        - DEFAULT_STORAGE
+      x-enum:
+      - CUSTOMER_HOSTED
+      - DEFAULT_STORAGE
       description: |-
         Create a collection of name/value pairs.
 
@@ -2724,9 +2300,9 @@ components:
         attributes -- see the documentation for details.
     EndpointUseCase:
       type: string
-      enum:
-        - DATAPLANE_RELAY_ACCESS
-        - WORKSPACE_ACCESS
+      x-enum:
+      - DATAPLANE_RELAY_ACCESS
+      - WORKSPACE_ACCESS
       description: |-
         Create a collection of name/value pairs.
 
@@ -2766,42 +2342,33 @@ components:
         attributes -- see the documentation for details.
     ErrorType:
       type: string
-      enum:
-        - credentials
-        - networkAcl
-        - securityGroup
-        - subnet
-        - vpc
-      description: >-
-        ErrorType and WarningType are used to represent the type of error or
-        warning by NetworkHealth
-
+      x-enum:
+      - credentials
+      - networkAcl
+      - securityGroup
+      - subnet
+      - vpc
+      description: |-
+        ErrorType and WarningType are used to represent the type of error or warning by NetworkHealth
         and NetworkWarning defined in central/api/accounts/accounts.proto
     GkeConfigConnectivityType:
       type: string
-      enum:
-        - PRIVATE_NODE_PUBLIC_MASTER
-        - PUBLIC_NODE_PUBLIC_MASTER
-      description: >-
-        Specifies the network connectivity types for the GKE nodes and the GKE
-        master network.
+      x-enum:
+      - PRIVATE_NODE_PUBLIC_MASTER
+      - PUBLIC_NODE_PUBLIC_MASTER
+      description: |-
+        Specifies the network connectivity types for the GKE nodes and the GKE master network.
 
-
-        Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the
-        workspace. The GKE nodes
-
+        Set to `PRIVATE_NODE_PUBLIC_MASTER` for a private GKE cluster for the workspace. The GKE nodes
         will not have public IPs.
 
-
-        Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes
-        of a public GKE cluster
-
+        Set to `PUBLIC_NODE_PUBLIC_MASTER` for a public GKE cluster. The nodes of a public GKE cluster
         have public IP addresses.
     KeyUseCase:
       type: string
-      enum:
-        - MANAGED_SERVICES
-        - STORAGE
+      x-enum:
+      - MANAGED_SERVICES
+      - STORAGE
       description: |-
         Create a collection of name/value pairs.
 
@@ -2841,13 +2408,13 @@ components:
         attributes -- see the documentation for details.
     PricingTier:
       type: string
-      enum:
-        - COMMUNITY_EDITION
-        - DEDICATED
-        - ENTERPRISE
-        - PREMIUM
-        - STANDARD
-        - UNKNOWN
+      x-enum:
+      - COMMUNITY_EDITION
+      - DEDICATED
+      - ENTERPRISE
+      - PREMIUM
+      - STANDARD
+      - UNKNOWN
       description: |-
         Create a collection of name/value pairs.
 
@@ -2887,9 +2454,9 @@ components:
         attributes -- see the documentation for details.
     PrivateAccessLevel:
       type: string
-      enum:
-        - ACCOUNT
-        - ENDPOINT
+      x-enum:
+      - ACCOUNT
+      - ENDPOINT
       description: |-
         Create a collection of name/value pairs.
 
@@ -2929,11 +2496,11 @@ components:
         attributes -- see the documentation for details.
     VpcStatus:
       type: string
-      enum:
-        - BROKEN
-        - UNATTACHED
-        - VALID
-        - WARNED
+      x-enum:
+      - BROKEN
+      - UNATTACHED
+      - VALID
+      - WARNED
       description: |-
         Create a collection of name/value pairs.
 
@@ -2973,9 +2540,9 @@ components:
         attributes -- see the documentation for details.
     WarningType:
       type: string
-      enum:
-        - securityGroup
-        - subnet
+      x-enum:
+      - securityGroup
+      - subnet
       description: |-
         Create a collection of name/value pairs.
 
@@ -3015,31 +2582,20 @@ components:
         attributes -- see the documentation for details.
     WorkspaceStatus:
       type: string
-      enum:
-        - BANNED
-        - CANCELLING
-        - FAILED
-        - NOT_PROVISIONED
-        - PROVISIONING
-        - RUNNING
-      description: >-
-        The different statuses of a workspace. The following represents the
-        current set of valid
-
-        transitions from status to status: NOT_PROVISIONED -> PROVISIONING ->
-        CANCELLED PROVISIONING ->
-
-        RUNNING -> FAILED -> CANCELLED (note that this transition is disallowed
-        in the MultiWorkspace
-
-        Project) RUNNING -> PROVISIONING -> BANNED -> CANCELLED FAILED ->
-        PROVISIONING -> CANCELLED
-
-        BANNED -> RUNNING -> CANCELLED Note that a transition from any state to
-        itself is also valid.
-
-        TODO(PLAT-5867): add a transition from CANCELLED to some other value
-        (e.g. RECOVERING)
+      x-enum:
+      - BANNED
+      - CANCELLING
+      - FAILED
+      - NOT_PROVISIONED
+      - PROVISIONING
+      - RUNNING
+      description: |-
+        The different statuses of a workspace. The following represents the current set of valid
+        transitions from status to status: NOT_PROVISIONED -> PROVISIONING -> CANCELLED PROVISIONING ->
+        RUNNING -> FAILED -> CANCELLED (note that this transition is disallowed in the MultiWorkspace
+        Project) RUNNING -> PROVISIONING -> BANNED -> CANCELLED FAILED -> PROVISIONING -> CANCELLED
+        BANNED -> RUNNING -> CANCELLED Note that a transition from any state to itself is also valid.
+        TODO(PLAT-5867): add a transition from CANCELLED to some other value (e.g. RECOVERING)
   x-stackQL-resources:
     credentials:
       id: databricks_account.provisioning.credentials
@@ -3047,6 +2603,9 @@ components:
       title: Credentials
       methods:
         credentials_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1credentials/post'
           response:
@@ -3060,31 +2619,25 @@ components:
             openAPIDocKey: '200'
         credentials_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1credentials~1{credentials_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1credentials~1{credentials_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         credentials_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1credentials~1{credentials_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1credentials~1{credentials_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/credentials/methods/credentials_get
-          - $ref: >-
-              #/components/x-stackQL-resources/credentials/methods/credentials_list
+        - $ref: '#/components/x-stackQL-resources/credentials/methods/credentials_get'
+        - $ref: '#/components/x-stackQL-resources/credentials/methods/credentials_list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/credentials/methods/credentials_create
+        - $ref: '#/components/x-stackQL-resources/credentials/methods/credentials_create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/credentials/methods/credentials_delete
+        - $ref: '#/components/x-stackQL-resources/credentials/methods/credentials_delete'
         replace: []
     encryption_keys:
       id: databricks_account.provisioning.encryption_keys
@@ -3092,46 +2645,41 @@ components:
       title: Encryption Keys
       methods:
         encryption_keys_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1customer-managed-keys/post
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1customer-managed-keys/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         encryption_keys_list:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1customer-managed-keys/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1customer-managed-keys/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         encryption_keys_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1customer-managed-keys~1{customer_managed_key_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1customer-managed-keys~1{customer_managed_key_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         encryption_keys_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1customer-managed-keys~1{customer_managed_key_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1customer-managed-keys~1{customer_managed_key_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/encryption_keys/methods/encryption_keys_get
-          - $ref: >-
-              #/components/x-stackQL-resources/encryption_keys/methods/encryption_keys_list
+        - $ref: '#/components/x-stackQL-resources/encryption_keys/methods/encryption_keys_get'
+        - $ref: '#/components/x-stackQL-resources/encryption_keys/methods/encryption_keys_list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/encryption_keys/methods/encryption_keys_create
+        - $ref: '#/components/x-stackQL-resources/encryption_keys/methods/encryption_keys_create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/encryption_keys/methods/encryption_keys_delete
+        - $ref: '#/components/x-stackQL-resources/encryption_keys/methods/encryption_keys_delete'
         replace: []
     networks:
       id: databricks_account.provisioning.networks
@@ -3139,6 +2687,9 @@ components:
       title: Networks
       methods:
         networks_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1networks/post'
           response:
@@ -3152,27 +2703,25 @@ components:
             openAPIDocKey: '200'
         networks_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1networks~1{network_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1networks~1{network_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         networks_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1networks~1{network_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1networks~1{network_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/networks/methods/networks_get'
-          - $ref: '#/components/x-stackQL-resources/networks/methods/networks_list'
+        - $ref: '#/components/x-stackQL-resources/networks/methods/networks_get'
+        - $ref: '#/components/x-stackQL-resources/networks/methods/networks_list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/networks/methods/networks_create'
+        - $ref: '#/components/x-stackQL-resources/networks/methods/networks_create'
         update: []
         delete:
-          - $ref: '#/components/x-stackQL-resources/networks/methods/networks_delete'
+        - $ref: '#/components/x-stackQL-resources/networks/methods/networks_delete'
         replace: []
     private_access:
       id: databricks_account.provisioning.private_access
@@ -3180,98 +2729,93 @@ components:
       title: Private Access
       methods:
         private_access_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1private-access-settings/post
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1private-access-settings/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         private_access_list:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1private-access-settings/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1private-access-settings/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         private_access_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1private-access-settings~1{private_access_settings_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1private-access-settings~1{private_access_settings_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         private_access_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1private-access-settings~1{private_access_settings_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1private-access-settings~1{private_access_settings_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         private_access_replace:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1private-access-settings~1{private_access_settings_id}/put
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1private-access-settings~1{private_access_settings_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/private_access/methods/private_access_get
-          - $ref: >-
-              #/components/x-stackQL-resources/private_access/methods/private_access_list
+        - $ref: '#/components/x-stackQL-resources/private_access/methods/private_access_get'
+        - $ref: '#/components/x-stackQL-resources/private_access/methods/private_access_list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/private_access/methods/private_access_create
+        - $ref: '#/components/x-stackQL-resources/private_access/methods/private_access_create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/private_access/methods/private_access_delete
+        - $ref: '#/components/x-stackQL-resources/private_access/methods/private_access_delete'
         replace:
-          - $ref: >-
-              #/components/x-stackQL-resources/private_access/methods/private_access_replace
+        - $ref: '#/components/x-stackQL-resources/private_access/methods/private_access_replace'
     storage:
       id: databricks_account.provisioning.storage
       name: storage
       title: Storage
       methods:
         storage_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1storage-configurations/post
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1storage-configurations/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         storage_list:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1storage-configurations/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1storage-configurations/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         storage_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1storage-configurations~1{storage_configuration_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1storage-configurations~1{storage_configuration_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         storage_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1storage-configurations~1{storage_configuration_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1storage-configurations~1{storage_configuration_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/storage/methods/storage_get'
-          - $ref: '#/components/x-stackQL-resources/storage/methods/storage_list'
+        - $ref: '#/components/x-stackQL-resources/storage/methods/storage_get'
+        - $ref: '#/components/x-stackQL-resources/storage/methods/storage_list'
         insert:
-          - $ref: '#/components/x-stackQL-resources/storage/methods/storage_create'
+        - $ref: '#/components/x-stackQL-resources/storage/methods/storage_create'
         update: []
         delete:
-          - $ref: '#/components/x-stackQL-resources/storage/methods/storage_delete'
+        - $ref: '#/components/x-stackQL-resources/storage/methods/storage_delete'
         replace: []
     vpc_endpoints:
       id: databricks_account.provisioning.vpc_endpoints
@@ -3279,6 +2823,9 @@ components:
       title: Vpc Endpoints
       methods:
         vpc_endpoints_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1vpc-endpoints/post'
           response:
@@ -3292,31 +2839,25 @@ components:
             openAPIDocKey: '200'
         vpc_endpoints_delete:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1vpc-endpoints~1{vpc_endpoint_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1vpc-endpoints~1{vpc_endpoint_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         vpc_endpoints_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1vpc-endpoints~1{vpc_endpoint_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1vpc-endpoints~1{vpc_endpoint_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: >-
-              #/components/x-stackQL-resources/vpc_endpoints/methods/vpc_endpoints_get
-          - $ref: >-
-              #/components/x-stackQL-resources/vpc_endpoints/methods/vpc_endpoints_list
+        - $ref: '#/components/x-stackQL-resources/vpc_endpoints/methods/vpc_endpoints_get'
+        - $ref: '#/components/x-stackQL-resources/vpc_endpoints/methods/vpc_endpoints_list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/vpc_endpoints/methods/vpc_endpoints_create
+        - $ref: '#/components/x-stackQL-resources/vpc_endpoints/methods/vpc_endpoints_create'
         update: []
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/vpc_endpoints/methods/vpc_endpoints_delete
+        - $ref: '#/components/x-stackQL-resources/vpc_endpoints/methods/vpc_endpoints_delete'
         replace: []
     workspaces:
       id: databricks_account.provisioning.workspaces
@@ -3326,7 +2867,7 @@ components:
         workspaces_create:
           config:
             requestBodyTranslate:
-              algorithm: naive        
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1workspaces/post'
           response:
@@ -3339,50 +2880,709 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         workspaces_delete:
-          # config:
-          #   requestBodyTranslate:
-          #     algorithm: naive        
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}/delete
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}/delete'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         workspaces_get:
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}/get
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}/get'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         workspaces_update:
-          # config:
-          #   requestBodyTranslate:
-          #     algorithm: naive        
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
-            $ref: >-
-              #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}/patch
+            $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}/patch'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
         select:
-          - $ref: '#/components/x-stackQL-resources/workspaces/methods/workspaces_get'
-          - $ref: >-
-              #/components/x-stackQL-resources/workspaces/methods/workspaces_list
+        - $ref: '#/components/x-stackQL-resources/workspaces/methods/workspaces_get'
+        - $ref: '#/components/x-stackQL-resources/workspaces/methods/workspaces_list'
         insert:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspaces/methods/workspaces_create
+        - $ref: '#/components/x-stackQL-resources/workspaces/methods/workspaces_create'
         update:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspaces/methods/workspaces_update
+        - $ref: '#/components/x-stackQL-resources/workspaces/methods/workspaces_update'
         delete:
-          - $ref: >-
-              #/components/x-stackQL-resources/workspaces/methods/workspaces_delete
+        - $ref: '#/components/x-stackQL-resources/workspaces/methods/workspaces_delete'
         replace: []
+    vw_workspaces:
+      name: vw_workspaces
+      id: databricks_account.provisioning.vw_workspaces
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: workspace_id
+            type: integer
+            description: Unique numeric identifier for the workspace.
+          - name: workspace_name
+            type: string
+            description: Human-readable name of the workspace.
+          - name: workspace_status
+            type: string
+            description: Current provisioning status of the workspace (e.g. RUNNING, PROVISIONING, FAILED).
+          - name: workspace_status_message
+            type: string
+            description: Human-readable message describing the current workspace status.
+          - name: cloud
+            type: string
+            description: Cloud provider hosting the workspace (e.g. aws, azure, gcp).
+          - name: aws_region
+            type: string
+            description: AWS region where the workspace is deployed (AWS only).
+          - name: location
+            type: string
+            description: Cloud region or location where the workspace is deployed (Azure/GCP).
+          - name: deployment_name
+            type: string
+            description: Subdomain component of the workspace URL (e.g. mycompany in mycompany.azuredatabricks.net).
+          - name: pricing_tier
+            type: string
+            description: Pricing tier of the workspace (e.g. PREMIUM, ENTERPRISE, STANDARD).
+          - name: compute_mode
+            type: string
+            description: Compute isolation mode for the workspace.
+          - name: storage_mode
+            type: string
+            description: Storage isolation mode for the workspace.
+          - name: credentials_id
+            type: string
+            description: ID of the cross-account credential configuration used by this workspace (AWS only).
+          - name: storage_configuration_id
+            type: string
+            description: ID of the root storage configuration for this workspace.
+          - name: network_id
+            type: string
+            description: ID of the customer-managed network configuration for this workspace.
+          - name: network_connectivity_config_id
+            type: string
+            description: ID of the network connectivity configuration for private access.
+          - name: managed_services_customer_managed_key_id
+            type: string
+            description: ID of the customer-managed key used to encrypt managed services data.
+          - name: storage_customer_managed_key_id
+            type: string
+            description: ID of the customer-managed key used to encrypt workspace storage.
+          - name: private_access_settings_id
+            type: string
+            description: ID of the private access settings configuration for this workspace.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the workspace was created.
+          - name: custom_tags
+            type: object
+            description: Key-value custom tags applied to cloud resources provisioned for this workspace.
+          - name: azure_subscription_id
+            type: string
+            description: Azure subscription ID where the workspace is deployed (Azure only).
+          - name: azure_resource_group
+            type: string
+            description: Azure resource group containing the workspace resources (Azure only).
+          - name: gcp_project_id
+            type: string
+            description: GCP project ID that contains the workspace resources (GCP only).
+          - name: gcp_subnet_cidr
+            type: string
+            description: CIDR range for the GCP managed network subnet (GCP only).
+          - name: gcp_pod_ip_range
+            type: string
+            description: IP range used for GKE cluster pods (GCP only).
+          - name: gcp_service_ip_range
+            type: string
+            description: IP range used for GKE cluster services (GCP only).
+          - name: gke_connectivity_type
+            type: string
+            description: GKE cluster connectivity type (e.g. PRIVATE_NODE_PUBLIC_MASTER, PUBLIC_NODE_PUBLIC_MASTER) (GCP only).
+          - name: gke_master_ip_range
+            type: string
+            description: CIDR range for the GKE control plane (GCP only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                w.account_id,
+                w.workspace_id,
+                w.workspace_name,
+                w.workspace_status,
+                w.workspace_status_message,
+                w.cloud,
+                w.aws_region,
+                w.location,
+                w.deployment_name,
+                w.pricing_tier,
+                w.compute_mode,
+                w.storage_mode,
+                w.credentials_id,
+                w.storage_configuration_id,
+                w.network_id,
+                w.network_connectivity_config_id,
+                w.managed_services_customer_managed_key_id,
+                w.storage_customer_managed_key_id,
+                w.private_access_settings_id,
+                w.creation_time,
+                w.custom_tags,
+                JSON_EXTRACT(w.azure_workspace_info, '$.subscription_id') AS azure_subscription_id,
+                JSON_EXTRACT(w.azure_workspace_info, '$.resource_group') AS azure_resource_group,
+                JSON_EXTRACT(w.cloud_resource_container, '$.gcp.project_id') AS gcp_project_id,
+                JSON_EXTRACT(w.gcp_managed_network_config, '$.subnet_cidr') AS gcp_subnet_cidr,
+                JSON_EXTRACT(w.gcp_managed_network_config, '$.gke_cluster_pod_ip_range') AS gcp_pod_ip_range,
+                JSON_EXTRACT(w.gcp_managed_network_config, '$.gke_cluster_service_ip_range') AS gcp_service_ip_range,
+                JSON_EXTRACT(w.gke_config, '$.connectivity_type') AS gke_connectivity_type,
+                JSON_EXTRACT(w.gke_config, '$.master_ip_range') AS gke_master_ip_range
+              FROM databricks_account.provisioning.workspaces w
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  w.account_id,
+                  w.workspace_id,
+                  w.workspace_name,
+                  w.workspace_status,
+                  w.workspace_status_message,
+                  w.cloud,
+                  w.aws_region,
+                  w.location,
+                  w.deployment_name,
+                  w.pricing_tier,
+                  w.compute_mode,
+                  w.storage_mode,
+                  w.credentials_id,
+                  w.storage_configuration_id,
+                  w.network_id,
+                  w.network_connectivity_config_id,
+                  w.managed_services_customer_managed_key_id,
+                  w.storage_customer_managed_key_id,
+                  w.private_access_settings_id,
+                  w.creation_time,
+                  w.custom_tags,
+                  w.azure_workspace_info->>'subscription_id' AS azure_subscription_id,
+                  w.azure_workspace_info->>'resource_group' AS azure_resource_group,
+                  w.cloud_resource_container->'gcp'->>'project_id' AS gcp_project_id,
+                  w.gcp_managed_network_config->>'subnet_cidr' AS gcp_subnet_cidr,
+                  w.gcp_managed_network_config->>'gke_cluster_pod_ip_range' AS gcp_pod_ip_range,
+                  w.gcp_managed_network_config->>'gke_cluster_service_ip_range' AS gcp_service_ip_range,
+                  w.gke_config->>'connectivity_type' AS gke_connectivity_type,
+                  w.gke_config->>'master_ip_range' AS gke_master_ip_range
+                FROM databricks_account.provisioning.workspaces w
+                WHERE account_id = '{{ account_id }}'
+    vw_networks:
+      name: vw_networks
+      id: databricks_account.provisioning.vw_networks
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_id
+            type: string
+            description: Unique identifier for the network configuration.
+          - name: network_name
+            type: string
+            description: Human-readable name of the network configuration.
+          - name: vpc_id
+            type: string
+            description: ID of the VPC used by this network configuration (AWS only).
+          - name: vpc_status
+            type: string
+            description: Validation status of the VPC (e.g. VALID, BROKEN, UNATTACHED).
+          - name: workspace_id
+            type: integer
+            description: ID of the workspace this network configuration is attached to.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the network configuration was created.
+          - name: security_group_ids
+            type: array
+            description: List of security group IDs associated with this network configuration (AWS only).
+          - name: subnet_ids
+            type: array
+            description: List of subnet IDs associated with this network configuration (AWS only).
+          - name: gcp_network_project_id
+            type: string
+            description: GCP project ID that hosts the shared VPC network (GCP only).
+          - name: gcp_vpc_id
+            type: string
+            description: Name of the GCP VPC network (GCP only).
+          - name: gcp_subnet_id
+            type: string
+            description: Name of the GCP subnet used by the workspace (GCP only).
+          - name: gcp_subnet_region
+            type: string
+            description: GCP region where the subnet is located (GCP only).
+          - name: gcp_pod_ip_range_name
+            type: string
+            description: Name of the secondary IP range used for GKE pods (GCP only).
+          - name: gcp_service_ip_range_name
+            type: string
+            description: Name of the secondary IP range used for GKE services (GCP only).
+          - name: vpc_endpoint_rest_api_ids
+            type: array
+            description: List of VPC endpoint IDs used for REST API private connectivity (AWS only).
+          - name: vpc_endpoint_dataplane_relay_ids
+            type: array
+            description: List of VPC endpoint IDs used for dataplane relay private connectivity (AWS only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                n.account_id,
+                n.network_id,
+                n.network_name,
+                n.vpc_id,
+                n.vpc_status,
+                n.workspace_id,
+                n.creation_time,
+                n.security_group_ids,
+                n.subnet_ids,
+                JSON_EXTRACT(n.gcp_network_info, '$.network_project_id') AS gcp_network_project_id,
+                JSON_EXTRACT(n.gcp_network_info, '$.vpc_id') AS gcp_vpc_id,
+                JSON_EXTRACT(n.gcp_network_info, '$.subnet_id') AS gcp_subnet_id,
+                JSON_EXTRACT(n.gcp_network_info, '$.subnet_region') AS gcp_subnet_region,
+                JSON_EXTRACT(n.gcp_network_info, '$.pod_ip_range_name') AS gcp_pod_ip_range_name,
+                JSON_EXTRACT(n.gcp_network_info, '$.service_ip_range_name') AS gcp_service_ip_range_name,
+                JSON_EXTRACT(n.vpc_endpoints, '$.rest_api') AS vpc_endpoint_rest_api_ids,
+                JSON_EXTRACT(n.vpc_endpoints, '$.dataplane_relay') AS vpc_endpoint_dataplane_relay_ids
+              FROM databricks_account.provisioning.networks n
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  n.account_id,
+                  n.network_id,
+                  n.network_name,
+                  n.vpc_id,
+                  n.vpc_status,
+                  n.workspace_id,
+                  n.creation_time,
+                  n.security_group_ids,
+                  n.subnet_ids,
+                  n.gcp_network_info->>'network_project_id' AS gcp_network_project_id,
+                  n.gcp_network_info->>'vpc_id' AS gcp_vpc_id,
+                  n.gcp_network_info->>'subnet_id' AS gcp_subnet_id,
+                  n.gcp_network_info->>'subnet_region' AS gcp_subnet_region,
+                  n.gcp_network_info->>'pod_ip_range_name' AS gcp_pod_ip_range_name,
+                  n.gcp_network_info->>'service_ip_range_name' AS gcp_service_ip_range_name,
+                  n.vpc_endpoints->'rest_api' AS vpc_endpoint_rest_api_ids,
+                  n.vpc_endpoints->'dataplane_relay' AS vpc_endpoint_dataplane_relay_ids
+                FROM databricks_account.provisioning.networks n
+                WHERE account_id = '{{ account_id }}'
+    vw_network_errors:
+      name: vw_network_errors
+      id: databricks_account.provisioning.vw_network_errors
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_id
+            type: string
+            description: Unique identifier for the network configuration.
+          - name: network_name
+            type: string
+            description: Human-readable name of the network configuration.
+          - name: vpc_status
+            type: string
+            description: Validation status of the VPC at the time of the error.
+          - name: error_type
+            type: string
+            description: Category of the network validation error (one row per error).
+          - name: error_message
+            type: string
+            description: Human-readable description of the network validation error.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                n.account_id,
+                n.network_id,
+                n.network_name,
+                n.vpc_status,
+                JSON_EXTRACT(e.value, '$.error_type') AS error_type,
+                JSON_EXTRACT(e.value, '$.error_message') AS error_message
+              FROM databricks_account.provisioning.networks n,
+                   JSON_EACH(n.error_messages) e
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  n.account_id,
+                  n.network_id,
+                  n.network_name,
+                  n.vpc_status,
+                  e.value->>'error_type' AS error_type,
+                  e.value->>'error_message' AS error_message
+                FROM databricks_account.provisioning.networks n,
+                     jsonb_array_elements(n.error_messages::jsonb) AS e
+                WHERE account_id = '{{ account_id }}'
+    vw_network_warnings:
+      name: vw_network_warnings
+      id: databricks_account.provisioning.vw_network_warnings
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: network_id
+            type: string
+            description: Unique identifier for the network configuration.
+          - name: network_name
+            type: string
+            description: Human-readable name of the network configuration.
+          - name: vpc_status
+            type: string
+            description: Validation status of the VPC at the time of the warning.
+          - name: warning_type
+            type: string
+            description: Category of the network validation warning (one row per warning).
+          - name: warning_message
+            type: string
+            description: Human-readable description of the network validation warning.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                n.account_id,
+                n.network_id,
+                n.network_name,
+                n.vpc_status,
+                JSON_EXTRACT(w.value, '$.warning_type') AS warning_type,
+                JSON_EXTRACT(w.value, '$.warning_message') AS warning_message
+              FROM databricks_account.provisioning.networks n,
+                   JSON_EACH(n.warning_messages) w
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  n.account_id,
+                  n.network_id,
+                  n.network_name,
+                  n.vpc_status,
+                  w.value->>'warning_type' AS warning_type,
+                  w.value->>'warning_message' AS warning_message
+                FROM databricks_account.provisioning.networks n,
+                     jsonb_array_elements(n.warning_messages::jsonb) AS w
+                WHERE account_id = '{{ account_id }}'
+    vw_encryption_keys:
+      name: vw_encryption_keys
+      id: databricks_account.provisioning.vw_encryption_keys
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: customer_managed_key_id
+            type: string
+            description: Unique identifier for the customer-managed key configuration.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the key configuration was created.
+          - name: use_case
+            type: string
+            description: Encryption use case this key is assigned to (one row per use case, e.g. MANAGED_SERVICES, STORAGE).
+          - name: aws_key_arn
+            type: string
+            description: ARN of the AWS KMS key (AWS only).
+          - name: aws_key_region
+            type: string
+            description: AWS region where the KMS key resides (AWS only).
+          - name: aws_key_alias
+            type: string
+            description: Alias of the AWS KMS key (AWS only).
+          - name: aws_reuse_key_for_volumes
+            type: boolean
+            description: Whether to reuse the same KMS key for cluster EBS volumes (AWS only).
+          - name: azure_key_name
+            type: string
+            description: Name of the Azure Key Vault key (Azure only).
+          - name: azure_key_vault_uri
+            type: string
+            description: URI of the Azure Key Vault containing the key (Azure only).
+          - name: azure_tenant_id
+            type: string
+            description: Azure Active Directory tenant ID for the key vault (Azure only).
+          - name: azure_key_version
+            type: string
+            description: Version of the Azure Key Vault key (Azure only).
+          - name: azure_disk_encryption_set_id
+            type: string
+            description: Resource ID of the Azure Disk Encryption Set using this key (Azure only).
+          - name: gcp_kms_key_id
+            type: string
+            description: Resource ID of the GCP Cloud KMS key (GCP only).
+          - name: cloud_type
+            type: string
+            description: Derived cloud provider for this key configuration - one of AWS, AZURE, GCP, or UNKNOWN.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                k.account_id,
+                k.customer_managed_key_id,
+                k.creation_time,
+                uc.value AS use_case,
+                JSON_EXTRACT(k.aws_key_info, '$.key_arn') AS aws_key_arn,
+                JSON_EXTRACT(k.aws_key_info, '$.key_region') AS aws_key_region,
+                JSON_EXTRACT(k.aws_key_info, '$.key_alias') AS aws_key_alias,
+                JSON_EXTRACT(k.aws_key_info, '$.reuse_key_for_cluster_volumes') AS aws_reuse_key_for_volumes,
+                JSON_EXTRACT(k.azure_key_info, '$.key_name') AS azure_key_name,
+                JSON_EXTRACT(k.azure_key_info, '$.key_vault_uri') AS azure_key_vault_uri,
+                JSON_EXTRACT(k.azure_key_info, '$.tenant_id') AS azure_tenant_id,
+                JSON_EXTRACT(k.azure_key_info, '$.version') AS azure_key_version,
+                JSON_EXTRACT(k.azure_key_info, '$.disk_encryption_set_id') AS azure_disk_encryption_set_id,
+                JSON_EXTRACT(k.gcp_key_info, '$.kms_key_id') AS gcp_kms_key_id,
+                CASE
+                  WHEN k.aws_key_info IS NOT NULL THEN 'AWS'
+                  WHEN k.azure_key_info IS NOT NULL THEN 'AZURE'
+                  WHEN k.gcp_key_info IS NOT NULL THEN 'GCP'
+                  ELSE 'UNKNOWN'
+                END AS cloud_type
+              FROM databricks_account.provisioning.encryption_keys k,
+                   JSON_EACH(k.use_cases) uc
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  k.account_id,
+                  k.customer_managed_key_id,
+                  k.creation_time,
+                  uc.value AS use_case,
+                  k.aws_key_info->>'key_arn' AS aws_key_arn,
+                  k.aws_key_info->>'key_region' AS aws_key_region,
+                  k.aws_key_info->>'key_alias' AS aws_key_alias,
+                  (k.aws_key_info->>'reuse_key_for_cluster_volumes')::boolean AS aws_reuse_key_for_volumes,
+                  k.azure_key_info->>'key_name' AS azure_key_name,
+                  k.azure_key_info->>'key_vault_uri' AS azure_key_vault_uri,
+                  k.azure_key_info->>'tenant_id' AS azure_tenant_id,
+                  k.azure_key_info->>'version' AS azure_key_version,
+                  k.azure_key_info->>'disk_encryption_set_id' AS azure_disk_encryption_set_id,
+                  k.gcp_key_info->>'kms_key_id' AS gcp_kms_key_id,
+                  CASE
+                    WHEN k.aws_key_info IS NOT NULL THEN 'AWS'
+                    WHEN k.azure_key_info IS NOT NULL THEN 'AZURE'
+                    WHEN k.gcp_key_info IS NOT NULL THEN 'GCP'
+                    ELSE 'UNKNOWN'
+                  END AS cloud_type
+                FROM databricks_account.provisioning.encryption_keys k,
+                     jsonb_array_elements(k.use_cases::jsonb) AS uc
+                WHERE account_id = '{{ account_id }}'
+    vw_credentials:
+      name: vw_credentials
+      id: databricks_account.provisioning.vw_credentials
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: credentials_id
+            type: string
+            description: Unique identifier for the credential configuration.
+          - name: credentials_name
+            type: string
+            description: Human-readable name of the credential configuration.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the credential configuration was created.
+          - name: aws_role_arn
+            type: string
+            description: ARN of the AWS IAM role Databricks uses to manage resources in the customer account (AWS only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                c.account_id,
+                c.credentials_id,
+                c.credentials_name,
+                c.creation_time,
+                JSON_EXTRACT(c.aws_credentials, '$.sts_role.role_arn') AS aws_role_arn
+              FROM databricks_account.provisioning.credentials c
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  c.account_id,
+                  c.credentials_id,
+                  c.credentials_name,
+                  c.creation_time,
+                  c.aws_credentials->'sts_role'->>'role_arn' AS aws_role_arn
+                FROM databricks_account.provisioning.credentials c
+                WHERE account_id = '{{ account_id }}'
+    vw_storage_configurations:
+      name: vw_storage_configurations
+      id: databricks_account.provisioning.vw_storage_configurations
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: storage_configuration_id
+            type: string
+            description: Unique identifier for the storage configuration.
+          - name: storage_configuration_name
+            type: string
+            description: Human-readable name of the storage configuration.
+          - name: creation_time
+            type: integer
+            description: Unix timestamp (ms) when the storage configuration was created.
+          - name: role_arn
+            type: string
+            description: ARN of the AWS IAM role used to access the root storage bucket (AWS only).
+          - name: root_bucket_name
+            type: string
+            description: Name of the S3 bucket used as the workspace root storage (AWS only).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                s.account_id,
+                s.storage_configuration_id,
+                s.storage_configuration_name,
+                s.creation_time,
+                s.role_arn,
+                JSON_EXTRACT(s.root_bucket_info, '$.bucket_name') AS root_bucket_name
+              FROM databricks_account.provisioning.storage s
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  s.account_id,
+                  s.storage_configuration_id,
+                  s.storage_configuration_name,
+                  s.creation_time,
+                  s.role_arn,
+                  s.root_bucket_info->>'bucket_name' AS root_bucket_name
+                FROM databricks_account.provisioning.storage s
+                WHERE account_id = '{{ account_id }}'
+    vw_vpc_endpoints:
+      name: vw_vpc_endpoints
+      id: databricks_account.provisioning.vw_vpc_endpoints
+      config:
+        docs:
+          fields:
+          - name: account_id
+            type: string
+            description: Databricks account ID used to scope the query.
+          - name: vpc_endpoint_id
+            type: string
+            description: Unique Databricks identifier for the VPC endpoint configuration.
+          - name: vpc_endpoint_name
+            type: string
+            description: Human-readable name of the VPC endpoint configuration.
+          - name: region
+            type: string
+            description: Cloud region where the VPC endpoint is deployed.
+          - name: state
+            type: string
+            description: Current state of the VPC endpoint (e.g. available, pending, rejected).
+          - name: use_case
+            type: string
+            description: Traffic type this endpoint handles (e.g. dataplane-relay, workspace-access).
+          - name: aws_account_id
+            type: string
+            description: AWS account ID that owns the VPC endpoint (AWS only).
+          - name: aws_endpoint_service_id
+            type: string
+            description: ID of the AWS endpoint service this VPC endpoint connects to (AWS only).
+          - name: aws_vpc_endpoint_id
+            type: string
+            description: AWS VPC endpoint ID (AWS only).
+          - name: gcp_project_id
+            type: string
+            description: GCP project ID containing the PSC endpoint (GCP only).
+          - name: gcp_psc_endpoint_name
+            type: string
+            description: Name of the GCP Private Service Connect endpoint (GCP only).
+          - name: gcp_endpoint_region
+            type: string
+            description: GCP region where the PSC endpoint is deployed (GCP only).
+          - name: gcp_psc_connection_id
+            type: string
+            description: Connection ID of the GCP PSC endpoint (GCP only).
+          - name: gcp_service_attachment_id
+            type: string
+            description: ID of the GCP service attachment the PSC endpoint connects to (GCP only).
+          - name: cloud_type
+            type: string
+            description: Derived cloud provider for this VPC endpoint - one of AWS, GCP, or UNKNOWN.
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                v.account_id,
+                v.vpc_endpoint_id,
+                v.vpc_endpoint_name,
+                v.region,
+                v.state,
+                v.use_case,
+                v.aws_account_id,
+                v.aws_endpoint_service_id,
+                v.aws_vpc_endpoint_id,
+                JSON_EXTRACT(v.gcp_vpc_endpoint_info, '$.project_id') AS gcp_project_id,
+                JSON_EXTRACT(v.gcp_vpc_endpoint_info, '$.psc_endpoint_name') AS gcp_psc_endpoint_name,
+                JSON_EXTRACT(v.gcp_vpc_endpoint_info, '$.endpoint_region') AS gcp_endpoint_region,
+                JSON_EXTRACT(v.gcp_vpc_endpoint_info, '$.psc_connection_id') AS gcp_psc_connection_id,
+                JSON_EXTRACT(v.gcp_vpc_endpoint_info, '$.service_attachment_id') AS gcp_service_attachment_id,
+                CASE
+                  WHEN v.aws_vpc_endpoint_id IS NOT NULL THEN 'AWS'
+                  WHEN v.gcp_vpc_endpoint_info IS NOT NULL THEN 'GCP'
+                  ELSE 'UNKNOWN'
+                END AS cloud_type
+              FROM databricks_account.provisioning.vpc_endpoints v
+              WHERE account_id = '{{ account_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  v.account_id,
+                  v.vpc_endpoint_id,
+                  v.vpc_endpoint_name,
+                  v.region,
+                  v.state,
+                  v.use_case,
+                  v.aws_account_id,
+                  v.aws_endpoint_service_id,
+                  v.aws_vpc_endpoint_id,
+                  v.gcp_vpc_endpoint_info->>'project_id' AS gcp_project_id,
+                  v.gcp_vpc_endpoint_info->>'psc_endpoint_name' AS gcp_psc_endpoint_name,
+                  v.gcp_vpc_endpoint_info->>'endpoint_region' AS gcp_endpoint_region,
+                  v.gcp_vpc_endpoint_info->>'psc_connection_id' AS gcp_psc_connection_id,
+                  v.gcp_vpc_endpoint_info->>'service_attachment_id' AS gcp_service_attachment_id,
+                  CASE
+                    WHEN v.aws_vpc_endpoint_id IS NOT NULL THEN 'AWS'
+                    WHEN v.gcp_vpc_endpoint_info IS NOT NULL THEN 'GCP'
+                    ELSE 'UNKNOWN'
+                  END AS cloud_type
+                FROM databricks_account.provisioning.vpc_endpoints v
+                WHERE account_id = '{{ account_id }}'
 x-stackQL-config:
-  # requestBodyTranslate:
-  #   algorithm: naive
   pagination:
     requestToken:
       key: page_token

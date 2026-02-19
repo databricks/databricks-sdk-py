@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_assignable_roles</code
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_assignable_roles</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_assignable_roles" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iam.account_assignable_roles" /></td></tr>
 </tbody></table>

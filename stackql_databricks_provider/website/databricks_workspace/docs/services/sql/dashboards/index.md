@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>dashboards</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>dashboards</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="dashboards" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.dashboards" /></td></tr>
 </tbody></table>
@@ -107,7 +107,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "permission_tier",
     "type": "string",
-    "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+    "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query (CAN_EDIT, CAN_MANAGE, CAN_RUN, CAN_VIEW)"
   },
   {
     "name": "slug",
@@ -338,7 +338,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "permission_tier",
                 "type": "string",
-                "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+                "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query (CAN_EDIT, CAN_MANAGE, CAN_RUN, CAN_VIEW)"
               },
               {
                 "name": "query",
@@ -353,7 +353,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "run_as_role",
                 "type": "string",
-                "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior)"
+                "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior) (owner, viewer)"
               },
               {
                 "name": "tags",
@@ -471,7 +471,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "permission_tier",
     "type": "string",
-    "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+    "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query (CAN_EDIT, CAN_MANAGE, CAN_RUN, CAN_VIEW)"
   },
   {
     "name": "slug",
@@ -702,7 +702,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "permission_tier",
                 "type": "string",
-                "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query"
+                "description": "* `CAN_VIEW`: Can view the query * `CAN_RUN`: Can run the query * `CAN_EDIT`: Can edit the query * `CAN_MANAGE`: Can manage the query (CAN_EDIT, CAN_MANAGE, CAN_RUN, CAN_VIEW)"
               },
               {
                 "name": "query",
@@ -717,7 +717,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "run_as_role",
                 "type": "string",
-                "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior)"
+                "description": "Sets the **Run as** role for the object. Must be set to one of `\"viewer\"` (signifying \"run as viewer\" behavior) or `\"owner\"` (signifying \"run as owner\" behavior) (owner, viewer)"
               },
               {
                 "name": "tags",
@@ -956,9 +956,9 @@ Modify this dashboard definition. This operation only affects attributes of the 
 
 ```sql
 INSERT INTO databricks_workspace.sql.dashboards (
-data__name,
-data__run_as_role,
-data__tags,
+name,
+run_as_role,
+tags,
 dashboard_id,
 deployment_name
 )

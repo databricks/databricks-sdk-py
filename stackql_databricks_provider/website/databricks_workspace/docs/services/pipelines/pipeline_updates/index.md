@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>pipeline_updates</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>pipeline_updates</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="pipeline_updates" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.pipelines.pipeline_updates" /></td></tr>
 </tbody></table>
@@ -50,7 +50,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "cause",
         "type": "string",
-        "description": "What triggered this update."
+        "description": "What triggered this update. (API_CALL, INFRASTRUCTURE_MAINTENANCE, JOB_TASK, RETRY_ON_FAILURE, SCHEMA_CHANGE, SERVICE_UPGRADE, USER_ACTION)"
       },
       {
         "name": "cluster_id",
@@ -197,7 +197,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "kind",
                 "type": "string",
-                "description": "The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a<br />Databricks Asset Bundle."
+                "description": "The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a<br />Databricks Asset Bundle. (BUNDLE)"
               },
               {
                 "name": "metadata_file_path",
@@ -352,7 +352,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source_type",
                 "type": "string",
-                "description": "The type of the foreign source. The source type will be inferred from the source connection or ingestion gateway. This field is output only and will be ignored if provided."
+                "description": "The type of the foreign source. The source type will be inferred from the source connection or ingestion gateway. This field is output only and will be ignored if provided. (BIGQUERY, DYNAMICS365, FOREIGN_CATALOG, GA4_RAW_DATA, MANAGED_POSTGRESQL, MYSQL, NETSUITE, ORACLE, POSTGRESQL, SALESFORCE, SERVICENOW, SHAREPOINT, SQLSERVER, TERADATA, WORKDAY_RAAS)"
               },
               {
                 "name": "table_configuration",
@@ -529,7 +529,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "The update state."
+        "description": "The update state. (CANCELED, COMPLETED, CREATED, FAILED, INITIALIZING, QUEUED, RESETTING, RUNNING, SETTING_UP_TABLES, STOPPING, WAITING_FOR_RESOURCES)"
       },
       {
         "name": "update_id",
@@ -566,7 +566,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "cause",
         "type": "string",
-        "description": "What triggered this update."
+        "description": "What triggered this update. (API_CALL, INFRASTRUCTURE_MAINTENANCE, JOB_TASK, RETRY_ON_FAILURE, SCHEMA_CHANGE, SERVICE_UPGRADE, USER_ACTION)"
       },
       {
         "name": "cluster_id",
@@ -713,7 +713,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "kind",
                 "type": "string",
-                "description": "The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a<br />Databricks Asset Bundle."
+                "description": "The deployment method that manages the pipeline: - BUNDLE: The pipeline is managed by a<br />Databricks Asset Bundle. (BUNDLE)"
               },
               {
                 "name": "metadata_file_path",
@@ -868,7 +868,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "source_type",
                 "type": "string",
-                "description": "The type of the foreign source. The source type will be inferred from the source connection or ingestion gateway. This field is output only and will be ignored if provided."
+                "description": "The type of the foreign source. The source type will be inferred from the source connection or ingestion gateway. This field is output only and will be ignored if provided. (BIGQUERY, DYNAMICS365, FOREIGN_CATALOG, GA4_RAW_DATA, MANAGED_POSTGRESQL, MYSQL, NETSUITE, ORACLE, POSTGRESQL, SALESFORCE, SERVICENOW, SHAREPOINT, SQLSERVER, TERADATA, WORKDAY_RAAS)"
               },
               {
                 "name": "table_configuration",
@@ -1045,7 +1045,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "The update state."
+        "description": "The update state. (CANCELED, COMPLETED, CREATED, FAILED, INITIALIZING, QUEUED, RESETTING, RUNNING, SETTING_UP_TABLES, STOPPING, WAITING_FOR_RESOURCES)"
       },
       {
         "name": "update_id",

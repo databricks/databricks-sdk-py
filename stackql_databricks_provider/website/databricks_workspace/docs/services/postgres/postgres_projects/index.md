@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>postgres_projects</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>postgres_projects</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="postgres_projects" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.postgres.postgres_projects" /></td></tr>
 </tbody></table>
@@ -213,14 +213,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-project_id"><code>project_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__project"><code>data__project</code></a></td>
+    <td><a href="#parameter-project_id"><code>project_id</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-project"><code>project</code></a></td>
     <td></td>
     <td>Creates a new Lakebase Autoscaling Postgres database project, which contains branches and compute</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__project"><code>data__project</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-project"><code>project</code></a></td>
     <td></td>
     <td>Updates the specified database project.</td>
 </tr>
@@ -318,7 +318,7 @@ Creates a new Lakebase Autoscaling Postgres database project, which contains bra
 
 ```sql
 INSERT INTO databricks_workspace.postgres.postgres_projects (
-data__project,
+project,
 project_id,
 deployment_name
 )
@@ -365,12 +365,12 @@ Updates the specified database project.
 ```sql
 UPDATE databricks_workspace.postgres.postgres_projects
 SET 
-data__project = '{{ project }}'
+project = '{{ project }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__project = '{{ project }}' --required;
+AND project = '{{ project }}' --required;
 ```
 </TabItem>
 </Tabs>

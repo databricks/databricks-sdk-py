@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>serving_endpoint_ai_gateway</co
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>serving_endpoint_ai_gateway</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="serving_endpoint_ai_gateway" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.serving.serving_endpoint_ai_gateway" /></td></tr>
 </tbody></table>
@@ -101,11 +101,11 @@ Used to update the AI Gateway of a serving endpoint. NOTE: External model, provi
 ```sql
 REPLACE databricks_workspace.serving.serving_endpoint_ai_gateway
 SET 
-data__fallback_config = '{{ fallback_config }}',
-data__guardrails = '{{ guardrails }}',
-data__inference_table_config = '{{ inference_table_config }}',
-data__rate_limits = '{{ rate_limits }}',
-data__usage_tracking_config = '{{ usage_tracking_config }}'
+fallback_config = '{{ fallback_config }}',
+guardrails = '{{ guardrails }}',
+inference_table_config = '{{ inference_table_config }}',
+rate_limits = '{{ rate_limits }}',
+usage_tracking_config = '{{ usage_tracking_config }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

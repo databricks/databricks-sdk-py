@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>alerts_v2</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>alerts_v2</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="alerts_v2" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.alerts_v2" /></td></tr>
 </tbody></table>
@@ -117,7 +117,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "aggregation",
             "type": "string",
-            "description": "If not set, the behavior is equivalent to using `First row` in the UI."
+            "description": "If not set, the behavior is equivalent to using `First row` in the UI. (AVG, COUNT, COUNT_DISTINCT, MAX, MEDIAN, MIN, STDDEV, SUM)"
           },
           {
             "name": "display",
@@ -129,12 +129,12 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "comparison_operator",
         "type": "string",
-        "description": "Operator used for comparison in alert evaluation."
+        "description": "Operator used for comparison in alert evaluation. (EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, IS_NOT_NULL, IS_NULL, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL)"
       },
       {
         "name": "empty_result_state",
         "type": "string",
-        "description": "Alert state if result is empty. Please avoid setting this field to be `UNKNOWN` because `UNKNOWN` state is planned to be deprecated."
+        "description": "Alert state if result is empty. Please avoid setting this field to be `UNKNOWN` because `UNKNOWN` state is planned to be deprecated. (ERROR, OK, TRIGGERED, UNKNOWN)"
       },
       {
         "name": "last_evaluated_at",
@@ -178,7 +178,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "Latest state of alert evaluation."
+        "description": "Latest state of alert evaluation. (ERROR, OK, TRIGGERED, UNKNOWN)"
       },
       {
         "name": "threshold",
@@ -198,7 +198,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "aggregation",
                 "type": "string",
-                "description": "If not set, the behavior is equivalent to using `First row` in the UI."
+                "description": "If not set, the behavior is equivalent to using `First row` in the UI. (AVG, COUNT, COUNT_DISTINCT, MAX, MEDIAN, MIN, STDDEV, SUM)"
               },
               {
                 "name": "display",
@@ -236,7 +236,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "lifecycle_state",
     "type": "string",
-    "description": "Indicates whether the query is trashed."
+    "description": "Indicates whether the query is trashed. (ACTIVE, DELETED)"
   },
   {
     "name": "parent_path",
@@ -283,7 +283,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "pause_status",
         "type": "string",
-        "description": "Indicate whether this schedule is paused or not."
+        "description": "Indicate whether this schedule is paused or not. (PAUSED, UNPAUSED)"
       }
     ]
   },
@@ -372,7 +372,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "aggregation",
             "type": "string",
-            "description": "If not set, the behavior is equivalent to using `First row` in the UI."
+            "description": "If not set, the behavior is equivalent to using `First row` in the UI. (AVG, COUNT, COUNT_DISTINCT, MAX, MEDIAN, MIN, STDDEV, SUM)"
           },
           {
             "name": "display",
@@ -384,12 +384,12 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "comparison_operator",
         "type": "string",
-        "description": "Operator used for comparison in alert evaluation."
+        "description": "Operator used for comparison in alert evaluation. (EQUAL, GREATER_THAN, GREATER_THAN_OR_EQUAL, IS_NOT_NULL, IS_NULL, LESS_THAN, LESS_THAN_OR_EQUAL, NOT_EQUAL)"
       },
       {
         "name": "empty_result_state",
         "type": "string",
-        "description": "Alert state if result is empty. Please avoid setting this field to be `UNKNOWN` because `UNKNOWN` state is planned to be deprecated."
+        "description": "Alert state if result is empty. Please avoid setting this field to be `UNKNOWN` because `UNKNOWN` state is planned to be deprecated. (ERROR, OK, TRIGGERED, UNKNOWN)"
       },
       {
         "name": "last_evaluated_at",
@@ -433,7 +433,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "state",
         "type": "string",
-        "description": "Latest state of alert evaluation."
+        "description": "Latest state of alert evaluation. (ERROR, OK, TRIGGERED, UNKNOWN)"
       },
       {
         "name": "threshold",
@@ -453,7 +453,7 @@ The following fields are returned by `SELECT` queries:
               {
                 "name": "aggregation",
                 "type": "string",
-                "description": "If not set, the behavior is equivalent to using `First row` in the UI."
+                "description": "If not set, the behavior is equivalent to using `First row` in the UI. (AVG, COUNT, COUNT_DISTINCT, MAX, MEDIAN, MIN, STDDEV, SUM)"
               },
               {
                 "name": "display",
@@ -491,7 +491,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "lifecycle_state",
     "type": "string",
-    "description": "Indicates whether the query is trashed."
+    "description": "Indicates whether the query is trashed. (ACTIVE, DELETED)"
   },
   {
     "name": "parent_path",
@@ -538,7 +538,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "pause_status",
         "type": "string",
-        "description": "Indicate whether this schedule is paused or not."
+        "description": "Indicate whether this schedule is paused or not. (PAUSED, UNPAUSED)"
       }
     ]
   },
@@ -583,14 +583,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__alert"><code>data__alert</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-alert"><code>alert</code></a></td>
     <td></td>
     <td>Create Alert</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__alert"><code>data__alert</code></a></td>
+    <td><a href="#parameter-id"><code>id</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-alert"><code>alert</code></a></td>
     <td></td>
     <td>Update alert</td>
 </tr>
@@ -734,7 +734,7 @@ Create Alert
 
 ```sql
 INSERT INTO databricks_workspace.sql.alerts_v2 (
-data__alert,
+alert,
 deployment_name
 )
 SELECT 
@@ -793,12 +793,12 @@ Update alert
 ```sql
 UPDATE databricks_workspace.sql.alerts_v2
 SET 
-data__alert = '{{ alert }}'
+alert = '{{ alert }}'
 WHERE 
 id = '{{ id }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__alert = '{{ alert }}' --required
+AND alert = '{{ alert }}' --required
 RETURNING
 id,
 warehouse_id,

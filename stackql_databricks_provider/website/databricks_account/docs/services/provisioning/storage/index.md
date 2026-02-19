@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>storage</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>storage</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="storage" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.provisioning.storage" /></td></tr>
 </tbody></table>
@@ -157,7 +157,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#storage_create"><CopyableCode code="storage_create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-data__storage_configuration_name"><code>data__storage_configuration_name</code></a>, <a href="#parameter-data__root_bucket_info"><code>data__root_bucket_info</code></a></td>
+    <td><a href="#parameter-account_id"><code>account_id</code></a>, <a href="#parameter-storage_configuration_name"><code>storage_configuration_name</code></a>, <a href="#parameter-root_bucket_info"><code>root_bucket_info</code></a></td>
     <td></td>
     <td>Creates a Databricks storage configuration for an account.</td>
 </tr>
@@ -259,9 +259,9 @@ Creates a Databricks storage configuration for an account.
 
 ```sql
 INSERT INTO databricks_account.provisioning.storage (
-data__storage_configuration_name,
-data__root_bucket_info,
-data__role_arn,
+storage_configuration_name,
+root_bucket_info,
+role_arn,
 account_id
 )
 SELECT 

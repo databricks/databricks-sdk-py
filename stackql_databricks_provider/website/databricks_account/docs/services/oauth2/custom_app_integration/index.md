@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>custom_app_integration</code> r
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>custom_app_integration</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="custom_app_integration" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.oauth2.custom_app_integration" /></td></tr>
 </tbody></table>
@@ -374,12 +374,12 @@ Create Custom OAuth App Integration.
 
 ```sql
 INSERT INTO databricks_account.oauth2.custom_app_integration (
-data__confidential,
-data__name,
-data__redirect_urls,
-data__scopes,
-data__token_access_policy,
-data__user_authorized_scopes,
+confidential,
+name,
+redirect_urls,
+scopes,
+token_access_policy,
+user_authorized_scopes,
 account_id
 )
 SELECT 
@@ -450,10 +450,10 @@ Updates an existing custom OAuth App Integration. You can retrieve the custom OA
 ```sql
 UPDATE databricks_account.oauth2.custom_app_integration
 SET 
-data__redirect_urls = '{{ redirect_urls }}',
-data__scopes = '{{ scopes }}',
-data__token_access_policy = '{{ token_access_policy }}',
-data__user_authorized_scopes = '{{ user_authorized_scopes }}'
+redirect_urls = '{{ redirect_urls }}',
+scopes = '{{ scopes }}',
+token_access_policy = '{{ token_access_policy }}',
+user_authorized_scopes = '{{ user_authorized_scopes }}'
 WHERE 
 account_id = '{{ account_id }}' --required
 AND integration_id = '{{ integration_id }}' --required;

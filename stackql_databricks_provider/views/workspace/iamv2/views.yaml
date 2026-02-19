@@ -1,0 +1,63 @@
+    vw_workspace_access_details:
+      name: vw_workspace_access_details
+      id: databricks_workspace.iamv2.vw_workspace_access_details
+      config:
+        docs:
+          fields:
+          - name: deployment_name
+            type: string
+            description: Workspace deployment name used to scope the query.
+          - name: principal_id
+            type: string
+            description: Unique identifier of the principal whose workspace access is being queried.
+          - name: principal_type
+            type: string
+            description: Type of the principal (e.g. USER, GROUP, SERVICE_PRINCIPAL).
+          - name: access_type
+            type: string
+            description: How the principal was granted access to the workspace (e.g. DIRECT, ACCOUNT_ADMIN).
+          - name: status
+            type: string
+            description: Current access status of the principal on the workspace (e.g. ACTIVE).
+          - name: account_id
+            type: string
+            description: Databricks account ID that owns the workspace.
+          - name: workspace_id
+            type: integer
+            description: Numeric identifier of the workspace.
+          - name: permission
+            type: string
+            description: Permission level granted to the principal on the workspace (one row per permission, e.g. USER, ADMIN).
+        views:
+          select:
+            predicate: sqlDialect == "sqlite3"
+            ddl: |-
+              SELECT
+                wa.deployment_name,
+                wa.principal_id,
+                wa.principal_type,
+                wa.access_type,
+                wa.status,
+                wa.account_id,
+                wa.workspace_id,
+                p.value AS permission
+              FROM databricks_workspace.iamv2.workspace_iam_v2 wa,
+                   JSON_EACH(wa.permissions) p
+              WHERE wa.deployment_name = '{{ deployment_name }}'
+              AND wa.principal_id = '{{ principal_id }}'
+            fallback:
+              predicate: sqlDialect == "postgres"
+              ddl: |-
+                SELECT
+                  wa.deployment_name,
+                  wa.principal_id,
+                  wa.principal_type,
+                  wa.access_type,
+                  wa.status,
+                  wa.account_id,
+                  wa.workspace_id,
+                  p.value AS permission
+                FROM databricks_workspace.iamv2.workspace_iam_v2 wa,
+                     jsonb_array_elements(wa.permissions::jsonb) AS p
+                WHERE wa.deployment_name = '{{ deployment_name }}'
+                AND wa.principal_id = '{{ principal_id }}'

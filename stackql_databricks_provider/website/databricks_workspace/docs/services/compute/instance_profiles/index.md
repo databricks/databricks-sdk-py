@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>instance_profiles</code> resou
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>instance_profiles</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="instance_profiles" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.compute.instance_profiles" /></td></tr>
 </tbody></table>
@@ -85,14 +85,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#add"><CopyableCode code="add" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__instance_profile_arn"><code>data__instance_profile_arn</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-instance_profile_arn"><code>instance_profile_arn</code></a></td>
     <td></td>
     <td>Registers an instance profile in Databricks. In the UI, you can then give users the permission to use</td>
 </tr>
 <tr>
     <td><a href="#edit"><CopyableCode code="edit" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__instance_profile_arn"><code>data__instance_profile_arn</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-instance_profile_arn"><code>instance_profile_arn</code></a></td>
     <td></td>
     <td>The only supported field to change is the optional IAM role ARN associated with the instance profile.</td>
 </tr>
@@ -167,10 +167,10 @@ Registers an instance profile in Databricks. In the UI, you can then give users 
 
 ```sql
 INSERT INTO databricks_workspace.compute.instance_profiles (
-data__instance_profile_arn,
-data__iam_role_arn,
-data__is_meta_instance_profile,
-data__skip_validation,
+instance_profile_arn,
+iam_role_arn,
+is_meta_instance_profile,
+skip_validation,
 deployment_name
 )
 SELECT 
@@ -227,12 +227,12 @@ The only supported field to change is the optional IAM role ARN associated with 
 ```sql
 REPLACE databricks_workspace.compute.instance_profiles
 SET 
-data__instance_profile_arn = '{{ instance_profile_arn }}',
-data__iam_role_arn = '{{ iam_role_arn }}',
-data__is_meta_instance_profile = '{{ is_meta_instance_profile }}'
+instance_profile_arn = '{{ instance_profile_arn }}',
+iam_role_arn = '{{ iam_role_arn }}',
+is_meta_instance_profile = '{{ is_meta_instance_profile }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__instance_profile_arn = '{{ instance_profile_arn }}' --required;
+AND instance_profile_arn = '{{ instance_profile_arn }}' --required;
 ```
 </TabItem>
 </Tabs>

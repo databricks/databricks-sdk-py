@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>app_permissions</code> resourc
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>app_permissions</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="app_permissions" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.apps.app_permissions" /></td></tr>
 </tbody></table>
@@ -69,7 +69,7 @@ The following fields are returned by `SELECT` queries:
           {
             "name": "permission_level",
             "type": "string",
-            "description": "Permission level"
+            "description": "Permission level (CAN_MANAGE, CAN_USE)"
           }
         ]
       },
@@ -210,7 +210,7 @@ Updates the permissions on an app. Apps can inherit permissions from their root 
 ```sql
 UPDATE databricks_workspace.apps.app_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 app_name = '{{ app_name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
@@ -238,7 +238,7 @@ Sets permissions on an object, replacing existing permissions if they exist. Del
 ```sql
 REPLACE databricks_workspace.apps.app_permissions
 SET 
-data__access_control_list = '{{ access_control_list }}'
+access_control_list = '{{ access_control_list }}'
 WHERE 
 app_name = '{{ app_name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

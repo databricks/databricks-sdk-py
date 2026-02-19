@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>workspace_bindings</code> resou
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>workspace_bindings</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="workspace_bindings" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.workspace_bindings" /></td></tr>
 </tbody></table>
@@ -50,7 +50,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "binding_type",
     "type": "string",
-    "description": "One of READ_WRITE/READ_ONLY. Default is READ_WRITE."
+    "description": "One of READ_WRITE/READ_ONLY. Default is READ_WRITE. (BINDING_TYPE_READ_ONLY, BINDING_TYPE_READ_WRITE)"
   }
 ]} />
 </TabItem>
@@ -216,8 +216,8 @@ Updates workspace bindings of the securable. The caller must be a metastore admi
 ```sql
 UPDATE databricks_workspace.catalog.workspace_bindings
 SET 
-data__add = '{{ add }}',
-data__remove = '{{ remove }}'
+add = '{{ add }}',
+remove = '{{ remove }}'
 WHERE 
 securable_type = '{{ securable_type }}' --required
 AND securable_name = '{{ securable_name }}' --required
@@ -233,8 +233,8 @@ Updates workspace bindings of the catalog. The caller must be a metastore admin 
 ```sql
 UPDATE databricks_workspace.catalog.workspace_bindings
 SET 
-data__assign_workspaces = '{{ assign_workspaces }}',
-data__unassign_workspaces = '{{ unassign_workspaces }}'
+assign_workspaces = '{{ assign_workspaces }}',
+unassign_workspaces = '{{ unassign_workspaces }}'
 WHERE 
 name = '{{ name }}' --required
 AND deployment_name = '{{ deployment_name }}' --required

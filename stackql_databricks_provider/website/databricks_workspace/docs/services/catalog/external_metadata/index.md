@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>external_metadata</code> resou
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>external_metadata</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="external_metadata" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.external_metadata" /></td></tr>
 </tbody></table>
@@ -95,7 +95,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "system_type",
     "type": "string",
-    "description": "Type of external system."
+    "description": "Type of external system. (AMAZON_REDSHIFT, AZURE_SYNAPSE, CONFLUENT, DATABRICKS, GOOGLE_BIGQUERY, KAFKA, LOOKER, MICROSOFT_FABRIC, MICROSOFT_SQL_SERVER, MONGODB, MYSQL, ORACLE, OTHER, POSTGRESQL, POWER_BI, SALESFORCE, SAP, SERVICENOW, SNOWFLAKE, STREAM_NATIVE, TABLEAU, TERADATA, WORKDAY)"
   },
   {
     "name": "update_time",
@@ -170,7 +170,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "system_type",
     "type": "string",
-    "description": "Type of external system."
+    "description": "Type of external system. (AMAZON_REDSHIFT, AZURE_SYNAPSE, CONFLUENT, DATABRICKS, GOOGLE_BIGQUERY, KAFKA, LOOKER, MICROSOFT_FABRIC, MICROSOFT_SQL_SERVER, MONGODB, MYSQL, ORACLE, OTHER, POSTGRESQL, POWER_BI, SALESFORCE, SAP, SERVICENOW, SNOWFLAKE, STREAM_NATIVE, TABLEAU, TERADATA, WORKDAY)"
   },
   {
     "name": "update_time",
@@ -223,14 +223,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__external_metadata"><code>data__external_metadata</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-external_metadata"><code>external_metadata</code></a></td>
     <td></td>
     <td>Creates a new external metadata object in the parent metastore if the caller is a metastore admin or</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__external_metadata"><code>data__external_metadata</code></a></td>
+    <td><a href="#parameter-name"><code>name</code></a>, <a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-external_metadata"><code>external_metadata</code></a></td>
     <td></td>
     <td>Updates the external metadata object that matches the supplied name. The caller can only update either</td>
 </tr>
@@ -365,7 +365,7 @@ Creates a new external metadata object in the parent metastore if the caller is 
 
 ```sql
 INSERT INTO databricks_workspace.catalog.external_metadata (
-data__external_metadata,
+external_metadata,
 deployment_name
 )
 SELECT 
@@ -422,12 +422,12 @@ Updates the external metadata object that matches the supplied name. The caller 
 ```sql
 UPDATE databricks_workspace.catalog.external_metadata
 SET 
-data__external_metadata = '{{ external_metadata }}'
+external_metadata = '{{ external_metadata }}'
 WHERE 
 name = '{{ name }}' --required
 AND update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__external_metadata = '{{ external_metadata }}' --required
+AND external_metadata = '{{ external_metadata }}' --required
 RETURNING
 id,
 name,

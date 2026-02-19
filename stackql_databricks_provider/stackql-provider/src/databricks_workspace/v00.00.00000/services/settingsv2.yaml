@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.settingsv2
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -473,7 +473,7 @@ components:
             personal customization (e.g., UI theme, editor preferences) without affecting other users.
     AibiDashboardEmbeddingAccessPolicyAccessPolicyType:
       type: string
-      enum:
+      x-enum:
         - ALLOW_ALL_DOMAINS
         - ALLOW_APPROVED_DOMAINS
         - DENY_ALL_DOMAINS
@@ -516,7 +516,7 @@ components:
         attributes -- see the documentation for details.
     ClusterAutoRestartMessageMaintenanceWindowDayOfWeek:
       type: string
-      enum:
+      x-enum:
         - FRIDAY
         - MONDAY
         - SATURDAY
@@ -563,7 +563,7 @@ components:
         attributes -- see the documentation for details.
     ClusterAutoRestartMessageMaintenanceWindowWeekDayFrequency:
       type: string
-      enum:
+      x-enum:
         - EVERY_WEEK
         - FIRST_AND_THIRD_OF_MONTH
         - FIRST_OF_MONTH
@@ -610,7 +610,7 @@ components:
         attributes -- see the documentation for details.
     PersonalComputeMessagePersonalComputeMessageEnum:
       type: string
-      enum:
+      x-enum:
         - DELEGATE
         - 'ON'
       description: >-
@@ -629,7 +629,7 @@ components:
         will be able to create compute resources through that policy.
     RestrictWorkspaceAdminsMessageStatus:
       type: string
-      enum:
+      x-enum:
         - ALLOW_ALL
         - RESTRICT_TOKENS_AND_JOB_RUN_AS
       description: |-
@@ -682,6 +682,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         patch:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1settings~1{name}/patch'
           response:
@@ -705,3 +708,11 @@ components:
               #/components/x-stackQL-resources/workspace_settings_v2/methods/patch
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

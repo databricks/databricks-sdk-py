@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.cleanrooms
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -1677,7 +1677,7 @@ components:
         - review_state
     CleanRoomAccessRestricted:
       type: string
-      enum:
+      x-enum:
         - CSP_MISMATCH
         - NO_RESTRICTION
       description: |-
@@ -1719,7 +1719,7 @@ components:
         attributes -- see the documentation for details.
     CleanRoomAssetAssetType:
       type: string
-      enum:
+      x-enum:
         - FOREIGN_TABLE
         - NOTEBOOK_FILE
         - TABLE
@@ -1764,7 +1764,7 @@ components:
         attributes -- see the documentation for details.
     CleanRoomAssetStatusEnum:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - PENDING
         - PERMISSION_DENIED
@@ -1807,7 +1807,7 @@ components:
         attributes -- see the documentation for details.
     CleanRoomAutoApprovalRuleAuthorScope:
       type: string
-      enum:
+      x-enum:
         - ANY_AUTHOR
       description: |-
         Create a collection of name/value pairs.
@@ -1848,7 +1848,7 @@ components:
         attributes -- see the documentation for details.
     CleanRoomNotebookReviewNotebookReviewState:
       type: string
-      enum:
+      x-enum:
         - APPROVED
         - PENDING
         - REJECTED
@@ -1891,7 +1891,7 @@ components:
         attributes -- see the documentation for details.
     CleanRoomNotebookReviewNotebookReviewSubReason:
       type: string
-      enum:
+      x-enum:
         - AUTO_APPROVED
         - BACKFILLED
       description: |-
@@ -1933,7 +1933,7 @@ components:
         attributes -- see the documentation for details.
     CleanRoomOutputCatalogOutputCatalogStatus:
       type: string
-      enum:
+      x-enum:
         - CREATED
         - NOT_CREATED
         - NOT_ELIGIBLE
@@ -1976,7 +1976,7 @@ components:
         attributes -- see the documentation for details.
     CleanRoomStatusEnum:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - DELETED
         - FAILED
@@ -2053,6 +2053,9 @@ components:
       title: Assets
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets/post'
           response:
@@ -2066,6 +2069,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.assets
         review:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}~1reviews/post
@@ -2087,6 +2093,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1assets~1{asset_type.value}~1{name}/patch
@@ -2110,6 +2119,9 @@ components:
       title: Auto Approval Rules
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules/post
@@ -2139,6 +2151,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1auto-approval-rules~1{rule_id}/patch
@@ -2184,6 +2199,9 @@ components:
       title: Clean Rooms
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms/post'
           response:
@@ -2197,6 +2215,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.clean_rooms
         create_output_catalog:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1clean-rooms~1{clean_room_name}~1output-catalogs/post
@@ -2216,6 +2237,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1clean-rooms~1{name}/patch'
           response:
@@ -2232,3 +2256,11 @@ components:
         delete:
           - $ref: '#/components/x-stackQL-resources/clean_rooms/methods/delete'
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

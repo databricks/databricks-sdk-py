@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>rule_sets</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>rule_sets</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="rule_sets" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.iam.rule_sets" /></td></tr>
 </tbody></table>
@@ -97,7 +97,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="replace" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__name"><code>data__name</code></a>, <a href="#parameter-data__rule_set"><code>data__rule_set</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-name"><code>name</code></a>, <a href="#parameter-rule_set"><code>rule_set</code></a></td>
     <td></td>
     <td>Replace the rules of a rule set. First, use get to read the current version of the rule set before</td>
 </tr>
@@ -177,12 +177,12 @@ Replace the rules of a rule set. First, use get to read the current version of t
 ```sql
 REPLACE databricks_workspace.iam.rule_sets
 SET 
-data__name = '{{ name }}',
-data__rule_set = '{{ rule_set }}'
+name = '{{ name }}',
+rule_set = '{{ rule_set }}'
 WHERE 
 deployment_name = '{{ deployment_name }}' --required
-AND data__name = '{{ name }}' --required
-AND data__rule_set = '{{ rule_set }}' --required
+AND name = '{{ name }}' --required
+AND rule_set = '{{ rule_set }}' --required
 RETURNING
 name,
 etag,

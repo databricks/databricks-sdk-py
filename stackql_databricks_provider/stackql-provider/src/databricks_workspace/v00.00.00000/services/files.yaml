@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.files
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -1179,24 +1179,36 @@ components:
       title: Dbfs
       methods:
         add_block:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1add-block/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         close:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1close/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1delete/post'
           response:
@@ -1216,18 +1228,27 @@ components:
             openAPIDocKey: '200'
             objectKey: $.files
         mkdirs:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1mkdirs/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         move:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1move/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         put:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1dbfs~1put/post'
           response:
@@ -1285,6 +1306,9 @@ components:
             mediaType: application/octet-stream
             openAPIDocKey: '200'
         upload:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1fs~1files{file_path}/put'
           response:
@@ -1303,3 +1327,11 @@ components:
         replace:
           - $ref: '#/components/x-stackQL-resources/files/methods/create_directory'
           - $ref: '#/components/x-stackQL-resources/files/methods/upload'
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

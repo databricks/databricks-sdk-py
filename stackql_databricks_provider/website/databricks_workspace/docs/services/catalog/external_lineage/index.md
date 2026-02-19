@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>external_lineage</code> resour
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>external_lineage</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="external_lineage" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.catalog.external_lineage" /></td></tr>
 </tbody></table>
@@ -218,7 +218,7 @@ The following fields are returned by `SELECT` queries:
       {
         "name": "system_type",
         "type": "string",
-        "description": "Type of external system."
+        "description": "Type of external system. (AMAZON_REDSHIFT, AZURE_SYNAPSE, CONFLUENT, DATABRICKS, GOOGLE_BIGQUERY, KAFKA, LOOKER, MICROSOFT_FABRIC, MICROSOFT_SQL_SERVER, MONGODB, MYSQL, ORACLE, OTHER, POSTGRESQL, POWER_BI, SALESFORCE, SAP, SERVICENOW, SNOWFLAKE, STREAM_NATIVE, TABLEAU, TERADATA, WORKDAY)"
       }
     ]
   },
@@ -332,14 +332,14 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__external_lineage_relationship"><code>data__external_lineage_relationship</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-external_lineage_relationship"><code>external_lineage_relationship</code></a></td>
     <td></td>
     <td>Creates an external lineage relationship between a Databricks or external metadata object and another</td>
 </tr>
 <tr>
     <td><a href="#update"><CopyableCode code="update" /></a></td>
     <td><CopyableCode code="update" /></td>
-    <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__external_lineage_relationship"><code>data__external_lineage_relationship</code></a></td>
+    <td><a href="#parameter-update_mask"><code>update_mask</code></a>, <a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-external_lineage_relationship"><code>external_lineage_relationship</code></a></td>
     <td></td>
     <td>Updates an external lineage relationship between a Databricks or external metadata object and another</td>
 </tr>
@@ -450,7 +450,7 @@ Creates an external lineage relationship between a Databricks or external metada
 
 ```sql
 INSERT INTO databricks_workspace.catalog.external_lineage (
-data__external_lineage_relationship,
+external_lineage_relationship,
 deployment_name
 )
 SELECT 
@@ -498,11 +498,11 @@ Updates an external lineage relationship between a Databricks or external metada
 ```sql
 UPDATE databricks_workspace.catalog.external_lineage
 SET 
-data__external_lineage_relationship = '{{ external_lineage_relationship }}'
+external_lineage_relationship = '{{ external_lineage_relationship }}'
 WHERE 
 update_mask = '{{ update_mask }}' --required
 AND deployment_name = '{{ deployment_name }}' --required
-AND data__external_lineage_relationship = '{{ external_lineage_relationship }}' --required
+AND external_lineage_relationship = '{{ external_lineage_relationship }}' --required
 RETURNING
 id,
 columns,

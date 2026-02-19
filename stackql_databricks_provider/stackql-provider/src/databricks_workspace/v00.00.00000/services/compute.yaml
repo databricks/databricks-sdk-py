@@ -6,7 +6,7 @@ info:
     APIs), generated from the Databricks Python SDK.
   version: 0.1.0
   x-stackql-sdk-version: 0.86.0
-  x-stackql-date-generated: '2026-02-12'
+  x-stackql-date-generated: '2026-02-19'
   x-stackql-sdk-namespace: databricks.sdk.service.compute
 servers:
   - url: https://{deployment_name}.cloud.databricks.com
@@ -7805,7 +7805,7 @@ components:
       description: A storage location in Workspace Filesystem (WSFS)
     AwsAvailability:
       type: string
-      enum:
+      x-enum:
         - ON_DEMAND
         - SPOT
         - SPOT_WITH_FALLBACK
@@ -7818,7 +7818,7 @@ components:
         for the entire cluster.
     AzureAvailability:
       type: string
-      enum:
+      x-enum:
         - ON_DEMAND_AZURE
         - SPOT_AZURE
         - SPOT_WITH_FALLBACK_AZURE
@@ -7830,7 +7830,7 @@ components:
         entire cluster.
     CloudProviderNodeStatus:
       type: string
-      enum:
+      x-enum:
         - NotAvailableInRegion
         - NotEnabledOnSubscription
       description: |-
@@ -7872,19 +7872,19 @@ components:
         attributes -- see the documentation for details.
     ClusterPermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_ATTACH_TO
         - CAN_MANAGE
         - CAN_RESTART
       description: Permission level
     ClusterPolicyPermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_USE
       description: Permission level
     ClusterSource:
       type: string
-      enum:
+      x-enum:
         - API
         - JOB
         - MODELS
@@ -7900,7 +7900,7 @@ components:
         cluster_creator, but read only.
     CommandStatus:
       type: string
-      enum:
+      x-enum:
         - Cancelled
         - Cancelling
         - Error
@@ -7946,7 +7946,7 @@ components:
         attributes -- see the documentation for details.
     ContextStatus:
       type: string
-      enum:
+      x-enum:
         - Error
         - Pending
         - Running
@@ -7989,7 +7989,7 @@ components:
         attributes -- see the documentation for details.
     DataPlaneEventDetailsEventType:
       type: string
-      enum:
+      x-enum:
         - NODE_BLACKLISTED
         - NODE_EXCLUDED_DECOMMISSIONED
       description: |-
@@ -8031,7 +8031,7 @@ components:
         attributes -- see the documentation for details.
     DataSecurityMode:
       type: string
-      enum:
+      x-enum:
         - DATA_SECURITY_MODE_AUTO
         - DATA_SECURITY_MODE_DEDICATED
         - DATA_SECURITY_MODE_STANDARD
@@ -8104,7 +8104,7 @@ components:
         doesn’t have UC nor passthrough enabled.
     DiskTypeAzureDiskVolumeType:
       type: string
-      enum:
+      x-enum:
         - PREMIUM_LRS
         - STANDARD_LRS
       description: >-
@@ -8113,7 +8113,7 @@ components:
         https://docs.microsoft.com/en-us/azure/storage/storage-about-disks-and-vhds-linux#types-of-disks
     DiskTypeEbsVolumeType:
       type: string
-      enum:
+      x-enum:
         - GENERAL_PURPOSE_SSD
         - THROUGHPUT_OPTIMIZED_HDD
       description: >-
@@ -8123,7 +8123,7 @@ components:
         details.
     EbsVolumeType:
       type: string
-      enum:
+      x-enum:
         - GENERAL_PURPOSE_SSD
         - THROUGHPUT_OPTIMIZED_HDD
       description: >-
@@ -8133,7 +8133,7 @@ components:
         details.
     EventDetailsCause:
       type: string
-      enum:
+      x-enum:
         - AUTORECOVERY
         - AUTOSCALE
         - AUTOSCALE_V2
@@ -8142,7 +8142,7 @@ components:
       description: The cause of a change in target size.
     EventType:
       type: string
-      enum:
+      x-enum:
         - ADD_NODES_FAILED
         - AUTOMATIC_CLUSTER_UPDATE
         - AUTOSCALING_BACKOFF
@@ -8215,7 +8215,7 @@ components:
         attributes -- see the documentation for details.
     GcpAvailability:
       type: string
-      enum:
+      x-enum:
         - ON_DEMAND_GCP
         - PREEMPTIBLE_GCP
         - PREEMPTIBLE_WITH_FALLBACK_GCP
@@ -8227,7 +8227,7 @@ components:
         unavailable.
     GetEventsOrder:
       type: string
-      enum:
+      x-enum:
         - ASC
         - DESC
       description: |-
@@ -8269,7 +8269,7 @@ components:
         attributes -- see the documentation for details.
     HardwareAcceleratorType:
       type: string
-      enum:
+      x-enum:
         - GPU_1xA10
         - GPU_8xH100
       description: >-
@@ -8282,7 +8282,7 @@ components:
         specify hardware accelerator requirements for AI compute workloads.
     InitScriptExecutionDetailsInitScriptExecutionStatus:
       type: string
-      enum:
+      x-enum:
         - FAILED_EXECUTION
         - FAILED_FETCH
         - FUSE_MOUNT_FAILED
@@ -8293,7 +8293,7 @@ components:
       description: Result of attempted script execution
     InstancePoolAwsAttributesAvailability:
       type: string
-      enum:
+      x-enum:
         - ON_DEMAND
         - SPOT
       description: >-
@@ -8301,7 +8301,7 @@ components:
         cluster.
     InstancePoolAzureAttributesAvailability:
       type: string
-      enum:
+      x-enum:
         - ON_DEMAND_AZURE
         - SPOT_AZURE
       description: >-
@@ -8309,13 +8309,13 @@ components:
         a cluster.
     InstancePoolPermissionLevel:
       type: string
-      enum:
+      x-enum:
         - CAN_ATTACH_TO
         - CAN_MANAGE
       description: Permission level
     InstancePoolState:
       type: string
-      enum:
+      x-enum:
         - ACTIVE
         - DELETED
         - STOPPED
@@ -8330,7 +8330,7 @@ components:
         ``STOPPED`` -> ``DELETED``
     Kind:
       type: string
-      enum:
+      x-enum:
         - CLASSIC_PREVIEW
       description: >-
         The kind of compute described by this compute specification.
@@ -8362,7 +8362,7 @@ components:
         [simple form]: https://docs.databricks.com/compute/simple-form.html
     Language:
       type: string
-      enum:
+      x-enum:
         - python
         - r
         - scala
@@ -8406,7 +8406,7 @@ components:
         attributes -- see the documentation for details.
     LibraryInstallStatus:
       type: string
-      enum:
+      x-enum:
         - FAILED
         - INSTALLED
         - INSTALLING
@@ -8418,7 +8418,7 @@ components:
       description: The status of a library on a specific cluster.
     ListClustersSortByDirection:
       type: string
-      enum:
+      x-enum:
         - ASC
         - DESC
       description: |-
@@ -8460,7 +8460,7 @@ components:
         attributes -- see the documentation for details.
     ListClustersSortByField:
       type: string
-      enum:
+      x-enum:
         - CLUSTER_NAME
         - DEFAULT
       description: |-
@@ -8502,7 +8502,7 @@ components:
         attributes -- see the documentation for details.
     ListSortColumn:
       type: string
-      enum:
+      x-enum:
         - POLICY_CREATION_TIME
         - POLICY_NAME
       description: |-
@@ -8544,7 +8544,7 @@ components:
         attributes -- see the documentation for details.
     ListSortOrder:
       type: string
-      enum:
+      x-enum:
         - ASC
         - DESC
       description: |-
@@ -8586,7 +8586,7 @@ components:
         attributes -- see the documentation for details.
     ResultType:
       type: string
-      enum:
+      x-enum:
         - error
         - image
         - images
@@ -8631,7 +8631,7 @@ components:
         attributes -- see the documentation for details.
     RuntimeEngine:
       type: string
-      enum:
+      x-enum:
         - 'NULL'
         - PHOTON
         - STANDARD
@@ -8674,7 +8674,7 @@ components:
         attributes -- see the documentation for details.
     State:
       type: string
-      enum:
+      x-enum:
         - ERROR
         - PENDING
         - RESIZING
@@ -8700,7 +8700,7 @@ components:
         `TERMINATED`
     TerminationReasonCode:
       type: string
-      enum:
+      x-enum:
         - ABUSE_DETECTED
         - ACCESS_TOKEN_FAILURE
         - ALLOCATION_TIMEOUT
@@ -8890,7 +8890,7 @@ components:
       description: The status code indicating why the cluster was terminated
     TerminationReasonType:
       type: string
-      enum:
+      x-enum:
         - CLIENT_ERROR
         - CLOUD_FAILURE
         - SERVICE_FAULT
@@ -8903,18 +8903,27 @@ components:
       title: Cluster Policies
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         replace:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1edit/post'
           response:
@@ -8977,6 +8986,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1cluster-policies~1{cluster_policy_id}/put
@@ -8984,6 +8996,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1cluster-policies~1{cluster_policy_id}/patch
@@ -9008,30 +9023,45 @@ components:
       title: Clusters
       methods:
         change_owner:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1change-owner/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         edit:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1edit/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         events:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1events/post'
           response:
@@ -9051,42 +9081,63 @@ components:
             openAPIDocKey: '200'
             objectKey: $.clusters
         permanent_delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1permanent-delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         pin:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1pin/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         resize:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1resize/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         restart:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1restart/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         start:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1start/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         unpin:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1unpin/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.1~1clusters~1update/post'
           response:
@@ -9133,12 +9184,18 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1clusters~1{cluster_id}/put'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1permissions~1clusters~1{cluster_id}/patch'
           response:
@@ -9214,6 +9271,9 @@ components:
       title: Command Execution
       methods:
         cancel:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~11.2~1commands~1cancel/post'
           response:
@@ -9226,18 +9286,27 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~11.2~1contexts~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         destroy:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~11.2~1contexts~1destroy/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         execute:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~11.2~1commands~1execute/post'
           response:
@@ -9276,6 +9345,9 @@ components:
       title: Global Init Scripts
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1global-init-scripts/post'
           response:
@@ -9301,6 +9373,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1global-init-scripts~1{script_id}/patch'
           response:
@@ -9326,18 +9401,27 @@ components:
       title: Instance Pools
       methods:
         create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1instance-pools~1create/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         delete:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1instance-pools~1delete/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         replace:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1instance-pools~1edit/post'
           response:
@@ -9400,6 +9484,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         set:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1instance-pools~1{instance_pool_id}/put
@@ -9407,6 +9494,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         update:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: >-
               #/paths/~1api~12.0~1permissions~1instance-pools~1{instance_pool_id}/patch
@@ -9431,12 +9521,18 @@ components:
       title: Instance Profiles
       methods:
         add:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1instance-profiles~1add/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         edit:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1instance-profiles~1edit/post'
           response:
@@ -9450,6 +9546,9 @@ components:
             openAPIDocKey: '200'
             objectKey: $.instance_profiles
         remove:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1instance-profiles~1remove/post'
           response:
@@ -9498,12 +9597,18 @@ components:
             openAPIDocKey: '200'
             objectKey: $.library_statuses
         install:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1libraries~1install/post'
           response:
             mediaType: application/json
             openAPIDocKey: '200'
         uninstall:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1libraries~1uninstall/post'
           response:
@@ -9523,6 +9628,9 @@ components:
       title: Policy Compliance For Clusters
       methods:
         enforce:
+          config:
+            requestBodyTranslate:
+              algorithm: naive
           operation:
             $ref: '#/paths/~1api~12.0~1policies~1clusters~1enforce-compliance/post'
           response:
@@ -9579,3 +9687,11 @@ components:
         update: []
         delete: []
         replace: []
+x-stackQL-config:
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

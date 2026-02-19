@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists a <code>query_visualizations_legacy</co
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>query_visualizations_legacy</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="query_visualizations_legacy" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_workspace.sql.query_visualizations_legacy" /></td></tr>
 </tbody></table>
@@ -60,7 +60,7 @@ The following methods are available for this resource:
 <tr>
     <td><a href="#create"><CopyableCode code="create" /></a></td>
     <td><CopyableCode code="insert" /></td>
-    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-data__options"><code>data__options</code></a>, <a href="#parameter-data__query_id"><code>data__query_id</code></a>, <a href="#parameter-data__type"><code>data__type</code></a></td>
+    <td><a href="#parameter-deployment_name"><code>deployment_name</code></a>, <a href="#parameter-options"><code>options</code></a>, <a href="#parameter-query_id"><code>query_id</code></a>, <a href="#parameter-type"><code>type</code></a></td>
     <td></td>
     <td>Creates visualization in the query.</td>
 </tr>
@@ -116,13 +116,13 @@ Updates visualization in the query.
 
 ```sql
 INSERT INTO databricks_workspace.sql.query_visualizations_legacy (
-data__created_at,
-data__description,
-data__name,
-data__options,
-data__query,
-data__type,
-data__updated_at,
+created_at,
+description,
+name,
+options,
+query,
+type,
+updated_at,
 id,
 deployment_name
 )
@@ -154,11 +154,11 @@ Creates visualization in the query.
 
 ```sql
 INSERT INTO databricks_workspace.sql.query_visualizations_legacy (
-data__options,
-data__query_id,
-data__type,
-data__description,
-data__name,
+options,
+query_id,
+type,
+description,
+name,
 deployment_name
 )
 SELECT 

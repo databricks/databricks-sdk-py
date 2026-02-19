@@ -23,7 +23,7 @@ Creates, updates, deletes, gets or lists an <code>account_iam</code> resource.
 
 ## Overview
 <table><tbody>
-<tr><td><b>Name</b></td><td><code>account_iam</code></td></tr>
+<tr><td><b>Name</b></td><td><CopyableCode code="account_iam" /></td></tr>
 <tr><td><b>Type</b></td><td>Resource</td></tr>
 <tr><td><b>Id</b></td><td><CopyableCode code="databricks_account.iamv2.account_iam" /></td></tr>
 </tbody></table>
@@ -59,7 +59,7 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "access_type",
     "type": "string",
-    "description": "The type of access the principal has to the workspace."
+    "description": "The type of access the principal has to the workspace. (DIRECT, INDIRECT)"
   },
   {
     "name": "permissions",
@@ -69,12 +69,12 @@ The following fields are returned by `SELECT` queries:
   {
     "name": "principal_type",
     "type": "string",
-    "description": "The type of the principal (user/sp/group)."
+    "description": "The type of the principal (user/sp/group). (GROUP, SERVICE_PRINCIPAL, USER)"
   },
   {
     "name": "status",
     "type": "string",
-    "description": "The activity status of the principal in the workspace. Not applicable for groups at the moment."
+    "description": "The activity status of the principal in the workspace. Not applicable for groups at the moment. (ACTIVE, INACTIVE)"
   }
 ]} />
 </TabItem>
