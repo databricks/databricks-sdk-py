@@ -470,6 +470,100 @@ class Endpoint:
 
 
 @dataclass
+class EndpointGroupSpec:
+    min: int
+    """The minimum number of computes in the endpoint group. Currently, this must be equal to max. This
+    must be greater than or equal to 1."""
+
+    max: int
+    """The maximum number of computes in the endpoint group. Currently, this must be equal to min. Set
+    to 1 for single compute endpoints, to disable HA. To manually suspend all computes in an
+    endpoint group, set disabled to true on the EndpointSpec."""
+
+    enable_readable_secondaries: Optional[bool] = None
+    """Whether to allow read-only connections to read-write endpoints. Only relevant for read-write
+    endpoints where size.max > 1."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointGroupSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enable_readable_secondaries is not None:
+            body["enable_readable_secondaries"] = self.enable_readable_secondaries
+        if self.max is not None:
+            body["max"] = self.max
+        if self.min is not None:
+            body["min"] = self.min
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointGroupSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enable_readable_secondaries is not None:
+            body["enable_readable_secondaries"] = self.enable_readable_secondaries
+        if self.max is not None:
+            body["max"] = self.max
+        if self.min is not None:
+            body["min"] = self.min
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointGroupSpec:
+        """Deserializes the EndpointGroupSpec from a dictionary."""
+        return cls(
+            enable_readable_secondaries=d.get("enable_readable_secondaries", None),
+            max=d.get("max", None),
+            min=d.get("min", None),
+        )
+
+
+@dataclass
+class EndpointGroupStatus:
+    min: int
+    """The minimum number of computes in the endpoint group. Currently, this must be equal to max. This
+    must be greater than or equal to 1."""
+
+    max: int
+    """The maximum number of computes in the endpoint group. Currently, this must be equal to min. Set
+    to 1 for single compute endpoints, to disable HA. To manually suspend all computes in an
+    endpoint group, set disabled to true on the EndpointSpec."""
+
+    enable_readable_secondaries: Optional[bool] = None
+    """Whether read-only connections to read-write endpoints are allowed. Only relevant if read
+    replicas are configured by specifying size.max > 1."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointGroupStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.enable_readable_secondaries is not None:
+            body["enable_readable_secondaries"] = self.enable_readable_secondaries
+        if self.max is not None:
+            body["max"] = self.max
+        if self.min is not None:
+            body["min"] = self.min
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointGroupStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.enable_readable_secondaries is not None:
+            body["enable_readable_secondaries"] = self.enable_readable_secondaries
+        if self.max is not None:
+            body["max"] = self.max
+        if self.min is not None:
+            body["min"] = self.min
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointGroupStatus:
+        """Deserializes the EndpointGroupStatus from a dictionary."""
+        return cls(
+            enable_readable_secondaries=d.get("enable_readable_secondaries", None),
+            max=d.get("max", None),
+            min=d.get("min", None),
+        )
+
+
+@dataclass
 class EndpointHosts:
     """Encapsulates various hostnames (r/w or r/o, pooled or not) for an endpoint."""
 
@@ -478,11 +572,19 @@ class EndpointHosts:
     hostname which connects to the primary compute. For read-only endpoints, this is a read-only
     hostname which allows read-only operations."""
 
+    read_only_host: Optional[str] = None
+    """An optionally defined read-only host for the endpoint, without pooling. For read-only endpoints,
+    this attribute is always defined and is equivalent to host. For read-write endpoints, this
+    attribute is defined if the enclosing endpoint is a group with greater than 1 computes
+    configured, and has readable secondaries enabled."""
+
     def as_dict(self) -> dict:
         """Serializes the EndpointHosts into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.host is not None:
             body["host"] = self.host
+        if self.read_only_host is not None:
+            body["read_only_host"] = self.read_only_host
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -490,12 +592,14 @@ class EndpointHosts:
         body = {}
         if self.host is not None:
             body["host"] = self.host
+        if self.read_only_host is not None:
+            body["read_only_host"] = self.read_only_host
         return body
 
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> EndpointHosts:
         """Deserializes the EndpointHosts from a dictionary."""
-        return cls(host=d.get("host", None))
+        return cls(host=d.get("host", None), read_only_host=d.get("read_only_host", None))
 
 
 @dataclass
@@ -559,6 +663,11 @@ class EndpointSpec:
     suspend compute operation. A disabled compute endpoint cannot be enabled by a connection or
     console action."""
 
+    group: Optional[EndpointGroupSpec] = None
+    """Settings for optional HA configuration of the endpoint. If unspecified, the endpoint defaults to
+    non HA settings, with a single compute backing the endpoint (and no readable secondaries for
+    Read/Write endpoints)."""
+
     no_suspension: Optional[bool] = None
     """When set to true, explicitly disables automatic suspension (never suspend). Should be set to
     true when provided."""
@@ -580,6 +689,8 @@ class EndpointSpec:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type.value
+        if self.group:
+            body["group"] = self.group.as_dict()
         if self.no_suspension is not None:
             body["no_suspension"] = self.no_suspension
         if self.settings:
@@ -599,6 +710,8 @@ class EndpointSpec:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type
+        if self.group:
+            body["group"] = self.group
         if self.no_suspension is not None:
             body["no_suspension"] = self.no_suspension
         if self.settings:
@@ -615,6 +728,7 @@ class EndpointSpec:
             autoscaling_limit_min_cu=d.get("autoscaling_limit_min_cu", None),
             disabled=d.get("disabled", None),
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
+            group=_from_dict(d, "group", EndpointGroupSpec),
             no_suspension=d.get("no_suspension", None),
             settings=_from_dict(d, "settings", EndpointSettings),
             suspend_timeout_duration=_duration(d, "suspend_timeout_duration"),
@@ -639,6 +753,9 @@ class EndpointStatus:
     endpoint_type: Optional[EndpointType] = None
     """The endpoint type. A branch can only have one READ_WRITE endpoint."""
 
+    group: Optional[EndpointGroupStatus] = None
+    """Details on the HA configuration of the endpoint."""
+
     hosts: Optional[EndpointHosts] = None
     """Contains host information for connecting to the endpoint."""
 
@@ -662,6 +779,8 @@ class EndpointStatus:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type.value
+        if self.group:
+            body["group"] = self.group.as_dict()
         if self.hosts:
             body["hosts"] = self.hosts.as_dict()
         if self.pending_state is not None:
@@ -685,6 +804,8 @@ class EndpointStatus:
             body["disabled"] = self.disabled
         if self.endpoint_type is not None:
             body["endpoint_type"] = self.endpoint_type
+        if self.group:
+            body["group"] = self.group
         if self.hosts:
             body["hosts"] = self.hosts
         if self.pending_state is not None:
@@ -704,6 +825,7 @@ class EndpointStatus:
             current_state=_enum(d, "current_state", EndpointStatusState),
             disabled=d.get("disabled", None),
             endpoint_type=_enum(d, "endpoint_type", EndpointType),
+            group=_from_dict(d, "group", EndpointGroupStatus),
             hosts=_from_dict(d, "hosts", EndpointHosts),
             pending_state=_enum(d, "pending_state", EndpointStatusState),
             settings=_from_dict(d, "settings", EndpointSettings),
@@ -715,6 +837,7 @@ class EndpointStatusState(Enum):
     """The state of the compute endpoint."""
 
     ACTIVE = "ACTIVE"
+    DEGRADED = "DEGRADED"
     IDLE = "IDLE"
     INIT = "INIT"
 
@@ -810,6 +933,31 @@ class ErrorCode(Enum):
     UNKNOWN = "UNKNOWN"
     UNPARSEABLE_HTTP_ERROR = "UNPARSEABLE_HTTP_ERROR"
     WORKSPACE_TEMPORARILY_UNAVAILABLE = "WORKSPACE_TEMPORARILY_UNAVAILABLE"
+
+
+@dataclass
+class InitialEndpointSpec:
+    group: Optional[EndpointGroupSpec] = None
+    """Settings for HA configuration of the endpoint"""
+
+    def as_dict(self) -> dict:
+        """Serializes the InitialEndpointSpec into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.group:
+            body["group"] = self.group.as_dict()
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the InitialEndpointSpec into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.group:
+            body["group"] = self.group
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> InitialEndpointSpec:
+        """Deserializes the InitialEndpointSpec from a dictionary."""
+        return cls(group=_from_dict(d, "group", EndpointGroupSpec))
 
 
 @dataclass
@@ -1011,6 +1159,13 @@ class Project:
     create_time: Optional[Timestamp] = None
     """A timestamp indicating when the project was created."""
 
+    initial_endpoint_spec: Optional[InitialEndpointSpec] = None
+    """Configuration settings for the initial Read/Write endpoint created inside the default branch for
+    a newly created project. If omitted, the initial endpoint created will have default settings,
+    without high availability configured. This field does not apply to any endpoints created after
+    project creation. Use spec.default_endpoint_settings to configure default settings for endpoints
+    created after project creation."""
+
     name: Optional[str] = None
     """Output only. The full resource path of the project. Format: projects/{project_id}"""
 
@@ -1032,6 +1187,8 @@ class Project:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time.ToJsonString()
+        if self.initial_endpoint_spec:
+            body["initial_endpoint_spec"] = self.initial_endpoint_spec.as_dict()
         if self.name is not None:
             body["name"] = self.name
         if self.spec:
@@ -1049,6 +1206,8 @@ class Project:
         body = {}
         if self.create_time is not None:
             body["create_time"] = self.create_time
+        if self.initial_endpoint_spec:
+            body["initial_endpoint_spec"] = self.initial_endpoint_spec
         if self.name is not None:
             body["name"] = self.name
         if self.spec:
@@ -1066,6 +1225,7 @@ class Project:
         """Deserializes the Project from a dictionary."""
         return cls(
             create_time=_timestamp(d, "create_time"),
+            initial_endpoint_spec=_from_dict(d, "initial_endpoint_spec", InitialEndpointSpec),
             name=d.get("name", None),
             spec=_from_dict(d, "spec", ProjectSpec),
             status=_from_dict(d, "status", ProjectStatus),
