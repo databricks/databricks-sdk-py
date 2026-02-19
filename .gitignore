@@ -17,3 +17,4 @@ node_modules
 stackql
 stackql-*.sh
 stackql-server.log
+stackql-zip

@@ -2639,6 +2639,7 @@ components:
           type: string
           description: The human-readable name of the workspace.
         workspace_status:
+          type: string
           $ref: '#/components/schemas/WorkspaceStatus'
           description: The status of a workspace
         workspace_status_message:
@@ -3323,6 +3324,9 @@ components:
       title: Workspaces
       methods:
         workspaces_create:
+          config:
+            requestBodyTranslate:
+              algorithm: naive        
           operation:
             $ref: '#/paths/~1api~12.0~1accounts~1{account_id}~1workspaces/post'
           response:
@@ -3335,6 +3339,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         workspaces_delete:
+          # config:
+          #   requestBodyTranslate:
+          #     algorithm: naive        
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}/delete
@@ -3349,6 +3356,9 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
         workspaces_update:
+          # config:
+          #   requestBodyTranslate:
+          #     algorithm: naive        
           operation:
             $ref: >-
               #/paths/~1api~12.0~1accounts~1{account_id}~1workspaces~1{workspace_id}/patch
@@ -3370,3 +3380,13 @@ components:
           - $ref: >-
               #/components/x-stackQL-resources/workspaces/methods/workspaces_delete
         replace: []
+x-stackQL-config:
+  # requestBodyTranslate:
+  #   algorithm: naive
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

@@ -98,7 +98,10 @@ npm run generate-provider -- \
   --config-path inventory/account/all_services.csv \
   --servers '[{"url": "https://accounts.cloud.databricks.com"}]' \
   --provider-config '{"auth":{"type":"oauth2","client_id_env_var":"DATABRICKS_CLIENT_ID","client_secret_env_var":"DATABRICKS_CLIENT_SECRET","grant_type":"client_credentials","token_url":"https://accounts.cloud.databricks.com/oidc/accounts/{{ .__env__DATABRICKS_ACCOUNT_ID }}/v1/token","scopes":["all-apis"]}}' \
+  --service-config '{"pagination":{"requestToken":{"key":"page_token","location":"query"},"responseToken":{"key":"next_page_token","location":"body"}}}' \
+  --naive-req-body-translate \
   --overwrite
+
 ```
 
 #### Workspace scope
@@ -111,6 +114,8 @@ npm run generate-provider -- \
   --config-path inventory/workspace/all_services.csv \
   --servers '[{"url":"https://{deployment_name}.cloud.databricks.com","variables":{"deployment_name":{"description":"The Databricks Workspace Deployment Name","default":"dbc-abcd0123-a1bc"}}}]' \
   --provider-config '{"auth":{"type":"oauth2","client_id_env_var":"DATABRICKS_CLIENT_ID","client_secret_env_var":"DATABRICKS_CLIENT_SECRET","grant_type":"client_credentials","token_url":"https://accounts.cloud.databricks.com/oidc/accounts/{{ .__env__DATABRICKS_ACCOUNT_ID }}/v1/token","scopes":["all-apis"]}}' \
+  --service-config '{"pagination":{"requestToken":{"key":"page_token","location":"query"},"responseToken":{"key":"next_page_token","location":"body"}}}' \
+  --naive-req-body-translate \
   --overwrite
 ```
 

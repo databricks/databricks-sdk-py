@@ -4973,6 +4973,157 @@ paths:
             application/json:
               schema:
                 type: object
+                properties:
+                  customReferences:
+                    type: string
+                    description: Custom reference links displayed in the workspace help menu
+                  enable-X-Frame-Options:
+                    type: string
+                    description: Controls the X-Frame-Options HTTP header to prevent clickjacking by restricting iframe embedding
+                  enableClusterAclsConfig:
+                    type: string
+                    description: Enables cluster-level access control lists (ACLs) for managing cluster permissions
+                  enableDatabricksAutologgingAdminConf:
+                    type: string
+                    description: Enables or disables Databricks Autologging for MLflow experiments at the workspace level
+                  enableDcs:
+                    type: string
+                    description: Enables Delta Cache Service for accelerated data reads from cloud storage
+                  enableDbfsFileBrowser:
+                    type: string
+                    description: Enables the DBFS visual file browser in the workspace UI
+                  enableDeprecatedGlobalInitScripts:
+                    type: string
+                    description: Enables legacy global init scripts (deprecated in favor of the Global Init Scripts API)
+                  enableEnforceImdsV2:
+                    type: string
+                    description: Enforces IMDSv2 (Instance Metadata Service v2) on cluster nodes for improved security (AWS only)
+                  enableExportNotebook:
+                    type: string
+                    description: Controls whether users can export notebooks from the workspace
+                  enableFileStoreEndpoint:
+                    type: string
+                    description: Enables the /FileStore endpoint for accessing files uploaded to DBFS FileStore
+                  enableGp3:
+                    type: string
+                    description: Enables GP3 EBS volumes for cluster nodes instead of GP2 (AWS only)
+                  enableHlsRuntime:
+                    type: string
+                    description: Enables the Databricks Runtime for Health and Life Sciences (genomics and biomedical workloads)
+                  enableIpAccessLists:
+                    type: string
+                    description: Enables IP access list functionality to restrict workspace access by IP address (Premium tier required)
+                  enableJobAclsConfig:
+                    type: string
+                    description: Enables job-level access control lists (ACLs) for managing job permissions
+                  enableJobViewAcls:
+                    type: string
+                    description: Enables view-level ACLs on jobs, restricting visibility of jobs to permitted users
+                  enableJobsEmailsV2:
+                    type: string
+                    description: Enables the updated email notification system for job run results
+                  enableNotebookTableClipboard:
+                    type: string
+                    description: Controls whether users can copy table data from notebook output to the clipboard
+                  enableProjectTypeInWorkspace:
+                    type: string
+                    description: Enables project-type resources within the workspace
+                  enableProjectsAllowList:
+                    type: string
+                    description: Enables the projects allow list to restrict which Git repositories can be used
+                  enableResultsDownloading:
+                    type: string
+                    description: Controls whether users can download query and notebook results
+                  enableTokensConfig:
+                    type: string
+                    description: Enables or disables personal access token creation and management for the workspace
+                  enableUploadDataUis:
+                    type: string
+                    description: Enables the data upload UI for importing files into the workspace
+                  enableVerboseAuditLogs:
+                    type: string
+                    description: Enables verbose audit logging with additional event details including notebook command results
+                  enableWebTerminal:
+                    type: string
+                    description: Enables web-based terminal access to cluster driver nodes from the workspace UI
+                  enableWorkspaceAclsConfig:
+                    type: string
+                    description: Enables workspace-level access control lists (ACLs) for managing workspace object permissions
+                  enableWorkspaceFilesystem:
+                    type: string
+                    description: Enables the workspace filesystem for storing and accessing workspace files
+                  enforceClusterViewAcls:
+                    type: string
+                    description: Enforces view-level ACLs on clusters, restricting cluster visibility to permitted users
+                  enforceUserIsolation:
+                    type: string
+                    description: Enforces user isolation on clusters to prevent users from accessing each others data
+                  enforceWorkspaceViewAcls:
+                    type: string
+                    description: Enforces view-level ACLs on workspace objects, restricting visibility to permitted users
+                  heapAnalyticsAdminConsent:
+                    type: string
+                    description: Controls admin consent for Heap Analytics usage tracking in the workspace
+                  homePageLogo:
+                    type: string
+                    description: Custom logo image URL displayed on the workspace home page
+                  homePageLogoWidth:
+                    type: string
+                    description: Width in pixels of the custom home page logo
+                  homePageWelcomeMessage:
+                    type: string
+                    description: Custom welcome message displayed on the workspace home page
+                  jobsListBackendPaginationEnabled:
+                    type: string
+                    description: Enables backend pagination for the jobs list API for improved performance with large job counts
+                  jobsListBackendPaginationOptOut:
+                    type: string
+                    description: Opts out of backend pagination for the jobs list if enabled at the workspace level
+                  loginLogo:
+                    type: string
+                    description: Custom logo image URL displayed on the workspace login page
+                  loginLogoWidth:
+                    type: string
+                    description: Width in pixels of the custom login page logo
+                  maxTokenLifetimeDays:
+                    type: string
+                    description: Maximum lifetime in days for newly created personal access tokens (empty or 0 means no limit)
+                  mlflowModelRegistryEmailNotificationsEnabled:
+                    type: string
+                    description: Enables email notifications for MLflow Model Registry events such as model version transitions
+                  mlflowModelServingEndpointCreationEnabled:
+                    type: string
+                    description: Enables creation of MLflow model serving endpoints in the workspace
+                  mlflowRunArtifactDownloadEnabled:
+                    type: string
+                    description: Controls whether users can download artifacts from MLflow experiment runs
+                  productName:
+                    type: string
+                    description: Custom product name displayed in the workspace UI (white-labeling)
+                  projectsAllowList:
+                    type: string
+                    description: Comma-separated list of allowed Git repository URL prefixes for workspace projects
+                  projectsAllowListPermissions:
+                    type: string
+                    description: Permissions configuration for who can manage the projects allow list
+                  rStudioUserDefaultHomeBase:
+                    type: string
+                    description: Default home directory base path for RStudio users in the workspace
+                  reposIpynbResultsExportPermissions:
+                    type: string
+                    description: Controls permissions for exporting ipynb notebook results from Git-backed repos
+                  sidebarLogoActive:
+                    type: string
+                    description: Custom logo image URL for the active state of the workspace sidebar
+                  sidebarLogoInactive:
+                    type: string
+                    description: Custom logo image URL for the inactive state of the workspace sidebar
+                  sidebarLogoText:
+                    type: string
+                    description: Custom text displayed alongside the sidebar logo (white-labeling)
+                  storeInteractiveNotebookResultsInCustomerAccount:
+                    type: string
+                    description: Stores all interactive notebook results in the customer cloud account instead of the Databricks control plane
         default:
           description: Error response
           content:
@@ -8844,8 +8995,19 @@ components:
             mediaType: application/json
             openAPIDocKey: '200'
       sqlVerbs:
-        select: []
+        select: 
+        - $ref: '#/components/x-stackQL-resources/workspace_config/methods/get_workspace_config'
         insert: []
         update: []
         delete: []
         replace: []
+x-stackQL-config:
+  requestBodyTranslate:
+    algorithm: naive
+  pagination:
+    requestToken:
+      key: page_token
+      location: query
+    responseToken:
+      key: next_page_token
+      location: body

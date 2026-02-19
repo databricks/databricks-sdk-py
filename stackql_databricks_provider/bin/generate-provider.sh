@@ -17,6 +17,8 @@ PROVIDER_CONFIG=""
 SKIP_FILES=""
 OVERWRITE=false
 VERBOSE=false
+SERVICE_CONFIG=""
+NAIVE_REQ_BODY_TRANSLATE=false
 
 # Parse command line arguments
 while [[ $# -gt 0 ]]; do
@@ -57,6 +59,14 @@ while [[ $# -gt 0 ]]; do
       VERBOSE=true
       shift
       ;;
+    --service-config)
+      SERVICE_CONFIG="$2"
+      shift 2
+      ;;
+    --naive-req-body-translate)
+      NAIVE_REQ_BODY_TRANSLATE=true
+      shift
+      ;;
     --help)
       echo "Usage: generate-provider.sh [OPTIONS]"
       echo ""
@@ -70,6 +80,8 @@ while [[ $# -gt 0 ]]; do
       echo "  --skip-files LIST           Comma-separated list of files to skip"
       echo "  --overwrite                 Overwrite existing files"
       echo "  --verbose                   Enable verbose output"
+      echo "  --service-config JSON       JSON string with service-level configuration (x-stackQL-config)"
+      echo "  --naive-req-body-translate  Add naive requestBodyTranslate config to methods with request bodies"
       echo "  --help                      Show this help message"
       exit 0
       ;;
@@ -110,6 +122,16 @@ fi
 if [ -n "$SKIP_FILES" ]; then
   ARGS+=("--skip-files" "$SKIP_FILES")
   echo "Skipping files: $SKIP_FILES"
+fi
+
+if [ -n "$SERVICE_CONFIG" ]; then
+  ARGS+=("--service-config" "$SERVICE_CONFIG")
+  echo "Custom service configuration provided"
+fi
+
+if [ "$NAIVE_REQ_BODY_TRANSLATE" = true ]; then
+  ARGS+=("--naive-req-body-translate")
+  echo "Naive request body translation: Yes"
 fi
 
 if [ "$OVERWRITE" = true ]; then

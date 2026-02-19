@@ -19,6 +19,8 @@ async function generateProvider() {
   const skipFiles = getArg('--skip-files')?.split(',') || [];
   const overwrite = args.includes('--overwrite');
   const verbose = args.includes('--verbose');
+  const serviceConfig = getArg('--service-config');
+  const naiveReqBodyTranslate = args.includes('--naive-req-body-translate');
 
   if (!providerName || !inputDir || !outputDir || !configPath) {
     console.error('Error: Missing required arguments');
@@ -44,6 +46,14 @@ async function generateProvider() {
       console.log(`Skipping files: ${skipFiles.join(', ')}`);
     }
 
+    if (serviceConfig) {
+      console.log(`Custom service configuration provided`);
+    }
+
+    if (naiveReqBodyTranslate) {
+      console.log(`Naive request body translation enabled`);
+    }
+
     const result = await providerdev.generate({
       inputDir,
       outputDir,
@@ -51,6 +61,8 @@ async function generateProvider() {
       providerId: providerName,
       servers,
       providerConfig,
+      serviceConfig,
+      naiveReqBodyTranslate,
       skipFiles,
       overwrite,
       verbose
