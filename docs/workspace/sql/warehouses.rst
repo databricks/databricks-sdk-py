@@ -57,7 +57,7 @@
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
-          Defaults to false.
+          Defaults to true.
         :param enable_serverless_compute: bool (optional)
           Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)
@@ -196,7 +196,7 @@
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
-          Defaults to false.
+          Defaults to true.
         :param enable_serverless_compute: bool (optional)
           Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)

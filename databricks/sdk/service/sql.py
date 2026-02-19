@@ -2467,7 +2467,7 @@ class EndpointInfo:
     enable_photon: Optional[bool] = None
     """Configures whether the warehouse should use Photon optimized clusters.
     
-    Defaults to false."""
+    Defaults to true."""
 
     enable_serverless_compute: Optional[bool] = None
     """Configures whether the warehouse should use serverless compute"""
@@ -3084,7 +3084,7 @@ class GetWarehouseResponse:
     enable_photon: Optional[bool] = None
     """Configures whether the warehouse should use Photon optimized clusters.
     
-    Defaults to false."""
+    Defaults to true."""
 
     enable_serverless_compute: Optional[bool] = None
     """Configures whether the warehouse should use serverless compute"""
@@ -8141,7 +8141,11 @@ class DashboardsAPI:
     dashboard objects to look-up a collection of related query IDs. The API can also be used to duplicate
     multiple dashboards at once since you can get a dashboard definition with a GET request and then POST it
     to create a new one. Dashboards can be scheduled using the `sql_task` type of the Jobs API, e.g.
-    :method:jobs/create."""
+    :method:jobs/create.
+
+    **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+    [Learn more]: https://docs.databricks.com/en/dashboards/"""
 
     def __init__(self, api_client):
         self._api = api_client
@@ -8149,6 +8153,10 @@ class DashboardsAPI:
     def delete(self, dashboard_id: str):
         """Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
         be shared.
+
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+        [Learn more]: https://docs.databricks.com/en/dashboards/
 
         :param dashboard_id: str
 
@@ -8167,6 +8175,10 @@ class DashboardsAPI:
 
     def get(self, dashboard_id: str) -> Dashboard:
         """Returns a JSON representation of a dashboard object, including its visualization and query objects.
+
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+        [Learn more]: https://docs.databricks.com/en/dashboards/
 
         :param dashboard_id: str
 
@@ -8196,6 +8208,10 @@ class DashboardsAPI:
 
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
+
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+        [Learn more]: https://docs.databricks.com/en/dashboards/
 
         :param order: :class:`ListOrder` (optional)
           Name of dashboard attribute to order by.
@@ -8239,6 +8255,10 @@ class DashboardsAPI:
     def restore(self, dashboard_id: str):
         """A restored dashboard appears in list views and searches and can be shared.
 
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+        [Learn more]: https://docs.databricks.com/en/dashboards/
+
         :param dashboard_id: str
 
 
@@ -8266,6 +8286,10 @@ class DashboardsAPI:
         does not add, modify, or remove widgets.
 
         **Note**: You cannot undo this operation.
+
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+        [Learn more]: https://docs.databricks.com/en/dashboards/
 
         :param dashboard_id: str
         :param name: str (optional)
@@ -9793,7 +9817,7 @@ class WarehousesAPI:
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
-          Defaults to false.
+          Defaults to true.
         :param enable_serverless_compute: bool (optional)
           Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)
@@ -10026,7 +10050,7 @@ class WarehousesAPI:
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
-          Defaults to false.
+          Defaults to true.
         :param enable_serverless_compute: bool (optional)
           Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)

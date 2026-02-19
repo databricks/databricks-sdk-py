@@ -1,5 +1,5 @@
-``w.dashboards``: Dashboards (legacy)
-=====================================
+``w.dashboards``: Dashboards (deprecated)
+=========================================
 .. currentmodule:: databricks.sdk.service.sql
 
 .. py:class:: DashboardsAPI
@@ -9,6 +9,10 @@
     multiple dashboards at once since you can get a dashboard definition with a GET request and then POST it
     to create a new one. Dashboards can be scheduled using the `sql_task` type of the Jobs API, e.g.
     :method:jobs/create.
+
+    **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+    [Learn more]: https://docs.databricks.com/en/dashboards/
 
     .. py:method:: delete(dashboard_id: str)
 
@@ -32,6 +36,10 @@
 
         Moves a dashboard to the trash. Trashed dashboards do not appear in list views or searches, and cannot
         be shared.
+
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+        [Learn more]: https://docs.databricks.com/en/dashboards/
 
         :param dashboard_id: str
 
@@ -60,6 +68,10 @@
 
         Returns a JSON representation of a dashboard object, including its visualization and query objects.
 
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+        [Learn more]: https://docs.databricks.com/en/dashboards/
+
         :param dashboard_id: str
 
         :returns: :class:`Dashboard`
@@ -83,6 +95,10 @@
 
         **Warning**: Calling this API concurrently 10 or more times could result in throttling, service
         degradation, or a temporary ban.
+
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+        [Learn more]: https://docs.databricks.com/en/dashboards/
 
         :param order: :class:`ListOrder` (optional)
           Name of dashboard attribute to order by.
@@ -118,6 +134,10 @@
 
         A restored dashboard appears in list views and searches and can be shared.
 
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+        [Learn more]: https://docs.databricks.com/en/dashboards/
+
         :param dashboard_id: str
 
 
@@ -129,6 +149,10 @@
         does not add, modify, or remove widgets.
 
         **Note**: You cannot undo this operation.
+
+        **Warning**: This API is deprecated. Please use the AI/BI Dashboards API instead. [Learn more]
+
+        [Learn more]: https://docs.databricks.com/en/dashboards/
 
         :param dashboard_id: str
         :param name: str (optional)
