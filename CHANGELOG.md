@@ -1,5 +1,16 @@
 # Version changelog
 
+## Release v0.91.0 (2026-02-19)
+
+### Bug Fixes
+* Make `useragent.with_extra()` idempotent to prevent User-Agent header growth in long-lived processes.
+
+### API Changes
+* Add `attributes` and `membership_roles` fields for `databricks.sdk.service.postgres.RoleRoleSpec`.
+* Add `membership_roles` field for `databricks.sdk.service.postgres.RoleRoleStatus`.
+* Add `general_access` enum value for `databricks.sdk.service.provisioning.EndpointUseCase`.
+
+
 ## Release v0.90.0 (2026-02-18)
 
 ### API Changes
