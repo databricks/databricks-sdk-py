@@ -202,6 +202,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: AppResourceApp
+   :members:
+   :undoc-members:
+
 .. autoclass:: AppResourceDatabase
    :members:
    :undoc-members:
@@ -317,6 +321,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: EXECUTE
       :value: "EXECUTE"
+
+   .. py:attribute:: MODIFY
+      :value: "MODIFY"
 
    .. py:attribute:: READ_VOLUME
       :value: "READ_VOLUME"

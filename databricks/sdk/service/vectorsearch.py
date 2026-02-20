@@ -494,6 +494,9 @@ class EndpointInfo:
     num_indexes: Optional[int] = None
     """Number of indexes on the endpoint"""
 
+    scaling_info: Optional[EndpointScalingInfo] = None
+    """Scaling information for the endpoint"""
+
     def as_dict(self) -> dict:
         """Serializes the EndpointInfo into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -519,6 +522,8 @@ class EndpointInfo:
             body["name"] = self.name
         if self.num_indexes is not None:
             body["num_indexes"] = self.num_indexes
+        if self.scaling_info:
+            body["scaling_info"] = self.scaling_info.as_dict()
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -546,6 +551,8 @@ class EndpointInfo:
             body["name"] = self.name
         if self.num_indexes is not None:
             body["num_indexes"] = self.num_indexes
+        if self.scaling_info:
+            body["scaling_info"] = self.scaling_info
         return body
 
     @classmethod
@@ -563,7 +570,40 @@ class EndpointInfo:
             last_updated_user=d.get("last_updated_user", None),
             name=d.get("name", None),
             num_indexes=d.get("num_indexes", None),
+            scaling_info=_from_dict(d, "scaling_info", EndpointScalingInfo),
         )
+
+
+@dataclass
+class EndpointScalingInfo:
+    requested_min_qps: Optional[int] = None
+    """The minimum QPS target requested for the endpoint."""
+
+    state: Optional[ScalingChangeState] = None
+    """The current state of the scaling change request."""
+
+    def as_dict(self) -> dict:
+        """Serializes the EndpointScalingInfo into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.requested_min_qps is not None:
+            body["requested_min_qps"] = self.requested_min_qps
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the EndpointScalingInfo into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.requested_min_qps is not None:
+            body["requested_min_qps"] = self.requested_min_qps
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> EndpointScalingInfo:
+        """Deserializes the EndpointScalingInfo from a dictionary."""
+        return cls(requested_min_qps=d.get("requested_min_qps", None), state=_enum(d, "state", ScalingChangeState))
 
 
 @dataclass
@@ -1192,6 +1232,13 @@ class RetrieveUserVisibleMetricsResponse:
         )
 
 
+class ScalingChangeState(Enum):
+
+    SCALING_CHANGE_APPLIED = "SCALING_CHANGE_APPLIED"
+    SCALING_CHANGE_IN_PROGRESS = "SCALING_CHANGE_IN_PROGRESS"
+    SCALING_CHANGE_UNSPECIFIED = "SCALING_CHANGE_UNSPECIFIED"
+
+
 @dataclass
 class ScanVectorIndexResponse:
     """Response to a scan vector index request."""
@@ -1610,7 +1657,12 @@ class VectorSearchEndpointsAPI:
         raise TimeoutError(f"timed out after {timeout}: {status_message}")
 
     def create_endpoint(
-        self, name: str, endpoint_type: EndpointType, *, budget_policy_id: Optional[str] = None
+        self,
+        name: str,
+        endpoint_type: EndpointType,
+        *,
+        budget_policy_id: Optional[str] = None,
+        min_qps: Optional[int] = None,
     ) -> Wait[EndpointInfo]:
         """Create a new endpoint.
 
@@ -1620,6 +1672,9 @@ class VectorSearchEndpointsAPI:
           Type of endpoint
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
+        :param min_qps: int (optional)
+          Min QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
+          calculated at index creation/sync time based on this value.
 
         :returns:
           Long-running operation waiter for :class:`EndpointInfo`.
@@ -1631,6 +1686,8 @@ class VectorSearchEndpointsAPI:
             body["budget_policy_id"] = budget_policy_id
         if endpoint_type is not None:
             body["endpoint_type"] = endpoint_type.value
+        if min_qps is not None:
+            body["min_qps"] = min_qps
         if name is not None:
             body["name"] = name
         headers = {
@@ -1655,11 +1712,12 @@ class VectorSearchEndpointsAPI:
         endpoint_type: EndpointType,
         *,
         budget_policy_id: Optional[str] = None,
+        min_qps: Optional[int] = None,
         timeout=timedelta(minutes=20),
     ) -> EndpointInfo:
-        return self.create_endpoint(budget_policy_id=budget_policy_id, endpoint_type=endpoint_type, name=name).result(
-            timeout=timeout
-        )
+        return self.create_endpoint(
+            budget_policy_id=budget_policy_id, endpoint_type=endpoint_type, min_qps=min_qps, name=name
+        ).result(timeout=timeout)
 
     def delete_endpoint(self, endpoint_name: str):
         """Delete a vector search endpoint.
@@ -1728,6 +1786,32 @@ class VectorSearchEndpointsAPI:
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
+
+    def patch_endpoint(self, endpoint_name: str, *, min_qps: Optional[int] = None) -> EndpointInfo:
+        """Update an endpoint
+
+        :param endpoint_name: str
+          Name of the vector search endpoint
+        :param min_qps: int (optional)
+          Min QPS for the endpoint. Positive integer sets QPS target; -1 resets to default scaling behavior.
+
+        :returns: :class:`EndpointInfo`
+        """
+
+        body = {}
+        if min_qps is not None:
+            body["min_qps"] = min_qps
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/vector-search/endpoints/{endpoint_name}", body=body, headers=headers)
+        return EndpointInfo.from_dict(res)
 
     def retrieve_user_visible_metrics(
         self,

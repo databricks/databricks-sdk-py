@@ -18,3 +18,10 @@
 * Add `group` field for `databricks.sdk.service.postgres.EndpointStatus`.
 * Add `initial_endpoint_spec` field for `databricks.sdk.service.postgres.Project`.
 * Add `degraded` enum value for `databricks.sdk.service.postgres.EndpointStatusState`.
+* Add `patch_endpoint()` method for [w.vector_search_endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/vectorsearch/vector_search_endpoints.html) workspace-level service.
+* Add `app` field for `databricks.sdk.service.apps.AppResource`.
+* Add `securable_kind` field for `databricks.sdk.service.apps.AppResourceUcSecurable`.
+* Add `min_qps` field for `databricks.sdk.service.vectorsearch.CreateEndpoint`.
+* Add `scaling_info` field for `databricks.sdk.service.vectorsearch.EndpointInfo`.
+* Add `modify` enum value for `databricks.sdk.service.apps.AppResourceUcSecurableUcSecurablePermission`.
+* Add `could_not_get_dashboard_schema_exception` enum value for `databricks.sdk.service.dashboards.MessageErrorType`.

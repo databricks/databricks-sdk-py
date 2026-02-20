@@ -163,6 +163,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: CONTEXT_EXCEEDED_EXCEPTION
       :value: "CONTEXT_EXCEEDED_EXCEPTION"
 
+   .. py:attribute:: COULD_NOT_GET_DASHBOARD_SCHEMA_EXCEPTION
+      :value: "COULD_NOT_GET_DASHBOARD_SCHEMA_EXCEPTION"
+
    .. py:attribute:: COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION
       :value: "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION"
 
