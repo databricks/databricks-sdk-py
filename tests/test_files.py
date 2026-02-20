@@ -23,6 +23,7 @@ from requests import RequestException
 
 from databricks.sdk import WorkspaceClient
 from databricks.sdk.core import Config
+from databricks.sdk.credentials_provider import credentials_strategy
 from databricks.sdk.environments import Cloud, DatabricksEnvironment
 from databricks.sdk.errors.platform import (AlreadyExists, BadRequest,
                                             InternalError, NotImplemented,
@@ -2847,3 +2848,273 @@ def fast_random_bytes(n: int, chunk_size: int = 1024) -> bytes:
     chunk = os.urandom(chunk_size)
     # Repeat it until we reach n bytes
     return (chunk * (n // chunk_size + 1))[:n]
+
+
+# ---------------------------------------------------------------------------
+# Storage-proxy upload tests
+# ---------------------------------------------------------------------------
+
+STORAGE_PROXY_HOST = "http://storage-proxy.databricks.com"
+
+
+def _make_response(
+    request: requests.Request, status_code: int = 200, body: str = "", headers: Optional[Dict[str, str]] = None
+) -> requests.Response:
+    """Creates a mock response with the request reference set (needed by SDK logger)."""
+    resp = requests.Response()
+    resp.status_code = status_code
+    resp._content = body.encode() if isinstance(body, str) else body
+    resp.request = request
+    resp.url = request.url
+    if headers:
+        for k, v in headers.items():
+            resp.headers[k] = v
+    return resp
+
+
+class StorageProxyUploadServerState:
+    """Tracks server state for storage-proxy multipart uploads."""
+
+    def __init__(self):
+        self.session_token = f"sp-token-{random.randrange(10000)}"
+        self.uploaded_parts: Dict[int, bytes] = {}
+        self.completed = False
+
+    def save_part(self, part_number: int, data: bytes) -> str:
+        etag = f"etag-sp-{part_number}"
+        self.uploaded_parts[part_number] = data
+        return etag
+
+    def get_assembled_content(self) -> Optional[bytes]:
+        if not self.completed:
+            return None
+        parts = sorted(self.uploaded_parts.items())
+        return b"".join(data for _, data in parts)
+
+
+def _make_storage_proxy_config() -> Config:
+    """Creates a Config that will route uploads through the storage proxy."""
+    clock = FakeClock()
+
+    @credentials_strategy("pat", [])
+    def pat_credentials(_: any):
+        return lambda: {"Authorization": "Bearer test-pat-token"}
+
+    config = Config(
+        host="http://localhost",
+        credentials_strategy=pat_credentials,
+        clock=clock,
+    )
+    config.files_ext_storage_proxy_hostname = STORAGE_PROXY_HOST
+    return config
+
+
+def test_storage_proxy_probe_success():
+    """Verify that a successful probe enables the storage-proxy path."""
+    config = _make_storage_proxy_config()
+    w = WorkspaceClient(config=config)
+
+    with requests_mock.Mocker() as m:
+        # Probe succeeds.
+        m.get(
+            f"{STORAGE_PROXY_HOST}/api/2.0/fs/files/DatabricksInternal/Probes/ping",
+            status_code=200,
+        )
+        # Single-shot upload goes to storage proxy.
+        m.put(
+            requests_mock.ANY,
+            status_code=200,
+        )
+
+        data = b"hello world"
+        w.files.upload("/test.txt", io.BytesIO(data), overwrite=True)
+
+        # The PUT should have gone to the storage proxy, not localhost.
+        put_requests = [h for h in m.request_history if h.method == "PUT"]
+        assert len(put_requests) == 1
+        assert put_requests[0].url.startswith(STORAGE_PROXY_HOST)
+
+
+def test_storage_proxy_probe_failure_falls_back():
+    """Verify that a failed probe falls back to presigned URLs via localhost."""
+    config = _make_storage_proxy_config()
+    w = WorkspaceClient(config=config)
+
+    with requests_mock.Mocker() as m:
+        # Probe fails.
+        m.get(
+            f"{STORAGE_PROXY_HOST}/api/2.0/fs/files/DatabricksInternal/Probes/ping",
+            status_code=500,
+        )
+        # Single-shot upload goes to localhost (GIG direct).
+        m.put(
+            requests_mock.ANY,
+            status_code=200,
+        )
+
+        data = b"hello world"
+        w.files.upload("/test.txt", io.BytesIO(data), overwrite=True)
+
+        # The PUT should have gone to localhost, not the storage proxy.
+        put_requests = [h for h in m.request_history if h.method == "PUT"]
+        assert len(put_requests) == 1
+        assert put_requests[0].url.startswith("http://localhost")
+
+
+def test_storage_proxy_multipart_upload():
+    """End-to-end multipart upload through the storage proxy."""
+    config = _make_storage_proxy_config()
+    config.files_ext_multipart_upload_min_stream_size = 1  # Force multipart.
+    w = WorkspaceClient(config=config)
+
+    server_state = StorageProxyUploadServerState()
+    file_content = fast_random_bytes(2 * 1024 * 1024)
+    part_size = 1024 * 1024  # 1 MiB parts.
+
+    with requests_mock.Mocker() as session_mock:
+
+        def custom_matcher(request: requests.Request) -> Optional[requests.Response]:
+            parsed_url = urlparse(request.url)
+            query = parse_qs(parsed_url.query)
+
+            # Probe endpoint.
+            if (
+                request.url.startswith(STORAGE_PROXY_HOST)
+                and parsed_url.path == "/api/2.0/fs/files/DatabricksInternal/Probes/ping"
+                and request.method == "GET"
+            ):
+                return _make_response(request)
+
+            # Initiate upload on the storage proxy.
+            if (
+                request.url.startswith(STORAGE_PROXY_HOST)
+                and parsed_url.path == "/api/2.0/fs/files/test.txt"
+                and query.get("action") == ["initiate-upload"]
+                and request.method == "POST"
+            ):
+                assert "Authorization" in request.headers
+                body = json.dumps({"multipart_upload": {"session_token": server_state.session_token}})
+                return _make_response(request, body=body, headers={"Content-Type": "application/json"})
+
+            # Part upload on the storage proxy.
+            if (
+                request.url.startswith(STORAGE_PROXY_HOST)
+                and parsed_url.path == "/api/2.0/fs/files/test.txt"
+                and query.get("upload_type") == ["multipart"]
+                and request.method == "PUT"
+            ):
+                assert "Authorization" in request.headers
+                part_number = int(query["part_number"][0])
+                data = request.body.read() if hasattr(request.body, "read") else request.body
+                etag = server_state.save_part(part_number, data)
+                return _make_response(request, headers={"ETag": etag})
+
+            # Complete upload on the storage proxy.
+            if (
+                request.url.startswith(STORAGE_PROXY_HOST)
+                and parsed_url.path == "/api/2.0/fs/files/test.txt"
+                and query.get("action") == ["complete-upload"]
+                and request.method == "POST"
+            ):
+                assert "Authorization" in request.headers
+                server_state.completed = True
+                return _make_response(request)
+
+            return None
+
+        session_mock.add_matcher(matcher=custom_matcher)
+
+        w.files.upload(
+            "/test.txt",
+            io.BytesIO(file_content),
+            overwrite=True,
+            part_size=part_size,
+        )
+
+    # Verify the assembled content matches.
+    assembled = server_state.get_assembled_content()
+    assert assembled == file_content
+
+    # Verify no calls went to create-upload-part-urls (presigned URL path).
+    presigned_calls = [
+        h for h in session_mock.request_history if "create-upload-part-urls" in (h.url or "")
+    ]
+    assert len(presigned_calls) == 0, "Storage proxy path should not call create-upload-part-urls."
+
+
+def test_storage_proxy_single_shot_upload():
+    """Single-shot upload through the storage proxy (small file)."""
+    config = _make_storage_proxy_config()
+    w = WorkspaceClient(config=config)
+
+    file_content = b"small file content"
+    uploaded_content = None
+
+    with requests_mock.Mocker() as session_mock:
+
+        def custom_matcher(request: requests.Request) -> Optional[requests.Response]:
+            nonlocal uploaded_content
+            parsed_url = urlparse(request.url)
+
+            # Probe endpoint.
+            if (
+                request.url.startswith(STORAGE_PROXY_HOST)
+                and parsed_url.path == "/api/2.0/fs/files/DatabricksInternal/Probes/ping"
+                and request.method == "GET"
+            ):
+                return _make_response(request)
+
+            # Single-shot PUT to storage proxy.
+            if (
+                request.url.startswith(STORAGE_PROXY_HOST)
+                and parsed_url.path == "/api/2.0/fs/files/test.txt"
+                and request.method == "PUT"
+            ):
+                assert "Authorization" in request.headers
+                uploaded_content = request.body.read() if hasattr(request.body, "read") else request.body
+                return _make_response(request)
+
+            return None
+
+        session_mock.add_matcher(matcher=custom_matcher)
+
+        w.files.upload("/test.txt", io.BytesIO(file_content), overwrite=True)
+
+    assert uploaded_content == file_content
+
+
+def test_storage_proxy_probe_cached():
+    """Verify that the probe result is cached across uploads."""
+    config = _make_storage_proxy_config()
+    w = WorkspaceClient(config=config)
+    probe_count = 0
+
+    with requests_mock.Mocker() as session_mock:
+
+        def custom_matcher(request: requests.Request) -> Optional[requests.Response]:
+            nonlocal probe_count
+            parsed_url = urlparse(request.url)
+
+            # Probe endpoint.
+            if (
+                request.url.startswith(STORAGE_PROXY_HOST)
+                and parsed_url.path == "/api/2.0/fs/files/DatabricksInternal/Probes/ping"
+                and request.method == "GET"
+            ):
+                probe_count += 1
+                return _make_response(request)
+
+            # Single-shot PUT.
+            if request.method == "PUT":
+                return _make_response(request)
+
+            return None
+
+        session_mock.add_matcher(matcher=custom_matcher)
+
+        # Upload twice.
+        w.files.upload("/test1.txt", io.BytesIO(b"first"), overwrite=True)
+        w.files.upload("/test2.txt", io.BytesIO(b"second"), overwrite=True)
+
+    # Probe should have been called only once.
+    assert probe_count == 1, f"Probe was called {probe_count} times, expected 1."
