@@ -203,6 +203,31 @@ SELECT
 FROM databricks_account.provisioning.workspaces
 WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
 
+-- JOIN permissions and workspaces
+SELECT
+w.workspace_id,
+w.workspace_name,
+w.workspace_status,
+wp.permissions
+FROM databricks_account.provisioning.workspaces w
+LEFT JOIN databricks_account.iam.workspace_permissions wp
+ON w.workspace_id = wp.workspace_id
+WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
+
+SELECT
+w.workspace_id,
+w.workspace_name,
+w.workspace_status,
+JSON_EXTRACT(wa.principal, '$.display_name') as display_name,
+JSON_EXTRACT(wa.principal, '$.principal_id') as principal_id,
+JSON_EXTRACT(wa.principal, '$.service_principal_name') as service_principal_name,
+wa.permissions,
+wa.error
+FROM databricks_account.provisioning.workspaces w
+LEFT JOIN databricks_account.iam.workspace_assignment wa
+ON w.workspace_id = wa.workspace_id
+WHERE account_id = 'ebfcc5a9-9d49-4c93-b651-b3ee6cf1c9ce';
+
 -- Fuzzy match workspaces
 SELECT
   workspace_id,
