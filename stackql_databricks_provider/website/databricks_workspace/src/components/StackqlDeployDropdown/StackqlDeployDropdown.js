@@ -173,10 +173,20 @@ function buildExistsQuery(parsed) {
   return sql;
 }
 
+// Extracts field names that appear before '=' in a WHERE clause string.
+function getWhereFieldNames(whereClause) {
+  if (!whereClause) return new Set();
+  const matches = whereClause.match(/(\w+)\s*=/g) || [];
+  return new Set(matches.map(m => m.replace(/\s*=/, '').trim()));
+}
+
 // Builds a "statecheck" hint query - a count query where SELECT fields become
 // equality checks in the WHERE clause, followed by the original WHERE params.
+// Fields already present in the WHERE clause are excluded to avoid duplication.
 function buildStatecheckQuery(parsed) {
+  const whereFields = getWhereFieldNames(parsed.where);
   const fieldConditions = parsed.fields
+    .filter(f => !whereFields.has(f))
     .map(f => `${f} = {{ ${f} }}`)
     .join(' AND\n');
 
@@ -204,17 +214,22 @@ function buildTemplate(sections) {
   const parts = [];
   let parsed = null;
 
+  // /*+ exists */
   if (sections.select) {
     parsed = parseSelectSQL(sections.select);
     parts.push(`/*+ exists */\n${buildExistsQuery(parsed)}`);
   }
 
+  // /*+ create */
   if (sections.insert) {
-    parts.push(`/*+ createorupdate */\n${sections.insert}`);
-  } else if (sections.update) {
-    parts.push(`/*+ createorupdate */\n${sections.update}`);
+    parts.push(`/*+ create */\n${sections.insert}`);
+  }
+
+  // /*+ update */ - prefer UPDATE, fall back to REPLACE
+  if (sections.update) {
+    parts.push(`/*+ update */\n${sections.update}`);
   } else if (sections.replace) {
-    parts.push(`/*+ createorupdate */\n${sections.replace}`);
+    parts.push(`/*+ update */\n${sections.replace}`);
   }
 
   if (parsed) {
@@ -228,9 +243,10 @@ function buildTemplate(sections) {
       }
     }
 
+    // /*+ statecheck */
     parts.push(`/*+ statecheck, retries=5, retry_delay=10 */\n${buildStatecheckQuery(mutableParsed)}`);
 
-    // Build exports SELECT with only mutable fields
+    // /*+ exports */
     let exportsSql = `SELECT ${mutableParsed.fields.join(',\n')}\nFROM ${parsed.table}`;
     if (parsed.where) {
       exportsSql += `\nWHERE ${parsed.where}`;
@@ -239,6 +255,7 @@ function buildTemplate(sections) {
     parts.push(`/*+ exports */\n${exportsSql}`);
   }
 
+  // /*+ delete */
   if (sections.delete) {
     parts.push(`/*+ delete */\n${sections.delete}`);
   }
