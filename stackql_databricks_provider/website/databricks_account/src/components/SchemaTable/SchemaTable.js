@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import CopyableCode from '@site/src/components/CopyableCode/CopyableCode';
 import styles from './SchemaTable.module.css';
 
 function SchemaRow({ name, type, description, children, depth = 0 }) {
@@ -17,9 +18,9 @@ function SchemaRow({ name, type, description, children, depth = 0 }) {
               {expanded ? '▼' : '▶'}
             </span>
           )}
-          <code>{name}</code>
+          <CopyableCode code={name} />
         </td>
-        <td><code>{type}</code></td>
+        <td><CopyableCode code={type} /></td>
         <td>{description}</td>
       </tr>
       {expanded && children?.map((child, idx) => (
