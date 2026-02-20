@@ -692,7 +692,7 @@ class OAuthClient:
             return lambda: {}
 
         config = Config(host=host, credentials_strategy=noop_credentials)
-        oidc = config.oidc_endpoints
+        oidc = config.databricks_oidc_endpoints
         if not oidc:
             raise ValueError(f"{host} does not support OAuth")
         return OAuthClient(oidc, redirect_url, client_id, scopes, client_secret)

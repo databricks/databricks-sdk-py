@@ -20,6 +20,8 @@ from google.auth import impersonated_credentials  # type: ignore
 from google.auth.transport.requests import Request  # type: ignore
 from google.oauth2 import service_account  # type: ignore
 
+from databricks.sdk.oauth import get_azure_entra_id_workspace_endpoints
+
 from . import azure, oauth, oidc, oidc_token_supplier
 from .client_types import ClientType
 
@@ -218,7 +220,7 @@ def oauth_service_principal(cfg: "Config") -> Optional[CredentialsProvider]:
     """Adds refreshed Databricks machine-to-machine OAuth Bearer token to every request,
     if /oidc/.well-known/oauth-authorization-server is available on the given host.
     """
-    oidc = cfg.oidc_endpoints
+    oidc = cfg.databricks_oidc_endpoints
     if oidc is None:
         return None
 
@@ -248,14 +250,21 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
         return None
 
     client_id, client_secret = None, None
+    oidc_endpoints = None
     if cfg.client_id:
         client_id = cfg.client_id
         client_secret = cfg.client_secret
+        oidc_endpoints = cfg.databricks_oidc_endpoints
     elif cfg.azure_client_id:
-        client_id = cfg.azure_client
+        client_id = cfg.azure_client_id
         client_secret = cfg.azure_client_secret
+        oidc_endpoints = get_azure_entra_id_workspace_endpoints(cfg.host)
     if not client_id:
         client_id = "databricks-cli"
+        oidc_endpoints = cfg.databricks_oidc_endpoints
+
+    if not oidc_endpoints:
+        return None
 
     scopes = cfg.get_scopes()
     if not cfg.disable_oauth_refresh_token:
@@ -264,7 +273,6 @@ def external_browser(cfg: "Config") -> Optional[CredentialsProvider]:
 
     # Load cached credentials from disk if they exist. Note that these are
     # local to the Python SDK and not reused by other SDKs.
-    oidc_endpoints = cfg.oidc_endpoints
     redirect_url = "http://localhost:8020"
     token_cache = oauth.TokenCache(
         host=cfg.host,
@@ -321,7 +329,7 @@ def _ensure_host_present(cfg: "Config", token_source_for: Callable[[str], oauth.
 
 @oauth_credentials_strategy(
     "azure-client-secret",
-    ["is_azure", "azure_client_id", "azure_client_secret"],
+    ["azure_client_id", "azure_client_secret"],
 )
 def azure_service_principal(cfg: "Config") -> CredentialsProvider:
     """Adds refreshed Azure Active Directory (AAD) Service Principal OAuth tokens
@@ -390,7 +398,7 @@ def oidc_credentials_provider(cfg, id_token_source: oidc.IdTokenSource) -> Optio
 
     token_source = oidc.DatabricksOidcTokenSource(
         host=cfg.host,
-        token_endpoint=cfg.oidc_endpoints.token_endpoint,
+        token_endpoint=cfg.databricks_oidc_endpoints.token_endpoint,
         client_id=cfg.client_id,
         account_id=cfg.account_id,
         id_token_source=id_token_source,
@@ -434,7 +442,7 @@ def _oidc_credentials_provider(
     if audience is None and cfg.client_type == ClientType.ACCOUNT:
         audience = cfg.account_id
     if audience is None and cfg.client_type != ClientType.ACCOUNT:
-        audience = cfg.oidc_endpoints.token_endpoint
+        audience = cfg.databricks_oidc_endpoints.token_endpoint
 
     # Try to get an OIDC token. If no supplier returns a token, we cannot use this authentication mode.
     id_token = supplier.get_oidc_token(audience)
@@ -453,7 +461,7 @@ def _oidc_credentials_provider(
         return oauth.ClientCredentials(
             client_id=cfg.client_id,
             client_secret="",  # we have no (rotatable) secrets in OIDC flow
-            token_url=cfg.oidc_endpoints.token_endpoint,
+            token_url=cfg.databricks_oidc_endpoints.token_endpoint,
             endpoint_params={
                 "subject_token_type": "urn:ietf:params:oauth:token-type:jwt",
                 "subject_token": id_token,
@@ -505,15 +513,12 @@ def azure_devops_oidc(cfg: "Config") -> Optional[CredentialsProvider]:
     )
 
 
+# Azure Client ID is the minimal thing we need, as otherwise we get AADSTS700016: Application with
+# identifier 'https://token.actions.githubusercontent.com' was not found in the directory '...'.
 @oauth_credentials_strategy("github-oidc-azure", ["host", "azure_client_id"])
 def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
     if "ACTIONS_ID_TOKEN_REQUEST_TOKEN" not in os.environ:
         # not in GitHub actions
-        return None
-
-    # Client ID is the minimal thing we need, as otherwise we get AADSTS700016: Application with
-    # identifier 'https://token.actions.githubusercontent.com' was not found in the directory '...'.
-    if not cfg.is_azure:
         return None
 
     token = oidc_token_supplier.GitHubOIDCTokenSupplier().get_oidc_token("api://AzureADTokenExchange")
@@ -528,7 +533,7 @@ def github_oidc_azure(cfg: "Config") -> Optional[CredentialsProvider]:
     aad_endpoint = cfg.arm_environment.active_directory_endpoint
     if not cfg.azure_tenant_id:
         # detect Azure AD Tenant ID if it's not specified directly
-        token_endpoint = cfg.oidc_endpoints.token_endpoint
+        token_endpoint = get_azure_entra_id_workspace_endpoints(cfg.host).token_endpoint
         cfg.azure_tenant_id = token_endpoint.replace(aad_endpoint, "").split("/")[0]
 
     inner = oauth.ClientCredentials(
@@ -564,8 +569,6 @@ GcpScopes = [
 
 @oauth_credentials_strategy("google-credentials", ["host", "google_credentials"])
 def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
-    if not cfg.is_gcp:
-        return None
     # Reads credentials as JSON. Credentials can be either a path to JSON file, or actual JSON string.
     # Obtain the id token by providing the json file path and target audience.
     if os.path.isfile(cfg.google_credentials):
@@ -600,8 +603,6 @@ def google_credentials(cfg: "Config") -> Optional[CredentialsProvider]:
 
 @oauth_credentials_strategy("google-id", ["host", "google_service_account"])
 def google_id(cfg: "Config") -> Optional[CredentialsProvider]:
-    if not cfg.is_gcp:
-        return None
     credentials, _project_id = google.auth.default()
 
     # Create the impersonated credential.
@@ -806,7 +807,7 @@ class AzureCliTokenSource(CliTokenSource):
         return components[2]
 
 
-@credentials_strategy("azure-cli", ["is_azure"])
+@credentials_strategy("azure-cli", ["effective_azure_login_app_id"])
 def azure_cli(cfg: "Config") -> Optional[CredentialsProvider]:
     """Adds refreshed OAuth token granted by `az login` command to every request."""
     cfg.load_azure_tenant_id()

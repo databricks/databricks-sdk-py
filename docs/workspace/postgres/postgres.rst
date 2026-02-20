@@ -237,7 +237,7 @@
         Returns a paginated list of database projects in the workspace that the user has permission to access.
 
         :param page_size: int (optional)
-          Upper bound for items returned. Cannot be negative.
+          Upper bound for items returned. Cannot be negative. The maximum value is 100.
         :param page_token: str (optional)
           Page token from a previous response. If not provided, returns the first page.
 

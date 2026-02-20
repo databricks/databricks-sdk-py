@@ -45,6 +45,23 @@ def test_user_agent_with_partner(user_agent):
     assert "partner/differenttest" in user_agent.to_string()
 
 
+@pytest.mark.xdist_group(name="user_agent")
+def test_with_extra_is_idempotent(user_agent):
+    user_agent.with_extra("foo", "bar")
+    user_agent.with_extra("foo", "bar")
+    user_agent.with_extra("foo", "bar")
+    assert user_agent.to_string().count("foo/bar") == 1
+
+
+@pytest.mark.xdist_group(name="user_agent")
+def test_with_extra_different_values_still_allowed(user_agent):
+    user_agent.with_extra("foo", "bar")
+    user_agent.with_extra("foo", "wiz")
+    ua = user_agent.to_string()
+    assert "foo/bar" in ua
+    assert "foo/wiz" in ua
+
+
 @pytest.fixture(scope="function")
 def clear_cicd():
     # Save and clear env vars.

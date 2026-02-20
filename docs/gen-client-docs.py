@@ -281,6 +281,11 @@ class Generator:
             "Postgres",
             "provides access to a Postgres database via REST API or direct SQL."
         ),
+        Package(
+            "networking",
+            "Networking",
+            "Manage network connectivity configurations for Databricks workspaces."
+        ),
     ]
 
     def __init__(self):

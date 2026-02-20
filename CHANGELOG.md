@@ -1,5 +1,82 @@
 # Version changelog
 
+## Release v0.91.0 (2026-02-19)
+
+### Bug Fixes
+* Make `useragent.with_extra()` idempotent to prevent User-Agent header growth in long-lived processes.
+
+### API Changes
+* Add `attributes` and `membership_roles` fields for `databricks.sdk.service.postgres.RoleRoleSpec`.
+* Add `membership_roles` field for `databricks.sdk.service.postgres.RoleRoleStatus`.
+* Add `general_access` enum value for `databricks.sdk.service.provisioning.EndpointUseCase`.
+
+
+## Release v0.90.0 (2026-02-18)
+
+### API Changes
+* Add `databricks.sdk.service.networking` package.
+* Add [a.endpoints](https://databricks-sdk-py.readthedocs.io/en/latest/account/networking/endpoints.html) account-level service.
+* Add `create_space()`, `delete_space()`, `get_space()`, `get_space_operation()`, `list_spaces()` and `update_space()` methods for [w.apps](https://databricks-sdk-py.readthedocs.io/en/latest/workspace/apps/apps.html) workspace-level service.
+* Add `space` field for `databricks.sdk.service.apps.App`.
+* Add `space` field for `databricks.sdk.service.apps.ListAppsRequest`.
+* Add `source_type`, `update_time` and `updated_by` fields for `databricks.sdk.service.catalog.EntityTagAssignment`.
+* Add `skip_notify` field for `databricks.sdk.service.dashboards.Subscription`.
+* Add `sparse_checkout` field for `databricks.sdk.service.jobs.GitSource`.
+* Add `disable_auto_optimization`, `max_retries`, `min_retry_interval_millis` and `retry_on_timeout` fields for `databricks.sdk.service.jobs.RunTask`.
+* Add `disable_auto_optimization`, `max_retries`, `min_retry_interval_millis` and `retry_on_timeout` fields for `databricks.sdk.service.jobs.SubmitTask`.
+* Add `budget_policy_id` and `custom_tags` fields for `databricks.sdk.service.postgres.ProjectSpec`.
+* Add `budget_policy_id` and `custom_tags` fields for `databricks.sdk.service.postgres.ProjectStatus`.
+* Add `edgegrid_akamai` enum value for `databricks.sdk.service.catalog.CredentialType`.
+* Add `using_arguments` field for `databricks.sdk.service.catalog.ColumnMask`.
+* Add `effective_enable_file_events` field for `databricks.sdk.service.catalog.CreateExternalLocation`.
+* Add `effective_enable_file_events` field for `databricks.sdk.service.catalog.ExternalLocationInfo`.
+* Add `input_arguments` field for `databricks.sdk.service.catalog.TableRowFilter`.
+* Add `effective_enable_file_events` field for `databricks.sdk.service.catalog.UpdateExternalLocation`.
+
+
+## Release v0.89.0 (2026-02-17)
+
+### New Features and Improvements
+* Remove cloud type restrictions from Azure/GCP credential providers. Azure and GCP authentication now works with any Databricks host when credentials are properly configured,enabling authentication against cloud-agnostic endpoints such as aliased hosts.
+
+
+## Release v0.88.0 (2026-02-12)
+
+### New Features and Improvements
+
+* FilesExt retry logic now respects a retry count limit in addition to the time-based timeout. Operations will stop retrying when either the retry count (`experimental_files_ext_cloud_api_max_retries`, default: 3) or timeout (`retry_timeout_seconds`) is exceeded, whichever comes first. This provides faster feedback when APIs are consistently unavailable.
+
+### Bug Fixes
+
+* FilesExt no longer retries on 500 (Internal Server Error) responses. These errors now fail immediately or fallback to alternative upload methods as appropriate.
+
+### API Changes
+* Deprecated `WorkspaceClient.serving_endpoints.get_open_ai_client()` and `WorkspaceClient.serving_endpoints.get_langchain_chat_open_ai_client()` methods in favor of dedicated packages. Users should migrate to `databricks-openai` (using `DatabricksOpenAI`) and `databricks-langchain` (using `ChatDatabricks`) respectively ([#1238](https://github.com/databricks/databricks-sdk-py/pull/1238)).
+
+
+## Release v0.87.0 (2026-02-11)
+
+### Bug Fixes
+
+* Fixed Databricks M2M OAuth to correctly use Databricks OIDC endpoints instead of incorrectly using Azure endpoints when `ARM_CLIENT_ID` is set. Added new `databricks_oidc_endpoints` property that returns only Databricks OIDC endpoints, and updated all Databricks OAuth flows to use it. The old `oidc_endpoints` property is deprecated but maintained for backward compatibility.
+
+
+## Release v0.86.0 (2026-02-10)
+
+### New Features and Improvements
+* Added `custom_headers` parameter to `WorkspaceClient` and `AccountClient` to support custom HTTP headers in all API requests ([#1245](https://github.com/databricks/databricks-sdk-py/pull/1245)).
+
+### API Changes
+* Add `id` field for `databricks.sdk.service.sharing.CreateRecipient`.
+* Add `id` field for `databricks.sdk.service.sharing.RecipientInfo`.
+* Add `id` field for `databricks.sdk.service.sharing.UpdateRecipient`.
+* Add `query_tags` field for `databricks.sdk.service.sql.ExecuteStatementRequest`.
+* Add `query_tags` field for `databricks.sdk.service.sql.QueryInfo`.
+* Add `uc_volume_misconfigured` enum value for `databricks.sdk.service.compute.EventType`.
+* Add `filters` field for `databricks.sdk.service.jobs.DashboardTask`.
+* Add `ssws_token` enum value for `databricks.sdk.service.catalog.CredentialType`.
+
+
 ## Release v0.85.0 (2026-02-05)
 
 ### API Changes

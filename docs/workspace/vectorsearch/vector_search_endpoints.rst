@@ -6,7 +6,7 @@
 
     **Endpoint**: Represents the compute resources to host vector search indexes.
 
-    .. py:method:: create_endpoint(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str]]) -> Wait[EndpointInfo]
+    .. py:method:: create_endpoint(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], min_qps: Optional[int]]) -> Wait[EndpointInfo]
 
         Create a new endpoint.
 
@@ -16,13 +16,16 @@
           Type of endpoint
         :param budget_policy_id: str (optional)
           The budget policy id to be applied
+        :param min_qps: int (optional)
+          Min QPS for the endpoint. Mutually exclusive with num_replicas. The actual replica count is
+          calculated at index creation/sync time based on this value.
 
         :returns:
           Long-running operation waiter for :class:`EndpointInfo`.
           See :method:wait_get_endpoint_vector_search_endpoint_online for more details.
         
 
-    .. py:method:: create_endpoint_and_wait(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], timeout: datetime.timedelta = 0:20:00]) -> EndpointInfo
+    .. py:method:: create_endpoint_and_wait(name: str, endpoint_type: EndpointType [, budget_policy_id: Optional[str], min_qps: Optional[int], timeout: datetime.timedelta = 0:20:00]) -> EndpointInfo
 
 
     .. py:method:: delete_endpoint(endpoint_name: str)
@@ -53,6 +56,18 @@
           Token for pagination
 
         :returns: Iterator over :class:`EndpointInfo`
+        
+
+    .. py:method:: patch_endpoint(endpoint_name: str [, min_qps: Optional[int]]) -> EndpointInfo
+
+        Update an endpoint
+
+        :param endpoint_name: str
+          Name of the vector search endpoint
+        :param min_qps: int (optional)
+          Min QPS for the endpoint. Positive integer sets QPS target; -1 resets to default scaling behavior.
+
+        :returns: :class:`EndpointInfo`
         
 
     .. py:method:: retrieve_user_visible_metrics(name: str [, end_time: Optional[str], granularity_in_seconds: Optional[int], metrics: Optional[List[Metric]], page_token: Optional[str], start_time: Optional[str]]) -> RetrieveUserVisibleMetricsResponse

@@ -10,9 +10,14 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from google.protobuf.timestamp_pb2 import Timestamp
+
 from databricks.sdk.client_types import HostType
+from databricks.sdk.common import lro
+from databricks.sdk.common.types.fieldmask import FieldMask
+from databricks.sdk.retries import RetryError, poll
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict)
+                                              _repeated_dict, _timestamp)
 
 from ..errors import OperationFailed
 
@@ -84,6 +89,9 @@ class App:
 
     service_principal_name: Optional[str] = None
 
+    space: Optional[str] = None
+    """Name of the space this app belongs to."""
+
     update_time: Optional[str] = None
     """The update time of the app. Formatted timestamp in ISO 6801."""
 
@@ -144,6 +152,8 @@ class App:
             body["service_principal_id"] = self.service_principal_id
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
+        if self.space is not None:
+            body["space"] = self.space
         if self.update_time is not None:
             body["update_time"] = self.update_time
         if self.updater is not None:
@@ -203,6 +213,8 @@ class App:
             body["service_principal_id"] = self.service_principal_id
         if self.service_principal_name is not None:
             body["service_principal_name"] = self.service_principal_name
+        if self.space is not None:
+            body["space"] = self.space
         if self.update_time is not None:
             body["update_time"] = self.update_time
         if self.updater is not None:
@@ -241,6 +253,7 @@ class App:
             service_principal_client_id=d.get("service_principal_client_id", None),
             service_principal_id=d.get("service_principal_id", None),
             service_principal_name=d.get("service_principal_name", None),
+            space=d.get("space", None),
             update_time=d.get("update_time", None),
             updater=d.get("updater", None),
             url=d.get("url", None),
@@ -1016,6 +1029,8 @@ class AppResource:
     name: str
     """Name of the App Resource."""
 
+    app: Optional[AppResourceApp] = None
+
     database: Optional[AppResourceDatabase] = None
 
     description: Optional[str] = None
@@ -1038,6 +1053,8 @@ class AppResource:
     def as_dict(self) -> dict:
         """Serializes the AppResource into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.app:
+            body["app"] = self.app.as_dict()
         if self.database:
             body["database"] = self.database.as_dict()
         if self.description is not None:
@@ -1063,6 +1080,8 @@ class AppResource:
     def as_shallow_dict(self) -> dict:
         """Serializes the AppResource into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.app:
+            body["app"] = self.app
         if self.database:
             body["database"] = self.database
         if self.description is not None:
@@ -1089,6 +1108,7 @@ class AppResource:
     def from_dict(cls, d: Dict[str, Any]) -> AppResource:
         """Deserializes the AppResource from a dictionary."""
         return cls(
+            app=_from_dict(d, "app", AppResourceApp),
             database=_from_dict(d, "database", AppResourceDatabase),
             description=d.get("description", None),
             experiment=_from_dict(d, "experiment", AppResourceExperiment),
@@ -1100,6 +1120,24 @@ class AppResource:
             sql_warehouse=_from_dict(d, "sql_warehouse", AppResourceSqlWarehouse),
             uc_securable=_from_dict(d, "uc_securable", AppResourceUcSecurable),
         )
+
+
+@dataclass
+class AppResourceApp:
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceApp into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceApp into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceApp:
+        """Deserializes the AppResourceApp from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1421,6 +1459,10 @@ class AppResourceUcSecurable:
 
     permission: AppResourceUcSecurableUcSecurablePermission
 
+    securable_kind: Optional[str] = None
+    """The securable kind from Unity Catalog. See
+    https://docs.databricks.com/api/workspace/tables/get#securable_kind_manifest-securable_kind."""
+
     def as_dict(self) -> dict:
         """Serializes the AppResourceUcSecurable into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1428,6 +1470,8 @@ class AppResourceUcSecurable:
             body["permission"] = self.permission.value
         if self.securable_full_name is not None:
             body["securable_full_name"] = self.securable_full_name
+        if self.securable_kind is not None:
+            body["securable_kind"] = self.securable_kind
         if self.securable_type is not None:
             body["securable_type"] = self.securable_type.value
         return body
@@ -1439,6 +1483,8 @@ class AppResourceUcSecurable:
             body["permission"] = self.permission
         if self.securable_full_name is not None:
             body["securable_full_name"] = self.securable_full_name
+        if self.securable_kind is not None:
+            body["securable_kind"] = self.securable_kind
         if self.securable_type is not None:
             body["securable_type"] = self.securable_type
         return body
@@ -1449,6 +1495,7 @@ class AppResourceUcSecurable:
         return cls(
             permission=_enum(d, "permission", AppResourceUcSecurableUcSecurablePermission),
             securable_full_name=d.get("securable_full_name", None),
+            securable_kind=d.get("securable_kind", None),
             securable_type=_enum(d, "securable_type", AppResourceUcSecurableUcSecurableType),
         )
 
@@ -1456,6 +1503,7 @@ class AppResourceUcSecurable:
 class AppResourceUcSecurableUcSecurablePermission(Enum):
 
     EXECUTE = "EXECUTE"
+    MODIFY = "MODIFY"
     READ_VOLUME = "READ_VOLUME"
     SELECT = "SELECT"
     USE_CONNECTION = "USE_CONNECTION"
@@ -1760,6 +1808,55 @@ class CustomTemplate:
 
 
 @dataclass
+class DatabricksServiceExceptionWithDetailsProto:
+    """Databricks Error that is returned by all Databricks APIs."""
+
+    details: Optional[List[dict]] = None
+
+    error_code: Optional[ErrorCode] = None
+
+    message: Optional[str] = None
+
+    stack_trace: Optional[str] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the DatabricksServiceExceptionWithDetailsProto into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.details:
+            body["details"] = [v for v in self.details]
+        if self.error_code is not None:
+            body["error_code"] = self.error_code.value
+        if self.message is not None:
+            body["message"] = self.message
+        if self.stack_trace is not None:
+            body["stack_trace"] = self.stack_trace
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the DatabricksServiceExceptionWithDetailsProto into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.details:
+            body["details"] = self.details
+        if self.error_code is not None:
+            body["error_code"] = self.error_code
+        if self.message is not None:
+            body["message"] = self.message
+        if self.stack_trace is not None:
+            body["stack_trace"] = self.stack_trace
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> DatabricksServiceExceptionWithDetailsProto:
+        """Deserializes the DatabricksServiceExceptionWithDetailsProto from a dictionary."""
+        return cls(
+            details=d.get("details", None),
+            error_code=_enum(d, "error_code", ErrorCode),
+            message=d.get("message", None),
+            stack_trace=d.get("stack_trace", None),
+        )
+
+
+@dataclass
 class EnvVar:
     name: Optional[str] = None
     """The name of the environment variable."""
@@ -1797,6 +1894,92 @@ class EnvVar:
     def from_dict(cls, d: Dict[str, Any]) -> EnvVar:
         """Deserializes the EnvVar from a dictionary."""
         return cls(name=d.get("name", None), value=d.get("value", None), value_from=d.get("value_from", None))
+
+
+class ErrorCode(Enum):
+    """Error codes returned by Databricks APIs to indicate specific failure conditions."""
+
+    ABORTED = "ABORTED"
+    ALREADY_EXISTS = "ALREADY_EXISTS"
+    BAD_REQUEST = "BAD_REQUEST"
+    CANCELLED = "CANCELLED"
+    CATALOG_ALREADY_EXISTS = "CATALOG_ALREADY_EXISTS"
+    CATALOG_DOES_NOT_EXIST = "CATALOG_DOES_NOT_EXIST"
+    CATALOG_NOT_EMPTY = "CATALOG_NOT_EMPTY"
+    COULD_NOT_ACQUIRE_LOCK = "COULD_NOT_ACQUIRE_LOCK"
+    CUSTOMER_UNAUTHORIZED = "CUSTOMER_UNAUTHORIZED"
+    DAC_ALREADY_EXISTS = "DAC_ALREADY_EXISTS"
+    DAC_DOES_NOT_EXIST = "DAC_DOES_NOT_EXIST"
+    DATA_LOSS = "DATA_LOSS"
+    DEADLINE_EXCEEDED = "DEADLINE_EXCEEDED"
+    DEPLOYMENT_TIMEOUT = "DEPLOYMENT_TIMEOUT"
+    DIRECTORY_NOT_EMPTY = "DIRECTORY_NOT_EMPTY"
+    DIRECTORY_PROTECTED = "DIRECTORY_PROTECTED"
+    DRY_RUN_FAILED = "DRY_RUN_FAILED"
+    ENDPOINT_NOT_FOUND = "ENDPOINT_NOT_FOUND"
+    EXTERNAL_LOCATION_ALREADY_EXISTS = "EXTERNAL_LOCATION_ALREADY_EXISTS"
+    EXTERNAL_LOCATION_DOES_NOT_EXIST = "EXTERNAL_LOCATION_DOES_NOT_EXIST"
+    FEATURE_DISABLED = "FEATURE_DISABLED"
+    GIT_CONFLICT = "GIT_CONFLICT"
+    GIT_REMOTE_ERROR = "GIT_REMOTE_ERROR"
+    GIT_SENSITIVE_TOKEN_DETECTED = "GIT_SENSITIVE_TOKEN_DETECTED"
+    GIT_UNKNOWN_REF = "GIT_UNKNOWN_REF"
+    GIT_URL_NOT_ON_ALLOW_LIST = "GIT_URL_NOT_ON_ALLOW_LIST"
+    INSECURE_PARTNER_RESPONSE = "INSECURE_PARTNER_RESPONSE"
+    INTERNAL_ERROR = "INTERNAL_ERROR"
+    INVALID_PARAMETER_VALUE = "INVALID_PARAMETER_VALUE"
+    INVALID_STATE = "INVALID_STATE"
+    INVALID_STATE_TRANSITION = "INVALID_STATE_TRANSITION"
+    IO_ERROR = "IO_ERROR"
+    IPYNB_FILE_IN_REPO = "IPYNB_FILE_IN_REPO"
+    MALFORMED_PARTNER_RESPONSE = "MALFORMED_PARTNER_RESPONSE"
+    MALFORMED_REQUEST = "MALFORMED_REQUEST"
+    MANAGED_RESOURCE_GROUP_DOES_NOT_EXIST = "MANAGED_RESOURCE_GROUP_DOES_NOT_EXIST"
+    MAX_BLOCK_SIZE_EXCEEDED = "MAX_BLOCK_SIZE_EXCEEDED"
+    MAX_CHILD_NODE_SIZE_EXCEEDED = "MAX_CHILD_NODE_SIZE_EXCEEDED"
+    MAX_LIST_SIZE_EXCEEDED = "MAX_LIST_SIZE_EXCEEDED"
+    MAX_NOTEBOOK_SIZE_EXCEEDED = "MAX_NOTEBOOK_SIZE_EXCEEDED"
+    MAX_READ_SIZE_EXCEEDED = "MAX_READ_SIZE_EXCEEDED"
+    METASTORE_ALREADY_EXISTS = "METASTORE_ALREADY_EXISTS"
+    METASTORE_DOES_NOT_EXIST = "METASTORE_DOES_NOT_EXIST"
+    METASTORE_NOT_EMPTY = "METASTORE_NOT_EMPTY"
+    NOT_FOUND = "NOT_FOUND"
+    NOT_IMPLEMENTED = "NOT_IMPLEMENTED"
+    PARTIAL_DELETE = "PARTIAL_DELETE"
+    PERMISSION_DENIED = "PERMISSION_DENIED"
+    PERMISSION_NOT_PROPAGATED = "PERMISSION_NOT_PROPAGATED"
+    PRINCIPAL_DOES_NOT_EXIST = "PRINCIPAL_DOES_NOT_EXIST"
+    PROJECTS_OPERATION_TIMEOUT = "PROJECTS_OPERATION_TIMEOUT"
+    PROVIDER_ALREADY_EXISTS = "PROVIDER_ALREADY_EXISTS"
+    PROVIDER_DOES_NOT_EXIST = "PROVIDER_DOES_NOT_EXIST"
+    PROVIDER_SHARE_NOT_ACCESSIBLE = "PROVIDER_SHARE_NOT_ACCESSIBLE"
+    QUOTA_EXCEEDED = "QUOTA_EXCEEDED"
+    RECIPIENT_ALREADY_EXISTS = "RECIPIENT_ALREADY_EXISTS"
+    RECIPIENT_DOES_NOT_EXIST = "RECIPIENT_DOES_NOT_EXIST"
+    REQUEST_LIMIT_EXCEEDED = "REQUEST_LIMIT_EXCEEDED"
+    RESOURCE_ALREADY_EXISTS = "RESOURCE_ALREADY_EXISTS"
+    RESOURCE_CONFLICT = "RESOURCE_CONFLICT"
+    RESOURCE_DOES_NOT_EXIST = "RESOURCE_DOES_NOT_EXIST"
+    RESOURCE_EXHAUSTED = "RESOURCE_EXHAUSTED"
+    RESOURCE_LIMIT_EXCEEDED = "RESOURCE_LIMIT_EXCEEDED"
+    SCHEMA_ALREADY_EXISTS = "SCHEMA_ALREADY_EXISTS"
+    SCHEMA_DOES_NOT_EXIST = "SCHEMA_DOES_NOT_EXIST"
+    SCHEMA_NOT_EMPTY = "SCHEMA_NOT_EMPTY"
+    SEARCH_QUERY_TOO_LONG = "SEARCH_QUERY_TOO_LONG"
+    SEARCH_QUERY_TOO_SHORT = "SEARCH_QUERY_TOO_SHORT"
+    SERVICE_UNDER_MAINTENANCE = "SERVICE_UNDER_MAINTENANCE"
+    SHARE_ALREADY_EXISTS = "SHARE_ALREADY_EXISTS"
+    SHARE_DOES_NOT_EXIST = "SHARE_DOES_NOT_EXIST"
+    STORAGE_CREDENTIAL_ALREADY_EXISTS = "STORAGE_CREDENTIAL_ALREADY_EXISTS"
+    STORAGE_CREDENTIAL_DOES_NOT_EXIST = "STORAGE_CREDENTIAL_DOES_NOT_EXIST"
+    TABLE_ALREADY_EXISTS = "TABLE_ALREADY_EXISTS"
+    TABLE_DOES_NOT_EXIST = "TABLE_DOES_NOT_EXIST"
+    TEMPORARILY_UNAVAILABLE = "TEMPORARILY_UNAVAILABLE"
+    UNAUTHENTICATED = "UNAUTHENTICATED"
+    UNAVAILABLE = "UNAVAILABLE"
+    UNKNOWN = "UNKNOWN"
+    UNPARSEABLE_HTTP_ERROR = "UNPARSEABLE_HTTP_ERROR"
+    WORKSPACE_TEMPORARILY_UNAVAILABLE = "WORKSPACE_TEMPORARILY_UNAVAILABLE"
 
 
 @dataclass
@@ -2031,6 +2214,406 @@ class ListCustomTemplatesResponse:
         )
 
 
+@dataclass
+class ListSpacesResponse:
+    next_page_token: Optional[str] = None
+    """Pagination token to request the next page of app spaces."""
+
+    spaces: Optional[List[Space]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the ListSpacesResponse into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.spaces:
+            body["spaces"] = [v.as_dict() for v in self.spaces]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ListSpacesResponse into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.next_page_token is not None:
+            body["next_page_token"] = self.next_page_token
+        if self.spaces:
+            body["spaces"] = self.spaces
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ListSpacesResponse:
+        """Deserializes the ListSpacesResponse from a dictionary."""
+        return cls(next_page_token=d.get("next_page_token", None), spaces=_repeated_dict(d, "spaces", Space))
+
+
+@dataclass
+class Operation:
+    """This resource represents a long-running operation that is the result of a network API call."""
+
+    done: Optional[bool] = None
+    """If the value is `false`, it means the operation is still in progress. If `true`, the operation
+    is completed, and either `error` or `response` is available."""
+
+    error: Optional[DatabricksServiceExceptionWithDetailsProto] = None
+    """The error result of the operation in case of failure or cancellation."""
+
+    metadata: Optional[dict] = None
+    """Service-specific metadata associated with the operation. It typically contains progress
+    information and common metadata such as create time. Some services might not provide such
+    metadata."""
+
+    name: Optional[str] = None
+    """The server-assigned name, which is only unique within the same service that originally returns
+    it. If you use the default HTTP mapping, the `name` should be a resource name ending with
+    `operations/{unique_id}`."""
+
+    response: Optional[dict] = None
+    """The normal, successful response of the operation."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Operation into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.done is not None:
+            body["done"] = self.done
+        if self.error:
+            body["error"] = self.error.as_dict()
+        if self.metadata:
+            body["metadata"] = self.metadata
+        if self.name is not None:
+            body["name"] = self.name
+        if self.response:
+            body["response"] = self.response
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Operation into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.done is not None:
+            body["done"] = self.done
+        if self.error:
+            body["error"] = self.error
+        if self.metadata:
+            body["metadata"] = self.metadata
+        if self.name is not None:
+            body["name"] = self.name
+        if self.response:
+            body["response"] = self.response
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Operation:
+        """Deserializes the Operation from a dictionary."""
+        return cls(
+            done=d.get("done", None),
+            error=_from_dict(d, "error", DatabricksServiceExceptionWithDetailsProto),
+            metadata=d.get("metadata", None),
+            name=d.get("name", None),
+            response=d.get("response", None),
+        )
+
+
+@dataclass
+class Space:
+    create_time: Optional[Timestamp] = None
+    """The creation time of the app space. Formatted timestamp in ISO 6801."""
+
+    creator: Optional[str] = None
+    """The email of the user that created the app space."""
+
+    description: Optional[str] = None
+    """The description of the app space."""
+
+    effective_usage_policy_id: Optional[str] = None
+    """The effective usage policy ID used by apps in the space."""
+
+    effective_user_api_scopes: Optional[List[str]] = None
+    """The effective api scopes granted to the user access token."""
+
+    id: Optional[str] = None
+    """The unique identifier of the app space."""
+
+    name: Optional[str] = None
+    """The name of the app space. The name must contain only lowercase alphanumeric characters and
+    hyphens. It must be unique within the workspace."""
+
+    oauth2_app_client_id: Optional[str] = None
+    """The OAuth2 app client ID for the app space."""
+
+    oauth2_app_integration_id: Optional[str] = None
+    """The OAuth2 app integration ID for the app space."""
+
+    resources: Optional[List[AppResource]] = None
+    """Resources for the app space. Resources configured at the space level are available to all apps
+    in the space."""
+
+    service_principal_client_id: Optional[str] = None
+    """The service principal client ID for the app space."""
+
+    service_principal_id: Optional[int] = None
+    """The service principal ID for the app space."""
+
+    service_principal_name: Optional[str] = None
+    """The service principal name for the app space."""
+
+    status: Optional[SpaceStatus] = None
+    """The status of the app space."""
+
+    update_time: Optional[Timestamp] = None
+    """The update time of the app space. Formatted timestamp in ISO 6801."""
+
+    updater: Optional[str] = None
+    """The email of the user that last updated the app space."""
+
+    usage_policy_id: Optional[str] = None
+    """The usage policy ID for managing cost at the space level."""
+
+    user_api_scopes: Optional[List[str]] = None
+    """OAuth scopes for apps in the space."""
+
+    def as_dict(self) -> dict:
+        """Serializes the Space into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time.ToJsonString()
+        if self.creator is not None:
+            body["creator"] = self.creator
+        if self.description is not None:
+            body["description"] = self.description
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
+        if self.effective_user_api_scopes:
+            body["effective_user_api_scopes"] = [v for v in self.effective_user_api_scopes]
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oauth2_app_client_id is not None:
+            body["oauth2_app_client_id"] = self.oauth2_app_client_id
+        if self.oauth2_app_integration_id is not None:
+            body["oauth2_app_integration_id"] = self.oauth2_app_integration_id
+        if self.resources:
+            body["resources"] = [v.as_dict() for v in self.resources]
+        if self.service_principal_client_id is not None:
+            body["service_principal_client_id"] = self.service_principal_client_id
+        if self.service_principal_id is not None:
+            body["service_principal_id"] = self.service_principal_id
+        if self.service_principal_name is not None:
+            body["service_principal_name"] = self.service_principal_name
+        if self.status:
+            body["status"] = self.status.as_dict()
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updater is not None:
+            body["updater"] = self.updater
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
+        if self.user_api_scopes:
+            body["user_api_scopes"] = [v for v in self.user_api_scopes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the Space into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.create_time is not None:
+            body["create_time"] = self.create_time
+        if self.creator is not None:
+            body["creator"] = self.creator
+        if self.description is not None:
+            body["description"] = self.description
+        if self.effective_usage_policy_id is not None:
+            body["effective_usage_policy_id"] = self.effective_usage_policy_id
+        if self.effective_user_api_scopes:
+            body["effective_user_api_scopes"] = self.effective_user_api_scopes
+        if self.id is not None:
+            body["id"] = self.id
+        if self.name is not None:
+            body["name"] = self.name
+        if self.oauth2_app_client_id is not None:
+            body["oauth2_app_client_id"] = self.oauth2_app_client_id
+        if self.oauth2_app_integration_id is not None:
+            body["oauth2_app_integration_id"] = self.oauth2_app_integration_id
+        if self.resources:
+            body["resources"] = self.resources
+        if self.service_principal_client_id is not None:
+            body["service_principal_client_id"] = self.service_principal_client_id
+        if self.service_principal_id is not None:
+            body["service_principal_id"] = self.service_principal_id
+        if self.service_principal_name is not None:
+            body["service_principal_name"] = self.service_principal_name
+        if self.status:
+            body["status"] = self.status
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updater is not None:
+            body["updater"] = self.updater
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
+        if self.user_api_scopes:
+            body["user_api_scopes"] = self.user_api_scopes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> Space:
+        """Deserializes the Space from a dictionary."""
+        return cls(
+            create_time=_timestamp(d, "create_time"),
+            creator=d.get("creator", None),
+            description=d.get("description", None),
+            effective_usage_policy_id=d.get("effective_usage_policy_id", None),
+            effective_user_api_scopes=d.get("effective_user_api_scopes", None),
+            id=d.get("id", None),
+            name=d.get("name", None),
+            oauth2_app_client_id=d.get("oauth2_app_client_id", None),
+            oauth2_app_integration_id=d.get("oauth2_app_integration_id", None),
+            resources=_repeated_dict(d, "resources", AppResource),
+            service_principal_client_id=d.get("service_principal_client_id", None),
+            service_principal_id=d.get("service_principal_id", None),
+            service_principal_name=d.get("service_principal_name", None),
+            status=_from_dict(d, "status", SpaceStatus),
+            update_time=_timestamp(d, "update_time"),
+            updater=d.get("updater", None),
+            usage_policy_id=d.get("usage_policy_id", None),
+            user_api_scopes=d.get("user_api_scopes", None),
+        )
+
+
+@dataclass
+class SpaceStatus:
+    message: Optional[str] = None
+    """Message providing context about the current state."""
+
+    state: Optional[SpaceStatusSpaceState] = None
+    """The state of the app space."""
+
+    def as_dict(self) -> dict:
+        """Serializes the SpaceStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.message is not None:
+            body["message"] = self.message
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SpaceStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.message is not None:
+            body["message"] = self.message
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SpaceStatus:
+        """Deserializes the SpaceStatus from a dictionary."""
+        return cls(message=d.get("message", None), state=_enum(d, "state", SpaceStatusSpaceState))
+
+
+class SpaceStatusSpaceState(Enum):
+
+    SPACE_ACTIVE = "SPACE_ACTIVE"
+    SPACE_CREATING = "SPACE_CREATING"
+    SPACE_DELETED = "SPACE_DELETED"
+    SPACE_DELETING = "SPACE_DELETING"
+    SPACE_ERROR = "SPACE_ERROR"
+    SPACE_UPDATING = "SPACE_UPDATING"
+
+
+@dataclass
+class SpaceUpdate:
+    """Tracks app space update information."""
+
+    description: Optional[str] = None
+
+    resources: Optional[List[AppResource]] = None
+
+    status: Optional[SpaceUpdateStatus] = None
+
+    usage_policy_id: Optional[str] = None
+
+    user_api_scopes: Optional[List[str]] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the SpaceUpdate into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.resources:
+            body["resources"] = [v.as_dict() for v in self.resources]
+        if self.status:
+            body["status"] = self.status.as_dict()
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
+        if self.user_api_scopes:
+            body["user_api_scopes"] = [v for v in self.user_api_scopes]
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SpaceUpdate into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.description is not None:
+            body["description"] = self.description
+        if self.resources:
+            body["resources"] = self.resources
+        if self.status:
+            body["status"] = self.status
+        if self.usage_policy_id is not None:
+            body["usage_policy_id"] = self.usage_policy_id
+        if self.user_api_scopes:
+            body["user_api_scopes"] = self.user_api_scopes
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SpaceUpdate:
+        """Deserializes the SpaceUpdate from a dictionary."""
+        return cls(
+            description=d.get("description", None),
+            resources=_repeated_dict(d, "resources", AppResource),
+            status=_from_dict(d, "status", SpaceUpdateStatus),
+            usage_policy_id=d.get("usage_policy_id", None),
+            user_api_scopes=d.get("user_api_scopes", None),
+        )
+
+
+class SpaceUpdateState(Enum):
+
+    FAILED = "FAILED"
+    IN_PROGRESS = "IN_PROGRESS"
+    NOT_UPDATED = "NOT_UPDATED"
+    SUCCEEDED = "SUCCEEDED"
+
+
+@dataclass
+class SpaceUpdateStatus:
+    """Status of an app space update operation"""
+
+    message: Optional[str] = None
+
+    state: Optional[SpaceUpdateState] = None
+
+    def as_dict(self) -> dict:
+        """Serializes the SpaceUpdateStatus into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.message is not None:
+            body["message"] = self.message
+        if self.state is not None:
+            body["state"] = self.state.value
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the SpaceUpdateStatus into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.message is not None:
+            body["message"] = self.message
+        if self.state is not None:
+            body["state"] = self.state
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> SpaceUpdateStatus:
+        """Deserializes the SpaceUpdateStatus from a dictionary."""
+        return cls(message=d.get("message", None), state=_enum(d, "state", SpaceUpdateState))
+
+
 class AppsAPI:
     """Apps run directly on a customer's Databricks instance, integrate with their data, use and extend
     Databricks services, and enable users to interact through single sign-on."""
@@ -2200,6 +2783,28 @@ class AppsAPI:
     def create_and_wait(self, app: App, *, no_compute: Optional[bool] = None, timeout=timedelta(minutes=20)) -> App:
         return self.create(app=app, no_compute=no_compute).result(timeout=timeout)
 
+    def create_space(self, space: Space) -> CreateSpaceOperation:
+        """Creates a new app space.
+
+        :param space: :class:`Space`
+
+        :returns: :class:`Operation`
+        """
+
+        body = space.as_dict()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("POST", "/api/2.0/app-spaces", body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return CreateSpaceOperation(self, operation)
+
     def create_update(self, app_name: str, update_mask: str, *, app: Optional[App] = None) -> Wait[AppUpdate]:
         """Creates an app update and starts the update process. The update process is asynchronous and the status
         of the update can be checked with the GetAppUpdate method.
@@ -2263,6 +2868,27 @@ class AppsAPI:
 
         res = self._api.do("DELETE", f"/api/2.0/apps/{name}", headers=headers)
         return App.from_dict(res)
+
+    def delete_space(self, name: str) -> DeleteSpaceOperation:
+        """Deletes an app space.
+
+        :param name: str
+          The name of the app space.
+
+        :returns: :class:`Operation`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("DELETE", f"/api/2.0/app-spaces/{name}", headers=headers)
+        operation = Operation.from_dict(res)
+        return DeleteSpaceOperation(self, operation)
 
     def deploy(self, app_name: str, app_deployment: AppDeployment) -> Wait[AppDeployment]:
         """Creates an app deployment for the app with the supplied name.
@@ -2382,6 +3008,46 @@ class AppsAPI:
         res = self._api.do("GET", f"/api/2.0/permissions/apps/{app_name}", headers=headers)
         return AppPermissions.from_dict(res)
 
+    def get_space(self, name: str) -> Space:
+        """Retrieves information for the app space with the supplied name.
+
+        :param name: str
+          The name of the app space.
+
+        :returns: :class:`Space`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/app-spaces/{name}", headers=headers)
+        return Space.from_dict(res)
+
+    def get_space_operation(self, name: str) -> Operation:
+        """Gets the status of an app space update operation.
+
+        :param name: str
+          The name of the operation resource.
+
+        :returns: :class:`Operation`
+        """
+
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("GET", f"/api/2.0/app-spaces/{name}/operation", headers=headers)
+        return Operation.from_dict(res)
+
     def get_update(self, app_name: str) -> AppUpdate:
         """Gets the status of an app update.
 
@@ -2402,13 +3068,17 @@ class AppsAPI:
         res = self._api.do("GET", f"/api/2.0/apps/{app_name}/update", headers=headers)
         return AppUpdate.from_dict(res)
 
-    def list(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[App]:
+    def list(
+        self, *, page_size: Optional[int] = None, page_token: Optional[str] = None, space: Optional[str] = None
+    ) -> Iterator[App]:
         """Lists all apps in the workspace.
 
         :param page_size: int (optional)
           Upper bound for items returned.
         :param page_token: str (optional)
           Pagination token to go to the next page of apps. Requests first page if absent.
+        :param space: str (optional)
+          Filter apps by app space name. When specified, only apps belonging to this space are returned.
 
         :returns: Iterator over :class:`App`
         """
@@ -2418,6 +3088,8 @@ class AppsAPI:
             query["page_size"] = page_size
         if page_token is not None:
             query["page_token"] = page_token
+        if space is not None:
+            query["space"] = space
         headers = {
             "Accept": "application/json",
         }
@@ -2468,6 +3140,39 @@ class AppsAPI:
             if "app_deployments" in json:
                 for v in json["app_deployments"]:
                     yield AppDeployment.from_dict(v)
+            if "next_page_token" not in json or not json["next_page_token"]:
+                return
+            query["page_token"] = json["next_page_token"]
+
+    def list_spaces(self, *, page_size: Optional[int] = None, page_token: Optional[str] = None) -> Iterator[Space]:
+        """Lists all app spaces in the workspace.
+
+        :param page_size: int (optional)
+          Upper bound for items returned.
+        :param page_token: str (optional)
+          Pagination token to go to the next page of app spaces. Requests first page if absent.
+
+        :returns: Iterator over :class:`Space`
+        """
+
+        query = {}
+        if page_size is not None:
+            query["page_size"] = page_size
+        if page_token is not None:
+            query["page_token"] = page_token
+        headers = {
+            "Accept": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        while True:
+            json = self._api.do("GET", "/api/2.0/app-spaces", query=query, headers=headers)
+            if "spaces" in json:
+                for v in json["spaces"]:
+                    yield Space.from_dict(v)
             if "next_page_token" not in json or not json["next_page_token"]:
                 return
             query["page_token"] = json["next_page_token"]
@@ -2602,6 +3307,274 @@ class AppsAPI:
 
         res = self._api.do("PATCH", f"/api/2.0/permissions/apps/{app_name}", body=body, headers=headers)
         return AppPermissions.from_dict(res)
+
+    def update_space(self, name: str, space: Space, update_mask: FieldMask) -> UpdateSpaceOperation:
+        """Updates an app space. The update process is asynchronous and the status of the update can be checked
+        with the GetSpaceOperation method.
+
+        :param name: str
+          The name of the app space. The name must contain only lowercase alphanumeric characters and hyphens.
+          It must be unique within the workspace.
+        :param space: :class:`Space`
+        :param update_mask: FieldMask
+          The field mask must be a single string, with multiple fields separated by commas (no spaces). The
+          field path is relative to the resource object, using a dot (`.`) to navigate sub-fields (e.g.,
+          `author.given_name`). Specification of elements in sequence or map fields is not allowed, as only
+          the entire collection field can be specified. Field names must exactly match the resource field
+          names.
+
+          A field mask of `*` indicates full replacement. It’s recommended to always explicitly list the
+          fields being updated and avoid using `*` wildcards, as it can lead to unintended results if the API
+          changes in the future.
+
+        :returns: :class:`Operation`
+        """
+
+        body = space.as_dict()
+        query = {}
+        if update_mask is not None:
+            query["update_mask"] = update_mask.ToJsonString()
+        headers = {
+            "Accept": "application/json",
+            "Content-Type": "application/json",
+        }
+
+        cfg = self._api._cfg
+        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
+            headers["X-Databricks-Org-Id"] = cfg.workspace_id
+
+        res = self._api.do("PATCH", f"/api/2.0/app-spaces/{name}", query=query, body=body, headers=headers)
+        operation = Operation.from_dict(res)
+        return UpdateSpaceOperation(self, operation)
+
+
+class CreateSpaceOperation:
+    """Long-running operation for create_space"""
+
+    def __init__(self, impl: AppsAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> Space:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Space`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_space_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            space = Space.from_dict(operation.response)
+
+            return space, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> Space:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`Space` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return Space.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_space_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class DeleteSpaceOperation:
+    """Long-running operation for delete_space"""
+
+    def __init__(self, impl: AppsAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None):
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Any /* MISSING TYPE */`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_space_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            return {}, None
+
+        poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> Space:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`Space` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return Space.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_space_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
+
+
+class UpdateSpaceOperation:
+    """Long-running operation for update_space"""
+
+    def __init__(self, impl: AppsAPI, operation: Operation):
+        self._impl = impl
+        self._operation = operation
+
+    def wait(self, opts: Optional[lro.LroOptions] = None) -> Space:
+        """Wait blocks until the long-running operation is completed. If no timeout is
+        specified, this will poll indefinitely. If a timeout is provided and the operation
+        didn't finish within the timeout, this function will raise an error of type
+        TimeoutError, otherwise returns successful response and any errors encountered.
+
+        :param opts: :class:`LroOptions`
+          Timeout options (default: polls indefinitely)
+
+        :returns: :class:`Space`
+        """
+
+        def poll_operation():
+            operation = self._impl.get_space_operation(name=self._operation.name)
+
+            # Update local operation state
+            self._operation = operation
+
+            if not operation.done:
+                return None, RetryError.continues("operation still in progress")
+
+            if operation.error:
+                error_msg = operation.error.message if operation.error.message else "unknown error"
+                if operation.error.error_code:
+                    error_msg = f"[{operation.error.error_code}] {error_msg}"
+                return None, RetryError.halt(Exception(f"operation failed: {error_msg}"))
+
+            # Operation completed successfully, unmarshal response.
+            if operation.response is None:
+                return None, RetryError.halt(Exception("operation completed but no response available"))
+
+            space = Space.from_dict(operation.response)
+
+            return space, None
+
+        return poll(poll_operation, timeout=opts.timeout if opts is not None else None)
+
+    def name(self) -> str:
+        """Name returns the name of the long-running operation. The name is assigned
+        by the server and is unique within the service from which the operation is created.
+
+        :returns: str
+        """
+        return self._operation.name
+
+    def metadata(self) -> SpaceUpdate:
+        """Metadata returns metadata associated with the long-running operation.
+        If the metadata is not available, the returned metadata is None.
+
+        :returns: :class:`SpaceUpdate` or None
+        """
+        if self._operation.metadata is None:
+            return None
+
+        return SpaceUpdate.from_dict(self._operation.metadata)
+
+    def done(self) -> bool:
+        """Done reports whether the long-running operation has completed.
+
+        :returns: bool
+        """
+        # Refresh the operation state first
+        operation = self._impl.get_space_operation(name=self._operation.name)
+
+        # Update local operation state
+        self._operation = operation
+
+        return operation.done
 
 
 class AppsSettingsAPI:

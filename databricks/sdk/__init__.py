@@ -30,6 +30,7 @@ from databricks.sdk.service import iamv2 as pkg_iamv2
 from databricks.sdk.service import jobs as pkg_jobs
 from databricks.sdk.service import marketplace as pkg_marketplace
 from databricks.sdk.service import ml as pkg_ml
+from databricks.sdk.service import networking as pkg_networking
 from databricks.sdk.service import oauth2 as pkg_oauth2
 from databricks.sdk.service import pipelines as pkg_pipelines
 from databricks.sdk.service import postgres as pkg_postgres
@@ -109,6 +110,7 @@ from databricks.sdk.service.ml import (ExperimentsAPI, FeatureEngineeringAPI,
                                        FeatureStoreAPI, ForecastingAPI,
                                        MaterializedFeaturesAPI,
                                        ModelRegistryAPI)
+from databricks.sdk.service.networking import EndpointsAPI
 from databricks.sdk.service.oauth2 import (AccountFederationPolicyAPI,
                                            CustomAppIntegrationAPI,
                                            OAuthPublishedAppsAPI,
@@ -225,6 +227,7 @@ class WorkspaceClient:
         config: Optional[client.Config] = None,
         scopes: Optional[List[str]] = None,
         authorization_details: Optional[List[AuthorizationDetail]] = None,
+        custom_headers: Optional[dict] = None,
     ):
         if not config:
             config = client.Config(
@@ -259,6 +262,7 @@ class WorkspaceClient:
                     if authorization_details
                     else None
                 ),
+                custom_headers=custom_headers,
             )
         self._config = config.copy()
         self._dbutils = _make_dbutils(self._config)
@@ -796,12 +800,12 @@ class WorkspaceClient:
 
     @property
     def quality_monitor_v2(self) -> pkg_qualitymonitorv2.QualityMonitorV2API:
-        """[DEPRECATED] This API is deprecated."""
+        """Deprecated: Please use the Data Quality Monitoring API instead (REST: /api/data-quality/v1/monitors)."""
         return self._quality_monitor_v2
 
     @property
     def quality_monitors(self) -> pkg_catalog.QualityMonitorsAPI:
-        """[DEPRECATED] This API is deprecated."""
+        """Deprecated: Please use the Data Quality Monitors API instead (REST: /api/data-quality/v1/monitors), which manages both Data Profiling and Anomaly Detection."""
         return self._quality_monitors
 
     @property
@@ -1077,6 +1081,7 @@ class AccountClient:
         credentials_provider: Optional[CredentialsStrategy] = None,
         token_audience: Optional[str] = None,
         config: Optional[client.Config] = None,
+        custom_headers: Optional[dict] = None,
     ):
         if not config:
             config = client.Config(
@@ -1105,6 +1110,7 @@ class AccountClient:
                 product=product,
                 product_version=product_version,
                 token_audience=token_audience,
+                custom_headers=custom_headers,
             )
         self._config = config.copy()
         self._api_client = client.ApiClient(self._config)
@@ -1115,6 +1121,7 @@ class AccountClient:
         self._credentials = pkg_provisioning.CredentialsAPI(self._api_client)
         self._custom_app_integration = pkg_oauth2.CustomAppIntegrationAPI(self._api_client)
         self._encryption_keys = pkg_provisioning.EncryptionKeysAPI(self._api_client)
+        self._endpoints = pkg_networking.EndpointsAPI(self._api_client)
         self._federation_policy = pkg_oauth2.AccountFederationPolicyAPI(self._api_client)
         self._groups_v2 = pkg_iam.AccountGroupsV2API(self._api_client)
         self._iam_v2 = pkg_iamv2.AccountIamV2API(self._api_client)
@@ -1187,6 +1194,11 @@ class AccountClient:
     def encryption_keys(self) -> pkg_provisioning.EncryptionKeysAPI:
         """These APIs manage encryption key configurations for this workspace (optional)."""
         return self._encryption_keys
+
+    @property
+    def endpoints(self) -> pkg_networking.EndpointsAPI:
+        """These APIs manage endpoint configurations for this account."""
+        return self._endpoints
 
     @property
     def federation_policy(self) -> pkg_oauth2.AccountFederationPolicyAPI:

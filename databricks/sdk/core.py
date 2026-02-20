@@ -83,11 +83,16 @@ class ApiClient:
             # Once we've fixed the OpenAPI spec, we can remove this
             path = re.sub("^/api/2.0/fs/files//", "/api/2.0/fs/files/", path)
             url = f"{self._cfg.host}{path}"
+
+        # Merge custom headers with request-specific headers
+        # Request-specific headers take precedence
+        merged_headers = {**self._cfg._custom_headers, **(headers or {})}
+
         return self._api_client.do(
             method=method,
             url=url,
             query=query,
-            headers=headers,
+            headers=merged_headers,
             body=body,
             raw=raw,
             files=files,

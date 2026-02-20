@@ -269,7 +269,8 @@ class GenieAttachment:
     """Follow-up questions suggested by Genie"""
 
     text: Optional[TextAttachment] = None
-    """Text Attachment if Genie responds with text"""
+    """Text Attachment if Genie responds with text. This also contains the final summary when
+    available."""
 
     def as_dict(self) -> dict:
         """Serializes the GenieAttachment into a dictionary suitable for use as a JSON request body."""
@@ -1207,6 +1208,7 @@ class MessageErrorType(Enum):
     CHAT_COMPLETION_NETWORK_EXCEPTION = "CHAT_COMPLETION_NETWORK_EXCEPTION"
     CONTENT_FILTER_EXCEPTION = "CONTENT_FILTER_EXCEPTION"
     CONTEXT_EXCEEDED_EXCEPTION = "CONTEXT_EXCEEDED_EXCEPTION"
+    COULD_NOT_GET_DASHBOARD_SCHEMA_EXCEPTION = "COULD_NOT_GET_DASHBOARD_SCHEMA_EXCEPTION"
     COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION = "COULD_NOT_GET_MODEL_DEPLOYMENTS_EXCEPTION"
     COULD_NOT_GET_UC_SCHEMA_EXCEPTION = "COULD_NOT_GET_UC_SCHEMA_EXCEPTION"
     DEPLOYMENT_NOT_FOUND_EXCEPTION = "DEPLOYMENT_NOT_FOUND_EXCEPTION"
@@ -1588,6 +1590,10 @@ class Subscription:
     schedule_id: Optional[str] = None
     """UUID identifying the schedule to which the subscription belongs."""
 
+    skip_notify: Optional[bool] = None
+    """Controls whether notifications are sent to the subscriber for scheduled dashboard refreshes. If
+    not defined, defaults to false in the backend to match the current behavior (refresh and notify)"""
+
     subscription_id: Optional[str] = None
     """UUID identifying the subscription."""
 
@@ -1607,6 +1613,8 @@ class Subscription:
             body["etag"] = self.etag
         if self.schedule_id is not None:
             body["schedule_id"] = self.schedule_id
+        if self.skip_notify is not None:
+            body["skip_notify"] = self.skip_notify
         if self.subscriber:
             body["subscriber"] = self.subscriber.as_dict()
         if self.subscription_id is not None:
@@ -1628,6 +1636,8 @@ class Subscription:
             body["etag"] = self.etag
         if self.schedule_id is not None:
             body["schedule_id"] = self.schedule_id
+        if self.skip_notify is not None:
+            body["skip_notify"] = self.skip_notify
         if self.subscriber:
             body["subscriber"] = self.subscriber
         if self.subscription_id is not None:
@@ -1645,6 +1655,7 @@ class Subscription:
             dashboard_id=d.get("dashboard_id", None),
             etag=d.get("etag", None),
             schedule_id=d.get("schedule_id", None),
+            skip_notify=d.get("skip_notify", None),
             subscriber=_from_dict(d, "subscriber", Subscriber),
             subscription_id=d.get("subscription_id", None),
             update_time=d.get("update_time", None),

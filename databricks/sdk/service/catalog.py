@@ -10,9 +10,12 @@ from datetime import timedelta
 from enum import Enum
 from typing import Any, Callable, Dict, Iterator, List, Optional
 
+from google.protobuf.timestamp_pb2 import Timestamp
+
 from databricks.sdk.client_types import HostType
 from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum)
+                                              _repeated_dict, _repeated_enum,
+                                              _timestamp)
 
 from ..errors import OperationFailed
 
@@ -1442,6 +1445,11 @@ class ColumnMask:
     function_name: Optional[str] = None
     """The full name of the column mask SQL UDF."""
 
+    using_arguments: Optional[List[PolicyFunctionArgument]] = None
+    """The list of additional table columns or literals to be passed as additional arguments to a
+    column mask function. This is the replacement of the deprecated using_column_names field and
+    carries information about the types (alias or constant) of the arguments to the mask function."""
+
     using_column_names: Optional[List[str]] = None
     """The list of additional table columns to be passed as input to the column mask function. The
     first arg of the mask function should be of the type of the column being masked and the types of
@@ -1452,6 +1460,8 @@ class ColumnMask:
         body = {}
         if self.function_name is not None:
             body["function_name"] = self.function_name
+        if self.using_arguments:
+            body["using_arguments"] = [v.as_dict() for v in self.using_arguments]
         if self.using_column_names:
             body["using_column_names"] = [v for v in self.using_column_names]
         return body
@@ -1461,6 +1471,8 @@ class ColumnMask:
         body = {}
         if self.function_name is not None:
             body["function_name"] = self.function_name
+        if self.using_arguments:
+            body["using_arguments"] = self.using_arguments
         if self.using_column_names:
             body["using_column_names"] = self.using_column_names
         return body
@@ -1468,7 +1480,11 @@ class ColumnMask:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> ColumnMask:
         """Deserializes the ColumnMask from a dictionary."""
-        return cls(function_name=d.get("function_name", None), using_column_names=d.get("using_column_names", None))
+        return cls(
+            function_name=d.get("function_name", None),
+            using_arguments=_repeated_dict(d, "using_arguments", PolicyFunctionArgument),
+            using_column_names=d.get("using_column_names", None),
+        )
 
 
 @dataclass
@@ -2582,10 +2598,11 @@ class CredentialPurpose(Enum):
 
 
 class CredentialType(Enum):
-    """Next Id: 14"""
+    """Next Id: 16"""
 
     ANY_STATIC_CREDENTIAL = "ANY_STATIC_CREDENTIAL"
     BEARER_TOKEN = "BEARER_TOKEN"
+    EDGEGRID_AKAMAI = "EDGEGRID_AKAMAI"
     OAUTH_ACCESS_TOKEN = "OAUTH_ACCESS_TOKEN"
     OAUTH_M2M = "OAUTH_M2M"
     OAUTH_MTLS = "OAUTH_MTLS"
@@ -2596,6 +2613,7 @@ class CredentialType(Enum):
     OIDC_TOKEN = "OIDC_TOKEN"
     PEM_PRIVATE_KEY = "PEM_PRIVATE_KEY"
     SERVICE_CREDENTIAL = "SERVICE_CREDENTIAL"
+    SSWS_TOKEN = "SSWS_TOKEN"
     UNKNOWN_CREDENTIAL_TYPE = "UNKNOWN_CREDENTIAL_TYPE"
     USERNAME_PASSWORD = "USERNAME_PASSWORD"
 
@@ -3267,8 +3285,17 @@ class EntityTagAssignment:
     """The type of the entity to which the tag is assigned. Allowed values are: catalogs, schemas,
     tables, columns, volumes."""
 
+    source_type: Optional[TagAssignmentSourceType] = None
+    """The source type of the tag assignment, e.g., user-assigned or system-assigned"""
+
     tag_value: Optional[str] = None
     """The value of the tag"""
+
+    update_time: Optional[Timestamp] = None
+    """The timestamp when the tag assignment was last updated"""
+
+    updated_by: Optional[str] = None
+    """The user or principal who updated the tag assignment"""
 
     def as_dict(self) -> dict:
         """Serializes the EntityTagAssignment into a dictionary suitable for use as a JSON request body."""
@@ -3277,10 +3304,16 @@ class EntityTagAssignment:
             body["entity_name"] = self.entity_name
         if self.entity_type is not None:
             body["entity_type"] = self.entity_type
+        if self.source_type is not None:
+            body["source_type"] = self.source_type.value
         if self.tag_key is not None:
             body["tag_key"] = self.tag_key
         if self.tag_value is not None:
             body["tag_value"] = self.tag_value
+        if self.update_time is not None:
+            body["update_time"] = self.update_time.ToJsonString()
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     def as_shallow_dict(self) -> dict:
@@ -3290,10 +3323,16 @@ class EntityTagAssignment:
             body["entity_name"] = self.entity_name
         if self.entity_type is not None:
             body["entity_type"] = self.entity_type
+        if self.source_type is not None:
+            body["source_type"] = self.source_type
         if self.tag_key is not None:
             body["tag_key"] = self.tag_key
         if self.tag_value is not None:
             body["tag_value"] = self.tag_value
+        if self.update_time is not None:
+            body["update_time"] = self.update_time
+        if self.updated_by is not None:
+            body["updated_by"] = self.updated_by
         return body
 
     @classmethod
@@ -3302,8 +3341,11 @@ class EntityTagAssignment:
         return cls(
             entity_name=d.get("entity_name", None),
             entity_type=d.get("entity_type", None),
+            source_type=_enum(d, "source_type", TagAssignmentSourceType),
             tag_key=d.get("tag_key", None),
             tag_value=d.get("tag_value", None),
+            update_time=_timestamp(d, "update_time"),
+            updated_by=d.get("updated_by", None),
         )
 
 
@@ -3866,9 +3908,13 @@ class ExternalLocationInfo:
     credential_name: Optional[str] = None
     """Name of the storage credential used with this location."""
 
+    effective_enable_file_events: Optional[bool] = None
+    """The effective value of `enable_file_events` after applying server-side defaults."""
+
     enable_file_events: Optional[bool] = None
     """Whether to enable file events on this external location. Default to `true`. Set to `false` to
-    disable file events."""
+    disable file events. The actual applied value may differ due to server-side defaults; check
+    `effective_enable_file_events` for the effective state."""
 
     encryption_details: Optional[EncryptionDetails] = None
 
@@ -3919,6 +3965,8 @@ class ExternalLocationInfo:
             body["credential_id"] = self.credential_id
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.effective_enable_file_events is not None:
+            body["effective_enable_file_events"] = self.effective_enable_file_events
         if self.enable_file_events is not None:
             body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
@@ -3960,6 +4008,8 @@ class ExternalLocationInfo:
             body["credential_id"] = self.credential_id
         if self.credential_name is not None:
             body["credential_name"] = self.credential_name
+        if self.effective_enable_file_events is not None:
+            body["effective_enable_file_events"] = self.effective_enable_file_events
         if self.enable_file_events is not None:
             body["enable_file_events"] = self.enable_file_events
         if self.encryption_details:
@@ -3996,6 +4046,7 @@ class ExternalLocationInfo:
             created_by=d.get("created_by", None),
             credential_id=d.get("credential_id", None),
             credential_name=d.get("credential_name", None),
+            effective_enable_file_events=d.get("effective_enable_file_events", None),
             enable_file_events=d.get("enable_file_events", None),
             encryption_details=_from_dict(d, "encryption_details", EncryptionDetails),
             fallback=d.get("fallback", None),
@@ -7779,6 +7830,41 @@ class PipelineProgress:
 
 
 @dataclass
+class PolicyFunctionArgument:
+    """A positional argument passed to a row filter or column mask function. Distinguishes between
+    column references and literals."""
+
+    column: Optional[str] = None
+    """A column reference."""
+
+    constant: Optional[str] = None
+    """A constant literal."""
+
+    def as_dict(self) -> dict:
+        """Serializes the PolicyFunctionArgument into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.column is not None:
+            body["column"] = self.column
+        if self.constant is not None:
+            body["constant"] = self.constant
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the PolicyFunctionArgument into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.column is not None:
+            body["column"] = self.column
+        if self.constant is not None:
+            body["constant"] = self.constant
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> PolicyFunctionArgument:
+        """Deserializes the PolicyFunctionArgument from a dictionary."""
+        return cls(column=d.get("column", None), constant=d.get("constant", None))
+
+
+@dataclass
 class PolicyInfo:
     to_principals: List[str]
     """List of user or group names that the policy applies to. Required on create and optional on
@@ -8785,7 +8871,7 @@ class Securable:
 
 
 class SecurableKind(Enum):
-    """Latest kind: CONNECTION_ONE_PASSWORD_EVENT_LOGS_BEARER_TOKEN = 294; Next id: 295"""
+    """Latest kind: CONNECTION_JDBC_OAUTH_M2M = 298; Next id: 299"""
 
     TABLE_DB_STORAGE = "TABLE_DB_STORAGE"
     TABLE_DELTA = "TABLE_DELTA"
@@ -9655,11 +9741,18 @@ class TableRowFilter:
     """The list of table columns to be passed as input to the row filter function. The column types
     should match the types of the filter function arguments."""
 
+    input_arguments: Optional[List[PolicyFunctionArgument]] = None
+    """The list of additional table columns or literals to be passed as additional arguments to a row
+    filter function. This is the replacement of the deprecated input_column_names field and carries
+    information about the types (alias or constant) of the arguments to the filter function."""
+
     def as_dict(self) -> dict:
         """Serializes the TableRowFilter into a dictionary suitable for use as a JSON request body."""
         body = {}
         if self.function_name is not None:
             body["function_name"] = self.function_name
+        if self.input_arguments:
+            body["input_arguments"] = [v.as_dict() for v in self.input_arguments]
         if self.input_column_names:
             body["input_column_names"] = [v for v in self.input_column_names]
         return body
@@ -9669,6 +9762,8 @@ class TableRowFilter:
         body = {}
         if self.function_name is not None:
             body["function_name"] = self.function_name
+        if self.input_arguments:
+            body["input_arguments"] = self.input_arguments
         if self.input_column_names:
             body["input_column_names"] = self.input_column_names
         return body
@@ -9676,7 +9771,11 @@ class TableRowFilter:
     @classmethod
     def from_dict(cls, d: Dict[str, Any]) -> TableRowFilter:
         """Deserializes the TableRowFilter from a dictionary."""
-        return cls(function_name=d.get("function_name", None), input_column_names=d.get("input_column_names", None))
+        return cls(
+            function_name=d.get("function_name", None),
+            input_arguments=_repeated_dict(d, "input_arguments", PolicyFunctionArgument),
+            input_column_names=d.get("input_column_names", None),
+        )
 
 
 @dataclass
@@ -9732,6 +9831,12 @@ class TableType(Enum):
     METRIC_VIEW = "METRIC_VIEW"
     STREAMING_TABLE = "STREAMING_TABLE"
     VIEW = "VIEW"
+
+
+class TagAssignmentSourceType(Enum):
+    """Enum representing the source type of a tag assignment"""
+
+    TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION = "TAG_ASSIGNMENT_SOURCE_TYPE_SYSTEM_DATA_CLASSIFICATION"
 
 
 @dataclass
@@ -10641,10 +10746,6 @@ class AccountMetastoreAssignmentsAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}",
@@ -10668,10 +10769,6 @@ class AccountMetastoreAssignmentsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastores/{metastore_id}",
@@ -10694,10 +10791,6 @@ class AccountMetastoreAssignmentsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/workspaces/{workspace_id}/metastore", headers=headers
         )
@@ -10715,10 +10808,6 @@ class AccountMetastoreAssignmentsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/workspaces", headers=headers
@@ -10748,10 +10837,6 @@ class AccountMetastoreAssignmentsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",
@@ -10785,10 +10870,6 @@ class AccountMetastoresAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do("POST", f"/api/2.0/accounts/{self._api.account_id}/metastores", body=body, headers=headers)
         return AccountsCreateMetastoreResponse.from_dict(res)
 
@@ -10809,10 +10890,6 @@ class AccountMetastoresAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "DELETE",
@@ -10835,10 +10912,6 @@ class AccountMetastoresAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", headers=headers
         )
@@ -10854,10 +10927,6 @@ class AccountMetastoresAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do("GET", f"/api/2.0/accounts/{self._api.account_id}/metastores", headers=headers)
         parsed = AccountsListMetastoresResponse.from_dict(json).metastores
@@ -10883,10 +10952,6 @@ class AccountMetastoresAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT", f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}", body=body, headers=headers
@@ -10934,10 +10999,6 @@ class AccountStorageCredentialsAPI:
             "Content-Type": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "POST",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials",
@@ -10969,10 +11030,6 @@ class AccountStorageCredentialsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "DELETE",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}",
@@ -10997,10 +11054,6 @@ class AccountStorageCredentialsAPI:
             "Accept": "application/json",
         }
 
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
-
         res = self._api.do(
             "GET",
             f"/api/2.0/accounts/{self._api.account_id}/metastores/{metastore_id}/storage-credentials/{storage_credential_name}",
@@ -11020,10 +11073,6 @@ class AccountStorageCredentialsAPI:
         headers = {
             "Accept": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         json = self._api.do(
             "GET",
@@ -11064,10 +11113,6 @@ class AccountStorageCredentialsAPI:
             "Accept": "application/json",
             "Content-Type": "application/json",
         }
-
-        cfg = self._api._cfg
-        if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
-            headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
         res = self._api.do(
             "PUT",
@@ -12382,6 +12427,7 @@ class ExternalLocationsAPI:
         credential_name: str,
         *,
         comment: Optional[str] = None,
+        effective_enable_file_events: Optional[bool] = None,
         enable_file_events: Optional[bool] = None,
         encryption_details: Optional[EncryptionDetails] = None,
         fallback: Optional[bool] = None,
@@ -12401,9 +12447,12 @@ class ExternalLocationsAPI:
           Name of the storage credential used with this location.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param effective_enable_file_events: bool (optional)
+          The effective value of `enable_file_events` after applying server-side defaults.
         :param enable_file_events: bool (optional)
           Whether to enable file events on this external location. Default to `true`. Set to `false` to
-          disable file events.
+          disable file events. The actual applied value may differ due to server-side defaults; check
+          `effective_enable_file_events` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
@@ -12425,6 +12474,8 @@ class ExternalLocationsAPI:
             body["comment"] = comment
         if credential_name is not None:
             body["credential_name"] = credential_name
+        if effective_enable_file_events is not None:
+            body["effective_enable_file_events"] = effective_enable_file_events
         if enable_file_events is not None:
             body["enable_file_events"] = enable_file_events
         if encryption_details is not None:
@@ -12575,6 +12626,7 @@ class ExternalLocationsAPI:
         *,
         comment: Optional[str] = None,
         credential_name: Optional[str] = None,
+        effective_enable_file_events: Optional[bool] = None,
         enable_file_events: Optional[bool] = None,
         encryption_details: Optional[EncryptionDetails] = None,
         fallback: Optional[bool] = None,
@@ -12597,9 +12649,12 @@ class ExternalLocationsAPI:
           User-provided free-form text description.
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
+        :param effective_enable_file_events: bool (optional)
+          The effective value of `enable_file_events` after applying server-side defaults.
         :param enable_file_events: bool (optional)
           Whether to enable file events on this external location. Default to `true`. Set to `false` to
-          disable file events.
+          disable file events. The actual applied value may differ due to server-side defaults; check
+          `effective_enable_file_events` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
@@ -12630,6 +12685,8 @@ class ExternalLocationsAPI:
             body["comment"] = comment
         if credential_name is not None:
             body["credential_name"] = credential_name
+        if effective_enable_file_events is not None:
+            body["effective_enable_file_events"] = effective_enable_file_events
         if enable_file_events is not None:
             body["enable_file_events"] = enable_file_events
         if encryption_details is not None:
@@ -14170,8 +14227,8 @@ class PoliciesAPI:
 
 
 class QualityMonitorsAPI:
-    """[DEPRECATED] This API is deprecated. Please use the Data Quality Monitors API instead (REST:
-    /api/data-quality/v1/monitors), which manages both Data Profiling and Anomaly Detection.
+    """Deprecated: Please use the Data Quality Monitors API instead (REST: /api/data-quality/v1/monitors), which
+    manages both Data Profiling and Anomaly Detection.
 
     A monitor computes and monitors data or model quality metrics for a table over time. It generates metrics
     tables and a dashboard that you can use to monitor table health and set alerts. Most write operations
@@ -14183,8 +14240,8 @@ class QualityMonitorsAPI:
         self._api = api_client
 
     def cancel_refresh(self, table_name: str, refresh_id: int):
-        """[DEPRECATED] Cancels an already-initiated refresh job. Use Data Quality Monitors API instead
-        (/api/data-quality/v1/monitors).
+        """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Cancels an
+        already-initiated refresh job.
 
         :param table_name: str
           UC table name in format `catalog.schema.table_name`. table_name is case insensitive and spaces are
@@ -14225,8 +14282,8 @@ class QualityMonitorsAPI:
         time_series: Optional[MonitorTimeSeries] = None,
         warehouse_id: Optional[str] = None,
     ) -> MonitorInfo:
-        """[DEPRECATED] Creates a new monitor for the specified table. Use Data Quality Monitors API instead
-        (/api/data-quality/v1/monitors).
+        """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Creates a new
+        monitor for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog, have **USE_SCHEMA** on the
         table's parent schema, and have **SELECT** access on the table 2. have **USE_CATALOG** on the table's
@@ -14321,8 +14378,8 @@ class QualityMonitorsAPI:
         return MonitorInfo.from_dict(res)
 
     def delete(self, table_name: str) -> DeleteMonitorResponse:
-        """[DEPRECATED] Deletes a monitor for the specified table. Use Data Quality Monitors API instead
-        (/api/data-quality/v1/monitors).
+        """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Deletes a monitor
+        for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14353,8 +14410,8 @@ class QualityMonitorsAPI:
         return DeleteMonitorResponse.from_dict(res)
 
     def get(self, table_name: str) -> MonitorInfo:
-        """[DEPRECATED] Gets a monitor for the specified table. Use Data Quality Monitors API instead
-        (/api/data-quality/v1/monitors).
+        """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets a monitor for
+        the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema. 3. have the following
@@ -14384,8 +14441,8 @@ class QualityMonitorsAPI:
         return MonitorInfo.from_dict(res)
 
     def get_refresh(self, table_name: str, refresh_id: int) -> MonitorRefreshInfo:
-        """[DEPRECATED] Gets info about a specific monitor refresh using the given refresh ID. Use Data Quality
-        Monitors API instead (/api/data-quality/v1/monitors).
+        """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets info about a
+        specific monitor refresh using the given refresh ID.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14416,8 +14473,8 @@ class QualityMonitorsAPI:
         return MonitorRefreshInfo.from_dict(res)
 
     def list_refreshes(self, table_name: str) -> MonitorRefreshListResponse:
-        """[DEPRECATED] Gets an array containing the history of the most recent refreshes (up to 25) for this
-        table. Use Data Quality Monitors API instead (/api/data-quality/v1/monitors).
+        """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Gets an array
+        containing the history of the most recent refreshes (up to 25) for this table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14447,8 +14504,8 @@ class QualityMonitorsAPI:
     def regenerate_dashboard(
         self, table_name: str, *, warehouse_id: Optional[str] = None
     ) -> RegenerateDashboardResponse:
-        """[DEPRECATED] Regenerates the monitoring dashboard for the specified table. Use Data Quality Monitors
-        API instead (/api/data-quality/v1/monitors).
+        """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Regenerates the
+        monitoring dashboard for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14486,8 +14543,8 @@ class QualityMonitorsAPI:
         return RegenerateDashboardResponse.from_dict(res)
 
     def run_refresh(self, table_name: str) -> MonitorRefreshInfo:
-        """[DEPRECATED] Queues a metric refresh on the monitor for the specified table. Use Data Quality Monitors
-        API instead (/api/data-quality/v1/monitors). The refresh will execute in the background.
+        """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Queues a metric
+        refresh on the monitor for the specified table. The refresh will execute in the background.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:
@@ -14531,8 +14588,8 @@ class QualityMonitorsAPI:
         snapshot: Optional[MonitorSnapshot] = None,
         time_series: Optional[MonitorTimeSeries] = None,
     ) -> MonitorInfo:
-        """[DEPRECATED] Updates a monitor for the specified table. Use Data Quality Monitors API instead
-        (/api/data-quality/v1/monitors).
+        """Deprecated: Use Data Quality Monitors API instead (/api/data-quality/v1/monitors). Updates a monitor
+        for the specified table.
 
         The caller must either: 1. be an owner of the table's parent catalog 2. have **USE_CATALOG** on the
         table's parent catalog and be an owner of the table's parent schema 3. have the following permissions:

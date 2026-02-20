@@ -4300,10 +4300,12 @@ class OnlineStoreConfig:
     """Configuration for online store destination."""
 
     catalog_name: str
-    """The Unity Catalog catalog name. This name is also used as the Lakebase logical database name."""
+    """The Unity Catalog catalog name. This name is also used as the Lakebase logical database name.
+    Quoting is handled by the backend where needed, do not pre-quote it."""
 
     schema_name: str
-    """The Unity Catalog schema name."""
+    """The Unity Catalog schema name. This name is also used as the Lakebase schema name under the
+    database. Quoting is handled by the backend where needed, do not pre-quote it."""
 
     table_name_prefix: str
     """Prefix for Unity Catalog table name. The materialized feature will be stored in a Lakebase table

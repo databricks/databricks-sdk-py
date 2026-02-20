@@ -15,7 +15,7 @@
     To create external locations, you must be a metastore admin or a user with the
     **CREATE_EXTERNAL_LOCATION** privilege.
 
-    .. py:method:: create(name: str, url: str, credential_name: str [, comment: Optional[str], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], read_only: Optional[bool], skip_validation: Optional[bool]]) -> ExternalLocationInfo
+    .. py:method:: create(name: str, url: str, credential_name: str [, comment: Optional[str], effective_enable_file_events: Optional[bool], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], read_only: Optional[bool], skip_validation: Optional[bool]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -30,20 +30,22 @@
             
             w = WorkspaceClient()
             
-            credential = w.storage_credentials.create(
+            storage_credential = w.storage_credentials.create(
                 name=f"sdk-{time.time_ns()}",
                 aws_iam_role=catalog.AwsIamRoleRequest(role_arn=os.environ["TEST_METASTORE_DATA_ACCESS_ARN"]),
+                comment="created via SDK",
             )
             
-            created = w.external_locations.create(
+            external_location = w.external_locations.create(
                 name=f"sdk-{time.time_ns()}",
-                credential_name=credential.name,
-                url="s3://%s/%s" % (os.environ["TEST_BUCKET"], f"sdk-{time.time_ns()}"),
+                credential_name=storage_credential.name,
+                comment="created via SDK",
+                url="s3://" + os.environ["TEST_BUCKET"] + "/" + f"sdk-{time.time_ns()}",
             )
             
             # cleanup
-            w.storage_credentials.delete(name=credential.name)
-            w.external_locations.delete(name=created.name)
+            w.storage_credentials.delete(name=storage_credential.name)
+            w.external_locations.delete(name=external_location.name)
 
         Creates a new external location entry in the metastore. The caller must be a metastore admin or have
         the **CREATE_EXTERNAL_LOCATION** privilege on both the metastore and the associated storage
@@ -57,9 +59,12 @@
           Name of the storage credential used with this location.
         :param comment: str (optional)
           User-provided free-form text description.
+        :param effective_enable_file_events: bool (optional)
+          The effective value of `enable_file_events` after applying server-side defaults.
         :param enable_file_events: bool (optional)
           Whether to enable file events on this external location. Default to `true`. Set to `false` to
-          disable file events.
+          disable file events. The actual applied value may differ due to server-side defaults; check
+          `effective_enable_file_events` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is
@@ -141,11 +146,10 @@
         .. code-block::
 
             from databricks.sdk import WorkspaceClient
-            from databricks.sdk.service import catalog
             
             w = WorkspaceClient()
             
-            all = w.external_locations.list(catalog.ListExternalLocationsRequest())
+            all = w.external_locations.list()
 
         Gets an array of external locations (__ExternalLocationInfo__ objects) from the metastore. The caller
         must be a metastore admin, the owner of the external location, or a user that has some privilege on
@@ -175,7 +179,7 @@
         :returns: Iterator over :class:`ExternalLocationInfo`
         
 
-    .. py:method:: update(name: str [, comment: Optional[str], credential_name: Optional[str], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
+    .. py:method:: update(name: str [, comment: Optional[str], credential_name: Optional[str], effective_enable_file_events: Optional[bool], enable_file_events: Optional[bool], encryption_details: Optional[EncryptionDetails], fallback: Optional[bool], file_event_queue: Optional[FileEventQueue], force: Optional[bool], isolation_mode: Optional[IsolationMode], new_name: Optional[str], owner: Optional[str], read_only: Optional[bool], skip_validation: Optional[bool], url: Optional[str]]) -> ExternalLocationInfo
 
 
         Usage:
@@ -221,9 +225,12 @@
           User-provided free-form text description.
         :param credential_name: str (optional)
           Name of the storage credential used with this location.
+        :param effective_enable_file_events: bool (optional)
+          The effective value of `enable_file_events` after applying server-side defaults.
         :param enable_file_events: bool (optional)
           Whether to enable file events on this external location. Default to `true`. Set to `false` to
-          disable file events.
+          disable file events. The actual applied value may differ due to server-side defaults; check
+          `effective_enable_file_events` for the effective state.
         :param encryption_details: :class:`EncryptionDetails` (optional)
         :param fallback: bool (optional)
           Indicates whether fallback mode is enabled for this external location. When fallback mode is

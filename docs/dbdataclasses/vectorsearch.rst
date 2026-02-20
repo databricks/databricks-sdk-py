@@ -63,6 +63,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EndpointScalingInfo
+   :members:
+   :undoc-members:
+
 .. autoclass:: EndpointStatus
    :members:
    :undoc-members:
@@ -182,6 +186,17 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 .. autoclass:: RetrieveUserVisibleMetricsResponse
    :members:
    :undoc-members:
+
+.. py:class:: ScalingChangeState
+
+   .. py:attribute:: SCALING_CHANGE_APPLIED
+      :value: "SCALING_CHANGE_APPLIED"
+
+   .. py:attribute:: SCALING_CHANGE_IN_PROGRESS
+      :value: "SCALING_CHANGE_IN_PROGRESS"
+
+   .. py:attribute:: SCALING_CHANGE_UNSPECIFIED
+      :value: "SCALING_CHANGE_UNSPECIFIED"
 
 .. autoclass:: ScanVectorIndexResponse
    :members:
