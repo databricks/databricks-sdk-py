@@ -1029,6 +1029,8 @@ class AppResource:
     name: str
     """Name of the App Resource."""
 
+    app: Optional[AppResourceApp] = None
+
     database: Optional[AppResourceDatabase] = None
 
     description: Optional[str] = None
@@ -1051,6 +1053,8 @@ class AppResource:
     def as_dict(self) -> dict:
         """Serializes the AppResource into a dictionary suitable for use as a JSON request body."""
         body = {}
+        if self.app:
+            body["app"] = self.app.as_dict()
         if self.database:
             body["database"] = self.database.as_dict()
         if self.description is not None:
@@ -1076,6 +1080,8 @@ class AppResource:
     def as_shallow_dict(self) -> dict:
         """Serializes the AppResource into a shallow dictionary of its immediate attributes."""
         body = {}
+        if self.app:
+            body["app"] = self.app
         if self.database:
             body["database"] = self.database
         if self.description is not None:
@@ -1102,6 +1108,7 @@ class AppResource:
     def from_dict(cls, d: Dict[str, Any]) -> AppResource:
         """Deserializes the AppResource from a dictionary."""
         return cls(
+            app=_from_dict(d, "app", AppResourceApp),
             database=_from_dict(d, "database", AppResourceDatabase),
             description=d.get("description", None),
             experiment=_from_dict(d, "experiment", AppResourceExperiment),
@@ -1113,6 +1120,24 @@ class AppResource:
             sql_warehouse=_from_dict(d, "sql_warehouse", AppResourceSqlWarehouse),
             uc_securable=_from_dict(d, "uc_securable", AppResourceUcSecurable),
         )
+
+
+@dataclass
+class AppResourceApp:
+    def as_dict(self) -> dict:
+        """Serializes the AppResourceApp into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the AppResourceApp into a shallow dictionary of its immediate attributes."""
+        body = {}
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> AppResourceApp:
+        """Deserializes the AppResourceApp from a dictionary."""
+        return cls()
 
 
 @dataclass
@@ -1434,6 +1459,10 @@ class AppResourceUcSecurable:
 
     permission: AppResourceUcSecurableUcSecurablePermission
 
+    securable_kind: Optional[str] = None
+    """The securable kind from Unity Catalog. See
+    https://docs.databricks.com/api/workspace/tables/get#securable_kind_manifest-securable_kind."""
+
     def as_dict(self) -> dict:
         """Serializes the AppResourceUcSecurable into a dictionary suitable for use as a JSON request body."""
         body = {}
@@ -1441,6 +1470,8 @@ class AppResourceUcSecurable:
             body["permission"] = self.permission.value
         if self.securable_full_name is not None:
             body["securable_full_name"] = self.securable_full_name
+        if self.securable_kind is not None:
+            body["securable_kind"] = self.securable_kind
         if self.securable_type is not None:
             body["securable_type"] = self.securable_type.value
         return body
@@ -1452,6 +1483,8 @@ class AppResourceUcSecurable:
             body["permission"] = self.permission
         if self.securable_full_name is not None:
             body["securable_full_name"] = self.securable_full_name
+        if self.securable_kind is not None:
+            body["securable_kind"] = self.securable_kind
         if self.securable_type is not None:
             body["securable_type"] = self.securable_type
         return body
@@ -1462,6 +1495,7 @@ class AppResourceUcSecurable:
         return cls(
             permission=_enum(d, "permission", AppResourceUcSecurableUcSecurablePermission),
             securable_full_name=d.get("securable_full_name", None),
+            securable_kind=d.get("securable_kind", None),
             securable_type=_enum(d, "securable_type", AppResourceUcSecurableUcSecurableType),
         )
 
@@ -1469,6 +1503,7 @@ class AppResourceUcSecurable:
 class AppResourceUcSecurableUcSecurablePermission(Enum):
 
     EXECUTE = "EXECUTE"
+    MODIFY = "MODIFY"
     READ_VOLUME = "READ_VOLUME"
     SELECT = "SELECT"
     USE_CONNECTION = "USE_CONNECTION"
