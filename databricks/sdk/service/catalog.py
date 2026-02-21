@@ -13,8 +13,8 @@ from typing import Any, Callable, Dict, Iterator, List, Optional
 from google.protobuf.timestamp_pb2 import Timestamp
 
 from databricks.sdk.client_types import HostType
-from databricks.sdk.service._internal import (Wait, _enum, _from_dict,
-                                              _repeated_dict, _repeated_enum,
+from databricks.sdk.service._internal import (Wait, _enum, _escape_multi_segment_path_parameter,
+                                              _from_dict, _repeated_dict, _repeated_enum,
                                               _timestamp)
 
 from ..errors import OperationFailed
@@ -16215,7 +16215,7 @@ class TablesAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{full_name}", headers=headers)
+        self._api.do("DELETE", f"/api/2.1/unity-catalog/tables/{_escape_multi_segment_path_parameter(full_name)}", headers=headers)
 
     def exists(self, full_name: str) -> TableExistsResponse:
         """Gets if a table exists in the metastore for a specific catalog and schema. The caller must satisfy one
@@ -16239,7 +16239,7 @@ class TablesAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}/exists", headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{_escape_multi_segment_path_parameter(full_name)}/exists", headers=headers)
         return TableExistsResponse.from_dict(res)
 
     def get(
@@ -16284,7 +16284,7 @@ class TablesAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{full_name}", query=query, headers=headers)
+        res = self._api.do("GET", f"/api/2.1/unity-catalog/tables/{_escape_multi_segment_path_parameter(full_name)}", query=query, headers=headers)
         return TableInfo.from_dict(res)
 
     def list(
@@ -16481,7 +16481,7 @@ class TablesAPI:
         if cfg.host_type == HostType.UNIFIED and cfg.workspace_id:
             headers["X-Databricks-Org-Id"] = cfg.workspace_id
 
-        self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{full_name}", body=body, headers=headers)
+        self._api.do("PATCH", f"/api/2.1/unity-catalog/tables/{_escape_multi_segment_path_parameter(full_name)}", body=body, headers=headers)
 
 
 class TemporaryPathCredentialsAPI:
