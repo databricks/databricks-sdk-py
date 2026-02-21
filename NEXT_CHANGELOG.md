@@ -25,3 +25,6 @@
 * Add `scaling_info` field for `databricks.sdk.service.vectorsearch.EndpointInfo`.
 * Add `modify` enum value for `databricks.sdk.service.apps.AppResourceUcSecurableUcSecurablePermission`.
 * Add `could_not_get_dashboard_schema_exception` enum value for `databricks.sdk.service.dashboards.MessageErrorType`.
+* Add `replace_where_overrides` field for `databricks.sdk.service.pipelines.StartUpdate`.
+* Add `hivemetastore_connectivity_failure` enum value for `databricks.sdk.service.compute.TerminationReasonCode`.
+* Add `hivemetastore_connectivity_failure` enum value for `databricks.sdk.service.sql.TerminationReasonCode`.
