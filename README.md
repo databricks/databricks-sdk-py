@@ -29,6 +29,7 @@ The SDK's internal HTTP client is robust and handles failures on different level
 - [Authentication](#authentication)
 - [Long-running operations](#long-running-operations)
 - [Paginated responses](#paginated-responses)
+- [Retries](#retries)
 - [Single-sign-on with OAuth](#single-sign-on-sso-with-oauth)
 - [User Agent Request Attribution](#user-agent-request-attribution)
 - [Error handling](#error-handling)
@@ -397,6 +398,10 @@ for job_id, run in latest_state.items():
 for line in sorted(summary, key=lambda s: s['last_finished'], reverse=True):
     logging.info(f'Latest: {line}')
 ```
+
+## Retries<a id="retries"></a>
+
+The SDK automatically retries failed requests that are safe to retry. This includes HTTP 429 (Too Many Requests) and 503 (Service Unavailable) responses, as well as network-level errors such as connection resets and timeouts. The SDK uses a backoff strategy with jitter between retry attempts to avoid overwhelming the service. Retry behavior can be adjusted through the SDK configuration.
 
 ## Single-Sign-On (SSO) with OAuth<a id="single-sign-on-sso-with-oauth"></a>
 
