@@ -22,3 +22,4 @@ recursive-exclude examples *
 recursive-exclude tests *
 recursive-exclude .codegen *
 recursive-exclude .vscode *
+recursive-exclude .claude *
