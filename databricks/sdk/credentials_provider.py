@@ -882,6 +882,13 @@ class DatabricksCliTokenSource(CliTokenSource):
         elif cli_path.count("/") == 0:
             cli_path = self.__class__._find_executable(cli_path)
 
+        # get_scopes() defaults to ["all-apis"] when nothing is configured, which would
+        # cause false-positive mismatches against every token that wasn't issued with
+        # exactly ["all-apis"]. Only validate when scopes are explicitly set (either
+        # directly in code or loaded from a CLI profile).
+        self._requested_scopes = cfg.get_scopes() if cfg.scopes else None
+        self._host = cfg.host
+
         super().__init__(
             cmd=[cli_path, *args],
             token_type_field="token_type",
@@ -889,6 +896,62 @@ class DatabricksCliTokenSource(CliTokenSource):
             expiry_field="expiry",
             disable_async=cfg.disable_async_token_refresh,
         )
+
+    def refresh(self) -> oauth.Token:
+        # The scope validation lives in refresh() because this is the only method that
+        # produces new tokens (see Refreshable._token assignments). By overriding here,
+        # every token is validated — both at initial auth and on every subsequent refresh
+        # when the cached token expires. This catches cases where a user re-authenticates
+        # mid-session with different scopes.
+        token = super().refresh()
+        if self._requested_scopes:
+            self._validate_token_scopes(token)
+        return token
+
+    # offline_access controls whether the IdP issues a refresh token. It does not
+    # grant any API permissions, so its presence or absence should not cause a
+    # scope mismatch error.
+    _SCOPES_IGNORED_FOR_COMPARISON = {"offline_access"}
+
+    def _validate_token_scopes(self, token: oauth.Token):
+        """Validate that the token's scopes match the requested scopes from the config.
+
+        The `databricks auth token` command does not accept scopes yet. It returns whatever
+        token was cached from the last `databricks auth login`. If a user configures
+        specific scopes in the SDK config but their cached CLI token was issued with
+        different scopes, requests will silently use the wrong scopes. This check
+        surfaces that mismatch early with an actionable error telling the user how to
+        re-authenticate with the correct scopes.
+        """
+        claims = token.jwt_claims()
+        if not claims:
+            logger.debug("Could not decode token as JWT to validate scopes")
+            return
+
+        token_scopes_raw = claims.get("scope")
+        if token_scopes_raw is None:
+            logger.debug("Token does not contain 'scope' claim, skipping scope validation")
+            return
+
+        if isinstance(token_scopes_raw, str):
+            token_scopes = set(token_scopes_raw.split())
+        elif isinstance(token_scopes_raw, list):
+            token_scopes = {str(s) for s in token_scopes_raw}
+        else:
+            logger.debug(f"Unexpected 'scope' claim type: {type(token_scopes_raw)}")
+            return
+
+        token_scopes -= self._SCOPES_IGNORED_FOR_COMPARISON
+        requested_scopes = set(self._requested_scopes) - self._SCOPES_IGNORED_FOR_COMPARISON
+
+        if token_scopes != requested_scopes:
+            scopes_csv = ",".join(sorted(requested_scopes))
+            raise ValueError(
+                f"Token issued by Databricks CLI has scopes {sorted(token_scopes)} which do not match "
+                f"the configured scopes {sorted(requested_scopes)}. Please re-authenticate "
+                f"with the correct scopes by running: "
+                f"databricks auth login --host {self._host} --scopes {scopes_csv}"
+            )
 
     @staticmethod
     def _find_executable(name) -> str:
@@ -925,6 +988,16 @@ def databricks_cli(cfg: "Config") -> Optional[CredentialsProvider]:
             logger.debug(f"OAuth not configured or not available: {e}")
             return None
         raise e
+    except ValueError as e:
+        # Scope validation failed. When the user explicitly selected databricks-cli auth,
+        # surface the mismatch immediately so they get an actionable error. When we're being
+        # tried as part of the default credential chain, step aside so other providers get
+        # a chance (DefaultCredentials filters by auth_type before calling us, so this
+        # condition is only true when the user explicitly set auth_type="databricks-cli").
+        if cfg.auth_type == "databricks-cli":
+            raise
+        logger.warning(f"Databricks CLI token scope mismatch, skipping: {e}")
+        return None
 
     logger.info("Using Databricks CLI authentication")
 

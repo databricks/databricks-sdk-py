@@ -7,6 +7,8 @@
 ### Security
 
 ### Bug Fixes
+* Validate that Databricks CLI token scopes match configured scopes, surfacing an actionable error on mismatch instead of silently using the wrong scopes ([#XXXX](https://github.com/databricks/databricks-sdk-py/pull/XXXX)).
+* Fix JWT payload decoding to use URL-safe base64 per RFC 7519 ([#XXXX](https://github.com/databricks/databricks-sdk-py/pull/XXXX)).
 
 ### Documentation
 

@@ -1,3 +1,5 @@
+import base64
+import json
 import os
 import pathlib
 import platform
@@ -179,6 +181,144 @@ def test_databricks_cli_credential_provider_installed_new(config, monkeypatch, t
 
     assert databricks_cli(config) is not None
     assert get_mock.call_count == 1
+
+
+def _make_jwt(claims: dict) -> str:
+    """Build a fake JWT (header.payload.signature) with the given claims."""
+    header = base64.urlsafe_b64encode(json.dumps({"alg": "none"}).encode()).rstrip(b"=").decode()
+    payload = base64.urlsafe_b64encode(json.dumps(claims).encode()).rstrip(b"=").decode()
+    return f"{header}.{payload}.sig"
+
+
+@pytest.mark.parametrize(
+    "token_claims, configured_scopes, expect_error",
+    [
+        # Exact match (offline_access filtered out)
+        ({"scope": "sql offline_access"}, ["sql"], False),
+        # Mismatch: token has all-apis, config wants sql
+        ({"scope": "all-apis offline_access"}, ["sql"], True),
+        # offline_access on token only — still equivalent
+        ({"scope": "all-apis offline_access"}, ["all-apis"], False),
+        # offline_access in config only — still equivalent
+        ({"scope": "all-apis"}, ["all-apis", "offline_access"], False),
+        # No scopes configured — skip validation
+        ({"scope": "all-apis"}, None, False),
+        # scope claim as list instead of string
+        ({"scope": ["sql", "offline_access"]}, ["sql"], False),
+    ],
+    ids=[
+        "match",
+        "mismatch",
+        "offline_access_on_token_only",
+        "offline_access_in_config_only",
+        "no_scopes_configured",
+        "scope_as_list",
+    ],
+)
+def test_databricks_cli_scope_validation(
+    config, monkeypatch, tmp_path, mocker, token_claims, configured_scopes, expect_error
+):
+    access_token = _make_jwt(token_claims) if token_claims else "not-a-jwt"
+    mocker.patch(
+        "databricks.sdk.credentials_provider.CliTokenSource.refresh",
+        return_value=Token(access_token=access_token, token_type="Bearer", expiry=datetime(2023, 5, 22)),
+    )
+    write_large_dummy_executable(tmp_path)
+    monkeypatch.setenv("PATH", str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]]))
+    if configured_scopes is not None:
+        # sorted() to match _parse_scopes transform applied during real Config construction
+        config.scopes = sorted(configured_scopes)
+
+    if expect_error:
+        config.auth_type = "databricks-cli"
+        with pytest.raises(ValueError, match="do not match the configured scopes"):
+            databricks_cli(config)
+    else:
+        assert databricks_cli(config) is not None
+
+
+def test_databricks_cli_scope_validation_error_message(config, monkeypatch, tmp_path, mocker):
+    jwt_token = _make_jwt({"scope": "all-apis"})
+    mocker.patch(
+        "databricks.sdk.credentials_provider.CliTokenSource.refresh",
+        return_value=Token(access_token=jwt_token, token_type="Bearer", expiry=datetime(2023, 5, 22)),
+    )
+    write_large_dummy_executable(tmp_path)
+    monkeypatch.setenv("PATH", str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]]))
+    # sorted() to match _parse_scopes transform applied during real Config construction
+    config.scopes = sorted(["sql", "offline_access"])
+    config.auth_type = "databricks-cli"
+
+    with pytest.raises(ValueError, match=r"databricks auth login --host .* --scopes sql"):
+        databricks_cli(config)
+
+
+def test_databricks_cli_scope_mismatch_falls_through_in_default_chain(
+    config, monkeypatch, tmp_path, mocker
+):
+    """When auth_type is not 'databricks-cli', scope mismatch should return None
+    so the default credential chain can try other providers."""
+    jwt_token = _make_jwt({"scope": "all-apis"})
+    mocker.patch(
+        "databricks.sdk.credentials_provider.CliTokenSource.refresh",
+        return_value=Token(access_token=jwt_token, token_type="Bearer", expiry=datetime(2023, 5, 22)),
+    )
+    write_large_dummy_executable(tmp_path)
+    monkeypatch.setenv("PATH", str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]]))
+    config.scopes = sorted(["sql"])
+    # auth_type is "noop" from the fixture (not "databricks-cli"),
+    # simulating what happens in the default credential chain where
+    # auth_type hasn't been set yet.
+    assert config.auth_type != "databricks-cli"
+
+    assert databricks_cli(config) is None
+
+
+def _write_jwt_cli_executable(path: pathlib.Path, claims: dict) -> pathlib.Path:
+    """Create a dummy 'databricks' CLI that returns a JWT token with the given claims.
+
+    Unlike write_large_dummy_executable, this embeds a real JWT in the response so
+    integration tests can exercise the full path: subprocess → JSON parse → JWT decode
+    → scope extraction → validation — without mocking CliTokenSource.refresh.
+    """
+    jwt_token = _make_jwt(claims)
+    padding = "".join(random.choice(string.ascii_letters) for _ in range(1024 * 1024))
+    cli = path.joinpath("databricks")
+    cli.write_text(
+        f"""#!/bin/sh
+cat <<'EOF'
+{{
+"access_token": "{jwt_token}",
+"token_type": "Bearer",
+"expiry": "2099-12-31T23:59:59.000000+00:00"
+}}
+EOF
+exit 0
+"""
+        + padding
+    )
+    cli.chmod(0o755)
+    return cli
+
+
+def test_databricks_cli_scope_validation_integration_match(config, monkeypatch, tmp_path):
+    """End-to-end: real subprocess returns a JWT whose scopes match — auth succeeds."""
+    _write_jwt_cli_executable(tmp_path, {"scope": "sql offline_access"})
+    monkeypatch.setenv("PATH", str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]]))
+    config.scopes = sorted(["sql"])
+
+    assert databricks_cli(config) is not None
+
+
+def test_databricks_cli_scope_validation_integration_mismatch(config, monkeypatch, tmp_path):
+    """End-to-end: real subprocess returns a JWT whose scopes don't match — actionable error."""
+    _write_jwt_cli_executable(tmp_path, {"scope": "all-apis"})
+    monkeypatch.setenv("PATH", str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]]))
+    config.scopes = sorted(["sql"])
+    config.auth_type = "databricks-cli"
+
+    with pytest.raises(ValueError, match="do not match the configured scopes"):
+        databricks_cli(config)
 
 
 def test_extra_and_upstream_user_agent(monkeypatch):

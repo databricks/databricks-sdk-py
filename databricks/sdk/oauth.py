@@ -170,7 +170,7 @@ class Token:
                 logger.debug(f"Tried to decode access token as JWT, but failed: {len(jwt_split)} components")
                 return {}
             payload_with_padding = jwt_split[1] + "=="
-            payload_bytes = base64.standard_b64decode(payload_with_padding)
+            payload_bytes = base64.urlsafe_b64decode(payload_with_padding)
             payload_json = payload_bytes.decode("utf8")
             claims = json.loads(payload_json)
             return claims
