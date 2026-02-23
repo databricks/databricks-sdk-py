@@ -791,6 +791,7 @@ _DUMMY_WORKSPACE_ID = "111111111111111"
 _DUMMY_AUTH_ENDPOINT = f"{_DUMMY_WS_HOST}/oidc/v1/authorize"
 _DUMMY_TOKEN_ENDPOINT = f"{_DUMMY_WS_HOST}/oidc/v1/token"
 
+
 def test_discovery_url_from_env(monkeypatch):
     monkeypatch.setenv("DATABRICKS_DISCOVERY_URL", "https://custom.idp.example.com/oidc")
     config = Config(host=_DUMMY_WS_HOST, token="t")
@@ -814,9 +815,17 @@ def test_databricks_oidc_endpoints_uses_discovery_url(requests_mock):
     [
         pytest.param(
             _DUMMY_WS_HOST,
-            {"oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc", "account_id": _DUMMY_ACCOUNT_ID, "workspace_id": _DUMMY_WORKSPACE_ID},
+            {
+                "oidc_endpoint": f"{_DUMMY_WS_HOST}/oidc",
+                "account_id": _DUMMY_ACCOUNT_ID,
+                "workspace_id": _DUMMY_WORKSPACE_ID,
+            },
             {},
-            {"account_id": _DUMMY_ACCOUNT_ID, "workspace_id": _DUMMY_WORKSPACE_ID, "discovery_url": f"{_DUMMY_WS_HOST}/oidc"},
+            {
+                "account_id": _DUMMY_ACCOUNT_ID,
+                "workspace_id": _DUMMY_WORKSPACE_ID,
+                "discovery_url": f"{_DUMMY_WS_HOST}/oidc",
+            },
             id="workspace-populates-all-fields",
         ),
         pytest.param(
