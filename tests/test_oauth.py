@@ -1,6 +1,8 @@
+import pytest
+
 from databricks.sdk._base_client import _BaseClient
-from databricks.sdk.oauth import (OidcEndpoints, TokenCache,
-                                  get_account_endpoints,
+from databricks.sdk.oauth import (HostMetadata, OidcEndpoints, TokenCache,
+                                  get_account_endpoints, get_host_metadata,
                                   get_workspace_endpoints)
 
 from .clock import FakeClock
@@ -140,3 +142,69 @@ def test_workspace_oidc_endpoints_retry_on_429(requests_mock):
         "https://my-workspace.cloud.databricks.com/oidc/oauth/authorize",
         "https://my-workspace.cloud.databricks.com/oidc/oauth/token",
     )
+
+
+# -- get_host_metadata / HostMetadata tests --
+
+_FAKE_HOST = "https://fake-workspace.databricks.com"
+_FAKE_ACCOUNT_HOST = "https://fake-accounts.databricks.com"
+_FAKE_ACCOUNT_ID = "00000000-0000-0000-0000-000000000001"
+_FAKE_WORKSPACE_ID = "111111111111111"
+
+
+@pytest.mark.parametrize(
+    "host,response_json,account_id,expected",
+    [
+        pytest.param(
+            _FAKE_HOST,
+            {"oidc_endpoint": f"{_FAKE_HOST}/oidc", "account_id": _FAKE_ACCOUNT_ID, "workspace_id": _FAKE_WORKSPACE_ID},
+            None,
+            HostMetadata(
+                oidc_endpoint=f"{_FAKE_HOST}/oidc", account_id=_FAKE_ACCOUNT_ID, workspace_id=_FAKE_WORKSPACE_ID
+            ),
+            id="workspace-static-oidc-endpoint",
+        ),
+        pytest.param(
+            _FAKE_ACCOUNT_HOST,
+            {"oidc_endpoint": f"{_FAKE_ACCOUNT_HOST}/oidc/accounts/{{account_id}}"},
+            _FAKE_ACCOUNT_ID,
+            HostMetadata(
+                oidc_endpoint=f"{_FAKE_ACCOUNT_HOST}/oidc/accounts/{_FAKE_ACCOUNT_ID}",
+                account_id=_FAKE_ACCOUNT_ID,
+                workspace_id=None,
+            ),
+            id="account-account-id-substituted",
+        ),
+    ],
+)
+def test_get_host_metadata(requests_mock, host, response_json, account_id, expected):
+    requests_mock.get(f"{host}/.well-known/databricks-config", json=response_json)
+    client = _BaseClient(clock=FakeClock())
+    assert get_host_metadata(host, account_id=account_id, client=client) == expected
+
+
+@pytest.mark.parametrize(
+    "host,response_json,account_id,error_match",
+    [
+        pytest.param(
+            _FAKE_ACCOUNT_HOST,
+            {"oidc_endpoint": f"{_FAKE_ACCOUNT_HOST}/oidc/accounts/{{account_id}}"},
+            None,
+            "account_id",
+            id="placeholder-without-account-id",
+        ),
+        pytest.param(
+            _FAKE_HOST,
+            {"error": "not found"},
+            None,
+            "Failed to fetch host metadata",
+            id="http-error",
+        ),
+    ],
+)
+def test_get_host_metadata_raises(requests_mock, host, response_json, account_id, error_match):
+    status_code = 404 if "error" in response_json else 200
+    requests_mock.get(f"{host}/.well-known/databricks-config", status_code=status_code, json=response_json)
+    client = _BaseClient(clock=FakeClock())
+    with pytest.raises(ValueError, match=error_match):
+        get_host_metadata(host, account_id=account_id, client=client)
