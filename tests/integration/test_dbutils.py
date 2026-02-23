@@ -212,3 +212,9 @@ def test_secrets(w, random):
 
     assert all_secrets[key_for_string] == random_value
     assert all_secrets[key_for_bytes] == random_value
+
+
+def test_dbutils_spark_import_no_error_if_doesnt_exist():
+    from databricks.sdk.runtime import spark
+
+    assert spark is None
