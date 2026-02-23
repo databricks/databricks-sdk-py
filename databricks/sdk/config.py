@@ -21,6 +21,7 @@ from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import (OidcEndpoints, Token, get_account_endpoints,
                     get_azure_entra_id_workspace_endpoints,
+                    get_endpoints_from_url, get_host_metadata,
                     get_unified_endpoints, get_workspace_endpoints)
 
 logger = logging.getLogger("databricks.sdk")
@@ -82,6 +83,11 @@ class Config:
 
     # Experimental flag to indicate if the host is a unified host (supports both workspace and account APIs)
     experimental_is_unified_host: bool = ConfigAttribute(env="DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST")
+
+    # [Experimental] OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
+    # from this URL instead of the default well-known endpoint. If not set, the discovery URL is
+    # derived from the oidc_endpoint returned by /.well-known/databricks-config.
+    discovery_url: str = ConfigAttribute(env="DATABRICKS_DISCOVERY_URL")
 
     # PAT token.
     token: str = ConfigAttribute(env="DATABRICKS_TOKEN", auth="pat", sensitive=True)
@@ -494,10 +500,9 @@ class Config:
     def databricks_oidc_endpoints(self) -> Optional[OidcEndpoints]:
         """Get OIDC endpoints for Databricks OAuth.
 
-        This method returns the appropriate Databricks OIDC endpoints based on the host type:
-        - Unified hosts: Returns unified account-scoped endpoints
-        - Account hosts: Returns traditional account endpoints
-        - Workspace hosts: Returns workspace endpoints
+        If discovery_url is set (explicitly or resolved via _resolve_host_metadata), OIDC
+        endpoints are fetched directly from it. Otherwise falls back to the host-type-based
+        well-known endpoint logic.
 
         Note: This method does NOT return Azure Entra ID endpoints. For Azure authentication,
         use get_azure_entra_id_workspace_endpoints() directly.
@@ -508,6 +513,9 @@ class Config:
         self._fix_host_if_needed()
         if not self.host:
             return None
+
+        if self.discovery_url:
+            return get_endpoints_from_url(self.discovery_url)
 
         # Handle unified hosts
         if self.host_type == HostType.UNIFIED:
@@ -616,6 +624,31 @@ class Config:
             attrs.append(v)
         cls._attributes = attrs
         return cls._attributes
+
+    def _resolve_host_metadata(self) -> None:
+        """[Experimental] Populate missing config fields from the host's
+        /.well-known/databricks-config discovery endpoint.
+
+        Fills in account_id, workspace_id, and discovery_url (derived from oidc_endpoint,
+        with any {account_id} placeholder substituted) if not already set.
+        """
+        if not self.host:
+            return
+        meta = get_host_metadata(self.host)
+        if not self.account_id and meta.account_id:
+            logger.debug(f"Resolved account_id from host metadata: {meta.account_id}")
+            self.account_id = meta.account_id
+        if not self.account_id:
+            raise ValueError("account_id is not configured and could not be resolved from host metadata")
+        if not self.workspace_id and meta.workspace_id:
+            logger.debug(f"Resolved workspace_id from host metadata: {meta.workspace_id}")
+            self.workspace_id = meta.workspace_id
+        if not self.discovery_url:
+            if meta.oidc_endpoint:
+                logger.debug(f"Resolved discovery_url from host metadata: {meta.oidc_endpoint}")
+                self.discovery_url = meta.oidc_endpoint.replace("{account_id}", self.account_id)
+            else:
+                raise ValueError("discovery_url is not configured and could not be resolved from host metadata")
 
     def _fix_host_if_needed(self):
         updated_host = _fix_host_if_needed(self.host)
