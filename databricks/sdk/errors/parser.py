@@ -13,6 +13,8 @@ from .mapper import _error_mapper
 from .private_link import (_get_private_link_validation_error,
                            _is_private_link_redirect)
 
+_LOG = logging.getLogger(__name__)
+
 # A list of _ErrorDeserializers that are tried in order to parse an API error from a response body. Most errors should
 # be parsable by the _StandardErrorDeserializer, but additional parsers can be added here for specific error formats.
 # The order of the parsers is not important, as the set of errors that can be parsed by each parser should be disjoint.
@@ -83,7 +85,7 @@ class _Parser:
                             customizer.customize_error(response, error_args)
                         return _error_mapper(response, error_args)
                 except Exception as e:
-                    logging.debug(
+                    _LOG.debug(
                         f"Error parsing response with {parser}, continuing",
                         exc_info=e,
                     )

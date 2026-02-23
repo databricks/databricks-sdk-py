@@ -8,6 +8,8 @@
 
 ### Bug Fixes
 
+* Always create a new logger instance, rather than using Python's default global logger instance ([#988](https://github.com/databricks/databricks-sdk-py/pull/988)).
+
 ### Documentation
 * Added "Retries" section to README.
 

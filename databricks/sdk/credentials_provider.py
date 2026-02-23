@@ -25,6 +25,8 @@ from databricks.sdk.oauth import get_azure_entra_id_workspace_endpoints
 from . import azure, oauth, oidc, oidc_token_supplier
 from .client_types import ClientType
 
+_LOG = logging.getLogger(__name__)
+
 CredentialsProvider = Callable[[], Dict[str, str]]
 
 logger = logging.getLogger("databricks.sdk")
@@ -699,7 +701,7 @@ def _run_subprocess(
     kwargs["shell"] = sys.platform.startswith("win")
     # windows requires shell=True to be able to execute 'az login' or other commands
     # cannot use shell=True all the time, as it breaks macOS
-    logging.debug(f"Running command: {' '.join(popenargs)}")
+    _LOG.debug(f"Running command: {' '.join(popenargs)}")
     return subprocess.run(
         popenargs,
         input=input,
