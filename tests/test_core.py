@@ -245,7 +245,9 @@ def test_databricks_cli_scope_validation(
 def test_databricks_cli_scope_validation_error_message(config, monkeypatch, tmp_path, mocker):
     mocker.patch(
         "databricks.sdk.credentials_provider.CliTokenSource.refresh",
-        return_value=Token(access_token=_make_jwt({"scope": "all-apis"}), token_type="Bearer", expiry=datetime(2023, 5, 22)),
+        return_value=Token(
+            access_token=_make_jwt({"scope": "all-apis"}), token_type="Bearer", expiry=datetime(2023, 5, 22)
+        ),
     )
     write_large_dummy_executable(tmp_path)
     monkeypatch.setenv("PATH", str(os.pathsep).join([tmp_path.as_posix(), os.environ["PATH"]]))
