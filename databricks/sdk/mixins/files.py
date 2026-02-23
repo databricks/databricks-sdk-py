@@ -495,7 +495,7 @@ class _VolumesPath(_Path):
             next_path = queue.popleft()
             for file in self._api.list_directory_contents(next_path.as_string):
                 if recursive and file.is_directory:
-                    queue.append(self.child(file.name))
+                    queue.append(self.child(file.path))
                 if not recursive or not file.is_directory:
                     yield files.FileInfo(
                         path=file.path,
