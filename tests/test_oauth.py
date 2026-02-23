@@ -144,67 +144,37 @@ def test_workspace_oidc_endpoints_retry_on_429(requests_mock):
     )
 
 
-# -- get_host_metadata / HostMetadata tests --
-
-_FAKE_HOST = "https://fake-workspace.databricks.com"
-_FAKE_ACCOUNT_HOST = "https://fake-accounts.databricks.com"
-_FAKE_ACCOUNT_ID = "00000000-0000-0000-0000-000000000001"
-_FAKE_WORKSPACE_ID = "111111111111111"
+_DUMMY_HOST = "https://dummy-workspace.databricks.com"
+_DUMMY_ACCOUNT_HOST = "https://dummy-accounts.databricks.com"
+_DUMMY_ACCOUNT_ID = "00000000-0000-0000-0000-000000000001"
+_DUMMY_WORKSPACE_ID = "111111111111111"
 
 
 @pytest.mark.parametrize(
-    "host,response_json,account_id,expected",
+    "host,response_json,expected",
     [
         pytest.param(
-            _FAKE_HOST,
-            {"oidc_endpoint": f"{_FAKE_HOST}/oidc", "account_id": _FAKE_ACCOUNT_ID, "workspace_id": _FAKE_WORKSPACE_ID},
-            None,
-            HostMetadata(
-                oidc_endpoint=f"{_FAKE_HOST}/oidc", account_id=_FAKE_ACCOUNT_ID, workspace_id=_FAKE_WORKSPACE_ID
-            ),
+            _DUMMY_HOST,
+            {"oidc_endpoint": f"{_DUMMY_HOST}/oidc", "account_id": _DUMMY_ACCOUNT_ID, "workspace_id": _DUMMY_WORKSPACE_ID},
+            HostMetadata(oidc_endpoint=f"{_DUMMY_HOST}/oidc", account_id=_DUMMY_ACCOUNT_ID, workspace_id=_DUMMY_WORKSPACE_ID),
             id="workspace-static-oidc-endpoint",
         ),
         pytest.param(
-            _FAKE_ACCOUNT_HOST,
-            {"oidc_endpoint": f"{_FAKE_ACCOUNT_HOST}/oidc/accounts/{{account_id}}"},
-            _FAKE_ACCOUNT_ID,
-            HostMetadata(
-                oidc_endpoint=f"{_FAKE_ACCOUNT_HOST}/oidc/accounts/{_FAKE_ACCOUNT_ID}",
-                account_id=_FAKE_ACCOUNT_ID,
-                workspace_id=None,
-            ),
-            id="account-account-id-substituted",
+            _DUMMY_ACCOUNT_HOST,
+            {"oidc_endpoint": f"{_DUMMY_ACCOUNT_HOST}/oidc/accounts/{{account_id}}"},
+            HostMetadata(oidc_endpoint=f"{_DUMMY_ACCOUNT_HOST}/oidc/accounts/{{account_id}}", account_id=None, workspace_id=None),
+            id="account-raw-oidc-endpoint-template",
         ),
     ],
 )
-def test_get_host_metadata(requests_mock, host, response_json, account_id, expected):
+def test_get_host_metadata(requests_mock, host, response_json, expected):
     requests_mock.get(f"{host}/.well-known/databricks-config", json=response_json)
     client = _BaseClient(clock=FakeClock())
-    assert get_host_metadata(host, account_id=account_id, client=client) == expected
+    assert get_host_metadata(host, client=client) == expected
 
 
-@pytest.mark.parametrize(
-    "host,response_json,account_id,error_match",
-    [
-        pytest.param(
-            _FAKE_ACCOUNT_HOST,
-            {"oidc_endpoint": f"{_FAKE_ACCOUNT_HOST}/oidc/accounts/{{account_id}}"},
-            None,
-            "account_id",
-            id="placeholder-without-account-id",
-        ),
-        pytest.param(
-            _FAKE_HOST,
-            {"error": "not found"},
-            None,
-            "Failed to fetch host metadata",
-            id="http-error",
-        ),
-    ],
-)
-def test_get_host_metadata_raises(requests_mock, host, response_json, account_id, error_match):
-    status_code = 404 if "error" in response_json else 200
-    requests_mock.get(f"{host}/.well-known/databricks-config", status_code=status_code, json=response_json)
+def test_get_host_metadata_raises_on_http_error(requests_mock):
+    requests_mock.get(f"{_DUMMY_HOST}/.well-known/databricks-config", status_code=404, json={"error": "not found"})
     client = _BaseClient(clock=FakeClock())
-    with pytest.raises(ValueError, match=error_match):
-        get_host_metadata(host, account_id=account_id, client=client)
+    with pytest.raises(ValueError, match="Failed to fetch host metadata"):
+        get_host_metadata(_DUMMY_HOST, client=client)
