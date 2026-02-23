@@ -434,6 +434,17 @@ def get_host_metadata(host: str, client: _BaseClient = _BaseClient()) -> HostMet
     return HostMetadata.from_dict(resp)
 
 
+def get_endpoints_from_url(url: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
+    """
+    Fetch OIDC endpoints directly from a discovery URL.
+
+    :param url: Full URL to the OIDC discovery document (e.g. the value of discovery_url config).
+    :return: Parsed :class:`OidcEndpoints`.
+    """
+    resp = client.do("GET", url)
+    return OidcEndpoints.from_dict(resp)
+
+
 def get_account_endpoints(host: str, account_id: str, client: _BaseClient = _BaseClient()) -> OidcEndpoints:
     """
     Get the OIDC endpoints for a given account.
