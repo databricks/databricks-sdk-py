@@ -291,7 +291,11 @@ class Refreshable(TokenSource):
         self._token = token
         if token.expiry:
             ttl = token.expiry - datetime.now()
-            self._stale_duration = min(ttl * 0.5, self._max_stale_duration)
+
+            if ttl < timedelta(seconds=0):
+                self._stale_duration = timedelta(seconds=0)
+            else:
+                self._stale_duration = min(ttl * 0.5, self._max_stale_duration)
 
     # This is the main entry point for the Token. Do not access the token
     # using any of the internal functions.
