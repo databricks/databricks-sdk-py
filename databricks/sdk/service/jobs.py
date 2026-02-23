@@ -1801,7 +1801,7 @@ class ForEachTaskErrorMessageStats:
     """Describes the count of such error message encountered during the iterations."""
 
     error_message: Optional[str] = None
-    """Describes the error message occured during the iterations."""
+    """Describes the error message occurred during the iterations."""
 
     termination_category: Optional[str] = None
     """Describes the termination reason for the error message."""
