@@ -12,6 +12,7 @@ import pytest
 from databricks.sdk import AccountClient, WorkspaceClient, oauth, useragent
 from databricks.sdk.config import (ClientType, Config, HostType, with_product,
                                    with_user_agent_extra)
+from databricks.sdk.environments import Cloud
 from databricks.sdk.version import __version__
 
 from .conftest import noop_credentials, set_az_path, set_home
@@ -782,3 +783,42 @@ def test_oidc_scopes_sent_to_token_endpoint(requests_mock, tmp_path, scopes_inpu
     config.authenticate()
 
     assert _get_scope_from_request(token_mock.last_request.text) == expected_scope
+
+
+def test_unknown_cloud_environment_properties(mocker):
+    """Test that is_azure/is_gcp/is_aws properties work with Cloud.UNKNOWN environment."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+
+    config = Config(
+        host="https://unknown-host.databricks.com",
+        token="test-token",
+    )
+
+    # Unknown host should have UNKNOWN cloud
+    assert config.environment.cloud == Cloud.UNKNOWN
+
+    # All cloud properties should return False without crashing
+    assert config.is_azure is False
+    assert config.is_gcp is False
+    assert config.is_aws is False
+
+
+def test_azure_resource_id_sets_is_azure_with_unknown_environment(mocker):
+    """Test that azure_workspace_resource_id sets is_azure even when environment is UNKNOWN."""
+    mocker.patch("databricks.sdk.config.Config.init_auth")
+
+    config = Config(
+        host="https://unknown-host.databricks.com",
+        azure_workspace_resource_id="/subscriptions/test/resourceGroups/test/providers/Microsoft.Databricks/workspaces/test",
+        azure_client_id="test-client-id",
+        azure_tenant_id="test-tenant-id",
+        azure_client_secret="test-secret",
+    )
+
+    # Should have UNKNOWN cloud
+    assert config.environment.cloud == Cloud.UNKNOWN
+
+    # is_azure should still be True due to azure_workspace_resource_id
+    assert config.is_azure is True
+    assert config.is_gcp is False
+    assert config.is_aws is False
