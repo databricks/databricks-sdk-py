@@ -393,6 +393,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: ReplaceWhereOverride
+   :members:
+   :undoc-members:
+
 .. autoclass:: ReportSpec
    :members:
    :undoc-members:

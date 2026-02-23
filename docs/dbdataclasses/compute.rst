@@ -1348,6 +1348,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: GLOBAL_INIT_SCRIPT_FAILURE
       :value: "GLOBAL_INIT_SCRIPT_FAILURE"
 
+   .. py:attribute:: HIVEMETASTORE_CONNECTIVITY_FAILURE
+      :value: "HIVEMETASTORE_CONNECTIVITY_FAILURE"
+
    .. py:attribute:: HIVE_METASTORE_PROVISIONING_FAILURE
       :value: "HIVE_METASTORE_PROVISIONING_FAILURE"
 

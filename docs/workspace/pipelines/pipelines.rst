@@ -430,7 +430,7 @@
         :returns: :class:`PipelinePermissions`
         
 
-    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], refresh_selection: Optional[List[str]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
+    .. py:method:: start_update(pipeline_id: str [, cause: Optional[StartUpdateCause], full_refresh: Optional[bool], full_refresh_selection: Optional[List[str]], refresh_selection: Optional[List[str]], replace_where_overrides: Optional[List[ReplaceWhereOverride]], rewind_spec: Optional[RewindSpec], validate_only: Optional[bool]]) -> StartUpdateResponse
 
         Starts a new update for the pipeline. If there is already an active update for the pipeline, the
         request will fail and the active update will remain running.
@@ -447,6 +447,9 @@
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param replace_where_overrides: List[:class:`ReplaceWhereOverride`] (optional)
+          A list of predicate overrides for replace_where flows in this update. Only replace_where flows may
+          be specified. Flows not listed use their original predicate.
         :param rewind_spec: :class:`RewindSpec` (optional)
           The information about the requested rewind operation. If specified this is a rewind mode update.
         :param validate_only: bool (optional)
