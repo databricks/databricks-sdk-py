@@ -13,6 +13,8 @@
 
 ### Internal Changes
 
+* Increase count in integration test for listing workspace groups to reduce API calls and timeout. 
+
 ### API Changes
 * Add `read_only_host` field for `databricks.sdk.service.postgres.EndpointHosts`.
 * Add `group` field for `databricks.sdk.service.postgres.EndpointSpec`.
