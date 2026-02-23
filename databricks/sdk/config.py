@@ -21,7 +21,7 @@ from .environments import (ALL_ENVS, AzureEnvironment, Cloud,
                            DatabricksEnvironment, get_environment_for_hostname)
 from .oauth import (OidcEndpoints, Token, get_account_endpoints,
                     get_azure_entra_id_workspace_endpoints,
-                    get_unified_endpoints, get_workspace_endpoints)
+                    get_workspace_endpoints)
 
 logger = logging.getLogger("databricks.sdk")
 
@@ -46,7 +46,10 @@ class ConfigAttribute:
         return cfg._inner.get(self.name, None)
 
     def __set__(self, cfg: "Config", value: any):
-        cfg._inner[self.name] = self.transform(value)
+        if value is None:
+            cfg._inner.pop(self.name, None)
+        else:
+            cfg._inner[self.name] = self.transform(value)
 
     def __repr__(self) -> str:
         return f"<ConfigAttribute '{self.name}' {self.transform.__name__}>"
@@ -285,6 +288,7 @@ class Config:
             self.databricks_environment = kwargs["databricks_environment"]
             del kwargs["databricks_environment"]
         self._clock = clock if clock is not None else RealClock()
+
         try:
             self._set_inner_config(kwargs)
             self._load_from_env()
@@ -293,6 +297,9 @@ class Config:
             self._validate()
             self.init_auth()
             self._init_product(product, product_version)
+            # Extract the workspace ID for legacy profiles. This is extracted from an API call.
+            if not self.workspace_id and not self.account_id and self.experimental_is_unified_host:
+                self.workspace_id = self._fetch_workspace_id()
         except ValueError as e:
             message = self.wrap_debug_info(str(e))
             raise ValueError(message) from e
@@ -374,15 +381,15 @@ class Config:
     def is_azure(self) -> bool:
         if self.azure_workspace_resource_id:
             return True
-        return self.environment.cloud == Cloud.AZURE
+        return self.environment is not None and self.environment.cloud == Cloud.AZURE
 
     @property
     def is_gcp(self) -> bool:
-        return self.environment.cloud == Cloud.GCP
+        return self.environment is not None and self.environment.cloud == Cloud.GCP
 
     @property
     def is_aws(self) -> bool:
-        return self.environment.cloud == Cloud.AWS
+        return self.environment is not None and self.environment.cloud == Cloud.AWS
 
     @property
     def host_type(self) -> HostType:
@@ -405,7 +412,9 @@ class Config:
 
     @property
     def client_type(self) -> ClientType:
-        """Determine the type of client configuration.
+        """
+        [Deprecated] Deprecated. Use host_type instead. Some hosts can support both account and workspace clients.
+        Determine the type of client configuration.
 
         This is separate from host_type. For example, a unified host can support both
         workspace and account client types.
@@ -424,25 +433,24 @@ class Config:
             return ClientType.WORKSPACE
 
         if host_type == HostType.UNIFIED:
-            if not self.account_id:
-                raise ValueError("Unified host requires account_id to be set")
             if self.workspace_id:
                 return ClientType.WORKSPACE
-            return ClientType.ACCOUNT
+            if self.account_id:
+                return ClientType.ACCOUNT
+            # Legacy workspace hosts don't have a workspace_id until AFTER the auth is resolved.
+            return ClientType.WORKSPACE
 
         # Default to workspace for backward compatibility
         return ClientType.WORKSPACE
 
     @property
     def is_account_client(self) -> bool:
-        """[Deprecated] Use host_type or client_type instead.
+        """[Deprecated] Use host_type instead.
 
-        Determines if this is an account client based on the host URL.
+        Determines if this config is compatible with an account client based on the host URL and account_id.
         """
         if self.experimental_is_unified_host:
-            raise ValueError(
-                "is_account_client cannot be used with unified hosts; use host_type or client_type instead"
-            )
+            return self.account_id
         if not self.host:
             return False
         return self.host.startswith("https://accounts.") or self.host.startswith("https://accounts-dod.")
@@ -510,10 +518,8 @@ class Config:
             return None
 
         # Handle unified hosts
-        if self.host_type == HostType.UNIFIED:
-            if not self.account_id:
-                raise ValueError("Unified host requires account_id to be set for OAuth endpoints")
-            return get_unified_endpoints(self.host, self.account_id)
+        if self.experimental_is_unified_host:
+            return self._experimental_oidc_discovery()
 
         # Handle traditional account hosts
         if self.host_type == HostType.ACCOUNTS and self.account_id:
@@ -521,6 +527,32 @@ class Config:
 
         # Default to workspace endpoints
         return get_workspace_endpoints(self.host)
+
+    def _experimental_oidc_discovery(self) -> Optional[OidcEndpoints]:
+        """[Experimental] Discover OIDC endpoints for Databricks OAuth.
+
+        This method discovers the OIDC endpoints for Databricks OAuth by making a request to the
+        multiple paths.
+        This is not to be used for production purposes.
+        It is only to be used for testing and development purposes until a unified OIDC endpoint is available.
+        """
+
+        # DO NOT REMOVE THIS ERROR. THIS IS USED TO ENFORCE THAT THE EXPERIMENTAL IS UNIFIED HOST FLAG IS SET.
+        # THIS WHOLE METHOD SHOULD BE REMOVED WHEN THE EXPERIMENTAL IS UNIFIED HOST FLAG IS REMOVED.
+        if not self.experimental_is_unified_host:
+            raise ValueError(
+                "experimental_oidc_discovery is only supported with the experimental_is_unified_host flag set"
+            )
+        if self.account_id:
+            try:
+                return get_account_endpoints(self.host, self.account_id)
+            except Exception as e:
+                logger.warning(f"Failed to discover OIDC endpoints for account {self.account_id}: {e}")
+        try:
+            return get_workspace_endpoints(self.host)
+        except Exception as e:
+            logger.warning(f"Failed to discover OIDC endpoints for workspace {self.workspace_id}: {e}")
+        raise ValueError("Failed to discover OIDC endpoints")
 
     @property
     def oidc_endpoints(self) -> Optional[OidcEndpoints]:
@@ -579,12 +611,9 @@ class Config:
             return None
         if self.cluster_id and self.warehouse_id:
             raise ValueError("cannot have both cluster_id and warehouse_id")
-        headers = self.authenticate()
-        headers["User-Agent"] = f"{self.user_agent} sdk-feature/sql-http-path"
         if self.cluster_id:
-            response = requests.get(f"{self.host}/api/2.0/preview/scim/v2/Me", headers=headers)
-            # get workspace ID from the response header
-            workspace_id = response.headers.get("x-databricks-org-id")
+            # Reuse cached workspace_id or fetch it
+            workspace_id = self.workspace_id or self._fetch_workspace_id()
             return f"sql/protocolv1/o/{workspace_id}/{self.cluster_id}"
         if self.warehouse_id:
             return f"/sql/1.0/warehouses/{self.warehouse_id}"
@@ -775,3 +804,17 @@ class Config:
     def deep_copy(self):
         """Creates a deep copy of the config object."""
         return copy.deepcopy(self)
+
+    # The code below is used to support legacy hosts.
+    def _fetch_workspace_id(self) -> Optional[str]:
+        """Fetch the workspace ID from the host."""
+        try:
+            headers = self.authenticate()
+            headers["User-Agent"] = f"{self.user_agent} sdk-feature/sql-http-path"
+            response = requests.get(f"{self.host}/api/2.0/preview/scim/v2/Me", headers=headers)
+            response.raise_for_status()
+            # get workspace ID from the response header
+            return response.headers.get("x-databricks-org-id")
+        except Exception as e:
+            logger.debug(f"Failed to fetch workspace ID: {e}")
+            return None
