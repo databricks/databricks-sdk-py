@@ -85,8 +85,7 @@ class Config:
     experimental_is_unified_host: bool = ConfigAttribute(env="DATABRICKS_EXPERIMENTAL_IS_UNIFIED_HOST")
 
     # [Experimental] OpenID Connect discovery URL. When set, OIDC endpoints are fetched directly
-    # from this URL instead of the default well-known endpoint. If not set, the discovery URL is
-    # derived from the oidc_endpoint returned by /.well-known/databricks-config.
+    # from this URL instead of the default host-type-based well-known endpoint logic.
     discovery_url: str = ConfigAttribute(env="DATABRICKS_DISCOVERY_URL")
 
     # PAT token.
@@ -500,9 +499,8 @@ class Config:
     def databricks_oidc_endpoints(self) -> Optional[OidcEndpoints]:
         """Get OIDC endpoints for Databricks OAuth.
 
-        If discovery_url is set (explicitly or resolved via _resolve_host_metadata), OIDC
-        endpoints are fetched directly from it. Otherwise falls back to the host-type-based
-        well-known endpoint logic.
+        If discovery_url is set, OIDC endpoints are fetched directly from it. Otherwise
+        falls back to the host-type-based well-known endpoint logic.
 
         Note: This method does NOT return Azure Entra ID endpoints. For Azure authentication,
         use get_azure_entra_id_workspace_endpoints() directly.
