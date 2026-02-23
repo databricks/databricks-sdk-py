@@ -2596,6 +2596,41 @@ class PostgresSlotConfig:
 
 
 @dataclass
+class ReplaceWhereOverride:
+    """Specifies a replace_where predicate override for a replace where flow."""
+
+    flow_name: Optional[str] = None
+    """Name of the flow to apply this override to."""
+
+    predicate_override: Optional[str] = None
+    """SQL predicate string to use as replace_where condition. Example: `date = '2024-10-10' AND city =
+    'xyz'`"""
+
+    def as_dict(self) -> dict:
+        """Serializes the ReplaceWhereOverride into a dictionary suitable for use as a JSON request body."""
+        body = {}
+        if self.flow_name is not None:
+            body["flow_name"] = self.flow_name
+        if self.predicate_override is not None:
+            body["predicate_override"] = self.predicate_override
+        return body
+
+    def as_shallow_dict(self) -> dict:
+        """Serializes the ReplaceWhereOverride into a shallow dictionary of its immediate attributes."""
+        body = {}
+        if self.flow_name is not None:
+            body["flow_name"] = self.flow_name
+        if self.predicate_override is not None:
+            body["predicate_override"] = self.predicate_override
+        return body
+
+    @classmethod
+    def from_dict(cls, d: Dict[str, Any]) -> ReplaceWhereOverride:
+        """Deserializes the ReplaceWhereOverride from a dictionary."""
+        return cls(flow_name=d.get("flow_name", None), predicate_override=d.get("predicate_override", None))
+
+
+@dataclass
 class ReportSpec:
     source_url: str
     """Required. Report URL in the source system."""
@@ -4321,6 +4356,7 @@ class PipelinesAPI:
         full_refresh: Optional[bool] = None,
         full_refresh_selection: Optional[List[str]] = None,
         refresh_selection: Optional[List[str]] = None,
+        replace_where_overrides: Optional[List[ReplaceWhereOverride]] = None,
         rewind_spec: Optional[RewindSpec] = None,
         validate_only: Optional[bool] = None,
     ) -> StartUpdateResponse:
@@ -4339,6 +4375,9 @@ class PipelinesAPI:
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param replace_where_overrides: List[:class:`ReplaceWhereOverride`] (optional)
+          A list of predicate overrides for replace_where flows in this update. Only replace_where flows may
+          be specified. Flows not listed use their original predicate.
         :param rewind_spec: :class:`RewindSpec` (optional)
           The information about the requested rewind operation. If specified this is a rewind mode update.
         :param validate_only: bool (optional)
@@ -4357,6 +4396,8 @@ class PipelinesAPI:
             body["full_refresh_selection"] = [v for v in full_refresh_selection]
         if refresh_selection is not None:
             body["refresh_selection"] = [v for v in refresh_selection]
+        if replace_where_overrides is not None:
+            body["replace_where_overrides"] = [v.as_dict() for v in replace_where_overrides]
         if rewind_spec is not None:
             body["rewind_spec"] = rewind_spec.as_dict()
         if validate_only is not None:

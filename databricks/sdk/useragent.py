@@ -82,6 +82,8 @@ def with_extra(key: str, value: str):
     global _extra
     _match_alphanum(key)
     _match_alphanum_or_semver(value)
+    if (key, value) in _extra:
+        return
     logger.debug(f"Adding {key}/{value} to User-Agent")
     _extra.append((key, value))
 

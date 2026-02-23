@@ -51,6 +51,14 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: EndpointGroupSpec
+   :members:
+   :undoc-members:
+
+.. autoclass:: EndpointGroupStatus
+   :members:
+   :undoc-members:
+
 .. autoclass:: EndpointHosts
    :members:
    :undoc-members:
@@ -77,6 +85,9 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: ACTIVE
       :value: "ACTIVE"
+
+   .. py:attribute:: DEGRADED
+      :value: "DEGRADED"
 
    .. py:attribute:: IDLE
       :value: "IDLE"
@@ -354,6 +365,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    .. py:attribute:: UNIFIED
       :value: "UNIFIED"
 
+.. autoclass:: InitialEndpointSpec
+   :members:
+   :undoc-members:
+
 .. autoclass:: ListBranchesResponse
    :members:
    :undoc-members:
@@ -375,6 +390,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :undoc-members:
 
 .. autoclass:: Project
+   :members:
+   :undoc-members:
+
+.. autoclass:: ProjectCustomTag
    :members:
    :undoc-members:
 
@@ -411,6 +430,10 @@ These dataclasses are used in the SDK to represent API requests and responses fo
    :members:
    :undoc-members:
 
+.. autoclass:: RoleAttributes
+   :members:
+   :undoc-members:
+
 .. py:class:: RoleAuthMethod
 
    How the role is authenticated when connecting to Postgres.
@@ -436,6 +459,13 @@ These dataclasses are used in the SDK to represent API requests and responses fo
 
    .. py:attribute:: USER
       :value: "USER"
+
+.. py:class:: RoleMembershipRole
+
+   Roles that the DatabaseInstanceRole can be a member of.
+
+   .. py:attribute:: DATABRICKS_SUPERUSER
+      :value: "DATABRICKS_SUPERUSER"
 
 .. autoclass:: RoleOperationMetadata
    :members:

@@ -20,6 +20,7 @@ Dataclasses
    jobs
    marketplace
    ml
+   networking
    oauth2
    pipelines
    postgres

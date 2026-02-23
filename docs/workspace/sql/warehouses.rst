@@ -51,13 +51,13 @@
           max_num_clusters.
 
           Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
-          4X-Large
+          4X-Large - 5X-Large
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
-          Defaults to false.
+          Defaults to true.
         :param enable_serverless_compute: bool (optional)
           Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)
@@ -190,13 +190,13 @@
           max_num_clusters.
 
           Supported values: - 2X-Small - X-Small - Small - Medium - Large - X-Large - 2X-Large - 3X-Large -
-          4X-Large
+          4X-Large - 5X-Large
         :param creator_name: str (optional)
           warehouse creator name
         :param enable_photon: bool (optional)
           Configures whether the warehouse should use Photon optimized clusters.
 
-          Defaults to false.
+          Defaults to true.
         :param enable_serverless_compute: bool (optional)
           Configures whether the warehouse should use serverless compute
         :param instance_profile_arn: str (optional)

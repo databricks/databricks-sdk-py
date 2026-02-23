@@ -20,6 +20,7 @@ databricks/sdk/service/jsonmarshallv2.py linguist-generated=true
 databricks/sdk/service/lrotesting.py linguist-generated=true
 databricks/sdk/service/marketplace.py linguist-generated=true
 databricks/sdk/service/ml.py linguist-generated=true
+databricks/sdk/service/networking.py linguist-generated=true
 databricks/sdk/service/oauth2.py linguist-generated=true
 databricks/sdk/service/pipelines.py linguist-generated=true
 databricks/sdk/service/postgres.py linguist-generated=true

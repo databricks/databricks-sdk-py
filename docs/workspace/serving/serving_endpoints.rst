@@ -119,10 +119,22 @@
 
     .. py:method:: get_langchain_chat_open_ai_client(model)
 
+        Create a LangChain ChatOpenAI client configured for Databricks Model Serving.
+
+        .. deprecated::
+            This method is deprecated. Please install the `databricks-langchain` package
+            and use `from databricks_langchain import ChatDatabricks` instead.
+            See https://api-docs.databricks.com/python/databricks-ai-bridge/latest/databricks_langchain.html for more information.
+        
 
     .. py:method:: get_open_ai_client()
 
         Create an OpenAI client configured for Databricks Model Serving.
+
+        .. deprecated::
+            This method is deprecated. Please install the `databricks-openai` package
+            and use `from databricks_openai import DatabricksOpenAI` instead.
+            See https://api-docs.databricks.com/python/databricks-ai-bridge/latest/databricks_openai.html for more information.
 
         Returns an OpenAI client instance that is pre-configured to send requests to
         Databricks Model Serving endpoints. The client uses Databricks authentication
