@@ -155,14 +155,22 @@ _DUMMY_WORKSPACE_ID = "111111111111111"
     [
         pytest.param(
             _DUMMY_HOST,
-            {"oidc_endpoint": f"{_DUMMY_HOST}/oidc", "account_id": _DUMMY_ACCOUNT_ID, "workspace_id": _DUMMY_WORKSPACE_ID},
-            HostMetadata(oidc_endpoint=f"{_DUMMY_HOST}/oidc", account_id=_DUMMY_ACCOUNT_ID, workspace_id=_DUMMY_WORKSPACE_ID),
+            {
+                "oidc_endpoint": f"{_DUMMY_HOST}/oidc",
+                "account_id": _DUMMY_ACCOUNT_ID,
+                "workspace_id": _DUMMY_WORKSPACE_ID,
+            },
+            HostMetadata(
+                oidc_endpoint=f"{_DUMMY_HOST}/oidc", account_id=_DUMMY_ACCOUNT_ID, workspace_id=_DUMMY_WORKSPACE_ID
+            ),
             id="workspace-static-oidc-endpoint",
         ),
         pytest.param(
             _DUMMY_ACCOUNT_HOST,
             {"oidc_endpoint": f"{_DUMMY_ACCOUNT_HOST}/oidc/accounts/{{account_id}}"},
-            HostMetadata(oidc_endpoint=f"{_DUMMY_ACCOUNT_HOST}/oidc/accounts/{{account_id}}", account_id=None, workspace_id=None),
+            HostMetadata(
+                oidc_endpoint=f"{_DUMMY_ACCOUNT_HOST}/oidc/accounts/{{account_id}}", account_id=None, workspace_id=None
+            ),
             id="account-raw-oidc-endpoint-template",
         ),
     ],
