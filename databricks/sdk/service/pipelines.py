@@ -3456,6 +3456,9 @@ class UpdateInfo:
     full_refresh_selection are empty, this is a full graph update. Full Refresh on a table means
     that the states of the table will be reset before the refresh."""
 
+    parameters: Optional[Dict[str, str]] = None
+    """Key/value map of parameters used to initiate the update"""
+
     pipeline_id: Optional[str] = None
     """The ID of the pipeline."""
 
@@ -3489,6 +3492,8 @@ class UpdateInfo:
             body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
             body["full_refresh_selection"] = [v for v in self.full_refresh_selection]
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
@@ -3516,6 +3521,8 @@ class UpdateInfo:
             body["full_refresh"] = self.full_refresh
         if self.full_refresh_selection:
             body["full_refresh_selection"] = self.full_refresh_selection
+        if self.parameters:
+            body["parameters"] = self.parameters
         if self.pipeline_id is not None:
             body["pipeline_id"] = self.pipeline_id
         if self.refresh_selection:
@@ -3538,6 +3545,7 @@ class UpdateInfo:
             creation_time=d.get("creation_time", None),
             full_refresh=d.get("full_refresh", None),
             full_refresh_selection=d.get("full_refresh_selection", None),
+            parameters=d.get("parameters", None),
             pipeline_id=d.get("pipeline_id", None),
             refresh_selection=d.get("refresh_selection", None),
             state=_enum(d, "state", UpdateInfoState),
@@ -4355,6 +4363,7 @@ class PipelinesAPI:
         cause: Optional[StartUpdateCause] = None,
         full_refresh: Optional[bool] = None,
         full_refresh_selection: Optional[List[str]] = None,
+        parameters: Optional[Dict[str, str]] = None,
         refresh_selection: Optional[List[str]] = None,
         replace_where_overrides: Optional[List[ReplaceWhereOverride]] = None,
         rewind_spec: Optional[RewindSpec] = None,
@@ -4371,6 +4380,8 @@ class PipelinesAPI:
           A list of tables to update with fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
           will be reset before the refresh.
+        :param parameters: Dict[str,str] (optional)
+          Key/value map of parameters to pass to the pipeline execution
         :param refresh_selection: List[str] (optional)
           A list of tables to update without fullRefresh. If both refresh_selection and full_refresh_selection
           are empty, this is a full graph update. Full Refresh on a table means that the states of the table
@@ -4394,6 +4405,8 @@ class PipelinesAPI:
             body["full_refresh"] = full_refresh
         if full_refresh_selection is not None:
             body["full_refresh_selection"] = [v for v in full_refresh_selection]
+        if parameters is not None:
+            body["parameters"] = parameters
         if refresh_selection is not None:
             body["refresh_selection"] = [v for v in refresh_selection]
         if replace_where_overrides is not None:

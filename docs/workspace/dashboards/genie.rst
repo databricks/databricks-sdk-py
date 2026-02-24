@@ -143,7 +143,7 @@
         :returns: :class:`GenieGenerateDownloadFullQueryResultResponse`
         
 
-    .. py:method:: get_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str [, download_id_signature: Optional[str]]) -> GenieGetDownloadFullQueryResultResponse
+    .. py:method:: get_download_full_query_result(space_id: str, conversation_id: str, message_id: str, attachment_id: str, download_id: str, download_id_signature: str) -> GenieGetDownloadFullQueryResultResponse
 
         After [Generating a Full Query Result Download](:method:genie/generatedownloadfullqueryresult) and
         successfully receiving a `download_id` and `download_id_signature`, use this API to poll the download
@@ -178,7 +178,7 @@
         :param download_id: str
           Download ID. This ID is provided by the [Generate Download
           endpoint](:method:genie/generateDownloadFullQueryResult)
-        :param download_id_signature: str (optional)
+        :param download_id_signature: str
           JWT signature for the download_id to ensure secure access to query results
 
         :returns: :class:`GenieGetDownloadFullQueryResultResponse`
