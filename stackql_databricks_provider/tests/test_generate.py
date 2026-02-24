@@ -98,8 +98,12 @@ class TestGenerateAll:
             if refs is None:
                 refs = set()
             if isinstance(obj, dict):
-                if "$ref" in obj:
-                    refs.add(obj["$ref"])
+                ref = obj.get("$ref")
+                # Only collect string $ref values (OpenAPI references).
+                # Some schemas (e.g. SCIM) have a literal "$ref" property
+                # whose value is a schema dict, not a reference pointer.
+                if isinstance(ref, str):
+                    refs.add(ref)
                 for v in obj.values():
                     collect_refs(v, refs)
             elif isinstance(obj, list):
@@ -240,3 +244,56 @@ class TestSpecOverrides:
         uid_param = next((p for p in params if p["name"] == "uid"), None)
         assert uid_param is not None
         assert uid_param["required"] is True
+
+
+class TestRequestBodyRefInlining:
+    def test_nested_object_refs_are_inlined(self):
+        """Request body $ref properties should be inlined so StackQL shows subfields."""
+        spec = generate_spec_for_service("provisioning", "account")
+        cred_path = spec["paths"].get("/api/2.0/accounts/{account_id}/credentials", {})
+        body_schema = (
+            cred_path.get("post", {})
+            .get("requestBody", {})
+            .get("content", {})
+            .get("application/json", {})
+            .get("schema", {})
+        )
+        aws_creds = body_schema.get("properties", {}).get("aws_credentials", {})
+        # Should be inlined (type: object with properties), NOT a $ref
+        assert "$ref" not in aws_creds, "aws_credentials should be inlined, not a $ref"
+        assert aws_creds.get("type") == "object"
+        assert "sts_role" in aws_creds.get("properties", {})
+        # Nested sts_role should also be inlined
+        sts_role = aws_creds["properties"]["sts_role"]
+        assert "$ref" not in sts_role
+        assert "role_arn" in sts_role.get("properties", {})
+
+    def test_inlining_preserves_description(self):
+        """Descriptions on $ref properties should be preserved after inlining."""
+        spec = generate_spec_for_service("provisioning", "account")
+        cred_path = spec["paths"].get("/api/2.0/accounts/{account_id}/credentials", {})
+        body_schema = (
+            cred_path.get("post", {})
+            .get("requestBody", {})
+            .get("content", {})
+            .get("application/json", {})
+            .get("schema", {})
+        )
+        aws_creds = body_schema.get("properties", {}).get("aws_credentials", {})
+        # The original $ref had a description - it should still be present
+        assert "description" in aws_creds
+
+    def test_response_refs_are_not_inlined(self):
+        """Response schemas should still use $ref (only request bodies are inlined)."""
+        spec = generate_spec_for_service("provisioning", "account")
+        cred_path = spec["paths"].get("/api/2.0/accounts/{account_id}/credentials", {})
+        resp_schema = (
+            cred_path.get("post", {})
+            .get("responses", {})
+            .get("200", {})
+            .get("content", {})
+            .get("application/json", {})
+            .get("schema", {})
+        )
+        # Response should still use $ref
+        assert "$ref" in resp_schema

@@ -5,6 +5,7 @@ Produces one JSON file per service module, organized into account/
 and workspace/ subdirectories under ``openapi_generated/``.
 """
 
+import copy
 import json
 import logging
 import os
@@ -156,6 +157,9 @@ def generate_spec_for_service(
     # Apply post-extraction overrides from spec_overrides.json
     overrides = _load_overrides()
     overrides_applied = _apply_overrides(spec, scope, service_name, overrides)
+
+    # Inline $ref in request body schemas so StackQL can see subfields
+    _inline_request_body_refs(spec)
 
     logger.info(
         "Generated %s/%s: %d paths, %d operations, %d schemas (%d skipped, %d overrides)",
@@ -376,6 +380,70 @@ def _parse_json_path(json_path: str) -> List[str]:
         segments.append(current)
 
     return segments
+
+
+def _inline_request_body_refs(spec: Dict[str, Any]) -> None:
+    """Resolve ``$ref`` in request body schemas to inline object properties.
+
+    StackQL's manifest generator does not follow ``$ref`` for request body
+    properties, so nested objects appear as opaque ``value: object``.
+    This step inlines referenced component schemas so subfields are visible.
+    """
+    schemas = spec.get("components", {}).get("schemas", {})
+    for path_data in spec.get("paths", {}).values():
+        for method_data in path_data.values():
+            if not isinstance(method_data, dict):
+                continue
+            request_body = method_data.get("requestBody", {})
+            content = request_body.get("content", {})
+            for media_type_data in content.values():
+                schema = media_type_data.get("schema", {})
+                _inline_refs_recursive(schema, schemas, set())
+
+
+def _inline_refs_recursive(
+    schema: Dict[str, Any],
+    all_schemas: Dict[str, Any],
+    seen: Set[str],
+) -> None:
+    """Recursively replace ``$ref`` entries with their resolved inline schemas."""
+    if not isinstance(schema, dict):
+        return
+
+    properties = schema.get("properties", {})
+    for prop_name in list(properties.keys()):
+        prop_schema = properties[prop_name]
+        if not isinstance(prop_schema, dict):
+            continue
+
+        if "$ref" in prop_schema:
+            ref_name = prop_schema["$ref"].split("/")[-1]
+            if ref_name in all_schemas and ref_name not in seen:
+                seen.add(ref_name)
+                resolved = copy.deepcopy(all_schemas[ref_name])
+                # Preserve extra fields (e.g. description) from the original
+                for k, v in prop_schema.items():
+                    if k != "$ref":
+                        resolved[k] = v
+                _inline_refs_recursive(resolved, all_schemas, seen)
+                properties[prop_name] = resolved
+                seen.discard(ref_name)
+
+        elif prop_schema.get("type") == "array" and isinstance(prop_schema.get("items"), dict):
+            items = prop_schema["items"]
+            if "$ref" in items:
+                ref_name = items["$ref"].split("/")[-1]
+                if ref_name in all_schemas and ref_name not in seen:
+                    seen.add(ref_name)
+                    resolved = copy.deepcopy(all_schemas[ref_name])
+                    _inline_refs_recursive(resolved, all_schemas, seen)
+                    prop_schema["items"] = resolved
+                    seen.discard(ref_name)
+            elif "properties" in items:
+                _inline_refs_recursive(items, all_schemas, seen)
+
+        elif "properties" in prop_schema:
+            _inline_refs_recursive(prop_schema, all_schemas, seen)
 
 
 def _sanitize_orphaned_refs(paths: Dict[str, Any], schemas: Dict[str, Any]) -> None:
