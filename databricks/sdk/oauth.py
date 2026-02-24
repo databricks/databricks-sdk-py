@@ -292,12 +292,9 @@ class Refreshable(TokenSource):
         use the full cap of _DEFAULT_STALE_DURATION.
         """
         self._token = token
-        if not token.expiry:
-            self._stale_duration = timedelta(seconds=0)
-            return
 
-        if self._use_dynamic_stale_duration:
-            ttl = token.expiry - datetime.now()
+        if self._use_dynamic_stale_duration and self._token.expiry:
+            ttl = self._token.expiry - datetime.now()
 
             if ttl < timedelta(seconds=0):
                 self._stale_duration = timedelta(seconds=0)
@@ -339,7 +336,7 @@ class Refreshable(TokenSource):
         lifespan = self._token.expiry - datetime.now()
         if lifespan < timedelta(seconds=0):
             return _TokenState.EXPIRED
-        if lifespan <= self._stale_duration:
+        if lifespan < self._stale_duration:
             return _TokenState.STALE
         return _TokenState.FRESH
 
