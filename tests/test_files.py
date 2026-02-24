@@ -1958,27 +1958,27 @@ class MultipartUploadTestCase(UploadTestCase):
             expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Create upload URL: meaningless JSON response is not retried",
+            "Create upload URL: meaningless JSON response falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(body='{"foo":123}', only_invocation=1),
-            expected_exception_type=ValueError,
             expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Create upload URL: meaningless JSON response is not retried 2",
+            "Create upload URL: empty upload_part_urls falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(body='{"upload_part_urls":[]}', only_invocation=1),
-            expected_exception_type=ValueError,
             expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
-            "Create upload URL: meaningless JSON response is not retried 3",
+            "Create upload URL: missing part_number key falls back to single-shot",
             content_size=1024 * 1024,
             custom_response_on_create_multipart_url=CustomResponse(
                 body='{"upload_part_urls":[{"url":""}]}', only_invocation=1
             ),
-            expected_exception_type=KeyError,
             expected_multipart_upload_aborted=True,
+            expected_single_shot_upload=True,
         ),
         MultipartUploadTestCase(
             "Create upload URL: permanent retryable exception should fallback",
@@ -2615,22 +2615,22 @@ class ResumableUploadTestCase(UploadTestCase):
             expected_single_shot_upload=True,
         ),
         ResumableUploadTestCase(
-            "Create resumable URL: meaningless JSON response is not retried",
+            "Create resumable URL: meaningless JSON response falls back to single-shot",
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(
                 body='{"upload_part_urls":[{"url":""}]}', only_invocation=1
             ),
-            expected_exception_type=ValueError,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         ResumableUploadTestCase(
-            "Create resumable URL: node exists but URL is empty",
+            "Create resumable URL: node exists but URL is empty falls back to single-shot",
             stream_size=1024 * 1024,
             custom_response_on_create_resumable_url=CustomResponse(
                 body='{"resumable_upload_url":{"headers":[]}}', only_invocation=1
             ),
-            expected_exception_type=ValueError,
             expected_multipart_upload_aborted=False,  # upload didn't start
+            expected_single_shot_upload=True,
         ),
         ResumableUploadTestCase(
             "Create resumable URL: permanent retryable status code",
