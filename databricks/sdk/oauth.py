@@ -247,9 +247,11 @@ class Refreshable(TokenSource):
 
     _EXECUTOR = None
     _EXECUTOR_LOCK = threading.Lock()
+    # Legacy default duration for the stale period. This value is chosen to cover the
+    # maximum monthly downtime allowed by a 99.99% uptime SLA (~4.38 minutes).
+    _DEFAULT_STALE_DURATION = timedelta(minutes=5)
     # Default maximum stale duration. Chosen to cover the maximum monthly downtime
-    # allowed by a 99.99% uptime SLA (~4.32 minutes) with generous overhead guarantees
-    # Used as part of the stale period calculation: stale_period = min(TTL x 0.5, _MAX_STALE_DURATION).
+    # allowed by a 99.99% uptime SLA (~4.38 minutes) with generous overhead guarantees
     _MAX_STALE_DURATION = timedelta(minutes=20)
 
     @classmethod
@@ -266,10 +268,11 @@ class Refreshable(TokenSource):
         self,
         token: Optional[Token] = None,
         disable_async: bool = True,
-        max_stale_duration: timedelta = _MAX_STALE_DURATION,
+        stale_duration: Optional[timedelta] = None,
     ):
         # Config properties
-        self._max_stale_duration = max_stale_duration
+        self._use_dynamic_stale_duration = stale_duration is None
+        self._stale_duration = stale_duration if stale_duration is not None else timedelta(seconds=0)
         self._disable_async = disable_async
         # Lock
         self._lock = threading.Lock()
@@ -286,16 +289,20 @@ class Refreshable(TokenSource):
 
         This ensures short-lived tokens (e.g. FastPath with 10-minute TTL) get a
         proportionally smaller stale window, while standard OAuth tokens (≥1 hour TTL)
-        use the full cap of _max_stale_duration.
+        use the full cap of _DEFAULT_STALE_DURATION.
         """
         self._token = token
-        if token.expiry:
+        if not token.expiry:
+            self._stale_duration = timedelta(seconds=0)
+            return
+
+        if self._use_dynamic_stale_duration:
             ttl = token.expiry - datetime.now()
 
             if ttl < timedelta(seconds=0):
                 self._stale_duration = timedelta(seconds=0)
             else:
-                self._stale_duration = min(ttl * 0.5, self._max_stale_duration)
+                self._stale_duration = min(ttl * 0.5, self._MAX_STALE_DURATION)
 
     # This is the main entry point for the Token. Do not access the token
     # using any of the internal functions.
