@@ -1263,9 +1263,7 @@ class FilesExt(files.FilesAPI):
             query["overwrite"] = ctx.overwrite
 
         # Method _api.do() takes care of retrying and will raise an exception in case of failure.
-        initiate_upload_response = self._api.do(
-            "POST", url=f"{hostname}/api/2.0/fs/files{escaped}", query=query
-        )
+        initiate_upload_response = self._api.do("POST", url=f"{hostname}/api/2.0/fs/files{escaped}", query=query)
         return initiate_upload_response
 
     def _single_thread_multipart_upload(self, ctx: _UploadContext, contents: BinaryIO) -> None:
@@ -2219,9 +2217,7 @@ class FilesExt(files.FilesAPI):
             current_time, self._config.files_ext_presigned_download_url_expiration_duration
         )
 
-    def _abort_multipart_upload(
-        self, ctx: _UploadContext, session_token: str
-    ) -> None:
+    def _abort_multipart_upload(self, ctx: _UploadContext, session_token: str) -> None:
         """Aborts ongoing multipart upload session to clean up incomplete file."""
         hostname = self._get_hostname()
         body: dict = {
@@ -2233,7 +2229,9 @@ class FilesExt(files.FilesAPI):
         headers = {"Content-Type": "application/json"}
 
         # Method _api.do() takes care of retrying and will raise an exception in case of failure.
-        abort_url_response = self._api.do("POST", url=f"{hostname}/api/2.0/fs/create-abort-upload-url", headers=headers, body=body)
+        abort_url_response = self._api.do(
+            "POST", url=f"{hostname}/api/2.0/fs/create-abort-upload-url", headers=headers, body=body
+        )
 
         abort_upload_url_node = abort_url_response["abort_upload_url"]
         abort_url = abort_upload_url_node["url"]
@@ -2257,9 +2255,7 @@ class FilesExt(files.FilesAPI):
         if abort_response.status_code not in (200, 201):
             raise ValueError(abort_response)
 
-    def _abort_resumable_upload(
-        self, resumable_upload_url: str, headers: dict[str, str]
-    ) -> None:
+    def _abort_resumable_upload(self, resumable_upload_url: str, headers: dict[str, str]) -> None:
         """Aborts ongoing resumable upload session to clean up incomplete file."""
 
         def perform() -> requests.Response:
